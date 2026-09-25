@@ -22,7 +22,7 @@ are correctly expressed in `em`. Bullet gaps and inline padding on `code` elemen
 also correct uses of `em`. The rule is about column geometry, not typographic spacing.
 
 **The design guide is the canonical test bed.** If you are unsure how a rule renders,
-add a specimen to the design guide's own sheet (`@layer book`) and build a preview.
+add a specimen to the design guide's own sheet and build a preview.
 
 ---
 
@@ -36,20 +36,26 @@ manifest array is the only place the order is written down.
 **Package boundary.** This whole repository is the Gutterpress extension
 package `gp-dimm-city`. A book installs it with `gutterpress ext add
 gp-dimm-city` (or from the app's Features panel), which pins the exact
-version and vendors a copy under the book's `plugins/npm/`. The cascade a
-consuming book gets is core (layered) → the sixteen package sheets in
-`gutterpress.styles` order → the book's own `styles:` last (gutterpress#265).
-Anything a single book needs — a design guide's demo scaffolding, a field
-guide's chapter-specific art — lives in that book's own sheet, wrapped in
-`@layer book`, never in this package.
+version and vendors a copy under the book's `plugins/npm/`. Gutterpress
+≥0.11.0 wraps every extension's CSS in its own cascade layer, `@layer
+ext.<name>` (this package is `ext.gp-dimm-city`), in `extensions:` list
+order — so the cascade a consuming book gets is core (layered) → each
+extension in its own layer, this package's sixteen sheets among them in
+`gutterpress.styles` order → the book's own `styles:` last, which stay
+UNLAYERED (gutterpress#265, gutterpress#227). Anything a single book needs —
+a design guide's demo scaffolding, a field guide's chapter-specific art —
+lives in that book's own sheet, plain and unlayered, never in this package:
+being unlayered, it beats every rule in `ext.gp-dimm-city` at any
+specificity, with no layer of its own required.
 
-The layer names and order are declared **once**, as a statement in
-`dc-fonts.css` — the first sheet the cascade sees — so layer order never
-depends on file order:
+The layer names and order for this package's OWN sheets are declared
+**once**, as a statement in `dc-fonts.css` — the first sheet the cascade
+sees — so layer order never depends on file order. These are sublayers
+nested inside the engine's `ext.gp-dimm-city` wrapper, not top-level layers:
 
 ```css
 /* styles/dc-fonts.css — before any rule */
-@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, book;
+@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages;
 ```
 
 Each file below is wrapped in the one layer it names. Layer order settles
@@ -78,27 +84,32 @@ silently flip which sheet wins a shared selector.
 "styles/dc-native.css"                        // UNLAYERED, last — see below
 ```
 
-`book` is declared last and holds no package file: it is the layer for a
-consuming book's own sheets. Because it is the last-declared layer, a rule in
-`book` wins every cross-layer tie without a specificity contest. A book must
-not invent further layer names — a layer this statement does not name is
-created where it is first used, which places it *after* `book`, silently
-above the book's own overrides.
+There is no `book` entry in this statement. Before Gutterpress 0.11.0, a
+consuming book joined a `book` layer declared here to win cross-layer ties
+without a specificity fight. Now that this whole package sits inside the
+engine's `ext.gp-dimm-city` wrapper, that sublayer would only be reachable
+from *inside* this package — a book's separate `styles:` sheet can't nest
+into it — so it was dead weight nobody could target, and it has been
+dropped. A book needs no replacement for it: its `styles:` sheets are
+unlayered by the engine and already win every cross-layer tie against this
+whole package, at any specificity, without joining any layer at all.
 
-**Two sheets are deliberately UNLAYERED.** `dc-native.css` is the last
-entry in the array and carries the engine-specific native-print chrome
-(margin-box chip styling, the brick margin band, native-print break fixes).
-Unlayered CSS always outranks layered CSS, no matter which layer, no matter
-specificity — that is the ONE piece of the cascade stronger than any
-`@layer` — so it beats every layered sheet in the package *and* the book's
-`@layer book` overrides. The same rule cuts the other way: **any unlayered
-rule in a book's own `styles:` list also beats every layered sheet**, which
-is exactly how a book overrides `dc-native.css` when it must — an unlayered
-sheet listed after the extension (the field guide's `fg-native.css` is one).
-`dc-fonts.css` is the other unlayered file, for an unrelated reason: it
-carries the `@layer` statement (which must be a top-level statement, not
-nested inside a layer) and its only rules are `@font-face`, where a layer
-would be pointless — font-family lookup is not a cascade contest.
+**Two sheets are deliberately UNLAYERED — within this package.**
+`dc-native.css` is the last entry in the array and carries the
+engine-specific native-print chrome (margin-box chip styling, the brick
+margin band, native-print break fixes). Unlayered CSS always outranks
+layered CSS, no matter which layer, no matter specificity — that is the ONE
+piece of the cascade stronger than any `@layer` — so within
+`ext.gp-dimm-city`, it beats every `dc.*` sublayer, which is why it must
+stay last in the array. From outside the package, though, `dc-native.css` is
+just part of the single `ext.gp-dimm-city` layer like everything else here —
+the book's own `styles:` sheets beat it automatically, at any specificity,
+the same way they beat every other sheet in this package, with no
+unlayered-sheet trick required. `dc-fonts.css` is the other unlayered file,
+for an unrelated reason: it carries the `@layer` statement (which must be a
+top-level statement relative to this package's own sublayers, not nested
+inside one of them) and its only rules are `@font-face`, where a layer would
+be pointless — font-family lookup is not a cascade contest.
 
 ### Layer Responsibilities
 
@@ -109,8 +120,7 @@ would be pointless — font-family lookup is not a cascade contest.
 | `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | `columns:N` rules, `@page` declarations, `div.chapter` scaffolding |
 | `dc.templates` | `page-templates.css` | ALL **theme** `columns:N` rules (exclusive ownership), `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
 | `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, `columns:N` rules |
-| `book` | *the consuming book's own sheets* (none in this package) | Book context overrides — chapter-id token selectors, context-scoped break rules, a design guide's demo scaffolding; last-declared layer, so it wins every cross-layer tie | Bare `.dc-*` component rules, `:root` token definitions, `columns:N` rules |
-| *(unlayered)* | `dc-fonts.css`, `dc-native.css`, and any unlayered sheet a book lists after the extension | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every layered sheet AND any layered book CSS (`dc-native.css`) | Anything that should lose to a later book override — unlayered CSS cannot be outranked by any layer |
+| *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
 
 ### COLUMNS:N Ownership Rule
 
@@ -144,9 +154,10 @@ the point of separating them.
 **Tokens flow downward only.** The `:root` block is the exclusive property of
 the `dc.tokens` layer (`dc-palette.css`, `dc-identity.css`,
 `dc-component-defaults.css`). No other layer defines custom properties on
-`:root`. All layers consume tokens via `var(--token)`. a book's `@layer book` sheet's
-`book` layer — the last-declared layer — is the only sanctioned override
-path — do not edit the `dc.tokens` files for project-specific changes.
+`:root`. All layers consume tokens via `var(--token)`. A book's own `styles:`
+sheet — unlayered, so it beats this whole package regardless — is the only
+sanctioned override path; do not edit the `dc.tokens` files for
+project-specific changes.
 
 **No upward `!important` fights.** Layers do not override each other with
 `!important`, and a layer-order flip is never fixed with `!important` either
@@ -158,12 +169,12 @@ alone (see `page-rules.css`'s "ONE BLOCK PER NAMED PAGE" contract).
 belongs in `components/callouts.css` (`@layer dc.components`). If you are writing
 an `@page` rule — including the page background — it belongs in `page-rules.css`
 (`@layer dc.pages`). If you are writing a selector that only exists for a rendered
-design-guide example, it belongs in the design guide's own sheet (`@layer book`).
+design-guide example, it belongs in the design guide's own sheet.
 A `.dc-*` selector in `page-rules.css` is a bug.
 
 **Cascade layers, not just file order (dc#54).** Layer order decides a
 cross-layer tie **regardless of selector specificity** — a one-class rule in
-`book` beats a three-class rule in `dc.components`. This is what makes the
+`dc.pages` beats a three-class rule in `dc.components`. This is what makes the
 stack immune to reordering the `gutterpress.styles` array or splitting a file in two, but it
 also means a rule written assuming "my file loads later, so my higher
 specificity wins" can flip the moment two sheets end up in different
@@ -307,7 +318,7 @@ silently. `gutterpress build` reports that shape as
 that makes this shape work landed in Gutterpress 0.10.2-alpha.1.
 
 To change the page background in an adapted project, override `--bg` in
-the book's own sheet (`@layer book`); the `@page` rules read it directly.
+the book's own sheet; the `@page` rules read it directly.
 
 ### What Makes a Good Token
 
@@ -516,7 +527,7 @@ component no longer ships one, since its rules were removed as unreachable.
 The adjacent sibling prevents headings from stranding without content:
 
 ```css
-/* the design guide's own sheet (@layer book) */
+/* the design guide's own sheet */
 div.chapter h2 + p, div.chapter h3 + p {
   break-before: avoid;
   page-break-before: avoid;
@@ -529,7 +540,7 @@ The `div.chapter` and `.page.*` parent selectors scope rules to their context.
 A rule scoped to `section#ch-name` is guaranteed not to bleed into adjacent chapters:
 
 ```css
-/* the design guide's own sheet (@layer book) */
+/* the design guide's own sheet */
 .page.page-credits.dc-credits > h1,
 .page.page-intro.dg-intro > h1,
 .page.page-chapter-start.dc-chapter-start > h1 {
@@ -743,7 +754,7 @@ column contexts. Pair both for full compatibility:
 ### Keep Headings With Their Content
 
 ```css
-/* the design guide's own sheet (@layer book) */
+/* the design guide's own sheet */
 div.chapter h2, div.chapter h3, div.chapter h4 {
   break-after: avoid;
   break-before: auto;

@@ -2,7 +2,8 @@
 
 :root {  /* ── Section Component Public Tokens ────────────────────────────────────
      Default theming for .section / @section macros. Chapter-scoped overrides
-     live in the book's own sheet (`@layer book`) and win via the parent-context cascade —
+     live in the book's own sheet (unlayered — it wins over this whole package
+     regardless of specificity) and win via the parent-context cascade —
      typically by applying a .dc-accent-X utility on @chapter / @section
      (see components/*.css "ACCENT IDENTITY UTILITIES" section). */
   --dc-section-bg:     var(--paper-cream);
@@ -12,9 +13,9 @@
      Override surface for per-chapter and per-project theming. These are the
      defaults that were previously declared inside each component class rule.
      Moving them to :root makes them visible to the theming system and lets
-     the book's own sheet (`@layer book`) override them at chapter-id scope instead of having to
+     the book's own sheet override them at chapter-id scope instead of having to
      write a full component selector chain.
-     Set them here; override at chapter id scope in the book's own sheet (`@layer book`).
+     Set them here; override at chapter id scope in the book's own sheet.
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-alert public API */

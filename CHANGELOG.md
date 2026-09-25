@@ -7,6 +7,29 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **The layer statement drops `book`**: `dc-fonts.css` now declares `@layer
+  dc.tokens, dc.base, dc.components, dc.templates, dc.pages;`. Gutterpress
+  0.11.0 wraps every extension's CSS in its own cascade layer (`@layer
+  ext.gp-dimm-city` for this package), so the package's own `dc.*` layers are
+  now sublayers nested inside that wrapper rather than top-level layers, and
+  a `book` sublayer declared here would only be reachable from inside this
+  package — a consuming book's separate `styles:` sheet can't nest into it.
+  Nothing in this package or any known consuming book ever put rules inside
+  `@layer book`, so there is no rendered change.
+
+### Docs
+
+- **README quick start now requires Gutterpress 0.11.0+** and drops the
+  `gutterpress ext remove ./extensions/clean-book` workaround: Gutterpress
+  now layers every extension's CSS itself (in `extensions:` list order), so
+  this package's rules can no longer be jumped by an unlayered starter look,
+  and `gutterpress new` no longer scaffolds one anyway. The "Your own CSS"
+  section no longer recommends wrapping book overrides in `@layer book` —
+  a book's own `styles:` sheets are unlayered by the engine and already beat
+  this whole package at any specificity.
+
 ## [1.0.0] - unreleased
 
 First release as a standalone package. Extracted from the private

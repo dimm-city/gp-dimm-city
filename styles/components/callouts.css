@@ -25,10 +25,10 @@
    - :root token definitions (→ dc-component-defaults.css)
    - @media screen rules (print-only project)
    - Element selectors scoped to page/chapter context classes
-     (→ the book's own sheet (`@layer book`))
+     (→ the book's own sheet (unlayered))
 
    CORE CONSTRAINT — COMPONENT STYLE ISOLATION:
-   If a bare .dc-* rule needs different values in the book's own sheet (`@layer book`), the
+   If a bare .dc-* rule needs different values in the book's own sheet (unlayered), the
    components/*.css value is WRONG — fix it here. The override files own
    layout context only. Never split a component's appearance across files.
 
@@ -75,7 +75,7 @@
      `var(--x, fallback)`. A token declared at :root needs no fallback, and
      an inline fallback that duplicates the :root value is dead weight that
      invites the two to drift (found and corrected during dc#34).
-   - Variants and contexts set tokens on ANCESTORS (the book's own sheet (`@layer book`)
+   - Variants and contexts set tokens on ANCESTORS (the book's own sheet (unlayered)
      chapter/page scopes) or on VARIANT CLASSES on the same element
      (`.dc-ap.free`, `.dc-sidebar.inset`, `.dc-specialty.<name> .dc-X`) —
      never by re-declaring the token on the base component selector itself.
@@ -92,7 +92,7 @@
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
-   Override at chapter-id scope in the book's own sheet (`@layer book`), or in variant rules below. */
+   Override at chapter-id scope in the book's own sheet (unlayered), or in variant rules below. */
 .dc-alert {
   background: var(--dc-alert-bg);
   border-left: var(--dc-alert-border-width) solid var(--dc-alert-border);

@@ -2,9 +2,13 @@
    DC-NATIVE.CSS — engine-specific page chrome
    =============================================================================
    The LAST entry in package.json `gutterpress.styles`, and deliberately
-   unlayered, so it beats every layered sheet in this package and in the
-   book. A book's own unlayered sheet listed after the extension still wins
-   over it — that is the one hook a book has above this file.
+   unlayered *within this package's own layer stack* — so it beats every
+   `dc.*` sublayer in this package, which is why it must stay last in the
+   array. Gutterpress ≥0.11.0 wraps the whole package in a layer of its own,
+   `ext.gp-dimm-city`, so from outside the package that unlayered status
+   doesn't matter: the book's own `styles:` sheets stay unlayered by the
+   engine and beat this whole file automatically, at any specificity, with
+   no unlayered-sheet trick required on the book's side.
 
    Mechanics, each measured against Chromium 151 (gutterpress ENGINE.md §5/§8):
    - ONE `@page { background }` rule paints the brick wall across the whole

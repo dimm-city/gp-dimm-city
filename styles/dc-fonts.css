@@ -15,29 +15,32 @@
    - .page.* layout or column rules (→ page-templates.css)
    - .dc-* component/utility styles (→ components/*.css / page-templates.css)
    - Design tokens (→ dc-palette.css, dc-identity.css, dc-component-defaults.css)
-   - Anything a single book needs (→ that book's own sheet, `@layer book`)
+   - Anything a single book needs (→ that book's own sheet, unlayered — no
+     `@layer` needed)
    - @media screen rules (print-only project)
 
    AGENT RULE: "Is this a token or a font?" — if NO, use another file.
 
    ──────────────────────────────────────────────────────────────────────── */
 
-/* Layer order for the whole DC stack, declared here because this is the
-   first sheet the cascade sees — so layer order stops depending on the
-   manifest's file order. `dc-fonts.css` itself is deliberately NOT wrapped
-   in a layer: @font-face inside a layer is legal but pointless (font-family
-   lookup is not a cascade contest). `dc-native.css`, the last sheet in this
-   package, is ALSO deliberately unlayered — not because it is special, but
-   because it is LAST, and anything that must beat unlayered author CSS
-   cannot be layered (see docs/css-architecture.md).
+/* Sublayer order for this package's OWN stack, declared here because this is
+   the first sheet the cascade sees — so layer order stops depending on the
+   manifest's file order. Gutterpress ≥0.11.0 wraps every extension's CSS in
+   `@layer ext.<name>` (this package is `ext.gp-dimm-city`), so this
+   statement declares sublayers nested inside that wrapper, not top-level
+   layers.
 
-   `book` is the layer for a consuming book's own sheets: declared last here,
-   it outranks every dc.* layer, so a book wins any cross-layer tie without
-   fighting specificity. A book that must beat dc-native.css lists an
-   UNLAYERED sheet after it in its manifest instead. Do not invent further
-   layers in a book — a layer this statement does not name sorts after
-   `book`, silently above your own overrides. */
-@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, book;
+   `dc-fonts.css` itself is deliberately NOT wrapped in a layer: @font-face
+   inside a layer is legal but pointless (font-family lookup is not a
+   cascade contest). `dc-native.css`, the last sheet in this package, is
+   ALSO deliberately unlayered — not because it is special, but because it
+   is LAST, and anything that must beat the other dc.* sublayers cannot
+   itself be layered. That ordering is internal to this package only: a
+   consuming book's own `styles:` sheets stay unlayered by the engine and
+   beat this whole `ext.gp-dimm-city` stack — dc-native.css included —
+   automatically, at any specificity, so a book needs no layer of its own to
+   win (see docs/css-architecture.md). */
+@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages;
 
 /* ── WEBFONTS (local) ─────────────────────────────────────────────────────── */
 @font-face {

@@ -99,7 +99,7 @@ h1.dc-chevron {
   line-height: 1.2;
 }
 
-/* Front-matter chevron font-size overrides moved to the book's own sheet (`@layer book`) per A1
+/* Front-matter chevron font-size overrides moved to the book's own sheet (unlayered) per A1
    layer-ownership (page-context rules belong in the guide-specific override
    file, not the portable component library). Three-judge gate iteration 3. */
 

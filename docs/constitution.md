@@ -384,7 +384,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 ### Cascade discipline
 
 - Component styles in `components/*.css` expose `--dc-X-*` token surfaces defaulted in `dc-component-defaults.css`.
-- Per-book overrides in the book's own sheet (`@layer book`) set those tokens via **natural selector chains** (chapter id → page template → section component).
+- Per-book overrides in the book's own sheet (unlayered — it beats this package at any specificity) set those tokens via **natural selector chains** (chapter id → page template → section component).
 - Override files NEVER carry bare `.dc-*` rules — only context-scoped selectors (`#ch-X .dc-Y`, `.page.Z .dc-Y`, `.section.dc-X`).
 - Section variants ride on `@section .dc-X` only. No utility variant classes (`.dc-accent-X`, `.variant-Y` are forbidden).
 - Authors NEVER write per-element class attributes for styling (`{.dc-warning}` on a paragraph is forbidden).
@@ -399,8 +399,8 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 | `components/*.css` | Every `.dc-*` + `.pmd-*` component (base + thin variants + token contracts) |
 | `page-templates.css` | **All `columns:N` rules** (exclusive), `.page.*` layouts, paged wrapper scaffolding |
 | `page-rules.css` | `@page` declarations, named pages, folio + chapter footers |
-| the design guide's own sheet (`@layer book`) | `div.chapter` scaffolding, design-guide specimen chrome |
-| a book's own sheet (`@layer book`) | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |
+| the design guide's own sheet (unlayered) | `div.chapter` scaffolding, design-guide specimen chrome |
+| a book's own sheet (unlayered) | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |
 
 ---
 

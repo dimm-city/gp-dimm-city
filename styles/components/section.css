@@ -672,7 +672,7 @@ h3 + .section {
 
    To tune the walkthrough's accent or substrate, override the existing
    --dc-section-accent / --dc-section-bg custom properties at the chapter
-   id scope in the book's own sheet (`@layer book`) — do NOT add bespoke rules here unless an
+   id scope in the book's own sheet (unlayered) — do NOT add bespoke rules here unless an
    observed problem requires it.
 
    OBSERVED PROBLEM (2026-05-25): When the walkthrough's first card uses
@@ -865,7 +865,7 @@ h3 + .section {
 
 
 
-/* Per-book variant assignment lives in the book's own sheet (`@layer book`) using natural
+/* Per-book variant assignment lives in the book's own sheet (unlayered) using natural
    selector chains (chapter id → page template class → section component
    class) that set component CSS custom properties. No utility-variant
    classes here — that would force authors to re-type variant intent. */
@@ -1036,7 +1036,7 @@ h3 + .section {
    declared in :root in dc-component-defaults.css — same values as before this moved
    (the 3in art width: user feedback said the previous 1.85in "Lil Thump
    placeholder image is too small... should take up more of the left side
-   of the page"). Per-page/per-chapter variants override via the book's own sheet (`@layer book`)
+   of the page"). Per-page/per-chapter variants override via the book's own sheet (unlayered)
    context selectors, e.g. `.page....chapter-01 .section.dc-fiction-excerpt`. */
 .section.dc-fiction-excerpt {
   background: var(--dc-fiction-bg);

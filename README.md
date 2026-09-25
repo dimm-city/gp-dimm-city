@@ -67,19 +67,15 @@ byte for byte on every build.
 
 ## Quick start
 
+Requires Gutterpress **0.11.0** or later — it wraps every extension's CSS in
+its own cascade layer, so a book no longer needs a starter look removed
+before this package can win the cascade.
+
 ```sh
 gutterpress new "My Book" --preset dtrpg
-gutterpress ext remove ./extensions/clean-book my-book && rm -r my-book/extensions
 gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 ```
-
-The second line matters. `gutterpress new` gives every book a starter look
-(`./extensions/clean-book`), and a look's CSS is unlayered, so it beats this
-package's layered rules on anything the look styles — plain prose comes out in
-the starter's serif instead of Titillium Web. This package *is* the look;
-remove the starter before adding it. (In the app: Project settings → Look →
-remove *Clean book*.)
 
 Then insert the *Toc Page*, *Credits Page* and *Chapter Start Page* snippets
 to lay down the front matter, and reach for *Skill*, *Learning Path* and
@@ -88,34 +84,28 @@ the manifest's `page:` in step with it.
 
 ## Your own CSS: the layer convention
 
-List your sheets under `styles:` in the manifest. Extension styles always load
-first, so yours come after. Wrap them in the `book` layer:
+List your sheets under `styles:` in the manifest. Gutterpress (0.11.0+) wraps
+this whole package in its own cascade layer, `@layer ext.gp-dimm-city`, and
+keeps the book's own `styles:` unlayered — so anything you write there beats
+every rule in this package at any specificity, with no layer of your own to
+declare:
 
 ```css
-@layer book {
-  #chapter-03 { --dc-section-accent: var(--hud-magenta); }
-}
+#chapter-03 { --dc-section-accent: var(--hud-magenta); }
 ```
 
-The package declares `@layer dc.tokens, dc.base, dc.components, dc.templates,
-dc.pages, book;` in its first sheet. `book` is last, so anything you put there
-outranks every `dc.*` rule without a specificity contest. Two things to know:
-
-- `dc-native.css` is deliberately **unlayered** so it beats every layered rule
-  — a book that must override it lists an **unlayered** sheet after the
-  extension; the last unlayered sheet wins.
-- Do not invent layer names. A layer the package's statement does not name is
-  created where it is first used, which puts it *after* `book` and silently
-  above your own overrides.
+The package's own sheets are layered internally (`@layer dc.tokens, dc.base,
+dc.components, dc.templates, dc.pages`, nested inside `ext.gp-dimm-city`), and
+`dc-native.css` stays last and unlayered within that internal stack — that's
+a package-internal ordering concern, not something your book needs to work
+around.
 
 Never write bare `.dc-*` rules in a book to change a component; that fights
 the package on every update. Reset the component's public tokens on a context
 selector instead:
 
 ```css
-@layer book {
-  .chapter-05 .dc-alert { --dc-alert-accent: var(--hud-blue); }
-}
+.chapter-05 .dc-alert { --dc-alert-accent: var(--hud-blue); }
 ```
 
 The tokens each component exposes are listed under `tokens:` in

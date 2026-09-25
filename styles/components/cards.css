@@ -48,7 +48,7 @@
      6px. The old margin-bottom was exactly 6px, so it was entirely consumed
      and consecutive cards rendered touching (screenshot-confirmed on the
      Augmerc BODYCOVER/BLITZ seam). Same class of fix as .fg-art-portrait's
-     margin-bottom in the book's own sheet (`@layer book`). */
+     margin-bottom in the book's own sheet (unlayered). */
   margin-bottom: calc(var(--dc-card-gap) + 6px);
   max-width: 100%;
   /* 4-way ink outline (2px on each side) + HARD offset poster shadow. The

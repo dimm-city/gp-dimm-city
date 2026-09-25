@@ -317,7 +317,7 @@
        inside the composite.
 
    This block is the SINGLE location where TOC and Credits styling lives —
-   do not split it across the book's own sheet (`@layer book`). */
+   do not split it across the book's own sheet. */
 
 /* Identity tokens for the spread. --dc-intro-accent / --dc-intro-bg feed
    the .dc-intro component's gradient via its own var() fallback chain. */

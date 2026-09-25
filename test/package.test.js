@@ -30,7 +30,7 @@ const escapesFolder = (rel) => path.isAbsolute(rel) || rel.split(/[\\/]/).includ
 const LICENSE_NAMES = ["LICENSE", "LICENSE.txt", "LICENSE.md", "LICENCE", "LICENCE.txt", "OFL.txt", "OFL-1.1.txt", "COPYING"];
 const FONT_EXTS = [".woff", ".woff2", ".otf", ".ttf", ".eot"];
 
-const EXPECTED_LAYER_STATEMENT = "@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, book;";
+const EXPECTED_LAYER_STATEMENT = "@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages;";
 
 function declaredPaths() {
   const out = [pkg.main, ...(gp.styles ?? []), gp.tokensFile, gp.components, gp.snippets].filter(Boolean);
@@ -189,7 +189,7 @@ describe("cascade contract", () => {
   test("dc-fonts.css is first and carries the layer order statement", () => {
     expect(styles[0]).toBe("styles/dc-fonts.css");
     expect(read(styles[0])).toContain(EXPECTED_LAYER_STATEMENT);
-    expect(read(styles[0])).not.toMatch(/dc\.guide/); // dropped in 1.0.0; books use `book`
+    expect(read(styles[0])).not.toMatch(/dc\.guide/); // dropped in 1.0.0
   });
 
   test("dc-native.css is last and unlayered", () => {
