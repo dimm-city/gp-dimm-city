@@ -1,0 +1,22 @@
+name: Set up Bun (cached)
+description: Install Bun at the version that wrote bun.lock, with the install cache restored.
+
+inputs:
+  bun-version:
+    description: Bun version. Must be able to read this repo's bun.lock with --frozen-lockfile.
+    required: false
+    default: "1.4.1"
+
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - uses: actions/cache@v5
+      with:
+        path: ~/.bun/install/cache
+        key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          bun-${{ runner.os }}-

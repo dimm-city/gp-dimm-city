@@ -60,6 +60,7 @@
   },
   "scripts": {
     "test": "bun test",
+    "test:update-snapshot": "bun scripts/update-snapshot.mjs",
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {

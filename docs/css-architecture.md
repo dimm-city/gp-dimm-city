@@ -22,87 +22,83 @@ are correctly expressed in `em`. Bullet gaps and inline padding on `code` elemen
 also correct uses of `em`. The rule is about column geometry, not typographic spacing.
 
 **The design guide is the canonical test bed.** If you are unsure how a rule renders,
-add a specimen in `dg-overrides.css` scoped to `div.chapter` and build a preview.
+add a specimen to the design guide's own sheet (`@layer book`) and build a preview.
 
 ---
 
 ## 2. The CSS Layer Stack
 
 The stylesheet cascade is a set of files, each wrapped in one CSS **cascade
-layer** (`@layer`, adopted dc#54), imported in explicit order by `index.css`.
-No file imports another directly — all imports flow through `index.css`.
+layer** (`@layer`, adopted dc#54), loaded in the explicit order of
+`package.json`'s `gutterpress.styles` array. No file imports another; the
+manifest array is the only place the order is written down.
 
-**Package boundary (dc#47).** Every file this section lists EXCEPT
-`dg-overrides.css` is also declared, in the same order, as the
-`gutterpress.styles` array of `../package.json` — the Gutterpress extension
-package a
-project installs with `extensions: [../dc-design-guide]` or (once
-published) `gutterpress ext add dimm-city-components`. `dg-overrides.css`
-is guide-only chrome (`div.chapter` scaffolding, `.dg-specimen` demos) and
-is never packaged; a consuming book that needs it (the field guide does —
-verified by render-parity: dropping it moves 573 diffs and a page) lists it
-itself, after the extension, in its own `styles:`. The cascade a package
-consumer gets is core (layered) → extension styles in `extensions:` order →
-the project's own `styles:` last (gutterpress#265) — which is exactly the
-layer order this section describes, since every packaged sheet keeps the
-layer it is wrapped in regardless of which manifest key loaded it.
+**Package boundary.** This whole repository is the Gutterpress extension
+package `gp-dimm-city`. A book installs it with `gutterpress ext add
+gp-dimm-city` (or from the app's Features panel), which pins the exact
+version and vendors a copy under the book's `plugins/npm/`. The cascade a
+consuming book gets is core (layered) → the sixteen package sheets in
+`gutterpress.styles` order → the book's own `styles:` last (gutterpress#265).
+Anything a single book needs — a design guide's demo scaffolding, a field
+guide's chapter-specific art — lives in that book's own sheet, wrapped in
+`@layer book`, never in this package.
 
 The layer names and order are declared **once**, as a statement in
-`dc-fonts.css` — the first sheet the cascade sees — so layer order stops
-depending on the manifest's or `index.css`'s own file order:
+`dc-fonts.css` — the first sheet the cascade sees — so layer order never
+depends on file order:
 
 ```css
-/* css/dc-fonts.css — before any rule */
-@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, dc.guide, book;
+/* styles/dc-fonts.css — before any rule */
+@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, book;
 ```
 
 Each file below is wrapped in the one layer it names. Layer order settles
 cross-file ties — a rule in a later layer wins **regardless of selector
 specificity**, which is what makes the stack order-proof: moving a file
-earlier or later in `index.css`, or splitting one file into several, can no
-longer silently flip which sheet wins a shared selector.
+earlier or later in the array, or splitting one file into several, cannot
+silently flip which sheet wins a shared selector.
 
-```css
-/* css/index.css */
-@import url("./dc-fonts.css");              /* UNLAYERED — see below */
-@import url("./dc-palette.css");            /* @layer dc.tokens */
-@import url("./dc-identity.css");           /* @layer dc.tokens */
-@import url("./dc-component-defaults.css"); /* @layer dc.tokens */
-@import url("./dc-core.css");               /* @layer dc.base */
-@import url("./components/callouts.css");           /* @layer dc.components */
-@import url("./components/specialty-identity.css"); /* @layer dc.components */
-@import url("./components/chrome.css");              /* @layer dc.components */
-@import url("./components/cards.css");               /* @layer dc.components */
-@import url("./components/specialty.css");           /* @layer dc.components */
-@import url("./components/data.css");                /* @layer dc.components */
-@import url("./components/images.css");              /* @layer dc.components */
-@import url("./components/section.css");             /* @layer dc.components */
-@import url("./page-templates.css"); /* @layer dc.templates */
-@import url("./page-rules.css");     /* @layer dc.pages */
-@import url("./dg-overrides.css");   /* @layer dc.guide */
-
-/* Field-guide / project overrides — context-scoped selectors that set component
-   tokens, plus break rules. @layer book — last-declared layer, so it wins
-   every cross-layer tie regardless of specificity. */
-@import url("./fg-overrides.css");
+```jsonc
+// package.json → gutterpress.styles
+"styles/dc-fonts.css",                        // UNLAYERED — see below
+"styles/dc-palette.css",                      // @layer dc.tokens
+"styles/dc-identity.css",                     // @layer dc.tokens
+"styles/dc-component-defaults.css",           // @layer dc.tokens
+"styles/dc-core.css",                         // @layer dc.base
+"styles/components/callouts.css",             // @layer dc.components
+"styles/components/specialty-identity.css",   // @layer dc.components
+"styles/components/chrome.css",               // @layer dc.components
+"styles/components/cards.css",                // @layer dc.components
+"styles/components/specialty.css",            // @layer dc.components
+"styles/components/data.css",                 // @layer dc.components
+"styles/components/images.css",               // @layer dc.components
+"styles/components/section.css",              // @layer dc.components
+"styles/page-templates.css",                  // @layer dc.templates
+"styles/page-rules.css",                      // @layer dc.pages
+"styles/dc-native.css"                        // UNLAYERED, last — see below
 ```
 
-**Two sheets are deliberately left UNLAYERED, and load after everything
-above** (via a book's own `styles:` list — see `field-guide/manifest.yaml`
-— not via `index.css`): `dc-native.css`, then the book's own
-`*-native.css` (e.g. `field-guide/styles/fg-native.css`). Unlayered CSS
-always outranks layered CSS, no matter which layer, no matter specificity —
-that is the ONE piece of the cascade layer order stronger than any `@layer`.
-These two sheets carry the engine-specific native-print chrome (margin-box
-chip styling, the brick margin band, native-print break fixes) and must
-win unconditionally, so they stay unlayered instead of occupying a
-notional "last" layer. The same rule cuts the other way: **any unlayered
-rule in a book's own `styles:` list — including one the author never meant
-to compete — also beats every layered sheet above.** `dc-fonts.css` itself
-is the third unlayered file, for an unrelated reason: it carries the
-`@layer` statement (which must be a top-level statement, not nested inside
-a layer) and its only rules are `@font-face`, where a layer would be
-pointless — font-family lookup is not a cascade contest.
+`book` is declared last and holds no package file: it is the layer for a
+consuming book's own sheets. Because it is the last-declared layer, a rule in
+`book` wins every cross-layer tie without a specificity contest. A book must
+not invent further layer names — a layer this statement does not name is
+created where it is first used, which places it *after* `book`, silently
+above the book's own overrides.
+
+**Two sheets are deliberately UNLAYERED.** `dc-native.css` is the last
+entry in the array and carries the engine-specific native-print chrome
+(margin-box chip styling, the brick margin band, native-print break fixes).
+Unlayered CSS always outranks layered CSS, no matter which layer, no matter
+specificity — that is the ONE piece of the cascade stronger than any
+`@layer` — so it beats every layered sheet in the package *and* the book's
+`@layer book` overrides. The same rule cuts the other way: **any unlayered
+rule in a book's own `styles:` list also beats every layered sheet**, which
+is exactly how a book overrides `dc-native.css` when it must — an unlayered
+sheet listed after the extension (the field guide's `fg-native.css` is one).
+`dc-fonts.css` is the other unlayered file, for an unrelated reason: it
+carries the `@layer` statement (which must be a top-level statement, not
+nested inside a layer) and its only rules are `@font-face`, where a layer
+would be pointless — font-family lookup is not a cascade contest.
 
 ### Layer Responsibilities
 
@@ -111,18 +107,17 @@ pointless — font-family lookup is not a cascade contest.
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
 | `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | `columns:N` rules, `@page` declarations, `div.chapter` scaffolding |
-| `dc.templates` | `page-templates.css` | ALL **theme** `columns:N` rules (exclusive ownership), `.page.*` content layout, page wrapper scaffolding, print utilities | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
-| `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers) | Component styles, token definitions, `columns:N` rules |
-| `dc.guide` | `dg-overrides.css` | `div.chapter` scaffolding, `.dg-specimen` chrome, palette grid, guide-only code/table overrides | Reusable production component rules, `columns:N` rules, bare `.dc-*` rules |
-| `book` | `fg-overrides.css` (or a project's own project-overrides file) | Field-guide/project context overrides — chapter-id token selectors and context-scoped break rules; last-declared layer, so it wins every cross-layer tie | Bare `.dc-*` component rules, `:root` token definitions, `columns:N` rules |
-| *(unlayered)* | `dc-fonts.css`, `dc-native.css`, the book's own `*-native.css` | `@font-face`, the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every layered sheet AND any book CSS (`dc-native.css` / `*-native.css`) | Anything that should lose to a later book override — unlayered CSS cannot be outranked by any layer |
+| `dc.templates` | `page-templates.css` | ALL **theme** `columns:N` rules (exclusive ownership), `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
+| `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, `columns:N` rules |
+| `book` | *the consuming book's own sheets* (none in this package) | Book context overrides — chapter-id token selectors, context-scoped break rules, a design guide's demo scaffolding; last-declared layer, so it wins every cross-layer tie | Bare `.dc-*` component rules, `:root` token definitions, `columns:N` rules |
+| *(unlayered)* | `dc-fonts.css`, `dc-native.css`, and any unlayered sheet a book lists after the extension | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every layered sheet AND any layered book CSS (`dc-native.css`) | Anything that should lose to a later book override — unlayered CSS cannot be outranked by any layer |
 
 ### COLUMNS:N Ownership Rule
 
 Among the theme's own sheets, `columns:N` lives **exclusively** in
 `page-templates.css` (`@layer dc.templates`). Every other file is
 single-flow. If you find `columns:` in a `components/*.css` file,
-`dg-overrides.css`, or `page-rules.css`, it is a bug.
+or `page-rules.css`, it is a bug.
 
 **The generic column vocabulary is not the theme's at all.** Gutterpress core
 ships `.gp-columns-2` / `.gp-columns-3` in `GUTTERPRESS_CSS`, and a theme may
@@ -149,7 +144,7 @@ the point of separating them.
 **Tokens flow downward only.** The `:root` block is the exclusive property of
 the `dc.tokens` layer (`dc-palette.css`, `dc-identity.css`,
 `dc-component-defaults.css`). No other layer defines custom properties on
-`:root`. All layers consume tokens via `var(--token)`. `fg-overrides.css`'s
+`:root`. All layers consume tokens via `var(--token)`. a book's `@layer book` sheet's
 `book` layer — the last-declared layer — is the only sanctioned override
 path — do not edit the `dc.tokens` files for project-specific changes.
 
@@ -163,13 +158,13 @@ alone (see `page-rules.css`'s "ONE BLOCK PER NAMED PAGE" contract).
 belongs in `components/callouts.css` (`@layer dc.components`). If you are writing
 an `@page` rule — including the page background — it belongs in `page-rules.css`
 (`@layer dc.pages`). If you are writing a selector that only exists for a rendered
-design-guide example, it belongs in `dg-overrides.css` (`@layer dc.guide`).
+design-guide example, it belongs in the design guide's own sheet (`@layer book`).
 A `.dc-*` selector in `page-rules.css` is a bug.
 
 **Cascade layers, not just file order (dc#54).** Layer order decides a
 cross-layer tie **regardless of selector specificity** — a one-class rule in
 `book` beats a three-class rule in `dc.components`. This is what makes the
-stack immune to reordering `index.css` or splitting a file in two, but it
+stack immune to reordering the `gutterpress.styles` array or splitting a file in two, but it
 also means a rule written assuming "my file loads later, so my higher
 specificity wins" can flip the moment two sheets end up in different
 layers. When two rules genuinely need to compete for the same property on
@@ -180,7 +175,7 @@ rule that should win's own layer**. Never reach for `!important`, and never
 pull a sheet out of its layer to "fix" a flip — that reopens the exact
 specificity-order fragility layers exist to close. If a genuine one-off
 diff survives a real fix attempt, waive it in
-`tools/render-parity/waivers/*.json` with a reason that names the two
+the consuming book repo's render-parity waivers with a reason that names the two
 competing rules and why the new (layered) winner is correct — do not carry
 an unexplained visual regression forward just to keep a diff count at zero.
 
@@ -294,9 +289,9 @@ in two files:
 /* page-rules.css — the base color */
 @page { background-color: var(--bg); }
 
-/* native-furniture.css — the brick tile over it */
+/* dc-native.css — the brick tile over it */
 @page {
-  background: var(--bg) url("../img/brick-bg-01.png") repeat;
+  background: var(--bg) url("../images/brick-bg-01.png") repeat;
   background-size: 1.5in auto;
   background-blend-mode: multiply;
 }
@@ -312,7 +307,7 @@ silently. `gutterpress build` reports that shape as
 that makes this shape work landed in Gutterpress 0.10.2-alpha.1.
 
 To change the page background in an adapted project, override `--bg` in
-`fg-overrides.css`; the `@page` rules read it directly.
+the book's own sheet (`@layer book`); the `@page` rules read it directly.
 
 ### What Makes a Good Token
 
@@ -378,7 +373,7 @@ inserts — use it to suppress footers on them.
 
 While `@page` controls the physical box, `.page.*` selectors control what happens
 inside it: column count, column-fill strategy, break behavior. Those selectors live
-in `dg-overrides.css` for the design guide. The `.page` class is the structural hook;
+in the design guide's own sheet. The `.page` class is the structural hook;
 specialized classes extend it:
 
 ```css
@@ -388,7 +383,7 @@ specialized classes extend it:
    (`.gp-columns-2` in GUTTERPRESS_CSS) — the theme may not redefine
    `columns` on it. What the theme sets is the gap (page-templates.css,
    through core's `--gp-column-gap` hook) and the fill strategy for this
-   shape (native-furniture.css §10b: a `.page` is one sheet, so its run
+   shape (dc-native.css §10b: a `.page` is one sheet, so its run
    does not fragment and `balance` is correct). */
 .page.gp-columns-2 {
   column-fill: balance;
@@ -408,7 +403,7 @@ The double-class pattern (`.page.dc-chapter-start`, `.page.page-toc`) is intenti
 Specificity (0,2,0) beats single-class overrides from upstream CSS without
 `!important`.
 
-Guide-only examples should live in `dg-overrides.css` even when they use `.page.*`
+Guide-only examples should live in the design guide's own sheet even when they use `.page.*`
 selectors.
 
 ### Folios and the `.chapter-N` class
@@ -427,12 +422,12 @@ because nothing defines it.
 **`.chapter-N` is a styling hook, not a counting one.** `markers.js` stamps it
 onto every `@page` opened inside an `@chapter … ch="N"` (its `counterClass`
 merge), so authors never hand-apply it. Its only consumers are positional
-overrides in `fg-overrides.css` — e.g. `.page.dc-chapter-start.chapter-03 …` for
+overrides in a book's own sheet — e.g. `.page.dc-chapter-start.chapter-03 …` for
 that chapter's opener art. No rule in any sheet uses it for a counter.
 
 ### Chapter Footer Labels — `string-set` / `string()`
 
-The producer is one rule in `dg-overrides.css`:
+The producer is one rule at the bottom of `page-rules.css`:
 
 ```css
 div.chapter[data-ch] { string-set: guideSection attr(data-ch); }
@@ -478,7 +473,7 @@ When content lives inside a container with a known class, the child combinator t
 elements without requiring authors to add classes:
 
 ```css
-/* dg-overrides.css — first h1 in every @chapter wrapper triggers a page break */
+/* a book's own sheet — first h1 in every @chapter wrapper triggers a page break */
 div.chapter > h1:first-of-type {
   break-before: page;
   page-break-before: always;
@@ -521,7 +516,7 @@ component no longer ships one, since its rules were removed as unreachable.
 The adjacent sibling prevents headings from stranding without content:
 
 ```css
-/* dg-overrides.css */
+/* the design guide's own sheet (@layer book) */
 div.chapter h2 + p, div.chapter h3 + p {
   break-before: avoid;
   page-break-before: avoid;
@@ -534,7 +529,7 @@ The `div.chapter` and `.page.*` parent selectors scope rules to their context.
 A rule scoped to `section#ch-name` is guaranteed not to bleed into adjacent chapters:
 
 ```css
-/* dg-overrides.css */
+/* the design guide's own sheet (@layer book) */
 .page.page-credits.dc-credits > h1,
 .page.page-intro.dg-intro > h1,
 .page.page-chapter-start.dc-chapter-start > h1 {
@@ -748,7 +743,7 @@ column contexts. Pair both for full compatibility:
 ### Keep Headings With Their Content
 
 ```css
-/* dg-overrides.css */
+/* the design guide's own sheet (@layer book) */
 div.chapter h2, div.chapter h3, div.chapter h4 {
   break-after: avoid;
   break-before: auto;

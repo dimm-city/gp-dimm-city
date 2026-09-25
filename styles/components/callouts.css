@@ -1,7 +1,7 @@
 /* =============================================================================
    DC-COMPONENTS.CSS — Reusable DC Component Library
    =============================================================================
-   This file IS the DC component library. Any DC-branded print-md project
+   This file IS the DC component library. Any DC-branded Gutterpress book
    imports this file and gets all components at their correct defaults with
    no override files required. Do not break that portability contract.
 
@@ -21,15 +21,15 @@
    MUST NOT CONTAIN:
    - columns:N rules of any kind (→ page-templates.css)
    - @page declarations or named-page assignments (→ page-rules.css)
-   - div.chapter scaffolding (→ dg-overrides.css)
-   - :root token definitions (→ dc-tokens.css)
+   - div.chapter scaffolding (→ the consuming book's own sheet)
+   - :root token definitions (→ dc-component-defaults.css)
    - @media screen rules (print-only project)
    - Element selectors scoped to page/chapter context classes
-     (→ fg-overrides.css or dg-overrides.css)
+     (→ the book's own sheet (`@layer book`))
 
    CORE CONSTRAINT — COMPONENT STYLE ISOLATION:
-   If a bare .dc-* rule needs different values in fg-overrides.css, the
-   dc-components.css value is WRONG — fix it here. The override files own
+   If a bare .dc-* rule needs different values in the book's own sheet (`@layer book`), the
+   components/*.css value is WRONG — fix it here. The override files own
    layout context only. Never split a component's appearance across files.
 
    CORE CONSTRAINT — shape-following chrome is a clipped SIBLING layer, never
@@ -61,7 +61,7 @@
    Do not expose internal layout dimensions as a variable API.
 
    TOKEN CONVENTION (dc#34, one rule, no exceptions):
-   - Every public component token DEFAULTS at :root in dc-tokens.css. A
+   - Every public component token DEFAULTS at :root in dc-component-defaults.css. A
      component's own base rule NEVER declares its own public token — an
      element that sets a custom property on itself makes that property
      unconditionally win over any ancestor-scope override for as long as
@@ -75,7 +75,7 @@
      `var(--x, fallback)`. A token declared at :root needs no fallback, and
      an inline fallback that duplicates the :root value is dead weight that
      invites the two to drift (found and corrected during dc#34).
-   - Variants and contexts set tokens on ANCESTORS (fg-overrides.css
+   - Variants and contexts set tokens on ANCESTORS (the book's own sheet (`@layer book`)
      chapter/page scopes) or on VARIANT CLASSES on the same element
      (`.dc-ap.free`, `.dc-sidebar.inset`, `.dc-specialty.<name> .dc-X`) —
      never by re-declaring the token on the base component selector itself.
@@ -91,8 +91,8 @@
    GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT/GEAR] or @callout/@dm-note macros. */
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
-/* Token defaults for .dc-alert are declared in :root in dc-tokens.css.
-   Override at chapter-id scope in fg-overrides.css, or in variant rules below. */
+/* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
+   Override at chapter-id scope in the book's own sheet (`@layer book`), or in variant rules below. */
 .dc-alert {
   background: var(--dc-alert-bg);
   border-left: var(--dc-alert-border-width) solid var(--dc-alert-border);

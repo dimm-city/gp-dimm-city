@@ -2,9 +2,9 @@
 
 :root {  /* ── Section Component Public Tokens ────────────────────────────────────
      Default theming for .section / @section macros. Chapter-scoped overrides
-     live in fg-overrides.css and win via the parent-context cascade —
+     live in the book's own sheet (`@layer book`) and win via the parent-context cascade —
      typically by applying a .dc-accent-X utility on @chapter / @section
-     (see dc-components.css "ACCENT IDENTITY UTILITIES" section). */
+     (see components/*.css "ACCENT IDENTITY UTILITIES" section). */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
 
@@ -12,9 +12,9 @@
      Override surface for per-chapter and per-project theming. These are the
      defaults that were previously declared inside each component class rule.
      Moving them to :root makes them visible to the theming system and lets
-     fg-overrides.css override them at chapter-id scope instead of having to
+     the book's own sheet (`@layer book`) override them at chapter-id scope instead of having to
      write a full component selector chain.
-     Set them here; override at chapter id scope in fg-overrides.css.
+     Set them here; override at chapter id scope in the book's own sheet (`@layer book`).
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-alert public API */
@@ -65,7 +65,7 @@
   --dc-block-title-fg: var(--paper-cream);
 
   /* ─── Component Public Tokens Lifted From Inline Fallbacks ───────────────
-     Workstream B (2026-06-21): these tokens were consumed in dc-components.css
+     Workstream B (2026-06-21): these tokens were consumed in components/*.css
      ONLY via inline `var(--dc-X, fallback)` and were never declared on :root,
      so they were invisible to the public override surface. Each default below
      equals the component's existing inline fallback, so rendering is unchanged

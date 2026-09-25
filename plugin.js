@@ -1,5 +1,5 @@
 /**
- * Dimm City Field Guide — Server-Side Only Plugin for print-md
+ * Dimm City — the gp-dimm-city Gutterpress plugin (server-side markdown-it)
  *
  * IMPORTANT: This plugin only transforms content marked with special markers.
  * Regular markdown content passes through unchanged.
@@ -896,7 +896,7 @@ function dcAlertsTransform(state) {
 }
 
 /**
- * Main plugin function - default export for print-md
+ * Main plugin function - the default export Gutterpress loads
  */
 export default function dimmCityPlugin(md, options = {}) {
   registerSkillContinueBridge(md);
@@ -932,7 +932,7 @@ export default function dimmCityPlugin(md, options = {}) {
   //
   // All chapter-opener visual treatment (the C.NN badge, the section
   // variant chrome, the chevron-styled h1) is provided by CSS attribute
-  // selectors in dc-components.css matching this structure.
+  // selectors in components/*.css matching this structure.
 
   // Transform tokens after parsing
    md.core.ruler.push('dimm_city_transform', function (state) {
@@ -1528,7 +1528,7 @@ export default function dimmCityPlugin(md, options = {}) {
 
       // --- @specialty-art / @end-specialty-art ---
       // Full-bleed art panel for a specialty profile. Emits .dc-specialty-art
-      // (CSS: dc-components.css + page-rules.css `.dc-specialty-art { page: full; }`).
+      // (CSS: components/*.css + page-rules.css `.dc-specialty-art { page: full; }`).
       const specialtyArtMarker = parseMarker(tok, tokens, i, '@specialty-art');
       if (specialtyArtMarker.matched) {
         closeAll();
@@ -1573,7 +1573,7 @@ export default function dimmCityPlugin(md, options = {}) {
       // --- @gear / @end-gear ---
       // Shorthand for @card .dc-gear — emits a bare `.dc-card.dc-gear`.
       // NOTE: there is NO .section.dc-gear-list wrapper (an earlier comment
-      // claimed one, and dc-components.css carried ~40 lines of CSS keyed on
+      // claimed one, and components/*.css carried ~40 lines of CSS keyed on
       // it that could never match). Style `.dc-card.dc-gear` directly.
       const gearMarker = parseMarker(tok, tokens, i, '@gear');
       if (gearMarker.matched) {
@@ -2121,12 +2121,11 @@ export default function dimmCityPlugin(md, options = {}) {
 }
 
 /**
- * Plugin metadata for print-md
+ * Plugin metadata (the package version in package.json is the only version).
  */
 export const metadata = {
-  name: 'dimm-city-plugin',
-  version: '17.3.0',
-  description: 'Dimm City TTRPG skill cards - supports H3/H4, bullet lists, numbered abilities',
+  name: 'Dimm City',
+  description: 'Dimm City TTRPG macros: specialties, learning paths, skill cards, callouts, page templates',
   author: 'Dimm City',
   keywords: ['ttrpg', 'rpg', 'skills', 'dimm-city'],
 };

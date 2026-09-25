@@ -11,7 +11,7 @@
    Specialty themes override via .dc-specialty.<name> .dc-specialty-intro { }. */
 
 /* ── Specialty intro shell + element overrides ────────────────────────── */
-/* Token defaults for .dc-specialty-intro are declared in :root in dc-tokens.css.
+/* Token defaults for .dc-specialty-intro are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-specialty-intro { } above. */
 .dc-specialty-intro {
   /* NO clip-path here — surface + clip are on ::before, the ink outline on
@@ -149,7 +149,7 @@
    Specialty themes override via .dc-specialty.<name> .dc-specialty-card { }. */
 
 /* ── Specialty card (.dc-specialty-card + descendants + nth-of-type(even)) */
-/* Token defaults for .dc-specialty-card are declared in :root in dc-tokens.css.
+/* Token defaults for .dc-specialty-card are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-specialty-card { } above. */
 .dc-specialty-card {
   /* Stack the optional per-specialty shadow on top of the universal

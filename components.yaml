@@ -1,45 +1,43 @@
 # Dimm City component catalog — the machine-readable ground truth for the
-# component library (dc#42).
+# component library that gp-dimm-city ships.
 #
 # WHAT THIS IS
 #   One entry per component: what an author writes, what lands in the HTML,
-#   which custom properties are public, how it fragments, and which CSS file
-#   owns it. The narrative chapters (04-components.md, 09-component-gallery.md)
-#   explain and demonstrate; this file is the catalog of record. It is
-#   also the file the extension package (dc#47, landed in PR #62) declares as
-#   its `components:` entry in package.json — gutterpress only checks that the
-#   file exists, so the schema below is this repo's own.
+#   which custom properties are public, how it fragments, and which stylesheet
+#   owns it. The Dimm City Design Guide (a book in the dc-op-manual repo)
+#   explains and demonstrates the components; this file is the catalog of
+#   record. It is the file package.json declares as `gutterpress.components` —
+#   Gutterpress only checks that the file exists, so the schema below is this
+#   package's own. Paths are relative to the package root.
 #
 # FIELDS
-#   Fields: name (kebab, unique) · status · origin (plugin | author | core —
-#   who puts the class in the DOM) · recipe · emits (DOM strings, one or a
-#   list) · css (paths relative to this folder; required for live/unused, and
-#   at least one must style one of the entry's classes) · tokens (must be
-#   declared under css/) · breaks (documentation; omitted where the component
-#   has no fragmentation rule of its own — variants inherit their parent's) ·
-#   usage (literal strings that mark a use of a component with no marker or
-#   class: `ROLL THE DIE!`, `| highlight`, `variant=panel`, …) · unstyled
-#   (emitted classes acknowledged to have no CSS) · notes.
+#   name (kebab, unique) · status · origin (plugin | author | core — who puts
+#   the class in the DOM) · recipe · emits (DOM strings, one or a list) · css
+#   (package-relative paths; required for live/unused, and at least one must
+#   style one of the entry's classes) · tokens (must be declared under
+#   styles/) · breaks (documentation; omitted where the component has no
+#   fragmentation rule of its own — variants inherit their parent's) · usage
+#   (literal strings that mark a use of a component with no marker or class:
+#   `ROLL THE DIE!`, `| highlight`, `variant=panel`, …) · unstyled (emitted
+#   classes acknowledged to have no CSS) · notes.
 #
-#   Status meanings:
+#   Status meanings (measured against the Dimm City books that consume this
+#   package — the Field Guide, the Design Guide, SysOps):
 #     live           at least one class styled; used at least once in a book;
 #                    plugin-origin entries must actually be emitted/parsed
-#     unused         styled or emitted, but used by NEITHER book
+#     unused         styled or emitted, but used by no book
 #     retired        no class styled, none emitted, none used (a retired marker
 #                    may still be parsed as a no-op stripper)
 #     unimplemented  no class styled, none emitted — documented or authored,
 #                    never built.
 #
-#   Top-level `ignore:` lists `dc-*` classes a book uses that are not
-#   components, each with a reason.
-#
 # THE RULE
 #   Give every component an honest status, and every new macro or `.dc-*`
-#   class an entry. Nothing checks this file automatically, so keep it
-#   accurate by hand.
+#   class an entry. Nothing checks this file automatically beyond its `css:`
+#   paths existing (test/package.test.js), so keep it accurate by hand.
 #
-# Order: plugin macros, plugin-emitted internals, author classes, guide-only
-# classes, unused, retired, unimplemented.
+# Order: plugin macros, plugin-emitted internals, author classes, unused,
+# retired, unimplemented.
 
 components:
   # ── Plugin macros and alerts ───────────────────────────────────────────
@@ -55,7 +53,7 @@ components:
       - div.dc-alert.dc-origin-callout > span.dc-alert-label
       - div.dc-alert.dc-visit-callout > span.dc-alert-label
       - div.dc-alert.dc-gear-callout > span.dc-alert-label
-    css: [css/components/callouts.css, css/dc-native.css]
+    css: [styles/components/callouts.css, styles/dc-native.css]
     tokens:
       - --dc-alert-bg
       - --dc-alert-border
@@ -83,7 +81,7 @@ components:
       - div.dc-alert.dc-origin-callout
       - div.dc-alert.dc-visit-callout
       - div.dc-alert.dc-gear-callout
-    css: css/components/callouts.css
+    css: styles/components/callouts.css
     breaks: "as alert"
     notes: "Same DOM and tokens as alert; the macro form allows multiple paragraphs and a custom label."
 
@@ -92,7 +90,7 @@ components:
     origin: plugin
     recipe: "@dm-note label=\"…\" … @end-dm-note"
     emits: div.dc-alert.dc-dm-note > span.dc-alert-label
-    css: [css/components/callouts.css, css/dc-native.css]
+    css: [styles/components/callouts.css, styles/dc-native.css]
     breaks: "as alert; first child glued to the box start (dc-native.css)"
     notes: "Sugar for @callout variant=dm. Used by the design guide only."
 
@@ -101,7 +99,7 @@ components:
     origin: plugin
     recipe: "> [!FLAVOR]"
     emits: [div.dc-flavor, "p.dc-flavor (the > blockquote inside a @skill card)"]
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
     tokens: [--dc-flavor-accent, --dc-flavor-accent-width, --dc-flavor-color]
     breaks: none
 
@@ -110,7 +108,7 @@ components:
     origin: plugin
     recipe: "> [!PULLQUOTE]"
     emits: div.dc-pullquote.dc-flush
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-pullquote-accent, --dc-pullquote-accent-soft, --dc-pullquote-bg]
     breaks: "break-inside: avoid"
 
@@ -119,7 +117,7 @@ components:
     origin: plugin
     recipe: "@sidebar [.inset] … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
     emits: div.dc-sidebar
-    css: [css/components/images.css, css/page-templates.css]
+    css: [styles/components/images.css, styles/page-templates.css]
     tokens:
       - --dc-sidebar-surface
       - --dc-sidebar-border
@@ -136,7 +134,7 @@ components:
     origin: plugin
     recipe: "@sidebar-box … @end-sidebar-box"
     emits: div.dc-prose-panel.dc-sidebar-box
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-sidebar-box-surface, --dc-sidebar-box-border, --dc-sidebar-box-accent, --dc-sidebar-box-rail]
     breaks: "break-inside: avoid (via .dc-prose-panel)"
     notes: "Design guide only."
@@ -146,7 +144,7 @@ components:
     origin: plugin
     recipe: "@definition … @end-definition"
     emits: div.dc-prose-panel.dc-definition-block
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width]
     breaks: "break-inside: avoid (via .dc-prose-panel)"
     notes: "04-components.md marks the macro as superseded by markdown definition lists; both books still use it."
@@ -156,7 +154,7 @@ components:
     origin: plugin
     recipe: "@procedure … 1. step … @end-procedure"
     emits: ol.dc-steps > li > span.dc-step-no
-    css: css/components/data.css
+    css: styles/components/data.css
     breaks: "break-inside: avoid"
 
   - name: block
@@ -164,7 +162,7 @@ components:
     origin: plugin
     recipe: "@block .dc-panel|.dc-slate|.dc-shard|.dc-codex label=\"Title\" … @end-block"
     emits: div.dc-block > div.dc-block-title
-    css: css/components/section.css
+    css: styles/components/section.css
     tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg]
     breaks: "break-inside: avoid"
     notes: "The variant class is author-supplied (see block-variants; also accepted as variant=panel). Design guide only."
@@ -174,7 +172,7 @@ components:
     origin: author
     recipe: "@block .dc-panel | .dc-slate | .dc-shard | .dc-codex"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard|.dc-codex
-    css: css/components/section.css
+    css: styles/components/section.css
     usage: [variant=panel, variant=slate, variant=shard, variant=codex]
     notes: "Four clip-path/surface treatments on .dc-block; the class is passed through from the marker, or built by the plugin from variant=x (a concatenation the check's plugin scan cannot see — hence origin: author and the usage literals)."
 
@@ -185,7 +183,7 @@ components:
     emits:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
-    css: css/components/section.css
+    css: styles/components/section.css
     breaks: "break-inside: avoid"
 
   - name: card-variants
@@ -193,7 +191,7 @@ components:
     origin: author
     recipe: "@card .dc-flaws | .dc-ideals | .dc-dreams"
     emits: div.dc-card.dc-flaws|.dc-ideals|.dc-dreams
-    css: css/components/section.css
+    css: styles/components/section.css
     notes: "Citizen-file card accents; the class is passed through from the marker."
 
   - name: gear
@@ -201,7 +199,7 @@ components:
     origin: plugin
     recipe: "@gear … @end-gear"
     emits: div.dc-card.dc-gear
-    css: css/components/section.css
+    css: styles/components/section.css
     unstyled: [dc-gear]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only."
@@ -211,7 +209,7 @@ components:
     origin: plugin
     recipe: "@lede … @end-lede"
     emits: div.dc-intro
-    css: [css/components/chrome.css, css/components/section.css, css/page-templates.css]
+    css: [styles/components/chrome.css, styles/components/section.css, styles/page-templates.css]
     tokens: [--dc-intro-bg, --dc-intro-accent]
     breaks: "break-after: avoid inside .dc-card-grid"
     notes: "The same .dc-intro is emitted for a learning path's subtitle and authored raw on the contents page."
@@ -221,7 +219,7 @@ components:
     origin: plugin
     recipe: "@tape label=\"…\"  (also authored as raw <div class=\"dc-tape dc-flush\">…</div>)"
     emits: div.dc-tape
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
     tokens: [--dc-tape-bg, --dc-tape-border, --dc-tape-color]
     breaks: "break-inside: avoid"
 
@@ -230,7 +228,7 @@ components:
     origin: plugin
     recipe: "@toc … @end-toc  (also authored as raw <div class=\"dc-toc\">)"
     emits: div.dc-toc
-    css: [css/components/data.css, css/dg-overrides.css, css/page-templates.css]
+    css: [styles/components/data.css, styles/page-templates.css]
     breaks: "list items break-inside: avoid"
 
   - name: glossary
@@ -238,7 +236,7 @@ components:
     origin: plugin
     recipe: "@glossary … @end-glossary  (the macro is used by neither book; the raw <div class=\"dc-terms\"> wrapper is)"
     emits: div.dc-terms
-    css: css/components/images.css
+    css: styles/components/images.css
     breaks: "break-inside: avoid"
     notes: "CSS styles the children as .dc-terms .dc-item (see glossary-item); the docs and gallery author .dc-terms-item instead (see glossary-item-authored)."
 
@@ -250,7 +248,7 @@ components:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
       - span.dc-outcome-text
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens:
       - --dc-outcomes-surface
       - --dc-outcomes-border
@@ -270,12 +268,12 @@ components:
     recipe: "@specialty .augmerc|.proxy|.streetwarden|.gutterdruid|.cybersurgeon|.wirephreak|.technosorcerer|.etherlock|.dualist|.generalist … @end-specialty"
     emits: div.dc-specialty.<name>
     css:
-      - css/components/specialty-identity.css
-      - css/components/specialty.css
-      - css/components/cards.css
-      - css/components/data.css
-      - css/components/section.css
-      - css/page-templates.css
+      - styles/components/specialty-identity.css
+      - styles/components/specialty.css
+      - styles/components/cards.css
+      - styles/components/data.css
+      - styles/components/section.css
+      - styles/page-templates.css
     tokens:
       - --spec-accent
       - --spec-mid
@@ -295,7 +293,7 @@ components:
     origin: plugin
     recipe: "@specialty-intro … @end-specialty-intro"
     emits: div.dc-specialty-intro
-    css: [css/components/specialty.css, css/components/specialty-identity.css]
+    css: [styles/components/specialty.css, styles/components/specialty-identity.css]
     tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color]
     breaks: "break-inside: avoid; first h2 break-after: avoid"
 
@@ -304,7 +302,7 @@ components:
     origin: plugin
     recipe: "@specialty-art … @end-specialty-art"
     emits: div.dc-specialty-art
-    css: [css/components/chrome.css, css/page-rules.css]
+    css: [styles/components/chrome.css, styles/page-rules.css]
     breaks: "break-before: page; page: full"
 
   - name: specialty-card
@@ -313,10 +311,10 @@ components:
     recipe: "@specialty-card … @end-specialty-card  (data-position=odd|even alternates per card)"
     emits: div.dc-specialty-card
     css:
-      - css/components/specialty.css
-      - css/components/specialty-identity.css
-      - css/components/section.css
-      - css/page-templates.css
+      - styles/components/specialty.css
+      - styles/components/specialty-identity.css
+      - styles/components/section.css
+      - styles/page-templates.css
     tokens:
       - --dc-specialty-card-bg
       - --dc-specialty-card-border
@@ -339,7 +337,7 @@ components:
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)
-    css: [css/components/data.css, css/components/chrome.css, css/components/specialty-identity.css]
+    css: [styles/components/data.css, styles/components/chrome.css, styles/components/specialty-identity.css]
     tokens:
       - --dc-path-title-bg
       - --dc-path-title-color
@@ -357,7 +355,7 @@ components:
       - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > span.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
       - div.dc-ability > span.dc-ap + p.dc-ability-text
-    css: [css/components/cards.css, css/components/data.css, css/components/specialty-identity.css, css/dc-native.css]
+    css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
     tokens:
       - --dc-card-accent
       - --dc-card-surface
@@ -374,7 +372,7 @@ components:
     origin: plugin
     recipe: "#### Name | Tier | highlight  (inside @skill)"
     emits: [div.dc-card-tab.dc-highlight, div.dc-card-body.dc-highlight-body]
-    css: css/components/cards.css
+    css: styles/components/cards.css
     usage: ["| highlight"]
     breaks: "as skill"
     notes: "Also reachable as @skill {.dc-highlight}, which puts the class on the card root instead of the tab."
@@ -384,7 +382,7 @@ components:
     origin: plugin
     recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
     emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
-    css: css/components/cards.css
+    css: styles/components/cards.css
     breaks: "as skill; honours the parent card's .dc-allow-split"
     notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
 
@@ -393,7 +391,7 @@ components:
     origin: plugin
     recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X → .variable; also authored as raw <span class=\"dc-ap\">)"
     emits: span.dc-ap[.free|.variable]
-    css: [css/components/cards.css, css/components/specialty-identity.css]
+    css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
     usage: [" AP**"]
     breaks: none
@@ -404,7 +402,7 @@ components:
     origin: plugin
     recipe: "| Distance | AP | table inside a skill card"
     emits: div.dc-sub-header + div.dc-distance-tags > span.dc-dist-tag > span.dc-dist-ap + span.dc-dist-name
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-dist-tag-surface, --dc-dist-tag-border, --dc-dist-ap-color, --dc-dist-name-color]
     usage: ["| Distance | AP |"]
     breaks: none
@@ -419,7 +417,7 @@ components:
     origin: plugin
     recipe: "ROLL THE DIE!  (automatic on the canonical text in markdown prose; code spans and raw HTML are left alone)"
     emits: span.dc-roll-the-die
-    css: css/components/cards.css
+    css: styles/components/cards.css
     tokens: [--dc-roll-the-die-color, --dc-roll-the-die-border]
     usage: ["ROLL THE DIE!"]
     breaks: none
@@ -429,7 +427,7 @@ components:
     origin: plugin
     recipe: "![alt](src)  (automatic on any image-only paragraph)"
     emits: p.dc-img-wrapper
-    css: [css/components/data.css, css/dc-native.css]
+    css: [styles/components/data.css, styles/dc-native.css]
     usage: ["!["]
     breaks: "break-inside: avoid"
 
@@ -438,7 +436,7 @@ components:
     origin: plugin
     recipe: "@outcome flush, > [!PULLQUOTE], or .dc-flush on raw .dc-tape / .dc-stat / .dc-stickers"
     emits: .dc-flush (edge-to-edge modifier)
-    css: [css/components/chrome.css, css/components/data.css]
+    css: [styles/components/chrome.css, styles/components/data.css]
     breaks: none
 
   # ── Author classes on core markers, attrs and raw HTML ────────────────
@@ -447,7 +445,7 @@ components:
     origin: author
     recipe: "@section .gp-columns-2 .dc-column-panel"
     emits: div.section.dc-column-panel
-    css: css/components/section.css
+    css: styles/components/section.css
     breaks: "first heading glued to its first paragraph"
 
   - name: tabbed
@@ -455,7 +453,7 @@ components:
     origin: author
     recipe: "@section .dc-tabbed"
     emits: div.section.dc-tabbed
-    css: css/components/section.css
+    css: styles/components/section.css
     tokens: [--dc-section-tab-indent, --dc-section-tab-overlap]
     breaks: "first heading break-after: avoid"
 
@@ -464,7 +462,7 @@ components:
     origin: author
     recipe: "@section .dc-card-grid"
     emits: div.section.dc-card-grid
-    css: [css/components/section.css, css/page-templates.css]
+    css: [styles/components/section.css, styles/page-templates.css]
     breaks: "break-inside: auto on the grid; each specialty card avoid"
 
   - name: citizen-walkthrough
@@ -472,7 +470,7 @@ components:
     origin: author
     recipe: "@section .dc-citizen-walkthrough [.gp-columns-2]"
     emits: div.section.dc-citizen-walkthrough
-    css: [css/components/section.css, css/dc-native.css]
+    css: [styles/components/section.css, styles/dc-native.css]
     notes: "KNOWN DRIFT (2026-09-01 audit, T2): 04-components.md tells authors to override --section-accent / --section-bg at the chapter id; no CSS declares either name. The chassis reads --dc-section-accent / --dc-section-bg (see section). Unprefixed names are outside the check's token scan, so this stays a note until the chapter is corrected."
 
   - name: citizen-file-page
@@ -480,7 +478,7 @@ components:
     origin: author
     recipe: "@page .dc-citizen-file-page"
     emits: div.page.dc-citizen-file-page
-    css: css/page-rules.css
+    css: styles/page-rules.css
     breaks: "page: citizen-file"
 
   - name: fiction-excerpt
@@ -488,7 +486,7 @@ components:
     origin: author
     recipe: "@section .dc-fiction-excerpt"
     emits: div.section.dc-fiction-excerpt
-    css: [css/components/section.css, css/dg-overrides.css]
+    css: [styles/components/section.css]
     tokens:
       - --dc-fiction-bg
       - --dc-fiction-line-height
@@ -503,7 +501,7 @@ components:
     origin: author
     recipe: "@section .dc-npc-stat"
     emits: div.section.dc-npc-stat
-    css: [css/components/section.css, css/dg-overrides.css]
+    css: [styles/components/section.css]
     tokens:
       - --dc-npc-stat-primary
       - --dc-npc-stat-secondary
@@ -516,7 +514,7 @@ components:
     origin: author
     recipe: "@page .page-chapter-start .dc-chapter-start"
     emits: div.page.dc-chapter-start
-    css: [css/page-rules.css, css/dg-overrides.css]
+    css: [styles/page-rules.css, styles/page-templates.css]
     breaks: "page: chapter-start"
 
   - name: credits
@@ -524,22 +522,22 @@ components:
     origin: author
     recipe: "@page .page-credits .dc-credits"
     emits: div.page.dc-credits
-    css: css/dg-overrides.css
-    notes: "Styled in dg-overrides.css, which both books load."
+    css: [styles/page-templates.css, styles/dc-native.css]
+    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0."
 
   - name: colophon-grid
     status: live
     origin: author
     recipe: "raw <div class=\"dc-colophon-grid\"> on the credits page"
     emits: div.dc-colophon-grid
-    css: css/page-templates.css
+    css: styles/page-templates.css
 
   - name: chevron
     status: live
     origin: author
     recipe: "# Title {.dc-chevron}  (the chapter-opener h1 gets the same treatment structurally)"
     emits: h1.dc-chevron
-    css: [css/components/chrome.css, css/dc-native.css, css/dg-overrides.css, css/page-templates.css]
+    css: [styles/components/chrome.css, styles/dc-native.css, styles/page-templates.css]
     tokens: [--dc-chevron-bg, --dc-chevron-color, --dc-chevron-font-size]
 
   - name: spray
@@ -547,7 +545,7 @@ components:
     origin: author
     recipe: "## Title {.dc-spray}  (also emitted by @learning-path for its title)"
     emits: h2.dc-spray
-    css: [css/components/chrome.css, css/components/data.css, css/dg-overrides.css]
+    css: [styles/components/chrome.css, styles/components/data.css]
     tokens: [--dc-spray-bg, --dc-spray-color]
     breaks: "as a path-shell title: break-before avoid on the element after it"
 
@@ -556,14 +554,14 @@ components:
     origin: author
     recipe: "### Title {.dc-spec-tweak [.dc-no-top]}"
     emits: h3.dc-spec-tweak[.dc-no-top]
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
 
   - name: classtag
     status: live
     origin: author
     recipe: "raw <span class=\"dc-classtag <specialty>\">"
     emits: span.dc-classtag.<specialty>
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
     tokens: [--dc-classtag-color]
 
   - name: tag
@@ -571,14 +569,14 @@ components:
     origin: author
     recipe: "raw <span class=\"dc-tag\">"
     emits: span.dc-tag
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
 
   - name: human-callout
     status: live
     origin: author
     recipe: "raw <div class=\"dc-sidebar\"><div class=\"dc-human-callout\">…  (NPC sidebar)"
     emits: div.dc-human-callout
-    css: css/components/images.css
+    css: styles/components/images.css
     breaks: "break-inside: avoid"
 
   - name: at-a-glance-cards
@@ -586,7 +584,7 @@ components:
     origin: author
     recipe: "raw <div class=\"dc-at-a-glance-cards\"> > <div class=\"dc-at-a-glance-card\">"
     emits: div.dc-at-a-glance-cards > div.dc-at-a-glance-card
-    css: css/components/data.css
+    css: styles/components/data.css
 
   - name: stat-block
     status: live
@@ -596,7 +594,7 @@ components:
       - div.dc-stat > div.dc-stat-head > span.dc-stat-name + span.dc-stat-class
       - div.dc-stat-grid > div.dc-stat-cell > span.dc-stat-cell-key + span.dc-stat-cell-val
       - div.dc-stat-line
-    css: css/components/data.css
+    css: styles/components/data.css
     breaks: "break-inside: avoid"
 
   - name: allow-split
@@ -604,7 +602,7 @@ components:
     origin: author
     recipe: "@skill {.dc-allow-split} or @section .dc-allow-split"
     emits: .dc-allow-split (on the skill card or section it is written on)
-    css: css/components/section.css
+    css: styles/components/section.css
     breaks: "break-inside: auto — opts a section or skill card out of the default avoid"
     notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it."
 
@@ -613,7 +611,7 @@ components:
     origin: author
     recipe: "@skill {.dc-two-col}"
     emits: div.dc-skill-card.dc-two-col
-    css: css/components/cards.css
+    css: styles/components/cards.css
     breaks: "list items and paragraphs break-inside: avoid within the columns"
 
   # ── Core-owned structure whose public tokens this library declares ─────
@@ -622,7 +620,7 @@ components:
     origin: core
     recipe: "@section  (bare; core markers.js emits the wrapper)"
     emits: div.section
-    css: css/components/section.css
+    css: styles/components/section.css
     tokens: [--dc-section-bg, --dc-section-accent]
     breaks: "break-inside: avoid (core MARKER_CSS)"
     notes: "The panel chrome is opt-out; .dc-plain is the escape."
@@ -632,7 +630,7 @@ components:
     origin: core
     recipe: "@chapter C.01 / @page intro / @section / # Title  (markup-driven; core injects .chapter-opener)"
     emits: div.page[data-page=intro][data-chapter-label] > div.section > h1
-    css: [css/components/chrome.css, css/dc-palette.css]
+    css: [styles/components/chrome.css, styles/dc-palette.css]
     tokens:
       - --dc-chapter-opener-bg
       - --dc-chapter-opener-accent
@@ -643,21 +641,13 @@ components:
       - --dc-chapter-opener-pad-right
     notes: "There is no @chapter-opener macro."
 
-  # ── Guide-only classes (dg-overrides.css) ──────────────────────────────
-  - name: palette-swatch
-    status: live
-    origin: author
-    recipe: "raw <div class=\"dc-palette-grid\"> > <div class=\"dc-palette-swatch\">  (design guide only)"
-    emits: div.dc-palette-grid > div.dc-palette-swatch
-    css: css/dg-overrides.css
-
-  # ── Styled but used by neither book ───────────────────────────────────
+  # ── Author classes currently unused by the books ──────────────────────────────
   - name: plain
     status: unused
     origin: author
     recipe: "@section .dc-plain"
     emits: div.section.dc-plain
-    css: css/components/section.css
+    css: styles/components/section.css
     notes: "The section-chrome escape hatch (dc#39)."
 
   - name: full-page
@@ -665,7 +655,7 @@ components:
     origin: author
     recipe: "@page .dc-full-page"
     emits: div.page.dc-full-page
-    css: [css/page-templates.css, css/page-rules.css, css/dc-native.css]
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
     breaks: "break-before: page; page: full"
     notes: "Documented in 05-page-templates.md; every occurrence in the guide is inside a fenced example."
 
@@ -674,7 +664,7 @@ components:
     origin: author
     recipe: "@page .dc-suppress-footer"
     emits: div.page.dc-suppress-footer
-    css: css/page-rules.css
+    css: styles/page-rules.css
     breaks: "page: clean"
 
   - name: cover-page
@@ -684,7 +674,7 @@ components:
     emits:
       - div.dc-cover-page.dc-cover-layout > div.dc-cover-bg + div.dc-cover-num + h1.dc-cover-bigword + p.dc-cover-strap
       - div.dc-cover-body + div.dc-cover-meta-row
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-cover-meta-border]
     notes: "Documented in 05-page-templates.md inside a fenced example only."
 
@@ -693,7 +683,7 @@ components:
     origin: author
     recipe: "raw <div class=\"dc-toc-row\"> > .dc-toc-no + .dc-toc-title + .dc-toc-page inside .dc-toc"
     emits: div.dc-toc-row > span.dc-toc-no + span.dc-toc-title + span.dc-toc-page
-    css: css/components/data.css
+    css: styles/components/data.css
     notes: "Both books' contents pages use a plain list inside .dc-toc."
 
   - name: img-float
@@ -701,7 +691,7 @@ components:
     origin: author
     recipe: "![alt](src){.dc-img-float-left|.dc-img-float-right}"
     emits: img.dc-img-float-left|.dc-img-float-right
-    css: css/components/images.css
+    css: styles/components/images.css
     notes: "Documented in 06-layout.md and 07-markdown-reference.md; no live use."
 
   - name: portrait
@@ -709,7 +699,7 @@ components:
     origin: author
     recipe: "raw <div class=\"dc-portrait\"><img></div>"
     emits: div.dc-portrait > img
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
     tokens: [--dc-portrait-border, --dc-portrait-surface]
 
   - name: dashed-rule
@@ -717,21 +707,21 @@ components:
     origin: author
     recipe: "raw <hr class=\"dc-dashed-rule\">"
     emits: hr.dc-dashed-rule
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
 
   - name: margin-sm
     status: unused
     origin: author
     recipe: ".dc-margin-sm modifier (e.g. on .dc-tape)"
     emits: .dc-margin-sm
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
 
   - name: path-subtitle
     status: unused
     origin: author
     recipe: "raw <div class=\"dc-path-subtitle\">"
     emits: div.dc-path-subtitle
-    css: css/components/chrome.css
+    css: styles/components/chrome.css
     notes: "@learning-path emits .dc-intro for its subtitle, not this."
 
   - name: outcome-table
@@ -739,7 +729,7 @@ components:
     origin: author
     recipe: "(none — no macro or markdown path emits it)"
     emits: .dc-outcome-table
-    css: css/components/cards.css
+    css: styles/components/cards.css
     notes: "A column-span rule inside .dc-two-col; the plugin emits .dc-outcomes."
 
   - name: roll-badges
@@ -747,7 +737,7 @@ components:
     origin: author
     recipe: "(none — no current authoring path)"
     emits: [span.dc-roll-lucid, span.dc-roll-surreal]
-    css: css/components/data.css
+    css: styles/components/data.css
     tokens: [--dc-roll-lucid-color, --dc-roll-surreal-color]
 
   - name: sidebar-box-divider
@@ -755,21 +745,14 @@ components:
     origin: author
     recipe: "raw <hr class=\"dc-sidebar-box-divider\"> inside a sidebar-box"
     emits: hr.dc-sidebar-box-divider
-    css: css/components/data.css
-
-  - name: table
-    status: unused
-    origin: author
-    recipe: "@section .dc-table"
-    emits: div.section.dc-table
-    css: css/dg-overrides.css
+    css: styles/components/data.css
 
   - name: glossary-item
     status: unused
     origin: author
     recipe: "raw <div class=\"dc-item\"> inside .dc-terms"
     emits: div.dc-item
-    css: css/components/images.css
+    css: styles/components/images.css
     breaks: "break-inside: avoid"
     notes: "The class the CSS styles; the docs and gallery author .dc-terms-item instead (see glossary-item-authored)."
 
@@ -778,7 +761,7 @@ components:
     origin: author
     recipe: "(none — no macro or markdown path emits it)"
     emits: .dc-callout
-    css: css/dc-native.css
+    css: styles/dc-native.css
     notes: "One stale first-child glue rule in the engine sheet; the alert family emits .dc-alert. Adjacency rules for it were removed 2026-06-21 (chrome.css)."
 
   # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
@@ -847,6 +830,3 @@ components:
     notes: "No CSS has ever styled .dc-terms-item — images.css styles .dc-terms .dc-item. The gallery specimen renders unstyled. Resolve by renaming one side; a separate decision."
 
 # Classes a book uses that are not components.
-ignore:
-  - class: dc-banner-demo
-    reason: "guide-only demo wrapper in 09-component-gallery.md; has no CSS by design"

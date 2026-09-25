@@ -15,7 +15,7 @@
    and replace token values with the new specialty's --<name>-* aliases. */
 
 /* ── Skill card shell ─────────────────────────────────────────────────── */
-/* Token defaults for .dc-skill-card are declared in :root in dc-tokens.css.
+/* Token defaults for .dc-skill-card are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-skill-card { } below. */
 .dc-skill-card {
   position: relative;
@@ -48,7 +48,7 @@
      6px. The old margin-bottom was exactly 6px, so it was entirely consumed
      and consecutive cards rendered touching (screenshot-confirmed on the
      Augmerc BODYCOVER/BLITZ seam). Same class of fix as .fg-art-portrait's
-     margin-bottom in fg-overrides.css. */
+     margin-bottom in the book's own sheet (`@layer book`). */
   margin-bottom: calc(var(--dc-card-gap) + 6px);
   max-width: 100%;
   /* 4-way ink outline (2px on each side) + HARD offset poster shadow. The
@@ -284,8 +284,8 @@
 }
 
 /* `.section.dc-rules-definition` (this file's columns block + the chrome/
-   tokens/doc block in dc-components.css) and `.two-column-list` (both here
-   and its two tombstone bodies in dc-components.css) were here and are
+   tokens/doc block in components/*.css) and `.two-column-list` (both here
+   and its two tombstone bodies in components/*.css) were here and are
    DELETED (2026-09-02): zero uses of either in any book's rendered HTML,
    zero emissions from the Dimm City plugin. */
 
@@ -294,7 +294,7 @@
    `@skill {.dc-two-col}` in markdown. The .dc-card-inner content flows in
    2 columns so a 4in single-column skill becomes ~2in tall, doubling
    horizontal packing density. Column authority lives here; the card's
-   column-span and break rules stay in dc-components.css. */
+   column-span and break rules stay in components/*.css. */
 .dc-skill-card.dc-two-col .dc-card-inner {
   column-count: 2;
   column-gap: 12px;
@@ -436,7 +436,7 @@
 
 /* ── AP base + author-facing variants ─────────────────────────────────── */
 /* Token defaults for .dc-ap (--dc-ap-bg/-fg/-border) are declared in :root
-   in dc-tokens.css — cream on --hud-blue = 4.45:1 borderline; on the
+   in dc-component-defaults.css — cream on --hud-blue = 4.45:1 borderline; on the
    gradient mid-tone it measured 3.95 in real preview, so the default is
    --hud-blue-dark at 7.45:1, safe. Author-facing variants below override
    via .dc-ap.<variant> { }, same convention as every other component. */

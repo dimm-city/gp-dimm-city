@@ -2,7 +2,7 @@
 
 This is the shortest safe path for adding a new Dimm City plugin macro.
 
-Use the existing `@skill` implementation in `plugins/dimm-city-plugin.js` as the main reference. It follows the right model:
+Use the existing `@skill` implementation in `plugin.js` as the main reference. It follows the right model:
 
 - one real root class: `.dc-skill-card`
 - **no per-card variant** — shapes come from the `.specialty.<name>` parent container (CSS parent-selector model, not card-level attributes)
@@ -34,14 +34,14 @@ Card variants (skill cards, path shells, specialty cards, specialty intros) are 
 > **Deprecated (2026-05-24):** `@class-entry` / `@end-class-entry` and the
 > `.section.dc-class-entry` CSS were retired after zero production usage. The
 > CSS was parked in `css/deprecated.css`, which has since been deleted —
-> `git log -- dc-design-guide/css/deprecated.css` has the rules. Do not use
+> the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules. Do not use
 > them in new content — author the same layout with `@section .dc-class-entry`
-> plus structural child elements (see `05-page-templates.md`).
+> plus structural child elements (see the design guide's page-templates chapter).
 >
 > **Retired — `@chapter-opener`:** never re-add it. The chapter-opener composite
 > is markup-driven: `markers.js` injects
 > `<div class="chapter-opener" data-chapter-label="C.NN">` as the first child of
-> a labeled chapter's first page, and `dc-components.css` styles it plus the
+> a labeled chapter's first page, and `styles/components/*.css` style it plus the
 > `.chapter[data-chapter-label] > .page[data-page="intro"] > .section` chain.
 > The plugin registers no `@chapter-opener` marker.
 
@@ -115,7 +115,7 @@ Rules:
 - Only expose a small variant API: surface, accent, foreground, title treatment.
 - Do not turn padding, margins, widths, or break behavior into a large custom-property API.
 
-## 2. Add the marker to `dimm-city-plugin.js`
+## 2. Add the marker to `plugin.js`
 
 For a simple wrapper macro, follow the `@sidebar-box` and `@definition` pattern.
 
@@ -153,7 +153,7 @@ That is usually better than asking authors to write raw HTML.
 
 If the macro is just a shell around normal markdown content, do less: open the wrapper, let standard markdown render `h3`, `p`, `ul`, and `li`, then close the wrapper. That keeps the parser logic small and avoids creating extra internal hook classes you do not really need.
 
-## 3. Add CSS in `css/components/cards.css`
+## 3. Add CSS in `styles/components/cards.css`
 
 The root class owns the shell. Inner parts are descendants.
 

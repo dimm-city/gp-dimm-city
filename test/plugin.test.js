@@ -1,232 +1,233 @@
-/**
- * Dimm City — the plugin's own test suite.
- *
- *   bun install     # once — pulls the single devDependency, markdown-it
- *   bun test
- *
- * Three things are checked, and it is worth knowing which is which.
- *
- * 1. RENDER (fixture.md → expected.html). The bespoke inline rule is an
- *    ordinary markdown-it rule, so a plain markdown-it instance with this
- *    plugin applied renders it exactly as a book would. This is the test that
- *    turns "did I break my plugin" into one command.
- *
- *    There is deliberately no snapshot auto-update here. After an intentional
- *    change, open `expected.html`, make the edit you meant to make, and commit
- *    it — a diff somebody had to read is the point of the file.
- *
- * 2. CONTRACT. The exact export shape Gutterpress's loader requires, and the
- *    existence of every file `package.json` declares. These catch the
- *    failures that otherwise surface as a blank page in someone else's book.
- *
- * 3. CONVENTIONS. The prefix rules — every class this package emits is its
- *    own, and none is `gp-`. Nothing in Gutterpress enforces this for you;
- *    a collision just silently restyles somebody's book. So it is enforced
- *    here.
- *
- * What this suite deliberately does NOT do: render the `@term-box` container.
- * That container is produced by Gutterpress CORE's marker parser from the
- * `markers` table below — plain markdown-it knows nothing about it, and this
- * package cannot import core (see README.md, "Why you cannot import
- * gutterpress"). So the table's CONTRACT is checked here, and the rendered
- * container is checked by running `gutterpress preview` on a real book.
- */
+// plugin.test.js — what the plugin emits.
+//
+// Two layers of protection:
+//   1. A fixture snapshot: test/fixtures/all-macros.md exercises every macro
+//      the plugin ships, and all-macros.expected.html is what the plugin
+//      produced for it the day this package was cut from the book repo. Any
+//      change to the plugin's output fails here until the snapshot is updated
+//      ON PURPOSE (`bun run test:update-snapshot`) and the diff reviewed.
+//   2. Behavioural tests carried over from the book repo — the edge cases that
+//      earned a regression test at the time (table pass-through, ROLL THE DIE!
+//      boundaries, alert ordering, inline formatting, outcome/distance tables,
+//      @continue before core's layout transform, @card footers).
+//
+// `gutterpress/render` is a devDependency used here to run the plugin inside
+// core's own markdown pipeline (core markers such as @section/@page/@chapter
+// are not this plugin's to render). It is never imported at runtime — see
+// conventions.test.js.
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import MarkdownIt from "markdown-it";
+import { createMarkdownRenderer } from "gutterpress/render";
 
-import plugin, { createTermRule, markers, metadata } from "../plugin.js";
+import dimmCityPlugin, { metadata } from "../plugin.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const root = path.join(here, "..");
-const read = (rel) => readFileSync(path.join(root, rel), "utf8");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const read = (rel) => readFileSync(path.join(ROOT, rel), "utf8");
 
-const pkg = JSON.parse(read("package.json"));
-const css = read("styles/plugin.css");
-/** The stylesheet's RULES — comments stripped, so a name assertion below
- *  tests what the sheet emits rather than what it talks about. */
-const cssRules = css.replace(/\/\*[\s\S]*?\*\//g, "");
+const ROLL_HTML = '<span class="dc-roll-the-die">ROLL THE DIE!</span>';
 
-/** The prefix every class and custom property this package emits must carry.
- *  Written out here rather than imported from plugin.js on purpose: this is
- *  the independent statement of the convention, so changing the constant in
- *  plugin.js alone makes these tests fail instead of silently agreeing. */
-const PREFIX = "dc-";
+function createMarkdown() {
+  return new MarkdownIt({ html: true }).use(dimmCityPlugin);
+}
 
-// ── 1. Render ───────────────────────────────────────────────────────────────
+function createGutterpressMarkdown() {
+  return createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: {} }]);
+}
 
-describe("render", () => {
-  test("fixture.md renders to expected.html", () => {
-    // The same options Gutterpress builds its own renderer with, so what
-    // passes here behaves the same way in a real book.
-    const md = new MarkdownIt({ html: true, linkify: true, typographer: true });
-    md.use(plugin);
+function countRolls(html) {
+  return html.split('class="dc-roll-the-die"').length - 1;
+}
 
-    const actual = md.render(read("test/fixture.md"));
-    expect(actual).toBe(read("test/expected.html"));
+describe("fixture snapshot", () => {
+  test("all-macros.md renders exactly to all-macros.expected.html", () => {
+    const env = {};
+    const html = createGutterpressMarkdown().render(read("test/fixtures/all-macros.md"), env);
+    expect(env.layoutWarnings ?? []).toEqual([]);
+    expect(html).toBe(read("test/fixtures/all-macros.expected.html"));
   });
 
-  test("plugin options can override the emitted class", () => {
-    const md = new MarkdownIt();
-    md.use(plugin, { termClass: "custom-term" });
-    expect(md.render("[[x]]")).toContain('class="custom-term"');
-  });
-
-  test("the inline rule honours markdown-it's silent mode", () => {
-    // A rule that emits tokens while `silent` is true corrupts markdown-it's
-    // link/reference probing. Easy to get wrong, invisible until it breaks
-    // somebody's footnote.
-    const rule = createTermRule("x");
-    const pushed = [];
-    const state = {
-      src: "[[term]]",
-      pos: 0,
-      posMax: 8,
-      push: (...args) => {
-        pushed.push(args);
-        return { attrSet() {} };
-      },
-    };
-    expect(rule(state, true)).toBe(true);
-    expect(pushed).toHaveLength(0);
-    expect(state.pos).toBe(8);
+  test("the fixture leaves no marker unrendered", () => {
+    const html = createGutterpressMarkdown().render(read("test/fixtures/all-macros.md"), {});
+    expect(html.match(/^@[a-z]/gm) ?? []).toEqual([]);
   });
 });
-
-// ── 2. Contract ─────────────────────────────────────────────────────────────
 
 describe("loader contract", () => {
   test("the default export is a plain (md, options) function", () => {
-    // CLAUDE.md §5: a Gutterpress plugin is a plain markdown-it plugin.
-    // Nothing else is accepted, and nothing else should be.
-    expect(typeof plugin).toBe("function");
-    expect(plugin.length).toBeLessThanOrEqual(2);
+    expect(typeof dimmCityPlugin).toBe("function");
+    expect(dimmCityPlugin.length).toBeLessThanOrEqual(2);
   });
 
-  test("`markers` is a plain object", () => {
-    expect(typeof markers).toBe("object");
-    expect(markers).not.toBeNull();
-    expect(Array.isArray(markers)).toBe(false);
-  });
-
-  test("`metadata` carries a name", () => {
-    expect(typeof metadata?.name).toBe("string");
+  test("metadata names the package and carries no private version", () => {
+    expect(typeof metadata.name).toBe("string");
     expect(metadata.name.length).toBeGreaterThan(0);
-  });
-
-  test("every path package.json declares exists", () => {
-    const gp = pkg.gutterpress ?? {};
-    const declared = [
-      gp.markdown ?? pkg.main,
-      ...(gp.styles ?? []),
-      gp.components,
-      gp.snippets,
-      gp.tokensFile,
-    ].filter(Boolean);
-
-    expect(declared.length).toBeGreaterThan(0);
-    for (const rel of declared) {
-      // Gutterpress refuses to load an extension that reaches outside its own
-      // folder, so a `../` here would fail at install time, not here.
-      expect(rel.startsWith("/")).toBe(false);
-      expect(rel.split(/[\\/]/)).not.toContain("..");
-      // `existsSync`, not a read: `snippets` names a DIRECTORY.
-      expect(existsSync(path.join(root, rel))).toBe(true);
-    }
+    expect("version" in metadata).toBe(false);
   });
 });
 
-// ── 3. Conventions ──────────────────────────────────────────────────────────
+describe("behaviour carried from the book repo", () => {
+  test("preserves unclassified skill tables as native markdown-it tables", () => {
+    const table = ["| Name | Detail |", "| :--- | ---: |", "| **Alpha** | [Linked](https://example.test) |"].join("\n");
+    const source = ["@skill", "", "#### Test Skill | T0", "", table, "", "@end-skill"].join("\n");
+    const expectedTable = new MarkdownIt({ html: true }).render(table);
+    const html = createMarkdown().render(source);
 
-/** Every class name this package declares, from wherever it declares it. */
-function declaredClasses() {
-  const out = new Set();
-  for (const decl of Object.values(markers)) {
-    if (typeof decl?.class === "string") {
-      for (const c of decl.class.split(/\s+/).filter(Boolean)) out.add(c);
-    }
-    for (const variant of Object.values(decl?.variants ?? {})) {
-      for (const c of String(variant).split(/\s+/).filter(Boolean)) out.add(c);
-    }
-    if (typeof decl?.label?.class === "string") out.add(decl.label.class);
-  }
-  return [...out];
-}
-
-describe("conventions", () => {
-  test("every class the markers declare carries this package's prefix", () => {
-    const classes = declaredClasses();
-    expect(classes.length).toBeGreaterThan(0);
-    for (const c of classes) expect(c.startsWith(PREFIX)).toBe(true);
+    expect(html).toContain(expectedTable);
+    expect(html).toMatch(/<thead>[\s\S]*<th style="text-align:left">Name<\/th>/);
+    expect(html).toMatch(/<tbody>[\s\S]*<strong>Alpha<\/strong>/);
+    expect(html).not.toMatch(/dc-outcomes|dc-distance-tags/);
   });
 
-  test("nothing emits a `gp-` class — that prefix belongs to core", () => {
-    for (const c of declaredClasses()) expect(c.startsWith("gp-")).toBe(false);
-    // Also catch a `gp-` selector added straight to the stylesheet.
-    expect(cssRules).not.toMatch(/\.gp-/);
-    expect(cssRules).not.toMatch(/--gp-/);
+  test("transforms only complete roll instructions in markdown text tokens", () => {
+    const source = [
+      "ROLL THE DIE! and **ROLL THE DIE!** and *ROLL THE DIE!* and [ROLL THE DIE!](#roll).",
+      "",
+      "REROLL THE DIE! ROLL THE DIE!S PREROLL THE DIE!",
+      "",
+      "`ROLL THE DIE!` and <code>ROLL THE DIE!</code>.",
+      "",
+      '<span data-copy="ROLL THE DIE!">ROLL THE DIE!</span> then ROLL THE DIE!',
+      "",
+      "<br> ROLL THE DIE!",
+      "",
+      '<span class="dc-roll-the-die">ROLL THE DIE!</span>',
+      "",
+      "<div>",
+      "ROLL THE DIE!",
+      "</div>",
+      "",
+      "```text",
+      "ROLL THE DIE!",
+      "```",
+    ].join("\n");
+    const md = createMarkdown();
+    const html = md.render(source);
+
+    expect(countRolls(html)).toBe(7);
+    expect(html).toContain(`<strong>${ROLL_HTML}</strong>`);
+    expect(html).toContain(`<em>${ROLL_HTML}</em>`);
+    expect(html).toContain(`<a href="#roll">${ROLL_HTML}</a>`);
+    expect(html).toContain("REROLL THE DIE! ROLL THE DIE!S PREROLL THE DIE!");
+    expect(html).toContain("<code>ROLL THE DIE!</code>");
+    expect(html).toContain('<span data-copy="ROLL THE DIE!">ROLL THE DIE!</span>');
+    expect(html).toContain('<pre><code class="language-text">ROLL THE DIE!\n</code></pre>');
+
+    const renderedOnce = md.renderInline("ROLL THE DIE!");
+    expect(md.renderInline(renderedOnce)).toBe(renderedOnce);
   });
 
-  test("every declared class has a rule in the stylesheet", () => {
-    // A class the plugin emits but never styles is a silent no-op in every
-    // book that installs it.
-    for (const c of declaredClasses()) {
-      expect(cssRules).toContain(`.${c}`);
-    }
+  test("runs after alert parsing and handles ordinary blockquotes", () => {
+    const source = ["> [!NOTE]", "> **ROLL THE DIE!** and `ROLL THE DIE!`.", "", "> *Ordinary* ROLL THE DIE!"].join("\n");
+    const html = createMarkdown().render(source);
+
+    expect(countRolls(html)).toBe(2);
+    expect(html).toMatch(
+      /<div class="dc-alert dc-note"><span class="dc-alert-label">Note<\/span>[\s\S]*<strong><span class="dc-roll-the-die">ROLL THE DIE!<\/span><\/strong> and <code>ROLL THE DIE!<\/code>/,
+    );
+    expect(html).toMatch(/<blockquote>[\s\S]*<em>Ordinary<\/em> <span class="dc-roll-the-die">ROLL THE DIE!<\/span>[\s\S]*<\/blockquote>/);
   });
 
-  test("marker names are valid and do not shadow a core marker", () => {
-    // Core's names are claimed during block parsing, before any plugin runs.
-    // Declaring one of them is a hard load error — caught here first.
-    const core = [
-      "chapter", "spread", "page", "section", "continue",
-      "page-break", "column-break", "end-section",
-    ];
-    for (const name of Object.keys(markers)) {
-      expect(name).toMatch(/^[a-z][a-z0-9-]*$/);
-      expect(name.startsWith("end-")).toBe(false);
-      expect(core).not.toContain(name);
-    }
+  test("preserves inline formatting in transformed learning-path and skill content", () => {
+    const learningPath = ["@learning-path", "", "### Ghost Route", "", "> *Formatted route* says ROLL THE DIE!", "", "@end-learning-path"].join("\n");
+    const skill = [
+      "@skill",
+      "",
+      "#### Signal Cut | T1",
+      "",
+      "> **Formatted flavor** says ROLL THE DIE!",
+      "",
+      "1. **0 AP** *Move:* Keep *ability formatting* and ROLL THE DIE!",
+      "",
+      "@end-skill",
+    ].join("\n");
+
+    const learningPathHtml = createMarkdown().render(learningPath);
+    const skillHtml = createMarkdown().render(skill);
+
+    expect(learningPathHtml).toContain(`<div class="dc-intro"><em>Formatted route</em> says ${ROLL_HTML}</div>`);
+    expect(skillHtml).toContain(`<p class="dc-flavor"><strong>Formatted flavor</strong> says ${ROLL_HTML}</p>`);
+    expect(skillHtml).toContain(`<p class="dc-ability-text"><em>Move:</em> Keep <em>ability formatting</em> and ${ROLL_HTML}</p>`);
   });
 
-  test("marker declarations use only supported fields", () => {
-    for (const [name, decl] of Object.entries(markers)) {
-      if (decl.deprecated !== undefined || decl.alias !== undefined) continue;
-      expect(typeof decl.tag === "undefined" || /^[a-z][a-z0-9-]*$/.test(decl.tag)).toBe(true);
-      for (const [variant, cls] of Object.entries(decl.variants ?? {})) {
-        expect(typeof cls).toBe("string");
-        expect(variant).toMatch(/^\S+$/);
-      }
-      if (decl.label) {
-        // "attr:<name>" is the only supported source today.
-        expect(decl.label.from).toMatch(/^attr:[A-Za-z_][A-Za-z0-9_-]*$/);
-        expect(typeof decl.label.class).toBe("string");
-      }
-      for (const at of decl.autoCloseAt ?? []) {
-        expect(at).toBe("eof");
-      }
-      expect(name).toBeTruthy();
-    }
+  test("retains custom outcome and distance rendering with safe inline rolls", () => {
+    const outcomeTable = [
+      "@skill {.dc-allow-split}",
+      "",
+      "#### Risk It",
+      "",
+      "| Roll | Outcome |",
+      "| --- | --- |",
+      "| 20 | **ROLL THE DIE!** but not `ROLL THE DIE!` |",
+      "",
+      "@end-skill",
+    ].join("\n");
+    const distanceTable = ["@skill", "", "#### Close In", "", "| Distance | AP |", "| --- | --- |", "| **Near** | *1 AP* |", "", "@end-skill"].join("\n");
+    const outcomeMacro = ["@outcome", "20 | Triumph | **ROLL THE DIE!** but not `ROLL THE DIE!`.", "@end-outcome"].join("\n");
+
+    const outcomeHtml = createMarkdown().render(outcomeTable);
+    const distanceHtml = createMarkdown().render(distanceTable);
+    const macroHtml = createMarkdown().render(outcomeMacro);
+
+    expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
+    expect(outcomeHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
+    expect(outcomeHtml).not.toMatch(/<table>/);
+    expect(distanceHtml).toMatch(
+      /<div class="dc-distance-tags">[\s\S]*<span class="dc-dist-ap"><em>1 AP<\/em><\/span>[\s\S]*<span class="dc-dist-name"><strong>Near<\/strong><\/span>/,
+    );
+    expect(countRolls(macroHtml)).toBe(1);
+    expect(macroHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
   });
 
-  test("every public custom property carries the prefix too", () => {
-    // `--x` declared at :root is global. An unprefixed one would collide with
-    // the book's own tokens exactly as an unprefixed class would.
-    const declaredProps = [...cssRules.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gim)].map((m) => m[1]);
-    expect(declaredProps.length).toBeGreaterThan(0);
-    for (const prop of declaredProps) {
-      expect(prop.startsWith(`--${PREFIX}`)).toBe(true);
-    }
+  test("claims skill continuations before the Gutterpress layout transform", () => {
+    const skill = [
+      "@skill {.dc-allow-split}",
+      "",
+      "#### Long Skill | T2",
+      "",
+      "1. **0 AP** *First:* Opening text.",
+      "",
+      "@continue",
+      "",
+      "2. **1 AP** *Second:* Continued text.",
+      "",
+      "@end-skill",
+    ].join("\n");
+    const section = ["@section .panel", "", "First section fragment.", "", "@continue", "", "Second section fragment.", "", "@end-section"].join("\n");
+    const md = createGutterpressMarkdown();
+    const skillEnv = {};
+    const sectionEnv = {};
+    const skillHtml = md.render(skill, skillEnv);
+    const sectionHtml = md.render(section, sectionEnv);
+
+    expect((skillHtml.match(/class="dc-skill-card/g) ?? []).length).toBe(2);
+    expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont dc-allow-split"/);
+    expect(skillHtml).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
+    expect(JSON.stringify(skillEnv.layoutWarnings ?? [])).not.toMatch(/continue_without_section/);
+
+    expect(sectionHtml).toMatch(/class="section panel gp-continued"/);
+    expect(JSON.stringify(sectionEnv.layoutWarnings ?? [])).not.toMatch(/continue_without_section/);
   });
 
-  test("the stylesheet keeps all of its rules inside its own cascade layer", () => {
-    // An unlayered rule beats every layered one, including this package's
-    // own — see the header comment in styles/plugin.css.
-    expect(css).toContain("@layer gp-dimm-city {");
-    const outside = css.replace(/@layer\s+[\w-]+\s*\{[\s\S]*\}/m, "");
-    expect(outside).not.toMatch(/^[^*\/\s][^{}]*\{/m);
+  test("tags only the last @card body blockquote as dc-card-footer (dc#44)", () => {
+    const singleFooter = ["@card .dc-flaws", "", "#### Title", "", "> Pull quote", "", "Body paragraph.", "", "> Footer blockquote", "", "@end-card"].join("\n");
+    const twoBodyBlockquotes = ["@card", "", "#### Title", "", "> Pull quote", "", "> Not the footer", "", "> The real footer", "", "@end-card"].join("\n");
+
+    const singleHtml = createMarkdown().render(singleFooter);
+    const twoHtml = createMarkdown().render(twoBodyBlockquotes);
+
+    // The pull quote (first blockquote, before the body opens) renders as a
+    // plain .dc-card-pull div, so it is never a footer candidate.
+    expect(singleHtml).toMatch(/<div class="dc-card-pull">Pull quote<\/div>/);
+    expect((singleHtml.match(/dc-card-footer/g) ?? []).length).toBe(1);
+    expect(singleHtml).toMatch(/<blockquote class="dc-card-footer">\s*<p>Footer blockquote<\/p>/);
+
+    // Of the two body blockquotes only the last carries the tag.
+    expect(twoHtml).toMatch(/<blockquote>\s*<p>Not the footer<\/p>\s*<\/blockquote>/);
+    expect(twoHtml).toMatch(/<blockquote class="dc-card-footer">\s*<p>The real footer<\/p>/);
+    expect((twoHtml.match(/dc-card-footer/g) ?? []).length).toBe(1);
   });
 });

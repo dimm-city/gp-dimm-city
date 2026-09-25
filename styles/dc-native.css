@@ -1,8 +1,10 @@
 /* =============================================================================
-   NATIVE-FURNITURE.CSS — engine-specific page chrome
+   DC-NATIVE.CSS — engine-specific page chrome
    =============================================================================
-   Loaded via the book manifest's `engineStyles: { native: [...] }` (appended
-   after every other sheet, so it wins the cascade).
+   The LAST entry in package.json `gutterpress.styles`, and deliberately
+   unlayered, so it beats every layered sheet in this package and in the
+   book. A book's own unlayered sheet listed after the extension still wins
+   over it — that is the one hook a book has above this file.
 
    Mechanics, each measured against Chromium 151 (gutterpress ENGINE.md §5/§8):
    - ONE `@page { background }` rule paints the brick wall across the whole
@@ -176,6 +178,24 @@
   /* breathing room between the TOC card and the sheet bottom */
   padding-bottom: 0.75in;
 }
+/* Credits page as a full-height flex column so a pinned founders plate
+   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Exact `height`
+   rather than core's `min-height` cushion so the pin's containing block ends
+   exactly on the sheet edge. Carried from the field guide's native sheet in
+   1.0.0: every Dimm City book writes this page. */
+.page.page-credits {
+  display: flex;
+  flex-direction: column;
+  height: var(--gp-content-h);
+  padding-bottom: 0;
+}
+.page.page-credits .section.credits-colophon {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
 /* The masthead escapes the padding back to the sheet edges — visible paint
    inside the full-width content box. `margin-top: 0` is deliberate: a
    negative top pull here drags a band fragment onto the previous page
@@ -202,7 +222,7 @@ figure {
 
 /* ── 10. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
    `.section` carries `break-inside: avoid` from THIS BOOK's own
-   dc-components.css (core no longer ships that default, but the book still
+   components/*.css (core no longer ships that default, but the book still
    sets it). Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
    container, columns:2) and the `.section` blocks sit INSIDE it. A section
    taller than one column can then never split, so Chromium drops it whole

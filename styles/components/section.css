@@ -1,7 +1,7 @@
 @layer dc.components {
 
 /* ── Base card: every @section gets a cream surface + left accent strip ──
-   Public tokens (defaults declared in dc-tokens.css :root):
+   Public tokens (defaults declared in dc-component-defaults.css :root):
      --dc-section-bg      — panel background surface
      --dc-section-accent  — left strip / top bar accent color */
 .section {
@@ -66,7 +66,7 @@
    inset: 0`, and a lone markdown image is wrapped in `p.dc-img-wrapper`
    whose only child is that pin — so the wrapper had no in-flow content, no
    height, and `.gp-bottom` resolved to the bottom of a zero-height box.
-   MEASURED (native-furniture.css §6, CSS.getMatchedStylesForNode): the
+   MEASURED (dc-native.css §6, CSS.getMatchedStylesForNode): the
    credits founders plate authored inside its `@section` painted 179pt below
    the sheet and fragmented onto the next one. The workaround was to author
    every pinned image after `@end-section`, as page furniture.
@@ -440,7 +440,7 @@ h3 + .section {
    ─────────────────────────────────────────────────────────────────────── */
 
 /* ── Base shell ──────────────────────────────────────────────────────────── */
-/* Token defaults for .dc-block are declared in :root in dc-tokens.css.
+/* Token defaults for .dc-block are declared in :root in dc-component-defaults.css.
    Override via variant rules (.dc-block.dc-panel etc.) below. */
 .dc-block {
   background: var(--dc-block-bg);
@@ -636,7 +636,7 @@ h3 + .section {
   font-style: italic;
 }
 
-/* ── Card list contexts (dc-components.css owns these — NOT fg-overrides) ── */
+/* ── Card list contexts (components/*.css owns these — NOT the book's own sheet) ── */
 
 /* Flaw cards */
 .section.dc-flaws > .dc-card {
@@ -672,7 +672,7 @@ h3 + .section {
 
    To tune the walkthrough's accent or substrate, override the existing
    --dc-section-accent / --dc-section-bg custom properties at the chapter
-   id scope in fg-overrides.css — do NOT add bespoke rules here unless an
+   id scope in the book's own sheet (`@layer book`) — do NOT add bespoke rules here unless an
    observed problem requires it.
 
    OBSERVED PROBLEM (2026-05-25): When the walkthrough's first card uses
@@ -720,7 +720,7 @@ h3 + .section {
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
-   Override per chapter / per faction in fg-overrides selector chains. */
+   Override per chapter / per faction in the book's own sheet selector chains. */
 .dc-npc-stat h4 {
   border-top: var(--dc-npc-stat-rule-width) solid var(--dc-npc-stat-rule);
   padding-top: 0.05in;
@@ -813,12 +813,12 @@ h3 + .section {
 /* `.page.dc-chapter-start.two-column`'s ornamental `column-rule` was DELETED
    before this migration: it needed a page carrying BOTH classes and no book's
    markdown has ever written one. The `column-rule` that IS live sits on
-   `.gp-columns-2` in dc-components.css — an ornament, not a layout rule. */
+   `.gp-columns-2` in components/*.css — an ornament, not a layout rule. */
 
 /* ── LAYOUT: CARD GRID (.dc-card-grid section) ─────────────────────────────── */
 /* Specialty card grid — two columns, auto-fill. Layout owns columns + column-
    span here; component styling (chrome reset, card density, break control)
-   lives in dc-components.css under the same .dc-card-grid selector. */
+   lives in components/*.css under the same .dc-card-grid selector. */
 .dc-card-grid {
   columns: 2;
   column-gap: var(--gutter);
@@ -865,7 +865,7 @@ h3 + .section {
 
 
 
-/* Per-book variant assignment lives in fg-overrides.css using natural
+/* Per-book variant assignment lives in the book's own sheet (`@layer book`) using natural
    selector chains (chapter id → page template class → section component
    class) that set component CSS custom properties. No utility-variant
    classes here — that would force authors to re-type variant intent. */
@@ -906,7 +906,7 @@ h3 + .section {
 
    Token contract — override at the chapter id scope for per-chapter
    variants. Authors don't write these in markdown; they're project CSS
-   overrides. Defaults live in dc-tokens.css; example per-chapter
+   overrides. Defaults live in dc-component-defaults.css; example per-chapter
    override (NOT nested CSS comments — these are illustrative only):
 
        #ch-example-specialty-overview .chapter {
@@ -916,7 +916,7 @@ h3 + .section {
 
    ───────────────────────────────────────────────────────────────────── */
 
-/* Token defaults for this component live in dc-tokens.css alongside the
+/* Token defaults for this component live in dc-component-defaults.css alongside the
    space / color / clip primitives they reference — one declaration site for
    the whole override surface. */
 
@@ -1033,10 +1033,10 @@ h3 + .section {
 
 /* Token defaults for .section.dc-fiction-excerpt (--dc-fiction-bg,
    --dc-fiction-art-width/-shadow/-outline, --dc-fiction-line-height) are
-   declared in :root in dc-tokens.css — same values as before this moved
+   declared in :root in dc-component-defaults.css — same values as before this moved
    (the 3in art width: user feedback said the previous 1.85in "Lil Thump
    placeholder image is too small... should take up more of the left side
-   of the page"). Per-page/per-chapter variants override via fg-overrides.css
+   of the page"). Per-page/per-chapter variants override via the book's own sheet (`@layer book`)
    context selectors, e.g. `.page....chapter-01 .section.dc-fiction-excerpt`. */
 .section.dc-fiction-excerpt {
   background: var(--dc-fiction-bg);
@@ -1049,7 +1049,7 @@ h3 + .section {
 }
 
 /* Images inside the excerpt float by default (--dc-fiction-art-float; left
-   by default, set to right on a specific page/chapter via fg-overrides if
+   by default, set to right on a specific page/chapter via the book's own sheet if
    needed). Text wraps to the opposite side. Author places the image at the
    start of the paragraph flow — no per-image class required. */
 .section.dc-fiction-excerpt img {

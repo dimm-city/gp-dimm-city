@@ -1,164 +1,157 @@
-# Dimm City
+# gp-dimm-city
 
-> Dimm City design system for Gutterpress
+The Dimm City design system for [Gutterpress](https://github.com/dimm-city/gutterpress):
+the markdown-it macros, print stylesheets, design tokens, fonts and page
+templates that the Dimm City TTRPG books are set in. Install it into a book
+and write `@skill`, `@specialty`, `@learning-path`, `@callout` and the rest;
+the package renders them and prints them.
 
-A Gutterpress **plugin** — a folder that adds markdown behaviour, component
-CSS and insertable snippets to a book.
+## Install
 
-```
-gp-dimm-city/
-├── package.json         what this package declares: `main` is the plugin,
-│                        the `gutterpress` block names the styles and snippets
-├── plugin.js            the markdown-it plugin (declarative + bespoke halves)
-├── styles/plugin.css    component CSS, with public tokens at :root
-├── snippets/            insertable recipes, one per component
-└── test/                fixture.md → expected.html, runnable with `bun test`
-```
+**In the Gutterpress app:** open the book, then Project settings → Features →
+*Find more on npm* (search "dimm city") or *Install from npm* and enter
+`gp-dimm-city`. Confirm the install prompt. The package appears under Features
+with a "+ look" badge, and its sheets and snippets are live in the preview.
 
-## Try it
+**From the command line**, in the folder that holds the book:
 
 ```sh
-bun install     # once — pulls markdown-it, the suite's only dependency
-bun test
+gutterpress ext add gp-dimm-city my-book
 ```
 
-Then wire it into a book. In the book's `manifest.yaml`:
+Either way Gutterpress downloads the package from npm, verifies the registry
+hash, writes a copy under `my-book/plugins/npm/`, and pins the exact version
+in the manifest:
 
 ```yaml
 extensions:
-  - ./plugins/gp-dimm-city
+  - gp-dimm-city@1.0.0
 ```
 
-`gutterpress ext add ./plugins/gp-dimm-city <book>` writes that line for you (the
-book directory is the second positional argument). Either way the entry names
-the FOLDER, not `plugin.js`. That is what makes Gutterpress read
-`package.json` and pick up the stylesheet and snippets alongside the
-markdown behaviour — point it at the `.js` file and you get the markdown and
-nothing else. The folder is referenced in place, never copied: keep editing it
-and the book follows.
+**Commit `plugins/npm/`.** Builds never fetch from the registry; the vendored
+copy is what builds your book, on every machine and in CI. If your repo
+ignores `node_modules`, add `!**/plugins/npm/**` as the last line of
+`.gitignore` — the vendored tree has a `node_modules` folder inside it — and
+`**/plugins/npm/** -text` to `.gitattributes`, because the copy is verified
+byte for byte on every build.
 
-Now `gutterpress preview` the book and write:
+`gutterpress ext list my-book` shows `gp-dimm-city@1.0.0 [npm; markdown, styles, components, snippets]`.
 
-```markdown
-@term-box warning label="Read this first"
-The rule of three applies here, and [[initiative]] is defined inline.
-@end-term-box
+## What you get
+
+- **Macros**, from `plugin.js`: `@specialty` / `@specialty-intro` /
+  `@specialty-art` / `@specialty-card`, `@learning-path`, `@skill` (with
+  `@continue` for a card that spans a page break), `@outcome`, `@callout`,
+  `@dm-note`, `@sidebar`, `@sidebar-box`, `@block`, `@card`, `@gear`,
+  `@definition`, `@procedure`, `@lede`, `@toc`, `@tape`, `@glossary`, GFM
+  alerts (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`,
+  `[!VISIT]`, `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic
+  `ROLL THE DIE!` chip. `docs/macros.md` is the inventory;
+  `docs/components-and-palette-reference.md` maps each to the classes it
+  emits.
+- **Sixteen stylesheets** under `styles/`, listed in `package.json` in
+  cascade order: fonts and the layer statement, the palette and identity
+  tokens, the element baseline, eight component sheets, page templates,
+  paged-media rules, and `dc-native.css` — the engine-specific page chrome
+  (brick-wall background, folios, chapter chips) that must stay last.
+- **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
+  build time.
+- **Page templates** every Dimm City book writes: `.page-toc`,
+  `.page-credits .dc-credits`, `.page-chapter-start .dc-chapter-start`,
+  `.dc-full-page`, plus the folio/chapter-chip chrome driven by
+  `@chapter #id ch="N"`.
+- **Snippets** for the app's snippet picker (`snippets/`): one per macro and
+  one per front-matter page, with placeholders for the parts you fill in.
+- **`components.yaml`**: the catalog of every component — what you write,
+  what lands in the HTML, which tokens are public, which sheet owns it.
+
+## Quick start
+
+```sh
+gutterpress new "My Book" --preset dtrpg
+gutterpress ext add gp-dimm-city my-book
+gutterpress preview my-book
 ```
 
-## The conventions that are load-bearing
+Then, in the app, insert the *Toc Page*, *Credits Page* and *Chapter Start
+Page* snippets to lay down the front matter, and reach for *Skill*,
+*Learning Path* and *Specialty* as you write. `page-rules.css` sets a Letter
+page with bleed; keep the manifest's `page:` in step with it.
 
-Most of what is in this folder is a suggestion. These five are not — each one
-is something Gutterpress does not check for you, and each one fails silently
-in somebody else's book when you get it wrong.
+## Your own CSS: the layer convention
 
-### 1. One prefix, and it is yours
-
-Every class, every CSS custom property and every marker name this package
-emits starts with `dc-`.
-
-A book loads core, a theme and any number of plugins into a single flat CSS
-namespace and a single flat marker namespace. Nothing scopes them. Without a
-prefix, your `.callout` and somebody else's `.callout` are the same selector,
-and the one that loads second wins — in their book, not yours, with no error.
-
-`gp-` is reserved for Gutterpress core. Taking it does not conflict; it
-overrides, which is worse.
-
-`test/plugin.test.js` enforces both halves of this.
-
-### 2. Never import from `gutterpress`
-
-Not at runtime. Gutterpress ships as a single compiled binary with no
-`node_modules` for plugin code to resolve against, so the import that works on
-your machine throws on a reader's.
-
-If you need a helper from core, inline a copy of it.
-
-TYPE-only imports are the exception, because they are erased before the code
-ever runs:
-
-```js
-/** @param {import("gutterpress").GutterpressPlugin} _ */
-```
-
-```ts
-import type { GutterpressPlugin, GutterpressMarkerTable } from "gutterpress";
-```
-
-### 3. A plugin is a plain markdown-it plugin
-
-`export default function (md, options) {}` and nothing else. No base class, no
-registration call, no context object handed to you by the host. This is why
-any markdown-it plugin on npm works in Gutterpress unchanged — and the price
-of that is that your plugin has to be one too.
-
-`markers`, `styles`, `css` and `metadata` are additional exports the loader
-READS. They are data, not an API.
-
-### 4. Declarative markers for containers, a rule for everything else
-
-`export const markers` describes a wrapper element and Gutterpress's own
-marker parser does the rest — same grammar, same class merging, same warnings
-as core's `@section`. Use it whenever "wrap a block in an element with a
-class" is the whole job.
-
-Write a markdown-it rule by hand when it is not: inline syntax, token
-rewriting, custom renderers. `plugin.js` has one of each so you can see the
-line.
-
-Marker names are global across every plugin a book loads. Two plugins
-declaring `@callout` is a hard load error naming both — which is a good
-outcome, and another reason to prefix.
-
-### 5. Put your CSS in your own cascade layer
-
-`styles/plugin.css` wraps everything in `@layer gp-dimm-city`.
-
-Extension CSS lands in the book in `extensions:` list order, and always before
-the book's own `styles:`. In CSS an unlayered rule beats a layered one at any
-specificity. So an unlayered plugin sheet outranks every rule in a book whose
-look uses the recommended
-`@layer tokens, base, components, templates, pages, book;` convention — the
-author edits their CSS and nothing happens.
-
-Inside a layer, the book's own unlayered `styles:` always beat you, which is
-right. Against the LOOK's layers, position decides: a layer sorts by where it
-is first declared, so with this plugin listed above the look in `extensions:`
-its layer sorts first and is the weakest thing in the book — the right place
-for a plugin to sit. Listed below the look, its component rules win ties over
-the look's layered rules instead. Either way the author moves one line to
-change it; that is the whole point of the list.
-
-Adopt it for the whole file: a rule left outside the layer is unlayered and
-beats everything inside it, including your own.
-
-## Theming: the token pattern
-
-Every look this package ships is driven by a custom property declared once at
-`:root`, and consumed bare:
+List your sheets under `styles:` in the manifest. Extension styles always load
+first, so yours come after. Wrap them in the `book` layer:
 
 ```css
-:root { --dc-term-box-accent: #2f5d8a; }
-
-.dc-term-box { border-left: 3px solid var(--dc-term-box-accent); }
+@layer book {
+  #chapter-03 { --dc-section-accent: var(--hud-magenta); }
+}
 ```
 
-`var(--x)`, not `var(--x, #2f5d8a)` — the default lives at `:root` exactly
-once, so there is one place to look and no second copy to drift.
+The package declares `@layer dc.tokens, dc.base, dc.components, dc.templates,
+dc.pages, book;` in its first sheet. `book` is last, so anything you put there
+outranks every `dc.*` rule without a specificity contest. Two things to know:
 
-A book retunes it without touching this package, globally or per chapter:
+- `dc-native.css` is deliberately **unlayered** so it beats every layered rule
+  — a book that must override it lists an **unlayered** sheet after the
+  extension; the last unlayered sheet wins.
+- Do not invent layer names. A layer the package's statement does not name is
+  created where it is first used, which puts it *after* `book` and silently
+  above your own overrides.
+
+Never write bare `.dc-*` rules in a book to change a component; that fights
+the package on every update. Reset the component's public tokens on a context
+selector instead:
 
 ```css
-#ch-appendix { --dc-term-box-accent: #7a1f1f; }
+@layer book {
+  .chapter-05 .dc-alert { --dc-alert-accent: var(--hud-blue); }
+}
 ```
 
-A variant does the same thing internally: it only ever resets tokens, never
-restates the component's rules.
+The tokens each component exposes are listed under `tokens:` in
+`components.yaml`, and `styles/dc-component-defaults.css` is where their
+defaults live.
 
-## Publishing
+## Versioning
 
-Anything a book can reach works. Committing the folder into the book's
-`plugins/` directory is the simplest and needs no registry at all.
+Books pin an exact version, so nothing changes under you. To move a book to a
+new release:
 
-To publish to npm, `npm publish` this folder and have readers install it with
-`gutterpress ext add gp-dimm-city`.
+```sh
+gutterpress ext add gp-dimm-city@1.1.0 my-book
+git rm -r my-book/plugins/npm/gp-dimm-city/1.0.0   # ext add leaves the old copy in place
+```
+
+Rebuild and compare before you commit — the Dimm City books gate every bump
+with a render-parity run (text runs, image placement, and a pixel comparison
+of every page). Public API for semver purposes: the macro vocabulary, the
+classes and tokens marked `live` in `components.yaml`, the page templates, and
+the layer names. `CHANGELOG.md` lists what each release changes.
+
+## Licences
+
+Code, stylesheets, catalog and docs: [MIT](LICENSE). Fonts carry their own
+licences beside the files — `fonts/titillium-web/OFL.txt`,
+`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`. The Dimm City name, logo,
+artwork and game text are not licensed by this package.
+
+## Development
+
+```sh
+bun install
+bun test                     # snapshot, behaviour, package and convention tests
+bun run test:update-snapshot # only when the plugin's output is meant to change
+bun run pack:check           # what npm would publish
+```
+
+`plugin.js` imports nothing at runtime — `gutterpress/render` is a
+devDependency used only by the tests to run the plugin inside core's markdown
+pipeline. Releases are cut from the *Release* workflow (version in, npm and
+GitHub release out); it refuses a version with no `## [X.Y.Z]` heading in
+`CHANGELOG.md`.
+
+The design guide that documents this system in depth is a book in the
+`dimm-city/dc-op-manual` repository. Issues about the package — a macro, a
+sheet, a token, a font — belong here.

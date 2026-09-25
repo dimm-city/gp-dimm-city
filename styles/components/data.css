@@ -14,7 +14,7 @@
   break-after: auto;
 }
 
-/* Token defaults for .dc-path-shell are declared in :root in dc-tokens.css.
+/* Token defaults for .dc-path-shell are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-path-shell { } above. */
 .dc-path-shell {
   /* Surface + clip-path are on ::before and the ink outline on ::after (the
@@ -91,7 +91,7 @@
 
 /* Within a .dc-specialty parent (the canonical wrapper around path-shell +
    skill cards), tighten path-shell padding tokens. Belongs here, not in
-   fg-overrides — every DC project that uses the specialty system needs
+   the book's own sheet — every DC project that uses the specialty system needs
    this default. */
 .dc-specialty .dc-path-shell {
   --dc-path-shell-padding-top: 0;
@@ -508,7 +508,7 @@
      --dc-sidebar-box-border   → frame border color (default --border-hairline)
      --dc-sidebar-box-accent   → left rail + heading + divider (default --hud-blue-dark)
      --dc-sidebar-box-rail     → left rail width (default 4px)
-   Override via fg-overrides selector chain, e.g.:
+   Override via the book's own sheet selector chain, e.g.:
      .dc-danger .dc-sidebar-box { --dc-sidebar-box-accent: var(--blood); }
 */
 .dc-sidebar-box {

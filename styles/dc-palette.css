@@ -60,7 +60,7 @@
   --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
-  --surface-tint-3:      #f2f0ec;  /* consumed by dg-overrides.css specimen chrome; not orphaned */
+  --surface-tint-3:      #f2f0ec;  /* public token: consumed by the Dimm City design guide's own sheet (palette swatches), not by this package */
   --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
@@ -148,7 +148,7 @@
   --clip-tail: 22px;
   --clip-banner: polygon(0 0, 100% 0, calc(100% - var(--clip-tail)) 100%, 0 100%);
 
-  /* ── Chapter-opener composite (dc-components.css consumes these) ──────
+  /* ── Chapter-opener composite (components/*.css consumes these) ──────
      Token contract — override at the chapter id scope to customise a
      specific chapter's opener without affecting any other chapter:
        #ch-chapter-2 .chapter {

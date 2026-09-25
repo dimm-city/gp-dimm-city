@@ -12,7 +12,7 @@ If a design decision conflicts with this document, the design decision is wrong 
 
 ## I. North-Star Goals
 
-1. **Reusable** — `dc-components.css` drops into any sibling DC project with zero override files required to render correctly.
+1. **Reusable** — `gp-dimm-city` installs into any Gutterpress book with zero override files required to render correctly.
 2. **Author-friendly** — non-technical writers compose books with simple macros. No HTML in markdown. No per-element class attributes for styling.
 3. **TTRPG-quality** — output matches the production bar of D&D 5e PHB, Pathfinder 2e Core, Mothership, Blades in the Dark.
 4. **Teachable** — the design guide's own markdown source IS the documentation for the system.
@@ -384,7 +384,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 ### Cascade discipline
 
 - Component styles in `components/*.css` expose `--dc-X-*` token surfaces defaulted in `dc-component-defaults.css`.
-- Per-book overrides in `fg-overrides.css` set those tokens via **natural selector chains** (chapter id → page template → section component).
+- Per-book overrides in the book's own sheet (`@layer book`) set those tokens via **natural selector chains** (chapter id → page template → section component).
 - Override files NEVER carry bare `.dc-*` rules — only context-scoped selectors (`#ch-X .dc-Y`, `.page.Z .dc-Y`, `.section.dc-X`).
 - Section variants ride on `@section .dc-X` only. No utility variant classes (`.dc-accent-X`, `.variant-Y` are forbidden).
 - Authors NEVER write per-element class attributes for styling (`{.dc-warning}` on a paragraph is forbidden).
@@ -399,8 +399,8 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 | `components/*.css` | Every `.dc-*` + `.pmd-*` component (base + thin variants + token contracts) |
 | `page-templates.css` | **All `columns:N` rules** (exclusive), `.page.*` layouts, paged wrapper scaffolding |
 | `page-rules.css` | `@page` declarations, named pages, folio + chapter footers |
-| `dg-overrides.css` | `div.chapter` scaffolding, design-guide specimen chrome |
-| `fg-overrides.css` | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |
+| the design guide's own sheet (`@layer book`) | `div.chapter` scaffolding, design-guide specimen chrome |
+| a book's own sheet (`@layer book`) | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |
 
 ---
 
@@ -467,7 +467,7 @@ The judges are dispatched as parallel agents (Sonnet model, background) with the
 
 **Key questions**:
 - Are component styles in `components/*.css` with `--dc-X-*` token surfaces?
-- Are per-book overrides in `fg-overrides.css` setting tokens via context selectors only?
+- Are per-book overrides in the book's own sheet setting tokens via context selectors only?
 - Any bare `.dc-*` rules in override files? Any raw property assignments where tokens should mediate?
 - Are token contract comments present and accurate on the major components?
 - Could a new author add a 9th specialty by following an existing pattern?

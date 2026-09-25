@@ -11,13 +11,13 @@
    MUST NOT CONTAIN:
    - Content layout rules (.page.* { columns: N }) — EXCLUSIVELY in
      page-templates.css
-   - Component styles (→ dc-components.css)
-   - :root token definitions (→ dc-tokens.css)
-   - div.chapter scaffolding (→ dg-overrides.css)
+   - Component styles (→ components/*.css)
+   - :root token definitions (→ dc-component-defaults.css)
+   - div.chapter scaffolding (→ the consuming book's own sheet)
    - @media screen rules (print-only project)
    - Margin-box VISUAL CHROME (background/border/padding on the folio and
-     chapter chips) — that lives in native-furniture.css, loaded via the
-     manifest's `engineStyles: { native: [...] }` so it wins the cascade.
+     chapter chips) — that lives in dc-native.css, the last entry in
+     package.json `gutterpress.styles`, unlayered so it wins the cascade.
      This file declares only the chip CONTENT (`content:` + color), which is
      engine-agnostic standard CSS.
 
@@ -32,7 +32,7 @@
        `margin` shorthand wins per-longhand over a weaker rule's `margin-left`.
    So every named template below needs exactly ONE block. A `name:left` twin
    that merely repeats it is dead weight, and one that repeats `content: none`
-   silently OUTRANKS native-furniture.css's own `@page <name>` overrides —
+   silently OUTRANKS dc-native.css's own `@page <name>` overrides —
    that is how the brick margin band was being suppressed on chapter-start
    pages. The two `citizen-file` twins are the exception that proves the rule:
    the running head sits in the OUTER top corner, a different margin box per
@@ -53,7 +53,7 @@
    0.625in on a verso page — so the margins below name their tokens. The trim
    SIZE is the one value where a var() that failed to resolve would silently
    produce a differently-sized book, and it is duplicated by --page-width /
-   --page-height in dc-tokens.css: change both together. */
+   --page-height in dc-palette.css: change both together. */
 @page {
   size: 8.625in 11.25in;
   margin: var(--page-margin) var(--outer-margin) 0.75in;
@@ -61,8 +61,8 @@
 }
 
 /* Body footers: folio on the OUTER corner, chapter chip on the inner one.
-   `string(guideSection, first)` is published by `div.chapter[data-ch]` in
-   dg-overrides.css — that rule is the only producer of the C.N value. */
+   `string(guideSection, first)` is published by the `div.chapter[data-ch]`
+   rule at the bottom of THIS file — the only producer of the C.N value. */
 @page :left {
   margin-right: var(--binding-margin);
   margin-left: var(--outer-margin);
@@ -81,7 +81,7 @@
 
 /* ---------------------------------------------------------------------------
    Front matter — no folio, no chapter chip. Constitution: front matter is
-   unnumbered. (native-furniture.css additionally zeroes this template's side
+   unnumbered. (dc-native.css additionally zeroes this template's side
    and bottom margins for the full-bleed masthead composite.)
    --------------------------------------------------------------------------- */
 
@@ -98,7 +98,7 @@
 
 /* ---------------------------------------------------------------------------
    Chapter start — footers suppressed; the chevron banner IS the visual
-   identity. native-furniture.css refills the two bottom boxes with the brick
+   identity. dc-native.css refills the two bottom boxes with the brick
    band so the margin band stays continuous.
    --------------------------------------------------------------------------- */
 

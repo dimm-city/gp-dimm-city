@@ -19,7 +19,7 @@
 }
 
 /* Token defaults for .dc-sidebar (--dc-sidebar-surface/-border/-accent) are
-   declared in :root in dc-tokens.css. The .inset variant below overrides
+   declared in :root in dc-component-defaults.css. The .inset variant below overrides
    --dc-sidebar-surface the same way any other component variant does. */
 .dc-sidebar {
   padding: 14px 18px;

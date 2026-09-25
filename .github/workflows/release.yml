@@ -1,0 +1,203 @@
+name: Release
+
+# Manual only. Enter a version; the workflow tests, bumps package.json, tags,
+# publishes to npm and cuts the GitHub release.
+#
+# npm publishing is OIDC trusted publishing — there is no NPM_TOKEN anywhere.
+# Prerequisite, configured once on npmjs.com by a package owner:
+#   package gp-dimm-city → Settings → Trusted Publishers → GitHub Actions:
+#   owner `dimm-city`, repository `gp-dimm-city`, workflow `release.yml`.
+# npm binds that trust to THIS FILE'S NAME. Do not rename release.yml and do
+# not move the publish step into another workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release: 1.2.3 (stable, from main only), or 1.2.3-alpha.1 / 1.2.3-beta.1 / 1.2.3-rc.1 (prerelease, published under the `next` dist-tag)."
+        required: true
+        type: string
+      skip_npm_publish:
+        description: "Tag and cut the GitHub release, but do not publish to npm."
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: ./.github/actions/bun
+      - run: bun install --frozen-lockfile
+      - run: bun test
+
+  version:
+    name: Bump version and tag
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+      prerelease: ${{ steps.tag.outputs.prerelease }}
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - name: Validate the version and the branch it is cut from
+        run: |
+          VERSION="${VERSION#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$ ]]; then
+            echo "::error::'$VERSION' is not 1.2.3, 1.2.3-alpha.N, 1.2.3-beta.N or 1.2.3-rc.N"
+            exit 1
+          fi
+          if [[ "$VERSION" != *-* && "${{ github.ref_name }}" != "${{ github.event.repository.default_branch }}" ]]; then
+            echo "::error::Stable releases must be dispatched from ${{ github.event.repository.default_branch }} (this is ${{ github.ref_name }})"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Verify CHANGELOG.md has a heading for this version
+        run: |
+          BASE_VERSION="${VERSION%%-*}"
+          ESCAPED="${BASE_VERSION//./\\.}"
+          if ! grep -qE "^## \[${ESCAPED}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## [$BASE_VERSION]' heading. Add the release notes before dispatching."
+            exit 1
+          fi
+
+      - uses: ./.github/actions/bun
+
+      - name: Bump package.json
+        run: |
+          node -e '
+            const fs = require("fs");
+            const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            p.version = process.env.VERSION;
+            fs.writeFileSync("package.json", JSON.stringify(p, null, 2) + "\n");
+          '
+          bun install   # keep bun.lock coherent with the bumped version
+
+      - name: Commit and tag
+        id: tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json bun.lock
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to $VERSION"
+            git push
+          fi
+          TAG="v$VERSION"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            if [[ "$VERSION" == *-* ]]; then
+              echo "Prerelease tag $TAG exists — re-tagging"
+              git push origin ":refs/tags/$TAG"
+            else
+              echo "::error::Stable release tag $TAG already exists. Stable tags are immutable; bump the version."
+              exit 1
+            fi
+          fi
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$VERSION" == *-* ]]; then echo "prerelease=true" >> "$GITHUB_OUTPUT"; else echo "prerelease=false" >> "$GITHUB_OUTPUT"; fi
+
+  publish-npm:
+    name: Publish to npm
+    needs: version
+    if: ${{ !inputs.skip_npm_publish }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # lets npm mint the short-lived OIDC credential
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # OIDC trusted publishing needs npm >= 11.5.1; Node 22 ships npm 10.x.
+      - run: npm install -g npm@11.5.2
+
+      - name: Skip if this version is already on npm
+        run: |
+          if npm view "gp-dimm-city@$VERSION" version >/dev/null 2>&1; then
+            echo "gp-dimm-city@$VERSION is already published — skipping"
+            echo "ALREADY_PUBLISHED=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Publish
+        if: ${{ env.ALREADY_PUBLISHED != 'true' }}
+        run: |
+          if [ "${{ needs.version.outputs.prerelease }}" = "true" ]; then
+            npm publish --provenance --access public --tag next
+          else
+            npm publish --provenance --access public
+          fi
+
+      - name: Pack the tarball for the GitHub release
+        run: npm pack
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: tarball
+          path: "*.tgz"
+          if-no-files-found: error
+
+  github-release:
+    name: GitHub release
+    needs: [version, publish-npm]
+    if: always() && needs.version.result == 'success' && (needs.publish-npm.result == 'success' || needs.publish-npm.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.version.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - uses: actions/download-artifact@v6
+        continue-on-error: true
+        with:
+          name: tarball
+          path: release-assets/
+
+      - name: Create the release
+        run: |
+          PRERELEASE_FLAG=""
+          if [ "${{ needs.version.outputs.prerelease }}" = "true" ]; then
+            PRERELEASE_FLAG="--prerelease"
+            if gh release view "$TAG" >/dev/null 2>&1; then gh release delete "$TAG" --yes; fi
+          elif gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::error::Release $TAG already exists. Stable releases are immutable."
+            exit 1
+          fi
+          shopt -s nullglob
+          gh release create "$TAG" --title "gp-dimm-city $TAG" --generate-notes --verify-tag $PRERELEASE_FLAG release-assets/*.tgz

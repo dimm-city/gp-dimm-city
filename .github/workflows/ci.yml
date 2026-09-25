@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/bun
+
+      - run: bun install --frozen-lockfile
+
+      # test/package.test.js runs `npm pack --dry-run` (npm ships with the
+      # runner's Node) and asserts the tarball carries every stylesheet,
+      # every url() asset, every font and every licence file.
+      - run: bun test

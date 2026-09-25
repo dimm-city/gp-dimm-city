@@ -11,13 +11,13 @@
    - print-color-adjust
 
    MUST NOT CONTAIN:
-   - :root token definitions (→ dc-tokens.css)
-   - .dc-* or .pmd-* component styles (→ dc-components.css)
+   - :root token definitions (→ dc-component-defaults.css)
+   - .dc-* or .pmd-* component styles (→ components/*.css)
    - columns:N rules (→ page-templates.css)
    - @page declarations or named-page assignments (→ page-rules.css)
    - Component-scoped font-size or line-height overrides — each component
      owns its own typography via its own selector
-   - div.chapter scaffolding or guide-specific rules (→ dg-overrides.css)
+   - div.chapter scaffolding or guide-specific rules (→ the consuming book's own sheet)
    - @media screen rules (print-only project)
    - Anything Gutterpress's MARKER_CSS already ships. Core injects
      `body { margin: 0 }`, `:where(img, svg, video) { max-width: 100% }`,
@@ -198,7 +198,7 @@ th {
      hook was never declared at :root and no chapter ever set it, so it was
      an override surface invisible to the override surface. A chapter that
      genuinely needs its own header colour should declare the token in
-     dc-tokens.css alongside the other component public tokens first. */
+     dc-component-defaults.css alongside the other component public tokens first. */
   background: var(--ink-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
