@@ -1,0 +1,268 @@
+/* =============================================================================
+   DC-CORE.CSS — Global Element Baseline
+   =============================================================================
+
+   ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
+   OWNS:
+   - body baseline styles (font, tracking, line-height, hyphens,
+     widows/orphans, positioning)
+   - Global element resets driven by tokens: h1–h6, p, a, em, code/kbd/samp,
+     pre, blockquote, ul/li, table/th/td, dl/dt/dd
+   - print-color-adjust
+
+   MUST NOT CONTAIN:
+   - :root token definitions (→ dc-tokens.css)
+   - .dc-* or .pmd-* component styles (→ dc-components.css)
+   - columns:N rules (→ page-templates.css)
+   - @page declarations or named-page assignments (→ page-rules.css)
+   - Component-scoped font-size or line-height overrides — each component
+     owns its own typography via its own selector
+   - div.chapter scaffolding or guide-specific rules (→ dg-overrides.css)
+   - @media screen rules (print-only project)
+   - Anything Gutterpress's MARKER_CSS already ships. Core injects
+     `body { margin: 0 }`, `:where(img, svg, video) { max-width: 100% }`,
+     `:where(p > img:only-child, figure > img) { width: fit-content;
+     max-width: 100%; height: auto; vertical-align: bottom }` and
+     `:where(h1,h2,h3,h4,h5,h6) { break-after: avoid }` before this sheet
+     loads. Restating any of those here is duplication — and restating them
+     at element specificity ALSO outranks core's zero-specificity
+     `:where()` form, so a later core fix would silently not reach this book.
+
+   AGENT RULE: "Is this a body baseline or a naked element reset
+   (no class, no ID, no page context)?" — if NO, use another file.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@layer dc.base {
+
+/* ── GLOBAL PRINT ACCURACY ────────────────────────────────────────────────── */
+* {
+  print-color-adjust: exact;
+}
+
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  /* Body text tracking — subtle tightening reads as "industrial print"
+     vs the slack default. Not enough to harm readability; enough to
+     give the body register its own creaturepunk voice. */
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+  position: relative;
+  hyphens: auto;
+  /* Paged Media orphans/widows constraint: cascades to every .page box, so
+     no need to repeat at .page p level — that would be pure duplication. */
+  widows: 2;
+  orphans: 2;
+}
+
+/* ── HEADINGS ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-tight);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  color: var(--ink-dark);
+}
+
+/* H1 — magenta neon authority: chapter openers, page-level titles.
+   overflow-wrap: the lixdu display face at 26pt overflows a narrow column
+   on one-word caps titles (CREATUREPUNK) and on long unbreakable strings
+   such as URLs or class names. */
+h1 {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.75em;
+  color: var(--hud-magenta);
+  border-bottom: 2px solid var(--hud-magenta);
+  padding-bottom: 0.15em;
+  overflow-wrap: break-word;
+}
+
+/* H2 — cold teal: major section breaks */
+h2 {
+  font-size: var(--fs-h2);
+  color: var(--hud-blue-dark);
+  letter-spacing: var(--ls-heading);
+  border-bottom: 2.5pt solid var(--hud-blue-dark);
+  padding-bottom: 0.1em;
+}
+
+/* H3 — deep teal: sub-sections (hud-blue-dark gives 6.4:1 on paper-cream vs hud-blue's 3.8:1) */
+h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); }
+/* H4–H6 — grim dark ramp: body labels */
+h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink-dark);  letter-spacing: 0.06em; }
+h5 { font-size: var(--fs-h5); color: var(--ink-smoke); }
+h6 { font-size: var(--fs-h6); color: var(--ink-dust); }
+
+
+
+/* ── INLINE ELEMENTS ──────────────────────────────────────────────────────── */
+/* Baseline p color = --ink. Prose outside any styled container (a plain <p>
+   not inside @section / @callout / etc.) was inheriting nothing and reading
+   as cyan in some leaked contexts — measured 1.33:1 on the wall. Explicit
+   color: --ink at the base element makes loose paragraphs always legible.
+   Components with paper substrates may still override --ink-smoke or warmer
+   tones via their own selectors. */
+p   { margin-top: 0; margin-bottom: 0.08in; color: var(--ink); }
+em  { color: var(--ink-smoke); font-style: italic; }
+/* Links: --crimson #e1261c on paper-cream = 4.03:1 (fails AA normal text).
+   --blood #901a12 on paper-cream = 7.73:1 (passes AA + AAA). Per expert
+   debate consensus: crimson is reserved for FILLS / decorative rails; text
+   color on light backgrounds uses --blood. */
+a   { color: var(--blood); text-decoration: none; border-bottom: 1px dotted var(--blood); }
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  font-size: 0.92em;
+  background: var(--paper-aged);
+  padding: 1pt 4pt;
+  border-radius: 2pt;
+  border: 1px solid var(--paper-aged);
+}
+
+/* Code blocks: wrap instead of spilling. An unwrapped long line inside a
+   card (measured: one 937px-wide code line in the Gutterdruid skill card)
+   escapes every ancestor box, and that overflow is the single largest
+   trigger of Chromium's whole-document shrink-to-fit (~27% on this book).
+   pre-wrap keeps every character readable; overflow-x: clip is the backstop
+   so any residual unbreakable run can never widen the document again. */
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  overflow-x: clip;
+}
+pre code {
+  white-space: inherit;
+}
+
+blockquote {
+  font-family: var(--font-quote);
+  font-style: italic;
+  color: var(--ink);
+  border-left: 7px solid var(--hud-blue-dim);
+  border-right: 2px solid rgba(230, 0, 122, 0.18);
+  background: var(--paper-stain);
+  padding: var(--space-md) var(--space-md) var(--space-md) var(--space-xl);
+  margin: 0.75rem 0;
+  text-wrap: balance;
+}
+
+/* ── GLOBAL LIST STYLES (kept as-is per plan) ─────────────────────────────── */
+ul { padding-left: 0.25in; }
+ul li { list-style: none; margin-bottom: 0.06in; }
+ul li::before {
+  content: "» ";
+  /* --orange (#d4500a) on wall = 2.46:1 (fail). --rust (#b23a12) = 3.48:1
+     (measured — also fail). --blood (#901a12) = 5.21:1 on wall, passes
+     AA small text. Bullet markers appear in every list including those
+     outside paper substrates, so they MUST read on the wall background. */
+  color: var(--blood);
+  font-weight: 700;
+  padding-right: 0.1em;
+}
+
+/* ── TABLES — universal default look, no class required ─────────────────────
+   Per the design-guide constitution (no per-element class attributes), every
+   <table> in markdown gets the full DC data-table appearance by default:
+   striped rows, HUD-blue header bar, mono caps headers, sane cell padding.
+   Authors write a plain markdown table and it looks right — no decoration. */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+  margin: 0.1in 0;
+  break-inside: avoid;
+}
+
+/* Row tinting: alternating paper-cream and paper-light reads cleaner
+   than paper-cream + paper-stain. The previous pair (cream + stain)
+   produced too much chroma shift between rows and read as "muddy" per
+   user feedback. paper-light is closer to cream so the zebra is subtle
+   without being invisible. */
+tr:nth-child(even) td { background: var(--paper-light); }
+tr:nth-child(odd)  td { background: var(--paper-cream); }
+
+th {
+  /* Was --hud-blue-dark — clashed with adjacent section accents in some
+     chapters (the Size Modifier heading uses rust/orange tones and the teal
+     table header fought it). ink-dark reads as a structural "this is a
+     header bar" rule that takes on no chroma identity of its own.
+     Deliberately NOT `var(--dc-table-header-bg, var(--ink-dark))`: that
+     hook was never declared at :root and no chapter ever set it, so it was
+     an override surface invisible to the override surface. A chapter that
+     genuinely needs its own header colour should declare the token in
+     dc-tokens.css alongside the other component public tokens first. */
+  background: var(--ink-dark);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+/* Authors often use a table purely as a boxed option list, which markdown
+   still requires a header row for — the cells come through genuinely empty.
+   Left alone those render as a solid ink bar with no text sitting above the
+   list (chapter-01 size/age/origin/dream lists). Collapse empty header cells
+   so the bar disappears; cells with real text are unaffected. */
+th:empty {
+  background: none;
+  padding: 0;
+  border: 0;
+  line-height: 0;
+}
+
+td {
+  border-bottom: 1pt solid var(--border-hairline);
+  padding: 5px 8px;
+  vertical-align: top;
+}
+
+/* ── DEFINITION LISTS — standard markdown `Term` / `: definition` ─────────────
+   Gutterpress (markdown-it-deflist) parses the standard PHP-Markdown-Extra /
+   Pandoc definition-list syntax and emits plain <dl><dt><dd>. Styled here to
+   match the definition register (orange-tint substrate + HUD-blue rail) so a
+   plain-markdown definition list is a drop-in for the @definition macro and the
+   raw-HTML .dc-terms glossary — no class or wrapper required by the author. */
+dl {
+  background: var(--surface-orange-tint);
+  border-left: 4px solid var(--hud-blue-bright);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+dt {
+  font-weight: 700;
+  color: var(--hud-blue-dark);
+  margin-top: var(--space-sm);
+}
+dl dt:first-child { margin-top: 0; }
+dd {
+  margin: 0.02in 0 0 var(--space-md);
+  color: var(--ink);
+}
+
+
+/* ── Headings: never split a multi-line heading across a page ────────────────
+   Keeping a heading WITH the content that follows is core's job — MARKER_CSS
+   ships `:where(h1,h2,h3,h4,h5,h6) { break-after: avoid }`, and CSS
+   Fragmentation resolves a break opportunity as "avoid" if EITHER adjacent
+   box says so, which is why the long `h2 + p, h2 + ul, …` list of
+   `break-before: avoid` twins that used to live here was doing nothing the
+   heading's own break-after did not already do. What core does not cover is
+   a heading that wraps to two lines splitting across the page boundary. */
+h2,
+h3,
+h4 {
+  break-inside: avoid;
+}
+
+}

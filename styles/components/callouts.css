@@ -1,0 +1,227 @@
+/* =============================================================================
+   DC-COMPONENTS.CSS — Reusable DC Component Library
+   =============================================================================
+   This file IS the DC component library. Any DC-branded print-md project
+   imports this file and gets all components at their correct defaults with
+   no override files required. Do not break that portability contract.
+
+   ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
+   OWNS:
+   - Every .dc-* component class (base + thin variants)
+   - Every .pmd-* utility class
+   - Specialty parent-scoped overrides:
+       .dc-specialty.<name> .dc-skill-card { … }
+       .dc-specialty.<name> .dc-path-shell { … }
+       .dc-specialty.<name> .dc-specialty-card { … }
+     These live HERE adjacent to the component they modify.
+   - Break control (break-inside/break-before/break-after) for individual
+     components
+   - Component-scoped public custom properties (--dc-alert-bg, etc.)
+
+   MUST NOT CONTAIN:
+   - columns:N rules of any kind (→ page-templates.css)
+   - @page declarations or named-page assignments (→ page-rules.css)
+   - div.chapter scaffolding (→ dg-overrides.css)
+   - :root token definitions (→ dc-tokens.css)
+   - @media screen rules (print-only project)
+   - Element selectors scoped to page/chapter context classes
+     (→ fg-overrides.css or dg-overrides.css)
+
+   CORE CONSTRAINT — COMPONENT STYLE ISOLATION:
+   If a bare .dc-* rule needs different values in fg-overrides.css, the
+   dc-components.css value is WRONG — fix it here. The override files own
+   layout context only. Never split a component's appearance across files.
+
+   CORE CONSTRAINT — shape-following chrome is a clipped SIBLING layer, never
+   a filter:
+   An element with clip-path clips everything it paints, its own pseudos
+   included, so an outline or shadow that has to reach outside the silhouette
+   cannot live on the clipped element. `filter: drop-shadow()` is not the
+   answer either: any filter makes Chromium rasterize the whole subtree into
+   a 300 DPI bitmap at print — the text inside stops being text, the PDF
+   bloats, and the build pays for it (dc#28: 166 skill cards were most of the
+   field guide's build time). The pattern is two pseudos on an UNCLIPPED host
+   that is a stacking context (isolation: isolate): one carries the surface
+   and the clip, the other the same clip on a box 2px larger (outline) or
+   offset (shadow), filled with the chrome colour. Canonical examples:
+     .section        → ::before (surface + clip), ::after (shadow)
+     .dc-path-shell  → ::before (surface + clip), ::after (outline)
+     .dc-skill-card  → .dc-card-inner::after (surface + clip),
+                       .dc-card-body::after (outline), .dc-card-inner::before (shadow)
+   Any component needing both a geometric clip AND chrome outside it MUST
+   follow this.
+
+   COMPONENT PATTERN:
+   One dc-prefixed base class owns the full default shell (structure, spacing,
+   typography, borders, break behavior). Variant classes (including specialty
+   parent-container overrides) override ONLY the documented public API:
+     --dc-[component]-surface / --dc-[component]-accent /
+     --dc-[component]-fg / --dc-[component]-label-color /
+     --dc-[component]-title-color
+   Do not expose internal layout dimensions as a variable API.
+
+   TOKEN CONVENTION (dc#34, one rule, no exceptions):
+   - Every public component token DEFAULTS at :root in dc-tokens.css. A
+     component's own base rule NEVER declares its own public token — an
+     element that sets a custom property on itself makes that property
+     unconditionally win over any ancestor-scope override for as long as
+     the element rule exists, regardless of the override's specificity,
+     because the winning declaration for an element is chosen among rules
+     that match that element BEFORE inheritance is ever considered. Three
+     components (.dc-ap, .dc-sidebar, .section.dc-fiction-excerpt) violated
+     this until dc#34 and silently ate every `#ch-x { --dc-ap-bg: … }`-shaped
+     override; the fix moved their defaults to :root and changed no render.
+   - Components consume their tokens as a bare `var(--x)` — no inline
+     `var(--x, fallback)`. A token declared at :root needs no fallback, and
+     an inline fallback that duplicates the :root value is dead weight that
+     invites the two to drift (found and corrected during dc#34).
+   - Variants and contexts set tokens on ANCESTORS (fg-overrides.css
+     chapter/page scopes) or on VARIANT CLASSES on the same element
+     (`.dc-ap.free`, `.dc-sidebar.inset`, `.dc-specialty.<name> .dc-X`) —
+     never by re-declaring the token on the base component selector itself.
+
+   AGENT RULE: "Is this a .dc-* or .pmd-* component style, or a
+   .dc-specialty.<name> scope block for a component?" — if NO, use another file.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@layer dc.components {
+
+/* ═══ ALERTS — base+thin-variant pattern ═══
+   .dc-alert base + .dc-alert-label label chrome + thin variant classes.
+   GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT/GEAR] or @callout/@dm-note macros. */
+
+/* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
+/* Token defaults for .dc-alert are declared in :root in dc-tokens.css.
+   Override at chapter-id scope in fg-overrides.css, or in variant rules below. */
+.dc-alert {
+  background: var(--dc-alert-bg);
+  border-left: var(--dc-alert-border-width) solid var(--dc-alert-border);
+  color: var(--dc-alert-fg);
+  font-size: var(--dc-alert-body-size);
+  line-height: var(--lh-normal);
+  padding: var(--space-lg) var(--space-xl);
+  margin-top: var(--dc-alert-margin-top);
+  break-inside: avoid;
+  /* Alerts are full-width callouts that interrupt the reading flow; they
+     should NEVER overlap a preceding right-floated image (observed 2026-05-25
+     with the portrait in the citizen-file intro). Block elements don't wrap
+     floats by default — clear: right ensures any alert after a floated image
+     sits decisively below it. Unconditional at the component-base layer: a
+     :has() variant would only narrow it, and the clear costs nothing on an
+     alert that follows no float. */
+  clear: right;
+}
+
+.dc-alert p {
+  margin: 0;
+  font-style: italic;
+}
+
+.dc-alert p+p {
+  margin-top: 6pt;
+}
+
+/* Inline emphasis + paragraphs inside callouts must inherit the alert's
+   --dc-alert-fg color. The global p/em/strong rules in dc-core.css set
+   dark text colors (color: --ink / --ink-smoke). Inside dark-fill callout
+   variants (.dc-dm-note etc.), dark-on-dark measured 1.17:1 — invisible.
+   Inherit makes p/em/strong adopt the alert's own foreground. */
+.dc-alert p,
+.dc-alert em,
+.dc-alert strong {
+  color: inherit;
+}
+
+.dc-alert ul,
+.dc-alert ol {
+  margin: 6pt 0 0;
+  padding-left: 0.2in;
+}
+
+.dc-alert li {
+  margin-bottom: 0.04in;
+}
+
+.dc-alert li::before {
+  color: var(--dc-alert-border);
+}
+
+/* ── Label chrome ───────────────────────────────────────────────────────── */
+.dc-alert-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--dc-alert-label-size);
+  font-weight: var(--dc-alert-label-weight);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: var(--dc-alert-label-spacing);
+  margin-bottom: var(--dc-alert-label-margin);
+  color: var(--dc-alert-label-color);
+}
+
+/* ── Variant: Note (player-facing, default) ─────────────────────────────── */
+.dc-note {
+  --dc-alert-label-size: 9px;
+  --dc-alert-label-spacing: 2px;
+  --dc-alert-label-margin: var(--space-sm);
+  --dc-alert-margin-top: var(--space-lg);
+}
+
+/* ── Variant: Warning (note with distinct surface) ──────────────────────── */
+.dc-note.warning {
+  --dc-alert-bg: var(--paper-stain);
+  --dc-alert-border: var(--orange);
+  --dc-alert-label-color: var(--rust);
+}
+
+/* ── Variant: DM Note (Dream Master-facing) — dark panel, authoritative ──── */
+.dc-dm-note {
+  --dc-alert-bg: var(--ink-dark);
+  --dc-alert-fg: var(--paper-cream);
+  --dc-alert-border: var(--hud-blue-bright);
+  --dc-alert-label-color: var(--hud-blue-bright);
+  --dc-alert-body-size: 9pt;
+  --dc-alert-border-width: 3px;
+  --dc-alert-label-weight: 600;
+  --dc-alert-label-spacing: 0.1em;
+  --dc-alert-margin-top: 9pt;
+}
+
+/* ── Variant: Vibe Callout — flavor fiction, dark panel ──────────────────── */
+.dc-vibe-callout {
+  --dc-alert-bg: var(--ink-dark);
+  --dc-alert-fg: var(--paper-aged);
+  --dc-alert-border: var(--hud-magenta);
+  --dc-alert-label-color: var(--hud-magenta);
+}
+
+/* ── Variant: Origin Callout ────────────────────────────────────────────── */
+.dc-origin-callout {
+  --dc-alert-bg: var(--surface-orange-tint);
+  --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
+  --dc-alert-label-color: var(--crimson);
+  --dc-alert-border-width: 3px;
+}
+
+/* ── Variant: Visit Callout ─────────────────────────────────────────────── */
+.dc-visit-callout {
+  --dc-alert-border: var(--hud-blue);
+  /* Was --hud-blue-dark on --hud-blue-dim (default alert bg) = 3.95:1
+     (fails AA). --ink-dark gives 7.05:1 on the same cyan bg. */
+  --dc-alert-label-color: var(--ink-dark);
+  --dc-alert-body-size: var(--fs-body);
+  margin: 0.12in 0;
+}
+
+/* ── Variant: Gear Callout ──────────────────────────────────────────────── */
+.dc-gear-callout {
+  --dc-alert-bg: var(--ink-dark);
+  --dc-alert-fg: var(--paper-cream);
+  --dc-alert-border: var(--brand-yellow);  /* brand-yellow = hazmat/tech signal */
+  --dc-alert-label-color: var(--brand-yellow);
+  margin: 0.12in auto 0.18in;
+  border-left-width: 4px;
+  width: 90%;
+}
+
+}

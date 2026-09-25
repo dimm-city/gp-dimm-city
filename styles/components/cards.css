@@ -1,0 +1,487 @@
+@layer dc.components {
+
+/* ═══ CARD SYSTEM ═══ */
+
+/* Token contract for .dc-skill-card:
+     --dc-card-accent          → tab border + body accent rule (default --ink)
+     --dc-card-surface         → card body background (default --paper-cream)
+     --dc-card-tab-bg          → tab background (default --ink-dark)
+     --dc-card-tab-title-color → tab title text color (default --paper-cream)
+     --dc-card-tier-color      → tier-badge fill (default --hud-magenta)
+     --dc-card-tier-border     → tier-badge border (default --hud-magenta)
+     --dc-card-body-mark       → decorative ::before mark color (default --crimson)
+   Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
+   Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)
+   and replace token values with the new specialty's --<name>-* aliases. */
+
+/* ── Skill card shell ─────────────────────────────────────────────────── */
+/* Token defaults for .dc-skill-card are declared in :root in dc-tokens.css.
+   Specialty contexts override via .dc-specialty.<name> .dc-skill-card { } below. */
+.dc-skill-card {
+  position: relative;
+  /* The card's chrome — poster shadow, ink outline, surface — is three
+     pseudos at negative z-index (below). isolation: isolate is the stacking
+     context that keeps them behind THIS card's content rather than escaping
+     to the nearest context above and painting behind the page; `.section`
+     declares it for the same reason. The drop-shadow filter that used to sit
+     here supplied that context implicitly (every filter creates one). */
+  isolation: isolate;
+  /* A filter's shadow was ink — it never counted as overflow. A positioned
+     pseudo is a box, and a box past the page content box makes Chromium
+     print shrink-to-fit scale the WHOLE book (the engine's width guard
+     measured this card's shadow at 713px against a 708px content box and
+     refused the build). Clipping the card's own horizontal overflow contains
+     it: the guard and Chromium both treat clipped overflow as contained
+     (build.ts, findWidthOffenders). It changes nothing visible on a card
+     that spans the page content box — the page already clipped the filter's
+     rim and shadow at exactly these two edges, so the printed card has never
+     had chrome on its left or right; a narrower card would lose its side
+     chrome to this clip. Only x: the bottom shadow and the outlines above
+     and below stay. */
+  overflow-x: clip;
+  break-inside: avoid;
+  /* --dc-card-gap is the VISIBLE gap; the +6px clears chrome bleed on top of
+     it. Margin is layout space, but the shadow and outline pseudos paint
+     outside the border-box without affecting it: this card's hard poster
+     shadow (2pt 3pt offset = 4px down) reaches 4px past its own bottom edge,
+     and the NEXT card's top ink-outline reaches 2px past its top edge. 4 + 2 =
+     6px. The old margin-bottom was exactly 6px, so it was entirely consumed
+     and consecutive cards rendered touching (screenshot-confirmed on the
+     Augmerc BODYCOVER/BLITZ seam). Same class of fix as .fg-art-portrait's
+     margin-bottom in fg-overrides.css. */
+  margin-bottom: calc(var(--dc-card-gap) + 6px);
+  max-width: 100%;
+  /* 4-way ink outline (2px on each side) + HARD offset poster shadow. The
+     hard shadow (2pt 3pt 0, no blur) pins the card to the brick wall as a
+     physical object; it replaced a soft 8px-blur drop shadow that read as
+     web-UI floating, not poster-on-wall stuck-on. Both used to be a five-stop
+     `filter: drop-shadow()` chain on this element. They are now the clipped
+     vector pseudos on .dc-card-tab, .dc-card-body and .dc-card-inner below
+     (dc#28): a filter makes Chromium rasterize the whole subtree into a
+     300 DPI bitmap at print — 166 cards were most of the field guide's build
+     time and turned every card's text into pixels — where a clipped pseudo
+     filled with the shadow colour is pure vector, the technique `.section`
+     already uses. */
+}
+
+/* ── Continuation markers ─────────────────────────────────────────────── */
+/* REMOVED 2026-07-25: .dc-card-cont-marker / .dc-card-fwd-marker.
+   Nothing ever emitted those nodes. They were injected only by
+   plugins/dimm-city-runtime.js, which was never loaded — print-md has no
+   script-injection hook (no manifest `scripts` key, no plugin `scripts`
+   export, and assemble.ts's <head> template is fixed), so the file was dead
+   and has been deleted. Split-card continuation markers are therefore an
+   UNIMPLEMENTED feature; docs that describe them (04-components.md,
+   09-component-gallery.md, docs/components-and-palette-reference.md) are
+   stale. Wiring this up requires a script hook in print-md itself. */
+
+/* ── Card tab ─────────────────────────────────────────────────────────── */
+.dc-card-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 3px 18px 3px 8px;
+  background: var(--dc-card-tab-bg);
+  border: 2px solid var(--dc-card-accent);
+  border-bottom: 0;
+  margin-left: 10px;
+  margin-bottom: -2px;
+  position: relative;
+  z-index: 2;
+  max-width: calc(100% - 28px);
+  box-sizing: border-box;
+  clip-path: var(--dc-skill-tab-shape);
+  /* Token surface — future-tech-high specialties opt into LED-rim inset
+     highlight via --dc-card-tab-shadow. Default none (paper-poster register). */
+  box-shadow: var(--dc-card-tab-shadow);
+}
+
+/* ── Skill-card tab chrome as vector layers (dc#28) ───────────────────── */
+/* Inside a skill card the tab's surface, accent border and clip move onto
+   ::before, and ::after adds the 2px ink outline the card-level drop-shadow
+   filter used to draw around the tab's silhouette. The element keeps its box
+   (the transparent 2px border preserves the metrics) but no longer clips:
+   an element with clip-path clips its own pseudos, which is the whole reason
+   the outline has to be a sibling layer and the clip has to move down one
+   level. Scoped to .dc-skill-card — `.dc-card-tab` is also the tab of the
+   `@section .dc-tabbed` silhouette, which never had the filter or the outline. */
+.dc-skill-card > .dc-card-tab {
+  background: transparent;
+  border-color: transparent;
+  clip-path: none;
+  box-shadow: none;
+}
+
+/* Surface + accent border, clipped to the tab shape. Inset by the negative
+   border width so this box coincides with the tab's border box — an absolute
+   child is positioned against the padding box, which sits 2px inside it. */
+.dc-skill-card > .dc-card-tab::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: 0;
+  left: -2px;
+  background: var(--dc-card-tab-bg);
+  border: 2px solid var(--dc-card-accent);
+  border-bottom: 0;
+  box-sizing: border-box;
+  clip-path: var(--dc-skill-tab-shape);
+  box-shadow: var(--dc-card-tab-shadow);
+  z-index: -1;
+}
+
+/* 2px ink outline: the same shape on a box 2px larger on the top and both
+   sides, filled with ink, one layer further back. Not extended below — the
+   tab's bottom edge merges into the card body (margin-bottom: -2px), and the
+   filter never drew a line there either. */
+.dc-skill-card > .dc-card-tab::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  bottom: 0;
+  left: -4px;
+  background: var(--ink);
+  clip-path: var(--dc-skill-tab-shape);
+  z-index: -2;
+}
+
+.dc-tab-title {
+  font-family: var(--font-tab);
+  /* Bumped 13px → 15px per user feedback: "The tab headings on skill
+     cards are a little too small." Stays under 16pt to keep the tab
+     chrome compact. */
+  font-size: 15px;
+  /* Default to paper-cream so reverse-out text on the saturated tab fill
+     always passes WCAG. Specialty contexts re-affirm the same color via
+     their --dc-card-tab-title-color token. Without this fallback, the
+     title rendered as default body color (near-black) over a saturated
+     magenta fill — 2.95:1 contrast, fails WCAG at all sizes. */
+  color: var(--dc-card-tab-title-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.dc-tab-tier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.25rem;
+  padding: 1px 5px;
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  background-color: var(--tier-bronze);
+  color: var(--paper-cream);
+  letter-spacing: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Tier 2 (mid-level specialties): gold badges with dark text for WCAG AA contrast */
+.dc-specialty.streetwarden .dc-tab-tier,
+.dc-specialty.cybersurgeon .dc-tab-tier,
+.dc-specialty.technosorcerer .dc-tab-tier {
+  background-color: var(--tier-gold);
+  color: var(--ink);
+}
+
+/* Tier 3 (advanced specialties): silver badges with dark text for WCAG AA contrast */
+.dc-specialty.gutterdruid .dc-tab-tier,
+.dc-specialty.etherlock .dc-tab-tier {
+  background-color: var(--tier-silver);
+  color: var(--ink);
+}
+
+/* ── Path block (structural section hook) ─────────────────────────────── */
+.dc-path-block {
+  position: relative;
+}
+
+/* ── Card body + decorative mark ──────────────────────────────────────── */
+.dc-card-body {
+  background: var(--dc-card-surface);
+  /* Tightened from 12px 14px 20px — saves ~10pt of vertical per card
+     so 2 cards fit per page more reliably. Bottom kept at 16px (down
+     from 20px) so the clip-path corner cut remains uncrowded by text. */
+  padding: 8px 12px 16px;
+  position: relative;
+  clip-path: var(--dc-skill-body-shape);
+}
+
+/* ── Skill-card body chrome as vector layers (dc#28) ──────────────────── */
+/* Inside a skill card the body is a bare positioned box: its surface and clip
+   move down onto .dc-card-inner::after, its ::after carries the ink outline,
+   and its ::before keeps the decorative mark (below). The padding moves onto
+   .dc-card-inner with the surface, so the inner's box IS the body's box and
+   every layer aligns with `inset: 0` — no layer needs to know the padding.
+   Scoped to .dc-skill-card: the unscoped rule above also styles the @card
+   primitive's body. */
+.dc-skill-card > .dc-card-body {
+  background: transparent;
+  clip-path: none;
+  padding: 0;
+}
+
+.dc-skill-card > .dc-card-body > .dc-card-inner {
+  padding: 8px 12px 16px;
+  /* Not a stacking context here (the unscoped rule below lifts it to 1): the
+     surface and shadow are this element's pseudos and must paint behind the
+     outline, which is the body's pseudo — that order only exists while all
+     three share the card's context. Nothing inside card content sits at a
+     negative z-index, so nothing else changes place. */
+  z-index: auto;
+}
+
+/* Hard poster shadow: the outlined silhouette (2px beyond the surface on
+   every side) shifted 2pt right and 3pt down, in the --shadow-poster colour.
+   Same offset and colour the filter's last stop used. */
+.dc-skill-card > .dc-card-body > .dc-card-inner::before {
+  content: '';
+  position: absolute;
+  top: calc(3pt - 2px);
+  right: calc(-2pt - 2px);
+  bottom: calc(-3pt - 2px);
+  left: calc(2pt - 2px);
+  background: rgba(0, 0, 0, 0.28);
+  clip-path: var(--dc-skill-body-shape);
+  z-index: -4;
+}
+
+/* 2px ink outline: the surface shape on a box 2px larger on every side,
+   filled with ink, between the surface and the shadow. */
+.dc-skill-card > .dc-card-body::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: var(--ink);
+  clip-path: var(--dc-skill-body-shape);
+  z-index: -3;
+}
+
+/* Card surface: the body's former background + clip, on the same box. */
+.dc-skill-card > .dc-card-body > .dc-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--dc-card-surface);
+  clip-path: var(--dc-skill-body-shape);
+  z-index: -2;
+}
+
+/* Two-column body variant for short skill cards. Applied via
+   `@skill {.dc-two-col}` in markdown. The .dc-card-inner content flows in
+   2 columns so a 4in single-column skill becomes ~2in tall, doubling
+   horizontal packing density. Suitable for skills with shorter mechanics
+   text (no large tables, no outcomes ladder). */
+.dc-skill-card.dc-two-col .dc-card-inner {
+  /* column-count/gap/fill owned by page-templates.css */
+}
+
+/* `.section.dc-rules-definition` (this file's columns block + the chrome/
+   tokens/doc block in dc-components.css) and `.two-column-list` (both here
+   and its two tombstone bodies in dc-components.css) were here and are
+   DELETED (2026-09-02): zero uses of either in any book's rendered HTML,
+   zero emissions from the Dimm City plugin. */
+
+/* ── SKILL-CARD TWO-COLUMN BODY ────────────────────────────────────────────── */
+/* Two-column body variant for short skill cards. Applied via
+   `@skill {.dc-two-col}` in markdown. The .dc-card-inner content flows in
+   2 columns so a 4in single-column skill becomes ~2in tall, doubling
+   horizontal packing density. Column authority lives here; the card's
+   column-span and break rules stay in dc-components.css. */
+.dc-skill-card.dc-two-col .dc-card-inner {
+  column-count: 2;
+  column-gap: 12px;
+  column-fill: balance;
+}
+
+/* Inside 2-col body, force outcome tables and full-width elements to span
+   both columns so the visual chrome doesn't break across the gap. */
+.dc-skill-card.dc-two-col .dc-card-inner .dc-outcome-table,
+.dc-skill-card.dc-two-col .dc-card-inner table,
+.dc-skill-card.dc-two-col .dc-card-inner h5 {
+  column-span: all;
+}
+
+/* AP/numbered list items must stay whole — splitting "Bullet to Blood"
+   across columns reads as sloppy. break-inside: avoid keeps each <li>
+   together in a single column even when the column boundary lands in
+   the middle of one. Paragraphs immediately following list items also
+   stay glued so their text doesn't strand from its anchor item. */
+.dc-skill-card.dc-two-col .dc-card-inner ol > li,
+.dc-skill-card.dc-two-col .dc-card-inner ul > li,
+.dc-skill-card.dc-two-col .dc-card-inner p {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Horizontal skill placement — not currently attempted. `.dc-specialty
+   .skill-grid { columns: 2 }` and `display: grid` are both worth testing
+   before more work goes into the alternatives: the per-skill `.dc-two-col` body
+   variant (above), which shrinks each card vertically so 2 fit per page, or
+   cutting skill body text length at the markdown level. */
+
+.dc-card-body::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  width: 28px;
+  height: 2px;
+  background: var(--dc-card-body-mark);
+  opacity: 0.15;
+  transform: rotate(-3deg);
+  z-index: 2;
+}
+
+.dc-card-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Highlight variant — featured skill card (| highlight suffix in title) */
+/* On ::before because that is where the tab's clip lives now (dc#28); the
+   ring sits entirely outside the clipped box, as it did on the element. */
+.dc-skill-card.dc-highlight .dc-card-tab::before {
+  box-shadow: 0 0 0 3px var(--crimson);
+}
+
+/* The crimson wash must sit OVER the light card substrate, not replace it.
+   The previous single-value `background: linear-gradient(... transparent ...)`
+   dropped the --dc-card-surface (--paper-cream) fill entirely, leaving the
+   lower 60% of the body transparent — dark ink text then rendered against the
+   bare (dark) page backdrop and read as illegible. Layering the gradient on
+   top of an explicit --dc-card-surface base keeps the body light end-to-end
+   while preserving the featured crimson accent at the top edge. Text color is
+   pinned to --ink for a guaranteed legible value. The surface is the
+   .dc-card-inner::after layer (dc#28), so the wash goes there. */
+.dc-skill-card.dc-highlight .dc-highlight-body {
+  color: var(--ink);
+}
+
+.dc-skill-card.dc-highlight .dc-highlight-body > .dc-card-inner::after {
+  background:
+    linear-gradient(to bottom, rgba(180, 40, 40, 0.10) 0%, rgba(180, 40, 40, 0) 45%),
+    var(--dc-card-surface);
+}
+
+/* ── Continuation card variants ───────────────────────────────────────── */
+.dc-skill-card-cont {
+  margin-top: 0;
+}
+
+.dc-card-tab-cont {
+  border-top-style: dashed;
+  border-top-color: var(--hud-blue);
+}
+
+/* Inside a skill card the tab's border paints on ::before (tab chrome rules
+   above), so the continuation dash goes there too. */
+.dc-skill-card > .dc-card-tab-cont::before {
+  border-top-style: dashed;
+  border-top-color: var(--hud-blue);
+}
+
+
+/* ═══ ABILITY ROW + AP SYSTEM ═══ */
+
+/* ── Ability row + ability text ───────────────────────────────────────── */
+.dc-ability {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
+  align-items: flex-start;
+}
+
+.dc-ability:last-child {
+  margin-bottom: 0;
+}
+
+.dc-ability-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.dc-ability-text strong {
+  /* --crimson on paper-cream = 4.03 (fails AA); --blood = 7.73:1 */
+  color: var(--blood);
+  font-weight: 600;
+}
+
+/* ROLL THE DIE! emphasis span — token: --dc-roll-the-die-color (default --blood)
+   --crimson default failed at 2.64:1 on the skill-card paper-aged substrate;
+   --blood is 5.07:1 there. Per-component overrides via the token are unchanged. */
+.dc-roll-the-die {
+    font-family: var(--font-display);
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--dc-roll-the-die-color);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: var(--paper-aged);
+    padding: 0.5em;
+    box-shadow: var(--shadow-tint);
+    border: 2px dashed var(--dc-roll-the-die-border);
+}
+
+/* ── AP base + author-facing variants ─────────────────────────────────── */
+/* Token defaults for .dc-ap (--dc-ap-bg/-fg/-border) are declared in :root
+   in dc-tokens.css — cream on --hud-blue = 4.45:1 borderline; on the
+   gradient mid-tone it measured 3.95 in real preview, so the default is
+   --hud-blue-dark at 7.45:1, safe. Author-facing variants below override
+   via .dc-ap.<variant> { }, same convention as every other component. */
+.dc-ap {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 6px;
+  min-width: 38px;
+  text-align: center;
+  /* Inner ink-density gradient + top-highlight — same pattern as
+     .dc-outcome-key. The chip reads as "stamped/printed" rather than a flat
+     CSS rectangle. */
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--dc-ap-bg) 90%, #fff 10%) 0%, /* PDF/X-1a: pre-composite to ~90% bg + 10% white; e.g. on --crimson (#e1261c) → #e64030; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      var(--dc-ap-bg) 50%,
+      color-mix(in srgb, var(--dc-ap-bg) 94%, #000 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% black; e.g. on --crimson (#e1261c) → #d42419; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+  color: var(--dc-ap-fg);
+  /* 1pt ink-dark hairline gives registration grip — without it, adjacent
+     red-family AP chips (free/var/increased) merge under CMYK dot gain
+     at chip scale (38px wide, ~0.5in on press). */
+  border: 1px solid var(--dc-ap-border);
+  transform: rotate(-1deg);
+  /* Layered shadow — tight close shadow + soft far shadow. Single flat shadow
+     is the #2 amateur tell after flat fills. The layered version gives depth
+     that reads as "card lifted off page". */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    2px 2px 0 rgba(0, 0, 0, 0.10),
+    3px 3px 6px rgba(0, 0, 0, 0.08);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.20);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+.dc-ap.free {
+  /* cream on --crimson = 4.03:1 (fails AA). --blood = 7.73:1. */
+  --dc-ap-bg: var(--blood);
+}
+
+.dc-ap.var {
+  --dc-ap-bg: var(--hud-magenta);
+}
+
+}

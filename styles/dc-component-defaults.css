@@ -1,0 +1,214 @@
+@layer dc.tokens {
+
+:root {  /* ── Section Component Public Tokens ────────────────────────────────────
+     Default theming for .section / @section macros. Chapter-scoped overrides
+     live in fg-overrides.css and win via the parent-context cascade —
+     typically by applying a .dc-accent-X utility on @chapter / @section
+     (see dc-components.css "ACCENT IDENTITY UTILITIES" section). */
+  --dc-section-bg:     var(--paper-cream);
+  --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
+
+  /* ─── Component Public Token Defaults ────────────────────────────────────
+     Override surface for per-chapter and per-project theming. These are the
+     defaults that were previously declared inside each component class rule.
+     Moving them to :root makes them visible to the theming system and lets
+     fg-overrides.css override them at chapter-id scope instead of having to
+     write a full component selector chain.
+     Set them here; override at chapter id scope in fg-overrides.css.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  /* .dc-alert public API */
+  --dc-alert-bg:             var(--hud-blue-dim);   /* surface-callout alias — player-facing note panel */
+  --dc-alert-border:         var(--hud-blue-dark);  /* border-callout-dm alias — left rail */
+  --dc-alert-fg:             var(--ink);
+  --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
+  --dc-alert-body-size:      var(--fs-body-sm);
+  --dc-alert-border-width:   4px;
+  --dc-alert-label-size:     8pt;
+  --dc-alert-label-weight:   700;
+  --dc-alert-label-spacing:  0.12em;
+  --dc-alert-label-margin:   8pt;
+  --dc-alert-margin-top:     0;
+
+  /* .dc-skill-card public API */
+  --dc-card-accent:          var(--ink);            /* default no-specialty: plain ink */
+  --dc-card-surface:         var(--paper-cream);
+  --dc-card-tab-bg:          var(--ink-dark);       /* overridden by .dc-specialty.<name> context */
+  --dc-card-tab-title-color: var(--paper-cream);
+  --dc-card-body-mark:       var(--crimson);
+
+  /* .dc-specialty-intro public API */
+  --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
+  --dc-specialty-intro-title-color: var(--bg);
+  --dc-specialty-intro-bg:          var(--hud-panel);
+
+  /* .dc-path-shell public API */
+  --dc-path-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> .dc-path-shell context */
+  --dc-path-title-color: var(--paper-cream);
+  --dc-path-accent:      var(--hud-magenta);
+
+  /* .dc-specialty-card public API */
+  --dc-specialty-card-bg:          var(--paper-cream);
+  --dc-specialty-card-border:      var(--hud-blue);
+  --dc-specialty-card-accent:      var(--crimson);
+  --dc-specialty-card-fg:          var(--ink);
+  --dc-specialty-card-media-height: 0.85in;
+  --dc-specialty-card-media-width:  0.75in;
+  --dc-specialty-card-title-align: right;
+  --dc-specialty-card-band-height: 16pt;
+
+  /* .dc-block public API */
+  --dc-block-bg:       var(--paper-light);
+  --dc-block-fg:       var(--ink);
+  --dc-block-accent:   var(--hud-blue-dark);
+  --dc-block-title-bg: var(--hud-blue-dark);
+  --dc-block-title-fg: var(--paper-cream);
+
+  /* ─── Component Public Tokens Lifted From Inline Fallbacks ───────────────
+     Workstream B (2026-06-21): these tokens were consumed in dc-components.css
+     ONLY via inline `var(--dc-X, fallback)` and were never declared on :root,
+     so they were invisible to the public override surface. Each default below
+     equals the component's existing inline fallback, so rendering is unchanged
+     — the inline fallbacks are now redundant (and harmless). Override any of
+     these at chapter-id / project scope the same way as the blocks above.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  /* .dc-ap (action-point tag) public API */
+  --dc-arrow-color:          var(--blood);
+  --dc-ap-bg:                var(--hud-blue-dark);
+  --dc-ap-fg:                var(--paper-cream);
+  --dc-ap-border:            var(--ink-dark);
+
+  /* .dc-sidebar (floated inset box) public API */
+  --dc-sidebar-surface:      var(--paper-light);
+  --dc-sidebar-border:       var(--hud-blue);
+  --dc-sidebar-accent:       var(--orange);
+
+  /* .section.dc-fiction-excerpt public API */
+  --dc-fiction-bg:           transparent;
+  --dc-fiction-art-width:    3in;
+  --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
+  --dc-fiction-art-outline:  3px solid var(--ink-dark);
+  --dc-fiction-line-height:  1.45;
+
+  /* .dc-chevron (chevron banner) public API */
+  --dc-chevron-bg:           var(--brand-magenta-deep);
+  --dc-chevron-color:        var(--paper-cream);
+  --dc-chevron-font-size:    var(--fs-h1);
+
+  /* .dc-classtag public API */
+  --dc-classtag-color:       var(--orange);
+
+  /* .dc-card-tab (skill-card tab) extra public API */
+  --dc-card-tab-shadow:      none;
+
+  /* cover meta public API */
+  --dc-cover-meta-border:    rgba(201, 214, 226, 0.35);
+
+  /* .dc-definition-block public API */
+  --dc-definition-block-accent:       var(--hud-blue-bright);
+  --dc-definition-block-accent-width: 4px;
+  --dc-definition-block-surface:      var(--surface-orange-tint);
+
+  /* distribution table (.dc-dist-*) public API */
+  --dc-dist-ap-color:        var(--ink);
+  --dc-dist-name-color:      var(--hud-blue);
+  --dc-dist-tag-border:      var(--hud-blue-dim);
+  --dc-dist-tag-surface:     var(--paper-light);
+
+  /* .dc-fiction public API */
+  --dc-fiction-art-float:    left;
+
+  /* .dc-flavor public API */
+  --dc-flavor-accent:        var(--orange);
+  --dc-flavor-accent-width:  3px;
+  --dc-flavor-color:         var(--ink-smoke);
+
+  /* gear entry public API */
+
+  /* .dc-intro public API */
+  --dc-intro-accent:         var(--orange);
+  --dc-intro-bg:             var(--paper-stain);
+
+  /* NPC stat block (.dc-npc-stat-*) public API */
+  --dc-npc-stat-label-color: var(--hud-blue-dark);
+  --dc-npc-stat-primary:     var(--hud-blue-dark);
+  --dc-npc-stat-rule:        var(--rust);
+  --dc-npc-stat-rule-width:  2pt;
+  --dc-npc-stat-secondary:   var(--ink-smoke);
+
+  /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
+  --dc-outcome-key-color:    var(--paper-cream);
+  --dc-outcome-name-color:   var(--paper-cream);
+  --dc-outcome-name-opacity: 0.85;
+  --dc-outcomes-border:      var(--ink);
+  --dc-outcomes-inner-border: var(--paper-aged);
+  --dc-outcomes-label-bg:    var(--ink-dark);
+  --dc-outcomes-label-color: var(--paper-cream);
+  --dc-outcomes-surface:     var(--paper-cream);
+  --dc-outcomes-divider:     var(--hud-blue-dim);
+
+  /* .dc-path-shell extra public API (shape geometry) */
+  --dc-path-shell-clip:           polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
+  --dc-path-shell-padding-bottom: 0;
+  --dc-path-shell-padding-top:    0;
+  --dc-path-title-shape:          polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
+
+  /* portrait public API */
+  --dc-portrait-border:      var(--paper-aged);
+  --dc-portrait-surface:     var(--paper-cream);
+
+  /* .dc-pullquote public API */
+  --dc-pullquote-accent:      var(--hud-magenta);
+  --dc-pullquote-accent-soft: rgba(230, 0, 122, 0.15);
+  --dc-pullquote-bg:          var(--concrete-pale);
+
+  /* roll / die callout public API */
+  --dc-roll-lucid-color:     var(--hud-blue-dark);
+  --dc-roll-surreal-color:   var(--hud-magenta);
+  --dc-roll-the-die-border:  var(--hud-magenta);
+  --dc-roll-the-die-color:   var(--blood);
+
+  /* .dc-sidebar-box public API */
+  --dc-sidebar-box-accent:   var(--hud-blue-dark);
+  --dc-sidebar-box-border:   var(--border-hairline);
+  --dc-sidebar-box-rail:     4px;
+  --dc-sidebar-box-surface:  var(--paper-cream);
+
+  /* .dc-sidebar-callout public API */
+  --dc-sidebar-callout-accent: var(--hud-blue);
+  --dc-sidebar-callout-bg:     rgba(42, 106, 138, 0.08);
+
+  /* .dc-skill-card extra public API (shape geometry) */
+  --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
+  --dc-skill-tab-shape:      polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+
+  /* .dc-specialty-card extra public API (shadow + shape + title) */
+  --dc-specialty-card-shadow:      none;
+  --dc-specialty-card-shell-shape: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 18px), calc(100% - 24px) 100%, 0 100%);
+  --dc-specialty-card-title-color: var(--dc-specialty-card-accent);
+
+  /* .dc-specialty-intro extra public API (shape geometry) */
+  --dc-specialty-intro-clip:        polygon(0 0, 100% 0, 100% calc(100% - 32px), calc(100% - 56px) 100%, 0 100%);
+  --dc-specialty-intro-title-shape: polygon(0 0, 100% 0, 100% 100%, 22px 100%, 0 calc(100% - 14px));
+
+  /* .dc-spray public API */
+  --dc-spray-bg:             var(--hud-magenta);
+  --dc-spray-color:          var(--paper-cream);
+
+  /* .dc-tape public API */
+  --dc-tape-bg:              var(--paper-aged);
+  --dc-tape-border:          rgba(212, 18, 0, 0.60);
+  --dc-tape-color:           var(--ink-dust);
+
+  /* NOTE — the "Semantic Surface Roles" bridge layer that used to close this
+     file (--surface-callout / -dm / -vibe, --surface-well, --surface-panel,
+     --text-on-dark, --text-accent, --text-muted, --border-callout / -dm,
+     --border-accent, --elevation-card) was DELETED. It was proposed as a
+     layer components would consume, and then nothing ever did: twelve
+     aliases, zero `var()` call sites in any of the seven sheets. The
+     component public tokens above are the real override surface — a new
+     project retheming this library sets THOSE. */
+}
+
+}

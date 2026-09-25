@@ -1,0 +1,483 @@
+@layer dc.components {
+
+/* ═══ SIMPLE COMPONENTS ═══ */
+
+/* ── Tag ──────────────────────────────────────────────────────────────── */
+.dc-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-cap-sm);
+  color: var(--ink-dust);
+  font-weight: 600;
+}
+
+/* ── Chevron banner ───────────────────────────────────────────────────── */
+/* Chapter-title chevron banner. Token contract:
+     --dc-chevron-bg    → banner background (default --brand-magenta-deep)
+     --dc-chevron-color → text color (default --paper-cream)
+   Per-chapter override e.g.:
+     #ch-example-gear-tech .dc-chevron { --dc-chevron-bg: var(--hud-blue-dark); }
+
+   WHY brand-magenta-deep default (and not rust): per the creaturepunk-
+   design-guide brand spec, magenta is the "banner / chapter punch /
+   spray treatment" role color. Rust/orange is reserved for "warnings,
+   AP tags, arrows, mechanical emphasis" — putting it on chapter banners
+   miscommunicates the semantic (CONTENTS shouldn't read as a warning).
+   Rubric: D9 (brand identity per chapter — chroma anchor must match
+   the banner's semantic role). */
+/* Chevron banner. Applies to elements explicitly marked `.dc-chevron`
+   AND to the h1 that's the first child of a chapter-opener intro section
+   — so authors don't have to write `{.dc-chevron}` on every chapter h1.
+   The structural-selector branch is the same selector used by the
+   chapter-opener composite rules above. */
+.dc-chevron,
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
+  font-family: var(--font-display);
+  font-size: var(--dc-chevron-font-size);
+  letter-spacing: 0.06em;
+  color: var(--dc-chevron-color);
+  text-transform: uppercase;
+  background: var(--dc-chevron-bg);
+  padding: 10px 28px 10px 14px;
+  display: block;
+  box-sizing: border-box;
+  clip-path: var(--clip-banner);
+  margin: 0;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+
+/* HEADING-SECTION ADJACENCY (D11, ≤ 0px gap)
+   See the single-direction margin convention applied to .section, .dc-intro,
+   .dc-toc etc. below in their base definitions: each component
+   has `margin-top: 0` and spaces itself via bottom margin only. Consecutive
+   siblings collapse naturally (top:0 + bottom:Npt = Npt gap). The first
+   sibling after a chevron has no top gap → flush attachment "for free",
+   no adjacency rule required.
+
+   Why not adjacent-sibling selectors? Single-direction margins side-step
+   the cascade tiebreak entirely — a later `.B { margin: ... }` shorthand
+   cannot silently beat an `A + B` gap rule if there is no gap rule.
+   Iter-8 (2026-05-25). */
+
+/* When a .dc-intro lede is followed by an alert/callout (the common
+   "lede + supporting note" pattern from How Abilities Work), tighten the
+   gap so they read as a connected pair. (@callout emits .dc-alert — the
+   former .dc-callout adjacency rule was dead and was removed 2026-06-21.) */
+.dc-intro + .dc-alert {
+  margin-top: 6pt;
+}
+
+/* Adjacent callouts/alerts (e.g. Cybersuck followed by SysFAIL after
+   the Ego Points table) read as a CONNECTED PAIR rather than two
+   independent floating boxes. Per user feedback: "design elements just
+   scattered on pages after Ego Points." (@callout only ever emits
+   .dc-alert; the three .dc-callout adjacency permutations never fired and
+   were removed 2026-06-21.) */
+.dc-alert + .dc-alert {
+  margin-top: 6pt;
+}
+
+/* H1.dc-chevron — chapter-title banner sized to fit long chapter names on
+   one or two lines. The base .dc-chevron font-size is too large for typical
+   H1 chapter titles ("What Do You Dream of Doing?", etc.). Front-matter pages
+   (TOC / Credits / Introduction) override this back up to a commanding display
+   size — see the page-scoped rule below. D4 type scale (banner-to-body ratio
+   must be ≥ 2× at print scale for chapter-punch role). */
+h1.dc-chevron {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+/* Chapter-opener heading runs at a smaller size than other h1.dc-chevron
+   instances so the section body weight stays the focal anchor below the
+   composite badge + banner. User-approved 2026-05-25. */
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+/* Front-matter chevron font-size overrides moved to fg-overrides.css per A1
+   layer-ownership (page-context rules belong in the guide-specific override
+   file, not the portable component library). Three-judge gate iteration 3. */
+
+
+/* ── Spray banner (h2 path header) ───────────────────────────────────────
+   Token contract:
+     --dc-spray-bg    → banner background (default --hud-magenta)
+     --dc-spray-color → text color (default --paper-cream)
+   Section-level override e.g.:
+     .section.dc-augmerc .dc-spray { --dc-spray-bg: var(--augmerc-dark); } */
+.dc-spray {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--dc-spray-color);
+  text-transform: uppercase;
+  line-height: 1.5;
+  background: var(--dc-spray-bg);
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 16px 22px 18px;
+  position: relative;
+  /* clip-path does double duty here: besides the chipped corner it makes this
+     banner a stacking context, which is what keeps the ::before skew tab
+     (z-index: -1) behind THIS element instead of escaping to an ancestor. The
+     banner used to get that context from a `.dc-path-shell > * { z-index: 1 }`
+     lift, now deleted; MEASURED pixel-identical (0 differing pixels at 2x over
+     the whole .dc-path-shell) with the lift, with an explicit
+     `isolation: isolate`, and with neither. */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
+  margin: 0;
+  word-break: break-word;
+  overflow: visible;
+}
+
+.dc-spray::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -8px;
+  bottom: -3px;
+  width: 14px;
+  background: var(--dc-spray-bg);
+  transform: skewX(-8deg);
+  z-index: -1;
+}
+
+.dc-spray::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 8%;
+  width: 45%;
+  height: 5px;
+  background: var(--dc-spray-bg);
+  opacity: 0.08;
+}
+
+
+/* ── Path subtitle ────────────────────────────────────────────────────── */
+.dc-path-subtitle {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--hud-blue-dark);
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+
+/* ── Stickers / Arrow ─────────────────────────────────────────────────── */
+.dc-stickers {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 4px 0 22px;
+}
+
+.dc-sticker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  background: var(--ink-dark);
+  color: var(--paper-cream);
+  border: 1px solid var(--hud-blue-dark);
+  transform: rotate(-0.5deg);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.dc-sticker:nth-child(4n+3) {
+  transform: rotate(0.7deg);
+}
+
+.dc-sticker:nth-child(4n+5) {
+  transform: rotate(-0.9deg);
+}
+
+.dc-sticker.active {
+  /* cream on --crimson = 4.03:1 (fails AA at 11px). I tested --ink on
+     --crimson per the pressure-test expert; measured 3.83:1 — also fails.
+     Neither text-color choice passes on the bright crimson fill at sticker
+     size. Switching the bg to --blood: cream-on-blood = 7.73:1, comfortably
+     passes AA. The "active/hot" semantic is preserved (still warm red),
+     just deeper. */
+  background: var(--blood);
+  color: var(--paper-cream);
+  border-color: var(--blood);
+  transform: rotate(-1.5deg);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
+}
+
+/* Inline ↑↓→ marker. Token: --dc-arrow-color (default --blood).
+   --orange #d4500a = 2.46:1 on wall — fails AA. --rust #b23a12 measured
+   3.48:1 on wall — still fails. --blood #901a12 = 5.21:1 on wall, passes
+   AA small text. Arrows can render outside a paper substrate, so default
+   needs to read against the worst case. */
+.dc-arrow {
+  font-family: var(--font-mono);
+  color: var(--dc-arrow-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* ── Path sticker / Sticker tier ref ──────────────────────────────────── */
+.dc-path-sticker {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  background: var(--paper-cream);
+  color: var(--hud-blue);
+  padding: 2px 5px 1px;
+  transform: rotate(-2.5deg);
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  margin-right: 10px;
+  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.30);
+}
+
+/* ───────── STICKER TIER REF ───────── */
+.dc-sticker-ref {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.55;
+  margin-right: 5px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Flavor (italic flavor text) ──────────────────────────────────────────
+   Token contract:
+     --dc-flavor-color         → text color (default --ink-smoke)
+     --dc-flavor-accent        → left-rail color (default --orange)
+     --dc-flavor-accent-width  → left-rail weight (default 3px)
+*/
+.dc-flavor {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--dc-flavor-color);
+  font-size: var(--fs-body-sm);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  position: relative;
+  border-left: var(--dc-flavor-accent-width) solid var(--dc-flavor-accent);
+  padding-left: 8px;
+}
+
+/* ── Sub-header ───────────────────────────────────────────────────────── */
+.dc-sub-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--hud-blue);
+  margin: 6px 0 3px;
+  padding-top: 4px;
+  border-top: 1px solid var(--hud-blue-dim);
+}
+
+
+/* ── Portrait panel ───────────────────────────────────────────────────── */
+/* Token contract:
+     --dc-portrait-surface → frame fill (default --paper-cream)
+     --dc-portrait-border  → frame border color (default --paper-aged)
+*/
+.dc-portrait {
+  background: var(--dc-portrait-surface);
+  border: 1px solid var(--dc-portrait-border);
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+  height: fit-content;
+}
+
+.dc-portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* ── Intro / Lede line ──────────────────────────────────────────────────
+   Single-direction margin: top: 0, bottom: standard gap. This gives the
+   lede flush attachment to a chevron heading above (D11 = 0) and natural
+   spacing to whatever comes below. When a lede follows body text (rare),
+   the paragraph's bottom margin provides the gap above the lede.
+
+   Token contract:
+     --dc-intro-accent → 4px left-strip color (default --orange)
+     --dc-intro-bg     → substrate color right of the strip (default --paper-stain) */
+.dc-intro {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-style: italic;
+  color: var(--ink-smoke);
+  background: linear-gradient(to right, var(--dc-intro-accent) 4px, var(--dc-intro-bg) 4px);
+  line-height: 1.5;
+  padding: 0 14px 10px 18px;
+  margin: 0 0 calc(0.1in + 3pt) 0;
+  box-shadow: var(--shadow-poster);
+}
+
+/* ── Spec tweak section header ────────────────────────────────────────── */
+.dc-spec-tweak {
+  font-size: 22px;
+  /* User feedback (2026-05-24): "Spec Tweak text color is kind of off."
+     Was --blood (red) which reads as "warning/wound" — too strong a
+     semantic for a structural section label. Switched to --ink-dark
+     (neutral dark) for text + bottom-rule, with --brand-magenta as the
+     left-rail accent so the chapter's brand color anchors the element
+     without taking the text color hostage. */
+  color: var(--ink-dark);
+  border-bottom: 2px solid var(--ink-dark);
+  border-left: 4px solid var(--brand-magenta);
+  padding-bottom: 6px;
+  padding-left: 10px;
+  margin: 20px 0 14px;
+}
+
+/* ── Dashed rule divider (hr) ─────────────────────────────────────────── */
+hr,
+.dc-dashed-rule {
+  border: none;
+  border-top: 1.5px dashed var(--hud-magenta);
+  opacity: 0.5;
+  margin: var(--space-xl) 0;
+}
+
+
+/* ── Class tag pill + specialty color variants ────────────────────────── */
+.dc-classtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: var(--paper-light);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 4px 10px 4px 6px;
+  font-weight: 600;
+}
+
+/* Token contract:
+     --dc-classtag-color → dot fill color (default --orange)
+   Set by each .dc-classtag.X variant to its specialty's accent.
+   The dot is now a ::before pseudo on .dc-classtag itself — no inner
+   .dc-classtag-dot element is required. Authors / plugin emit only the
+   outer .dc-classtag span. */
+.dc-classtag::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--dc-classtag-color);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Classtag dots — each specialty's own --*-accent for consistent identity */
+.dc-classtag.augmerc        { --dc-classtag-color: var(--augmerc-accent); }
+.dc-classtag.proxy          { --dc-classtag-color: var(--proxy-accent); }
+.dc-classtag.streetwarden   { --dc-classtag-color: var(--streetwarden-accent); }
+.dc-classtag.gutterdruid    { --dc-classtag-color: var(--gutterdruid-accent); }
+.dc-classtag.cybersurgeon   { --dc-classtag-color: var(--cybersurgeon-accent); }
+.dc-classtag.wirephreak     { --dc-classtag-color: var(--wirephreak-accent); }
+.dc-classtag.technosorcerer { --dc-classtag-color: var(--technosorcerer-accent); }
+.dc-classtag.etherlock      { --dc-classtag-color: var(--etherlock-accent); }
+.dc-classtag.dualist        { --dc-classtag-color: var(--dualist-accent); }
+.dc-classtag.generalist     { --dc-classtag-color: var(--generalist-accent); }
+
+
+/* .dc-stamp / .dc-classified were removed 2026-05-24 (zero live usage; the
+   only authoring path was raw HTML, which the cascade principle forbids).
+   They were parked in an unloaded css/deprecated.css, which has since been
+   deleted — `git log -- dc-design-guide/css/deprecated.css` has the rules if
+   the design is ever revived. Revive as `@section .dc-stamp`, not raw HTML. */
+
+/* ── Tape (torn-tape divider) ─────────────────────────────────────────── */
+.dc-tape {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--dc-tape-color);
+  background: var(--dc-tape-bg);
+  padding: 14px 14px;
+  border: 2px solid var(--dc-tape-border);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  break-inside: avoid;
+}
+
+.dc-tape::before,
+.dc-tape::after {
+  content: '';
+  flex: 1;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, var(--crimson) 0 6px, transparent 6px 10px);
+  opacity: 0.85;
+}
+
+/* Chapter-opener badge + H1 banner — see the chapter-opener composite
+   block further down (.page[data-page="intro"][data-chapter-label]).
+   The legacy .dc-chapter-opener-no rules previously here were removed
+   when the legacy @chapter-opener macro was retired. */
+
+/* ── Specialty art full-page plate ─────────────────────────────────────────── */
+.dc-specialty-art {
+  width: var(--page-width);
+  height: var(--page-height);
+  break-before: page;
+  margin: 0;
+  overflow: hidden;
+  background: var(--ink-dark); /* dark fallback so a missing image reads as intentional art plate */
+}
+
+.dc-specialty-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ── Modifier variants — .dc-flush removes margin ─────────────────────────── */
+.dc-stickers.dc-flush,
+.dc-path-subtitle.dc-flush,
+.dc-intro.dc-flush,
+.dc-tape.dc-flush {
+  margin: 0;
+}
+
+.dc-sub-header.dc-flush {
+  margin: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.dc-spec-tweak.dc-no-top {
+  margin-top: 0;
+}
+
+.dc-tape.dc-margin-sm {
+  margin: 14px 0 8px;
+}
+
+}

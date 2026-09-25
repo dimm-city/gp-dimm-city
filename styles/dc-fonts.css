@@ -1,0 +1,106 @@
+/* =============================================================================
+   TOKENS.CSS — DC Design Guide Brand Tokens
+   =============================================================================
+
+   ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
+   OWNS:
+   - The :root custom property block (all design tokens)
+   - @font-face declarations
+
+   MUST NOT CONTAIN:
+   - Any style rule at all — body baseline and element resets live in
+     dc-core.css, which loads immediately after this sheet
+   - @page declarations or named-page assignments (→ page-rules.css)
+   - .page.* layout or column rules (→ page-templates.css)
+   - .dc-* or .pmd-* component/utility styles (→ dc-components.css /
+     page-templates.css)
+   - div.chapter scaffolding or guide-specific rules (→ dg-overrides.css)
+   - @media screen rules (print-only project)
+
+   AGENT RULE: "Is this a token or a font?" — if NO, use another file.
+
+   NO SPECULATIVE TOKENS. A token earns its line by having a `var()`
+   consumer in one of the seven sheets. "Reserved for a future faction",
+   "companion for a submission profile we have not written", and "the top
+   step of a scale nothing reaches" are all reasons a token was DELETED
+   here — the palette values survive in docs/components-and-palette-
+   reference.md, which is where an unused colour belongs.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Layer order for the whole DC stack, declared here because this is the
+   first sheet the cascade sees — so layer order stops depending on the
+   manifest's file order. `dc-fonts.css` itself is deliberately NOT wrapped
+   in a layer: @font-face inside a layer is legal but pointless (font-family
+   lookup is not a cascade contest). The last two sheets loaded by every
+   book (`dc-native.css`, then the book's own native-print sheet) are ALSO
+   deliberately left unlayered — not because they're special, but because
+   they're LAST, and anything that must beat unlayered author CSS cannot be
+   layered (see docs/css-architecture.md). */
+@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages, dc.guide, book;
+
+/* ── WEBFONTS (local) ─────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-400.ttf") format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-400-italic.ttf") format('truetype');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-600.ttf") format('truetype');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-600-italic.ttf") format('truetype');
+  font-weight: 600; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-700.ttf") format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Titillium Web';
+  src: url("../fonts/titillium-web/titillium-web-700-italic.ttf") format('truetype');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-400.ttf") format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-500.ttf") format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-700.ttf") format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-400-italic.ttf") format('truetype');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-500-italic.ttf") format('truetype');
+  font-weight: 500; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Tomorrow';
+  src: url("../fonts/tomorrow/tomorrow-700-italic.ttf") format('truetype');
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'lixdu';
+  src: url("../fonts/lixdu/lixdu.woff") format('woff');
+  font-weight: normal; font-style: normal; font-display: swap;
+}

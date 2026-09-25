@@ -1,0 +1,66 @@
+@layer dc.tokens {
+
+:root {  /* ─── Dimm City Specialty Identity Tokens ────────────────────────────────
+     Project-specific: these map Dimm City class identities to palette values.
+     A different project using this component library would replace this entire
+     block with its own identity tokens, keeping the pillar palette above and
+     the component defaults below untouched.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  /* ── Specialty Accent Colors ──────────────────────────────────────────── */
+  /* Scheme A: 4 brand-anchored (augmerc=magenta, wirephreak=cyan, technosorcerer=violet, etherlock=yellow),
+     1 fungi-pillar (gutterdruid=bioluminescent rot), 3 bespoke creaturepunk hues
+     (proxy=burnt orange, streetwarden=toxic-civic hazard green, cybersurgeon=chrome).
+     Streetwarden keeps #4db840 (high-vis civic hazard) — distinct from the quieter
+     fungi-mid lichen tone; gutterdruid is the alive-and-glowing spore. */
+  --augmerc-accent:        var(--brand-magenta);  /* cyber-augmentation = brand-signature magenta */
+  --proxy-accent:          var(--orange);          /* burnt-circuit orange */
+  --streetwarden-accent:   #4db840;                /* toxic civic green — hazard, not park bench — ~CMYK 58/0/65/28; TAC ~151% */
+  --gutterdruid-accent:    var(--fungi-glow);      /* bioluminescent spore — alley fungus at full flare */
+  --cybersurgeon-accent:   #a8b4b8;                /* cool blue-gray chrome (was flat silver) */
+  --wirephreak-accent:     var(--brand-cyan);      /* signal interference = brand neon-cyan */
+  --technosorcerer-accent: var(--brand-violet);    /* ritual + tech = brand cyber-violet */
+  --etherlock-accent:      var(--brand-yellow);    /* spirit channeling = brand radiant gold */
+  --dualist-accent:        var(--crystal-aqua);     /* refractive mineral split — two-path walker */
+  --generalist-accent:     var(--crystal-amethyst); /* deep mineral refraction — survivor's stone, opposite pole from dualist */
+
+  /* ── Specialty Dark Colors (path-shell + specialty-card backgrounds) ── */
+  --augmerc-dark:          #8a1a90;  /* deep magenta-violet (TAC ~157% — was #7a1080 at 175%) */
+  --augmerc-deep:          var(--augmerc-dark);  /* alias — chapter-opener accent */
+  --proxy-dark:            #3d1a00;  /* near-black scorch — ~CMYK 0/45/100/76; TAC ~221% — large fills only */
+  --cybersurgeon-dark:     #303840;  /* cold clinical near-black — ~CMYK 18/6/0/78; TAC ~102% — POD-safe */
+  --wirephreak-dark:       #003a40;  /* deep teal-black — drowned circuit — ~CMYK 100/11/0/75; TAC ~186% — large fills only */
+  --streetwarden-dark:     #1a3d10;  /* rot-soaked forest dark — ~CMYK 57/0/73/76; TAC ~206% — large fills only */
+  --technosorcerer-dark:   #200a38;  /* ink-bruise kin — deep ritual dark — ~CMYK 42/73/0/78; TAC ~193% — large fills only */
+  --gutterdruid-dark:      #2a3408;  /* swamp-rot dark — greenish, not brown — ~CMYK 19/0/85/80; TAC ~184% — large fills only */
+  --etherlock-dark:        #3d3000;  /* deep tarnished gold — ~CMYK 0/21/100/76; TAC ~197% — large fills only */
+  --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark — ~CMYK 73/21/0/71; TAC ~165% */
+  --generalist-dark:       #1e0e2e;  /* deep amethyst-black — opposite crystal pole from dualist — ~CMYK 36/69/0/82; TAC ~187% — large fills only */
+
+  /* ── Specialty Mid Colors (card-tab bg + card border — uniform contract)
+     Each mid sits perceptually midway between its specialty's accent and
+     dark, slightly shifted toward the dark hue. Used wherever a specialty
+     needs a chrome/structural tone that isn't accent-glare or dark-mass. */
+  --augmerc-mid:           #9a1896;  /* between brand-magenta and augmerc-dark */
+  --proxy-mid:             #7a3008;  /* burnt umber, between scorch-orange and dark */
+  --cybersurgeon-mid:      #606870;  /* cool steel mid (pre-existing token) */
+  --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse */
+  --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen */
+  --wirephreak-mid:        #006878;  /* drowned signal teal */
+  --technosorcerer-mid:    #4a1878;  /* ritual indigo midpoint */
+  --etherlock-mid:         #8a6a00;  /* tarnished antique gold */
+  --dualist-mid:           #2a6878;  /* drowned mineral aqua — between crystal-aqua and sapphire-trench */
+  --generalist-mid:        #503070;  /* mid amethyst — between crystal-amethyst and generalist-dark */
+
+  /* ── Skill Tier Badge Colors — creaturepunk-decoded ─────────────────────
+     Tier identity reframed: not trophy-show metals but salvaged/scarred ones.
+     Bronze = rust-on-steel, Gold = pirated brass, Silver = cyan-tinged chrome. */
+  --tier-bronze:  #8a5c28;  /* tier 1 — rust-on-steel salvage */
+  --tier-gold:    #b8921a;  /* tier 2 — pirated brass, tarnished */
+  --tier-silver:  #a8b4b8;  /* tier 3 — cyan-tinged chrome (was flat printer-gray) */
+
+  /* ─── End Dimm City Specialty Tokens ─────────────────────────────────────── */
+
+}
+
+}

@@ -1,0 +1,215 @@
+@layer dc.components {
+
+/* ── Image floats — use markdown-it-attrs: ![Alt](img){.dc-img-float-right} ── */
+.dc-img-float-right,
+.dc-img-float-left {
+  width: 44%;
+  max-width: 44%;
+  display: block;
+}
+
+.dc-img-float-right {
+  float: right;
+  margin: 0 0 0.15in 0.2in;
+}
+
+.dc-img-float-left {
+  float: left;
+  margin: 0 0.2in 0.15in 0;
+}
+
+/* Token defaults for .dc-sidebar (--dc-sidebar-surface/-border/-accent) are
+   declared in :root in dc-tokens.css. The .inset variant below overrides
+   --dc-sidebar-surface the same way any other component variant does. */
+.dc-sidebar {
+  padding: 14px 18px;
+  float: right;
+  clear: right;
+  /* prevent stacking into adjacent floats */
+  shape-outside: margin-box;
+  /* body text wraps cleanly around margin-box */
+  width: var(--sidebar-width);
+  margin: 0 0 0.15in 0.2in;
+  background: var(--dc-sidebar-surface);
+  border: 1.5px solid var(--dc-sidebar-border);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-normal);
+  position: relative;
+  z-index: 2;
+  break-inside: avoid;
+}
+
+/* Inset variant — panel CHROME only. The full-height rail geometry (absolute
+   positioning, width, the page's reserved column) belongs to the
+   `.page.page-sidebar` template in page-templates.css: a rail is meaningless
+   without a page that reserved room for it, and scoping it there means a
+   stray `@sidebar .inset` on an ordinary page stays a readable floated
+   sidebar instead of painting over the body text. */
+.dc-sidebar.inset {
+  --dc-sidebar-surface: transparent;
+
+  border-left: none;
+}
+
+/* Hides empty .dc-sidebar wrappers. */
+.dc-sidebar:empty {
+  display: none;
+}
+
+/* Sidebar paragraph spacing. */
+.dc-sidebar p {
+  margin: 0 0 0.1in 0;
+}
+
+/* Sidebar h3 — LIVE in chapter-01.md sidebar blocks. */
+.dc-sidebar h3 {
+  margin: 0.12in 0 0.06in;
+  font-size: 1em;
+  letter-spacing: 0.04em;
+}
+
+.dc-sidebar.inset h3:first-child {
+  margin-top: 0.05in;
+  margin-bottom: 0.1in;
+  padding-bottom: 0.06in;
+  border-bottom: 1px solid var(--dc-sidebar-accent);
+  font-size: 1.05em;
+}
+
+.dc-sidebar.inset p {
+  margin-bottom: 0.09in;
+  line-height: var(--lh-normal);
+}
+
+.dc-sidebar.inset hr {
+  margin: 0.12in 0;
+  border-color: var(--dc-sidebar-accent);
+}
+
+.dc-sidebar.inset hr+p {
+  padding-top: 0.1in;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  color: var(--hud-blue);
+}
+
+.dc-sidebar.inset hr~p {
+  background: var(--dc-sidebar-callout-bg);
+  border-left: 3px solid var(--dc-sidebar-callout-accent);
+  margin-left: -0.1in;
+  margin-right: -0.1in;
+  padding: 0.06in 0.1in;
+}
+
+.dc-sidebar.inset>p:last-child {
+  margin-top: 0.1in;
+  margin-bottom: 0;
+  padding-top: 0.08in;
+  border-top: 1px solid var(--dc-sidebar-accent);
+  font-family: var(--font-display);
+  font-size: 0.95em;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: var(--dc-sidebar-accent);
+}
+
+.dc-human-callout {
+  background: var(--paper-cream);
+  border: 2px solid var(--ink);
+  padding: 8pt 9pt;
+  margin-top: 11pt;
+  break-inside: avoid;
+}
+
+/* .section.dc-class-entry + .dc-content-col + .dc-tag-row were removed
+   2026-05-24 — the @class-entry macro had no live consumers and its parser
+   had a multi-block bug. They were parked in an unloaded css/deprecated.css,
+   which has since been deleted; `git log -- dc-design-guide/css/deprecated.css`
+   has the rules. */
+
+.dc-terms {
+  break-inside: avoid;
+}
+
+.dc-terms .dc-item {
+  --card-border-color: transparent;
+  break-inside: avoid;
+}
+
+/* term label accent color */
+.dc-terms .dc-item strong {
+  color: var(--crimson);
+}
+
+/* term paragraph spacing */
+.dc-terms .dc-item p {
+  padding-block: var(--space-sm);
+}
+
+/* first term paragraph — border-bottom separator, no top padding */
+.dc-terms .dc-item p:first-of-type {
+  padding-block: 0;
+  border-bottom: 1px var(--hud-blue) solid;
+}
+
+/* Tables: universal default look lives in dc-core.css under the <table>,
+   <th>, <td>, tr:nth-child(...) selectors. Authors write plain markdown
+   tables; no class required. No per-element class attribute syntax in MD
+   files (constitution). If a future table needs to look DIFFERENT, wrap
+   it in @section .dc-some-variant so the section class is the styling
+   handle, not the table itself. */
+
+/* .dc-art-bottom is an art-placement print utility owned by
+   page-templates.css (see its ARCHITECTURAL CONTRACT header). The stale
+   absolute-positioned copy that used to live here unioned with that rule
+   and produced an incoherent box model — no rule belongs here. */
+
+/* Column ornament on core's two-column primitive. `columns`/`column-gap` are
+   core's (`GUTTERPRESS_CSS`, `.gp-columns-2`); this only paints the hairline
+   between the columns. It keys on the COUNT class, not the panel variant
+   below, because every two-column container in the book gets the rule —
+   `@block .gp-columns-2` and `@page … .gp-columns-2` included, neither of
+   which is a `.section`. */
+.gp-columns-2 {
+  column-rule: 1pt solid var(--border-hairline);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION CONTAINER — DC prose content card
+   ═══════════════════════════════════════════════════════════════════════════
+   .section is created by Gutterpress's @section markers (markers.js).
+
+   Base rule styles ALL sections as accent-strip cards sitting on the page
+   surface. Layout variants override with their own treatment. No :not()
+   chains — variant classes always win the cascade.
+
+   Token API:
+     --dc-section-bg      → panel background surface
+     --dc-section-accent  → left strip / top border accent color        */
+
+/* Float-containment DEFAULT — display at ZERO specificity on purpose.
+   flow-root makes the card a block formatting context so it CONTAINS floated
+   children (.dc-sidebar, .fg-art-inline, fiction-excerpt art — all
+   float:right). Without it a section whose trailing content is a float
+   collapses to the height of its in-flow content only, and the float spills
+   onto the bare wall below. Worst case seen: a section holding only a
+   .dc-sidebar collapsed to 23px while the sidebar ran 855px past it, so the
+   NEXT section painted over the sidebar's text (ch-03 "Dice Etiquette" vs
+   "Lucid and Surreal Rolls").
+   Safe w.r.t. margin collapsing: .section's non-zero vertical padding
+   already blocks parent/child margin collapse, so flow-root changes no
+   spacing for any variant that keeps that padding.
+   `:where()` keeps this a default, not a mandate: theme CSS loads after
+   core at equal specificity, so a class-strength `.section { display }`
+   silently beat core's layout vocabulary — measured: `.gp-grid-2` on a
+   `@section` computed flow-root (silent no-op) while the same class on a
+   `@page` worked. Zero specificity lets .gp-grid-* / .gp-columns-* own
+   `display`, exactly as core declares its own page-root display
+   (markers.js: `:where(.page, .spread) { display: flow-root }`). */
+:where(.section) {
+  display: flow-root;
+}
+
+}

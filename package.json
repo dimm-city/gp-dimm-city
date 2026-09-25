@@ -1,32 +1,77 @@
 {
   "name": "gp-dimm-city",
-  "version": "0.1.0",
-  "description": "Dimm City design system for Gutterpress",
+  "version": "1.0.0",
+  "description": "Dimm City design system for Gutterpress: the markdown-it macros (@skill, @specialty, @learning-path, @callout, …), print stylesheets, design tokens, fonts and page templates the Dimm City TTRPG books are set in.",
   "type": "module",
   "main": "plugin.js",
   "files": [
     "plugin.js",
-    "styles",
-    "snippets",
-    "README.md"
+    "styles/",
+    "fonts/",
+    "images/",
+    "snippets/",
+    "components.yaml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
-  "keywords": ["gutterpress", "gutterpress-plugin", "markdown-it-plugin"],
+  "keywords": [
+    "gutterpress",
+    "gutterpress-extension",
+    "gutterpress-plugin",
+    "markdown-it-plugin",
+    "dimm-city",
+    "ttrpg",
+    "print",
+    "pdf"
+  ],
   "author": "Dimm City",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimm-city/gp-dimm-city.git"
+  },
+  "homepage": "https://github.com/dimm-city/gp-dimm-city#readme",
+  "bugs": {
+    "url": "https://github.com/dimm-city/gp-dimm-city/issues"
+  },
   "gutterpress": {
-    "styles": ["styles/plugin.css"],
+    "styles": [
+      "styles/dc-fonts.css",
+      "styles/dc-palette.css",
+      "styles/dc-identity.css",
+      "styles/dc-component-defaults.css",
+      "styles/dc-core.css",
+      "styles/components/callouts.css",
+      "styles/components/specialty-identity.css",
+      "styles/components/chrome.css",
+      "styles/components/cards.css",
+      "styles/components/specialty.css",
+      "styles/components/data.css",
+      "styles/components/images.css",
+      "styles/components/section.css",
+      "styles/page-templates.css",
+      "styles/page-rules.css",
+      "styles/dc-native.css"
+    ],
+    "tokensFile": "styles/dc-palette.css",
+    "components": "components.yaml",
     "snippets": "snippets"
   },
   "scripts": {
-    "test": "bun test"
+    "test": "bun test",
+    "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
+    "gutterpress": "0.10.11",
     "markdown-it": "^14.1.0"
   },
   "peerDependencies": {
     "markdown-it": ">=14"
   },
   "peerDependenciesMeta": {
-    "markdown-it": { "optional": true }
+    "markdown-it": {
+      "optional": true
+    }
   }
 }

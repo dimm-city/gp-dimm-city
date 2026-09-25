@@ -1,0 +1,1026 @@
+@layer dc.components {
+
+/* ── Learning path structural + path shell + title overrides ──────────── */
+.dc-learning-path.dc-path-block {
+  --dc-path-accent: var(--crimson);
+  position: relative;
+  /* margin-bottom here is a no-op: .dc-path-block has no padding/border, so
+     this margin collapses with .dc-path-shell's own (larger) margin-bottom
+     below and never renders — every measured card-to-next-sibling gap in
+     the book is exactly the shell's 20px, never this 10px. The shell is
+     the value that actually controls spacing; see its comment. */
+  margin: 0 0 10px;
+  break-before: auto;
+  break-after: auto;
+}
+
+/* Token defaults for .dc-path-shell are declared in :root in dc-tokens.css.
+   Specialty contexts override via .dc-specialty.<name> .dc-path-shell { } above. */
+.dc-path-shell {
+  /* Surface + clip-path are on ::before and the ink outline on ::after (the
+     two-pseudo pattern of .section, and of .dc-card-body inside a skill
+     card): an element with clip-path clips its own pseudos, so the outline
+     has to be a sibling layer of the clipped one. */
+  background: transparent;
+  /* --dc-card-gap is the VISIBLE gap; +4px clears chrome bleed on top of it
+     (this shell's ink outline paints 2px below its box — no poster-shadow
+     component here — and the next element's top ink-outline bleeds 2px up).
+     Unlike .dc-skill-card, no book-wide instance of this touching was found;
+     every live path→card seam already cleared, so this is added breathing
+     room rather than a defect fix. */
+  margin: 8px 8px calc(var(--dc-card-gap) + 4px);
+  padding-top:    var(--dc-path-shell-padding-top);
+  padding-bottom: var(--dc-path-shell-padding-bottom);
+  /* Room for `.dc-spray::before`, the skewed tab pinned at `right: -8px` with
+     `width: 14px`. Without it that decoration escapes this shell (measured:
+     scrollWidth 394 vs clientWidth 384) and, with nothing clipping it, escapes
+     the document — at which point Chromium's native print widens its layout
+     past the page content box (696 -> 697 CSS px, read as an exact vector rect
+     out of the PDF). One pixel is enough to re-break a line: a paragraph sets
+     in 3 lines instead of 4 and the page count changes, while the on-screen
+     viewer keeps the spec-correct 696 and disagrees with the PDF.
+
+     This replaces a blanket `.chapter { overflow-x: clip }` that contained the
+     same overflow bluntly — and, as a side effect, clipped every full-bleed
+     plate back to the content box. Giving the decoration room keeps it fully
+     visible; clipping it here would work too but would cut the tab. */
+  padding-right: 12px;
+  position: relative;
+  /* Both pseudos sit at negative z-index; this is the stacking context that
+     keeps them behind THIS shell's content instead of behind the page. The
+     4-way drop-shadow filter that used to be here supplied it implicitly —
+     and rasterized all 32 shells and their prose on every build (dc#28). */
+  isolation: isolate;
+}
+
+/* Background + clip-path on ::before — the element itself stays unclipped so
+   the ::after outline can reach outside the silhouette, same as .dc-skill-card.
+   Substrate behind the content, not under a lift — same reasoning as
+   `.section::before`; see the containing-block note there. The host is a
+   stacking context (isolation: isolate), so -1 stays inside this component. */
+.dc-path-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--dc-path-accent) 4px, var(--paper-cream) 4px);
+  clip-path: var(--dc-path-shell-clip);
+  z-index: -1;
+}
+
+/* 2px ink outline: the shell shape on a box 2px larger on every side, filled
+   with ink, behind the surface. Replaces the 4-way drop-shadow(±2px) filter.
+   The title (h2.dc-spray) is an in-flow child with its own clip and no
+   outline of its own, so every shell cut equals its title cut at the corner
+   the title covers (specialty-identity.css, "Title-covered corners").
+   The box starts AT the shell's top and is translated up 2px: a shell that
+   opens a page (its top margin truncated at the break) would otherwise have
+   Chromium push the outline box down to the page's content area, 2px low —
+   see .dc-specialty-intro::after. */
+.dc-path-shell::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -4px;
+  left: -2px;
+  transform: translateY(-2px);
+  background: var(--ink);
+  clip-path: var(--dc-path-shell-clip);
+  z-index: -2;
+}
+
+/* Within a .dc-specialty parent (the canonical wrapper around path-shell +
+   skill cards), tighten path-shell padding tokens. Belongs here, not in
+   fg-overrides — every DC project that uses the specialty system needs
+   this default. */
+.dc-specialty .dc-path-shell {
+  --dc-path-shell-padding-top: 0;
+  --dc-path-shell-padding-bottom: 16px;
+}
+
+.dc-path-shell>h2.dc-spray {
+  width: stretch;
+}
+
+.dc-path-shell>h2.dc-spray:first-child {
+  color: var(--dc-path-title-color);
+  background: var(--dc-path-title-bg);
+  clip-path: var(--dc-path-title-shape);
+  margin-bottom: 12px;
+  padding: 10px 16px 12px;
+  font-size: 18px;
+  break-after: avoid;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dc-path-shell>h2.dc-spray:first-child + * {
+  break-before: avoid;
+}
+
+.dc-path-shell>h2.dc-spray:first-child::before {
+  background: var(--dc-path-title-bg);
+  right: -5px;
+}
+
+.dc-path-shell>h2.dc-spray:first-child::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--hud-magenta);
+  opacity: 1;
+  width: auto;
+}
+
+.dc-path-shell>p,
+.dc-path-shell>div,
+.dc-path-shell>div.dc-intro {
+  margin-inline: var(--space-sm);
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+/* ═══ OUTCOMES + STEPS + DISTANCE ═══ */
+
+/* ── Procedure / numbered steps ───────────────────────────────────────── */
+.dc-steps {
+  list-style: none;
+  padding: 0 0 0 12px;
+  margin: 8px 0;
+  border-left: 2px solid var(--hud-blue-dim);
+  break-inside: avoid;
+}
+
+.dc-steps>li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  padding: 8px 0 8px 2px;
+  border-top: 1px dashed var(--paper-aged);
+  font-family: var(--font-body);
+  font-size: 9pt;
+  line-height: 1.5;
+  color: var(--ink);
+  align-items: baseline;
+}
+
+.dc-steps>li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.dc-steps>li::before {
+  content: none;
+}
+
+/* defang any inherited bullets */
+.dc-steps .dc-step-no {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--hud-blue-dark);
+  line-height: 1;
+  align-self: center;
+}
+
+.dc-steps li strong {
+  /* --crimson 4.03:1 on paper-cream → --blood 7.73:1 */
+  color: var(--blood);
+  font-weight: 700;
+}
+
+/* ── Outcome ladder ───────────────────────────────────────────────────────
+   Token contract:
+     --dc-outcomes-surface       → body fill (default --paper-cream)
+     --dc-outcomes-border        → outer frame color (default --ink)
+     --dc-outcomes-inner-border  → inset hairline color (default --paper-aged)
+     --dc-outcomes-label-color   → label text color (default --hud-blue)
+     --dc-outcomes-divider       → label underline + row dividers (default --hud-blue-dim)
+*/
+.dc-outcomes {
+  margin: 8px 0;
+  border: 2px solid var(--dc-outcomes-border);
+  background: var(--dc-outcomes-surface);
+  position: relative;
+  break-inside: avoid;
+}
+
+.dc-outcomes::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--dc-outcomes-inner-border);
+  pointer-events: none;
+}
+
+.dc-outcomes-label {
+  font-family: var(--font-mono);
+  /* Bumped 8px → 10px and switched to ink-on-paper-aged chip styling
+     per user feedback: "The outcome header is kind of bland". Now
+     reads as a stamped header bar with its own surface rather than
+     a tiny label hovering above the chips. */
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dc-outcomes-label-color);
+  background: var(--dc-outcomes-label-bg);
+  padding: 6px 14px 5px;
+  border-bottom: 2pt solid var(--dc-outcomes-divider);
+  position: relative;
+  z-index: 1;
+}
+
+.dc-outcome-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--dc-outcomes-divider);
+  position: relative;
+  z-index: 1;
+}
+
+.dc-outcome-row:last-child {
+  border-bottom: 0;
+}
+
+.dc-outcome-key {
+  /* Inner top-highlight + bottom-shadow simulates ink density — the chip reads
+     as a "pressed-in" element rather than a flat color sticker. The 1px white
+     highlight at the top is the single most-recognisable signal designers use
+     to make a fill feel "lifted from above". */
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--row-color, var(--ink)) 92%, #fff 8%) 0%, /* PDF/X-1a: pre-composite to ~92% ink + 8% white; on --ink (#1a1512) → #2d2926; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      var(--row-color, var(--ink)) 50%,
+      color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
+     to --ink because the fungi-glow fill is too light for cream text — was
+     1.24:1) actually propagates to the chip element itself, not just to its
+     children. Default stays cream for the dark-fill outcomes (crit/miss/fail). */
+  color: var(--dc-outcome-key-color);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.dc-outcome-name {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--dc-outcome-name-color);
+  opacity: var(--dc-outcome-name-opacity);
+  line-height: 1;
+}
+
+.dc-outcome-key .dc-outcome-roll {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--dc-outcome-key-color);
+  opacity: 1;
+  display: block;
+  line-height: 1;
+  white-space: nowrap;
+  order: -1;
+}
+
+.dc-outcome-text {
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 8.5pt;
+  line-height: 1.55;
+  color: var(--ink);
+  align-self: center;
+  /* Container rule tethers the result text to its row color — without it the
+     right-column text floats on plain paper-cream with no visual tie back to
+     the row band, reading as untether'd prose next to a designed table.
+     Reads `--row-color` which is set per-variant on .dc-outcome-row.X. */
+  border-left: 2px solid var(--row-color, var(--ink-dust));
+}
+
+/* ── Outcome row color modifiers ──────────────────────────────────────────
+   Creaturepunk pillar gradient across the 5-band outcome ladder:
+     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 6.21:1)
+     hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 12.24:1)
+     mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 5.25:1)
+     miss  → rust                (GUTTER deep — paper-cream 4.59:1)
+     fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 8.73:1)
+   All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
+   for 9px outcome-name and 12pt roll-number text.
+
+   The hit row uses --row-text-color override because fungi-glow is too
+   light to carry paper-cream text (1.13:1 fail). Bright row + dark text
+   preserves the bioluminescent signal while keeping labels press-legible. */
+.dc-outcome-row.crit {
+  --row-color: var(--brand-magenta-deep);
+}
+
+.dc-outcome-row.hit {
+  --row-color: var(--fungi-glow);
+  --dc-outcome-name-color: var(--ink);
+  --dc-outcome-key-color: var(--ink);
+}
+
+.dc-outcome-row.mixed {
+  --row-color: var(--orange-deep);
+}
+
+.dc-outcome-row.miss {
+  /* --rust + cream = 4.48:1 (just under AA at small chip text). --blood
+     + cream = 7.73:1, safer at 9-10pt chip sizes. Still warm red, still
+     reads as "miss/fail" semantic. */
+  --row-color: var(--blood);
+}
+
+.dc-outcome-row.fail {
+  --row-color: var(--fungi-rot);
+}
+
+/* ── Distance tags (AP cost × distance block) ─────────────────────────── */
+.dc-distance-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+/* Token contract for distance-tag pills:
+     --dc-dist-tag-surface → cell bg (default --paper-light)
+     --dc-dist-tag-border  → cell border color (default --hud-blue-dim)
+     --dc-dist-ap-color    → AP-cost number color (default --ink)
+     --dc-dist-name-color  → distance-name caption color (default --hud-blue)
+*/
+.dc-dist-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--dc-dist-tag-surface);
+  border: 1px solid var(--dc-dist-tag-border);
+  padding: 6px 10px;
+  min-width: 52px;
+}
+
+.dc-dist-ap {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dc-dist-ap-color);
+  line-height: 1;
+}
+
+.dc-dist-name {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dc-dist-name-color);
+  margin-top: 3px;
+}
+
+/* ───────── LUCID / SURREAL ROLL VARIANTS ───────── */
+.dc-roll-lucid,
+.dc-roll-surreal {
+  font-family: var(--font-tab);
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --dc-roll-lucid-color (default --hud-blue-dark) */
+.dc-roll-lucid {
+  color: var(--dc-roll-lucid-color);
+}
+
+.dc-roll-lucid::before {
+  content: '◈ ';
+  opacity: 1;
+}
+
+/* --dc-roll-surreal-color (default --hud-magenta) */
+.dc-roll-surreal {
+  color: var(--dc-roll-surreal-color);
+}
+
+.dc-roll-surreal::before {
+  content: '∿ ';
+  opacity: 1;
+}
+
+/* ───────── PULL-QUOTE ───────── */
+.dc-pullquote {
+  background: var(--dc-pullquote-bg);
+  border-left: 5px solid var(--dc-pullquote-accent);
+  border-right: 2px solid var(--dc-pullquote-accent-soft);
+  padding: 14px 20px 12px 28px;
+  position: relative;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--fs-h2);
+  line-height: 1.3;
+  color: var(--ink-dark);
+  letter-spacing: -0.01em;
+  margin: 18px 0;
+  break-inside: avoid;
+}
+
+.dc-pullquote::before {
+  /* User RE-REQUESTED these accent marks: "I noticed the accent marks
+     from the pull quote have disappeared. That was one of my favorite
+     accents. I don't know why that was removed." They were removed
+     earlier because of an over-decoration concern; turns out the user
+     wanted them. Restored. Tightened size slightly (was 56px, now 48px)
+     to reduce duplication with literal quotes in body text without
+     removing the accent entirely. */
+  content: '"';
+  position: absolute;
+  top: -6px;
+  left: 10px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  color: var(--hud-magenta);
+  opacity: 0.55;
+  line-height: 1;
+}
+
+.dc-pullquote p {
+  margin: 0;
+}
+
+.dc-pullquote p+p {
+  margin-top: 10px;
+}
+
+/* ───────── PROSE PANEL BASE ───────── */
+.dc-prose-panel {
+  padding: 10px 14px;
+  margin: 0.12in 0;
+  break-inside: avoid;
+}
+
+/* ───────── DEFINITION BLOCK ─────────
+   Token contract:
+     --dc-definition-block-surface       → block background (default --surface-orange-tint)
+     --dc-definition-block-accent        → left rail color (default --hud-blue-bright)
+     --dc-definition-block-accent-width  → left rail weight (default 4px)
+   Per-section / per-column overrides set the tokens; they don't override
+   the properties directly. */
+.dc-definition-block {
+  background: var(--dc-definition-block-surface);
+  border-left: var(--dc-definition-block-accent-width) solid var(--dc-definition-block-accent);
+  font-style: italic;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--ink);
+  /* Added per user feedback: "text inside that section is pushed against
+     the left edge and potentially the right edge of the section." The
+     definition block had no internal padding so prose touched the box
+     edges. 9pt top/bottom + 12pt left/right gives prose breathing room
+     from the colored rail and right edge. */
+  padding: 9pt 12pt 9pt 14pt;
+}
+
+.dc-definition-block p {
+  margin: 0;
+}
+
+.dc-definition-block p+p {
+  margin-top: 6pt;
+}
+
+/* ───────── SIDEBAR BOX ─────────
+   Token contract:
+     --dc-sidebar-box-surface  → background (default --paper-cream)
+     --dc-sidebar-box-border   → frame border color (default --border-hairline)
+     --dc-sidebar-box-accent   → left rail + heading + divider (default --hud-blue-dark)
+     --dc-sidebar-box-rail     → left rail width (default 4px)
+   Override via fg-overrides selector chain, e.g.:
+     .dc-danger .dc-sidebar-box { --dc-sidebar-box-accent: var(--blood); }
+*/
+.dc-sidebar-box {
+  background: var(--dc-sidebar-box-surface);
+  border: 1.5px solid var(--dc-sidebar-box-border);
+  border-left: var(--dc-sidebar-box-rail) solid var(--dc-sidebar-box-accent);
+}
+
+/* Box heading — bold accent label above the internal divider */
+.dc-sidebar-box>h3:first-child,
+.dc-sidebar-box>h4:first-child {
+  font-size: var(--fs-h4);
+  letter-spacing: var(--ls-display);
+  color: var(--dc-sidebar-box-accent);
+  margin: 0 0 10px;
+  font-style: italic;
+}
+
+/* Internal dashed divider — separates the heading area from body content */
+.dc-sidebar-box hr,
+.dc-sidebar-box .dc-sidebar-box-divider {
+  border: none;
+  border-top: 1px dashed var(--dc-sidebar-box-accent);
+  margin: 7.5pt 0;
+}
+
+.dc-sidebar-box p {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-normal);
+}
+
+.dc-sidebar-box p+p {
+  margin-top: 6pt;
+}
+
+/* ───────── GEAR ENTRY — REMOVED 2026-08-21 ─────────
+   Two families of gear styling lived here and NEITHER could ever match:
+
+     .dc-gear-entry*            — a manual-markup authoring path. No book
+                                  writes the class; it appears only in the
+                                  design guide's own documentation.
+     .section.dc-gear-list > .dc-card
+                                — added 2026-06-21 to mirror the above for
+                                  the @gear macro, against a wrapper the
+                                  plugin does not emit. dimm-city-plugin.js
+                                  emits a bare `<div class="dc-card dc-gear">`
+                                  with no .section.dc-gear-list around it.
+
+   Net effect: `@gear` has always rendered as a plain .dc-card — no orange
+   left rule, no blood-red h3, no italic tagline — across all 48 uses. The
+   distinctive gear treatment is not "broken by a regression"; it never
+   printed.
+
+   To REVIVE it, style what the plugin actually emits (a design decision,
+   since it changes 48 cards):
+
+     .dc-card.dc-gear { margin: 0.1in 0; padding: 10pt 14pt;
+       background: var(--paper-light); border-left: 3pt solid var(--orange);
+       break-inside: avoid; }
+     .dc-card.dc-gear h3 { font-size: var(--fs-h4);
+       letter-spacing: var(--ls-display); color: var(--blood);
+       margin: 0 0 4px; break-after: avoid; }
+     .dc-card.dc-gear > p:first-of-type em:only-child,
+     .dc-card.dc-gear > p.dc-flavor:first-of-type { font-style: italic;
+       font-size: var(--fs-body-sm); color: var(--ink-smoke);
+       margin: 0 0 8px; display: block; }
+   ──────────────────────────────────────────────────────── */
+
+/* ───────── STAT BLOCK (compact creature/NPC reference) ───────── */
+.dc-stat {
+  background: var(--paper-cream);
+  border: 2px solid var(--ink);
+  padding: 14px 16px 16px;
+  position: relative;
+  margin: 18px 0;
+  break-inside: avoid;
+}
+
+.dc-stat::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--paper-aged);
+  pointer-events: none;
+}
+
+.dc-stat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.dc-stat-name {
+  font-family: var(--font-tab);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.dc-stat-class {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--hud-blue);
+}
+
+.dc-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.dc-stat-cell {
+  border-right: 1px dashed var(--paper-aged);
+  padding: 4px 8px 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+}
+
+.dc-stat-cell:last-child {
+  border-right: 0;
+}
+
+.dc-stat-cell-key {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--hud-blue);
+  margin-bottom: 2px;
+}
+
+.dc-stat-cell-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: var(--orange);
+  line-height: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dc-stat-line {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  margin: 6px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.dc-stat-line strong {
+  color: var(--crimson);
+  font-weight: 700;
+}
+
+/* ───────── TOC ───────── */
+.dc-toc {
+  font-family: var(--font-body);
+  counter-reset: dc-toc;
+  /* Creaturepunk industrial card: paper substrate framed by rust strips
+     (top + bottom — "mechanical emphasis / AP / arrows" role per brand
+     guide) and hard --ink-dark side rails (heavy ink hard borders per
+     "Cards: Use hard borders and clipped corners"). The dual accent
+     stripes + ink side rails read as field-issued reference card, not
+     editorial design. Rubric: D9 brand identity per chapter, A2 token-
+     driven (per-project tints via tokens, not raw colors). */
+  background: var(--paper-cream);
+  padding: 0.18in 0.22in;
+  box-shadow: var(--shadow-poster);
+  border-top: 4pt solid var(--rust);
+  border-bottom: 4pt solid var(--rust);
+  border-left: 1.5pt solid var(--ink-dark);
+  border-right: 1.5pt solid var(--ink-dark);
+}
+
+.dc-toc ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dc-toc ol>li {
+  position: relative;
+  padding: 10px 4px 10px 56px;
+  border-bottom: 1px solid var(--hud-blue-dim);
+  counter-increment: dc-toc;
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  color: var(--ink-smoke);
+  font-style: italic;
+  list-style: none;
+  break-inside: avoid;
+}
+
+.dc-toc ol>li:last-child {
+  border-bottom: 0;
+}
+
+/* Number badge — reads as a stamped chip rather than plain mono text.
+   42x22 boxed badge with rust fill + cream digits gives TOC entries a
+   designed start-of-row anchor instead of an underline-style number. */
+.dc-toc ol>li::before {
+  content: counter(dc-toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 42px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rust);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  /* Small bottom-right corner cut so the badge reads as a stamp, not
+     a flat rectangle. */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
+}
+
+.dc-toc ol>li>strong {
+  color: var(--hud-blue-dark);
+}
+
+.dc-toc ol>li>a {
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 0;
+  font-style: normal;
+}
+
+.dc-toc ol>li>a::after {
+  content: ' p.' target-counter(attr(href), page);
+  font-family: var(--font-mono);
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--hud-blue);
+  font-style: normal;
+  margin-left: 0.6em;
+  white-space: nowrap;
+}
+
+.dc-toc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hud-blue-dim);
+}
+
+.dc-toc .dc-toc-no {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--hud-blue);
+  flex: 0 0 auto;
+  margin-right: 28px;
+  white-space: nowrap;
+}
+
+.dc-toc-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.dc-toc-title small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-smoke);
+  margin-top: 2px;
+}
+
+.dc-toc-page {
+  flex: 0 0 auto;
+  margin-left: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--hud-blue);
+  font-weight: 600;
+}
+
+.dc-toc-page::before {
+  content: '— ';
+  color: var(--ink-dust);
+  font-weight: 400;
+}
+
+/* Cover-style chapter opener */
+.dc-cover-page {
+  background: var(--hud-blue);
+  color: var(--paper-cream);
+  position: relative;
+  overflow: hidden;
+}
+
+.dc-cover-page .dc-cover-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 8% 10%, rgba(0, 0, 0, 0.55), transparent 62%),
+    radial-gradient(ellipse at 82% 88%, rgba(0, 0, 0, 0.30), transparent 55%),
+    radial-gradient(ellipse at 80% 18%, rgba(242, 77, 0, 0.14), transparent 50%),
+    radial-gradient(ellipse at 60% 55%, rgba(72, 164, 224, 0.16), transparent 60%),
+    var(--hud-blue);
+}
+
+.dc-cover-page .dc-cover-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* HUD scanline overlay — horizontal lines at low opacity */
+.dc-cover-page .dc-cover-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to bottom,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.04) 3px,
+      rgba(0, 0, 0, 0.04) 4px);
+  pointer-events: none;
+}
+
+.dc-cover-page>* {
+  position: relative;
+  z-index: 1;
+}
+
+.dc-cover-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--hud-blue-dim);
+  margin-bottom: 18px;
+}
+
+.dc-cover-bigword {
+  font-family: var(--font-display);
+  /* Absolute, not vw: the cover word is sized against the sheet, and a
+     viewport unit in paged media has no stable meaning. */
+  font-size: 66pt;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin: 0 0 16px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.dc-cover-strap {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 14pt;
+  line-height: 1.4;
+  color: var(--paper-cream);
+  max-width: 24ch;
+  margin: 0 0 28px;
+  padding-left: 12px;
+  border-left: 3px solid var(--hud-magenta);
+}
+
+.dc-cover-meta-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--dc-cover-meta-border);
+}
+
+.dc-stat.dc-flush,
+.dc-steps.dc-flush,
+.dc-outcomes.dc-flush,
+.dc-pullquote.dc-flush {
+  margin: 0;
+}
+
+/* Cover page layout override (flex column with more padding) */
+.dc-cover-layout {
+  display: flex;
+  flex-direction: column;
+  padding: 60px 56px;
+}
+
+/* Cover body text */
+.dc-cover-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-xs);
+  line-height: 1.6;
+  color: var(--hud-blue-dim);
+  max-width: 46ch;
+  margin-bottom: auto;
+}
+
+/* When markdown wraps a list-item's text in a <p> (loose-list rendering),
+   the paragraph's block display + margins push the text below the marker.
+   Inline the paragraph so it flows directly after the bullet/number. */
+.dc-skill-card li>p:only-child,
+.dc-ability li>p:only-child {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.dc-card-body .dc-ability[data-ability-penultimate] {
+  break-after: avoid;
+}
+
+.dc-card-body .dc-ability[data-ability-last] {
+  break-before: avoid;
+}
+
+.dc-skill-card:only-child {
+  width: 100%;
+  max-width: 7.25in;
+}
+
+/* Universal card layout fixes — apply to any book using dc-skill-card. */
+
+:is(.dc-skill-card, .dc-skill-card .dc-card-body) {
+  height: auto;
+  min-height: 0;
+}
+
+/* `.two-column-list` (this tombstone + the base one below + both real
+   rules in page-templates.css) is DELETED (2026-09-02) — 0 uses, 0
+   emissions; see page-templates.css's note at its old location. */
+
+/* AP cell: prevent table-layout from over-allocating width to the cost
+   pill, which collapses the ability description column. */
+.dc-ability ol li strong:first-of-type {
+  width: 1%;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
+p.dc-img-wrapper {
+  padding: 0;
+  margin: 0;
+}
+
+/* Native-print shrink-to-fit guard for content images. With `width: auto`,
+   an image's INTRINSIC width (these placards are 2000-3500px) feeds
+   Chromium's print preferred-width computation even though `max-width:
+   100%` clamps the rendered box — and any preferred width past the page
+   content box makes native print scale the WHOLE book down (measured:
+   `width: 100%` restores the uncompressed 79.7pt probe, `min-width: 0`
+   alone does not). Scoped to UNCLASSED images in ANY paragraph wrapper (the bare markdown
+   placards — including wrappers whose class the author set via attrs,
+   which replaces dc-img-wrapper,
+   which already render at container width, so this changes nothing
+   visible): classed art images size themselves — some (fg-art-wall-feature,
+   fg-art-vibe) derive width from an explicit height via aspect ratio, and a
+   width here would distort them. `:where()` keeps specificity at (0,0,0)
+   so any future contextual rule still wins. */
+:where(p) > :where(img:not([class])) {
+  width: 100%;
+}
+
+.dc-at-a-glance-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 0 0 18px;
+}
+
+.dc-at-a-glance-card {
+  background: var(--paper-light);
+  border: 1px solid var(--paper-aged);
+  padding: 14px 16px;
+}
+
+}

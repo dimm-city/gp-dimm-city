@@ -1,0 +1,310 @@
+/* =============================================================================
+   NATIVE-FURNITURE.CSS — engine-specific page chrome
+   =============================================================================
+   Loaded via the book manifest's `engineStyles: { native: [...] }` (appended
+   after every other sheet, so it wins the cascade).
+
+   Mechanics, each measured against Chromium 151 (gutterpress ENGINE.md §5/§8):
+   - ONE `@page { background }` rule paints the brick wall across the whole
+     sheet: the content box, and every margin box that carries no content of
+     its own shows it through. The old two-layer paint (`html { background }`
+     for the content area + 14 hand-fed margin boxes + 6 refills in §4) is
+     gone — one origin for the wall instead of twenty-one.
+   - Margin boxes support background/border/counter()/fit-content; they do
+     NOT support transform: rotate() or box-shadow — the sticker chrome is
+     square and unshadowed.
+   - Any box past the page content box (or the sheet, on reduced-margin
+     pages) triggers whole-document print shrink-to-fit. Nothing in this
+     file may protrude; the frontmatter template zeroes only the SIDE
+     margins so the vertical arithmetic of the margined design is untouched.
+
+   The chip CONTENT (folio / chapter strings) comes from page-rules.css's
+   @page :left/:right rules — standard CSS, engine-agnostic. This file adds
+   visual chrome only.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. THE BRICK WALL — one rule, whole sheet ──────────────────────────────
+   A margin box with no content of its own shows the page background through,
+   so this single rule paints the content box AND the margin band. It replaces
+   the old `html { background }` content-area layer, the 14 hand-fed empty
+   margin boxes, and §4's six refills — 21 tiling origins became one, so the
+   wall is seamless: no phase break at a box edge, and no flat --bg patch in
+   the bottom band beside the chips. */
+@page {
+  background: var(--bg) url("../images/brick-bg-01.png") repeat;
+  background-size: 1.5in auto;
+  background-blend-mode: multiply;
+}
+
+/* ── 3. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
+   Chrome for the chip content page-rules.css declares on @bottom-left /
+   @bottom-right. Sticker identity swaps by spread side in page-rules.css's
+   content rules (folio outside, chapter tag inside); the chrome swaps the
+   same way.
+
+   BOTH axes must be fit-content. A margin box defaults to the size of its
+   SLOT, and the slot is big: per marginBoxRectPt (gutterpress
+   engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
+   content width by the whole bottom margin — 174 x 54pt on this book's page.
+   `width: fit-content` alone tightened only the inline axis, so the stickers
+   printed as FULL-HEIGHT RECTANGLES filling the margin band rather than as
+   pills.
+
+   MEASURED, field-guide p10/p11 rasterised at 150dpi and profiled through
+   each chip's interior:
+
+     folio (paper-cream + ink border)   52.3pt tall -> 14.9pt
+     chapter (paper-aged + dashed rule) 53.3pt tall -> 14.4pt
+
+   against a 53.8pt band. Both chips' widths and column spans are unchanged
+   (folio 71-77px, chapter 78px at 150dpi; folio left / chapter right on the
+   verso, mirrored on the recto), so this is a block-axis change only and the
+   recto/verso mirroring is untouched. NOTE for the design pass: a shrunk
+   margin box stays anchored at its slot's START edge, so the chips now sit
+   at the TOP of the bottom-margin band, tucked under the text block, rather
+   than centred in it.
+
+   Shrinking the box no longer punches a hole in the margin band: §1's
+   `@page` background paints underneath, so the wall shows through the rest
+   of the slot on its own. */
+@page :left {
+  @bottom-left {
+    /* folio sticker — civic register */
+    width: fit-content;
+    height: fit-content;
+    font-family: var(--font-mono);
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    color: var(--ink-dark);
+    background: var(--paper-cream);
+    border: 1px solid var(--ink-dark);
+  }
+  @bottom-right {
+    /* chapter sticker — stamped coupon */
+    width: fit-content;
+    height: fit-content;
+    font-family: var(--font-display);
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2.5px 8px;
+    color: var(--blood);
+    background: var(--paper-aged);
+    border: 1.5px dashed var(--hud-magenta);
+  }
+}
+
+@page :right {
+  @bottom-left {
+    /* chapter sticker — stamped coupon */
+    width: fit-content;
+    height: fit-content;
+    font-family: var(--font-display);
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2.5px 8px;
+    color: var(--blood);
+    background: var(--paper-aged);
+    border: 1.5px dashed var(--hud-magenta);
+  }
+  @bottom-right {
+    /* folio sticker — civic register */
+    width: fit-content;
+    height: fit-content;
+    font-family: var(--font-mono);
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    color: var(--ink-dark);
+    background: var(--paper-cream);
+    border: 1px solid var(--ink-dark);
+  }
+}
+
+/* ── 4. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
+   §1's `@page` background paints through a box that generates nothing, so
+   suppression is just clearing the chip's content — no brick refill needed,
+   which makes page-rules.css's own `@page chapter-start` / `@page clean`
+   `content: none` blocks sufficient on their own; only `:blank` has no
+   counterpart there, so only `:blank` is restated here. */
+@page :blank {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* ── 5. FRONTMATTER (TOC + Credits): full-bleed composite under native ──────
+   Target: masthead band edge-to-edge including its own rows, wall behind,
+   plate at the sheet bottom of the credits. Native print clips painting at
+   the content box and punishes any box past it with whole-document
+   shrink-to-fit, so the page SHAPE changes instead of the paint overflowing:
+
+   - side margins 0 and bottom margin 0 on the front-matter template — the
+     content box spans the full sheet width and reaches the sheet bottom,
+     so the h1's side pulls and the plate's bottom seat are VISIBLE paint
+     inside the content box, never overflow (verified clean with
+     no-founders in the side-0 variant; the bottom-0 extends the same
+     principle);
+   - the top margin (0.5in) stays, painted ink-dark by the top margin
+     boxes, so the band runs from the sheet top edge through the h1's own
+     rows;
+   - text re-insets itself via page padding. */
+@page front-matter {
+  margin: 0.5in 0 0 0;
+  @top-left-corner  { content: ""; background: var(--ink-dark); }
+  @top-left         { content: ""; background: var(--ink-dark); }
+  @top-center       { content: ""; background: var(--ink-dark); }
+  @top-right        { content: ""; background: var(--ink-dark); }
+  @top-right-corner { content: ""; background: var(--ink-dark); }
+}
+@page front-matter:left  { margin: 0.5in 0 0 0; }
+@page front-matter:right { margin: 0.5in 0 0 0; }
+.page.page-toc,
+.page.page-credits {
+  box-sizing: border-box;
+  padding: 0 0.625in;
+  margin-top: 0;
+}
+.page.page-toc {
+  /* breathing room between the TOC card and the sheet bottom */
+  padding-bottom: 0.75in;
+}
+/* The masthead escapes the padding back to the sheet edges — visible paint
+   inside the full-width content box. `margin-top: 0` is deliberate: a
+   negative top pull here drags a band fragment onto the previous page
+   (measured). The dark strip above is margin-box paint. */
+.page.page-toc h1.dc-chevron,
+.page.page-credits h1.dc-chevron {
+  margin-top: 0;
+  margin-left: -0.625in;
+  margin-right: -0.625in;
+  width: calc(100% + 1.25in);
+  box-sizing: border-box;
+}
+
+/* In-flow art must never be sliced across a page boundary. */
+p.dc-img-wrapper,
+figure {
+  break-inside: avoid;
+}
+/* Full-bleed plates fill their margin-0 page exactly; sub-pixel rounding
+   was slicing the last rows of the image onto the next page. */
+.dc-full-page {
+  overflow: clip;
+}
+
+/* ── 10. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
+   `.section` carries `break-inside: avoid` from THIS BOOK's own
+   dc-components.css (core no longer ships that default, but the book still
+   sets it). Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
+   container, columns:2) and the `.section` blocks sit INSIDE it. A section
+   taller than one column can then never split, so Chromium drops it whole
+   into one column fragment and the facing column dies — the dead-column
+   collapse. Removing this override cost 3 pages of pagination churn when
+   measured (302pp vs 299pp), so it is load-bearing, not legacy.
+
+   Keys on the COUNT class, not `.dc-column-panel`: this is about multicol
+   fragmentation, and the wrapper shape is often a `@block` or `@page` that
+   never carries the panel chrome at all. */
+.gp-columns-2 .section,
+.gp-columns-3 .section {
+  break-inside: auto;
+}
+
+/* ── 10b. COLUMN-FILL is a per-shape decision, and it lives HERE ────────────
+   (10b, not 11: a §11 was deleted from this file before this block existed,
+   and §13 below still cross-references that old §11. Taking the number would
+   silently redirect a live reference at the wrong rules.)
+   Core deliberately ships no `column-fill` on `.gp-columns-*` (the right
+   value depends on whether the run fragments, and only the author knows).
+   page-templates.css used to answer `balance` for the whole book; under
+   native print the wrapper fragments across pages, and Chromium's
+   balance-in-fragmentation leaves every non-final fragment with a dead right
+   column (measured: proof17 p12/p13). Sequential fill packs both columns per
+   page — the behavior the engine's multicol fixture verified. */
+.gp-columns-2,
+.gp-columns-3 {
+  column-fill: auto;
+}
+/* Per the measured rule (docs/native-engine-styling-guide.md §5): balance is
+   correct for single-page multicol, auto only for FRAGMENTING multicol.
+   The general `.gp-columns-2`/`.gp-columns-3` rule above stays `auto` — it is
+   load-bearing for the WRAPPER shape (a plain div around several `.section`
+   children, e.g. p12/p13's "THE PACK SHOULD BE WEIRD" walkthrough, and
+   p243's CORE ELEMENTS section, where the dc-alert callout is itself taller
+   than a column and MUST be allowed to fragment; see §13 below). A
+   `.section` that is ITSELF the multicol container is NOT reliably short —
+   CORE ELEMENTS is that same DOM shape (`.section.gp-columns-2`) and needs
+   `auto`, so shape alone can't tell "fits on one page" from "runs long".
+
+   Two exceptions, both scoped so they cannot catch the fragmenting case:
+
+   (a) p7's "Image Is Everything" aside — a short paragraph + a short callout,
+   nothing left to balance — scoped to its own authored classes rather than
+   promoted to a general `.section.gp-columns-2` rule that would also catch,
+   and break, CORE ELEMENTS. If a future page reuses
+   `.dc-citizen-walkthrough.gp-columns-2` with long enough content to actually
+   fragment, the compiler's own multicol-fragmentation check flags it and
+   tells the author to add column-fill: auto locally — not a silent trap.
+
+   (b) a PAGE that is itself the multicol container. A `.page` is one sheet by
+   construction, so its run does not fragment and balance is the correct
+   value. This carries forward the `.page.two-column { column-fill: balance }`
+   that page-templates.css used to win with on specificity alone (0-2-0 over
+   this file's 0-1-0); stating it here puts it next to the reasoning and the
+   measurements instead of leaving it to load order. Live user:
+   `@page .dc-citizen-file-page .gp-columns-2` in the design guide. */
+.dc-citizen-walkthrough.gp-columns-2,
+.page.gp-columns-2 {
+  column-fill: balance;
+}
+
+/* ── 12. WALL ART placement is the markdown's, via core's gp-* classes ──────
+   Do not add a position/float/margin declaration to a `.fg-art-*` class that
+   the markdown also pins. A `.fg-art-*` class beats `.gp-pin` at equal
+   specificity — the book's sheets load after GUTTERPRESS_CSS — so such a rule
+   silently DE-PINS whatever the author asked for. Measured on blue-bot
+   (chapter-01 "At a Glance"), which the markdown authors
+   `.gp-pin .gp-bottom .gp-left`. */
+
+/* ── 13. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
+   §11's break-after: avoid keeps a heading with the box that follows, but
+   the box itself can still emit a contentless first fragment (top border +
+   padding only) at a page bottom — measured: CORE ELEMENTS, p244. Gluing
+   the box's first child to the box start moves the whole start (and, via
+   §11, the heading) to the next page. break-inside: avoid is NOT usable
+   here: these callouts routinely run taller than a page. */
+.dc-dm-note > :first-child,
+.dc-callout > :first-child {
+  break-before: avoid;
+}
+
+/* Measured (p243, DOM-inspected): the CORE ELEMENTS heading is a full-width
+   spanner inside a .gp-columns-2 section, followed by a dc-alert callout
+   whose break-inside: avoid is UNENFORCEABLE (the card is taller than a
+   column). Chromium then emits an empty card fragment under the spanner —
+   header stranded, content headerless on the next page. A card that may
+   fragment starts filling right under its header instead. Scoped to
+   multicol sections only; standalone cards keep their avoid. */
+.gp-columns-2 .dc-alert,
+.gp-columns-3 .dc-alert {
+  break-inside: auto;
+}
+
+/* Skill-card tabs (MNEMONIC PLAGUE, p114): the .dc-card-tab chip is a
+   separate block from its .dc-card-body, so a page break can land between
+   them, stranding the tab alone at a page bottom. Glue tab to body, and the
+   body's first child to the body start. */
+.dc-card-tab {
+  break-after: avoid;
+}
+.dc-card-body > :first-child {
+  break-before: avoid;
+}

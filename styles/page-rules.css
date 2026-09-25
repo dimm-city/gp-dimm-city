@@ -1,0 +1,207 @@
+/* =============================================================================
+   PAGE-RULES.CSS — Paged Media declarations and named-page wiring
+   =============================================================================
+
+   ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
+   OWNS:
+   - All @page declarations (default, :left / :right, named pages)
+   - @page margin box CONTENT (the folio and chapter chips)
+   - Named-page wiring (`.page.page-toc { page: front-matter }`, etc.)
+
+   MUST NOT CONTAIN:
+   - Content layout rules (.page.* { columns: N }) — EXCLUSIVELY in
+     page-templates.css
+   - Component styles (→ dc-components.css)
+   - :root token definitions (→ dc-tokens.css)
+   - div.chapter scaffolding (→ dg-overrides.css)
+   - @media screen rules (print-only project)
+   - Margin-box VISUAL CHROME (background/border/padding on the folio and
+     chapter chips) — that lives in native-furniture.css, loaded via the
+     manifest's `engineStyles: { native: [...] }` so it wins the cascade.
+     This file declares only the chip CONTENT (`content:` + color), which is
+     engine-agnostic standard CSS.
+
+   ── ONE BLOCK PER NAMED PAGE ──────────────────────────────────────────────
+   A page NAME outranks `:left` / `:right` — CSS Paged Media orders the page
+   selector's components name-first, and Chromium implements it. MEASURED on
+   a 4-page fixture (6x9in, `@page :left` / `:right` declaring corner footers):
+     - `@page quiet { @bottom-*: content: none }` printed NO footer on both a
+       verso and a recto page, beating the `:left` / `:right` content;
+     - `@page full { margin: 0 }` placed text at x=0.0pt on a verso page where
+       `@page :left` asks for a 0.625in left margin — a higher-specificity
+       `margin` shorthand wins per-longhand over a weaker rule's `margin-left`.
+   So every named template below needs exactly ONE block. A `name:left` twin
+   that merely repeats it is dead weight, and one that repeats `content: none`
+   silently OUTRANKS native-furniture.css's own `@page <name>` overrides —
+   that is how the brick margin band was being suppressed on chapter-start
+   pages. The two `citizen-file` twins are the exception that proves the rule:
+   the running head sits in the OUTER top corner, a different margin box per
+   side.
+
+   AGENT RULE: "Is this an @page block or a named-page wiring rule?" — if NO,
+   use another file.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@layer dc.pages {
+
+/* ---------------------------------------------------------------------------
+   Default page template — Letter+bleed for DTRPG (8.625 x 11.25)
+   --------------------------------------------------------------------------- */
+
+/* `size` stays a literal on purpose. Chromium resolves var() in @page margins
+   — measured: `@page :left { margin-left: var(--om) }` put text at exactly
+   0.625in on a verso page — so the margins below name their tokens. The trim
+   SIZE is the one value where a var() that failed to resolve would silently
+   produce a differently-sized book, and it is duplicated by --page-width /
+   --page-height in dc-tokens.css: change both together. */
+@page {
+  size: 8.625in 11.25in;
+  margin: var(--page-margin) var(--outer-margin) 0.75in;
+  background-color: var(--bg);
+}
+
+/* Body footers: folio on the OUTER corner, chapter chip on the inner one.
+   `string(guideSection, first)` is published by `div.chapter[data-ch]` in
+   dg-overrides.css — that rule is the only producer of the C.N value. */
+@page :left {
+  margin-right: var(--binding-margin);
+  margin-left: var(--outer-margin);
+
+  @bottom-left  { content: "P." counter(page); }
+  @bottom-right { content: "C." string(guideSection, first); }
+}
+
+@page :right {
+  margin-left: var(--binding-margin);
+  margin-right: var(--outer-margin);
+
+  @bottom-left  { content: "C." string(guideSection, first); }
+  @bottom-right { content: "P." counter(page); }
+}
+
+/* ---------------------------------------------------------------------------
+   Front matter — no folio, no chapter chip. Constitution: front matter is
+   unnumbered. (native-furniture.css additionally zeroes this template's side
+   and bottom margins for the full-bleed masthead composite.)
+   --------------------------------------------------------------------------- */
+
+@page front-matter {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.page.page-intro,
+.page.page-toc,
+.page.page-credits {
+  page: front-matter;
+}
+
+/* ---------------------------------------------------------------------------
+   Chapter start — footers suppressed; the chevron banner IS the visual
+   identity. native-furniture.css refills the two bottom boxes with the brick
+   band so the margin band stays continuous.
+   --------------------------------------------------------------------------- */
+
+@page chapter-start {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.dc-chapter-start {
+  page: chapter-start;
+}
+
+/* ---------------------------------------------------------------------------
+   Full — zero margins, no footers. `.dc-full-page`'s full-bleed geometry lives
+   in page-templates.css; its named-page assignment is here (alongside the
+   `@specialty-art` plate's) since wiring belongs with its @page block.
+   --------------------------------------------------------------------------- */
+
+@page full {
+  margin: 0;
+
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.dc-specialty-art { page: full; }
+.dc-full-page { page: full; }
+
+/* ---------------------------------------------------------------------------
+   Clean — footer suppression on demand. Wired via `.pmd-suppress-footer`;
+   no page in either book currently opts in.
+   --------------------------------------------------------------------------- */
+
+@page clean {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.dc-suppress-footer {
+  page: clean;
+}
+
+/* ---------------------------------------------------------------------------
+   Citizen File — amber running header in the OUTER top corner, so this is the
+   one template that genuinely needs a per-side block. The bottom margin boxes
+   are left alone, so these pages keep the body footers.
+   --------------------------------------------------------------------------- */
+
+@page citizen-file:right {
+  @top-right {
+    content: "Citizen File";
+    color: var(--amber);
+    font-family: var(--font-display);
+    letter-spacing: 0.1em;
+    font-size: 0.8em;
+    padding-top: 0.1in;
+  }
+}
+
+@page citizen-file:left {
+  @top-left {
+    content: "Citizen File";
+    color: var(--amber);
+    font-family: var(--font-display);
+    letter-spacing: 0.1em;
+    font-size: 0.8em;
+    padding-top: 0.1in;
+  }
+}
+
+.page.dc-citizen-file-page {
+  page: citizen-file;
+}
+
+/* ── Chapter Footer Labels ──────────────────────────────────────────────────
+   The GCPM string mechanism: this rule publishes each chapter's number under
+   the name `guideSection`, and the `string(guideSection, first)` calls in
+   page-rules.css's @page :left / :right margin boxes read it back, so the C.N
+   footer propagates across every page of the chapter. This is the ONLY
+   producer — every book that wants C.N footers needs @chapter wrappers
+   carrying ch="N".
+
+   Verified end to end: a `build --format pdf` of this guide produces footers
+   C.1 x58, C.2 x57, C.3 x36, C.4 x5, C.5 x6, C.6 x4, matching chapter sizes.
+
+   Use attr(data-ch) rather than a bare string literal — the value has to come
+   from the document, and data-ch is what the @chapter directive writes.
+
+   IMPORTANT authoring note: write `ch="N"` (NOT `data-ch="N"`) in the @chapter
+   directive. The marker plugin prepends "data-" to every key that is not
+   id/class/template/region, so:
+     @chapter ... ch="1"   →   <div class="chapter ..." data-ch="1">   ✓
+     @chapter ... data-ch="1" →  <div class="chapter ..." data-data-ch="1">  ✗
+
+   One rule covers every chapter, in every book that loads this stylesheet. A
+   chapter split across several source files needs the @chapter marker repeated
+   in each file (the marker plugin renders one file at a time and drains its
+   frame stack at EOF, so a wrapper cannot span files); the resulting sibling
+   div.chapter elements all carry the same data-ch and resolve to the same
+   footer value.
+   ─────────────────────────────────────────────────────────────────────────── */
+div.chapter[data-ch] {
+  string-set: guideSection attr(data-ch);
+}
+
+}

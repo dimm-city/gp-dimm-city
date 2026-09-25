@@ -1,0 +1,562 @@
+/* =============================================================================
+   PAGE-TEMPLATES.CSS — Content Layout Templates
+   =============================================================================
+
+   ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
+   OWNS:
+   - ALL THEME columns:N rules — this is the ONLY file that may set columns on
+     a theme selector. Components are always single-flow. It may NOT set
+     columns on core's `.gp-columns-*` (only their `--gp-column-gap`).
+   - .page.* content layout rules (columns, flex, grid on page content divs)
+   - .page base geometry, .column-break
+   - .dc-full-page full-bleed geometry (its named-page assignment,
+     `page: full`, lives in page-rules.css alongside `@page full` — see
+     that file's "ONE BLOCK PER NAMED PAGE" contract)
+   - General print utilities (.pmd-no-break, .pmd-break-before, .pmd-col-span).
+     `.pmd-suppress-footer`'s named-page wiring (`page: clean`) lives in
+     page-rules.css alongside `@page clean` — same contract as .dc-full-page above
+   - Break/overflow control scoped to a page type (.dc-specialty break rules)
+
+   NOTE: Page-level typography constraints (orphans/widows on body, break-after
+   on global headings) live in dc-core.css — they cascade to every .page box,
+   so repeating them here would be pure duplication.
+
+   MUST NOT CONTAIN:
+   - @page declarations or named-page geometry (→ page-rules.css)
+   - .dc-* component styles (→ components.css)
+   - :root token definitions (→ tokens.css)
+   - div.chapter scaffolding unrelated to columns/layout (→ guide.css)
+   - @media screen rules (print-only project)
+
+   COLUMN OWNERSHIP RULE (narrowed, dc#41): if a THEME rule sets columns:N on a PAGE TEMPLATE (.page.*) in this
+   project, it belongs here and ONLY here. Any columns:N found in another file
+   is a bug. Core's `.gp-columns-2` / `.gp-columns-3` are the generic column
+   vocabulary and are NOT this file's to redefine — this file may only set
+   their `--gp-column-gap`. See the column-runs block below.
+
+   AGENT RULE: "Does this selector start with .page.*, a general print
+   utility, or a div.chapter layout rule that sets columns?" — if NO, use
+   another file.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@layer dc.templates {
+
+/* The brick wall lives in native-furniture.css §1: one `@page { background }`
+   rule, which paints the content box and the margin band alike. */
+
+
+/* ── PAGE WRAPPER BASE GEOMETRY ────────────────────────────────────────────── */
+/* `.page` uses `break-before: page`, NOT `break-after: always`. Each .page
+   wrapper must START a new page without forcing a phantom break after it —
+   `break-after` on consecutive wrappers emits a trailing blank page between
+   content sections (6 of them, when this file last got it wrong).
+   .page-break (the explicit @page-break directive) keeps break-after
+   so authors can still force a hard page break when needed.
+
+   `columns: unset` was here and is DELETED. `columns` does not inherit, so
+   on a plain div `unset` computes to the same `auto` a div already has —
+   the reset never did anything on its own. What it DID do was sit later in
+   the cascade than core's `GUTTERPRESS_CSS` at equal specificity (0-1-0),
+   so it silently ate `columns: 2` off any `@page … .gp-columns-2`.
+   Measured on `@page .dc-citizen-file-page .gp-columns-2` (design guide, chapter
+   opener): with the reset the page computed `column-count: auto` and ran
+   1098.6px tall; without it, `column-count: 2` at 720.3px — matching the
+   page's pre-migration render exactly. A theme reset that can only shadow
+   core's vocabulary is the §6 problem in miniature; do not reintroduce it. */
+.page {
+  break-before: page;
+  /* `break-inside: avoid` was here too and was REMOVED: `break-before: page`
+     already puts every .page wrapper at the top of a fragmentainer, so
+     `avoid` can never be honoured — it only stood to stop a legitimately
+     multi-sheet page root from fragmenting. Measured: removing it changed
+     nothing at all (chapter-00 + chapter-01 probe, 33pp — every image
+     placement and every text extent byte-identical; full book unchanged at
+     295pp).
+
+     Native-print shrink-to-fit guard. Chromium's print path scales the
+     ENTIRE document down when any box or text ink extends past the page
+     content box — and full-bleed components (masthead, art utilities) plus
+     stray text overflow do exactly that. Native print clips *painting* at
+     the content box anyway, so clipping scrollable overflow at the .page
+     wrapper (same edge, no padding) is visually identical there while
+     removing the shrink trigger entirely.
+
+     KEPT after re-measuring against core (2026-08-21). Core now hard-errors
+     on real shrink triggers via engine.width.overflow, but this book still
+     has one the audit does not catch: dropping `overflow-x: clip` shrinks
+     the whole document by 0.44% (33pp probe — body text run 568.5pt ->
+     566.0pt, the chapter-01 rabbit placard 717.0pt -> 713.9pt, and the
+     chapter-01 flush pin stops reaching the paper, its bottom edge lifting
+     from y=0.8pt to y=4.1pt). Do not remove it without re-running that
+     measurement.
+
+     SCOPED, not removed. The guard clips OUT-OF-FLOW descendants too, so on a
+     page carrying pinned or bleed art it cut exactly the thing that art
+     exists to do — reach the page edge. Core's printsafe rule names this and
+     prescribes this fix verbatim ("Scope it with :has() (e.g.
+     `.page:not(:has(.gp-bleed, .gp-pin))`) or drop it"). Pages WITHOUT such
+     art — every ordinary text page, which is where the 0.44% measurement
+     came from — keep the guard unchanged. */
+  overflow-x: clip;
+}
+
+/* The exception the guard above is scoped around: a page holding pinned or
+   bleed art must not clip it. `.gp-behind` is included because it is pinned
+   art by another name (a `.gp-pin` that paints under the text). */
+.page:is(:has(.gp-bleed), :has(.gp-pin), :has(.gp-behind)) {
+  overflow-x: visible;
+}
+
+/* ── PAGE TEMPLATE: SIDEBAR (full-height inset rail + reserved column) ──────
+   Composite contract. `@sidebar .inset` renders a full-height rail pinned to
+   the page's right edge; this template is what RESERVES the column it stands
+   in. Author surface:
+
+     @page .page-sidebar
+     ...body content...
+     @sidebar .inset
+     ...rail content...
+     @end-sidebar
+
+   WHY A TEMPLATE AND NOT `.page:has(> .dc-sidebar.inset)`. A `.page` wrapper
+   is not a sheet — it is a content run that fragments across as many sheets
+   as it needs. The component gallery's wrapper measured 27,272px tall (~27
+   sheets, 149 children), so an automatic `:has()` reservation squeezed the
+   right column out of all 27 — measured: it pushed `.dc-at-a-glance-cards`
+   156px past its own grid box 22 sheets away. The rail only makes sense on a
+   wrapper that IS one sheet, and `@page` is how an author declares one. So
+   opting in is the feature, not a papercut.
+
+   The rail's positioning lives here too, not in dc-components.css: scoping it
+   to the template means a stray `@sidebar .inset` outside one degrades to the
+   base floated sidebar (readable, in flow) instead of painting over the body
+   text — which is exactly the defect this template fixes. Component chrome
+   (transparent fill, accent rules, heading treatment) stays with the
+   component; only page-context geometry is here, per this file's contract.
+
+   `padding-right` (not a width change) is what reserves the column: an
+   absolutely positioned child resolves `right` against the page's PADDING
+   box, whose right edge does not move when padding grows. The text column
+   shrinks; the rail stays pinned to the page's right edge. */
+.page.page-sidebar {
+  padding-right: calc(
+    var(--dc-sidebar-inset-column) + var(--dc-sidebar-inset-gutter)
+  );
+}
+
+.page.page-sidebar > .dc-sidebar.inset {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* border-box so the width token is the rail's real footprint — the
+     reservation above spends the same token, so the two cannot drift. */
+  box-sizing: border-box;
+  width: var(--dc-sidebar-inset-column);
+  height: 100%;
+  padding: 0.2in 0.2in 0.15in;
+  margin: 0;
+  float: none;
+  clear: none;
+}
+
+/* `.page-break` (unprefixed) was here and is DELETED (2026-09-02): core
+   emits `.gp-page-break` for the `@page-break` marker, and the unprefixed
+   name had no emitter or author use — verified against both books'
+   rendered HTML (`--format html`, grepped for exact class="..." tokens)
+   before deleting.
+
+   `.column-break` (unprefixed) is NOT dead and stays: the design guide's
+   302-example-chapter-opener.md and 305-example-rules.md author it
+   directly as `---{.column-break}` (a markdown-it-attrs class on a `---`
+   thematic break), which is a different code path from the `@column-break`
+   marker line core recognizes (markers.js's parseMarkerLine only matches
+   lines starting with `@`) and renders `<hr class="column-break">` with no
+   `gp-` class at all. The rendered-HTML check that cleared every other
+   rule in this pass initially cleared this one too on a broken grep
+   pipeline; re-run correctly, it is present in the design guide's DOM. */
+.column-break {
+  color: var(--hud-magenta);
+  visibility: hidden;
+  break-after: column;
+}
+
+/* Specialty card image sizing lives in dc-components.css (.dc-specialty-card img)
+   via --dc-specialty-card-media-width/height tokens; no page-template override
+   needed. */
+
+/* ── FULL-PAGE GEOMETRY ────────────────────────────────────────────────────── */
+/* Empty full-bleed pages need explicit geometry so the engine allocates a page.
+   The height is core's published content box for THIS page's context
+   (`@page full` is margin: 0, so its content box IS the sheet) rather than
+   `var(--page-height)`, which was only correct by coincidence — a non-zero
+   margin on @page full would have pushed the plate past the page box with
+   nothing to catch it. */
+.dc-full-page {
+  width: var(--page-width);
+  height: var(--gp-content-h, 11.25in);
+  background-color: var(--bg);
+  break-before: page;
+}
+
+/* `.pmd-suppress-footer { page: clean; }` was here and MOVED (dc#35) to
+   page-rules.css, adjacent to `@page clean` — named-page wiring belongs
+   with its @page block, not scattered across files. */
+
+/* `.dc-art-top` and `.dc-art-bottom` (+ their shared `img` rule) were here
+   and are DELETED (2026-09-02): zero uses of either in any book's rendered
+   HTML — `.dc-art-bottom` had documentation mentions only
+   (04-components.md), which does not make it reachable. */
+
+/* `.page.full-bleed` was here — DELETED. Zero users in any book's markdown
+   (`.dc-full-page` is the live full-bleed template). Its `overflow: hidden` was
+   also a live page-containment warning: it clipped a `.gp-bleed` plate back
+   to the page box instead of letting it reach the sheet edge. */
+
+
+/* ── COLUMN RUNS: the theme sets THE GAP, core sets the columns ────────────── */
+/* `.two-column` / `.three-column` are GONE (2026-08-21). They were the book's
+   own generic spelling of core's `.gp-columns-2` / `.gp-columns-3`, and
+   gutterpress's CLAUDE.md §6 forbids exactly that — a theme redefining
+   `columns:` under a rival generic name leaves an author unable to tell which
+   vocabulary they are getting.
+
+   The name was doing two unrelated jobs, which is why the fix was not a
+   rename. Job one, the column COUNT, is core's and is deleted from this file:
+   nothing here sets `columns` for a column run any more. Job two, a SECTION
+   VARIANT (card substrate, the `column-span: all` heading bar, its shared
+   preamble paragraph, break-orphan guards, gear-entry min-heights) had no
+   business riding on a count class at all; it now has its own name,
+   `.dc-column-panel`, in dc-components.css. Authors write both:
+   `@section .gp-columns-2 .dc-column-panel`.
+
+   What survives here is the one genuine theme addition — the gap. Core reads
+   `--gp-column-gap` (its own default is 1.5em) so the book's structural
+   `--gutter` is expressed through core's hook rather than by re-declaring
+   `column-gap`. Nothing in this theme may set `columns` on these names again.
+
+   `column-fill` is NOT set here: it is a per-shape decision that depends on
+   whether the run fragments, and native-furniture.css §10b owns it with the
+   measurements behind each value. */
+.gp-columns-2 {
+  --gp-column-gap: var(--gutter);
+}
+
+.gp-columns-3 {
+  --gp-column-gap: 0.18in;  /* narrower than --gutter: three measures, less air */
+}
+
+.dc-card-grid > .dc-intro,
+.dc-card-grid > h1,
+.dc-card-grid > h2 {
+  column-span: all;
+}
+
+.dc-card-grid .dc-specialty,
+.dc-card-grid .dc-specialty-card {
+  break-inside: avoid;
+}
+
+/* ── PAGE TEMPLATE: FRONTMATTER (TOC + CREDITS) ─────────────────────────────
+   Shared opening-spread template for any DC-branded book. Owns the full
+   visual contract for the two-page TOC + Credits frontmatter so a sibling
+   project gets the same spread by importing this file and writing:
+
+     @page .page-toc
+     # Contents {.dc-chevron}
+     @lede ... @end-lede
+     @toc ... @end-toc
+
+     @page .page-credits .dc-credits
+     # Credits {.dc-chevron}
+     @lede ... @end-lede
+     @section .credits-colophon
+     <div class="dc-colophon-grid">
+       **Role:** Names
+       ...
+     </div>
+
+   ── Template public API ──────────────────────────────────────────────────
+   --frontmatter-accent    Single recolor knob. Drives the lede left-strip,
+                           masthead border, TOC number badges, and the
+                           colophon role-label underline.
+                           Default: --brand-magenta-deep (cyber signature).
+   --frontmatter-lede-bg   Lede substrate. Default: cool light grey concrete
+                           swatch lifted off the warm-grey wall.
+
+   Per-project recolor is one rule:
+     .page.page-toc, .page.page-credits {
+       --frontmatter-accent: var(--brand-cyan);
+     }
+
+   ── Colophon role-label convention (dc#44) ───────────────────────────────
+   Markdown-convention, not a macro: inside .credits-colophon, whichever
+   `**bold**` token comes FIRST in a paragraph is selected positionally
+   (`p strong:first-child`) and rendered as the row's mono-caps role-label
+   chrome with the accent underline. Write every colophon line as
+   `**Role:** Names` — the bold prefix IS the label. A paragraph that opens
+   with anything else (plain text, an em, a bold token that isn't first)
+   silently gets no label chrome; nothing warns when that happens.
+
+   ── Composite contract ──────────────────────────────────────────────────
+   The masthead, lede, and primary content (TOC card OR credits colophon)
+   stack flush with no gaps and read as ONE cohesive object lifted from
+   the wall. To make that work:
+     - The masthead is full-bleed across the page and casts NO shadow of
+       its own. Its full width is part of the banner identity, not a card
+       edge that should "lift."
+     - The body column (lede + primary) carries the lift. Each child
+       keeps its own --shadow-poster; flush stacking means each child's
+       bottom shadow hides under the next sibling, so the body column
+       reads as ONE card with a continuous right + bottom shadow.
+     - The TOC's component-default 4pt magenta top/bottom rails are
+       stripped — they were the visible "seam" at the lede/TOC junction.
+     - Color contrast between the three substrates (ink-dark masthead →
+       cool light grey lede → paper-cream primary) carries the internal
+       hierarchy without dividing rules.
+     - The masthead's magenta border-bottom is the single accent cut line
+       inside the composite.
+
+   This block is the SINGLE location where TOC and Credits styling lives —
+   do not split it across fg-overrides.css. */
+
+/* Identity tokens for the spread. --dc-intro-accent / --dc-intro-bg feed
+   the .dc-intro component's gradient via its own var() fallback chain. */
+.page.page-toc,
+.page.page-credits {
+  --frontmatter-accent: var(--brand-magenta-deep);
+  --frontmatter-lede-bg: var(--concrete-pale);
+  --dc-intro-accent: var(--frontmatter-accent);
+  --dc-intro-bg: var(--frontmatter-lede-bg);
+}
+
+/* Masthead — full-bleed dark band that covers the page top margin
+   (margin-top: -0.5in pulls it flush to the page box edge).
+   box-sizing: border-box so the 0.625in side padding lives INSIDE the
+   +1.25in width extension (the previous content-box version double-counted
+   it, making the band 1.25in wider than the sheet — invisibly clipped, but
+   the largest single trigger of native print's shrink-to-fit). */
+.page.page-toc h1.dc-chevron,
+.page.page-credits h1.dc-chevron {
+  display: block;
+  width: calc(100% + 1.25in);
+  margin-left: -0.625in;
+  margin-right: -0.625in;
+  margin-top: -0.5in;
+  margin-bottom: 0;
+  padding: 0.45in 0.625in 0.35in;
+  box-sizing: border-box;
+  clip-path: none;
+  background: var(--ink-dark);
+  color: var(--paper-cream);
+  border-bottom: 4px solid var(--frontmatter-accent);
+  font-size: 26pt;
+  letter-spacing: 0.32em;
+  font-weight: 700;
+}
+
+/* Lede flush-attaches to the masthead and passes straight into the next
+   element — no gap on either side. Shadow inherited from .dc-intro
+   base component (--shadow-poster) — its bottom edge is hidden under
+   the flush primary, leaving only the right-side shadow which lines up
+   continuously with the primary's own right shadow. */
+.page.page-toc .dc-intro,
+.page.page-credits .dc-intro {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.page.page-toc .dc-intro > :last-child,
+.page.page-credits .dc-intro > :last-child {
+  margin-bottom: 0;
+}
+
+/* TOC card — strip the dc-toc base component's 4pt top/bottom rust
+   rails + 1.5pt ink side rails. Those rails were the visible "seam" at
+   the lede/TOC junction in the original render — once removed, the
+   inherited --shadow-poster combines flush with the lede's right
+   shadow above to form one continuous body-column shadow. The number-
+   badge accent flips to --frontmatter-accent so the cyber signature
+   persists. Substrate also picks up the lede's 4px magenta gradient
+   strip so the rail extends from the top of the lede continuously
+   down through the bottom of the TOC. */
+.page.page-toc .dc-toc {
+  border: 0;
+  background: linear-gradient(
+    to right,
+    var(--frontmatter-accent) 4px,
+    var(--paper-cream) 4px
+  );
+}
+
+.page.page-toc .dc-toc ol > li::before {
+  background: var(--frontmatter-accent);
+}
+
+/* Row dividers between TOC entries — base component uses --hud-blue-dim
+   which clashes with the magenta accent everywhere else on the spread.
+   Match the colophon's role-label underline so both pages carry the
+   same accent hue on every internal divider. */
+.page.page-toc .dc-toc ol > li {
+  border-bottom-color: var(--frontmatter-accent);
+}
+
+/* Credits colophon section. Same composite role as the TOC card: it's
+   the bottom block of the stack. Carries --shadow-poster so the body
+   column on the credits page lifts off the wall the same way the TOC
+   does on page 1. Substrate picks up the lede's 4px magenta gradient
+   strip so the rail extends continuously from the top of the lede
+   down through the bottom of the colophon. The flex column layout
+   keeps any trailing publisher-mark image bottom-aligned while the
+   inner 2-column grid fills the available height. */
+.page.page-credits .section.credits-colophon {
+  columns: unset;
+  display: flex;
+  flex-direction: column;
+  font-size: 9.5pt;
+  line-height: 1.35;
+  background: linear-gradient(
+    to right,
+    var(--frontmatter-accent) 4px,
+    var(--paper-cream) 4px
+  );
+  padding: 0.18in 0.22in;
+  box-shadow: var(--shadow-poster);
+}
+
+/* Suppress the .section base component's ::before (magenta left strip +
+   18px top-right clip-path corner cut) and ::after (ink-dark fake-shadow
+   offset 3px down-right). The colophon here is a SUBSTRATE inside the
+   frontmatter composite — not a stand-alone section header card. The
+   base pseudo-elements were creating the visible right-edge step (clip-
+   path cut at the top-right corner) and a doubled shadow at the lede→
+   colophon seam. Once suppressed, the colophon becomes a plain
+   rectangle that matches the TOC's shape on page 1, so the body column
+   reads identically on both pages. */
+/* The colophon's `.section` chrome suppression MOVED (dc#39) into the single
+   `.dc-plain` escape rule in dc-components.css, beside the ::before/::after
+   that paint it. */
+
+.page.page-credits .section.credits-colophon .dc-colophon-grid {
+  columns: 2;
+  column-gap: var(--gutter);
+  column-fill: balance;
+  flex-grow: 1;
+}
+
+.page.page-credits .section.credits-colophon p {
+  margin: 0 0 0.08in 0;
+  break-inside: avoid;
+}
+
+/* Role labels — the first <strong> of each colophon paragraph (e.g.
+   "**Designers:**") becomes a chrome label with an accent underline. */
+.page.page-credits .section.credits-colophon p strong:first-child {
+  font-family: var(--font-mono);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--frontmatter-accent);
+  display: block;
+  margin-bottom: 0.04in;
+  padding-bottom: 0.02in;
+  border-bottom: 1.5pt solid var(--frontmatter-accent);
+}
+
+/* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────
+   KEEPS the default .dc-chevron heading styling (magenta banner with its
+   own bottom-right diagonal clip-path) — that's the established intro
+   identity and is intentional.
+
+   Composite contract:
+     - Chevron is constrained to body column width. The chapter-opener
+       composite's negative margins are designed for chapters where the
+       chevron lives inside a wrapper, not for this standalone intro page.
+     - Section's ::before / ::after pseudos suppressed (their 18px TOP-
+       right cut opposed the chevron's BOTTOM-right cut, producing the
+       stepped right-edge mismatch).
+     - Section gets a clean paper-cream substrate with the same 4px
+       magenta left rail as the lede; rail runs continuously through
+       both.
+     - ONE filter: drop-shadow on the .page wrapper follows the union
+       silhouette of all three children — chevron's clip-path included
+       — so the shadow respects the chevron's diagonal cut and there's
+       no top-right gap on the lede (per-child box-shadow with offset-y
+       leaves a few-pixel notch at every child's top-right; the wrapper
+       filter never does). Per-child box-shadows therefore SUPPRESSED.
+       MEMORY R8: composite shadows via filter:drop-shadow on the
+       common wrapper.
+
+   --intro-accent is the single recolor knob, mirroring --frontmatter-
+   accent's role on the TOC/Credits template. */
+.page.page-intro {
+  --intro-accent: var(--brand-magenta-deep);
+  --dc-intro-accent: var(--intro-accent);
+  filter: drop-shadow(var(--shadow-poster));
+}
+
+/* Chevron geometry on the standalone intro page. This page is NOT a
+   chapter-opener composite (no .chapter[data-chapter-label] ancestor,
+   data-page is "front-matter" not "intro"), so it takes the standard
+   .dc-chevron treatment explicitly rather than inheriting the composite's.
+
+   The chevron stays at lede width; the clip-path's bottom-right diagonal
+   cut (`--clip-banner`, tapering to `calc(100% - --clip-tail)`) lives
+   fully inside the column. Do NOT re-add a negative `margin-right` to land
+   the diagonal flush on the lede's right edge: print cannot paint past the
+   page content box, and the widened box makes Chromium shrink the WHOLE
+   book to fit (the engine's pre-print width check hard-errors on it).
+
+   --dc-chevron-bg is pinned explicitly so a chapter-opener accent token
+   cannot reach this page. */
+.page.page-intro h1.dc-chevron {
+  margin-left: 0;
+  margin-right: 0;
+  --dc-chevron-bg: var(--brand-magenta-deep);
+  box-shadow: none;
+}
+
+/* Lede flush-attaches to the chevron above; bottom margin zeroed so
+   the next sibling .section sits flush below. box-shadow suppressed —
+   page-level filter:drop-shadow provides the composite shadow. */
+.page.page-intro .dc-intro {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  box-shadow: none;
+}
+.page.page-intro .dc-intro > :last-child {
+  margin-bottom: 0;
+}
+
+/* Section content — paper-cream substrate, magenta 4px left rail
+   continuing from the lede. box-shadow suppressed; page filter handles
+   the composite shadow. */
+.page.page-intro > .section {
+  background: linear-gradient(
+    to right,
+    var(--intro-accent) 4px,
+    var(--paper-cream) 4px
+  );
+  padding: 0.18in 0.22in;
+  box-shadow: none;
+}
+
+/* Suppress the .section base ::before (magenta gradient + 18px top-right
+   clip-path corner cut) and ::after (ink-dark fake-shadow). Both fought
+   the chevron's clip direction and added doubled shadows. */
+/* The intro composite's `.section` chrome suppression MOVED (dc#39) into the
+   single `.dc-plain` escape rule in dc-components.css, beside the
+   ::before/::after that paint it. */
+
+/* ── PAGE TEMPLATE: IMAGE — DELETED ─────────────────────────────────────────
+   `.image-top` had zero users in any book's markdown. `.image-bottom` had
+   one (the chapter-01 monkey-gunner page) and existed only to make the page
+   a flex column so a trailing image could be pushed down with
+   `margin-top: auto`. That art is a core `.gp-pin .gp-bottom` now — MARKER_CSS
+   makes the page root the containing block and sizes it to the page content
+   box, so the pin lands on the page foot with no flex column, no auto margin,
+   and no template. The `.image-bottom` class survives on the @page marker in
+   chapter-01.md as an inert label; it can go the next time that file is
+   edited for content. */
+
+}
