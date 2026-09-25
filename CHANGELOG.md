@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-25
+
 ### Changed
 
 - **The layer statement drops `book`**: `dc-fonts.css` now declares `@layer
@@ -30,7 +32,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
   a book's own `styles:` sheets are unlayered by the engine and already beat
   this whole package at any specificity.
 
-## [1.0.0] - unreleased
+## [1.0.0] - 2026-09-25
 
 First release as a standalone package. Extracted from the private
 `dimm-city/dc-op-manual` repository, where it lived at `dc-design-guide/` as a
