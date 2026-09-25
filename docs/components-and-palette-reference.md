@@ -267,7 +267,7 @@ These tokens sit between the pillar palette and components. Override them at `:r
 
 ## Component Public Token Defaults
 
-All component tokens live at `:root` so per-chapter overrides can use the cascade. Set these at chapter id scope in `fg-overrides.css` to retheme a section without touching component rules.
+All component tokens live at `:root` so per-chapter overrides can use the cascade. Set these at chapter id scope in the book's own sheet (`@layer book`) to retheme a section without touching component rules.
 
 ### Section (`.section`)
 | Token | Default | Role |

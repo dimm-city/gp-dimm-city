@@ -69,14 +69,22 @@ byte for byte on every build.
 
 ```sh
 gutterpress new "My Book" --preset dtrpg
+gutterpress ext remove ./extensions/clean-book my-book && rm -r my-book/extensions
 gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 ```
 
-Then, in the app, insert the *Toc Page*, *Credits Page* and *Chapter Start
-Page* snippets to lay down the front matter, and reach for *Skill*,
-*Learning Path* and *Specialty* as you write. `page-rules.css` sets a Letter
-page with bleed; keep the manifest's `page:` in step with it.
+The second line matters. `gutterpress new` gives every book a starter look
+(`./extensions/clean-book`), and a look's CSS is unlayered, so it beats this
+package's layered rules on anything the look styles — plain prose comes out in
+the starter's serif instead of Titillium Web. This package *is* the look;
+remove the starter before adding it. (In the app: Project settings → Look →
+remove *Clean book*.)
+
+Then insert the *Toc Page*, *Credits Page* and *Chapter Start Page* snippets
+to lay down the front matter, and reach for *Skill*, *Learning Path* and
+*Specialty* as you write. `page-rules.css` sets a Letter page with bleed; keep
+the manifest's `page:` in step with it.
 
 ## Your own CSS: the layer convention
 
