@@ -125,7 +125,7 @@
 /* .section.dc-class-entry + .dc-content-col + .dc-tag-row were removed
    2026-05-24 — the @class-entry macro had no live consumers and its parser
    had a multi-block bug. They were parked in an unloaded css/deprecated.css,
-   which has since been deleted; `git log -- dc-design-guide/css/deprecated.css`
+   which has since been deleted; the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`)
    has the rules. */
 
 .dc-terms {

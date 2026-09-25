@@ -405,7 +405,7 @@ hr,
 /* .dc-stamp / .dc-classified were removed 2026-05-24 (zero live usage; the
    only authoring path was raw HTML, which the cascade principle forbids).
    They were parked in an unloaded css/deprecated.css, which has since been
-   deleted — `git log -- dc-design-guide/css/deprecated.css` has the rules if
+   deleted — the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules if
    the design is ever revived. Revive as `@section .dc-stamp`, not raw HTML. */
 
 /* ── Tape (torn-tape divider) ─────────────────────────────────────────── */

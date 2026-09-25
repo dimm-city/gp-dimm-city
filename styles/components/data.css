@@ -554,7 +554,7 @@
      .section.dc-gear-list > .dc-card
                                 — added 2026-06-21 to mirror the above for
                                   the @gear macro, against a wrapper the
-                                  plugin does not emit. dimm-city-plugin.js
+                                  plugin does not emit. plugin.js
                                   emits a bare `<div class="dc-card dc-gear">`
                                   with no .section.dc-gear-list around it.
 

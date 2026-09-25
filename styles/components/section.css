@@ -425,7 +425,7 @@ h3 + .section {
    a distinct clip-path geometry, surface color, and accent treatment that
    signal different content registers.
 
-   Plugin macro API (dimm-city-plugin.js):
+   Plugin macro API (plugin.js):
      @block .dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title" … @end-block
 
    CSS class API (direct use without plugin):
@@ -703,7 +703,7 @@ h3 + .section {
 
    AUTHOR-FACING CONTRACT (dc#44): this is a markdown-CONVENTION component,
    not a macro — @section is core Gutterpress's generic wrapper, and nothing
-   in dimm-city-plugin.js knows about NPC stat blocks specifically. The
+   in plugin.js knows about NPC stat blocks specifically. The
    "primary" and "secondary" stat lines below are selected POSITIONALLY —
    `blockquote + p` and `blockquote + p + p` — by counting the plain
    paragraphs that immediately follow the flavor quote. There is no macro
