@@ -1,0 +1,34 @@
+Lixdu — licence and provenance notice
+=====================================
+
+Font:       Lixdu (lixdu.woff, "Lixdu Regular", version 001.000)
+Designer:   Eitiqad (eitiqad blues / offoco; PayPal name Farhan Arsyadi) —
+            "Copyright (c) 2022, offoco" in the font's embedded name table
+Released:   2022-10-23
+
+Where it is published, and what each listing says about its terms:
+
+  https://befonts.com/lixdu-font.html
+      "License: Commercial Use Allowed"
+      "This font under Regular License on https://ffoco.cc/"
+      Donate: https://paypal.me/FarhanArsyadi
+
+  https://www.dafont.com/lixdu.font
+      Category "100% Free" (dafont's category for fonts declared free for
+      personal and commercial use); first seen there 2025-08-26
+      Author's note: "Donate Via Paypal: theoffoco@gmail.com — Download The
+      Full version with OTF,TTF,WOFF,WOFF2 only at https://offoco.com/ —
+      Read Full License at https://offoco.com/"
+
+The designer's own "Regular License" text is published only on the
+designer's site (ffoco.cc / offoco.com), and neither domain was reachable
+when this package was assembled (2026-09-25), so the text could not be
+reproduced here. Both public listings state commercial use is permitted;
+dafont's FAQ notes its category label is an indication and defers to the
+author's terms. This file records what was verifiable instead of inventing
+terms. Replace it with the designer's licence text the moment it is
+obtainable, and consider the donation the designer asks for.
+
+The font file itself is unmodified. It is redistributed in this package on
+the strength of the designer's public listings above; the package's own MIT
+licence does not apply to it.
