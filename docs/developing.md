@@ -50,10 +50,11 @@ watching. The *Features* tab shows the package as a path extension.
 
 Where to look while you work:
 
-- `design-guide/09-component-gallery.md` — one specimen per component, every
-  variant. Your component's live rendering.
-- `design-guide/07-markdown-reference.md` — the marker grammar.
-- `design-guide/03-palette.md` — every token, swatched.
+- `design-guide/05-text-and-callouts.md`, `06-panels-and-cards.md`,
+  `07-specialty-system.md` — every component as a "you write / result"
+  pair. Your component's live rendering, next to the markdown that makes it.
+- `design-guide/10-reference.md` — every marker, class, and token on one page.
+- `design-guide/03-palette.md` — every color token, swatched.
 
 Two things the watcher does not do: it does not reload modules `plugin.js`
 would import (it imports nothing, keep it that way), and it does not watch
@@ -86,9 +87,11 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
 2. `styles/components/<sheet>.css` — its rules, inside that sheet's layer.
 3. `components.yaml` — the catalog entry.
 4. `snippets/<name>.md` — with at least one `{{placeholder}}`.
-5. `design-guide/09-component-gallery.md` — a specimen. **Required**: a test
-   fails if the plugin handles a macro the guide never demonstrates.
-6. `design-guide/07-markdown-reference.md` — the grammar line.
+5. The matching component chapter under `design-guide/` — a "you write /
+   result" pair (a ```` ```markdown ```` fence with the source, then a
+   `Result {.dg-result}` line, then the same markdown live). **Required**: a
+   test fails if the plugin handles a macro the guide never demonstrates.
+6. `design-guide/10-reference.md` — the one-line grammar entry.
 
 Markers want a blank line on each side. `@end-procedure` directly under a
 list item is folded into the item by markdown and never closes.

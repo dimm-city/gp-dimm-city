@@ -72,9 +72,10 @@ describe("what the plugin emits", () => {
   const authored = new Set([...source.matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
   const added = [...withPlugin].filter((c) => !coreOnly.has(c) && !authored.has(c));
 
+  // `warning` is the one unprefixed modifier the plugin emits (.dc-note.warning).
   test("every class the plugin adds carries the dc- prefix", () => {
     expect(added.length).toBeGreaterThan(10);
-    const unexpected = added.filter((c) => !c.startsWith("dc-") && !/^(tier-)?(crit|hit|mixed|miss|fail|free|variable)$/.test(c));
+    const unexpected = added.filter((c) => !c.startsWith("dc-") && !/^(tier-)?(crit|hit|mixed|miss|fail|free|variable|warning)$/.test(c));
     expect(unexpected).toEqual([]);
   });
 

@@ -30,18 +30,19 @@ styles:
 
 source:
   files:
-    # Part 1 — Reference (00–09)
-    - 00-toc.md
-    - 01-overview.md
+    # Part 1 — Using the system
+    - 00-start-here.md
+    - 01-writing-a-page.md
     - 02-typography.md
     - 03-palette.md
-    - 04-components.md
-    - 05-page-templates.md
-    - 06-layout.md
-    - 07-markdown-reference.md
-    - 08-publishing.md
-    - 09-component-gallery.md
-    # Part 2 — Field Guide in Action examples
+    - 04-layout.md
+    - 05-text-and-callouts.md
+    - 06-panels-and-cards.md
+    - 07-specialty-system.md
+    - 08-page-templates.md
+    - 09-publishing.md
+    - 10-reference.md
+    # Part 2 — A book, page by page (Field Guide pages, verbatim)
     - 300-example-overview.md
     - 301-example-front-matter.md
     - 302-example-chapter-opener.md

@@ -6,7 +6,10 @@
    included — at any specificity.
 
    Contains, in order:
-     §1 code specimens and rules inside guide chapters (.dg-guide)
+     §1 code specimens and rules inside guide chapters (.dg-guide), and the
+        WRITE / RESULT labels every component page pairs: a fenced
+        ```markdown block is what the author types, the block after it is
+        what the package renders from exactly that source
      §2 the 301 intro-page specimen (.dg-intro)
      §3 the palette swatch grid (03-palette.md)
      §4 the #ch-example-* demo-chapter identity map (302-307)
@@ -65,6 +68,43 @@ div.chapter.dg-guide hr {
   border: none;
   border-top: 2px solid var(--border-hairline);
   margin: 0.25in 0;
+}
+
+/* WRITE / RESULT pair. A ```markdown fence is labelled automatically; the
+   author marks the rendered block with a `Result {.dg-result}` paragraph.
+   The RESULT label stays with its block; a fence may end a page. */
+div.chapter.dg-guide pre:has(code.language-markdown) {
+  position: relative;
+  padding-top: 18px;
+}
+
+div.chapter.dg-guide pre:has(code.language-markdown)::before,
+div.chapter.dg-guide p.dg-result {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-cream);
+  background: var(--orange);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+div.chapter.dg-guide pre:has(code.language-markdown)::before {
+  content: "You write";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0 0 2px 0;
+}
+
+div.chapter.dg-guide p.dg-result {
+  display: block;
+  width: max-content;
+  margin: 0.05in 0 0.08in;
+  background: var(--hud-blue);
+  break-after: avoid;
 }
 
 /* ── §2 Intro page specimen (301-example-front-matter.md) ──────────────────── */
