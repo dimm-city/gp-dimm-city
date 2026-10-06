@@ -1,96 +1,34 @@
-@chapter #ch-typography .typography .dg-guide ch="1"
+@chapter #ch-typography .typography .dg-guide ch="2"
 
 @page
+
 
 # Typography
 
 @lede
 
-Three font families, each with a specific role. lixdu anchors display and banner headings; Tomorrow handles tab labels and mono chrome; Titillium Web carries all body, flavor, and quote copy.
+Three faces, each with one job. lixdu is the display face for chapter and section headings and banners; Tomorrow is the mono face for tabs, chips, counters, and code; Titillium Web carries every line of body, flavor, and quote copy.
 
 @end-lede
 
-## Type Scale Reference
+## The type scale
 
-| Element | Syntax | Size · Weight · Font | Role |
+| Element | You write | Size · Face | Role |
 |---|---|---|---|
-| H1 | `# Chapter Title` | 20.7pt · bold · lixdu | Chapter and specialty openers only |
-| H2 | `## Section Heading` | 17.3pt · bold · lixdu | Major topic and section breaks |
-| H3 | `### Sub-section` | 14.4pt · lixdu | Reference column labels and sub-sections |
-| Spray Banner | `## Title {.dc-spray}` | Wider tracking, crimson underbar | Learning path headers |
-| Chevron Banner | `# Title {.dc-chevron}` | Angled crimson clip-path | Primary chapter and specialty opener banner |
-| Body | plain paragraph | 12pt · Titillium Web | Base reading type for all prose |
-| Flavor | `> [!FLAVOR]` | Italic body size · Titillium Web | In-world voice, card flavor, atmospheric prose |
-| Card Tab | `<span class="dc-tab-title">` (plugin-emitted) | 9pt · Tomorrow monospace | Skill card tab labels |
-| Mono Cap Tag | `<span class="dc-tag">` | 8pt · Tomorrow monospace | Stance and timing chips |
+| H1 | `# Title` | 20.7pt bold · lixdu | Chapter and specialty openers |
+| H2 | `## Heading` | 17.3pt bold · lixdu | Section breaks, with an accent rule |
+| H3 | `### Sub-heading` | 14.4pt · lixdu | Column labels and sub-topics |
+| H4 | `#### Item` | small uppercase · lixdu | Skill names, gear names, stat-block names |
+| Body | a paragraph | 12pt · Titillium Web | All prose |
+| Flavor | `> [!FLAVOR]` | 12pt italic · Titillium Web | In-world voice |
+| Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
+| Spray banner | `## Title {.dc-spray}` | H2 scale, spray-paint fill | Learning paths, major topic breaks |
+| Card tab | emitted by `@skill` | 9pt · Tomorrow | Skill-card tab labels |
+| Tag | `<span class="dc-tag">` | 8pt · Tomorrow | Keyword and cost chips |
 
----
+## Heading hierarchy
 
-## Font Token Reference
-
-| Variable | Font | Fallback | Used for |
-|---|---|---|---|
-| `--font-display` | lixdu | serif | H1–H3, banners, card tabs |
-| `--font-body` | Titillium Web | sans-serif | Body prose, flavor text, quotes |
-| `--font-mono` | Tomorrow | monospace | Code, counters, and monospaced tabular data |
-| `--font-tab` | Tomorrow | lixdu / sans-serif | Card tab labels, banner labels, stat names — Tomorrow preferred for readability at small sizes |
-| `--font-sans` | Titillium Web | Inter / system-ui | Alternate sans-serif body; use when Titillium Web weight needs a fallback |
-| `--font-quote` | Titillium Web | Tomorrow / serif | Italic flavor quotes and pullquote attribution lines |
-
-> [!NOTE]
-> `--font-tab` and `--font-mono` both resolve to Tomorrow as first choice. The distinction: `--font-tab` is for short label text (tab chips, stat labels); `--font-mono` is for code, counters, and monospaced tabular data.
-
-@page
-
-@section .gp-columns-2 .dc-column-panel
-
-## Smart Typography
-
-The markdown renderer has `typographer: true` enabled, which automatically converts common ASCII shortcuts to proper typographic characters.
-
-- `--` renders as an en dash --
-- `---` renders as an em dash ---
-- `...` renders as an ellipsis ...
-- `"quoted"` renders as curly double quotes "quoted"
-
-No special syntax required for these conversions.
-
-## See It In Action
-
-### Body Prose
-
-Twelve-point Titillium Web carries all running narrative. The quick dark fox leaped over the lazy augmerc's rig. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Read a full paragraph here --- notice the leading, the x-height, and how weight shifts when a word is **bolded** or *italicized* mid-sentence.
-
-### Flavor Text
-
-> [!FLAVOR]
-> See an opening, ya take it. Best time to hit 'em is when they think it's over.
-
-### Smart Typography
-
-The typographer converts ASCII shortcuts automatically --- no special syntax needed. Dashes: en -- and em --- . Ellipsis: ... . Double quotes: "quoted phrase" . Single quotes: 'abbreviated'.
-
-### Real-World Examples
-
-- [Front Matter & TOC](#ch-example-front-matter) — credits, TOC, intro pages
-- [Chapter Openers](#ch-example-chapter-opener) — chapter start spreads with chevron and spray banners in context
-- [Specialty Overview](#ch-example-specialty-overview) — chapter-02 specialty intro pages
-- [Specialty Profile](#ch-example-specialty-profile) — full specialty spread with skill card tabs and ability text
-- [Rules & Mechanics](#ch-example-rules) — rolling, outcomes, body prose at density
-- [Dream Master Pages](#ch-example-dm-npcs) — NPC stat blocks, encounter hooks
-- [Gear & Tech](#ch-example-gear-tech) — weapon tables and cybernetics
-
-> [!NOTE]
-> **Column-safe headings:** H3 and H4 only. H1 and H2 at full print size exceed 3.5-inch column width — reserve them for full-width chapter openers, section breaks, and specimen pages. In two-column reference layouts, H3 is the workhorse heading.
-
-> [!NOTE]
-> **Body vs. flavor:** Body prose is Titillium Web at 12pt with `--lh-normal` (1.5) leading. Flavor text inherits the same size but switches to italic and `--ink-smoke` for a visual register shift. Never use bold italic for flavor — it reads as urgency, not voice.
-
-@end-section
-
-### Heading Hierarchy
-
-Each heading level below is rendered live at its actual print size using the lixdu display font.
+Each level rendered at its print size:
 
 # Chapter Title
 
@@ -98,12 +36,56 @@ Each heading level below is rendered live at its actual print size using the lix
 
 ### Sub-section Label
 
-#### Card Tab / Tier Label
+#### Item Heading
 
----
+## Heading chrome
 
-### Chevron and Spray Banners
+Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; `.dc-no-top` pulls it tight against whatever is above it.
+
+```markdown
+# Augmerc {.dc-chevron}
+
+## Biting Distance {.dc-spray}
+
+### Spec Tweak: Wired to Kill {.dc-spec-tweak .dc-no-top}
+```
+
+Result {.dg-result}
+
+@section .dc-banner-demo
 
 # Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
+
+### Spec Tweak: Wired to Kill {.dc-spec-tweak .dc-no-top}
+
+@end-section
+
+## Body and flavor
+
+Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is **bolded** or *italicized* mid-sentence.
+
+> [!FLAVOR]
+> See an opening, ya take it. Best time to hit 'em is when they think it's over.
+
+Flavor keeps the body size and switches to italic and `--ink-smoke`. Never set flavor in bold italic — it reads as urgency, not voice.
+
+> [!NOTE]
+> **Column-safe headings:** in a two-column layout use `###` and `####`. `#` and `##` at full print size exceed a 3.5-inch column.
+
+## Smart typography
+
+The renderer converts ASCII shortcuts as you type: `--` is an en dash --, `---` an em dash ---, `...` an ellipsis ..., and "straight quotes" curl. No special syntax, no Unicode entry.
+
+## Font tokens
+
+| Token | Face | Used for |
+|---|---|---|
+| `--font-display` | lixdu | H1–H3, banners |
+| `--font-body` | Titillium Web | Body prose, flavor, quotes |
+| `--font-mono` | Tomorrow | Code, counters, tabular data |
+| `--font-tab` | Tomorrow | Short label text: card tabs, stat labels |
+| `--font-quote` | Titillium Web | Italic quotes and attributions |
+
+The fonts ship in the package and embed in the PDF at build time; a book never installs them.

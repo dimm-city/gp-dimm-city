@@ -65,7 +65,7 @@ describe("every chapter", () => {
     });
 
     test(`${rel} references only local images that exist`, () => {
-      const prose = read(rel).replace(/^```[\s\S]*?^```/gm, ""); // a code block may show an example path
+      const prose = read(rel).replace(/^```[\s\S]*?^```/gm, "").replace(/`[^`\n]*`/g, ""); // code may show an example path
       const refs = [...prose.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)].map((m) => m[1]).filter((r) => !/^https?:/.test(r));
       for (const ref of refs) expect(existsSync(path.join(GUIDE, ref)), `${rel} → ${ref}`).toBe(true);
     });

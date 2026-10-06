@@ -41,5 +41,12 @@
   "MD026": false,
 
   // Asterisk vs underscore emphasis is mixed across the corpus by author.
-  "MD049": false
+  "MD049": false,
+
+  // A book links across chapter files (`[Layout](#ch-layout)`); the linter
+  // sees one file at a time and cannot resolve the fragment.
+  "MD051": false,
+
+  // Stacked `> [!NOTE]` alerts are separate blocks separated by a blank line.
+  "MD028": false
 }
