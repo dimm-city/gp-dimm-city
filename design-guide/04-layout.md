@@ -1,14 +1,10 @@
 @chapter #ch-layout .layout .dg-guide ch="4"
 
-@page
+@page .dg-doc
 
 # Layout
 
-@lede
-
-How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a class on `@section`, `@page`, or an image.
-
-@end-lede
+How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a class on `@section`, `@page`, or an image. {.dg-lede}
 
 
 ## Two and three columns
@@ -29,6 +25,8 @@ Right column.
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .gp-columns-2
 
 Left column. Text fills top to bottom and overflows right.
@@ -38,6 +36,8 @@ Left column. Text fills top to bottom and overflows right.
 Right column.
 
 @end-section
+
+</div>
 
 ## The column panel
 
@@ -59,6 +59,8 @@ Nothing here is safe. Nothing here is free.
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .gp-columns-2 .dc-column-panel
 
 ## The City
@@ -70,6 +72,8 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 Nothing here is safe. Nothing here is free.
 
 @end-section
+
+</div>
 
 ## Tabbed section
 
@@ -87,6 +91,8 @@ You're a Dreamer, not because you're special, but because you're reckless enough
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .dc-tabbed
 
 ## Dreamers
@@ -94,6 +100,8 @@ Result {.dg-result}
 You're a Dreamer, not because you're special, but because you're reckless enough to try.
 
 @end-section
+
+</div>
 
 ## Sidebar
 
@@ -115,6 +123,8 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
 @sidebar
@@ -126,6 +136,8 @@ Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Mov
 @end-sidebar
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there — let them, and let it cost.
+
+</div>
 
 ### Inset sidebar
 
@@ -145,9 +157,9 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 @end-sidebar
 ```
 
-Result {.dg-result}
-
 @page .page-sidebar
+
+Result {.dg-result}
 
 Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.
 
@@ -161,7 +173,7 @@ One out-of-turn ability per round is *free to trigger* — but it still spends i
 
 That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.
 
-@page
+@page .dg-doc
 
 ## Floated images
 
@@ -175,11 +187,15 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 ![Scavenger](img/scavenger.png){.dc-img-float-right}
 
 Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. Neon signs cracked. Alleyways bled smoke. Debris rained in bursts. This wasn't about glory — it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
 
 DimmCitz scattered, vanished into bolted dens and reinforced rooftops. The air stank of scorched fur, ozone, and cordite.
+
+</div>
 
 A `@section .dc-fiction-excerpt` places its first image for you — see [Page Templates](#ch-templates).
 

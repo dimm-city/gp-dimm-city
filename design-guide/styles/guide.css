@@ -6,6 +6,11 @@
    included — at any specificity.
 
    Contains, in order:
+     §0 the guide's own register: explainer pages (`@page .dg-doc`) print on
+        plain paper with neutral headings and tables, so nothing the guide
+        says can be mistaken for a component. The brick wall appears only
+        behind rendered output — inside a `.dg-stage` specimen box, on a
+        whole-page specimen, and on every Part 2 example page
      §1 code specimens and rules inside guide chapters (.dg-guide), and the
         WRITE / RESULT labels every component page pairs: a fenced
         ```markdown block is what the author types, the block after it is
@@ -25,9 +30,105 @@
    NOT repeated here.
    ──────────────────────────────────────────────────────────────────────── */
 
+/* ── §0 Guide register: doc pages and specimen stages ──────────────────────── */
+:root {
+  --dg-paper: #ffffff;
+  --dg-ink: #222222;
+  --dg-ink-soft: #555555;
+  --dg-rule: #c8c8c8;
+  --dg-fill: #f2f2f2;
+}
+
+/* Explainer pages are a named page so the sheet itself — content box and
+   margin band — prints plain. This rule beats the package's `@page` brick
+   (dc-native.css §1) because book sheets sit outside the package layer. */
+.page.dg-doc { page: dg-doc; }
+
+@page dg-doc {
+  background: var(--dg-paper);
+}
+
+/* The guide's cover (00-start-here) prints no footer. */
+@page dg-doc:first {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* Guide headings and tables: direct children of a doc page only, so anything
+   inside a .dg-stage keeps the package's own styling. */
+.page.dg-doc > :is(h1, h2, h3),
+.page.dg-doc > .dg-toc > h2 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--dg-ink);
+}
+
+.page.dg-doc > h1 {
+  font-size: 24pt;
+  border-bottom: 1.5pt solid var(--dg-ink);
+}
+
+.page.dg-doc > h2,
+.page.dg-doc > .dg-toc > h2 {
+  font-size: 15pt;
+  margin-top: 0.2in;
+  border-bottom: 0.75pt solid var(--dg-rule);
+}
+
+.page.dg-doc > h3 {
+  font-size: 12pt;
+}
+
+.page.dg-doc > p.dg-lede {
+  font-size: 12.5pt;
+  line-height: 1.5;
+  color: var(--dg-ink-soft);
+  margin-bottom: 0.2in;
+}
+
+.page.dg-doc > table th {
+  background: var(--dg-fill);
+  color: var(--dg-ink);
+  border-bottom: 1pt solid var(--dg-ink);
+}
+
+.page.dg-doc > table td {
+  background: none;
+  border-bottom: 0.5pt solid var(--dg-rule);
+}
+
+.page.dg-doc > .dg-toc a {
+  color: var(--dg-ink);
+  border-bottom: none;
+  font-weight: 700;
+}
+
+/* The specimen stage: the brick wall a component is designed to sit on,
+   framed so it reads as "rendered output" against the plain doc page. It may
+   split across pages; each fragment keeps its frame. */
+.dg-stage {
+  display: flow-root;
+  background: var(--bg) url("../../images/brick-bg-01.png") repeat;
+  background-size: 1.5in auto;
+  background-blend-mode: multiply;
+  border: 1pt solid var(--dg-ink-soft);
+  padding: 0.15in;
+  margin: 0 0 0.2in;
+  box-decoration-break: clone;
+}
+
+/* A stage specimen is short, so its columns balance. The package's
+   `column-fill: auto` (dc-native.css §10b) is for runs that fragment across
+   pages; on a stage it stretched the first column to the page bottom. */
+.dg-stage :is(.gp-columns-2, .gp-columns-3) {
+  column-fill: balance;
+}
+
 /* ── §1 Code specimens ─────────────────────────────────────────────────────── */
 div.chapter.dg-guide pre {
-  background: var(--paper-aged);
+  background: var(--dg-fill);
   border-left: 3px solid var(--orange);
   border-radius: 2px;
   margin: 0.15in 0;
@@ -42,6 +143,8 @@ div.chapter.dg-guide pre code {
   line-height: 1.5;
   color: var(--ink);
   background: none;
+  border: 0;
+  border-radius: 0;
   padding: 0;
   white-space: pre-wrap;
   word-break: break-word;
@@ -71,8 +174,10 @@ div.chapter.dg-guide hr {
 }
 
 /* WRITE / RESULT pair. A ```markdown fence is labelled automatically; the
-   author marks the rendered block with a `Result {.dg-result}` paragraph.
-   The RESULT label stays with its block; a fence may end a page. */
+   author marks the rendered block with a `Result {.dg-result}` paragraph
+   followed by the specimen wrapped in `<div class="dg-stage">` (§0), or by a
+   whole-page specimen. The RESULT tab sits on the stage's top edge and stays
+   with it; a fence may end a page. */
 div.chapter.dg-guide pre:has(code.language-markdown) {
   position: relative;
   padding-top: 18px;
@@ -102,7 +207,8 @@ div.chapter.dg-guide pre:has(code.language-markdown)::before {
 div.chapter.dg-guide p.dg-result {
   display: block;
   width: max-content;
-  margin: 0.05in 0 0.08in;
+  margin: 0.05in 0 0;
+  border-radius: 2px 2px 0 0;
   background: var(--hud-blue);
   break-after: avoid;
 }

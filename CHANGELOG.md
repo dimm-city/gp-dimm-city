@@ -24,6 +24,15 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Design guide: explainer pages print plain, specimens sit on the wall.**
+  Part 1 pages (and the Part 2 overview) are `@page .dg-doc`, a named page
+  with a white background and neutral headings, tables and contents, so guide
+  text can't be mistaken for a component. Each rendered result is wrapped in
+  a framed `.dg-stage` that carries the brick wall; whole-page specimens and
+  the Part 2 example pages keep the full brick page. Chapter ledes, the
+  contents lists, and the explainer notes and column panels that used
+  package components are now plain guide markup. All of this lives in
+  `design-guide/` (markdown and `styles/guide.css`); the package is unchanged.
 - **Tests run against gutterpress 0.11.13** (devDependency, was 0.10.11).
 - **`test/fixtures/all-macros.md` and its snapshot are gone**; the design
   guide is the fixture. `npm run test:update-snapshot` is now bun's own

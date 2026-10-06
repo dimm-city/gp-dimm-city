@@ -1,14 +1,10 @@
 @chapter #ch-reference .reference .dg-guide ch="10"
 
-@page
+@page .dg-doc
 
 # Reference
 
-@lede
-
-Every marker on one page, the options they take, the classes you can add, and the token each component exposes. The chapters before this one show each in use.
-
-@end-lede
+Every marker on one page, the options they take, the classes you can add, and the token each component exposes. The chapters before this one show each in use. {.dg-lede}
 
 
 ## Structure (Gutterpress core)

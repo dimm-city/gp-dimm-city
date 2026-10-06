@@ -1,15 +1,11 @@
 @chapter #ch-typography .typography .dg-guide ch="2"
 
-@page
+@page .dg-doc
 
 
 # Typography
 
-@lede
-
-Three faces, each with one job. lixdu is the display face for chapter and section headings and banners; Tomorrow is the mono face for tabs, chips, counters, and code; Titillium Web carries every line of body, flavor, and quote copy.
-
-@end-lede
+Three faces, each with one job. lixdu is the display face for chapter and section headings and banners; Tomorrow is the mono face for tabs, chips, counters, and code; Titillium Web carries every line of body, flavor, and quote copy. {.dg-lede}
 
 ## The type scale
 
@@ -30,6 +26,8 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 
 Each level rendered at its print size:
 
+<div class="dg-stage">
+
 # Chapter Title
 
 ## Section Heading
@@ -37,6 +35,8 @@ Each level rendered at its print size:
 ### Sub-section Label
 
 #### Item Heading
+
+</div>
 
 ## Heading chrome
 
@@ -52,6 +52,8 @@ Three classes dress a heading. The chevron opens a chapter, the spray breaks a m
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .dc-banner-demo
 
 # Augmerc {.dc-chevron}
@@ -62,17 +64,22 @@ Result {.dg-result}
 
 @end-section
 
+</div>
+
 ## Body and flavor
+
+<div class="dg-stage">
 
 Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is **bolded** or *italicized* mid-sentence.
 
 > [!FLAVOR]
 > See an opening, ya take it. Best time to hit 'em is when they think it's over.
 
+</div>
+
 Flavor keeps the body size and switches to italic and `--ink-smoke`. Never set flavor in bold italic — it reads as urgency, not voice.
 
-> [!NOTE]
-> **Column-safe headings:** in a two-column layout use `###` and `####`. `#` and `##` at full print size exceed a 3.5-inch column.
+**Column-safe headings:** in a two-column layout use `###` and `####`. `#` and `##` at full print size exceed a 3.5-inch column.
 
 ## Smart typography
 

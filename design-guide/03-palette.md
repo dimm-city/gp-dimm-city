@@ -1,14 +1,10 @@
 @chapter #ch-palette .palette .dg-guide ch="3"
 
-@page
+@page .dg-doc
 
 # Color
 
-@lede
-
-Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crimson, orange, rust, amber — for printed lore, ability text, and danger. **HUD digital** — blue and magenta — for cybernetics, tech, and system chrome. The page is never black, and fire and HUD never share one element.
-
-@end-lede
+Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crimson, orange, rust, amber — for printed lore, ability text, and danger. **HUD digital** — blue and magenta — for cybernetics, tech, and system chrome. The page is never black, and fire and HUD never share one element. {.dg-lede}
 
 
 ## Paper & ink
@@ -45,8 +41,6 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
   <div class="dc-palette-swatch bg-hud-magenta on-dark"><strong>HUD Magenta</strong><code>#c026d3</code><code>--hud-magenta</code></div>
 </div>
 
-@section .gp-columns-2 .dc-column-panel
-
 ## Surfaces & borders
 
 <div class="dc-palette-grid">
@@ -58,16 +52,12 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
 
 `--paper-stain` (`#b0a89c`) is a textured fill; `--border-hairline` is a rule line. Other rules use the ink scale directly.
 
-@column-break
-
 ## Usage rules
 
 - Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.
 - HUD blue and magenta mean cybernetics or tech. Never mix fire and HUD on the same element.
 - Paper is for raised elements. The wall is the canvas; cream is the surface.
 - Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run.
-
-@end-section
 
 
 ## Retheming a book

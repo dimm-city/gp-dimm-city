@@ -1,14 +1,10 @@
 @chapter #ch-templates .templates .dg-guide ch="8"
 
-@page
+@page .dg-doc
 
 # Page Templates
 
-@lede
-
-Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2.
-
-@end-lede
+Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
 
 
 ## Page geometry
@@ -160,6 +156,8 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
 
 #### What's Yr Handle?
@@ -171,6 +169,8 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
 
 @end-section
+
+</div>
 
 
 ## Specialty catalog page
