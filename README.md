@@ -137,6 +137,8 @@ artwork and game text are not licensed by this package.
 
 ## Development
 
+The short how-to is [docs/developing.md](./docs/developing.md): the edit → preview → test → release loop, in web-dev terms.
+
 Everything you need to change the package and see the result is in this
 repository: the plugin, the stylesheets, and `design-guide/` — the Dimm City
 Design Guide, a Gutterpress book that documents every macro, token, component
