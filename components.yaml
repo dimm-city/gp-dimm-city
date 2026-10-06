@@ -4,7 +4,7 @@
 # WHAT THIS IS
 #   One entry per component: what an author writes, what lands in the HTML,
 #   which custom properties are public, how it fragments, and which stylesheet
-#   owns it. The Dimm City Design Guide (a book in the dc-op-manual repo)
+#   owns it. The Dimm City Design Guide (design-guide/ in this repo)
 #   explains and demonstrates the components; this file is the catalog of
 #   record. It is the file package.json declares as `gutterpress.components` —
 #   Gutterpress only checks that the file exists, so the schema below is this

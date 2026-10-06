@@ -1,0 +1,45 @@
+// Markdown lint rules for the gutterpress book projects in this repo.
+//
+// gutterpress runs these through `source.markdownlint` during
+// `gutterpress validate`. That check reports nothing at all unless a config is
+// found, so this file is what makes markdown linting exist for these books.
+// Each project's manifest points here via `validate.source.markdownlint`.
+//
+// Everything below starts from markdownlint's defaults. The disabled rules are
+// house-style preferences that produced ~14,000 findings across the three
+// projects; what remains is the ~170 that indicate a real rendering or
+// correctness problem. Re-enable any of these if the house style changes.
+{
+  "default": true,
+
+  // Prose in book source is written in long paragraphs, not wrapped columns.
+  "MD013": false,
+
+  // Table alignment and padding are cosmetic; the layout comes from CSS.
+  "MD060": false,
+  "MD058": false,
+
+  // Whitespace cosmetics that do not change the rendered page.
+  "MD009": false,
+  "MD012": false,
+  "MD022": false,
+  "MD032": false,
+
+  // List marker and indent style vary by author and render identically.
+  "MD004": false,
+  "MD007": false,
+  "MD029": false,
+
+  // These books embed layout HTML (div, span, u, br) on purpose.
+  "MD033": false,
+
+  // Chapters open with frontmatter and layout markers, not an h1.
+  "MD041": false,
+
+  // Bold or italic used as a visual lead-in is an intentional device here.
+  "MD036": false,
+  "MD026": false,
+
+  // Asterisk vs underscore emphasis is mixed across the corpus by author.
+  "MD049": false
+}

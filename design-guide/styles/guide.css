@@ -1,0 +1,332 @@
+/* =============================================================================
+   GUIDE.CSS — the Design Guide's own chrome
+   =============================================================================
+   Unlayered, like every book sheet: gutterpress puts the package in its own
+   `@layer ext.gp-dimm-city`, so these rules beat it — dc-native.css
+   included — at any specificity.
+
+   Contains, in order:
+     §1 code specimens and rules inside guide chapters (.dg-guide)
+     §2 the 301 intro-page specimen (.dg-intro)
+     §3 the palette swatch grid (03-palette.md)
+     §4 the #ch-example-* demo-chapter identity map (302-307)
+     §5 FROZEN COPIES of the field-guide art classes the Part 2 example
+        chapters use. Deliberately not shared with the field guide: the guide
+        shows those pages as captured at the cutover. If the field guide
+        changes an .fg-art-* rule, decide separately whether the specimen
+        should follow.
+
+   The rules every Dimm City book needs — contents rows, credits labels and
+   layout, chapter-start heading, specialty break control — moved into the
+   package (page-templates.css, dc-native.css) in gp-dimm-city 1.0.0 and are
+   NOT repeated here.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* ── §1 Code specimens ─────────────────────────────────────────────────────── */
+div.chapter.dg-guide pre {
+  background: var(--paper-aged);
+  border-left: 3px solid var(--orange);
+  border-radius: 2px;
+  margin: 0.15in 0;
+  padding: 10px 14px;
+  overflow-x: auto;
+  break-inside: avoid;
+}
+
+div.chapter.dg-guide pre code {
+  font-family: var(--font-mono);
+  font-size: 9pt;
+  line-height: 1.5;
+  color: var(--ink);
+  background: none;
+  padding: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Inline code (not inside pre) */
+div.chapter.dg-guide :not(pre)>code {
+  font-family: var(--font-mono);
+  font-size: 9pt;
+  /* Was: --orange (#d4500a) on rgba(242, 77, 0, 0.08) — orange-on-faint-
+     orange = 1.18:1 (effectively invisible). The 8% tint barely shifts
+     the wall/paper color, so the effective bg is whatever's behind. Fix:
+     keep the warm tint as a subtle visual but use --blood text which
+     passes on both wall (5.21:1) and paper-cream (7.73:1). */
+  color: var(--blood);
+  background: rgba(242, 77, 0, 0.08);
+  border-radius: 2px;
+  padding: 1px 4px;
+  overflow-wrap: break-word;
+  /* prevent long token names from escaping container bounds */
+}
+
+div.chapter.dg-guide hr {
+  border: none;
+  border-top: 2px solid var(--border-hairline);
+  margin: 0.25in 0;
+}
+
+/* ── §2 Intro page specimen (301-example-front-matter.md) ──────────────────── */
+.page.page-intro.dg-intro > h1 {
+  border: 0;
+  margin-top: 24pt;
+}
+
+.page.page-intro.dg-intro p {
+  line-height: 1.6;
+}
+
+/* ── §3 Palette swatches (03-palette.md) ───────────────────────────────────── */
+div.chapter.dg-guide .dc-palette-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.1in 0;
+}
+
+div.chapter.dg-guide .dc-palette-swatch {
+  width: 72px;
+  min-height: 68px;
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 8pt;
+  line-height: 1.2;
+}
+
+div.chapter.dg-guide .dc-palette-swatch strong {
+  display: block;
+}
+
+div.chapter.dg-guide .dc-palette-swatch.border {
+  border: 1px solid var(--border-hairline);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.on-light {
+  color: var(--ink);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.on-dark {
+  color: var(--paper-cream);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-ink {
+  background: var(--ink);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-ink-smoke {
+  background: var(--ink-smoke);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-ink-dust {
+  background: var(--ink-dust);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-crimson {
+  background: var(--crimson);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-blood {
+  background: var(--blood);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-orange {
+  background: var(--orange);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-rust {
+  background: var(--rust);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-amber {
+  background: var(--amber);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-deep-rust {
+  background: var(--deep-rust);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-hud-blue {
+  background: var(--hud-blue);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-hud-blue-bright {
+  background: var(--hud-blue-bright);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-hud-blue-dim {
+  background: var(--hud-blue-dim);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-hud-magenta {
+  background: var(--hud-magenta);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-hud-panel {
+  background: var(--hud-panel);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-surface-tint-3 {
+  background: var(--surface-tint-3);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-surface-orange-tint {
+  background: var(--surface-orange-tint);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
+  background: var(--border-hairline);
+}
+
+/* ── §4 Demo-chapter identity map (302–307) ────────────────────────────────── */
+#ch-example-chapter-opener {
+   --dc-section-accent: var(--brand-magenta-deep);
+}
+
+/* Chapter 2 — specialty overview (Choose Your Specialty card grid): brand-magenta gateway */
+#ch-example-specialty-overview {
+   --dc-section-accent: var(--brand-magenta-deep);
+}
+
+/* Chapter 3 — specialty profile spreads (Augmerc and friends): brand-magenta gateway */
+#ch-example-specialty-profile {
+   --dc-section-accent: var(--brand-magenta-deep);
+}
+
+/* Chapter 4 — rules (Are You Lucid Yet, Dreams, City, etc.): brand identity register */
+#ch-example-rules {
+   --dc-section-accent: var(--brand-magenta-deep);
+}
+
+/* Street-sign image in the chapter opener fiction excerpt: float right so the
+   ape-scenario text wraps around the sign's left side. Shadow flipped to
+   -x so it falls LEFT (visible beside the float) rather than right (clipped
+   by the section's composite edge). Token overrides follow contextual
+   cascade principle. */
+#ch-example-rules .section.dc-fiction-excerpt {
+   --dc-fiction-art-float: right;
+   --dc-fiction-art-shadow: -4px 4px 0 var(--hud-blue-dark);
+}
+
+/* Chapter 5 — DM & NPC pages (stat blocks) */
+#ch-example-dm-npcs {
+   --dc-section-accent: var(--rust);
+}
+
+/* Prevent a level-3 heading orphan at the bottom of a page — scoped
+   break-before on the heading itself. */
+#ch-example-dm-npcs .section>h3:first-child {
+   break-before: avoid;
+}
+
+/* Chapter 6 — gear & tech */
+#ch-example-gear-tech {
+   --dc-section-accent: var(--amber-dark);
+}
+
+/* ── DM/NPC chapter: page-title h1/h2 in neutral ink, not teal ──────────────
+   Default h1/h2 colors (--hud-magenta for h1, --hud-blue-dark for h2) clash
+   with this chapter's rust --dc-section-accent. Designer-eye reviewer flagged
+   "NPC STAT BLOCK: FODDER" h2 page-titles rendering teal while everything
+   else in the chapter (section tabs, stat-block accents, table headers) is
+   rust. Neutral --ink-dark page-titles let the chapter's rust components
+   carry the chroma identity without fighting the title. */
+#ch-example-dm-npcs h1,
+#ch-example-dm-npcs h2:not(.dc-spray):not(.dc-chevron) {
+   color: var(--ink-dark);
+   border-bottom-color: var(--rust);
+}
+
+/* ── DM/NPC chapter: tables wear the chapter's gutter-pillar accent ─────────
+   Default .dc-table header background is --hud-blue-dim (cold-teal HUD),
+   which conflicts with the rust section-accent on this chapter. Use --blood
+   (not --rust) for the header fill: --rust on paper-cream prints at 4.59:1
+   contrast — a bare WCAG AA pass with no press-margin safety. --blood lands
+   at 6.3:1 contrast on the same background while staying firmly in the warm
+   gutter-pillar register. Section headers and rule-stripes still use --rust;
+   table-header fills get the safer --blood. */
+#ch-example-dm-npcs .dc-table th,
+#ch-example-dm-npcs table th {
+   background: var(--blood);
+   color: var(--paper-cream);
+}
+
+/* User feedback (2026-05-24): "The MPC stat blocks are decent but need
+   more polish, not great colors." The default --dc-npc-stat-label-color
+   is --hud-blue-dark (teal), which clashes with the rust h4 top-rule
+   inherited from this chapter's --dc-section-accent. Override the h5
+   label color + primary stat-line color so the entire stat block lives
+   in the rust/blood register instead of teal-vs-rust split. */
+#ch-example-dm-npcs .dc-npc-stat {
+   --dc-npc-stat-label-color: var(--rust);
+   --dc-npc-stat-primary: var(--blood);
+}
+
+/* ── DM/NPC chapter: callouts catch a faint fungi glow ───────────────────────
+   Plants the fluorescent-fungi pillar in the DM chapter. The rust accents on
+   section headers and stat-block rules deliver the gutter pillar; this rule
+   gives advisory/vibe callouts a low-level organic glow — alley fungus
+   creeping into the encounter rules. Uses --fungi-rot at 30% mix against the
+   paper-light substrate so the green stays a tint, not a fill, and uses
+   --fungi-mid as the left-bar border accent. */
+#ch-example-dm-npcs .dc-alert {
+   /* User feedback (2026-05-24): "The colors for core elements and focus
+     on the Fantascape are absolutely terrible." Previous fungi-rot 30%
+     mix produced muddy olive-green. Switched to paper-stain (warm
+     parchment tint) with --rust border accent — matches the chapter's
+     rust --dc-section-accent so the callouts feel like part of the chapter
+     register, not an alien color block. */
+   --dc-alert-bg: var(--paper-stain);
+   --dc-alert-border: var(--rust);
+   --dc-alert-fg: var(--ink);
+   --dc-alert-label-color: var(--rust);
+}
+
+/* ── §5 Frozen field-guide art classes (301, 302, 305) ─────────────────────── */
+.fg-art-street-sign {
+   float: right;
+   width: 1.75in;
+   height: auto;
+   object-fit: cover;
+   margin: 0 0 var(--space-sm) var(--space-md);
+   outline: 3px solid var(--ink-dark);
+   box-shadow: -4px 4px 0 var(--hud-blue-dark);
+}
+
+.fg-art-portrait {
+   float: right;
+   width: 2.25in;
+   height: 2.75in;
+   object-fit: cover;
+   outline: 3px solid var(--ink-dark);
+   box-shadow: -4px 4px 0 var(--hud-magenta);
+   margin-bottom: 12pt;
+}
+
+.fg-art-founders-house {
+   object-fit: cover;
+   border: none;
+   box-shadow: none;
+}
+.fg-art-founders-house {
+  height: 2.75in;
+}
+
+.fg-art-intro-image {
+   display: block;
+   float: left;
+   width: 2in;
+   height: auto;
+   max-height: 4in;
+   object-fit: contain;
+   object-position: center;
+   margin: 0.05in 0.22in 0.15in 0;
+   shape-outside: margin-box;
+}
+
+:where(.page-intro) {
+   --dc-section-accent: var(--hud-magenta);
+}

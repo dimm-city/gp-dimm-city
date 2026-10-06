@@ -1,0 +1,59 @@
+# Publish the design guide as a static site on GitHub Pages.
+#
+# One-time repository setting, or every run fails at the deploy step:
+#   Settings → Pages → Build and deployment → Source: GitHub Actions
+#
+# Builds design-guide/ with `gutterpress build --format html` — a self-
+# contained book.html (CSS and fonts inlined) with the viewer's nav scripts and
+# the images the guide references — against the package in this checkout, so
+# the published site is always the current main.
+
+name: Publish design guide
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "design-guide/**"
+      - "plugin.js"
+      - "styles/**"
+      - "fonts/**"
+      - "images/**"
+      - "package.json"
+      - ".github/workflows/design-guide-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/bun
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run build:html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .build/design-guide-site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

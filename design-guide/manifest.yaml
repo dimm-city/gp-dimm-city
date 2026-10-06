@@ -1,0 +1,64 @@
+title: "Dimm City — Design Guide"
+authors:
+  - "IT Lackey"
+
+# Stated explicitly rather than relying on the fallback. gutterpress already
+# defaults to dtrpg when no preset is given, so this changes nothing about the
+# build — it just stops the warning and pins the choice.
+preset: dtrpg
+
+# The design system this guide documents, loaded IN PLACE from the repository
+# it lives in: `../` is the gp-dimm-city package root (package.json, plugin.js,
+# styles/, fonts/, snippets/, components.yaml). Nothing is downloaded or
+# vendored, and there is no version to pin — every edit to the plugin or a
+# stylesheet shows up on the next preview refresh. That is what makes this
+# book the package's fixture: the test suite renders these chapters, and CI
+# builds this PDF, against the working copy.
+#
+# A book outside this repo consumes the same package the usual way, pinned:
+#   extensions:
+#     - gp-dimm-city@1.0.1
+extensions:
+  - ../
+
+# This book's own chrome only, unlayered like every book sheet: code
+# specimens, the palette swatch grid, the #ch-example-* demo-chapter accent
+# map, and the guide's frozen copies of the field-guide art classes its Part 2
+# examples use.
+styles:
+  - styles/guide.css
+
+source:
+  files:
+    # Part 1 — Reference (00–09)
+    - 00-toc.md
+    - 01-overview.md
+    - 02-typography.md
+    - 03-palette.md
+    - 04-components.md
+    - 05-page-templates.md
+    - 06-layout.md
+    - 07-markdown-reference.md
+    - 08-publishing.md
+    - 09-component-gallery.md
+    # Part 2 — Field Guide in Action examples
+    - 300-example-overview.md
+    - 301-example-front-matter.md
+    - 302-example-chapter-opener.md
+    - 303-example-specialty-overview.md
+    - 304-example-specialty-profile.md
+    - 305-example-rules.md
+    - 306-example-dm-npcs.md
+    - 307-example-gear-tech.md
+
+# US Letter trim size (8.5 × 11 in = 612 × 792 pt) — drives gutterpress validation bounds.
+# NOTE: The @page CSS uses 8.625 × 11.25 in (Letter + bleed) for DTRPG POD output.
+# These differ intentionally: manifest = validation tolerance, CSS = actual PDF size.
+page:
+  width: 612
+  height: 792
+  tolerance: 0.5
+
+validate:
+  source:
+    markdownlint: ../.markdownlint.jsonc

@@ -7,6 +7,34 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **The design guide lives here.** `design-guide/` is the Dimm City Design
+  Guide book, moved from `dimm-city/dc-op-manual`. Its manifest loads the
+  package from this checkout (`extensions: - ../`), so it documents and
+  renders the working copy: `npm run dev` previews it, `npm run build`
+  renders the PDF, and the test suite uses it as the fixture
+  (`test/design-guide.test.js`: every chapter renders clean, every macro and
+  alert type is demonstrated, and each chapter's HTML is snapshotted under
+  `test/__snapshots__/`). CI builds the PDF with the PR's plugin and CSS and
+  uploads it; the release workflow attaches it to the GitHub release; a
+  *Publish design guide* workflow deploys the HTML build to GitHub Pages.
+- **`@glossary` is demonstrated** in the component gallery, which used raw
+  HTML for the term-list specimen before.
+
+### Changed
+
+- **Tests run against gutterpress 0.11.13** (devDependency, was 0.10.11).
+- **`test/fixtures/all-macros.md` and its snapshot are gone**; the design
+  guide is the fixture. `npm run test:update-snapshot` is now bun's own
+  `--update-snapshots`; `scripts/update-snapshot.mjs` is removed.
+
+### Fixed
+
+- Two design guide chapters (`303`, `306`) closed `@procedure` on the line
+  right after a list item, which markdown folds into that item, so the
+  marker never closed and the chapter rendered with a layout warning.
+
 ## [1.0.1] - 2026-09-25
 
 ### Changed
