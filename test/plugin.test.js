@@ -1,32 +1,19 @@
-// plugin.test.js — what the plugin emits.
-//
-// Two layers of protection:
-//   1. A fixture snapshot: test/fixtures/all-macros.md exercises every macro
-//      the plugin ships, and all-macros.expected.html is what the plugin
-//      produced for it the day this package was cut from the book repo. Any
-//      change to the plugin's output fails here until the snapshot is updated
-//      ON PURPOSE (`bun run test:update-snapshot`) and the diff reviewed.
-//   2. Behavioural tests carried over from the book repo — the edge cases that
-//      earned a regression test at the time (table pass-through, ROLL THE DIE!
-//      boundaries, alert ordering, inline formatting, outcome/distance tables,
-//      @continue before core's layout transform, @card footers).
+// plugin.test.js — what the plugin emits: the loader contract and the
+// behavioural edge cases that earned a regression test (table pass-through,
+// ROLL THE DIE! boundaries, alert ordering, inline formatting,
+// outcome/distance tables, @continue before core's layout transform, @card
+// footers). The whole-document regression check is design-guide.test.js,
+// which snapshots every chapter of the design guide.
 //
 // `gutterpress/render` is a devDependency used here to run the plugin inside
 // core's own markdown pipeline (core markers such as @section/@page/@chapter
 // are not this plugin's to render). It is never imported at runtime — see
 // conventions.test.js.
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import MarkdownIt from "markdown-it";
 import { createMarkdownRenderer } from "gutterpress/render";
 
 import dimmCityPlugin, { metadata } from "../plugin.js";
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const read = (rel) => readFileSync(path.join(ROOT, rel), "utf8");
 
 const ROLL_HTML = '<span class="dc-roll-the-die">ROLL THE DIE!</span>';
 
@@ -41,20 +28,6 @@ function createGutterpressMarkdown() {
 function countRolls(html) {
   return html.split('class="dc-roll-the-die"').length - 1;
 }
-
-describe("fixture snapshot", () => {
-  test("all-macros.md renders exactly to all-macros.expected.html", () => {
-    const env = {};
-    const html = createGutterpressMarkdown().render(read("test/fixtures/all-macros.md"), env);
-    expect(env.layoutWarnings ?? []).toEqual([]);
-    expect(html).toBe(read("test/fixtures/all-macros.expected.html"));
-  });
-
-  test("the fixture leaves no marker unrendered", () => {
-    const html = createGutterpressMarkdown().render(read("test/fixtures/all-macros.md"), {});
-    expect(html.match(/^@[a-z]/gm) ?? []).toEqual([]);
-  });
-});
 
 describe("loader contract", () => {
   test("the default export is a plain (md, options) function", () => {

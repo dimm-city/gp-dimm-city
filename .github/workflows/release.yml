@@ -189,6 +189,18 @@ jobs:
           name: tarball
           path: release-assets/
 
+      # The design guide PDF ships with every release: the published package,
+      # rendered. Same command as CI's design-guide job and `npm run build`.
+      - uses: ./.github/actions/bun
+      - run: bun install --frozen-lockfile
+      - name: Point Gutterpress at the runner's Chrome
+        run: echo "CHROMIUM_PATH=$(which google-chrome-stable)" >> "$GITHUB_ENV"
+      - name: Build the design guide PDF
+        run: |
+          bun run build
+          mkdir -p release-assets
+          cp .build/design-guide.pdf "release-assets/dimm-city-design-guide-$TAG.pdf"
+
       - name: Create the release
         run: |
           PRERELEASE_FLAG=""
@@ -200,4 +212,4 @@ jobs:
             exit 1
           fi
           shopt -s nullglob
-          gh release create "$TAG" --title "gp-dimm-city $TAG" --generate-notes --verify-tag $PRERELEASE_FLAG release-assets/*.tgz
+          gh release create "$TAG" --title "gp-dimm-city $TAG" --generate-notes --verify-tag $PRERELEASE_FLAG release-assets/*.tgz release-assets/*.pdf

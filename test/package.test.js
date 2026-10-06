@@ -144,6 +144,7 @@ describe("the tarball npm would publish", () => {
       expect(p.startsWith("test/")).toBe(false);
       expect(p.startsWith("docs/")).toBe(false);
       expect(p.startsWith("scripts/")).toBe(false);
+      expect(p.startsWith("design-guide/")).toBe(false); // the fixture book is not part of the package
       expect(p.split("/")).not.toContain("node_modules");
       // Windows-safe: Gutterpress refuses paths it cannot vendor on every OS.
       expect(p).not.toMatch(/[<>:"|?*]/);

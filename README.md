@@ -137,19 +137,57 @@ artwork and game text are not licensed by this package.
 
 ## Development
 
+Everything you need to change the package and see the result is in this
+repository: the plugin, the stylesheets, and `design-guide/` — the Dimm City
+Design Guide, a Gutterpress book that documents every macro, token, component
+and page template by rendering it. The guide's manifest loads the package from
+this checkout (`extensions: - ../`), not from npm, so it is both the public
+documentation and the test fixture: what it shows is what the working copy
+renders.
+
 ```sh
 bun install
-bun test                     # snapshot, behaviour, package and convention tests
-bun run test:update-snapshot # only when the plugin's output is meant to change
-bun run pack:check           # what npm would publish
+npm run dev                  # live preview of the design guide, opens the browser
+npm run build                # lint + validate + render .build/design-guide.pdf (needs Chrome 148+)
+npm run build:html           # the guide as a static site, .build/design-guide-site/
+bun test                     # plugin behaviour, design-guide render + snapshot, package, conventions
+npm run test:update-snapshot # only when the plugin's output is meant to change
+npm run pack:check           # what npm would publish
 ```
 
-`plugin.js` imports nothing at runtime — `gutterpress/render` is a
-devDependency used only by the tests to run the plugin inside core's markdown
-pipeline. Releases are cut from the *Release* workflow (version in, npm and
-GitHub release out); it refuses a version with no `## [X.Y.Z]` heading in
-`CHANGELOG.md`.
+The loop is the usual web one. `npm run dev` runs `gutterpress preview
+design-guide`: edit `plugin.js`, a sheet under `styles/`, a font or the brick
+tile, or any chapter of the guide, and the preview re-renders (the CLI lists
+each watched file as it starts). The Gutterpress desktop app does the same —
+open the `design-guide/` folder in it. `npm run build` is the PDF the
+reader gets; it runs Gutterpress's print-safety lint and source/PDF
+validation and fails on an error. Set `CHROMIUM_PATH` if your Chrome is not
+on a standard path.
 
-The design guide that documents this system in depth is a book in the
-`dimm-city/dc-op-manual` repository. Issues about the package — a macro, a
-sheet, a token, a font — belong here.
+The tests (`bun test`) are the CI gate:
+
+- `test/design-guide.test.js` — every chapter renders through Gutterpress's
+  pipeline with no layout warning and no marker left unrendered; every macro
+  and alert type the plugin handles appears in the guide; each chapter's HTML
+  matches `test/__snapshots__/`. A change to the plugin's output fails here
+  until you run `npm run test:update-snapshot` and review the snapshot diff
+  with the code.
+- `test/plugin.test.js` — the loader contract and the behavioural edge cases.
+- `test/package.test.js` — the tarball `npm publish` would ship: every
+  declared path, every `url()` asset, one licence per font directory, the
+  cascade contract.
+- `test/conventions.test.js` — one prefix (`dc-`), no runtime imports, only
+  allow-listed core hooks.
+
+CI (`.github/workflows/ci.yml`) runs the tests and then builds the design
+guide PDF with the PR's plugin and CSS, uploaded as the `design-guide-pdf`
+artifact — open it to see what a change did to every page. On `main`, the
+*Publish design guide* workflow deploys the HTML build to GitHub Pages
+(enable it once under Settings → Pages → Source: GitHub Actions).
+
+`plugin.js` imports nothing at runtime — `gutterpress` is a devDependency used
+by the tests (`gutterpress/render`) and by the scripts (the CLI). Releases are
+cut from the *Release* workflow (version in; npm, GitHub release and the
+design guide PDF out); it refuses a version with no `## [X.Y.Z]` heading in
+`CHANGELOG.md`. Issues about the package — a macro, a sheet, a token, a font,
+or a page of the guide — belong here.

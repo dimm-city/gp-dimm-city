@@ -20,4 +20,36 @@ jobs:
       # test/package.test.js runs `npm pack --dry-run` (npm ships with the
       # runner's Node) and asserts the tarball carries every stylesheet,
       # every url() asset, every font and every licence file.
+      # test/design-guide.test.js renders every chapter of design-guide/
+      # through gutterpress's pipeline with the working-copy plugin and
+      # compares it to the committed snapshot.
       - run: bun test
+
+  design-guide:
+    name: Design guide (PDF)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/bun
+
+      - run: bun install --frozen-lockfile
+
+      # The Gutterpress engine prints with Chromium 148+. The runner image's
+      # Chrome is current; CHROMIUM_PATH is the one variable gutterpress
+      # checks before probing its fixed paths.
+      - name: Point Gutterpress at the runner's Chrome
+        run: echo "CHROMIUM_PATH=$(which google-chrome-stable)" >> "$GITHUB_ENV"
+
+      # `gutterpress build` lints the stylesheets, validates the source, renders
+      # the PDF and validates it, and fails on any error — the same command as
+      # `npm run build` locally. The guide loads the package from this checkout
+      # (`extensions: - ../` in design-guide/manifest.yaml), so the PDF is the
+      # PR's plugin and CSS, rendered.
+      - run: bun run build
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: design-guide-pdf
+          path: .build/design-guide.pdf
+          if-no-files-found: error

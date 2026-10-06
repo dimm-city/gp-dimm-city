@@ -59,22 +59,27 @@ describe("plugin.js", () => {
 });
 
 describe("what the plugin emits", () => {
-  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]);
-  const html = md.render(read("test/fixtures/all-macros.md"), {});
-  const classes = [...new Set([...html.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)))];
+  // The design guide rendered twice: with the plugin, and through core alone.
+  // A class present only in the first render was added by the plugin — unless
+  // the author wrote it on a marker line (`@specialty .augmerc`), in which
+  // case it appears as `.name` somewhere in the markdown source.
+  const GUIDE = path.join(ROOT, "design-guide");
+  const chapters = [...read("design-guide/manifest.yaml").matchAll(/^\s*-\s*(\S+\.md)\s*$/gm)].map((m) => m[1]);
+  const source = chapters.map((f) => readFileSync(path.join(GUIDE, f), "utf8")).join("\n");
+  const classesOf = (md) => new Set(chapters.flatMap((f) => [...md.render(readFileSync(path.join(GUIDE, f), "utf8"), {}).matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/))));
+  const withPlugin = classesOf(createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]));
+  const coreOnly = classesOf(createMarkdownRenderer([]));
+  const authored = new Set([...source.matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
+  const added = [...withPlugin].filter((c) => !coreOnly.has(c) && !authored.has(c));
 
-  test("every class the plugin adds carries the dc- prefix (core and author classes aside)", () => {
-    // Core's own vocabulary and the author-supplied classes in the fixture.
-    const notOurs = new Set([
-      "page", "section", "chapter", "gp-continued",
-      "page-toc", "page-credits", "page-chapter-start", "credits-colophon", "chapter-7", "augmerc", "inset", "warning",
-    ]);
-    const unexpected = classes.filter((c) => !c.startsWith("dc-") && !notOurs.has(c) && !/^(tier-)?(crit|hit|mixed|miss|fail|free|variable)$/.test(c));
+  test("every class the plugin adds carries the dc- prefix", () => {
+    expect(added.length).toBeGreaterThan(10);
+    const unexpected = added.filter((c) => !c.startsWith("dc-") && !/^(tier-)?(crit|hit|mixed|miss|fail|free|variable)$/.test(c));
     expect(unexpected).toEqual([]);
   });
 
   test("emits no gp- class of its own", () => {
-    expect(classes.filter((c) => c.startsWith("gp-") && c !== "gp-continued")).toEqual([]);
+    expect(added.filter((c) => c.startsWith("gp-"))).toEqual([]);
   });
 });
 
