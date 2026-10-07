@@ -250,45 +250,27 @@ figure {
    value depends on whether the run fragments, and only the author knows).
    page-templates.css used to answer `balance` for the whole book; under
    native print the wrapper fragments across pages, and Chromium's
-   balance-in-fragmentation leaves every non-final fragment with a dead right
-   column (measured: proof17 p12/p13). Sequential fill packs both columns per
-   page — the behavior the engine's multicol fixture verified. */
+   balance-in-fragmentation left every non-final fragment with a dead right
+   column (measured: proof17 p12/p13), so this rule said `auto`.
+
+   It says `balance` again (2026-10). `auto` with no fixed height fills the
+   first column to the BOTTOM OF THE PAGE, so every short run — a column
+   panel, a pair of gear entries — printed as a full-height box with an
+   empty right column, and a heading above one was stranded alone on its
+   page when the full-height box could not fit under it (design guide
+   p.83, p.111). Measured against the change, under gutterpress 0.11.13:
+   the Field Guide's 221 pages render pixel-identical with `balance`, and
+   the design guide loses 6 pages of holes. A run that genuinely needs
+   sequential fill opts in with core's `.gp-columns-flow`. */
 .gp-columns-2,
 .gp-columns-3 {
-  column-fill: auto;
-}
-/* Per the measured rule (docs/native-engine-styling-guide.md §5): balance is
-   correct for single-page multicol, auto only for FRAGMENTING multicol.
-   The general `.gp-columns-2`/`.gp-columns-3` rule above stays `auto` — it is
-   load-bearing for the WRAPPER shape (a plain div around several `.section`
-   children, e.g. p12/p13's "THE PACK SHOULD BE WEIRD" walkthrough, and
-   p243's CORE ELEMENTS section, where the dc-alert callout is itself taller
-   than a column and MUST be allowed to fragment; see §13 below). A
-   `.section` that is ITSELF the multicol container is NOT reliably short —
-   CORE ELEMENTS is that same DOM shape (`.section.gp-columns-2`) and needs
-   `auto`, so shape alone can't tell "fits on one page" from "runs long".
-
-   Two exceptions, both scoped so they cannot catch the fragmenting case:
-
-   (a) p7's "Image Is Everything" aside — a short paragraph + a short callout,
-   nothing left to balance — scoped to its own authored classes rather than
-   promoted to a general `.section.gp-columns-2` rule that would also catch,
-   and break, CORE ELEMENTS. If a future page reuses
-   `.dc-citizen-walkthrough.gp-columns-2` with long enough content to actually
-   fragment, the compiler's own multicol-fragmentation check flags it and
-   tells the author to add column-fill: auto locally — not a silent trap.
-
-   (b) a PAGE that is itself the multicol container. A `.page` is one sheet by
-   construction, so its run does not fragment and balance is the correct
-   value. This carries forward the `.page.two-column { column-fill: balance }`
-   that page-templates.css used to win with on specificity alone (0-2-0 over
-   this file's 0-1-0); stating it here puts it next to the reasoning and the
-   measurements instead of leaving it to load order. Live user:
-   `@page .dc-citizen-file-page .gp-columns-2` in the design guide. */
-.dc-citizen-walkthrough.gp-columns-2,
-.page.gp-columns-2 {
   column-fill: balance;
 }
+/* The per-shape exceptions that used to follow — `.dc-citizen-walkthrough
+   .gp-columns-2` and `.page.gp-columns-2` set back to `balance` — are gone:
+   the rule above now says `balance` for every run. The Field Guide pages they
+   were measured on (p12/p13 "THE PACK SHOULD BE WEIRD", p243 CORE ELEMENTS,
+   p7 "Image Is Everything") are among the 221 that render pixel-identical. */
 
 /* ── 12. WALL ART placement is the markdown's, via core's gp-* classes ──────
    Do not add a position/float/margin declaration to a `.fg-art-*` class that

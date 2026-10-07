@@ -324,13 +324,6 @@ div.chapter[id^="ch-example-"][data-ch] {
   border: 2pt solid var(--crimson);
 }
 
-/* A stage specimen is short, so its columns balance. The package's
-   `column-fill: auto` (dc-native.css §10b) is for runs that fragment across
-   pages; on a stage it stretched the first column to the page bottom. */
-.dg-stage :is(.gp-columns-2, .gp-columns-3) {
-  column-fill: balance;
-}
-
 /* ── §1 Code specimens ─────────────────────────────────────────────────────
    Scoped to doc pages: the Part 2 example chapters carry .dg-guide too, and
    must render exactly as the package prints them. */

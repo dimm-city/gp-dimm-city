@@ -62,6 +62,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **Short two-column runs no longer print full-page height.** `dc-native.css`
+  §10b set `column-fill: auto` on every `.gp-columns-*` run; with no fixed
+  height that fills the first column to the page foot, so a short column
+  panel became a full-height box with an empty right column, and a heading
+  above one was stranded alone when the box could not fit under it. The
+  rule is `balance` again, and the two per-shape `balance` exceptions it
+  made redundant are removed. A run that needs sequential fill opts in with
+  core's `.gp-columns-flow`. The Field Guide's 221 pages render
+  pixel-identical before and after.
+- **A lede never splits** (`.dc-intro { break-inside: avoid }`), and the
+  section after a lede may start a new page. Core glues every section to
+  what precedes it, which chained heading → lede → section; when the section
+  could not fit, the lede split and painted an empty panel to the page foot.
+- **`@sidebar .inset` with a single paragraph** set that paragraph in
+  centred display caps: the rail's closing-line rule matched it as the last
+  child. It now applies only from the second paragraph on. The inset rail
+  also keeps the sidebar's paper surface instead of a transparent one that
+  put its text on the brick wall.
 - Two design guide chapters (`303`, `306`) closed `@procedure` on the line
   right after a list item, which markdown folds into that item, so the
   marker never closed and the chapter rendered with a layout warning.

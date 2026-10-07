@@ -610,9 +610,13 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 </div>
 <h3>Inset sidebar</h3>
 <p><code>@sidebar .inset</code> is a full-height rail pinned to the page’s edge. It needs the <code>@page .page-sidebar</code> template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.</p>
-<pre><code data-source-range="147:160" class="language-markdown">@page .page-sidebar
+<pre><code data-source-range="147:164" class="language-markdown">@page .page-sidebar
+
+@section
 
 Body text for this page stops at the rail's edge.
+
+@end-section
 
 @sidebar .inset
 
@@ -623,15 +627,15 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 @end-sidebar
 </code></pre>
 <p class="dg-next">The inset rail needs a page of its own, so the rendered page is the next page.</p>
-</div><div class="page page-sidebar chapter-4" data-source-range="163:164"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
-<div class="dc-sidebar inset">
+</div><div class="page page-sidebar chapter-4" data-source-range="167:168"><div class="section" data-source-range="169:170"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
+<p>That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.</p>
+</div><div class="dc-sidebar inset">
 <h3>Free, Not Costless</h3>
 <p>One out-of-turn ability per round is <em>free to trigger</em> — but it still spends its listed AP. Each additional out-of-turn use that round costs <strong>+1 AP</strong> on top.</p>
 </div>
-<p>That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.</p>
-</div><div class="page dg-doc chapter-4" data-source-range="177:178"><h2>Floated images</h2>
+</div><div class="page dg-doc chapter-4" data-source-range="185:186"><h2>Floated images</h2>
 <p>An image on its own line is a figure. <code>.dc-img-float-right</code> or <code>.dc-img-float-left</code> floats it at 44% of the column with text wrapping around it; leave a blank line after the paragraph that should clear it.</p>
-<pre><code data-source-range="183:188" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
+<pre><code data-source-range="191:196" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
 
 Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </code></pre>
@@ -645,26 +649,26 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 <h2>Break control</h2>
 <p>Components keep themselves whole by default: a card, a callout, a section will move to the next page rather than split. Two classes adjust that, and a third forces a break.</p>
 <table>
-<thead data-source-range="207:208">
-<tr data-source-range="207:208">
+<thead data-source-range="215:216">
+<tr data-source-range="215:216">
 <th>You write</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="209:213">
-<tr data-source-range="209:210">
+<tbody data-source-range="217:221">
+<tr data-source-range="217:218">
 <td><code>@section .gp-no-break</code></td>
 <td>Never split this section across pages</td>
 </tr>
-<tr data-source-range="210:211">
+<tr data-source-range="218:219">
 <td><code>@skill {.dc-allow-split}</code> or <code>@section .dc-allow-split</code></td>
 <td>Allow this one tall element to split instead of leaving a page mostly empty</td>
 </tr>
-<tr data-source-range="211:212">
+<tr data-source-range="219:220">
 <td><code>## Heading {.gp-break-before}</code></td>
 <td>Start a new page before this element</td>
 </tr>
-<tr data-source-range="212:213">
+<tr data-source-range="220:221">
 <td><code>@page-break</code></td>
 <td>Start a new page here</td>
 </tr>
@@ -3828,7 +3832,8 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
 <p><strong>350 DC · 2 kg</strong></p>
 <p>Destroys standard doors, locks, and light barriers. Very loud. Single use. Don’t stand in front of it.</p>
 </div>
-</div><div class="section gp-columns-2 dc-column-panel" data-source-range="133:134"><h3>Common Cybernetics</h3>
+</div><div class="gp-page-break" aria-hidden="true" data-source-range="133:134"></div>
+<div class="section gp-columns-2 dc-column-panel" data-source-range="135:136"><h3>Common Cybernetics</h3>
 <div class="dc-card dc-gear">
 <h3>UniArm 100</h3>
 <p><em>Cybernetic arm. Street grade. Reliable.</em></p>

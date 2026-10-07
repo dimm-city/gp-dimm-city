@@ -131,6 +131,8 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 
 @end-section
 
+@page-break
+
 @section .gp-columns-2 .dc-column-panel
 
 ### Common Cybernetics
