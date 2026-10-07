@@ -161,8 +161,7 @@ h1.dc-chevron {
   left: 8%;
   width: 45%;
   height: 5px;
-  background: var(--dc-spray-bg);
-  opacity: 0.08;
+  background: color-mix(in srgb, var(--dc-spray-bg) 8%, var(--wall-tone));
 }
 
 
@@ -198,7 +197,7 @@ h1.dc-chevron {
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -220,7 +219,7 @@ h1.dc-chevron {
   color: var(--paper-cream);
   border-color: var(--blood);
   transform: rotate(-1.5deg);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
+  box-shadow: 2px 2px 0 color-mix(in srgb, #000 28%, var(--paper-cream));
 }
 
 /* Inline ↑↓→ marker. Token: --dc-arrow-color (default --blood).
@@ -252,7 +251,7 @@ h1.dc-chevron {
   position: relative;
   top: -1px;
   margin-right: 10px;
-  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.30);
+  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
 }
 
 /* ───────── STICKER TIER REF ───────── */
@@ -260,8 +259,7 @@ h1.dc-chevron {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: inherit;
-  opacity: 0.55;
+  color: color-mix(in srgb, currentColor 55%, var(--ink-dark));
   margin-right: 5px;
   letter-spacing: 0.5px;
 }
@@ -375,8 +373,7 @@ h1.dc-chevron {
 hr,
 .dc-dashed-rule {
   border: none;
-  border-top: 1.5px dashed var(--hud-magenta);
-  opacity: 0.5;
+  border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
   margin: var(--space-xl) 0;
 }
 
@@ -445,7 +442,7 @@ hr,
   background: var(--dc-tape-bg);
   padding: 14px 14px;
   border: 2px solid var(--dc-tape-border);
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 1px 0 color-mix(in srgb, #000 15%, var(--wall-tone));
   break-inside: avoid;
 }
 
@@ -454,8 +451,7 @@ hr,
   content: '';
   flex: 1;
   height: 4px;
-  background: repeating-linear-gradient(90deg, var(--crimson) 0 6px, transparent 6px 10px);
-  opacity: 0.85;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
 }
 
 /* Chapter-opener badge + H1 banner — see the chapter-opener composite

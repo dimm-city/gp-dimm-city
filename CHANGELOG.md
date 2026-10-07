@@ -35,6 +35,19 @@ cut a version that has no `## [X.Y.Z]` heading below.
   body text now prints on the black plate only (separations: C = M = Y = 0
   under every glyph). A book that retints `--bg` no longer tints the
   brick; see the note in `dc-native.css` for baking a tile.
+- **Nothing in the package paints transparent.** The 25 other uses of
+  transparency — semi-transparent shadows, tinted fills, `opacity` on
+  stickers, rules, the tape dashes and the pull-quote mark — each flattened
+  their page in PDF/X-1a just as the wall did. Each is now pre-composited
+  with `color-mix()` onto the surface it sits on, so it prints the same
+  colour, opaque. Shadows on the wall mix against the new `--wall-tone`
+  (`#c1beb8`, the tile's measured mean). Measured on both books: layout and
+  page counts unchanged, and no page changes more than 0.7% of its pixels.
+  The AP chip loses its soft 6px blurred shadow, which has no opaque form,
+  and keeps its hard one. Every change, with where to look, is in
+  `docs/print-transparency-inventory.md`. A new convention test fails on
+  any transparency in the stylesheets; the unused `.dc-cover-page`
+  composite is its only exemption.
 
 ### Removed
 

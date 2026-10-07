@@ -147,7 +147,7 @@ blockquote {
   font-style: italic;
   color: var(--ink);
   border-left: 7px solid var(--hud-blue-dim);
-  border-right: 2px solid rgba(230, 0, 122, 0.18);
+  border-right: 2px solid color-mix(in srgb, rgb(230 0 122) 18%, var(--paper-stain));
   background: var(--paper-stain);
   padding: var(--space-md) var(--space-md) var(--space-md) var(--space-xl);
   margin: 0.75rem 0;

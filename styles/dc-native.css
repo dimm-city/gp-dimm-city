@@ -242,7 +242,7 @@
      Introduction. The shadow keeps its side offset and loses the drop; the
      colophon's foot sits under the pinned plate in any case. (Clipping the
      page instead would also clip a pinned or bleed plate on it.) */
-  box-shadow: 2pt 0 0 rgba(0, 0, 0, 0.28);
+  box-shadow: 2pt 0 0 color-mix(in srgb, #000 28%, var(--wall-tone));
 }
 /* The masthead escapes the padding back to the sheet edges — visible paint
    inside the full-width content box. `margin-top: 0` is deliberate: a

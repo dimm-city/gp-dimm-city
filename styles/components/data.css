@@ -263,8 +263,8 @@
       var(--row-color, var(--ink)) 50%,
       color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411; on Ingram submission replace with static opaque value in dc-tokens-print.css */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+    inset 0 1px 0 color-mix(in srgb, #fff 12%, var(--row-color, var(--ink))),
+    inset 0 -1px 0 color-mix(in srgb, #000 18%, var(--row-color, var(--ink)));
   /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
      to --ink because the fungi-glow fill is too light for cream text — was
      1.24:1) actually propagates to the chip element itself, not just to its
@@ -284,7 +284,7 @@
   font-weight: 400;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--dc-outcome-name-color);
+  color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink)));
   opacity: var(--dc-outcome-name-opacity);
   line-height: 1;
 }
@@ -456,8 +456,7 @@
   left: 10px;
   font-family: var(--font-display);
   font-size: 48px;
-  color: var(--hud-magenta);
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));
   line-height: 1;
 }
 
