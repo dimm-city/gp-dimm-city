@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 6 {.dg-kicker}
+
 # Panels, Cards & Data
 
 The enclosures: four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
@@ -319,7 +321,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 An item entry: a display-face name, an italic tagline of tags, then the mechanics. Separate entries with `---`.
 
-```markdown
+```markdown {.dg-split}
 @gear
 
 ### Throwaway Blaster
@@ -526,7 +528,7 @@ A contact capsule floated beside prose: a `.dc-human-callout` inside a raw `.dc-
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 The Dreamers are low on credits and lower on luck when the noodle-stall door swings open. A figure slides into the booth across from them, drops a battered data chip on the table, and waits.
 

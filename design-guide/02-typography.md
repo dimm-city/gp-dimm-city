@@ -2,6 +2,7 @@
 
 @page .dg-doc
 
+Chapter 2 {.dg-kicker}
 
 # Typography
 
@@ -11,16 +12,36 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 
 | Element | You write | Size · Face | Role |
 |---|---|---|---|
-| H1 | `# Title` | 20.7pt bold · lixdu | Chapter and specialty openers |
-| H2 | `## Heading` | 17.3pt bold · lixdu | Section breaks, with an accent rule |
-| H3 | `### Sub-heading` | 14.4pt · lixdu | Column labels and sub-topics |
-| H4 | `#### Item` | small uppercase · lixdu | Skill names, gear names, stat-block names |
+| H1 | `# Title` | 26pt bold · lixdu | Chapter and specialty openers |
+| H2 | `## Heading` | 20pt bold · lixdu | Section breaks, with an accent rule |
+| H3 | `### Sub-heading` | 16pt · lixdu | Column labels and sub-topics |
+| H4 | `#### Item` | 13pt uppercase · lixdu | Skill names, gear names, stat-block names |
 | Body | a paragraph | 12pt · Titillium Web | All prose |
 | Flavor | `> [!FLAVOR]` | 12pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
 | Spray banner | `## Title {.dc-spray}` | H2 scale, spray-paint fill | Learning paths, major topic breaks |
 | Card tab | emitted by `@skill` | 9pt · Tomorrow | Skill-card tab labels |
 | Tag | `<span class="dc-tag">` | 8pt · Tomorrow | Keyword and cost chips |
+
+## The three faces
+
+<div class="dg-face">
+<p class="dg-face-meta"><strong>lixdu</strong> — display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
+<p class="dg-face-sample dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
+<p class="dg-face-sample dg-face-display dg-face-set">Wired to kill</p>
+</div>
+
+<div class="dg-face">
+<p class="dg-face-meta"><strong>Titillium Web</strong> — body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
+<p class="dg-face-sample dg-face-body">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &amp;?!</p>
+<p class="dg-face-sample dg-face-body dg-face-set">Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. <em>Italic carries the in-world voice,</em> and <strong>bold marks a rule.</strong></p>
+</div>
+
+<div class="dg-face">
+<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 8–9pt, uppercase, tracking 0.1em</p>
+<p class="dg-face-sample dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+<p class="dg-face-sample dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
+</div>
 
 ## Heading hierarchy
 
@@ -68,7 +89,7 @@ Result {.dg-result}
 
 ## Body and flavor
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is **bolded** or *italicized* mid-sentence.
 
@@ -78,6 +99,15 @@ Twelve-point Titillium Web carries all running narrative. Corporate enforcers ea
 </div>
 
 Flavor keeps the body size and switches to italic and `--ink-smoke`. Never set flavor in bold italic — it reads as urgency, not voice.
+
+Don't {.dg-dont-label}
+
+<div class="dg-stage dg-dont">
+
+> [!FLAVOR]
+> ***See an opening, ya take it. Best time to hit 'em is when they think it's over.***
+
+</div>
 
 **Column-safe headings:** in a two-column layout use `###` and `####`. `#` and `##` at full print size exceed a 3.5-inch column.
 

@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 7 {.dg-kicker}
+
 # The Specialty System
 
 The richest family in the book. A specialty wrapper sets the shape and color; inside it, an intro panel, an art plate, a catalog card, learning paths, and skill cards all inherit that identity. Authors never set a variant on a card — the parent decides. {.dg-lede}
@@ -71,7 +73,7 @@ Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specia
 
 ## Specialty art
 
-A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro.
+A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page.
 
 ```markdown
 @specialty .augmerc
@@ -84,8 +86,6 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 @end-specialty
 ```
-
-Result {.dg-result}
 
 @specialty .augmerc
 
@@ -102,7 +102,7 @@ Result {.dg-result}
 
 The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@section .dc-card-grid` that lays the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
 
-```markdown
+```markdown {.dg-split}
 @section .dc-card-grid
 
 @specialty .augmerc
@@ -189,7 +189,7 @@ The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview
 
 A named path: a `###` title (rendered as a spray banner with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, …) are computed from position.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @learning-path
@@ -234,7 +234,7 @@ A named path: a `###` title (rendered as a spray banner with the path's code), a
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 
 @specialty .augmerc
 
@@ -387,7 +387,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Prefer this to `.dc-allow-split`: the break lands at a boundary you chose.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @skill
@@ -441,7 +441,7 @@ Result {.dg-result}
 
 A `| Roll | Outcome |` table inside a skill card renders as that card's outcome ladder.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @skill
@@ -498,7 +498,7 @@ Result {.dg-result}
 
 The same path and card markdown, dropped into a different `@specialty`, takes that family's silhouette and color with no change to the source. Gutterdruid, then the two multi-discipline shells:
 
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 
 @specialty .gutterdruid
 

@@ -1,5 +1,11 @@
 @chapter #ch-examples .examples .chapter-03 .dg-guide ch="3"
 
+@page .dg-doc .dg-part
+
+Part 2 {.dg-kicker}
+
+# A Book, Page by Page
+
 @page .dg-doc
 
 # Field Guide in Action

@@ -2,6 +2,7 @@
 
 @page .dg-doc
 
+Chapter 1 {.dg-kicker}
 
 # Writing a Page
 
@@ -24,7 +25,6 @@ A chapter is one file. A `@chapter` line opens each file, and the chapter ends w
 
 ```markdown
 @chapter #ch-augmerc ch="3"
-
 
 @section
 
@@ -114,7 +114,7 @@ Nothing below needs a class or a marker. The package styles the standard element
 `SysChk` marks a keyword that is also a mechanic.
 ```
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 **Bold** lands in burnt orange. *Italic* shifts to warm smoke. `SysChk` marks a keyword that is also a mechanic.
 
@@ -130,7 +130,7 @@ Nothing below needs a class or a marker. The package styles the standard element
 2. for sequences
 ```
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 - A loose list
 - of short items
@@ -218,7 +218,6 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 
 ```markdown
 @chapter #ch-rules ch="4"
-
 
 @section .gp-columns-2 .dc-column-panel
 

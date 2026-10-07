@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 5 {.dg-kicker}
+
 # Text & Callouts
 
 The components that live inside running prose: the lede that opens a chapter, flavor and pull quotes for in-world voice, the alert family for notes a reader must not miss, and the tape, tags, and roll chip that punctuate a page. {.dg-lede}
@@ -82,7 +84,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 One shell, seven registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
-```markdown
+```markdown {.dg-split}
 > [!NOTE]
 > A character may hold no more than one Signature Augment at a time.
 
@@ -245,7 +247,7 @@ Signal Jammer (single-use)
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 Trauma Kit × 2
 
@@ -267,7 +269,7 @@ Inline pills. `.dc-tag` is a keyword or cost label; `.dc-classtag.<specialty>` i
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 <span class="dc-tag">Melee</span> <span class="dc-tag">Reach 2</span> <span class="dc-tag">Loud</span>
 
@@ -294,7 +296,7 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
 

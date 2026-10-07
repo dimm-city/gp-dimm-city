@@ -11,7 +11,7 @@
         says can be mistaken for a component. The brick wall appears only
         behind rendered output — inside a `.dg-stage` specimen box, on a
         whole-page specimen, and on every Part 2 example page
-     §1 code specimens and rules inside guide chapters (.dg-guide), and the
+     §1 code specimens and rules on doc pages (.dg-doc), and the
         WRITE / RESULT labels every component page pairs: a fenced
         ```markdown block is what the author types, the block after it is
         what the package renders from exactly that source
@@ -31,12 +31,31 @@
    ──────────────────────────────────────────────────────────────────────── */
 
 /* ── §0 Guide register: doc pages and specimen stages ──────────────────────── */
+/* IBM Plex Mono (OFL, fonts/ibm-plex-mono/OFL.txt) is the guide's code face:
+   a true monospace, so markers and indents line up. The package's
+   --font-mono (Tomorrow) is proportional and stays the components' face. */
+@font-face {
+  font-family: "DG Plex Mono";
+  src: url("../fonts/ibm-plex-mono/IBMPlexMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "DG Plex Mono";
+  src: url("../fonts/ibm-plex-mono/IBMPlexMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
 :root {
   --dg-paper: #ffffff;
   --dg-ink: #222222;
   --dg-ink-soft: #555555;
   --dg-rule: #c8c8c8;
   --dg-fill: #f2f2f2;
+  --dg-mono: "DG Plex Mono", ui-monospace, monospace;
+  /* Text measure: ~65–70 characters of 12pt Titillium. Tables, code and
+     stages keep the full column. */
+  --dg-measure: 5.1in;
 }
 
 /* Explainer pages are a named page so the sheet itself — content box and
@@ -48,14 +67,125 @@
   background: var(--dg-paper);
 }
 
+/* Running foot on doc pages: a plain folio and the chapter title, replacing
+   the package's sticker chrome, which reads as a debug box on white. */
+.page.dg-doc > h1 {
+  string-set: dgTitle content(text);
+}
+
+@page dg-doc:left {
+  @bottom-left {
+    content: counter(page);
+    font-family: var(--font-sans);
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--dg-ink-soft);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  @bottom-right {
+    content: string(dgTitle, first);
+    font-family: var(--font-sans);
+    font-size: 8pt;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--dg-ink-soft);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+}
+
+@page dg-doc:right {
+  @bottom-left {
+    content: string(dgTitle, first);
+    font-family: var(--font-sans);
+    font-size: 8pt;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--dg-ink-soft);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: var(--font-sans);
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--dg-ink-soft);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+}
+
+/* Chapter chip: Part 1 reads C.N, the Part 2 example chapters E.N, so the
+   two parts never share a badge. The package hard-codes the "C." prefix in
+   its margin content, so the guide restates that content around a string of
+   its own, dgChip — and, being unlayered, must then restate the package's
+   footer-free pages too (page-rules.css), or it would outrank them.
+   Gutterpress records every matching string-set, so the two selectors must
+   never match the same chapter, and the string must not be the package's
+   guideSection: on a chapter's first page `first` would pick up the
+   package's bare number. */
+div.chapter[data-ch]:not([id^="ch-example-"]) {
+  string-set: dgChip "C." attr(data-ch);
+}
+
+div.chapter[id^="ch-example-"][data-ch] {
+  string-set: dgChip "E." attr(data-ch);
+}
+
+@page :left  { @bottom-right { content: string(dgChip, first); } }
+@page :right { @bottom-left  { content: string(dgChip, first); } }
+
+@page front-matter {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page chapter-start {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page full {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page clean {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page :blank {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
 /* The guide's cover (00-start-here) prints no footer. */
 @page dg-doc:first {
   @bottom-left  { content: none; }
   @bottom-right { content: none; }
 }
 
-/* Guide headings and tables: direct children of a doc page only, so anything
-   inside a .dg-stage keeps the package's own styling. */
+/* Guide text: direct children of a doc page only, so anything inside a
+   .dg-stage keeps the package's own styling. */
+.page.dg-doc > :is(p, ul, ol, dl),
+.page.dg-doc > .dg-toc {
+  max-width: var(--dg-measure);
+  line-height: 1.4;
+}
+
 .page.dg-doc > :is(h1, h2, h3),
 .page.dg-doc > .dg-toc > h2 {
   font-family: var(--font-sans);
@@ -65,38 +195,88 @@
   color: var(--dg-ink);
 }
 
+/* "Chapter N" / "Part 2" kicker, written as `Chapter 4 {.dg-kicker}` right
+   above the chapter's `#` title. */
+.page.dg-doc > p.dg-kicker {
+  font-family: var(--font-sans);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dg-ink-soft);
+  margin: 0.35in 0 0.04in;
+  break-after: avoid;
+}
+
 .page.dg-doc > h1 {
-  font-size: 24pt;
+  font-size: 26pt;
+  line-height: 1.15;
   border-bottom: 1.5pt solid var(--dg-ink);
+  padding-bottom: 0.08in;
+  margin-bottom: 0.18in;
 }
 
 .page.dg-doc > h2,
 .page.dg-doc > .dg-toc > h2 {
   font-size: 15pt;
-  margin-top: 0.2in;
+  margin-top: 0.22in;
   border-bottom: 0.75pt solid var(--dg-rule);
 }
 
 .page.dg-doc > h3 {
-  font-size: 12pt;
+  font-size: 13pt;
+  margin-top: 10pt;
+  margin-bottom: 4pt;
 }
 
 .page.dg-doc > p.dg-lede {
   font-size: 12.5pt;
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--dg-ink-soft);
   margin-bottom: 0.2in;
 }
 
+/* A Part title page (300-example-overview.md). */
+.page.dg-doc.dg-part > p.dg-kicker {
+  margin-top: 3in;
+  font-size: 11pt;
+}
+
+.page.dg-doc.dg-part > h1 {
+  font-size: 36pt;
+  border-bottom-width: 3pt;
+}
+
+/* Tables: 10pt cells, so a table doesn't drop to footnote size beside 12pt
+   body. */
+.page.dg-doc > table {
+  break-inside: auto;   /* a long reference table runs on; rows stay whole */
+}
+
+.page.dg-doc > table tr {
+  break-inside: avoid;
+}
+
+.page.dg-doc > table td {
+  font-size: 10pt;
+  padding: 4pt 6pt;
+  background: none;
+  border-bottom: 0.5pt solid var(--dg-rule);
+}
+
 .page.dg-doc > table th {
+  font-size: 8.5pt;
+  padding: 5pt 6pt;
   background: var(--dg-fill);
   color: var(--dg-ink);
   border-bottom: 1pt solid var(--dg-ink);
 }
 
-.page.dg-doc > table td {
-  background: none;
-  border-bottom: 0.5pt solid var(--dg-rule);
+/* Contents: the title links, each with its page number at the right edge. */
+.page.dg-doc > .dg-toc li {
+  position: relative;
+  padding-right: 0.45in;
+  margin-bottom: 2pt;
 }
 
 .page.dg-doc > .dg-toc a {
@@ -105,9 +285,18 @@
   font-weight: 700;
 }
 
+.page.dg-doc > .dg-toc a::after {
+  content: target-counter(attr(href), page);
+  position: absolute;
+  right: 0;
+  font-weight: 700;
+  color: var(--dg-ink-soft);
+}
+
 /* The specimen stage: the brick wall a component is designed to sit on,
-   framed so it reads as "rendered output" against the plain doc page. It may
-   split across pages; each fragment keeps its frame. */
+   framed so it reads as "rendered output" against the plain doc page. A
+   stage stays whole; `.dg-tall` marks one taller than a page, which splits
+   and keeps its frame on each fragment. */
 .dg-stage {
   display: flow-root;
   background: var(--bg) url("../../images/brick-bg-01.png") repeat;
@@ -116,7 +305,23 @@
   border: 1pt solid var(--dg-ink-soft);
   padding: 0.15in;
   margin: 0 0 0.2in;
+  break-inside: avoid;
+}
+
+.dg-stage.dg-tall {
+  break-inside: auto;
   box-decoration-break: clone;
+}
+
+/* Running prose belongs on a page's paper panel, not on bare wall: a prose
+   specimen shows on paper inside the frame. */
+.dg-stage.dg-on-paper {
+  background: var(--paper-cream);
+}
+
+/* Do / Don't: a "don't" stage has a crimson frame and its own tab. */
+.dg-stage.dg-dont {
+  border: 2pt solid var(--crimson);
 }
 
 /* A stage specimen is short, so its columns balance. The package's
@@ -126,10 +331,15 @@
   column-fill: balance;
 }
 
-/* ── §1 Code specimens ─────────────────────────────────────────────────────── */
-div.chapter.dg-guide pre {
+/* ── §1 Code specimens ─────────────────────────────────────────────────────
+   Scoped to doc pages: the Part 2 example chapters carry .dg-guide too, and
+   must render exactly as the package prints them. */
+.page.dg-doc pre:not(.dg-stage *) {
+  font-family: var(--dg-mono);
+  font-size: 9pt;
+  line-height: 1.4;
   background: var(--dg-fill);
-  border-left: 3px solid var(--orange);
+  border-left: 3pt solid var(--blood);
   border-radius: 2px;
   margin: 0.15in 0;
   padding: 10px 14px;
@@ -137,11 +347,20 @@ div.chapter.dg-guide pre {
   break-inside: avoid;
 }
 
-div.chapter.dg-guide pre code {
-  font-family: var(--font-mono);
-  font-size: 9pt;
-  line-height: 1.5;
-  color: var(--ink);
+/* A fence of 20+ lines is marked ```markdown {.dg-split}: it may split
+   across pages rather than leave most of the page before it empty. */
+.page.dg-doc pre:has(code.dg-split) {
+  break-inside: auto;
+  orphans: 4;
+  widows: 4;
+  box-decoration-break: clone;
+}
+
+.page.dg-doc pre:not(.dg-stage *) code {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: inherit;
+  color: var(--dg-ink);
   background: none;
   border: 0;
   border-radius: 0;
@@ -150,26 +369,27 @@ div.chapter.dg-guide pre code {
   word-break: break-word;
 }
 
-/* Inline code (not inside pre) */
-div.chapter.dg-guide :not(pre)>code {
-  font-family: var(--font-mono);
-  font-size: 9pt;
-  /* Was: --orange (#d4500a) on rgba(242, 77, 0, 0.08) — orange-on-faint-
-     orange = 1.18:1 (effectively invisible). The 8% tint barely shifts
-     the wall/paper color, so the effective bg is whatever's behind. Fix:
-     keep the warm tint as a subtle visual but use --blood text which
-     passes on both wall (5.21:1) and paper-cream (7.73:1). */
+/* Inline code in guide prose. Specimens (inside a stage) keep the package's
+   own inline code. */
+.page.dg-doc :not(pre) > code:not(.dg-stage *) {
+  font-family: var(--dg-mono);
+  font-size: 0.85em;
   color: var(--blood);
-  background: rgba(242, 77, 0, 0.08);
+  background: var(--dg-fill);
+  border: 0;
   border-radius: 2px;
-  padding: 1px 4px;
+  padding: 0 3px;
   overflow-wrap: break-word;
-  /* prevent long token names from escaping container bounds */
 }
 
-div.chapter.dg-guide hr {
+/* Token and class names are one word: never hyphenate them. */
+.page.dg-doc > table code {
+  hyphens: none;
+}
+
+.page.dg-doc > hr {
   border: none;
-  border-top: 2px solid var(--border-hairline);
+  border-top: 1pt solid var(--dg-rule);
   margin: 0.25in 0;
 }
 
@@ -177,26 +397,27 @@ div.chapter.dg-guide hr {
    author marks the rendered block with a `Result {.dg-result}` paragraph
    followed by the specimen wrapped in `<div class="dg-stage">` (§0), or by a
    whole-page specimen. The RESULT tab sits on the stage's top edge and stays
-   with it; a fence may end a page. */
-div.chapter.dg-guide pre:has(code.language-markdown) {
+   with it. Labels are 8pt on dark fills: cream on --blood is 7.7:1. */
+.page.dg-doc pre:has(code.language-markdown) {
   position: relative;
-  padding-top: 18px;
+  padding-top: 20px;
 }
 
-div.chapter.dg-guide pre:has(code.language-markdown)::before,
-div.chapter.dg-guide p.dg-result {
-  font-family: var(--font-mono);
-  font-size: 7pt;
+.page.dg-doc pre:has(code.language-markdown)::before,
+.page.dg-doc p.dg-result,
+.page.dg-doc p.dg-dont-label {
+  font-family: var(--font-sans);
+  font-size: 8pt;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--paper-cream);
-  background: var(--orange);
+  background: var(--blood);
   padding: 1px 6px;
   border-radius: 2px;
 }
 
-div.chapter.dg-guide pre:has(code.language-markdown)::before {
+.page.dg-doc pre:has(code.language-markdown)::before {
   content: "You write";
   position: absolute;
   top: 0;
@@ -204,13 +425,76 @@ div.chapter.dg-guide pre:has(code.language-markdown)::before {
   border-radius: 0 0 2px 0;
 }
 
-div.chapter.dg-guide p.dg-result {
+.page.dg-doc p:is(.dg-result, .dg-dont-label) {
   display: block;
   width: max-content;
   margin: 0.05in 0 0;
   border-radius: 2px 2px 0 0;
   background: var(--hud-blue);
   break-after: avoid;
+}
+
+.page.dg-doc p.dg-dont-label {
+  background: var(--crimson);
+}
+
+/* A whole-page specimen gets a plain note instead of a RESULT tab, so no tab
+   is left stranded at the foot of the page before it. */
+.page.dg-doc > p.dg-next {
+  font-style: italic;
+  color: var(--dg-ink-soft);
+}
+
+/* Typeface specimens (02-typography.md): each face at its working size,
+   labelled with its token and settings. */
+.page.dg-doc > .dg-face {
+  border-top: 0.75pt solid var(--dg-rule);
+  padding: 8pt 0 10pt;
+  break-inside: avoid;
+}
+
+.dg-face > p {
+  margin: 0 0 4pt;
+}
+
+.dg-face > p.dg-face-meta {
+  font-size: 9pt;
+  color: var(--dg-ink-soft);
+}
+
+.dg-face-display {
+  font-family: var(--font-display);
+  font-size: 16pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  color: var(--dg-ink);
+}
+
+.dg-face-display.dg-face-set {
+  font-size: 26pt;
+  letter-spacing: 0.2em;
+}
+
+.dg-face-body {
+  font-family: var(--font-body);
+  font-size: 12pt;
+  line-height: 1.5;
+  color: var(--dg-ink);
+}
+
+.dg-face-tab {
+  font-family: var(--font-tab);
+  font-size: 11pt;
+  letter-spacing: 0.06em;
+  color: var(--dg-ink);
+}
+
+.dg-face-tab.dg-face-set {
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 /* ── §2 Intro page specimen (301-example-front-matter.md) ──────────────────── */
@@ -232,15 +516,24 @@ div.chapter.dg-guide .dc-palette-grid {
 }
 
 div.chapter.dg-guide .dc-palette-swatch {
-  width: 72px;
-  min-height: 68px;
-  padding: 4px;
+  width: 1in;
+  min-height: 1in;
+  padding: 5px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   font-size: 8pt;
-  line-height: 1.2;
+  line-height: 1.25;
+}
+
+/* Swatch labels take the swatch's own text color, not guide inline code
+   (§1), which this selector must outrank. */
+.page.dg-doc .dc-palette-grid .dc-palette-swatch code {
+  font-size: 7pt;
+  color: inherit;
+  background: none;
+  padding: 0;
 }
 
 div.chapter.dg-guide .dc-palette-swatch strong {

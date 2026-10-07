@@ -33,6 +33,28 @@ cut a version that has no `## [X.Y.Z]` heading below.
   contents lists, and the explainer notes and column panels that used
   package components are now plain guide markup. All of this lives in
   `design-guide/` (markdown and `styles/guide.css`); the package is unchanged.
+- **Design guide: print-design review pass.** Readability and finish fixes
+  from a review against the print-quality rubrics, all in `design-guide/`:
+  - Code boxes are set in IBM Plex Mono (OFL, bundled in
+    `design-guide/fonts/ibm-plex-mono/`), 9pt on 1.4 leading, without the
+    doubled blank lines; fences of 20+ lines may split across pages.
+  - Guide text is capped at a 5.1in measure (about 65–70 characters) on 1.4
+    leading; tables are 10pt and may run across pages.
+  - Chapters open with a "Chapter N" label; H1 26pt, H3 13pt. Doc pages
+    carry a plain running foot (folio and chapter title); the contents list
+    has page numbers; Part 2 has a title page and E.1–E.6 chapter badges.
+  - YOU WRITE / RESULT labels are 8pt; YOU WRITE is cream on blood (7.7:1).
+  - Specimen stages stay whole unless marked `dg-tall`; prose specimens sit
+    on paper (`dg-on-paper`); two Do/Don't pairs (flavor in bold italic,
+    body text on bare wall).
+  - Typeface specimens for lixdu, Titillium Web and Tomorrow; palette
+    swatches are 1in and each carries a CMYK build from the CGATS21_CRPC1
+    profile (the hand-entered four-row CMYK table is replaced).
+  - Fixed: the type-scale table listed H1–H4 at stale sizes; the guide's
+    inline-code style leaked into the Part 2 examples (invisible text on a
+    dark callout), and its `hr` rule replaced the package's dashed rule in
+    the specimen; the inset-sidebar and art-plate specimens no longer leave
+    a RESULT tab stranded at a page foot.
 - **Tests run against gutterpress 0.11.13** (devDependency, was 0.10.11).
 - **`test/fixtures/all-macros.md` and its snapshot are gone**; the design
   guide is the fixture. `npm run test:update-snapshot` is now bun's own

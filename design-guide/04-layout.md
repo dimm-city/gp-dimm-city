@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 4 {.dg-kicker}
+
 # Layout
 
 How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a class on `@section`, `@page`, or an image. {.dg-lede}
@@ -25,7 +27,7 @@ Right column.
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 @section .gp-columns-2
 
@@ -123,7 +125,7 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
@@ -157,9 +159,9 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 @end-sidebar
 ```
 
-@page .page-sidebar
+The inset rail needs a page of its own, so the rendered page is the next page. {.dg-next}
 
-Result {.dg-result}
+@page .page-sidebar
 
 Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.
 
@@ -187,7 +189,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 ![Scavenger](img/scavenger.png){.dc-img-float-right}
 

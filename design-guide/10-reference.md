@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 10 {.dg-kicker}
+
 # Reference
 
 Every marker on one page, the options they take, the classes you can add, and the token each component exposes. The chapters before this one show each in use. {.dg-lede}

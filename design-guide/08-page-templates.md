@@ -2,6 +2,8 @@
 
 @page .dg-doc
 
+Chapter 8 {.dg-kicker}
+
 # Page Templates
 
 Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
@@ -69,7 +71,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.
 
-```markdown
+```markdown {.dg-split}
 @page .page-credits .dc-credits
 
 # Credits {.dc-chevron}
@@ -102,7 +104,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@section .dc-fiction-excerpt` sets narrative typography and floats the first image in the flow. `---{.column-break}` splits fiction from the rules column that follows.
 
-```markdown
+```markdown {.dg-split}
 @chapter C.01 #ch-citizen ch="1"
 
 @page intro
@@ -177,7 +179,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 `@page .card-grid` plus a `@section .dc-card-grid` of specialty cards, each in its own `@specialty`. Keep the cards uniform — identical chrome is what makes the choices comparable.
 
-```markdown
+```markdown {.dg-split}
 @page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
@@ -215,8 +217,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. The art plate takes its own page.
 
-```markdown
-
+```markdown {.dg-split}
 @specialty .augmerc
 
 @specialty-intro
@@ -262,7 +263,6 @@ Rendered: [Specialty Profile](#ch-example-specialty-profile).
 Flaws, ideals, and dreams: a `@section .dc-flaws` (or `.dc-ideals`, `.dc-dreams`) of `@card` blocks. The section class colors every card's accent. Cards stack in one column; use a tape divider between runs rather than columns.
 
 ```markdown
-
 @section .dc-ideals
 
 ## 4. Ideal
