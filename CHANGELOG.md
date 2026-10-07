@@ -9,6 +9,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Added
 
+- **Variant Gallery** (design guide chapter 11): every element with more than
+  one variant, its variants on one stage — all ten skill trees (each
+  specialty's first learning path with one skill card, Field Guide content
+  excerpted), the skill-card switches (tier override, both highlight forms,
+  two columns, outcome table), every AP chip, the ten specialty intros and
+  cards, class tags, alerts, blocks, choice cards, and the flush, heading,
+  section, sidebar and image-float variants.
 - **The design guide lives here.** `design-guide/` is the Dimm City Design
   Guide book, moved from `dimm-city/dc-op-manual`. Its manifest loads the
   package from this checkout (`extensions: - ../`), so it documents and
@@ -62,6 +69,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **Variable AP chips print as variable.** The plugin emitted
+  `.dc-ap.variable` but the CSS only styled `.dc-ap.var`, and a `VAR AP`
+  cost got no variable class at all. Both spellings are styled now, and
+  `VAR` is detected alongside ranges and `X`. Visible change in the Field
+  Guide: 13 pages, each a range-cost chip (`2-X AP` and the like) turning
+  from standard blue to variable magenta; no layout change.
 - **Short two-column runs no longer print full-page height.** `dc-native.css`
   §10b set `column-fill: auto` on every `.gp-columns-*` run; with no fixed
   height that fills the first column to the page foot, so a short column

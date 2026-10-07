@@ -313,6 +313,17 @@ div.chapter[id^="ch-example-"][data-ch] {
   box-decoration-break: clone;
 }
 
+/* A stage's caption — the heading and line of guide text right above it —
+   stays on the stage's page. */
+.page.dg-doc > :is(p, h3, table):has(+ .dg-stage),
+.page.dg-doc > h3:has(+ p + .dg-stage) {
+  break-after: avoid;
+}
+
+.page.dg-doc > p:has(+ .dg-stage) {
+  break-inside: avoid;
+}
+
 /* Running prose belongs on a page's paper panel, not on bare wall: a prose
    specimen shows on paper inside the frame. */
 .dg-stage.dg-on-paper {

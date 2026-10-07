@@ -389,13 +389,13 @@ components:
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X → .variable; also authored as raw <span class=\"dc-ap\">)"
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">)"
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
     usage: [" AP**"]
     breaks: none
-    notes: "Modifier drift outside the check's dc- scope: the plugin emits `variable` but the CSS styles `.dc-ap.var`; `.standard/.reduced/.increased/.special` (specialty-identity.css) are never emitted, only authored raw in the gallery."
+    notes: "The plugin emits `variable`; the CSS styles both `.variable` and the raw spelling `.var`. `.standard/.reduced/.increased/.special` (specialty-identity.css) are never emitted, only authored raw — shown in the design guide's Variant Gallery."
 
   - name: distance-tags
     status: unused

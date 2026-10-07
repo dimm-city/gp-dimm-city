@@ -490,7 +490,7 @@ function parseAbilityFromListItem(html) {
   // Determine AP class
   let apClass = 'dc-ap';
   if (apVal === '0 AP' || apVal === '0AP') apClass += ' free';
-  else if (apVal.includes('-') || apVal.toUpperCase().includes('X')) apClass += ' variable';
+  else if (apVal.includes('-') || /X|VAR/.test(apVal.toUpperCase())) apClass += ' variable';
 
   return {
     apVal: apVal,

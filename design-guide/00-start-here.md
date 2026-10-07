@@ -21,6 +21,7 @@ The Dimm City design system for Gutterpress: how to write a Dimm City book in ma
 <li><a href="#ch-templates">Page Templates</a> — chapter openers, contents, credits, catalog and profile pages</li>
 <li><a href="#ch-publishing">Publishing</a> — preview, build, validate</li>
 <li><a href="#ch-reference">Reference</a> — every marker on one page; options, classes, tokens</li>
+<li><a href="#ch-variants">Variant Gallery</a> — every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
 </ol>
 
 ## Part 2 — A book, page by page

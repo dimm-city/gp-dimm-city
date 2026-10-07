@@ -480,7 +480,10 @@
   --dc-ap-bg: var(--blood);
 }
 
-.dc-ap.var {
+/* The plugin emits `.variable` (a range, X or VAR); `.var` is the raw
+   authored spelling. Only `.var` was styled, so plugin chips never showed
+   as variable. */
+.dc-ap:is(.var, .variable) {
   --dc-ap-bg: var(--hud-magenta);
 }
 
