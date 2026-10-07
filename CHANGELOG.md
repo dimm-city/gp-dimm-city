@@ -7,6 +7,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-07
+
+**Layout note for books upgrading from 1.0.x:** the page margins now follow
+DriveThruRPG's print specification (text at least 0.5in inside the trim),
+which takes 0.25in off every page and reflows the whole book. Build and
+review your book after upgrading; the Field Guide needed a short layout
+pass (see `dc-op-manual`, branch `design/plugin-updates`). DriveThruRPG
+books should also end with `@page .dc-printer-page` and set
+`print: signature: 4` in `manifest.yaml`.
+
 ### Added
 
 - **`@page .dc-printer-page`**, a completely blank last page (no wall, no
