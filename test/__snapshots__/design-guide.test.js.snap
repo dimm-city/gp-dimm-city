@@ -3672,11 +3672,11 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </div></div>
 <h2>Section chassis</h2>
 <p>A bare <code>@section</code>, <code>@section .dc-plain</code>, <code>@section .dc-tabbed</code> with an <code>##</code> and a <code>###</code> tab, and <code>@section .gp-columns-2 .dc-column-panel</code>.</p>
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 <div class="section" data-source-range="1096:1097"><h3>Bare section</h3>
 <p>The panel chrome: substrate, accent rule, and the first heading as a bar.</p>
 </div><div class="section dc-plain" data-source-range="1104:1105"><h3>Plain section</h3>
-<p>The same grouping with every piece of chrome removed.</p>
+<p>No substrate, rail or shadow: the text sits on whatever is behind it. A first heading still prints as a bar.</p>
 </div><div class="section dc-tabbed" data-source-range="1112:1113"><h2>Tabbed, H2</h2>
 <p>The heading hangs off the panel edge as the primary tab.</p>
 </div><div class="section dc-tabbed" data-source-range="1120:1121"><h3>Tabbed, H3</h3>
