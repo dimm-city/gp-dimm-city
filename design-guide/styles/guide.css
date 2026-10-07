@@ -152,6 +152,11 @@ div.chapter[id^="ch-example-"][data-ch] {
   @bottom-right { content: none; }
 }
 
+@page front-matter-intro {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
 @page chapter-start {
   @bottom-left  { content: none; }
   @bottom-right { content: none; }

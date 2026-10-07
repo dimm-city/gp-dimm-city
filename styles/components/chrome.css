@@ -130,6 +130,14 @@ h1.dc-chevron {
      `isolation: isolate`, and with neither. */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
   margin: 0;
+  /* Leave room for the ::before skew tab, which overhangs the right edge
+     (right: -8px, 14px wide, skewed): 18px measured. A long title that
+     filled its column pushed the tab past the margin — "What Makes a Good
+     Cross-Specialty Moment", scrollWidth 726px in a 708px column — which a
+     clipping .page hid, and which on a page that may not clip (one holding
+     plate or bleed art) is print shrink-to-fit for the whole book. Such a
+     title now wraps one tab-width earlier; shorter banners are untouched. */
+  max-width: calc(100% - 18px);
   word-break: break-word;
   overflow: visible;
 }

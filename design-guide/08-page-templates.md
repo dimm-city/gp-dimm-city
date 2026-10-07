@@ -11,16 +11,19 @@ Classes on `@page` choose a page's geometry — margins, footers, running header
 
 ## Page geometry
 
-US Letter, perfect-bound, with bleed. Declared in `manifest.yaml`; the `@page` rules in the package's `styles/page-rules.css` set the rest.
+US Letter, perfect-bound, with bleed: the gutterpress `dtrpg` preset, declared in `manifest.yaml`. The `@page` rules in the package's `styles/page-rules.css` set the rest. Margins are set on the sheet, which includes the bleed; the second column is the distance from the trim.
 
-| Dimension | Value |
-|---|---|
-| Trim | 8.5 × 11 in |
-| Bleed | 0.125 in, all sides |
-| Top / bottom margin | 0.5 in / 0.70 in (footer sits in the bottom margin) |
-| Binding gutter / outside | 0.75 in / 0.5 in, swapping per recto and verso |
+| Dimension | On the sheet | From the trim |
+|---|---|---|
+| Sheet (trim + bleed) | 8.625 × 11.25 in | — |
+| Trim | — | 8.5 × 11 in |
+| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — |
+| Top margin | 0.5 in | 0.375 in |
+| Bottom margin (the footer sits in it) | 0.75 in | 0.625 in |
+| Outside margin | 0.625 in | 0.5 in |
+| Binding margin | 0.75 in | 0.75 in |
 
-Extend any full-bleed image 0.125 in past the trim.
+Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page classes
 

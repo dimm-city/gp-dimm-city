@@ -69,6 +69,51 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **The introduction page keeps the normal margins.** `.page-intro` shared
+  the `front-matter` named page with the Contents and Credits, whose side
+  and bottom margins are zeroed for their full-bleed masthead — so the
+  intro's chevron, lede and section sat flush on the sheet edge. It has its
+  own named page now, `front-matter-intro`: default margins, no footers.
+  The Field Guide writes its introduction as a plain `@page` and is
+  unaffected.
+- **No more pages printed as images.** `filter: drop-shadow()` on the
+  intro page and on the labelled chapter-opener page made Chromium print
+  each of those pages as one 300ppi bitmap with a soft mask: no live text,
+  and a transparency mask PDF/X-1a forbids. Both shadows are vector now
+  (box-shadow on the lede, section and opener badge; the opener section's
+  own clipped `::after`). Design guide: 8 pages regain live text. The
+  Field Guide uses neither and is unaffected.
+- **No hairline across the page after the credits.** The colophon fills to
+  the sheet's bottom edge, so its poster shadow's 3pt drop overflowed the
+  sheet and printed as a line across the top of the next page — over the
+  Field Guide's Contents masthead. The colophon keeps the shadow's side
+  offset and drops the downward one. (Clipping the page was rejected: it
+  would also clip a pinned or bleed plate.) Field Guide: p.2 loses the
+  line, and p.1 shows the colophon's side shadow starting level with its
+  top; nothing else changes.
+- **Specialty art plates print full bleed.** The `.page` overflow guard
+  (page-templates.css) exempted pages holding `.gp-bleed`/`.gp-pin` art but
+  not `.dc-specialty-art` or `.dc-full-page`, so a plate on a page with no
+  other pinned art was cut at the text column — a 100pt strip of bare wall
+  down its outside edge (design guide p.45, p.105). The Field Guide's
+  plates were full width only because its specialty pages also carry
+  pinned art. Field Guide unchanged.
+- **A long standalone banner title keeps its skew tab inside the margin.**
+  `.dc-spray`'s `::before` tab overhangs its right edge by 18px; a title
+  that filled its column pushed the tab past the margin, which is print
+  shrink-to-fit for the whole book once the page does not clip (found by
+  the build's width audit after the plate fix). Standalone banners cap at
+  the column less the tab; learning-path banners, which span their shell
+  with the tab pulled inside, are exempt. Field Guide unchanged.
+- **A learning-path banner stays with its first card.** The shell is never
+  split and keeps with the next card, and the first path after a
+  specialty's art page drops its 8px top margin — moved into the package
+  from the Field Guide's own sheet, which measured both. Without them the
+  design guide printed the Biting Distance banner alone, with the edge of
+  the first card's tab at the page foot. The package's `break-before:
+  always` on `.dc-learning-path` is not a value Chromium supports and does
+  nothing; it is left as is (making it valid would put every path on a new
+  page). Field Guide unchanged.
 - **A credits page that overflows no longer prints under the next page.**
   `.page.page-credits` had an exact one-sheet `height`; when its colophon
   did not fit, the colophon moved to a second sheet but the page box stayed

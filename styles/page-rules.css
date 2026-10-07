@@ -90,10 +90,24 @@
   @bottom-right { content: none; }
 }
 
-.page.page-intro,
 .page.page-toc,
 .page.page-credits {
   page: front-matter;
+}
+
+/* The introduction is front matter too — unnumbered — but it is not part
+   of the full-bleed masthead composite: its chevron, lede and section sit
+   inside the ordinary text column. It used to share `front-matter`, whose
+   zeroed side and bottom margins (dc-native.css §5) put the whole page
+   flush against the sheet edge. Its own name keeps the default margins and
+   drops only the footers. */
+@page front-matter-intro {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.page.page-intro {
+  page: front-matter-intro;
 }
 
 /* ---------------------------------------------------------------------------
