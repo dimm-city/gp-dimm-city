@@ -11,19 +11,21 @@ Classes on `@page` choose a page's geometry — margins, footers, running header
 
 ## Page geometry
 
-US Letter, perfect-bound, with bleed: the gutterpress `dtrpg` preset, declared in `manifest.yaml`. The `@page` rules in the package's `styles/page-rules.css` set the rest. Margins are set on the sheet, which includes the bleed; the second column is the distance from the trim.
+US Letter, perfect-bound, with bleed: the gutterpress `dtrpg` preset, declared in `manifest.yaml`. The geometry follows DriveThruRPG's published print specification ([Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)): a 0.125 in bleed on the three outside edges and none on the binding edge; all text at least 0.5 in inside the trim; art that does not bleed at least 0.25 in from the outside edges and 0.5 in from the binding edge.
 
-| Dimension | On the sheet | From the trim |
-|---|---|---|
-| Sheet (trim + bleed) | 8.625 × 11.25 in | — |
-| Trim | — | 8.5 × 11 in |
-| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — |
-| Top margin | 0.5 in | 0.375 in |
-| Bottom margin (the footer sits in it) | 0.75 in | 0.625 in |
-| Outside margin | 0.625 in | 0.5 in |
-| Binding margin | 0.75 in | 0.75 in |
+The `@page` rules in the package's `styles/page-rules.css` set the margins on the sheet, which includes the bleed, so each bleed-side margin is the trim distance plus 0.125 in.
 
-Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
+| Dimension | On the sheet | From the trim | DriveThruRPG minimum for text |
+|---|---|---|---|
+| Sheet (trim + bleed) | 8.625 × 11.25 in | — | — |
+| Trim | — | 8.5 × 11 in | — |
+| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
+| Top margin | 0.625 in | 0.5 in | 0.5 in |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips print about 0.55 in from the trim |
+| Outside margin | 0.625 in | 0.5 in | 0.5 in |
+| Binding margin | 0.75 in | 0.75 in | 0.5 in |
+
+A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page classes
 

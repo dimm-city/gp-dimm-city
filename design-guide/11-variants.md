@@ -885,7 +885,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 `> [!TYPE]` for one paragraph, `@callout variant=…` for more — both emit the same seven registers.
 
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 
 > [!NOTE]
 > A character may hold no more than one Signature Augment at a time.

@@ -56,7 +56,7 @@
    --page-height in dc-palette.css: change both together. */
 @page {
   size: 8.625in 11.25in;
-  margin: var(--page-margin) var(--outer-margin) 0.75in;
+  margin: var(--page-margin) var(--outer-margin) var(--bottom-margin);
   background-color: var(--bg);
 }
 
@@ -161,25 +161,34 @@
    are left alone, so these pages keep the body footers.
    --------------------------------------------------------------------------- */
 
+/* The running head is TEXT, so DriveThruRPG wants it 0.5in inside the trim
+   — below the default top margin, whose whole band lies within 0.5in of
+   the trim. These pages carry a deeper top margin and set the head at the
+   foot of it: 0.875in from the sheet edge, head baseline ~0.7in, 0.58in
+   from the trim. (It printed at 0.1in from the trim.) */
 @page citizen-file:right {
+  margin-top: 0.875in;
   @top-right {
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
     letter-spacing: 0.1em;
     font-size: 0.8em;
-    padding-top: 0.1in;
+    vertical-align: bottom;
+    padding-bottom: 0.08in;
   }
 }
 
 @page citizen-file:left {
+  margin-top: 0.875in;
   @top-left {
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
     letter-spacing: 0.1em;
     font-size: 0.8em;
-    padding-top: 0.1in;
+    vertical-align: bottom;
+    padding-bottom: 0.08in;
   }
 }
 

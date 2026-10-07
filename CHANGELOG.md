@@ -31,6 +31,22 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Page margins follow DriveThruRPG's print specification.** Its
+  [Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)
+  require all text at least 0.5in inside the trim. The bleed (0.125in on
+  the three outside edges, none at the spine) and the outside and binding
+  margins already complied; the top did not (0.375in from the trim) and
+  neither did the footer chips (0.43in). Top margin 0.5in → 0.625in on the
+  sheet (0.5in from the trim); bottom 0.75in → 0.875in, as the new
+  `--bottom-margin` token, so the chips print 0.55in from the trim. The
+  "Citizen File" running head, which printed 0.1in from the trim, sits at
+  the foot of a 0.875in top margin. Footer chips re-homed by a `.gp-flush`
+  pin are top-aligned like native ones (gutterpress centres them, which put
+  them 0.24in from the trim). A card title too long for its card breaks
+  rather than running into the margin. **This reflows every book:** the
+  Field Guide goes from 221 to 238 pages and now has no text inside 0.5in
+  of the trim (it had 1,273 words on 204 pages); the design guide goes from
+  126 to 131.
 - **Design guide: explainer pages print plain, specimens sit on the wall.**
   Part 1 pages (and the Part 2 overview) are `@page .dg-doc`, a named page
   with a white background and neutral headings, tables and contents, so guide

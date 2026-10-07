@@ -753,7 +753,7 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 &gt; Melee. Damage 1d8+STR. *Serrated:* on a critical hit, the target bleeds for 1d4.
 </code></pre>
 <p class="dg-result">Result</p>
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
 <p data-source-range="115:117">A character may hold no more than one Signature Augment at a time.</p>
 </div>
@@ -1973,115 +1973,124 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <h1>Page Templates</h1>
 <p class="dg-lede">Classes on <code>@page</code> choose a page’s geometry — margins, footers, running headers — and a few <code>@section</code> chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2.</p>
 <h2>Page geometry</h2>
-<p>US Letter, perfect-bound, with bleed: the gutterpress <code>dtrpg</code> preset, declared in <code>manifest.yaml</code>. The <code>@page</code> rules in the package’s <code>styles/page-rules.css</code> set the rest. Margins are set on the sheet, which includes the bleed; the second column is the distance from the trim.</p>
+<p>US Letter, perfect-bound, with bleed: the gutterpress <code>dtrpg</code> preset, declared in <code>manifest.yaml</code>. The geometry follows DriveThruRPG’s published print specification (<a href="https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books" data-gp-source-token="[Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)" data-gp-source-occurrence="0">Quick Specifications for Print Books</a>): a 0.125 in bleed on the three outside edges and none on the binding edge; all text at least 0.5 in inside the trim; art that does not bleed at least 0.25 in from the outside edges and 0.5 in from the binding edge.</p>
+<p>The <code>@page</code> rules in the package’s <code>styles/page-rules.css</code> set the margins on the sheet, which includes the bleed, so each bleed-side margin is the trim distance plus 0.125 in.</p>
 <table>
-<thead data-source-range="15:16">
-<tr data-source-range="15:16">
+<thead data-source-range="17:18">
+<tr data-source-range="17:18">
 <th>Dimension</th>
 <th>On the sheet</th>
 <th>From the trim</th>
+<th>DriveThruRPG minimum for text</th>
 </tr>
 </thead>
-<tbody data-source-range="17:24">
-<tr data-source-range="17:18">
+<tbody data-source-range="19:26">
+<tr data-source-range="19:20">
 <td>Sheet (trim + bleed)</td>
 <td>8.625 × 11.25 in</td>
 <td>—</td>
-</tr>
-<tr data-source-range="18:19">
-<td>Trim</td>
-<td>—</td>
-<td>8.5 × 11 in</td>
-</tr>
-<tr data-source-range="19:20">
-<td>Bleed</td>
-<td>0.125 in at top, bottom and the outside edge; none at the spine</td>
 <td>—</td>
 </tr>
 <tr data-source-range="20:21">
-<td>Top margin</td>
-<td>0.5 in</td>
-<td>0.375 in</td>
+<td>Trim</td>
+<td>—</td>
+<td>8.5 × 11 in</td>
+<td>—</td>
 </tr>
 <tr data-source-range="21:22">
-<td>Bottom margin (the footer sits in it)</td>
-<td>0.75 in</td>
-<td>0.625 in</td>
+<td>Bleed</td>
+<td>0.125 in at top, bottom and the outside edge; none at the spine</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr data-source-range="22:23">
-<td>Outside margin</td>
+<td>Top margin</td>
 <td>0.625 in</td>
+<td>0.5 in</td>
 <td>0.5 in</td>
 </tr>
 <tr data-source-range="23:24">
+<td>Bottom margin (the folio and chapter chips sit in it)</td>
+<td>0.875 in</td>
+<td>0.75 in</td>
+<td>0.5 in — the chips print about 0.55 in from the trim</td>
+</tr>
+<tr data-source-range="24:25">
+<td>Outside margin</td>
+<td>0.625 in</td>
+<td>0.5 in</td>
+<td>0.5 in</td>
+</tr>
+<tr data-source-range="25:26">
 <td>Binding margin</td>
 <td>0.75 in</td>
 <td>0.75 in</td>
+<td>0.5 in</td>
 </tr>
 </tbody>
 </table>
-<p>Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.</p>
+<p>A page carrying the “Citizen File” running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.</p>
 <h2>Page classes</h2>
 <table>
-<thead data-source-range="29:30">
-<tr data-source-range="29:30">
+<thead data-source-range="31:32">
+<tr data-source-range="31:32">
 <th>You write</th>
 <th>Footers</th>
 <th>Use for</th>
 </tr>
 </thead>
-<tbody data-source-range="31:42">
-<tr data-source-range="31:32">
+<tbody data-source-range="33:44">
+<tr data-source-range="33:34">
 <td><code>@page</code></td>
 <td><code>p.N</code> and <code>c.N</code> in opposing corners</td>
 <td>Every body page</td>
 </tr>
-<tr data-source-range="32:33">
+<tr data-source-range="34:35">
 <td><code>@page .page-toc</code></td>
 <td>none</td>
 <td>The contents page</td>
 </tr>
-<tr data-source-range="33:34">
+<tr data-source-range="35:36">
 <td><code>@page .page-credits .dc-credits</code></td>
 <td>none</td>
 <td>The credits page</td>
 </tr>
-<tr data-source-range="34:35">
+<tr data-source-range="36:37">
 <td><code>@page .page-intro</code></td>
 <td>none</td>
 <td>The introduction</td>
 </tr>
-<tr data-source-range="35:36">
+<tr data-source-range="37:38">
 <td><code>@page .page-chapter-start .dc-chapter-start</code></td>
 <td>none</td>
 <td>A chapter opener</td>
 </tr>
-<tr data-source-range="36:37">
+<tr data-source-range="38:39">
 <td><code>@page intro</code></td>
 <td><code>p.N</code>, <code>c.N</code></td>
 <td>A chapter’s first page under a labelled <code>@chapter</code> — the chapter badge is injected here</td>
 </tr>
-<tr data-source-range="37:38">
+<tr data-source-range="39:40">
 <td><code>@page .page-sidebar</code></td>
 <td><code>p.N</code>, <code>c.N</code></td>
 <td>A page with an inset sidebar rail</td>
 </tr>
-<tr data-source-range="38:39">
+<tr data-source-range="40:41">
 <td><code>@page .dc-citizen-file-page</code></td>
 <td><code>p.N</code>, <code>c.N</code></td>
 <td>Running header “Citizen File”</td>
 </tr>
-<tr data-source-range="39:40">
+<tr data-source-range="41:42">
 <td><code>@page .card-grid</code></td>
 <td><code>p.N</code>, <code>c.N</code></td>
 <td>The specialty catalog page</td>
 </tr>
-<tr data-source-range="40:41">
+<tr data-source-range="42:43">
 <td><code>@page .dc-full-page</code></td>
 <td>none</td>
 <td>Zero margins; full-bleed art</td>
 </tr>
-<tr data-source-range="41:42">
+<tr data-source-range="43:44">
 <td><code>@page .dc-suppress-footer</code></td>
 <td>none</td>
 <td>Any page that should print no footer</td>
@@ -2091,7 +2100,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <p>The <code>c.N</code> footer is the chapter number from <code>@chapter … ch=&quot;N&quot;</code>. A chapter split across files repeats its <code>@chapter</code> line in each.</p>
 <h2>Contents page</h2>
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
-<pre><code data-source-range="50:69" class="language-markdown">@page .page-toc
+<pre><code data-source-range="52:71" class="language-markdown">@page .page-toc
 
 # Contents {.dc-chevron}
 
@@ -2112,7 +2121,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Credits page</h2>
 <p>A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.</p>
-<pre><code class="dg-split language-markdown" data-source-range="76:101">@page .page-credits .dc-credits
+<pre><code class="dg-split language-markdown" data-source-range="78:103">@page .page-credits .dc-credits
 
 # Credits {.dc-chevron}
 
@@ -2139,7 +2148,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Chapter opener</h2>
 <p>A labelled <code>@chapter</code> plus <code>@page intro</code> gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: <code>@section .dc-fiction-excerpt</code> sets narrative typography and floats the first image in the flow. <code>---{.column-break}</code> splits fiction from the rules column that follows.</p>
-<pre><code class="dg-split language-markdown" data-source-range="109:136">@chapter C.01 #ch-citizen ch=&quot;1&quot;
+<pre><code class="dg-split language-markdown" data-source-range="111:138">@chapter C.01 #ch-citizen ch=&quot;1&quot;
 
 @page intro
 
@@ -2169,7 +2178,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>The footer-free variant is <code>@page .page-chapter-start .dc-chapter-start</code> with a <code># Title</code> — the snippet picker’s <em>Chapter Start Page</em>.</p>
 <h2>Citizen File walkthrough</h2>
 <p><code>@section .dc-citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Add <code>.gp-columns-2 .dc-column-panel</code> to put two short fields side by side. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
-<pre><code data-source-range="145:160" class="language-markdown">@page .dc-citizen-file-page
+<pre><code data-source-range="147:162" class="language-markdown">@page .dc-citizen-file-page
 
 @section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
 
@@ -2185,14 +2194,14 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="165:166"><h4>What’s Yr Handle?</h4>
+<div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="167:168"><h4>What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4>Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
 </div></div>
 <h2>Specialty catalog page</h2>
 <p><code>@page .card-grid</code> plus a <code>@section .dc-card-grid</code> of specialty cards, each in its own <code>@specialty</code>. Keep the cards uniform — identical chrome is what makes the choices comparable.</p>
-<pre><code class="dg-split language-markdown" data-source-range="184:215">@page .card-grid
+<pre><code class="dg-split language-markdown" data-source-range="186:217">@page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -2225,7 +2234,7 @@ Heavily armed and wired for war.
 <p>Rendered with all ten cards: <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>.</p>
 <h2>Specialty profile</h2>
 <p>Intro, art plate, then learning paths with their skill cards, all inside one <code>@specialty</code>. The art plate takes its own page.</p>
-<pre><code class="dg-split language-markdown" data-source-range="222:260">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="224:262">@specialty .augmerc
 
 @specialty-intro
 
@@ -2265,7 +2274,7 @@ Heavily armed and wired for war.
 <p>Rendered: <a href="#ch-example-specialty-profile" data-gp-source-token="[Specialty Profile](#ch-example-specialty-profile)" data-gp-source-occurrence="0">Specialty Profile</a>.</p>
 <h2>Choice page</h2>
 <p>Flaws, ideals, and dreams: a <code>@section .dc-flaws</code> (or <code>.dc-ideals</code>, <code>.dc-dreams</code>) of <code>@card</code> blocks. The section class colors every card’s accent. Cards stack in one column; use a tape divider between runs rather than columns.</p>
-<pre><code data-source-range="267:286" class="language-markdown">@section .dc-ideals
+<pre><code data-source-range="269:288" class="language-markdown">@section .dc-ideals
 
 ## 4. Ideal
 
@@ -3523,7 +3532,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </div>
 <h2>Alerts and callouts</h2>
 <p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout variant=…</code> for more — both emit the same seven registers.</p>
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
 <p data-source-range="889:891">A character may hold no more than one Signature Augment at a time.</p>
 </div>
@@ -4787,7 +4796,7 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
 <p>Neural interface chip. Connect to digital systems at Near range. Required for most high-tier augments.</p>
 </div>
 <div class="dc-card dc-gear">
-<h3>Reflex Accelerator</h3>
+<h3>Reflex Accel­erator</h3>
 <p><em>You move before they think.</em></p>
 <p><strong>3 EP · Cybersurgeon installation required</strong></p>
 <p>Combat processor wired into your nervous system. +1 AP per round. Cannot be Stunned. High EP cost — you’ll feel it.</p>

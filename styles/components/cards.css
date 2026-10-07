@@ -487,4 +487,13 @@
   --dc-ap-bg: var(--hud-magenta);
 }
 
+/* A card title is a wide display word in a narrow box (a gear card in a
+   two-column run is ~3.4in). One that cannot fit ran past the card and into
+   the page margin — "ACCELERATOR" printed 0.41in from the trim, inside
+   DriveThruRPG's 0.5in text minimum. It now breaks, as a last resort; a
+   soft hyphen (&shy;) in the source picks a better break. */
+.dc-card :is(h2, h3, h4) {
+  overflow-wrap: break-word;
+}
+
 }

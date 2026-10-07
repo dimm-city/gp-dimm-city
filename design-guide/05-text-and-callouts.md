@@ -111,7 +111,7 @@ One shell, seven registers. Write a GFM alert — a blockquote whose first line 
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-tall">
 
 > [!NOTE]
 > A character may hold no more than one Signature Augment at a time.

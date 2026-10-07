@@ -171,7 +171,7 @@ Neural interface chip. Connect to digital systems at Near range. Required for mo
 @end-gear
 
 @gear
-### Reflex Accelerator
+### Reflex Accel&shy;erator
 
 *You move before they think.*
 
