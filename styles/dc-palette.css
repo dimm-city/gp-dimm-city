@@ -123,7 +123,20 @@
   --dc-card-gap:   0.15in;  /* ~11pt */
 
   --gutter:        0.15in;  /* two-column structural gutter */
-  --page-margin:   0.5in;
+  /* Page margins, measured from the SHEET edge. The sheet is the trim plus
+     DriveThruRPG's 0.125in bleed on the top, bottom and outside edge (none
+     at the spine), so each bleed-side margin is the trim distance + 0.125in.
+     DriveThruRPG "Quick Specifications for Print Books": all text at least
+     0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
+     outside three edges and 0.5in from the binding edge.
+       top     0.625in  = 0.5in from the trim  (was 0.5in: 0.375in, out of spec)
+       bottom  0.875in  = 0.75in from the trim (was 0.75in: the folio and
+                          chapter chips sit in this band and printed 0.43in
+                          from the trim, out of spec)
+       outside 0.625in  = 0.5in from the trim
+       binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
+  --page-margin:   0.625in;
+  --bottom-margin: 0.875in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 

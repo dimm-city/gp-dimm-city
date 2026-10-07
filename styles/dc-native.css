@@ -42,6 +42,12 @@
   background-blend-mode: multiply;
 }
 
+/* The printer page (page-rules.css) carries no wall: DriveThruRPG wants
+   the final page free of any page background. */
+@page printer-blank {
+  background: none;
+}
+
 /* ── 3. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
    Chrome for the chip content page-rules.css declares on @bottom-left /
    @bottom-right. Sticker identity swaps by spread side in page-rules.css's
@@ -73,11 +79,20 @@
    Shrinking the box no longer punches a hole in the margin band: §1's
    `@page` background paints underneath, so the wall shows through the rest
    of the slot on its own. */
+/* `align-self: flex-start`: on a page whose footer band a `.gp-flush` pin
+   frees, gutterpress re-homes these chips into a flex slot the size of the
+   margin box, centred vertically (gutterpress-agent setFlushFurniture,
+   `align-items: center`), and copies these declarations onto the chip. A
+   native margin box anchors a fit-content chip at the TOP of the band;
+   centred, a re-homed chip printed 0.24in from the trim, against
+   DriveThruRPG's 0.5in text minimum (Field Guide p.9, p.10, p.16). The
+   declaration does nothing to a native margin box, which is not a flex item. */
 @page :left {
   @bottom-left {
     /* folio sticker — civic register */
     width: fit-content;
     height: fit-content;
+    align-self: flex-start;
     font-family: var(--font-mono);
     font-size: 9pt;
     font-weight: 700;
@@ -92,6 +107,7 @@
     /* chapter sticker — stamped coupon */
     width: fit-content;
     height: fit-content;
+    align-self: flex-start;
     font-family: var(--font-display);
     font-size: 9pt;
     font-weight: 700;
@@ -109,6 +125,7 @@
     /* chapter sticker — stamped coupon */
     width: fit-content;
     height: fit-content;
+    align-self: flex-start;
     font-family: var(--font-display);
     font-size: 9pt;
     font-weight: 700;
@@ -123,6 +140,7 @@
     /* folio sticker — civic register */
     width: fit-content;
     height: fit-content;
+    align-self: flex-start;
     font-family: var(--font-mono);
     font-size: 9pt;
     font-weight: 700;
@@ -183,14 +201,19 @@
   padding-bottom: 0.75in;
 }
 /* Credits page as a full-height flex column so a pinned founders plate
-   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Exact `height`
-   rather than core's `min-height` cushion so the pin's containing block ends
-   exactly on the sheet edge. Carried from the field guide's native sheet in
-   1.0.0: every Dimm City book writes this page. */
+   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Carried from the
+   field guide's native sheet in 1.0.0: every Dimm City book writes this page.
+
+   `min-height`, not `height`. A page whose credits fit is exactly one sheet
+   either way, so the pin still seats on the sheet edge. An exact `height`
+   broke the page whose credits do NOT fit: the colophon went to a second
+   sheet while the page box stayed one sheet tall, so the next page started
+   on that same second sheet and printed on top of it (design guide, the
+   Introduction over the credits colophon). */
 .page.page-credits {
   display: flex;
   flex-direction: column;
-  height: var(--gp-content-h);
+  min-height: var(--gp-content-h);
   padding-bottom: 0;
 }
 .page.page-credits .section.credits-colophon {
@@ -199,6 +222,14 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
+  /* The colophon fills to the sheet's bottom edge (this template has no
+     bottom margin), so the poster shadow's 3pt drop landed past the sheet,
+     and Chromium printed that overflow as a hairline across the top of the
+     NEXT sheet — the Field Guide's Contents masthead, the design guide's
+     Introduction. The shadow keeps its side offset and loses the drop; the
+     colophon's foot sits under the pinned plate in any case. (Clipping the
+     page instead would also clip a pinned or bleed plate on it.) */
+  box-shadow: 2pt 0 0 rgba(0, 0, 0, 0.28);
 }
 /* The masthead escapes the padding back to the sheet edges — visible paint
    inside the full-width content box. `margin-top: 0` is deliberate: a
@@ -250,44 +281,35 @@ figure {
    value depends on whether the run fragments, and only the author knows).
    page-templates.css used to answer `balance` for the whole book; under
    native print the wrapper fragments across pages, and Chromium's
-   balance-in-fragmentation leaves every non-final fragment with a dead right
-   column (measured: proof17 p12/p13). Sequential fill packs both columns per
-   page — the behavior the engine's multicol fixture verified. */
+   balance-in-fragmentation left every non-final fragment with a dead right
+   column (measured: proof17 p12/p13), so this rule said `auto`.
+
+   It says `balance` again (2026-10). `auto` with no fixed height fills the
+   first column to the BOTTOM OF THE PAGE, so every short run — a column
+   panel, a pair of gear entries — printed as a full-height box with an
+   empty right column, and a heading above one was stranded alone on its
+   page when the full-height box could not fit under it (design guide
+   p.83, p.111). Measured against the change, under gutterpress 0.11.13:
+   the Field Guide's 221 pages render pixel-identical with `balance`, and
+   the design guide loses 6 pages of holes. A run that genuinely needs
+   sequential fill opts in with core's `.gp-columns-flow`. */
 .gp-columns-2,
 .gp-columns-3 {
-  column-fill: auto;
-}
-/* Per the measured rule (docs/native-engine-styling-guide.md §5): balance is
-   correct for single-page multicol, auto only for FRAGMENTING multicol.
-   The general `.gp-columns-2`/`.gp-columns-3` rule above stays `auto` — it is
-   load-bearing for the WRAPPER shape (a plain div around several `.section`
-   children, e.g. p12/p13's "THE PACK SHOULD BE WEIRD" walkthrough, and
-   p243's CORE ELEMENTS section, where the dc-alert callout is itself taller
-   than a column and MUST be allowed to fragment; see §13 below). A
-   `.section` that is ITSELF the multicol container is NOT reliably short —
-   CORE ELEMENTS is that same DOM shape (`.section.gp-columns-2`) and needs
-   `auto`, so shape alone can't tell "fits on one page" from "runs long".
-
-   Two exceptions, both scoped so they cannot catch the fragmenting case:
-
-   (a) p7's "Image Is Everything" aside — a short paragraph + a short callout,
-   nothing left to balance — scoped to its own authored classes rather than
-   promoted to a general `.section.gp-columns-2` rule that would also catch,
-   and break, CORE ELEMENTS. If a future page reuses
-   `.dc-citizen-walkthrough.gp-columns-2` with long enough content to actually
-   fragment, the compiler's own multicol-fragmentation check flags it and
-   tells the author to add column-fill: auto locally — not a silent trap.
-
-   (b) a PAGE that is itself the multicol container. A `.page` is one sheet by
-   construction, so its run does not fragment and balance is the correct
-   value. This carries forward the `.page.two-column { column-fill: balance }`
-   that page-templates.css used to win with on specificity alone (0-2-0 over
-   this file's 0-1-0); stating it here puts it next to the reasoning and the
-   measurements instead of leaving it to load order. Live user:
-   `@page .dc-citizen-file-page .gp-columns-2` in the design guide. */
-.dc-citizen-walkthrough.gp-columns-2,
-.page.gp-columns-2 {
   column-fill: balance;
+}
+/* The per-shape exceptions that used to follow — `.dc-citizen-walkthrough
+   .gp-columns-2` and `.page.gp-columns-2` set back to `balance` — are gone:
+   the rule above now says `balance` for every run. The Field Guide pages they
+   were measured on (p12/p13 "THE PACK SHOULD BE WEIRD", p243 CORE ELEMENTS,
+   p7 "Image Is Everything") are among the 221 that render pixel-identical. */
+
+/* A PAGE that is itself the multicol container (`@page .gp-columns-2`) and
+   ends in a full-width spanner: the spanner's bottom margin pushed the page
+   box past its one-sheet minimum height, and the overflow printed as a blank
+   page (Field Guide: Quickstart vs. Deep Dive, after the DriveThruRPG
+   margins). A page's last child needs no bottom margin. */
+.page:is(.gp-columns-2, .gp-columns-3) > :last-child {
+  margin-bottom: 0;
 }
 
 /* ── 12. WALL ART placement is the markdown's, via core's gp-* classes ──────

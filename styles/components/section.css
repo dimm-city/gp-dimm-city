@@ -940,16 +940,16 @@ h3 + .section {
   border-top: 4pt solid var(--dc-chapter-opener-accent);
 }
 
-/* Cohesive drop shadow for the entire chapter-opener composite.
-   `filter: drop-shadow()` follows the union of the page's visible child
-   silhouettes — badge, tapered chevron, clipped section — and renders
-   ONE continuous shadow that looks like the composite is pinned to the
-   wall and casting a single offset. Applied on the page wrapper rather
-   than per-element so the diagonal join between chevron's tapered right
-   edge and the section's vertical right edge is preserved in the shadow
-   shape. */
-.chapter[data-chapter-label] > .page[data-page="intro"] {
-  filter: drop-shadow(var(--dc-chapter-opener-shadow));
+/* Chapter-opener shadow — vector, per element. This was ONE
+   `filter: drop-shadow()` on the page wrapper; Chromium prints a filtered
+   subtree as a bitmap, so every opener page went to the PDF as a single
+   300ppi image with a transparency mask — no live text, and a soft mask
+   that PDF/X-1a forbids. The badge takes a box-shadow; the section's own
+   ::after (below) draws its shadow on the same clipped silhouette as its
+   substrate, the way the base .section card does. The chevron sits inside
+   the section box, so the section's shadow covers it. */
+.chapter-opener {
+  box-shadow: var(--dc-chapter-opener-shadow);
 }
 
 /* Section substrate for the chapter-opener intro section. Selector
@@ -988,11 +988,21 @@ h3 + .section {
   );
 }
 
-/* Suppress the .section::after fake-shadow on the chapter-opener composite:
-   the chapter badge above already provides the upper visual weight, and a
-   vector shadow offset would visually clip at the indented right edge. */
+/* The chapter-opener section's shadow: the base ::after, offset like
+   --dc-chapter-opener-shadow and clipped to the same straight right edge
+   at the clip-tail as the substrate above. */
 .chapter[data-chapter-label] > .page[data-page="intro"] > .section::after {
-  content: none;
+  top: 4px;
+  left: 3px;
+  right: -3px;
+  bottom: -4px;
+  background: rgba(0, 0, 0, 0.28);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
+    0 100%
+  );
 }
 
 /* Auto-style the section's first h1 as a chevron banner — no markdown

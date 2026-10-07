@@ -7,8 +7,32 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-07
+
+**Layout note for books upgrading from 1.0.x:** the page margins now follow
+DriveThruRPG's print specification (text at least 0.5in inside the trim),
+which takes 0.25in off every page and reflows the whole book. Build and
+review your book after upgrading; the Field Guide needed a short layout
+pass (see `dc-op-manual`, branch `design/plugin-updates`). DriveThruRPG
+books should also end with `@page .dc-printer-page` and set
+`print: signature: 4` in `manifest.yaml`.
+
 ### Added
 
+- **`@page .dc-printer-page`**, a completely blank last page (no wall, no
+  footer). DriveThruRPG reserves a book's final page for printer
+  information: the interior must be one page short of its signature (4 for
+  US Letter) or end on a blank page. End the last chapter with this marker
+  and set `print: signature: 4` in the manifest — gutterpress pads with
+  blank pages to the next multiple of 4 — and the book always ends blank.
+  Verified in the Field Guide (228 content pages + 4 blank = 232).
+- **Variant Gallery** (design guide chapter 11): every element with more than
+  one variant, its variants on one stage — all ten skill trees (each
+  specialty's first learning path with one skill card, Field Guide content
+  excerpted), the skill-card switches (tier override, both highlight forms,
+  two columns, outcome table), every AP chip, the ten specialty intros and
+  cards, class tags, alerts, blocks, choice cards, and the flush, heading,
+  section, sidebar and image-float variants.
 - **The design guide lives here.** `design-guide/` is the Dimm City Design
   Guide book, moved from `dimm-city/dc-op-manual`. Its manifest loads the
   package from this checkout (`extensions: - ../`), so it documents and
@@ -24,6 +48,53 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Page margins follow DriveThruRPG's print specification.** Its
+  [Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)
+  require all text at least 0.5in inside the trim. The bleed (0.125in on
+  the three outside edges, none at the spine) and the outside and binding
+  margins already complied; the top did not (0.375in from the trim) and
+  neither did the footer chips (0.43in). Top margin 0.5in → 0.625in on the
+  sheet (0.5in from the trim); bottom 0.75in → 0.875in, as the new
+  `--bottom-margin` token, so the chips print 0.55in from the trim. The
+  "Citizen File" running head, which printed 0.1in from the trim, sits at
+  the foot of a 0.875in top margin. Footer chips re-homed by a `.gp-flush`
+  pin are top-aligned like native ones (gutterpress centres them, which put
+  them 0.24in from the trim). A card title too long for its card breaks
+  rather than running into the margin. **This reflows every book:** the
+  Field Guide goes from 221 to 238 pages and now has no text inside 0.5in
+  of the trim (it had 1,273 words on 204 pages); the design guide goes from
+  126 to 131.
+- **Design guide: explainer pages print plain, specimens sit on the wall.**
+  Part 1 pages (and the Part 2 overview) are `@page .dg-doc`, a named page
+  with a white background and neutral headings, tables and contents, so guide
+  text can't be mistaken for a component. Each rendered result is wrapped in
+  a framed `.dg-stage` that carries the brick wall; whole-page specimens and
+  the Part 2 example pages keep the full brick page. Chapter ledes, the
+  contents lists, and the explainer notes and column panels that used
+  package components are now plain guide markup. All of this lives in
+  `design-guide/` (markdown and `styles/guide.css`); the package is unchanged.
+- **Design guide: print-design review pass.** Readability and finish fixes
+  from a review against the print-quality rubrics, all in `design-guide/`:
+  - Code boxes are set in IBM Plex Mono (OFL, bundled in
+    `design-guide/fonts/ibm-plex-mono/`), 9pt on 1.4 leading, without the
+    doubled blank lines; fences of 20+ lines may split across pages.
+  - Guide text is capped at a 5.1in measure (about 65–70 characters) on 1.4
+    leading; tables are 10pt and may run across pages.
+  - Chapters open with a "Chapter N" label; H1 26pt, H3 13pt. Doc pages
+    carry a plain running foot (folio and chapter title); the contents list
+    has page numbers; Part 2 has a title page and E.1–E.6 chapter badges.
+  - YOU WRITE / RESULT labels are 8pt; YOU WRITE is cream on blood (7.7:1).
+  - Specimen stages stay whole unless marked `dg-tall`; prose specimens sit
+    on paper (`dg-on-paper`); two Do/Don't pairs (flavor in bold italic,
+    body text on bare wall).
+  - Typeface specimens for lixdu, Titillium Web and Tomorrow; palette
+    swatches are 1in and each carries a CMYK build from the CGATS21_CRPC1
+    profile (the hand-entered four-row CMYK table is replaced).
+  - Fixed: the type-scale table listed H1–H4 at stale sizes; the guide's
+    inline-code style leaked into the Part 2 examples (invisible text on a
+    dark callout), and its `hr` rule replaced the package's dashed rule in
+    the specimen; the inset-sidebar and art-plate specimens no longer leave
+    a RESULT tab stranded at a page foot.
 - **Tests run against gutterpress 0.11.13** (devDependency, was 0.10.11).
 - **`test/fixtures/all-macros.md` and its snapshot are gone**; the design
   guide is the fixture. `npm run test:update-snapshot` is now bun's own
@@ -31,6 +102,91 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **No blank page after a two-column page that ends in a spanner.** A
+  `@page .gp-columns-2` page ending in a full-width section printed an
+  extra blank page under the DriveThruRPG margins (Field Guide: Quickstart
+  vs. Deep Dive): the section's bottom margin pushed the page box past its
+  one-sheet minimum. A multicol page's last child has no bottom margin.
+  Design guide unchanged; Field Guide loses the blank page.
+- **The introduction page keeps the normal margins.** `.page-intro` shared
+  the `front-matter` named page with the Contents and Credits, whose side
+  and bottom margins are zeroed for their full-bleed masthead — so the
+  intro's chevron, lede and section sat flush on the sheet edge. It has its
+  own named page now, `front-matter-intro`: default margins, no footers.
+  The Field Guide writes its introduction as a plain `@page` and is
+  unaffected.
+- **No more pages printed as images.** `filter: drop-shadow()` on the
+  intro page and on the labelled chapter-opener page made Chromium print
+  each of those pages as one 300ppi bitmap with a soft mask: no live text,
+  and a transparency mask PDF/X-1a forbids. Both shadows are vector now
+  (box-shadow on the lede, section and opener badge; the opener section's
+  own clipped `::after`). Design guide: 8 pages regain live text. The
+  Field Guide uses neither and is unaffected.
+- **No hairline across the page after the credits.** The colophon fills to
+  the sheet's bottom edge, so its poster shadow's 3pt drop overflowed the
+  sheet and printed as a line across the top of the next page — over the
+  Field Guide's Contents masthead. The colophon keeps the shadow's side
+  offset and drops the downward one. (Clipping the page was rejected: it
+  would also clip a pinned or bleed plate.) Field Guide: p.2 loses the
+  line, and p.1 shows the colophon's side shadow starting level with its
+  top; nothing else changes.
+- **Specialty art plates print full bleed.** The `.page` overflow guard
+  (page-templates.css) exempted pages holding `.gp-bleed`/`.gp-pin` art but
+  not `.dc-specialty-art` or `.dc-full-page`, so a plate on a page with no
+  other pinned art was cut at the text column — a 100pt strip of bare wall
+  down its outside edge (design guide p.45, p.105). The Field Guide's
+  plates were full width only because its specialty pages also carry
+  pinned art. Field Guide unchanged.
+- **A long standalone banner title keeps its skew tab inside the margin.**
+  `.dc-spray`'s `::before` tab overhangs its right edge by 18px; a title
+  that filled its column pushed the tab past the margin, which is print
+  shrink-to-fit for the whole book once the page does not clip (found by
+  the build's width audit after the plate fix). Standalone banners cap at
+  the column less the tab; learning-path banners, which span their shell
+  with the tab pulled inside, are exempt. Field Guide unchanged.
+- **A learning-path banner stays with its first card.** The shell is never
+  split and keeps with the next card, and the first path after a
+  specialty's art page drops its 8px top margin — moved into the package
+  from the Field Guide's own sheet, which measured both. Without them the
+  design guide printed the Biting Distance banner alone, with the edge of
+  the first card's tab at the page foot. The package's `break-before:
+  always` on `.dc-learning-path` is not a value Chromium supports and does
+  nothing; it is left as is (making it valid would put every path on a new
+  page). Field Guide unchanged.
+- **A credits page that overflows no longer prints under the next page.**
+  `.page.page-credits` had an exact one-sheet `height`; when its colophon
+  did not fit, the colophon moved to a second sheet but the page box stayed
+  one sheet tall, so the following page started on that same sheet and was
+  painted over it (design guide: the Introduction over the colophon). It is
+  a `min-height` now: a page that fits is still exactly one sheet, so the
+  pinned plate still seats on the sheet edge, and the Field Guide renders
+  pixel-identical. The design guide's credits example also pins its plate
+  like the Field Guide's (`.gp-pin .gp-bottom .gp-full`) instead of placing
+  it in the colophon, which is what had made it overflow.
+- **Variable AP chips print as variable.** The plugin emitted
+  `.dc-ap.variable` but the CSS only styled `.dc-ap.var`, and a `VAR AP`
+  cost got no variable class at all. Both spellings are styled now, and
+  `VAR` is detected alongside ranges and `X`. Visible change in the Field
+  Guide: 13 pages, each a range-cost chip (`2-X AP` and the like) turning
+  from standard blue to variable magenta; no layout change.
+- **Short two-column runs no longer print full-page height.** `dc-native.css`
+  §10b set `column-fill: auto` on every `.gp-columns-*` run; with no fixed
+  height that fills the first column to the page foot, so a short column
+  panel became a full-height box with an empty right column, and a heading
+  above one was stranded alone when the box could not fit under it. The
+  rule is `balance` again, and the two per-shape `balance` exceptions it
+  made redundant are removed. A run that needs sequential fill opts in with
+  core's `.gp-columns-flow`. The Field Guide's 221 pages render
+  pixel-identical before and after.
+- **A lede never splits** (`.dc-intro { break-inside: avoid }`), and the
+  section after a lede may start a new page. Core glues every section to
+  what precedes it, which chained heading → lede → section; when the section
+  could not fit, the lede split and painted an empty panel to the page foot.
+- **`@sidebar .inset` with a single paragraph** set that paragraph in
+  centred display caps: the rail's closing-line rule matched it as the last
+  child. It now applies only from the second paragraph on. The inset rail
+  also keeps the sidebar's paper surface instead of a transparent one that
+  put its text on the brick wall.
 - Two design guide chapters (`303`, `306`) closed `@procedure` on the line
   right after a list item, which markdown folds into that item, so the
   marker never closed and the chapter rendered with a layout warning.

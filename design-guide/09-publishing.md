@@ -1,14 +1,12 @@
 @chapter #ch-publishing .cli .dg-guide ch="9"
 
-@page
+@page .dg-doc
+
+Chapter 9 {.dg-kicker}
 
 # Publishing
 
-@lede
-
-Three commands cover the whole lifecycle: preview while you write, build for output, validate for print. The app and the CLI run the same engine.
-
-@end-lede
+Three commands cover the whole lifecycle: preview while you write, build for output, validate for print. The app and the CLI run the same engine. {.dg-lede}
 
 
 ## Commands

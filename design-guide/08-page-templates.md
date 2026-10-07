@@ -1,28 +1,31 @@
 @chapter #ch-templates .templates .dg-guide ch="8"
 
-@page
+@page .dg-doc
+
+Chapter 8 {.dg-kicker}
 
 # Page Templates
 
-@lede
-
-Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2.
-
-@end-lede
+Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
 
 
 ## Page geometry
 
-US Letter, perfect-bound, with bleed. Declared in `manifest.yaml`; the `@page` rules in the package's `styles/page-rules.css` set the rest.
+US Letter, perfect-bound, with bleed: the gutterpress `dtrpg` preset, declared in `manifest.yaml`. The geometry follows DriveThruRPG's published print specification ([Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)): a 0.125 in bleed on the three outside edges and none on the binding edge; all text at least 0.5 in inside the trim; art that does not bleed at least 0.25 in from the outside edges and 0.5 in from the binding edge.
 
-| Dimension | Value |
-|---|---|
-| Trim | 8.5 × 11 in |
-| Bleed | 0.125 in, all sides |
-| Top / bottom margin | 0.5 in / 0.70 in (footer sits in the bottom margin) |
-| Binding gutter / outside | 0.75 in / 0.5 in, swapping per recto and verso |
+The `@page` rules in the package's `styles/page-rules.css` set the margins on the sheet, which includes the bleed, so each bleed-side margin is the trim distance plus 0.125 in.
 
-Extend any full-bleed image 0.125 in past the trim.
+| Dimension | On the sheet | From the trim | DriveThruRPG minimum for text |
+|---|---|---|---|
+| Sheet (trim + bleed) | 8.625 × 11.25 in | — | — |
+| Trim | — | 8.5 × 11 in | — |
+| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
+| Top margin | 0.625 in | 0.5 in | 0.5 in |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips print about 0.55 in from the trim |
+| Outside margin | 0.625 in | 0.5 in | 0.5 in |
+| Binding margin | 0.75 in | 0.75 in | 0.5 in |
+
+A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page classes
 
@@ -39,6 +42,7 @@ Extend any full-bleed image 0.125 in past the trim.
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
 | `@page .dc-full-page` | none | Zero margins; full-bleed art |
 | `@page .dc-suppress-footer` | none | Any page that should print no footer |
+| `@page .dc-printer-page` | none | The book's last page: completely blank (no wall, no footer), the page DriveThruRPG reserves for printer information. Pair it with `print: signature: 4` in `manifest.yaml` |
 
 The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter split across files repeats its `@chapter` line in each.
 
@@ -73,7 +77,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.
 
-```markdown
+```markdown {.dg-split}
 @page .page-credits .dc-credits
 
 # Credits {.dc-chevron}
@@ -106,7 +110,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@section .dc-fiction-excerpt` sets narrative typography and floats the first image in the flow. `---{.column-break}` splits fiction from the rules column that follows.
 
-```markdown
+```markdown {.dg-split}
 @chapter C.01 #ch-citizen ch="1"
 
 @page intro
@@ -160,6 +164,8 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
 
 #### What's Yr Handle?
@@ -172,12 +178,14 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 @end-section
 
+</div>
+
 
 ## Specialty catalog page
 
 `@page .card-grid` plus a `@section .dc-card-grid` of specialty cards, each in its own `@specialty`. Keep the cards uniform — identical chrome is what makes the choices comparable.
 
-```markdown
+```markdown {.dg-split}
 @page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
@@ -215,8 +223,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. The art plate takes its own page.
 
-```markdown
-
+```markdown {.dg-split}
 @specialty .augmerc
 
 @specialty-intro
@@ -262,7 +269,6 @@ Rendered: [Specialty Profile](#ch-example-specialty-profile).
 Flaws, ideals, and dreams: a `@section .dc-flaws` (or `.dc-ideals`, `.dc-dreams`) of `@card` blocks. The section class colors every card's accent. Cards stack in one column; use a tape divider between runs rather than columns.
 
 ```markdown
-
 @section .dc-ideals
 
 ## 4. Ideal

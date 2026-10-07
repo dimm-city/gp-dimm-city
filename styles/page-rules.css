@@ -56,7 +56,7 @@
    --page-height in dc-palette.css: change both together. */
 @page {
   size: 8.625in 11.25in;
-  margin: var(--page-margin) var(--outer-margin) 0.75in;
+  margin: var(--page-margin) var(--outer-margin) var(--bottom-margin);
   background-color: var(--bg);
 }
 
@@ -90,10 +90,24 @@
   @bottom-right { content: none; }
 }
 
-.page.page-intro,
 .page.page-toc,
 .page.page-credits {
   page: front-matter;
+}
+
+/* The introduction is front matter too — unnumbered — but it is not part
+   of the full-bleed masthead composite: its chevron, lede and section sit
+   inside the ordinary text column. It used to share `front-matter`, whose
+   zeroed side and bottom margins (dc-native.css §5) put the whole page
+   flush against the sheet edge. Its own name keeps the default margins and
+   drops only the footers. */
+@page front-matter-intro {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.page.page-intro {
+  page: front-matter-intro;
 }
 
 /* ---------------------------------------------------------------------------
@@ -137,6 +151,28 @@
   @bottom-right { content: none; }
 }
 
+/* ---------------------------------------------------------------------------
+   Printer page — a completely blank last page. DriveThruRPG reserves a
+   book's final page for printer information: the interior must be one page
+   short of its signature (4 pages for US Letter), or end on a page "devoid
+   of page backgrounds, page numbers, etc." (Quick Specifications for Print
+   Books). End the last chapter with `@page .dc-printer-page` and set
+   `print: signature: 4` in the manifest: gutterpress pads with blank pages
+   to the next multiple of 4, so the book always ends blank whatever its
+   length. dc-native.css drops the wall on this page.
+   --------------------------------------------------------------------------- */
+
+@page printer-blank {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.dc-printer-page {
+  page: printer-blank;
+  break-before: page;
+  height: var(--gp-content-h);
+}
+
 .dc-suppress-footer {
   page: clean;
 }
@@ -147,25 +183,34 @@
    are left alone, so these pages keep the body footers.
    --------------------------------------------------------------------------- */
 
+/* The running head is TEXT, so DriveThruRPG wants it 0.5in inside the trim
+   — below the default top margin, whose whole band lies within 0.5in of
+   the trim. These pages carry a deeper top margin and set the head at the
+   foot of it: 0.875in from the sheet edge, head baseline ~0.7in, 0.58in
+   from the trim. (It printed at 0.1in from the trim.) */
 @page citizen-file:right {
+  margin-top: 0.875in;
   @top-right {
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
     letter-spacing: 0.1em;
     font-size: 0.8em;
-    padding-top: 0.1in;
+    vertical-align: bottom;
+    padding-bottom: 0.08in;
   }
 }
 
 @page citizen-file:left {
+  margin-top: 0.875in;
   @top-left {
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
     letter-spacing: 0.1em;
     font-size: 0.8em;
-    padding-top: 0.1in;
+    vertical-align: bottom;
+    padding-bottom: 0.08in;
   }
 }
 

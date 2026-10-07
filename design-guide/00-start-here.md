@@ -1,16 +1,12 @@
 @chapter #ch-start .dg-guide
 
-@page .dc-suppress-footer
+@page .dg-doc
 
 # Dimm City Design Guide
 
-@lede
+The Dimm City design system for Gutterpress: how to write a Dimm City book in markdown, and what every macro, component, and page template looks like when it prints. Every example in this guide is live — the markdown shown is rendered by the same package the Field Guide uses, so what you see is what a book gets. {.dg-lede}
 
-The Dimm City design system for Gutterpress: how to write a Dimm City book in markdown, and what every macro, component, and page template looks like when it prints. Every example in this guide is live — the markdown shown is rendered by the same package the Field Guide uses, so what you see is what a book gets.
-
-@end-lede
-
-<div class="dc-toc">
+<div class="dg-toc">
 
 ## Part 1 — Using the system
 
@@ -25,6 +21,7 @@ The Dimm City design system for Gutterpress: how to write a Dimm City book in ma
 <li><a href="#ch-templates">Page Templates</a> — chapter openers, contents, credits, catalog and profile pages</li>
 <li><a href="#ch-publishing">Publishing</a> — preview, build, validate</li>
 <li><a href="#ch-reference">Reference</a> — every marker on one page; options, classes, tokens</li>
+<li><a href="#ch-variants">Variant Gallery</a> — every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
 </ol>
 
 ## Part 2 — A book, page by page
@@ -57,11 +54,15 @@ This is what you type.
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @lede
 
 This is what you type.
 
 @end-lede
+
+</div>
 
 Three rules carry through the whole system, and they are worth knowing before anything else:
 

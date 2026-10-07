@@ -131,6 +131,8 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 
 @end-section
 
+@page-break
+
 @section .gp-columns-2 .dc-column-panel
 
 ### Common Cybernetics
@@ -169,7 +171,7 @@ Neural interface chip. Connect to digital systems at Near range. Required for mo
 @end-gear
 
 @gear
-### Reflex Accelerator
+### Reflex Accel&shy;erator
 
 *You move before they think.*
 

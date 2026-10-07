@@ -1,14 +1,12 @@
 @chapter #ch-text .dg-guide ch="5"
 
-@page
+@page .dg-doc
+
+Chapter 5 {.dg-kicker}
 
 # Text & Callouts
 
-@lede
-
-The components that live inside running prose: the lede that opens a chapter, flavor and pull quotes for in-world voice, the alert family for notes a reader must not miss, and the tape, tags, and roll chip that punctuate a page.
-
-@end-lede
+The components that live inside running prose: the lede that opens a chapter, flavor and pull quotes for in-world voice, the alert family for notes a reader must not miss, and the tape, tags, and roll chip that punctuate a page. {.dg-lede}
 
 
 ## Lede
@@ -25,11 +23,15 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @lede
 
 The city didn't go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
 
 @end-lede
+
+</div>
 
 Tokens: `--dc-intro-bg`, `--dc-intro-accent`.
 
@@ -44,8 +46,12 @@ In-world voice: italic, accent-railed, spoken from inside the fiction. Inside a 
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 > [!FLAVOR]
 > Down here we don't ask what you were before the grafts. We ask what's left.
+
+</div>
 
 Tokens: `--dc-flavor-accent`, `--dc-flavor-accent-width`, `--dc-flavor-color`.
 
@@ -62,10 +68,14 @@ A large-format excerpt with rules above and below. One per chapter, to let a sin
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 > [!PULLQUOTE]
 > The rig braces and answers every swing.
 >
 > Field manual, second draft
+
+</div>
 
 Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-bg`.
 
@@ -74,7 +84,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 One shell, seven registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
-```markdown
+```markdown {.dg-split}
 > [!NOTE]
 > A character may hold no more than one Signature Augment at a time.
 
@@ -101,6 +111,8 @@ One shell, seven registers. Write a GFM alert — a blockquote whose first line 
 
 Result {.dg-result}
 
+<div class="dg-stage dg-tall">
+
 > [!NOTE]
 > A character may hold no more than one Signature Augment at a time.
 
@@ -123,6 +135,8 @@ Result {.dg-result}
 > **Ripper Blades (Mk II)**
 >
 > Melee. Damage 1d8+STR. *Serrated:* on a critical hit, the target bleeds for 1d4.
+
+</div>
 
 ### Which alert
 
@@ -155,6 +169,8 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @callout variant=warning label="Heat is shared"
 
 **Heat is shared, not personal.** When any member of the crew draws Corporate attention, the whole crew's Heat track ticks up.
@@ -162,6 +178,8 @@ Result {.dg-result}
 At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every public roll carries a complication.
 
 @end-callout
+
+</div>
 
 | Option | Values | Default |
 |---|---|---|
@@ -184,6 +202,8 @@ If the players investigate before accepting, they can smell the trap with a Stre
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @dm-note label="Running the Setup"
 
 The fixer offering this job doesn't know it's bait — they're a cut-out, paid to pass the contract along and ask no questions.
@@ -191,6 +211,8 @@ The fixer offering this job doesn't know it's bait — they're a cut-out, paid t
 If the players investigate before accepting, they can smell the trap with a Streetwise roll, DC 14.
 
 @end-dm-note
+
+</div>
 
 
 ## Tape
@@ -203,7 +225,11 @@ A torn-tape strip for a section break or a label between groups — tiers of NPC
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @tape label="Operators"
+
+</div>
 
 Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`. The raw form `<div class="dc-tape dc-flush">Label</div>` runs edge to edge.
 
@@ -221,11 +247,15 @@ Signal Jammer (single-use)
 
 Result {.dg-result}
 
+<div class="dg-stage dg-on-paper">
+
 Trauma Kit × 2
 
 ---
 
 Signal Jammer (single-use)
+
+</div>
 
 ## Tags and class tags
 
@@ -238,6 +268,8 @@ Inline pills. `.dc-tag` is a keyword or cost label; `.dc-classtag.<specialty>` i
 ```
 
 Result {.dg-result}
+
+<div class="dg-stage dg-on-paper">
 
 <span class="dc-tag">Melee</span> <span class="dc-tag">Reach 2</span> <span class="dc-tag">Loud</span>
 
@@ -252,6 +284,8 @@ Result {.dg-result}
 <span class="dc-classtag dualist">Dualist</span>
 <span class="dc-classtag generalist">Generalist</span>
 
+</div>
+
 ## Roll the die
 
 The exact text `ROLL THE DIE!` in prose becomes the die chip automatically. Inside a code span or raw HTML it is left alone.
@@ -262,6 +296,10 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
 
 Result {.dg-result}
 
+<div class="dg-stage dg-on-paper">
+
 When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
+
+</div>
 
 Tokens: `--dc-roll-the-die-color`, `--dc-roll-the-die-border`.

@@ -42,6 +42,7 @@ source:
     - 08-page-templates.md
     - 09-publishing.md
     - 10-reference.md
+    - 11-variants.md
     # Part 2 — A book, page by page (Field Guide pages, verbatim)
     - 300-example-overview.md
     - 301-example-front-matter.md

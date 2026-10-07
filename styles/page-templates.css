@@ -102,8 +102,16 @@
 
 /* The exception the guard above is scoped around: a page holding pinned or
    bleed art must not clip it. `.gp-behind` is included because it is pinned
-   art by another name (a `.gp-pin` that paints under the text). */
-.page:is(:has(.gp-bleed), :has(.gp-pin), :has(.gp-behind)) {
+   art by another name (a `.gp-pin` that paints under the text). The two
+   full-sheet plates are bleed art too: `.dc-specialty-art` and
+   `.dc-full-page` are sheet-wide on their zero-margin `full` page while the
+   `.page` around them keeps the body column's width, so the guard cut them
+   off at the column edge — a 100pt strip of bare wall down the outside of
+   every specialty plate on a page with no other pinned art (design guide
+   p.45, p.105). The Field Guide escaped only because its specialty pages
+   also carry pinned art. */
+.page:is(:has(.gp-bleed), :has(.gp-pin), :has(.gp-behind),
+         :has(.dc-specialty-art), :has(.dc-full-page)) {
   overflow-x: visible;
 }
 
@@ -537,6 +545,28 @@
   break-inside: auto;
 }
 
+/* The learning-path BANNER (the shell: title, intro, sticker row) is never
+   split and stays on the page of the first card after it. Note the rule
+   above does NOT do this: Chromium does not support `break-before: always`
+   and drops the declaration (measured by the Field Guide). Targets the
+   shell, not .dc-learning-path, which usually also holds the path's cards.
+   Without it the design guide printed the Biting Distance banner alone on
+   a page, with the edge of the first card's tab at the page foot. Carried
+   from the Field Guide's own sheet, where it is measured; the Field Guide
+   renders pixel-identical with it here. */
+.dc-specialty .dc-path-shell {
+  break-inside: avoid;
+  break-after: avoid;
+}
+
+/* A banner that opens a page sits flush with its top. Chromium drops the
+   shell's 8px top margin at every unforced break but keeps it after the
+   forced break that ends a specialty's art page — and those 8px were all
+   that kept the first card off its banner's page. */
+.dc-specialty > .dc-learning-path:first-child > .dc-path-shell {
+  margin-top: 0;
+}
+
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────
    KEEPS the default .dc-chevron heading styling (magenta banner with its
    own bottom-right diagonal clip-path) — that's the established intro
@@ -552,21 +582,18 @@
      - Section gets a clean paper-cream substrate with the same 4px
        magenta left rail as the lede; rail runs continuously through
        both.
-     - ONE filter: drop-shadow on the .page wrapper follows the union
-       silhouette of all three children — chevron's clip-path included
-       — so the shadow respects the chevron's diagonal cut and there's
-       no top-right gap on the lede (per-child box-shadow with offset-y
-       leaves a few-pixel notch at every child's top-right; the wrapper
-       filter never does). Per-child box-shadows therefore SUPPRESSED.
-       MEMORY R8: composite shadows via filter:drop-shadow on the
-       common wrapper.
+     - Vector shadows, per element: the lede and section each carry
+       --shadow-poster; the clipped chevron carries none. This was ONE
+       `filter: drop-shadow()` on the .page wrapper, which Chromium
+       prints as a bitmap — the whole intro page went to the PDF as a
+       300ppi image with a soft mask (no live text; PDF/X-1a forbids the
+       mask).
 
    --intro-accent is the single recolor knob, mirroring --frontmatter-
    accent's role on the TOC/Credits template. */
 .page.page-intro {
   --intro-accent: var(--brand-magenta-deep);
   --dc-intro-accent: var(--intro-accent);
-  filter: drop-shadow(var(--shadow-poster));
 }
 
 /* Chevron geometry on the standalone intro page. This page is NOT a
@@ -591,20 +618,18 @@
 }
 
 /* Lede flush-attaches to the chevron above; bottom margin zeroed so
-   the next sibling .section sits flush below. box-shadow suppressed —
-   page-level filter:drop-shadow provides the composite shadow. */
+   the next sibling .section sits flush below. It keeps the component's
+   own --shadow-poster. */
 .page.page-intro .dc-intro {
   margin-bottom: 0;
   padding-bottom: 0;
-  box-shadow: none;
 }
 .page.page-intro .dc-intro > :last-child {
   margin-bottom: 0;
 }
 
 /* Section content — paper-cream substrate, magenta 4px left rail
-   continuing from the lede. box-shadow suppressed; page filter handles
-   the composite shadow. */
+   continuing from the lede, with the poster shadow. */
 .page.page-intro > .section {
   background: linear-gradient(
     to right,
@@ -612,7 +637,7 @@
     var(--paper-cream) 4px
   );
   padding: 0.18in 0.22in;
-  box-shadow: none;
+  box-shadow: var(--shadow-poster);
 }
 
 /* Suppress the .section base ::before (magenta gradient + 18px top-right

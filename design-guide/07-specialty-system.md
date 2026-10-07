@@ -1,14 +1,12 @@
 @chapter #ch-specialty .dg-guide ch="7"
 
-@page
+@page .dg-doc
+
+Chapter 7 {.dg-kicker}
 
 # The Specialty System
 
-@lede
-
-The richest family in the book. A specialty wrapper sets the shape and color; inside it, an intro panel, an art plate, a catalog card, learning paths, and skill cards all inherit that identity. Authors never set a variant on a card — the parent decides.
-
-@end-lede
+The richest family in the book. A specialty wrapper sets the shape and color; inside it, an intro panel, an art plate, a catalog card, learning paths, and skill cards all inherit that identity. Authors never set a variant on a card — the parent decides. {.dg-lede}
 
 
 ## Specialty
@@ -51,6 +49,8 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @specialty .augmerc
 
 @specialty-intro
@@ -67,11 +67,13 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 @end-specialty
 
+</div>
+
 Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`.
 
 ## Specialty art
 
-A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro.
+A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page.
 
 ```markdown
 @specialty .augmerc
@@ -84,8 +86,6 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 @end-specialty
 ```
-
-Result {.dg-result}
 
 @specialty .augmerc
 
@@ -102,7 +102,7 @@ Result {.dg-result}
 
 The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@section .dc-card-grid` that lays the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
 
-```markdown
+```markdown {.dg-split}
 @section .dc-card-grid
 
 @specialty .augmerc
@@ -142,6 +142,8 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .dc-card-grid
 
 @specialty .augmerc
@@ -177,6 +179,8 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 @end-specialty
 
 @end-section
+
+</div>
 
 The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview). Tokens: `--dc-specialty-card-bg`, `--dc-specialty-card-border`, `--dc-specialty-card-accent`, `--dc-specialty-card-media-height`, `--dc-specialty-card-title-color`, `--dc-specialty-card-shadow`.
 
@@ -185,7 +189,7 @@ The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview
 
 A named path: a `###` title (rendered as a spray banner with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, …) are computed from position.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @learning-path
@@ -230,6 +234,8 @@ A named path: a `###` title (rendered as a spray banner with the path's code), a
 
 Result {.dg-result}
 
+<div class="dg-stage dg-tall">
+
 @specialty .augmerc
 
 @learning-path
@@ -270,6 +276,8 @@ Result {.dg-result}
 @end-learning-path
 
 @end-specialty
+
+</div>
 
 Tokens: `--dc-path-title-bg`, `--dc-path-title-color`, `--dc-path-accent`, `--dc-arrow-color`.
 
@@ -302,6 +310,8 @@ Once per round, outside your turn, you exploit a target in reach:
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @specialty .augmerc
 
 @skill
@@ -322,6 +332,8 @@ Once per round, outside your turn, you exploit a target in reach:
 
 @end-specialty
 
+</div>
+
 | Option | You write | Effect |
 |---|---|---|
 | Tier | `#### Name \| AUG1.3` | Override the computed tier on the tab |
@@ -333,6 +345,8 @@ Once per round, outside your turn, you exploit a target in reach:
 The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `VAR` or a range is variable (magenta). A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
 
 ### Highlight and two-column variants
+
+<div class="dg-stage">
 
 @specialty .augmerc
 
@@ -366,12 +380,14 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 @end-specialty
 
+</div>
+
 
 ## Continuing a long card
 
 When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Prefer this to `.dc-allow-split`: the break lands at a boundary you chose.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @skill
@@ -396,6 +412,8 @@ When one ability runs past a page, `@continue` inside the card closes it and ope
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @specialty .augmerc
 
 @skill
@@ -416,12 +434,14 @@ Result {.dg-result}
 @end-skill
 
 @end-specialty
+
+</div>
 
 ## Outcomes inside a card
 
 A `| Roll | Outcome |` table inside a skill card renders as that card's outcome ladder.
 
-```markdown
+```markdown {.dg-split}
 @specialty .augmerc
 
 @skill
@@ -447,6 +467,8 @@ A `| Roll | Outcome |` table inside a skill card renders as that card's outcome 
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @specialty .augmerc
 
 @skill
@@ -469,10 +491,14 @@ Result {.dg-result}
 
 @end-specialty
 
+</div>
+
 
 ## One source, ten shapes
 
 The same path and card markdown, dropped into a different `@specialty`, takes that family's silhouette and color with no change to the source. Gutterdruid, then the two multi-discipline shells:
+
+<div class="dg-stage dg-tall">
 
 @specialty .gutterdruid
 
@@ -554,5 +580,7 @@ The same path and card markdown, dropped into a different `@specialty`, takes th
 @end-learning-path
 
 @end-specialty
+
+</div>
 
 Skill-card tokens: `--dc-card-accent`, `--dc-card-surface`, `--dc-card-tab-bg`, `--dc-card-tab-title-color`, `--dc-card-gap`, `--dc-card-tab-shadow`; AP chip: `--dc-ap-bg`, `--dc-ap-fg`, `--dc-ap-border`.

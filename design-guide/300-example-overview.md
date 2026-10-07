@@ -1,14 +1,16 @@
 @chapter #ch-examples .examples .chapter-03 .dg-guide ch="3"
 
-@page
+@page .dg-doc .dg-part
 
-# Field Guide in Action {.dc-chevron}
+Part 2 {.dg-kicker}
 
-@lede
+# A Book, Page by Page
 
-Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a `placehold.co` placeholder image stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies.
+@page .dg-doc
 
-@end-lede
+# Field Guide in Action
+
+Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a `placehold.co` placeholder image stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
 
 ## What Part 2 is
 
@@ -18,7 +20,7 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 
 ## Part 2 contents
 
-<div class="dc-toc">
+<div class="dg-toc">
 <ol>
 <li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, and introduction pages</li>
 <li><a href="#ch-example-chapter-opener">Chapter Opener</a> — a labelled chapter with a fiction excerpt, then the Citizen File walkthrough</li>

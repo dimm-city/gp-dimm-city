@@ -100,6 +100,10 @@
 
 .dc-path-shell>h2.dc-spray {
   width: stretch;
+  /* A path banner spans its shell edge to edge, with its tab pulled inside
+     (`right: -5px` below): it takes none of the standalone banner's
+     tab allowance (chrome.css .dc-spray). */
+  max-width: none;
 }
 
 .dc-path-shell>h2.dc-spray:first-child {

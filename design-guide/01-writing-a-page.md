@@ -1,15 +1,12 @@
 @chapter #ch-writing .dg-guide ch="1"
 
-@page
+@page .dg-doc
 
+Chapter 1 {.dg-kicker}
 
 # Writing a Page
 
-@lede
-
-A Dimm City book is plain markdown with a small vocabulary of `@` markers. Markdown carries the text; markers draw the structure — chapters, pages, sections, and the components the rest of this guide catalogs. This chapter is the grammar.
-
-@end-lede
+A Dimm City book is plain markdown with a small vocabulary of `@` markers. Markdown carries the text; markers draw the structure — chapters, pages, sections, and the components the rest of this guide catalogs. This chapter is the grammar. {.dg-lede}
 
 ## The structure markers
 
@@ -29,7 +26,6 @@ A chapter is one file. A `@chapter` line opens each file, and the chapter ends w
 ```markdown
 @chapter #ch-augmerc ch="3"
 
-
 @section
 
 ## The Augmerc
@@ -41,6 +37,8 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section
 
 ## The Augmerc
@@ -48,6 +46,8 @@ Result {.dg-result}
 Muscle for hire. The difference is gear, grafts, and how much of them is still original.
 
 @end-section
+
+</div>
 
 A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis.
 
@@ -78,6 +78,8 @@ Markers are paragraphs to markdown. A marker directly under a list item or parag
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @procedure
 
 1. Pick a Spec.
@@ -85,13 +87,13 @@ Result {.dg-result}
 
 @end-procedure
 
+</div>
+
 Without the blank line before `@end-procedure`, the closer is swallowed by the last list item and the procedure stays open to the end of the page.
 
 ## Markdown the system styles
 
 Nothing below needs a class or a marker. The package styles the standard elements the way a Dimm City page expects.
-
-@section .gp-columns-2 .dc-column-panel
 
 ### Headings
 
@@ -112,7 +114,11 @@ Nothing below needs a class or a marker. The package styles the standard element
 `SysChk` marks a keyword that is also a mechanic.
 ```
 
+<div class="dg-stage dg-on-paper">
+
 **Bold** lands in burnt orange. *Italic* shifts to warm smoke. `SysChk` marks a keyword that is also a mechanic.
+
+</div>
 
 ### Lists
 
@@ -124,13 +130,15 @@ Nothing below needs a class or a marker. The package styles the standard element
 2. for sequences
 ```
 
+<div class="dg-stage dg-on-paper">
+
 - A loose list
 - of short items
 
 1. An ordered list
 2. for sequences
 
-@column-break
+</div>
 
 ### Tables
 
@@ -143,10 +151,14 @@ Pipe tables get the header band, alternating fills, and the data type size. Roll
 | **Near** | Same room |
 ```
 
+<div class="dg-stage">
+
 | Band | Range |
 |---|---|
 | **Reach** | Adjacent |
 | **Near** | Same room |
+
+</div>
 
 ### Blockquote
 
@@ -158,9 +170,13 @@ A plain `>` quote is an epigraph: accent rail, italic body. Inside a skill card 
 > — Hollis Vance
 ```
 
+<div class="dg-stage">
+
 > Every city has a language.
 >
 > — Hollis Vance
+
+</div>
 
 ### Definition list
 
@@ -174,13 +190,15 @@ Reach
 : Close enough to touch.
 ```
 
+<div class="dg-stage">
+
 Tick
 : A heartbeat. Used in ability text to mean *immediately*.
 
 Reach
 : Close enough to touch.
 
-@end-section
+</div>
 
 ### Smart typography and footnotes
 
@@ -201,7 +219,6 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 ```markdown
 @chapter #ch-rules ch="4"
 
-
 @section .gp-columns-2 .dc-column-panel
 
 ## Augment Points
@@ -221,6 +238,8 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 
 Result {.dg-result}
 
+<div class="dg-stage">
+
 @section .gp-columns-2 .dc-column-panel
 
 ## Augment Points
@@ -236,3 +255,5 @@ Result {.dg-result}
 
 > [!NOTE]
 > You start every dream with 10 AP.
+
+</div>

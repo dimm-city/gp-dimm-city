@@ -89,8 +89,19 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
 4. `snippets/<name>.md` — with at least one `{{placeholder}}`.
 5. The matching component chapter under `design-guide/` — a "you write /
    result" pair (a ```` ```markdown ```` fence with the source, then a
-   `Result {.dg-result}` line, then the same markdown live). **Required**: a
-   test fails if the plugin handles a macro the guide never demonstrates.
+   `Result {.dg-result}` line, then the same markdown live inside
+   `<div class="dg-stage">` … `</div>`, with blank lines around both tags and
+   any `@section` closed by `@end-section` before the `</div>`). Explainer
+   pages are `@page .dg-doc` and print plain; the brick wall shows only on
+   the stage, so keep every component inside one. Stage modifiers:
+   `dg-on-paper` for a running-prose specimen (prose sits on paper, not
+   wall), `dg-tall` for one taller than a page (it may split), `dg-dont`
+   with a `Don't {.dg-dont-label}` line for a wrong-usage example. A fence of
+   20+ lines is ```` ```markdown {.dg-split} ```` so it may split across
+   pages; shorter fences stay whole. A whole-page specimen gets a sentence
+   saying it is the next page, not a RESULT tab. Each chapter opens with
+   `Chapter N {.dg-kicker}` above its `#` title. **Required**: a test fails
+   if the plugin handles a macro the guide never demonstrates.
 6. `design-guide/10-reference.md` — the one-line grammar entry.
 
 Markers want a blank line on each side. `@end-procedure` directly under a

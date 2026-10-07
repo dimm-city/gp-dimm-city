@@ -44,10 +44,10 @@
    `.page.page-sidebar` template in page-templates.css: a rail is meaningless
    without a page that reserved room for it, and scoping it there means a
    stray `@sidebar .inset` on an ordinary page stays a readable floated
-   sidebar instead of painting over the body text. */
+   sidebar instead of painting over the body text. The rail keeps the
+   sidebar's paper surface: it was transparent, which put its text straight
+   on the brick wall. */
 .dc-sidebar.inset {
-  --dc-sidebar-surface: transparent;
-
   border-left: none;
 }
 
@@ -102,7 +102,9 @@
   padding: 0.06in 0.1in;
 }
 
-.dc-sidebar.inset>p:last-child {
+/* The rail's closing line — only when it is not also the rail's only (first)
+   paragraph, or a one-paragraph rail sets its whole body in display caps. */
+.dc-sidebar.inset>p:last-child:not(:first-of-type) {
   margin-top: 0.1in;
   margin-bottom: 0;
   padding-top: 0.08in;

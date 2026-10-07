@@ -389,13 +389,13 @@ components:
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X → .variable; also authored as raw <span class=\"dc-ap\">)"
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">)"
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
     usage: [" AP**"]
     breaks: none
-    notes: "Modifier drift outside the check's dc- scope: the plugin emits `variable` but the CSS styles `.dc-ap.var`; `.standard/.reduced/.increased/.special` (specialty-identity.css) are never emitted, only authored raw in the gallery."
+    notes: "The plugin emits `variable`; the CSS styles both `.variable` and the raw spelling `.var`. `.standard/.reduced/.increased/.special` (specialty-identity.css) are never emitted, only authored raw — shown in the design guide's Variant Gallery."
 
   - name: distance-tags
     status: unused
@@ -666,6 +666,15 @@ components:
     emits: div.page.dc-suppress-footer
     css: styles/page-rules.css
     breaks: "page: clean"
+
+  - name: printer-page
+    status: live
+    origin: author
+    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
+    emits: div.page.dc-printer-page
+    css: [styles/page-rules.css, styles/dc-native.css]
+    breaks: "page: printer-blank; break-before: page"
+    notes: "A completely blank final page — no wall, no footer — for DriveThruRPG's reserved printer page. With `print: signature: 4` in the manifest, gutterpress pads to the next multiple of 4, so the book always ends blank. Used by the Field Guide."
 
   - name: cover-page
     status: unused

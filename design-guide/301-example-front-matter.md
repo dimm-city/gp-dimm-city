@@ -64,13 +64,13 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 **Trademarks:** Dimm City, the Creaturepunk trademarked by Dimm City LLC. All rights reserved.
 
+**Published by:** Dimm City LLC · 2026.
+
 </div>
 
----
+@end-section
 
-![Founders House](img/founder-house.png){.fg-art-founders-house}
-
-**Published by Dimm City LLC · 2026.**
+![Founders House](img/founder-house.png){.fg-art-founders-house .gp-pin .gp-bottom .gp-full}
 
 @page .page-intro .dg-intro
 
