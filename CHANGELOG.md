@@ -69,6 +69,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **A credits page that overflows no longer prints under the next page.**
+  `.page.page-credits` had an exact one-sheet `height`; when its colophon
+  did not fit, the colophon moved to a second sheet but the page box stayed
+  one sheet tall, so the following page started on that same sheet and was
+  painted over it (design guide: the Introduction over the colophon). It is
+  a `min-height` now: a page that fits is still exactly one sheet, so the
+  pinned plate still seats on the sheet edge, and the Field Guide renders
+  pixel-identical. The design guide's credits example also pins its plate
+  like the Field Guide's (`.gp-pin .gp-bottom .gp-full`) instead of placing
+  it in the colophon, which is what had made it overflow.
 - **Variable AP chips print as variable.** The plugin emitted
   `.dc-ap.variable` but the CSS only styled `.dc-ap.var`, and a `VAR AP`
   cost got no variable class at all. Both spellings are styled now, and

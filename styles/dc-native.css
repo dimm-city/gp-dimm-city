@@ -183,14 +183,19 @@
   padding-bottom: 0.75in;
 }
 /* Credits page as a full-height flex column so a pinned founders plate
-   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Exact `height`
-   rather than core's `min-height` cushion so the pin's containing block ends
-   exactly on the sheet edge. Carried from the field guide's native sheet in
-   1.0.0: every Dimm City book writes this page. */
+   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Carried from the
+   field guide's native sheet in 1.0.0: every Dimm City book writes this page.
+
+   `min-height`, not `height`. A page whose credits fit is exactly one sheet
+   either way, so the pin still seats on the sheet edge. An exact `height`
+   broke the page whose credits do NOT fit: the colophon went to a second
+   sheet while the page box stayed one sheet tall, so the next page started
+   on that same second sheet and printed on top of it (design guide, the
+   Introduction over the credits colophon). */
 .page.page-credits {
   display: flex;
   flex-direction: column;
-  height: var(--gp-content-h);
+  min-height: var(--gp-content-h);
   padding-bottom: 0;
 }
 .page.page-credits .section.credits-colophon {

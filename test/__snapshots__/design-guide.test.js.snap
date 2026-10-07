@@ -3817,11 +3817,10 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 <p><strong>Safety Tools:</strong> This game uses Lines &amp; Veils, the X-Card, and Script Change. Establish boundaries at session zero. The full safety toolkit lives at dimm.city/safety.</p>
 <p><strong>Edition &amp; ISBN:</strong> First Edition · Version 0.1.x · ISBN pending. Printed on demand via DriveThruRPG and Founders House direct.</p>
 <p><strong>Trademarks:</strong> Dimm City, the Creaturepunk trademarked by Dimm City LLC. All rights reserved.</p>
+<p><strong>Published by:</strong> Dimm City LLC · 2026.</p>
 </div>
-<hr data-source-range="68:69">
-<p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
-<p><strong>Published by Dimm City LLC · 2026.</strong></p>
-</div></div><div class="page page-intro dg-intro chapter-1" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
+</div><p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house gp-pin gp-bottom gp-full" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
+</div><div class="page page-intro dg-intro chapter-1" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
 <div class="dc-intro">
 <p>The city didn’t go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.</p>
 </div>
