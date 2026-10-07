@@ -667,6 +667,15 @@ components:
     css: styles/page-rules.css
     breaks: "page: clean"
 
+  - name: printer-page
+    status: live
+    origin: author
+    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
+    emits: div.page.dc-printer-page
+    css: [styles/page-rules.css, styles/dc-native.css]
+    breaks: "page: printer-blank; break-before: page"
+    notes: "A completely blank final page — no wall, no footer — for DriveThruRPG's reserved printer page. With `print: signature: 4` in the manifest, gutterpress pads to the next multiple of 4, so the book always ends blank. Used by the Field Guide."
+
   - name: cover-page
     status: unused
     origin: author

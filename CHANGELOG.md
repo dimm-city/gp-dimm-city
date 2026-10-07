@@ -9,6 +9,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Added
 
+- **`@page .dc-printer-page`**, a completely blank last page (no wall, no
+  footer). DriveThruRPG reserves a book's final page for printer
+  information: the interior must be one page short of its signature (4 for
+  US Letter) or end on a blank page. End the last chapter with this marker
+  and set `print: signature: 4` in the manifest — gutterpress pads with
+  blank pages to the next multiple of 4 — and the book always ends blank.
+  Verified in the Field Guide (228 content pages + 4 blank = 232).
 - **Variant Gallery** (design guide chapter 11): every element with more than
   one variant, its variants on one stage — all ten skill trees (each
   specialty's first learning path with one skill card, Field Guide content
@@ -85,6 +92,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **No blank page after a two-column page that ends in a spanner.** A
+  `@page .gp-columns-2` page ending in a full-width section printed an
+  extra blank page under the DriveThruRPG margins (Field Guide: Quickstart
+  vs. Deep Dive): the section's bottom margin pushed the page box past its
+  one-sheet minimum. A multicol page's last child has no bottom margin.
+  Design guide unchanged; Field Guide loses the blank page.
 - **The introduction page keeps the normal margins.** `.page-intro` shared
   the `front-matter` named page with the Contents and Credits, whose side
   and bottom margins are zeroed for their full-bleed masthead — so the

@@ -42,6 +42,12 @@
   background-blend-mode: multiply;
 }
 
+/* The printer page (page-rules.css) carries no wall: DriveThruRPG wants
+   the final page free of any page background. */
+@page printer-blank {
+  background: none;
+}
+
 /* ── 3. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
    Chrome for the chip content page-rules.css declares on @bottom-left /
    @bottom-right. Sticker identity swaps by spread side in page-rules.css's
@@ -296,6 +302,15 @@ figure {
    the rule above now says `balance` for every run. The Field Guide pages they
    were measured on (p12/p13 "THE PACK SHOULD BE WEIRD", p243 CORE ELEMENTS,
    p7 "Image Is Everything") are among the 221 that render pixel-identical. */
+
+/* A PAGE that is itself the multicol container (`@page .gp-columns-2`) and
+   ends in a full-width spanner: the spanner's bottom margin pushed the page
+   box past its one-sheet minimum height, and the overflow printed as a blank
+   page (Field Guide: Quickstart vs. Deep Dive, after the DriveThruRPG
+   margins). A page's last child needs no bottom margin. */
+.page:is(.gp-columns-2, .gp-columns-3) > :last-child {
+  margin-bottom: 0;
+}
 
 /* ── 12. WALL ART placement is the markdown's, via core's gp-* classes ──────
    Do not add a position/float/margin declaration to a `.fg-art-*` class that

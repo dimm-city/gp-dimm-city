@@ -151,6 +151,28 @@
   @bottom-right { content: none; }
 }
 
+/* ---------------------------------------------------------------------------
+   Printer page — a completely blank last page. DriveThruRPG reserves a
+   book's final page for printer information: the interior must be one page
+   short of its signature (4 pages for US Letter), or end on a page "devoid
+   of page backgrounds, page numbers, etc." (Quick Specifications for Print
+   Books). End the last chapter with `@page .dc-printer-page` and set
+   `print: signature: 4` in the manifest: gutterpress pads with blank pages
+   to the next multiple of 4, so the book always ends blank whatever its
+   length. dc-native.css drops the wall on this page.
+   --------------------------------------------------------------------------- */
+
+@page printer-blank {
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+
+.dc-printer-page {
+  page: printer-blank;
+  break-before: page;
+  height: var(--gp-content-h);
+}
+
 .dc-suppress-footer {
   page: clean;
 }
