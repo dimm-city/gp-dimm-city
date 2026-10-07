@@ -5,7 +5,7 @@
     "": {
       "name": "gp-dimm-city",
       "devDependencies": {
-        "gutterpress": "0.11.13",
+        "gutterpress": "0.11.15-alpha.1",
         "markdown-it": "^14.1.0",
       },
       "peerDependencies": {
@@ -133,7 +133,7 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
-    "gutterpress": ["gutterpress@0.11.13", "", { "dependencies": { "chokidar": "^5.0.0", "citty": "^0.2.0", "diff3": "0.0.3", "fflate": "0.8.3", "glob": "^13.0.0", "htmlhint": "^1.9.2", "isomorphic-git": "^1.38.4", "markdown-it": "^14.3.2", "markdown-it-abbr": "^2.0.0", "markdown-it-attrs": "^4.3.0", "markdown-it-deflist": "^3.0.1", "markdown-it-footnote": "^4.0.0", "markdown-it-mark": "^4.0.0", "markdown-it-source-map": "^0.1.1", "markdown-it-sub": "^2.0.0", "markdown-it-sup": "^2.0.0", "markdownlint": "^0.40.0", "pdf-lib": "^1.17.1", "postcss": "^8.5.18", "resolve.exports": "2.0.3", "semver": "7.8.0", "tar": "7.5.22", "unpdf": "^1.6.2", "ws": "^8.21.0", "yaml": "^2.8.2" }, "bin": { "gutterpress": "dist/cli.js" } }, "sha512-9kVbhLrmDzDgydQ8xoC7NUt/dG4VcXJx55ITotwHSShcDOBjiyNi0gMHksg4moMASTV3YA4jVyGdhgeYn1ZGuA=="],
+    "gutterpress": ["gutterpress@0.11.15-alpha.1", "", { "dependencies": { "chokidar": "^5.0.0", "citty": "^0.2.0", "diff3": "0.0.3", "fflate": "0.8.3", "glob": "^13.0.0", "htmlhint": "^1.9.2", "isomorphic-git": "^1.38.4", "markdown-it": "^14.3.2", "markdown-it-abbr": "^2.0.0", "markdown-it-attrs": "^4.3.0", "markdown-it-deflist": "^3.0.1", "markdown-it-footnote": "^4.0.0", "markdown-it-mark": "^4.0.0", "markdown-it-source-map": "^0.1.1", "markdown-it-sub": "^2.0.0", "markdown-it-sup": "^2.0.0", "markdownlint": "^0.40.0", "pdf-lib": "^1.17.1", "postcss": "^8.5.18", "resolve.exports": "2.0.3", "semver": "7.8.0", "tar": "7.5.22", "unpdf": "^1.6.2", "ws": "^8.21.0", "yaml": "^2.8.2" }, "bin": { "gutterpress": "dist/cli.js" } }, "sha512-ACX2TCXLP90vTQ2RfDYoMBK1AIUcFU5yHnudV8jXpKx1XmmD55IgNazZhNsbzoaYDWcS5kdxAuWZmclYMo7oaQ=="],
 
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
 

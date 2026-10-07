@@ -2098,7 +2098,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <tr data-source-range="44:45">
 <td><code>@page .dc-printer-page</code></td>
 <td>none</td>
-<td>The book’s last page: completely blank (no wall, no footer), the page DriveThruRPG reserves for printer information. Pair it with <code>print: signature: 4</code> in <code>manifest.yaml</code></td>
+<td><strong>Deprecated.</strong> A completely blank last page for DriveThruRPG’s printer information. gutterpress 0.11.15+ reserves that page itself with <code>preset: dtrpg</code> (see <a href="#ch-publishing" data-gp-source-token="[Publishing](#ch-publishing)" data-gp-source-occurrence="0">Publishing</a>); still works, but no longer needed</td>
 </tr>
 </tbody>
 </table>
@@ -2354,47 +2354,68 @@ gutterpress build my-book --format pdfx --pdfx-flavor x1a --icc CGATS21_CRPC1.ic
 # Static site
 gutterpress build my-book --format html --out ./dist/site
 </code></pre>
+<h2>DriveThruRPG</h2>
+<p>The package’s page geometry follows DriveThruRPG’s print specification: 0.125 in bleed on the three outside edges, all text 0.5 in inside the trim (<a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>). With gutterpress 0.11.15 or later, <code>preset: dtrpg</code> covers the rest:</p>
+<table>
+<thead data-source-range="42:43">
+<tr data-source-range="42:43">
+<th>Setting (preset default)</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody data-source-range="44:46">
+<tr data-source-range="44:45">
+<td><code>print: { signature: 4, reserveLastPage: true }</code></td>
+<td>Pads the interior to DriveThruRPG’s 4-page signature and always ends on a completely blank page — the page reserved for printer information. The build log’s page count is the number to enter in the cover Template Generator.</td>
+</tr>
+<tr data-source-range="45:46">
+<td><code>pdfx.blackText: k-only</code></td>
+<td>In a <code>--format pdfx</code> build, near-black text (the book’s ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black.</td>
+</tr>
+</tbody>
+</table>
+<p><code>@page .dc-printer-page</code>, which did the reserved last page before gutterpress could, is no longer needed: drop it from the last chapter.</p>
 <h2>Flags</h2>
 <table>
-<thead data-source-range="40:41">
-<tr data-source-range="40:41">
+<thead data-source-range="51:52">
+<tr data-source-range="51:52">
 <th>Flag</th>
 <th>Commands</th>
 <th>Purpose</th>
 </tr>
 </thead>
-<tbody data-source-range="42:49">
-<tr data-source-range="42:43">
+<tbody data-source-range="53:60">
+<tr data-source-range="53:54">
 <td><code>--port N</code></td>
 <td>preview</td>
 <td>Port to listen on (default 3579)</td>
 </tr>
-<tr data-source-range="43:44">
+<tr data-source-range="54:55">
 <td><code>--open</code></td>
 <td>preview</td>
 <td>Open the browser</td>
 </tr>
-<tr data-source-range="44:45">
+<tr data-source-range="55:56">
 <td><code>--format</code></td>
 <td>build</td>
 <td><code>html</code>, <code>pdf</code> (default), or <code>pdfx</code></td>
 </tr>
-<tr data-source-range="45:46">
+<tr data-source-range="56:57">
 <td><code>--out</code></td>
 <td>build</td>
 <td>Output directory, or a <code>.pdf</code> path for <code>pdf</code> / <code>pdfx</code></td>
 </tr>
-<tr data-source-range="46:47">
+<tr data-source-range="57:58">
 <td><code>--pdfx-flavor</code></td>
 <td>build</td>
 <td><code>x1a</code> or <code>x3</code>, with <code>--format pdfx</code></td>
 </tr>
-<tr data-source-range="47:48">
+<tr data-source-range="58:59">
 <td><code>--icc</code></td>
 <td>build</td>
 <td>ICC profile; falls back to the manifest’s <code>pdfx.icc</code>, then the embedded profile</td>
 </tr>
-<tr data-source-range="48:49">
+<tr data-source-range="59:60">
 <td><code>--category</code></td>
 <td>validate</td>
 <td><code>source</code>, <code>pdf</code>, <code>asset</code>, or <code>heuristic</code></td>
@@ -2403,7 +2424,7 @@ gutterpress build my-book --format html --out ./dist/site
 </table>
 <h2>Keeping the package current</h2>
 <p>A book pins an exact package version and builds from the copy vendored under <code>plugins/npm/</code>. To see whether a newer version exists and move to it:</p>
-<pre><code data-source-range="54:58" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
+<pre><code data-source-range="65:69" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
 <p>Commit the manifest and <code>plugins/npm/</code> together. The Gutterpress app does the same under Project settings → Features.</p>

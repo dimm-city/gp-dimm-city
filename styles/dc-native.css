@@ -35,11 +35,24 @@
    the old `html { background }` content-area layer, the 14 hand-fed empty
    margin boxes, and §4's six refills — 21 tiling origins became one, so the
    wall is seamless: no phase break at a box edge, and no flat --bg patch in
-   the bottom band beside the chips. */
+   the bottom band beside the chips.
+
+   The image is OPAQUE: brick-wall.png is brick-bg-01.png multiplied into
+   --bg (#c8c5bf) and flattened, which is what `background-blend-mode:
+   multiply` used to do at render time. The old RGBA tile made every page
+   transparent, and PDF/X-1a cannot carry transparency: Ghostscript
+   flattened EVERY walled page to a raster image in a DriveThruRPG build —
+   no live text, no embedded fonts, and black text left four-colour, since
+   gutterpress's `pdfx.blackText: k-only` rewrite only reaches vector text.
+   --bg stays as the fill under the tile, but a book that retints --bg no
+   longer tints the brick with it. To bake a tile for another colour, take
+   the RGBA source (source-art/brick-bg-01.png in the repository; it is not
+   published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
+   src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
+   of the new --bg. */
 @page {
-  background: var(--bg) url("../images/brick-bg-01.png") repeat;
+  background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
-  background-blend-mode: multiply;
 }
 
 /* The printer page (page-rules.css) carries no wall: DriveThruRPG wants

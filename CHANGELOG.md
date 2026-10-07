@@ -7,6 +7,48 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **Tested against gutterpress 0.11.15-alpha.1** (devDependency, was
+  0.11.13), the release that upstreams this package's two DriveThruRPG
+  workarounds: `preset: dtrpg` now pads to a 4-page signature and always
+  ends on a blank reserved page (`print.reserveLastPage`,
+  dimm-city/gutterpress#332), and prints near-black text on the black plate
+  only in PDF/X builds (`pdfx.blackText: k-only`, dimm-city/gutterpress#331).
+  Verified on the Field Guide with the alpha: its 228 content pages render
+  pixel-identical to 0.11.13, and without any workaround the book ends on
+  4 pure-white pages (232). The design guide's Publishing chapter documents
+  both settings.
+
+### Fixed
+
+- **DriveThruRPG PDF/X builds keep live text.** The brick wall was an RGBA
+  tile blended with `background-blend-mode: multiply`, so every walled page
+  carried transparency, which PDF/X-1a cannot represent: Ghostscript
+  flattened each one to a raster image — no live text or embedded fonts
+  (a one-page book failed validation outright), and black text left
+  four-colour, because `pdfx.blackText: k-only` only reaches vector text.
+  The wall is now `images/brick-wall.png`, the same tile multiplied into
+  `--bg` and flattened to an opaque image, painted with no blend mode:
+  it renders the same (design guide wall pages differ by 0.15/255 on
+  average), and with gutterpress 0.11.15-alpha.1 a DriveThruRPG build's
+  body text now prints on the black plate only (separations: C = M = Y = 0
+  under every glyph). A book that retints `--bg` no longer tints the
+  brick; see the note in `dc-native.css` for baking a tile.
+
+### Removed
+
+- `images/brick-bg-01.png`, the RGBA wall tile, is no longer published
+  (it now lives in the repository's `source-art/`). Neither Dimm City book
+  referenced it; a book that did should use `images/brick-wall.png`.
+
+### Deprecated
+
+- **`@page .dc-printer-page`.** gutterpress 0.11.15+ reserves the blank
+  last page in core. The class still works — a book that keeps it gets one
+  printer page plus padding, still ending blank — and goes in the next
+  major.
+
 ## [1.1.0] - 2026-10-07
 
 **Layout note for books upgrading from 1.0.x:** the page margins now follow
