@@ -154,12 +154,16 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, rgb(230 0 122) 15%, var(--dc-pullquote-bg));
+  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, var(--dc-pullquote-bg));
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* roll / die callout public API */
   --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
+
+  /* .section.dc-tabbed public API — tab vertical overlap and left indent */
+  --dc-section-tab-overlap:  0px;
+  --dc-section-tab-indent:   0px;
 
   /* .dc-sidebar-box public API */
   --dc-sidebar-box-accent:   var(--hud-blue-dark);
@@ -169,7 +173,7 @@
 
   /* inset-sidebar rail callout (.dc-sidebar.inset hr ~ p, images.css) public API */
   --dc-sidebar-callout-accent: var(--hud-blue);
-  --dc-sidebar-callout-bg:     color-mix(in srgb, rgb(42 106 138) 8%, var(--dc-sidebar-surface));
+  --dc-sidebar-callout-bg:     color-mix(in srgb, var(--tint-hud-teal) 8%, var(--dc-sidebar-surface));
 
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
@@ -190,7 +194,7 @@
 
   /* .dc-tape public API */
   --dc-tape-bg:              var(--paper-aged);
-  --dc-tape-border:          color-mix(in srgb, rgb(212 18 0) 60%, var(--dc-tape-bg));
+  --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, var(--dc-tape-bg));
   --dc-tape-color:           var(--ink-dust);
 
   /* NOTE — the "Semantic Surface Roles" bridge layer that used to close this

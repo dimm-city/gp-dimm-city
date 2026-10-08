@@ -197,8 +197,6 @@
    clamps negative margins on the first in-flow child). `.section::before`
    is absolutely positioned, so flex doesn't disturb the background pseudo. */
 .section.dc-tabbed {
-  --dc-section-tab-overlap: 0px;
-  --dc-section-tab-indent: 0px;
   display: flex;
   flex-direction: column;
   margin-top: calc(var(--space-md) + 1.5em + 5px);
@@ -1002,7 +1000,7 @@ h3 + .section {
   left: 3px;
   right: -3px;
   bottom: -4px;
-  background: color-mix(in srgb, #000 28%, var(--wall-tone));
+  background: var(--shadow-ink);
   clip-path: polygon(
     0 0,
     calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
