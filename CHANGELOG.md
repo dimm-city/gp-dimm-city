@@ -63,6 +63,19 @@ cut a version that has no `## [X.Y.Z]` heading below.
   no text changes page. (It became visible with 1.1.0's DriveThruRPG
   margins, which moved the page breaks; the cause dates from 1.0.0.)
 
+- **Accent rails print as vectors in PDF/X.** The 3–5px coloured rail down
+  the left of sections, ledes, path banners, the Panel and Shard blocks,
+  and the front-matter and intro panels was a hard-stop
+  `linear-gradient`. The PDF/X conversion turned each gradient into a
+  45 ppi bitmap, so the rail's edge printed soft, and
+  `gutterpress preflight` flagged the pages as low-resolution. Each rail
+  is now an inset `box-shadow` over a flat fill: it looks the same and
+  prints as a vector.
+- **Design guide: preflight checks the right page size.** Its manifest
+  declared 612 × 792 pt (the bare Letter trim), so `gutterpress preflight`
+  failed every build on page size. It now declares the sheet the CSS
+  prints: 621 × 810 pt, the trim plus DriveThruRPG's bleed.
+
 ### Removed
 
 - `images/brick-bg-01.png`, the RGBA wall tile, is no longer published

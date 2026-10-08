@@ -53,12 +53,14 @@ source:
     - 306-example-dm-npcs.md
     - 307-example-gear-tech.md
 
-# US Letter trim size (8.5 × 11 in = 612 × 792 pt) — drives gutterpress validation bounds.
-# NOTE: The @page CSS uses 8.625 × 11.25 in (Letter + bleed) for DTRPG POD output.
-# These differ intentionally: manifest = validation tolerance, CSS = actual PDF size.
+# The PDF's page size, which gutterpress validate/preflight check against:
+# US Letter trim (8.5 × 11 in) plus DriveThruRPG's 0.125 in bleed on the
+# outside, top and bottom edges = 8.625 × 11.25 in = 621 × 810 pt, the
+# @page size in page-rules.css. (It said 612 × 792, the bare trim, and
+# preflight failed every build on page size.)
 page:
-  width: 612
-  height: 792
+  width: 621
+  height: 810
   tolerance: 0.5
 
 validate:

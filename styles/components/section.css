@@ -86,7 +86,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, var(--dc-section-accent) 5px, var(--dc-section-bg) 5px);
+  /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). */
+  background: var(--dc-section-bg);
+  box-shadow: inset 5px 0 0 var(--dc-section-accent);
   clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
   z-index: -1;
 }
@@ -487,8 +489,8 @@ h3 + .section {
 .dc-block.dc-panel {
   --dc-block-accent:   var(--hud-blue-dark);
   --dc-block-title-bg: var(--hud-blue-dark);
-  background:
-    linear-gradient(to right, var(--dc-block-accent) 3px, var(--paper-light) 3px);
+  background: var(--paper-light);
+  box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
   clip-path: polygon(
     14px 0, 100% 0,
     100% calc(100% - 14px), calc(100% - 14px) 100%,
@@ -526,8 +528,8 @@ h3 + .section {
   --dc-block-accent:    var(--rust);
   --dc-block-title-bg:  var(--rust);
   --dc-block-title-fg:  var(--paper-cream);
-  background:
-    linear-gradient(to right, var(--dc-block-accent) 4px, var(--paper-aged) 4px);
+  background: var(--paper-aged);
+  box-shadow: inset 4px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
   clip-path: polygon(
     0 0, 100% 0,
     100% calc(100% - 28px), calc(100% - 52px) 100%,

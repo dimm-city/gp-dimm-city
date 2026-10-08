@@ -65,7 +65,8 @@
   content: '';
   position: absolute;
   inset: 2px 0 0;
-  background: linear-gradient(to right, var(--dc-path-accent) 4px, var(--paper-cream) 4px);
+  background: var(--paper-cream);
+  box-shadow: inset 4px 0 0 var(--dc-path-accent); /* rail: see .dc-intro */
   clip-path: var(--dc-path-shell-clip);
   z-index: -1;
 }

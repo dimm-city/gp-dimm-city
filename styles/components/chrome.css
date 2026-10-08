@@ -330,11 +330,14 @@ h1.dc-chevron {
   font-size: var(--fs-body);
   font-style: italic;
   color: var(--ink-smoke);
-  background: linear-gradient(to right, var(--dc-intro-accent) 4px, var(--dc-intro-bg) 4px);
+  /* The accent rail is an inset shadow, not a hard-stop gradient: in a PDF/X
+     build Ghostscript turns a gradient into a 45 ppi bitmap, which printed
+     the rail's edge soft. */
+  background: var(--dc-intro-bg);
   line-height: 1.5;
   padding: 0 14px 10px 18px;
   margin: 0 0 calc(0.1in + 3pt) 0;
-  box-shadow: var(--shadow-poster);
+  box-shadow: inset 4px 0 0 var(--dc-intro-accent), var(--shadow-poster);
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel painted on to the page foot with the last paragraph overleaf
      (design guide p.82, "How Abilities Work"). */
