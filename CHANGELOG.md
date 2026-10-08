@@ -38,7 +38,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   at: specialty (`##`) > learning path (`h3.dc-spray`) > skill
   (`h4.dc-tab-title`). The CSS follows, and both books render
   pixel-identical. A stylesheet that targeted `h2.dc-spray` or
-  `span.dc-tab-title` needs the new tag.
+  `span.dc-tab-title` needs the new tag. A real space
+  (`span.dc-path-sep`, carrying the 10px gap the sticker's margin used to
+  give) separates a banner's tree code from its title, so the outline
+  reads "PRX1 Refuse Finality", not "PRX1Refuse Finality".
 
 ### Fixed
 

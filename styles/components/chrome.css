@@ -250,8 +250,19 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  margin-right: 10px;
   box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
+}
+
+/* The gap between the sticker and the banner title. It is a real space
+   (plugin.js), so the heading's text reads "PRX1 Refuse Finality" in the
+   outline and bookmarks rather than "PRX1Refuse Finality". The gap was the
+   sticker's 10px margin-right; it is now this box's fixed width, so the
+   banner prints as before whatever the font's space width. `pre` keeps the
+   lone space from collapsing away, which would drop it from the text. */
+.dc-path-sep {
+  display: inline-block;
+  width: 10px;
+  white-space: pre;
 }
 
 /* ───────── STICKER TIER REF ───────── */

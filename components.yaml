@@ -333,7 +333,7 @@ components:
     origin: plugin
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
-      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker
+      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker + span.dc-path-sep
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)

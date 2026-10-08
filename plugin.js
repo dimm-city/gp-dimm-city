@@ -1756,11 +1756,14 @@ export default function dimmCityPlugin(md, options = {}) {
         // H3 = Learning path title (banner). Emitted as an h3, the level it
         // was written at: the outline (the app's contents panel, PDF
         // bookmarks) nests specialty (##) > learning path (###) > skill (####).
+        // .dc-path-sep is a real space between the sticker and the title, so
+        // the heading's text reads "PRX1 Refuse Finality" (outline, bookmarks,
+        // copy, search, screen readers); chrome.css gives it the printed gap.
         if (tok.type === 'heading_open' && tok.tag === 'h3') {
           const inlineTok = tokens[i + 1];
           const titleText = inlineTok && inlineTok.content ? inlineTok.content : '';
           currentLearningPathName = titleText;
-          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span>' + esc(titleText) + '</h3>\n'));
+          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
           learningPathHasTitle = true;
           i += 2; // Skip heading_open, inline, heading_close
           continue;

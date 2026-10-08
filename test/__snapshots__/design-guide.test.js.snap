@@ -1604,7 +1604,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 <div class="dc-specialty augmerc">
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span></div>
 <p><strong>Backbiter Spines:</strong> Reactive spine rigs in the forearms and shins. Spend an action defending and the rig braces, resisting 2 damage from melee and dealing 1 to everything in reach.</p>
@@ -1915,7 +1915,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty gutterdruid">
 <div class="dc-learning-path dc-path-block" data-path-ref="GDR1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span>Beastmode</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span><span class="dc-path-sep"> </span>Beastmode</h3>
 <div class="dc-intro">Some adapt and overcome. You mutate and dominate.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span></div>
 </div>
@@ -1938,7 +1938,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty dualist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Split Discipline</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Split Discipline</h3>
 <div class="dc-intro">Two crafts, one body. You never fully belong to either — and that’s the edge.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Crossover Stance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Reflex</span></div>
 </div>
@@ -1961,7 +1961,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty generalist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Jack of the Sprawl</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Jack of the Sprawl</h3>
 <div class="dc-intro">Master of none, ready for anything.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Field Improvisation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Adaptive Loadout</span></div>
 </div>
@@ -2879,7 +2879,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Dirty Work</span></div>
 </div>
@@ -2904,7 +2904,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty proxy">
 <div class="dc-learning-path dc-path-block" data-path-ref="PRX1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span>Refuse Finality</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Refuse Finality</h3>
 <div class="dc-intro">Nothing ends while you are still standing.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Zeal Stitch</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Mercy</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Redline Rhythm</span></div>
 </div>
@@ -2929,7 +2929,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty streetwarden">
 <div class="dc-learning-path dc-path-block" data-path-ref="STW1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">STW1</span>Streetwise</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">STW1</span><span class="dc-path-sep"> </span>Streetwise</h3>
 <div class="dc-intro">The more you know the less you carry.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Gut Sense</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Quick Fix</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stealth Camp Shroud</span></div>
 </div>
@@ -2954,7 +2954,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty gutterdruid">
 <div class="dc-learning-path dc-path-block" data-path-ref="GDR1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span>Beastmode</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span><span class="dc-path-sep"> </span>Beastmode</h3>
 <div class="dc-intro">Some adapt and overcome.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Adaptive Mutation</span></div>
 </div>
@@ -2979,7 +2979,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty cybersurgeon">
 <div class="dc-learning-path dc-path-block" data-path-ref="CBS1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">CBS1</span>Trauma Economy</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">CBS1</span><span class="dc-path-sep"> </span>Trauma Economy</h3>
 <div class="dc-intro">Doctors are sworn to heal the sick but I require a 2000 cred downpayment to uphold my oath.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Peep and Patch</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Medicated Calm</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Triage Rig</span></div>
 </div>
@@ -3004,7 +3004,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty wirephreak">
 <div class="dc-learning-path dc-path-block" data-path-ref="WPH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">WPH1</span>Professional Courtesy</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">WPH1</span><span class="dc-path-sep"> </span>Professional Courtesy</h3>
 <div class="dc-intro">Every contract should end clean.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Dead or Alive</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Killer Instinct</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Hemorrhage</span></div>
 </div>
@@ -3029,7 +3029,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty technosorcerer">
 <div class="dc-learning-path dc-path-block" data-path-ref="TNS1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">TNS1</span>Prestidigitalization</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">TNS1</span><span class="dc-path-sep"> </span>Prestidigitalization</h3>
 <div class="dc-intro">Reality doesn’t have to change. You just have to sell the alternative.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Practical Power</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Digital Chameleon</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Override</span></div>
 </div>
@@ -3054,7 +3054,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty etherlock">
 <div class="dc-learning-path dc-path-block" data-path-ref="ETH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">ETH1</span>Mutanthurgy</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">ETH1</span><span class="dc-path-sep"> </span>Mutanthurgy</h3>
 <div class="dc-intro">Matter, momentum, gravity, flesh. None of them are laws. They’re habits. Break them all.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Rubber Soul</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Skyhook</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stolen Momentum</span></div>
 </div>
@@ -3079,7 +3079,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty dualist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Split Discipline</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Split Discipline</h3>
 <div class="dc-intro">Two crafts, one body. You never fully belong to either — and that’s the edge.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Crossover Stance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Reflex</span></div>
 </div>
@@ -3104,7 +3104,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty generalist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Jack of the Sprawl</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Jack of the Sprawl</h3>
 <div class="dc-intro">Master of none, ready for anything.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Field Improvisation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Adaptive Loadout</span></div>
 </div>
@@ -4202,7 +4202,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h3>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Dirty Work</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">4</span>Pain Compliance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">5</span>It's Personal</span></div>
 <p><strong>Backbiter Spines:</strong> Anyone who walks the Biting Distance path installs reactive spine rigs in the forearms, shins, or wherever their street doc could wedge the hardware. Beneath the skin sits a row of hungry metal waiting for contact.</p>
