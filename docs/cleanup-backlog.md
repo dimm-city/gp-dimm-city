@@ -28,5 +28,5 @@ Each class is live on its own, but never in this combination:
 
 ## Also noted
 
-- **Specialty codes for the dual specialist and generalist.** `specialtyCodeFromClass` in `plugin.js` maps eight specialties to their codes (AUG, PRX, STW, GDR, CBS, WPH, TNS, ETH). `.dualist` and `.generalist` are not in it, so a learning path inside either falls back to `PATH`. That prints `PATH1` on its banner sticker and `PATH1.1` on its skill tabs. No book has learning paths for those two today: the Field Guide shows them only as catalog cards. The one place `PATH1` prints is the design guide's Variant Gallery. Add codes for them (e.g. `DUA`, `GEN`) if they ever get skill trees.
+- **The Variant Gallery's dual specialist and generalist skill trees.** The dual specialist and generalist take their skills from the other specialties and will not have skill trees of their own. So `plugin.js` correctly has no specialty code for them. But the design guide's Variant Gallery (`11-variants.md`) still shows a sample learning path under each, printing the fallback `PATH1` sticker. Consider dropping those two specimens so the gallery does not suggest a skill tree that cannot exist.
 - **The glossary item's name.** The docs and gallery write `.dc-terms-item`, which nothing styles (catalog: `glossary-item-authored`, `unimplemented`).
