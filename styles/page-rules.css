@@ -142,7 +142,7 @@
 .dc-full-page { page: full; }
 
 /* ---------------------------------------------------------------------------
-   Clean — footer suppression on demand. Wired via `.pmd-suppress-footer`;
+   Clean — footer suppression on demand. Wired via `.dc-suppress-footer`;
    no page in either book currently opts in.
    --------------------------------------------------------------------------- */
 

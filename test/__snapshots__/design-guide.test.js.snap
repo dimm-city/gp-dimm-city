@@ -2765,7 +2765,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="93:117">
+<tbody data-source-range="93:116">
 <tr data-source-range="93:94">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code> <code>--dc-section-tab-indent</code> <code>--dc-section-tab-overlap</code></td>
@@ -2857,10 +2857,6 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="115:116">
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
-</tr>
-<tr data-source-range="116:117">
-<td>Portrait</td>
-<td><code>--dc-portrait-border</code> <code>--dc-portrait-surface</code></td>
 </tr>
 </tbody>
 </table>

@@ -396,7 +396,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` tokens |
 | `dc-fonts.css` | `@font-face` |
 | `dc-core.css` | `html`/`body` baseline, element resets, heading defaults, `* { print-color-adjust }` |
-| `components/*.css` | Every `.dc-*` + `.pmd-*` component (base + thin variants + token contracts) |
+| `components/*.css` | Every `.dc-*` component (base + thin variants + token contracts) |
 | `page-templates.css` | **All `columns:N` rules** (exclusive), `.page.*` layouts, paged wrapper scaffolding |
 | `page-rules.css` | `@page` declarations, named pages, folio + chapter footers |
 | the design guide's own sheet (unlayered) | `div.chapter` scaffolding, design-guide specimen chrome |

@@ -12,9 +12,8 @@
    - .dc-full-page full-bleed geometry (its named-page assignment,
      `page: full`, lives in page-rules.css alongside `@page full` — see
      that file's "ONE BLOCK PER NAMED PAGE" contract)
-   - General print utilities (.pmd-no-break, .pmd-break-before, .pmd-col-span).
-     `.pmd-suppress-footer`'s named-page wiring (`page: clean`) lives in
-     page-rules.css alongside `@page clean` — same contract as .dc-full-page above
+   (`.dc-suppress-footer`'s named-page wiring, `page: clean`, lives in
+     page-rules.css alongside `@page clean` — same contract as .dc-full-page)
    - Break/overflow control scoped to a page type (.dc-specialty break rules)
 
    NOTE: Page-level typography constraints (orphans/widows on body, break-after
@@ -23,8 +22,8 @@
 
    MUST NOT CONTAIN:
    - @page declarations or named-page geometry (→ page-rules.css)
-   - .dc-* component styles (→ components.css)
-   - :root token definitions (→ tokens.css)
+   - .dc-* component styles (→ components/*.css)
+   - :root token definitions (→ dc-palette.css, dc-component-defaults.css)
    - div.chapter scaffolding unrelated to columns/layout (→ guide.css)
    - @media screen rules (print-only project)
 
@@ -206,14 +205,15 @@
   break-before: page;
 }
 
-/* `.pmd-suppress-footer { page: clean; }` was here and MOVED (dc#35) to
+/* The footer-suppression wiring (`.dc-suppress-footer { page: clean; }`) was here and MOVED (dc#35) to
    page-rules.css, adjacent to `@page clean` — named-page wiring belongs
    with its @page block, not scattered across files. */
 
 /* `.dc-art-top` and `.dc-art-bottom` (+ their shared `img` rule) were here
    and are DELETED (2026-09-02): zero uses of either in any book's rendered
    HTML — `.dc-art-bottom` had documentation mentions only
-   (04-components.md), which does not make it reachable. */
+   (docs/components-and-palette-reference.md), which does not make it
+   reachable. */
 
 /* `.page.full-bleed` was here — DELETED. Zero users in any book's markdown
    (`.dc-full-page` is the live full-bleed template). Its `overflow: hidden` was

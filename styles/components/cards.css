@@ -78,9 +78,7 @@
    script-injection hook (no manifest `scripts` key, no plugin `scripts`
    export, and assemble.ts's <head> template is fixed), so the file was dead
    and has been deleted. Split-card continuation markers are therefore an
-   UNIMPLEMENTED feature; docs that describe them (04-components.md,
-   09-component-gallery.md, docs/components-and-palette-reference.md) are
-   stale. Wiring this up requires a script hook in print-md itself. */
+   UNIMPLEMENTED feature (components.yaml: skill-card-continuation-marker). Wiring this up requires a script hook in print-md itself. */
 
 /* ── Card tab ─────────────────────────────────────────────────────────── */
 .dc-card-tab {
@@ -313,11 +311,9 @@
   column-fill: balance;
 }
 
-/* Inside 2-col body, force outcome tables and full-width elements to span
-   both columns so the visual chrome doesn't break across the gap. */
-.dc-skill-card.dc-two-col .dc-card-inner .dc-outcome-table,
-.dc-skill-card.dc-two-col .dc-card-inner table,
-.dc-skill-card.dc-two-col .dc-card-inner h5 {
+/* Inside 2-col body, a table spans both columns so its chrome doesn't break
+   across the gap. */
+.dc-skill-card.dc-two-col .dc-card-inner table {
   column-span: all;
 }
 
@@ -326,7 +322,6 @@
    together in a single column even when the column boundary lands in
    the middle of one. Paragraphs immediately following list items also
    stay glued so their text doesn't strand from its anchor item. */
-.dc-skill-card.dc-two-col .dc-card-inner ol > li,
 .dc-skill-card.dc-two-col .dc-card-inner ul > li,
 .dc-skill-card.dc-two-col .dc-card-inner p {
   break-inside: avoid;
@@ -463,9 +458,9 @@
      CSS rectangle. */
   background:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--dc-ap-bg) 90%, #fff 10%) 0%, /* PDF/X-1a: pre-composite to ~90% bg + 10% white; e.g. on --crimson (#e1261c) → #e64030; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      color-mix(in srgb, var(--dc-ap-bg) 90%, #fff 10%) 0%, /* PDF/X-1a: pre-composite to ~90% bg + 10% white; e.g. on --crimson (#e1261c) → #e64030 */
       var(--dc-ap-bg) 50%,
-      color-mix(in srgb, var(--dc-ap-bg) 94%, #000 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% black; e.g. on --crimson (#e1261c) → #d42419; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      color-mix(in srgb, var(--dc-ap-bg) 94%, #000 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% black; e.g. on --crimson (#e1261c) → #d42419 */
   color: var(--dc-ap-fg);
   /* 1pt ink-dark hairline gives registration grip — without it, adjacent
      red-family AP chips (free/var/increased) merge under CMYK dot gain

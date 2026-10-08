@@ -35,7 +35,6 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 - `.dc-alert` — warning/info callout block
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-callout`
 - `.dc-vibe-callout`, `.dc-human-callout`, `.dc-origin-callout`, `.dc-gear-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
@@ -90,7 +89,7 @@ Use this to choose the right callout type before reaching for a class name.
 - `.dc-specialty-art` — full-bleed art panel
 - `.dc-path-shell` — learning path shell
 - `.dc-path-block` / `.dc-learning-path.dc-path-block`
-- `.dc-path-sticker` / `.dc-path-subtitle`
+- `.dc-path-sticker` / `.dc-path-sep`
 - `.dc-classtag` + specialty variant — class identity dots
 
 ### NPC / Stat Blocks
@@ -129,28 +128,18 @@ These are separate components — not variants of each other.
 - `.dc-column-panel` (section-variant card for a `.gp-columns-2` / `.gp-columns-3` run)
 - `.dc-citizen-walkthrough.gp-columns-2`
 
-Note: `.dc-accent-X` utility classes are referenced in comments but not implemented. Use the contextual cascade pattern instead (see `docs/contextual-cascade-principle.md`).
+Note: there are no `.dc-accent-X` utility classes. Retheme a chapter by setting the component tokens at its id (`#chapter-03 { --dc-section-accent: var(--rust); }`).
 
 ### Inline Markers
 - `.dc-arrow`
 - `.dc-tag`
 - `.dc-roll-the-die`
-- `.dc-roll-lucid` / `.dc-roll-surreal`
-- `.dc-dashed-rule`
 
 ### Images
 - `.dc-img-float-left` / `.dc-img-float-right`
-- `.dc-portrait`
-- `.dc-art-bottom`
-
-### Cover Page
-- `.dc-cover-page` / `.dc-cover-layout` / `.dc-cover-body`
-- `.dc-cover-bigword` / `.dc-cover-num` / `.dc-cover-strap` / `.dc-cover-meta-row`
-
-Note: the `rgba()` vignette overlays will fail PDF/X-1a preflight (required by Ingram). For Ingram submission, replace each `color-mix()` vignette gradient with its static opaque value — the pre-computed replacement color is given inline in a comment at each occurrence (`css/components/data.css`, `cards.css`, `section.css`). DTRPG accepts the default PDF output.
 
 ### TOC
-- `.dc-toc` / `.dc-toc-page` / `.dc-toc-row` / `.dc-toc-title`
+- `.dc-toc` (a plain list inside it)
 
 ---
 

@@ -344,8 +344,7 @@ figure {
    the box's first child to the box start moves the whole start (and, via
    §11, the heading) to the next page. break-inside: avoid is NOT usable
    here: these callouts routinely run taller than a page. */
-.dc-dm-note > :first-child,
-.dc-callout > :first-child {
+.dc-dm-note > :first-child {
   break-before: avoid;
 }
 

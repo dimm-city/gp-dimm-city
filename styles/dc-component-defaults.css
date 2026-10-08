@@ -4,8 +4,8 @@
      Default theming for .section / @section macros. Chapter-scoped overrides
      live in the book's own sheet (unlayered — it wins over this whole package
      regardless of specificity) and win via the parent-context cascade —
-     typically by applying a .dc-accent-X utility on @chapter / @section
-     (see components/*.css "ACCENT IDENTITY UTILITIES" section). */
+     typically by setting --dc-section-accent at the chapter's id
+     (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
 
@@ -103,9 +103,6 @@
   /* .dc-card-tab (skill-card tab) extra public API */
   --dc-card-tab-shadow:      none;
 
-  /* cover meta public API */
-  --dc-cover-meta-border:    rgba(201, 214, 226, 0.35);
-
   /* .dc-definition-block public API */
   --dc-definition-block-accent:       var(--hud-blue-bright);
   --dc-definition-block-accent-width: 4px;
@@ -155,18 +152,12 @@
   --dc-path-shell-padding-top:    0;
   --dc-path-title-shape:          polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
 
-  /* portrait public API */
-  --dc-portrait-border:      var(--paper-aged);
-  --dc-portrait-surface:     var(--paper-cream);
-
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
   --dc-pullquote-accent-soft: color-mix(in srgb, rgb(230 0 122) 15%, var(--dc-pullquote-bg));
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* roll / die callout public API */
-  --dc-roll-lucid-color:     var(--hud-blue-dark);
-  --dc-roll-surreal-color:   var(--hud-magenta);
   --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
 
@@ -176,7 +167,7 @@
   --dc-sidebar-box-rail:     4px;
   --dc-sidebar-box-surface:  var(--paper-cream);
 
-  /* .dc-sidebar-callout public API */
+  /* inset-sidebar rail callout (.dc-sidebar.inset hr ~ p, images.css) public API */
   --dc-sidebar-callout-accent: var(--hud-blue);
   --dc-sidebar-callout-bg:     color-mix(in srgb, rgb(42 106 138) 8%, var(--dc-sidebar-surface));
 

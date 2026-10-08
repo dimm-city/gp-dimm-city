@@ -165,18 +165,6 @@ h1.dc-chevron {
 }
 
 
-/* ── Path subtitle ────────────────────────────────────────────────────── */
-.dc-path-subtitle {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--hud-blue-dark);
-  font-weight: 600;
-  margin: 8px 0 4px;
-}
-
-
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
 .dc-stickers {
   display: flex;
@@ -206,20 +194,6 @@ h1.dc-chevron {
 
 .dc-sticker:nth-child(4n+5) {
   transform: rotate(-0.9deg);
-}
-
-.dc-sticker.active {
-  /* cream on --crimson = 4.03:1 (fails AA at 11px). I tested --ink on
-     --crimson per the pressure-test expert; measured 3.83:1 — also fails.
-     Neither text-color choice passes on the bright crimson fill at sticker
-     size. Switching the bg to --blood: cream-on-blood = 7.73:1, comfortably
-     passes AA. The "active/hot" semantic is preserved (still warm red),
-     just deeper. */
-  background: var(--blood);
-  color: var(--paper-cream);
-  border-color: var(--blood);
-  transform: rotate(-1.5deg);
-  box-shadow: 2px 2px 0 color-mix(in srgb, #000 28%, var(--paper-cream));
 }
 
 /* Inline ↑↓→ marker. Token: --dc-arrow-color (default --blood).
@@ -306,27 +280,6 @@ h1.dc-chevron {
 }
 
 
-/* ── Portrait panel ───────────────────────────────────────────────────── */
-/* Token contract:
-     --dc-portrait-surface → frame fill (default --paper-cream)
-     --dc-portrait-border  → frame border color (default --paper-aged)
-*/
-.dc-portrait {
-  background: var(--dc-portrait-surface);
-  border: 1px solid var(--dc-portrait-border);
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-  height: fit-content;
-}
-
-.dc-portrait img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-
 /* ── Intro / Lede line ──────────────────────────────────────────────────
    Single-direction margin: top: 0, bottom: standard gap. This gives the
    lede flush attachment to a chevron heading above (D11 = 0) and natural
@@ -384,8 +337,7 @@ h1.dc-chevron {
 }
 
 /* ── Dashed rule divider (hr) ─────────────────────────────────────────── */
-hr,
-.dc-dashed-rule {
+hr {
   border: none;
   border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
   margin: var(--space-xl) 0;
@@ -493,7 +445,6 @@ hr,
 
 /* ── Modifier variants — .dc-flush removes margin ─────────────────────────── */
 .dc-stickers.dc-flush,
-.dc-path-subtitle.dc-flush,
 .dc-intro.dc-flush,
 .dc-tape.dc-flush {
   margin: 0;
@@ -507,10 +458,6 @@ hr,
 
 .dc-spec-tweak.dc-no-top {
   margin-top: 0;
-}
-
-.dc-tape.dc-margin-sm {
-  margin: 14px 0 8px;
 }
 
 }

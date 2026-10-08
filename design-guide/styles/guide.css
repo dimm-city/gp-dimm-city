@@ -686,21 +686,19 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    else in the chapter (section tabs, stat-block accents, table headers) is
    rust. Neutral --ink-dark page-titles let the chapter's rust components
    carry the chroma identity without fighting the title. */
-#ch-example-dm-npcs h1,
 #ch-example-dm-npcs h2:not(.dc-spray):not(.dc-chevron) {
    color: var(--ink-dark);
    border-bottom-color: var(--rust);
 }
 
 /* ── DM/NPC chapter: tables wear the chapter's gutter-pillar accent ─────────
-   Default .dc-table header background is --hud-blue-dim (cold-teal HUD),
+   The default table header background is --hud-blue-dim (cold-teal HUD),
    which conflicts with the rust section-accent on this chapter. Use --blood
    (not --rust) for the header fill: --rust on paper-cream prints at 4.59:1
    contrast — a bare WCAG AA pass with no press-margin safety. --blood lands
    at 6.3:1 contrast on the same background while staying firmly in the warm
    gutter-pillar register. Section headers and rule-stripes still use --rust;
    table-header fills get the safer --blood. */
-#ch-example-dm-npcs .dc-table th,
 #ch-example-dm-npcs table th {
    background: var(--blood);
    color: var(--paper-cream);
@@ -721,9 +719,8 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    Plants the fluorescent-fungi pillar in the DM chapter. The rust accents on
    section headers and stat-block rules deliver the gutter pillar; this rule
    gives advisory/vibe callouts a low-level organic glow — alley fungus
-   creeping into the encounter rules. Uses --fungi-rot at 30% mix against the
-   paper-light substrate so the green stays a tint, not a fill, and uses
-   --fungi-mid as the left-bar border accent. */
+   creeping into the encounter rules. (The fungi tint it started with was
+   replaced by paper-stain and rust; see the note inside.) */
 #ch-example-dm-npcs .dc-alert {
    /* User feedback (2026-05-24): "The colors for core elements and focus
      on the Fantascape are absolutely terrible." Previous fungi-rot 30%

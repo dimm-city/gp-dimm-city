@@ -1565,10 +1565,9 @@ export default function dimmCityPlugin(md, options = {}) {
       }
 
       // Removed 2026-05-17: @two-column / @three-column / @no-break.
-      // Use @section .gp-columns-2 / @section .gp-columns-3 / @section .pmd-no-break
-      // instead — markers.js emits identical layout semantics, with the
-      // added `.section` class that picks up `break-inside: avoid` from MARKER_CSS.
-      // See docs/migrations/2026-05-removing-container-syntax.md for the rationale.
+      // Use @section .gp-columns-2 / @section .gp-columns-3 instead — markers.js
+      // emits identical layout semantics, with the added `.section` class that
+      // picks up `break-inside: avoid` from MARKER_CSS.
 
       // --- @gear / @end-gear ---
       // Shorthand for @card .dc-gear — emits a bare `.dc-card.dc-gear`.
@@ -1901,7 +1900,7 @@ export default function dimmCityPlugin(md, options = {}) {
 
       // Mark image-only paragraphs so layout rules can target them without
       // relying on p:has(img). The base CSS rule
-      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components.css.
+      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
       // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
       if (tok.type === 'paragraph_open') {
         const inlineTok = tokens[i + 1];

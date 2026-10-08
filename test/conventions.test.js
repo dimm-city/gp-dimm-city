@@ -125,9 +125,6 @@ describe("stylesheets", () => {
   // page that uses it to a raster image — no live text, and black text stays
   // four-colour. Every colour is opaque; see docs/print-transparency-inventory.md.
   test("paint nothing transparent (PDF/X-1a)", () => {
-    // The one exemption: the unused cover-page composite, built from stacked
-    // translucent gradients that have no opaque equivalent.
-    const EXEMPT = /\.dc-cover-page[^{]*\{[^}]*\}/g;
     const ALPHA = [
       [/rgba\(|hsla\(/, "an rgba()/hsla() colour"],
       [/(^|[^-\w])opacity\s*:\s*0?\.\d/, "opacity below 1"],
@@ -138,7 +135,7 @@ describe("stylesheets", () => {
     ];
     const found = [];
     for (const rel of sheets) {
-      const css = stripComments(read(rel)).replace(EXEMPT, "").replace(/--dc-cover-meta-border\s*:[^;]+;/, "");
+      const css = stripComments(read(rel));
       for (const [re, what] of ALPHA) if (re.test(css)) found.push(`${rel}: ${what}`);
     }
     expect(found).toEqual([]);

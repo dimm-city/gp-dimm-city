@@ -12,7 +12,7 @@
 
    MUST NOT CONTAIN:
    - :root token definitions (→ dc-component-defaults.css)
-   - .dc-* or .pmd-* component styles (→ components/*.css)
+   - .dc-* component styles (→ components/*.css)
    - columns:N rules (→ page-templates.css)
    - @page declarations or named-page assignments (→ page-rules.css)
    - Component-scoped font-size or line-height overrides — each component

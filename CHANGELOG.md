@@ -69,8 +69,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
   The AP chip loses its soft 6px blurred shadow, which has no opaque form,
   and keeps its hard one. Every change, with where to look, is in
   `docs/print-transparency-inventory.md`. A new convention test fails on
-  any transparency in the stylesheets; the unused `.dc-cover-page`
-  composite is its only exemption.
+  any transparency in the stylesheets, with no exemptions (the one
+  translucent holdout, the unused cover-page composite, was removed).
 
 - **No stray ink line across the folio row.** A skill card, learning-path
   banner or specialty intro that opened a page printed the top 2–4px of its
@@ -104,11 +104,36 @@ cut a version that has no `## [X.Y.Z]` heading below.
   outranked, so a run marked to flow stayed balanced. The balance rule now
   skips runs marked `.gp-columns-flow`.
 
+- **Catalog statuses.** `plain`, `img-float`, `full-page` and
+  `printer-page` were marked `unused` although a book uses each: the
+  design guide renders the first two, SysOps uses `full-page`, and the
+  Field Guide still ends on `@page .dc-printer-page` until it builds on a
+  stable gutterpress 0.11.15. They are `live` now.
 ### Removed
 
 - `images/brick-bg-01.png`, the RGBA wall tile, is no longer published
   (it now lives in the repository's `source-art/`). Neither Dimm City book
   referenced it; a book that did should use `images/brick-wall.png`.
+- **Dead styling, from an orphan audit of the package, the design guide and
+  the Field Guide.** Each item was used by no book (Field Guide, Design
+  Guide, SysOps), and both books render pixel-identical without it:
+  - components: the cover-page composite (`.dc-cover-*`, with
+    `--dc-cover-meta-border`), the contents-page rows (`.dc-toc-row/-no/
+    -title/-page`), `.dc-portrait` (with `--dc-portrait-*`), the roll badges
+    `.dc-roll-lucid/-surreal` (with their colour tokens), `.dc-path-subtitle`,
+    the glossary item `.dc-terms .dc-item` (with `--card-border-color`),
+    `.dc-dashed-rule`, `.dc-tape.dc-margin-sm`, `.dc-sidebar-box-divider`,
+    `.dc-outcome-table` and `.dc-callout`. Their catalog entries are now
+    `retired`.
+  - rules for markup the plugin no longer produces: `.dc-sticker.active`,
+    the `ol`/`li` rules under `.dc-ability` (abilities are no longer
+    lists), and `h5` and `ol > li` inside a two-column skill card (both
+    are converted before they get there).
+  - stale comments naming deleted files or classes (`dc-tokens-print.css`,
+    `components.css`, `tokens.css`, the `.pmd-*` utilities, `.dc-accent-X`,
+    old design-guide chapter names, undeclared tokens).
+  Styling the audit found unused but still reachable is listed in
+  `docs/cleanup-backlog.md` for review.
 
 ### Deprecated
 
