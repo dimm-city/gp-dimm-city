@@ -29,6 +29,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Tested against gutterpress 0.11.15** (stable; was 0.11.15-alpha.1).
 - **CSS quick wins from an architecture review.**
   - New tokens: `--shadow-ink` (the opaque wall-shadow colour, written
     out five times before) and four exact-value `--tint-*` mix sources
@@ -61,6 +62,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Removed
 
+- **`.dc-printer-page` and its `@page printer-blank`** (deprecated in
+  1.1.1). gutterpress 0.11.15's `dtrpg` preset pads the interior to the
+  4-page signature and reserves the blank last page itself, so a book
+  needs neither the marker nor its own `print.signature`. The Field
+  Guide, built on 0.11.15 without either, keeps its 232 pages
+  pixel-identical and still ends on four blank pages.
 - `--shadow-tint`, and `.dc-roll-the-die`'s `box-shadow: var(--shadow-tint)`:
   a bare colour is not a valid shadow, so it never rendered.
 - `.dc-suppress-footer` and its `@page clean` (and the design guide's

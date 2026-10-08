@@ -41,7 +41,6 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page .dc-citizen-file-page` | `p.N`, `c.N` | Running header "Citizen File" |
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
 | `@page .dc-full-page` | none | Zero margins; full-bleed art |
-| `@page .dc-printer-page` | none | **Deprecated.** A completely blank last page for DriveThruRPG's printer information. gutterpress 0.11.15+ reserves that page itself with `preset: dtrpg` (see [Publishing](#ch-publishing)); still works, but no longer needed |
 
 The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter split across files repeats its `@chapter` line in each.
 

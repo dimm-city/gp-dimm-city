@@ -2026,7 +2026,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <th>Use for</th>
 </tr>
 </thead>
-<tbody data-source-range="33:44">
+<tbody data-source-range="33:43">
 <tr data-source-range="33:34">
 <td><code>@page</code></td>
 <td><code>p.N</code> and <code>c.N</code> in opposing corners</td>
@@ -2077,17 +2077,12 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <td>none</td>
 <td>Zero margins; full-bleed art</td>
 </tr>
-<tr data-source-range="43:44">
-<td><code>@page .dc-printer-page</code></td>
-<td>none</td>
-<td><strong>Deprecated.</strong> A completely blank last page for DriveThruRPG’s printer information. gutterpress 0.11.15+ reserves that page itself with <code>preset: dtrpg</code> (see <a href="#ch-publishing" data-gp-source-token="[Publishing](#ch-publishing)" data-gp-source-occurrence="0">Publishing</a>); still works, but no longer needed</td>
-</tr>
 </tbody>
 </table>
 <p>The <code>c.N</code> footer is the chapter number from <code>@chapter … ch=&quot;N&quot;</code>. A chapter split across files repeats its <code>@chapter</code> line in each.</p>
 <h2>Contents page</h2>
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
-<pre><code data-source-range="52:71" class="language-markdown">@page .page-toc
+<pre><code data-source-range="51:70" class="language-markdown">@page .page-toc
 
 # Contents {.dc-chevron}
 
@@ -2108,7 +2103,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Credits page</h2>
 <p>A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.</p>
-<pre><code class="dg-split language-markdown" data-source-range="78:103">@page .page-credits .dc-credits
+<pre><code class="dg-split language-markdown" data-source-range="77:102">@page .page-credits .dc-credits
 
 # Credits {.dc-chevron}
 
@@ -2135,7 +2130,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Chapter opener</h2>
 <p>A labelled <code>@chapter</code> plus <code>@page intro</code> gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: <code>@section .dc-fiction-excerpt</code> sets narrative typography and floats the first image in the flow. <code>---{.column-break}</code> splits fiction from the rules column that follows.</p>
-<pre><code class="dg-split language-markdown" data-source-range="111:138">@chapter C.01 #ch-citizen ch=&quot;1&quot;
+<pre><code class="dg-split language-markdown" data-source-range="110:137">@chapter C.01 #ch-citizen ch=&quot;1&quot;
 
 @page intro
 
@@ -2165,7 +2160,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>The footer-free variant is <code>@page .page-chapter-start .dc-chapter-start</code> with a <code># Title</code> — the snippet picker’s <em>Chapter Start Page</em>.</p>
 <h2>Citizen File walkthrough</h2>
 <p><code>@section .dc-citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Add <code>.gp-columns-2 .dc-column-panel</code> to put two short fields side by side. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
-<pre><code data-source-range="147:162" class="language-markdown">@page .dc-citizen-file-page
+<pre><code data-source-range="146:161" class="language-markdown">@page .dc-citizen-file-page
 
 @section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
 
@@ -2181,14 +2176,14 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="167:168"><h4>What’s Yr Handle?</h4>
+<div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="166:167"><h4>What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4>Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
 </div></div>
 <h2>Specialty catalog page</h2>
 <p><code>@page .card-grid</code> plus a <code>@section .dc-card-grid</code> of specialty cards, each in its own <code>@specialty</code>. Keep the cards uniform — identical chrome is what makes the choices comparable.</p>
-<pre><code class="dg-split language-markdown" data-source-range="186:217">@page .card-grid
+<pre><code class="dg-split language-markdown" data-source-range="185:216">@page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -2221,7 +2216,7 @@ Heavily armed and wired for war.
 <p>Rendered with all ten cards: <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>.</p>
 <h2>Specialty profile</h2>
 <p>Intro, art plate, then learning paths with their skill cards, all inside one <code>@specialty</code>. The art plate takes its own page.</p>
-<pre><code class="dg-split language-markdown" data-source-range="224:262">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="223:261">@specialty .augmerc
 
 @specialty-intro
 
@@ -2261,7 +2256,7 @@ Heavily armed and wired for war.
 <p>Rendered: <a href="#ch-example-specialty-profile" data-gp-source-token="[Specialty Profile](#ch-example-specialty-profile)" data-gp-source-occurrence="0">Specialty Profile</a>.</p>
 <h2>Choice page</h2>
 <p>Flaws, ideals, and dreams: a <code>@section .dc-flaws</code> (or <code>.dc-ideals</code>, <code>.dc-dreams</code>) of <code>@card</code> blocks. The section class colors every card’s accent. Cards stack in one column; use a tape divider between runs rather than columns.</p>
-<pre><code data-source-range="269:288" class="language-markdown">@section .dc-ideals
+<pre><code data-source-range="268:287" class="language-markdown">@section .dc-ideals
 
 ## 4. Ideal
 
@@ -2356,7 +2351,7 @@ gutterpress build my-book --format html --out ./dist/site
 </tr>
 </tbody>
 </table>
-<p><code>@page .dc-printer-page</code>, which did the reserved last page before gutterpress could, is no longer needed: drop it from the last chapter.</p>
+<p>Don’t set <code>print.signature</code> yourself, and don’t end the book with a blank page of your own: the preset does both. (<code>@page .dc-printer-page</code>, the package’s stand-in from before gutterpress 0.11.15, was removed in 1.1.2.)</p>
 <h2>Flags</h2>
 <table>
 <thead data-source-range="51:52">

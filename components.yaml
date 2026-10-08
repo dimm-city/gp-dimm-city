@@ -647,15 +647,6 @@ components:
     breaks: "break-before: page; page: full"
     notes: "Used by SysOps (chapter-00); the design guide documents it in a fenced example (08-page-templates)."
 
-  - name: printer-page
-    status: live
-    origin: author
-    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
-    emits: div.page.dc-printer-page
-    css: [styles/page-rules.css, styles/dc-native.css]
-    breaks: "page: printer-blank; break-before: page"
-    notes: "DEPRECATED in 1.1.1: gutterpress 0.11.15+ reserves the blank last page itself (dtrpg preset, `print.reserveLastPage`). A completely blank final page — no wall, no footer — kept so books that still use it build unchanged. The Field Guide still ends with it (chapter-05) until it builds on a stable gutterpress 0.11.15; drop it then."
-
   - name: img-float
     status: live
     origin: author
@@ -692,6 +683,13 @@ components:
     notes: "There is no @chapter-opener macro."
 
   # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  - name: printer-page
+    status: retired
+    origin: author
+    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
+    emits: div.page.dc-printer-page
+    notes: "Removed in 1.1.2 with its @page printer-blank: gutterpress 0.11.15's dtrpg preset pads to the 4-page signature and reserves the blank last page itself (print.reserveLastPage)."
+
   - name: suppress-footer
     status: retired
     origin: author

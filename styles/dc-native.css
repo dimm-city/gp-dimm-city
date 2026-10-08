@@ -55,12 +55,6 @@
   background-size: 1.5in auto;
 }
 
-/* The printer page (page-rules.css) carries no wall: DriveThruRPG wants
-   the final page free of any page background. */
-@page printer-blank {
-  background: none;
-}
-
 /* ── 2. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
    Chrome for the chip content page-rules.css declares on @bottom-left /
    @bottom-right. Sticker identity swaps by spread side in page-rules.css's
