@@ -5,7 +5,7 @@ The canonical inventory of macros and classes is `../components.yaml`; `../READM
 ### Plugin class naming convention
 
 All classes emitted by `plugin.js` must use the `dc-` prefix
-(e.g. `dc-note-callout`, `dc-outcomes-label`). When adding new plugin output,
+(e.g. `dc-skill-card`, `dc-outcomes-label`). When adding new plugin output,
 always check that the emitted class name has a matching CSS rule before shipping.
 
 

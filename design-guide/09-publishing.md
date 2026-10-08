@@ -36,6 +36,17 @@ gutterpress build my-book --format pdfx --pdfx-flavor x1a --icc CGATS21_CRPC1.ic
 gutterpress build my-book --format html --out ./dist/site
 ```
 
+## DriveThruRPG
+
+The package's page geometry follows DriveThruRPG's print specification: 0.125 in bleed on the three outside edges, all text 0.5 in inside the trim ([Page Templates](#ch-templates)). With gutterpress 0.11.15 or later, `preset: dtrpg` covers the rest:
+
+| Setting (preset default) | What it does |
+|---|---|
+| `print: { signature: 4, reserveLastPage: true }` | Pads the interior to DriveThruRPG's 4-page signature and always ends on a completely blank page — the page reserved for printer information. The build log's page count is the number to enter in the cover Template Generator. |
+| `pdfx.blackText: k-only` | In a `--format pdfx` build, near-black text (the book's ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black. |
+
+`@page .dc-printer-page`, which did the reserved last page before gutterpress could, is no longer needed: drop it from the last chapter.
+
 ## Flags
 
 | Flag | Commands | Purpose |

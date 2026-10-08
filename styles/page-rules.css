@@ -142,7 +142,7 @@
 .dc-full-page { page: full; }
 
 /* ---------------------------------------------------------------------------
-   Clean — footer suppression on demand. Wired via `.pmd-suppress-footer`;
+   Clean — footer suppression on demand. Wired via `.dc-suppress-footer`;
    no page in either book currently opts in.
    --------------------------------------------------------------------------- */
 
@@ -152,6 +152,12 @@
 }
 
 /* ---------------------------------------------------------------------------
+   DEPRECATED (1.1.1): gutterpress 0.11.15+ does this in core — the dtrpg
+   preset's `print: { signature: 4, reserveLastPage: true }` appends blank
+   pages so the interior always ends blank (dimm-city/gutterpress#332).
+   Kept so a book that still ends with the marker builds unchanged (one
+   printer page + padding, still ending blank). Remove in the next major.
+
    Printer page — a completely blank last page. DriveThruRPG reserves a
    book's final page for printer information: the interior must be one page
    short of its signature (4 pages for US Letter), or end on a page "devoid

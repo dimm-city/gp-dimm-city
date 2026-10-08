@@ -59,6 +59,34 @@ Each level rendered at its print size:
 
 </div>
 
+## Level and look
+
+A heading's level is its place in the outline, and the outline never skips a level: `#` is followed by `##`, never `###`. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with `.dc-h3`, `.dc-h4`, `.dc-h5` or `.dc-h6`:
+
+```markdown
+# Cybernetics, Weapons, and Gear
+
+## Useful Items {.dc-h3}
+
+### Base Reality {.dc-h4}
+
+#### Dreamer {.dc-h5}
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+## Useful Items {.dc-h3}
+
+### Base Reality {.dc-h4}
+
+#### Dreamer {.dc-h5}
+
+</div>
+
+The look follows the class everywhere: an `##` with `.dc-h3` that opens a section takes the subordinate section bar, and a `###` with `.dc-h4` inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.
+
 ## Heading chrome
 
 Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; `.dc-no-top` pulls it tight against whatever is above it.

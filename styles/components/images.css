@@ -134,27 +134,6 @@
   break-inside: avoid;
 }
 
-.dc-terms .dc-item {
-  --card-border-color: transparent;
-  break-inside: avoid;
-}
-
-/* term label accent color */
-.dc-terms .dc-item strong {
-  color: var(--crimson);
-}
-
-/* term paragraph spacing */
-.dc-terms .dc-item p {
-  padding-block: var(--space-sm);
-}
-
-/* first term paragraph — border-bottom separator, no top padding */
-.dc-terms .dc-item p:first-of-type {
-  padding-block: 0;
-  border-bottom: 1px var(--hud-blue) solid;
-}
-
 /* Tables: universal default look lives in dc-core.css under the <table>,
    <th>, <td>, tr:nth-child(...) selectors. Authors write plain markdown
    tables; no class required. No per-element class attribute syntax in MD
@@ -193,7 +172,7 @@
 
 /* Float-containment DEFAULT — display at ZERO specificity on purpose.
    flow-root makes the card a block formatting context so it CONTAINS floated
-   children (.dc-sidebar, .fg-art-inline, fiction-excerpt art — all
+   children (.dc-sidebar, a book's floated art, fiction-excerpt art — all
    float:right). Without it a section whose trailing content is a float
    collapses to the height of its in-flow content only, and the float spills
    onto the bare wall below. Worst case seen: a section holding only a

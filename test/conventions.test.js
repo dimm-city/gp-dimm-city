@@ -120,6 +120,26 @@ describe("stylesheets", () => {
       expect(css).not.toMatch(/url\(\s*["']?https?:/); // a remote url() is a Gutterpress build error
     }
   });
+
+  // PDF/X-1a (DriveThruRPG) carries no transparency: Ghostscript flattens any
+  // page that uses it to a raster image — no live text, and black text stays
+  // four-colour. Every colour is opaque; see docs/print-transparency-inventory.md.
+  test("paint nothing transparent (PDF/X-1a)", () => {
+    const ALPHA = [
+      [/rgba\(|hsla\(/, "an rgba()/hsla() colour"],
+      [/(^|[^-\w])opacity\s*:\s*0?\.\d/, "opacity below 1"],
+      [/#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])/, "a hex colour with alpha"],
+      [/mix-blend-mode\s*:\s*(?!normal)|background-blend-mode\s*:\s*(?!normal)/, "a blend mode"],
+      [/gradient\([^;]*\btransparent\b/, "a transparent gradient stop"],
+      [/(box|text)-shadow\s*:[^;]*?-?\d[\d.]*(px|pt)\s+-?\d[\d.]*(px|pt)\s+[1-9][\d.]*(px|pt)\s/, "a blurred shadow"],
+    ];
+    const found = [];
+    for (const rel of sheets) {
+      const css = stripComments(read(rel));
+      for (const [re, what] of ALPHA) if (re.test(css)) found.push(`${rel}: ${what}`);
+    }
+    expect(found).toEqual([]);
+  });
 });
 
 describe("snippets", () => {

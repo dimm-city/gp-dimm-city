@@ -165,7 +165,7 @@ project-specific changes.
 plain `@page` cascade: one block per named page wins on the page selector
 alone (see `page-rules.css`'s "ONE BLOCK PER NAMED PAGE" contract).
 
-**Selector ownership is exclusive.** If you are writing a rule for `.dc-callout`, it
+**Selector ownership is exclusive.** If you are writing a rule for `.dc-alert`, it
 belongs in `components/callouts.css` (`@layer dc.components`). If you are writing
 an `@page` rule — including the page background — it belongs in `page-rules.css`
 (`@layer dc.pages`). If you are writing a selector that only exists for a rendered
@@ -300,11 +300,11 @@ in two files:
 /* page-rules.css — the base color */
 @page { background-color: var(--bg); }
 
-/* dc-native.css — the brick tile over it */
+/* dc-native.css — the brick tile over it (opaque: PDF/X-1a has no
+   transparency, so the tile is pre-multiplied into --bg, no blend mode) */
 @page {
-  background: var(--bg) url("../images/brick-bg-01.png") repeat;
+  background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
-  background-blend-mode: multiply;
 }
 ```
 
@@ -724,8 +724,7 @@ print output. The sheets in this project pair it with the legacy
 `page-break-inside: avoid` alias throughout; keep new rules consistent with that:
 
 ```css
-.dc-callout,
-.dc-stat-block,
+.dc-terms,
 .dc-card.dc-gear {
   break-inside: avoid;
   page-break-inside: avoid;

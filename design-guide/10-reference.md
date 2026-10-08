@@ -114,6 +114,5 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Learning path | `--dc-path-title-bg` `--dc-path-title-color` `--dc-path-accent` `--dc-path-shell-padding-top` `--dc-path-shell-padding-bottom` `--dc-arrow-color` |
 | Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-body-mark` `--dc-card-gap` `--dc-card-tab-shadow` |
 | AP chip | `--dc-ap-bg` `--dc-ap-fg` `--dc-ap-border` |
-| Portrait | `--dc-portrait-border` `--dc-portrait-surface` |
 
 The brand tokens — `--crimson`, `--orange`, `--rust`, `--amber`, `--blood`, `--hud-blue`, `--hud-magenta`, `--paper-cream`, `--paper-aged`, `--ink`, `--ink-smoke`, `--bg`, and the `--font-*` family — are in [Color](#ch-palette) and [Typography](#ch-typography). The machine-readable catalog of every component, with the DOM it emits and the sheet that owns it, is the package's `components.yaml`.

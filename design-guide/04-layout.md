@@ -41,6 +41,8 @@ Right column.
 
 </div>
 
+The package balances a run's columns, so a short run ends level. A run that carries on over more than one page takes core's `.gp-columns-flow` as well (`@page .gp-columns-2 .gp-columns-flow`): each page's first column then fills before the second starts. Gutterpress names the runs that need it when it builds.
+
 ## The column panel
 
 Add `.dc-column-panel` and the run sits in a card: substrate, top and bottom rules, and the leading `##` or `###` becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.

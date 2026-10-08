@@ -21,7 +21,11 @@
      cards, skill cards, sections, paper-variant callouts, NPC stat
      blocks, citizen file — anything that should read as "stuck on
      the wall" rather than "embedded in the page." */
-  --shadow-poster: 2pt 3pt 0 rgba(0, 0, 0, 0.28);
+  /* The wall's average colour (mean of images/brick-wall.png). Shadows and
+     tints that land on the wall pre-composite against it: PDF/X-1a carries
+     no transparency (see docs/print-transparency-inventory.md). */
+  --wall-tone: #c1beb8;
+  --shadow-poster: 2pt 3pt 0 color-mix(in srgb, #000 28%, var(--wall-tone));
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ─────────────────── */
   --ink:        #1a1512;  /* near-black with red bias — riso warm black */
@@ -185,7 +189,7 @@
      the existing --shadow-poster token. Applied via filter:drop-shadow
      on the chapter-opener page so it follows the union silhouette
      (badge + tapered chevron + section substrate) as a single shape. */
-  --dc-chapter-opener-shadow: 3px 4px 0 rgba(0, 0, 0, 0.28);
+  --dc-chapter-opener-shadow: 3px 4px 0 color-mix(in srgb, #000 28%, var(--wall-tone));
 
   /* ── Fluorescent Fungi Pillar (creaturepunk: bioluminescent organic) ─────
      The 4th creaturepunk register: spore-light, lichen-glow, UV-reactive

@@ -8,7 +8,6 @@
    ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
    OWNS:
    - Every .dc-* component class (base + thin variants)
-   - Every .pmd-* utility class
    - Specialty parent-scoped overrides:
        .dc-specialty.<name> .dc-skill-card { … }
        .dc-specialty.<name> .dc-path-shell { … }
@@ -80,7 +79,7 @@
      (`.dc-ap.free`, `.dc-sidebar.inset`, `.dc-specialty.<name> .dc-X`) —
      never by re-declaring the token on the base component selector itself.
 
-   AGENT RULE: "Is this a .dc-* or .pmd-* component style, or a
+   AGENT RULE: "Is this a .dc-* component style, or a
    .dc-specialty.<name> scope block for a component?" — if NO, use another file.
    ──────────────────────────────────────────────────────────────────────── */
 

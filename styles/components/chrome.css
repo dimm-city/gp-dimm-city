@@ -161,20 +161,7 @@ h1.dc-chevron {
   left: 8%;
   width: 45%;
   height: 5px;
-  background: var(--dc-spray-bg);
-  opacity: 0.08;
-}
-
-
-/* ── Path subtitle ────────────────────────────────────────────────────── */
-.dc-path-subtitle {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--hud-blue-dark);
-  font-weight: 600;
-  margin: 8px 0 4px;
+  background: color-mix(in srgb, var(--dc-spray-bg) 8%, var(--wall-tone));
 }
 
 
@@ -198,7 +185,7 @@ h1.dc-chevron {
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -207,20 +194,6 @@ h1.dc-chevron {
 
 .dc-sticker:nth-child(4n+5) {
   transform: rotate(-0.9deg);
-}
-
-.dc-sticker.active {
-  /* cream on --crimson = 4.03:1 (fails AA at 11px). I tested --ink on
-     --crimson per the pressure-test expert; measured 3.83:1 — also fails.
-     Neither text-color choice passes on the bright crimson fill at sticker
-     size. Switching the bg to --blood: cream-on-blood = 7.73:1, comfortably
-     passes AA. The "active/hot" semantic is preserved (still warm red),
-     just deeper. */
-  background: var(--blood);
-  color: var(--paper-cream);
-  border-color: var(--blood);
-  transform: rotate(-1.5deg);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
 }
 
 /* Inline ↑↓→ marker. Token: --dc-arrow-color (default --blood).
@@ -251,8 +224,19 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  margin-right: 10px;
-  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.30);
+  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
+}
+
+/* The gap between the sticker and the banner title. It is a real space
+   (plugin.js), so the heading's text reads "PRX1 Refuse Finality" in the
+   outline and bookmarks rather than "PRX1Refuse Finality". The gap was the
+   sticker's 10px margin-right; it is now this box's fixed width, so the
+   banner prints as before whatever the font's space width. `pre` keeps the
+   lone space from collapsing away, which would drop it from the text. */
+.dc-path-sep {
+  display: inline-block;
+  width: 10px;
+  white-space: pre;
 }
 
 /* ───────── STICKER TIER REF ───────── */
@@ -260,8 +244,7 @@ h1.dc-chevron {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: inherit;
-  opacity: 0.55;
+  color: color-mix(in srgb, currentColor 55%, var(--ink-dark));
   margin-right: 5px;
   letter-spacing: 0.5px;
 }
@@ -297,27 +280,6 @@ h1.dc-chevron {
 }
 
 
-/* ── Portrait panel ───────────────────────────────────────────────────── */
-/* Token contract:
-     --dc-portrait-surface → frame fill (default --paper-cream)
-     --dc-portrait-border  → frame border color (default --paper-aged)
-*/
-.dc-portrait {
-  background: var(--dc-portrait-surface);
-  border: 1px solid var(--dc-portrait-border);
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-  height: fit-content;
-}
-
-.dc-portrait img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-
 /* ── Intro / Lede line ──────────────────────────────────────────────────
    Single-direction margin: top: 0, bottom: standard gap. This gives the
    lede flush attachment to a chevron heading above (D11 = 0) and natural
@@ -332,11 +294,14 @@ h1.dc-chevron {
   font-size: var(--fs-body);
   font-style: italic;
   color: var(--ink-smoke);
-  background: linear-gradient(to right, var(--dc-intro-accent) 4px, var(--dc-intro-bg) 4px);
+  /* The accent rail is an inset shadow, not a hard-stop gradient: in a PDF/X
+     build Ghostscript turns a gradient into a 45 ppi bitmap, which printed
+     the rail's edge soft. */
+  background: var(--dc-intro-bg);
   line-height: 1.5;
   padding: 0 14px 10px 18px;
   margin: 0 0 calc(0.1in + 3pt) 0;
-  box-shadow: var(--shadow-poster);
+  box-shadow: inset 4px 0 0 var(--dc-intro-accent), var(--shadow-poster);
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel painted on to the page foot with the last paragraph overleaf
      (design guide p.82, "How Abilities Work"). */
@@ -372,11 +337,9 @@ h1.dc-chevron {
 }
 
 /* ── Dashed rule divider (hr) ─────────────────────────────────────────── */
-hr,
-.dc-dashed-rule {
+hr {
   border: none;
-  border-top: 1.5px dashed var(--hud-magenta);
-  opacity: 0.5;
+  border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
   margin: var(--space-xl) 0;
 }
 
@@ -445,7 +408,7 @@ hr,
   background: var(--dc-tape-bg);
   padding: 14px 14px;
   border: 2px solid var(--dc-tape-border);
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 1px 0 color-mix(in srgb, #000 15%, var(--wall-tone));
   break-inside: avoid;
 }
 
@@ -454,8 +417,7 @@ hr,
   content: '';
   flex: 1;
   height: 4px;
-  background: repeating-linear-gradient(90deg, var(--crimson) 0 6px, transparent 6px 10px);
-  opacity: 0.85;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
 }
 
 /* Chapter-opener badge + H1 banner — see the chapter-opener composite
@@ -483,7 +445,6 @@ hr,
 
 /* ── Modifier variants — .dc-flush removes margin ─────────────────────────── */
 .dc-stickers.dc-flush,
-.dc-path-subtitle.dc-flush,
 .dc-intro.dc-flush,
 .dc-tape.dc-flush {
   margin: 0;
@@ -497,10 +458,6 @@ hr,
 
 .dc-spec-tweak.dc-no-top {
   margin-top: 0;
-}
-
-.dc-tape.dc-margin-sm {
-  margin: 14px 0 8px;
 }
 
 }

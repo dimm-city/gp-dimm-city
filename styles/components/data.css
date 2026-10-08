@@ -28,8 +28,11 @@
      Unlike .dc-skill-card, no book-wide instance of this touching was found;
      every live path→card seam already cleared, so this is added breathing
      room rather than a defect fix. */
-  margin: 8px 8px calc(var(--dc-card-gap) + 4px);
-  padding-top:    var(--dc-path-shell-padding-top);
+  /* The top 2px of the box is the ink outline's top rim (see ::after): the
+     shell starts 2px higher (margin 6px, not 8px) and pads its content 2px
+     down, so content and outline sit exactly where they did. */
+  margin: 6px 8px calc(var(--dc-card-gap) + 4px);
+  padding-top:    calc(var(--dc-path-shell-padding-top) + 2px);
   padding-bottom: var(--dc-path-shell-padding-bottom);
   /* Room for `.dc-spray::before`, the skewed tab pinned at `right: -8px` with
      `width: 14px`. Without it that decoration escapes this shell (measured:
@@ -61,29 +64,31 @@
 .dc-path-shell::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, var(--dc-path-accent) 4px, var(--paper-cream) 4px);
+  inset: 2px 0 0;
+  background: var(--paper-cream);
+  box-shadow: inset 4px 0 0 var(--dc-path-accent); /* rail: see .dc-intro */
   clip-path: var(--dc-path-shell-clip);
   z-index: -1;
 }
 
 /* 2px ink outline: the shell shape on a box 2px larger on every side, filled
    with ink, behind the surface. Replaces the 4-way drop-shadow(±2px) filter.
-   The title (h2.dc-spray) is an in-flow child with its own clip and no
+   The title (h3.dc-spray) is an in-flow child with its own clip and no
    outline of its own, so every shell cut equals its title cut at the corner
    the title covers (specialty-identity.css, "Title-covered corners").
-   The box starts AT the shell's top and is translated up 2px: a shell that
-   opens a page (its top margin truncated at the break) would otherwise have
-   Chromium push the outline box down to the page's content area, 2px low —
-   see .dc-specialty-intro::after. */
+   Nothing reaches ABOVE the shell's box: its top rim is the box's own top
+   2px (the surface starts below it). A layer that started above the box —
+   `top: -2px`, or the `translateY(-2px)` this used to use — printed its top
+   2px at the foot of the PREVIOUS page whenever the shell opened a page: a
+   full-width ink line across the folio row (Field Guide, specialty
+   chapters). */
 .dc-path-shell::after {
   content: '';
   position: absolute;
   top: 0;
   right: -2px;
-  bottom: -4px;
+  bottom: -2px;
   left: -2px;
-  transform: translateY(-2px);
   background: var(--ink);
   clip-path: var(--dc-path-shell-clip);
   z-index: -2;
@@ -98,7 +103,7 @@
   --dc-path-shell-padding-bottom: 16px;
 }
 
-.dc-path-shell>h2.dc-spray {
+.dc-path-shell>h3.dc-spray {
   width: stretch;
   /* A path banner spans its shell edge to edge, with its tab pulled inside
      (`right: -5px` below): it takes none of the standalone banner's
@@ -106,7 +111,7 @@
   max-width: none;
 }
 
-.dc-path-shell>h2.dc-spray:first-child {
+.dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
   background: var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
@@ -118,16 +123,16 @@
   padding-bottom: 0;
 }
 
-.dc-path-shell>h2.dc-spray:first-child + * {
+.dc-path-shell>h3.dc-spray:first-child + * {
   break-before: avoid;
 }
 
-.dc-path-shell>h2.dc-spray:first-child::before {
+.dc-path-shell>h3.dc-spray:first-child::before {
   background: var(--dc-path-title-bg);
   right: -5px;
 }
 
-.dc-path-shell>h2.dc-spray:first-child::after {
+.dc-path-shell>h3.dc-spray:first-child::after {
   content: '';
   position: absolute;
   left: 0;
@@ -259,12 +264,12 @@
      to make a fill feel "lifted from above". */
   background:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--row-color, var(--ink)) 92%, #fff 8%) 0%, /* PDF/X-1a: pre-composite to ~92% ink + 8% white; on --ink (#1a1512) → #2d2926; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      color-mix(in srgb, var(--row-color, var(--ink)) 92%, #fff 8%) 0%, /* PDF/X-1a: pre-composite to ~92% ink + 8% white; on --ink (#1a1512) → #2d2926 */
       var(--row-color, var(--ink)) 50%,
-      color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411; on Ingram submission replace with static opaque value in dc-tokens-print.css */
+      color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411 */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+    inset 0 1px 0 color-mix(in srgb, #fff 12%, var(--row-color, var(--ink))),
+    inset 0 -1px 0 color-mix(in srgb, #000 18%, var(--row-color, var(--ink)));
   /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
      to --ink because the fungi-glow fill is too light for cream text — was
      1.24:1) actually propagates to the chip element itself, not just to its
@@ -284,7 +289,7 @@
   font-weight: 400;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--dc-outcome-name-color);
+  color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink)));
   opacity: var(--dc-outcome-name-opacity);
   line-height: 1;
 }
@@ -326,8 +331,9 @@
    All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
    for 9px outcome-name and 12pt roll-number text.
 
-   The hit row uses --row-text-color override because fungi-glow is too
-   light to carry paper-cream text (1.13:1 fail). Bright row + dark text
+   The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
+   (below) because fungi-glow is too light to carry paper-cream text
+   (1.13:1 fail). Bright row + dark text
    preserves the bioluminescent signal while keeping labels press-legible. */
 .dc-outcome-row.crit {
   --row-color: var(--brand-magenta-deep);
@@ -395,36 +401,6 @@
   margin-top: 3px;
 }
 
-/* ───────── LUCID / SURREAL ROLL VARIANTS ───────── */
-.dc-roll-lucid,
-.dc-roll-surreal {
-  font-family: var(--font-tab);
-  font-size: 0.75em;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-/* --dc-roll-lucid-color (default --hud-blue-dark) */
-.dc-roll-lucid {
-  color: var(--dc-roll-lucid-color);
-}
-
-.dc-roll-lucid::before {
-  content: '◈ ';
-  opacity: 1;
-}
-
-/* --dc-roll-surreal-color (default --hud-magenta) */
-.dc-roll-surreal {
-  color: var(--dc-roll-surreal-color);
-}
-
-.dc-roll-surreal::before {
-  content: '∿ ';
-  opacity: 1;
-}
-
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
   background: var(--dc-pullquote-bg);
@@ -456,8 +432,7 @@
   left: 10px;
   font-family: var(--font-display);
   font-size: 48px;
-  color: var(--hud-magenta);
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));
   line-height: 1;
 }
 
@@ -532,8 +507,7 @@
 }
 
 /* Internal dashed divider — separates the heading area from body content */
-.dc-sidebar-box hr,
-.dc-sidebar-box .dc-sidebar-box-divider {
+.dc-sidebar-box hr {
   border: none;
   border-top: 1px dashed var(--dc-sidebar-box-accent);
   margin: 7.5pt 0;
@@ -778,151 +752,6 @@
   white-space: nowrap;
 }
 
-.dc-toc-row {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--hud-blue-dim);
-}
-
-.dc-toc .dc-toc-no {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: var(--hud-blue);
-  flex: 0 0 auto;
-  margin-right: 28px;
-  white-space: nowrap;
-}
-
-.dc-toc-title {
-  flex: 1 1 auto;
-  min-width: 0;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--ink);
-}
-
-.dc-toc-title small {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--fs-body-sm);
-  font-style: italic;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink-smoke);
-  margin-top: 2px;
-}
-
-.dc-toc-page {
-  flex: 0 0 auto;
-  margin-left: 18px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--hud-blue);
-  font-weight: 600;
-}
-
-.dc-toc-page::before {
-  content: '— ';
-  color: var(--ink-dust);
-  font-weight: 400;
-}
-
-/* Cover-style chapter opener */
-.dc-cover-page {
-  background: var(--hud-blue);
-  color: var(--paper-cream);
-  position: relative;
-  overflow: hidden;
-}
-
-.dc-cover-page .dc-cover-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 8% 10%, rgba(0, 0, 0, 0.55), transparent 62%),
-    radial-gradient(ellipse at 82% 88%, rgba(0, 0, 0, 0.30), transparent 55%),
-    radial-gradient(ellipse at 80% 18%, rgba(242, 77, 0, 0.14), transparent 50%),
-    radial-gradient(ellipse at 60% 55%, rgba(72, 164, 224, 0.16), transparent 60%),
-    var(--hud-blue);
-}
-
-.dc-cover-page .dc-cover-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-}
-
-/* HUD scanline overlay — horizontal lines at low opacity */
-.dc-cover-page .dc-cover-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(to bottom,
-      transparent,
-      transparent 3px,
-      rgba(0, 0, 0, 0.04) 3px,
-      rgba(0, 0, 0, 0.04) 4px);
-  pointer-events: none;
-}
-
-.dc-cover-page>* {
-  position: relative;
-  z-index: 1;
-}
-
-.dc-cover-num {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--hud-blue-dim);
-  margin-bottom: 18px;
-}
-
-.dc-cover-bigword {
-  font-family: var(--font-display);
-  /* Absolute, not vw: the cover word is sized against the sheet, and a
-     viewport unit in paged media has no stable meaning. */
-  font-size: 66pt;
-  line-height: 1.1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin: 0 0 16px;
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
-.dc-cover-strap {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 14pt;
-  line-height: 1.4;
-  color: var(--paper-cream);
-  max-width: 24ch;
-  margin: 0 0 28px;
-  padding-left: 12px;
-  border-left: 3px solid var(--hud-magenta);
-}
-
-.dc-cover-meta-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: auto;
-  padding-top: 24px;
-  border-top: 1px solid var(--dc-cover-meta-border);
-}
-
 .dc-stat.dc-flush,
 .dc-steps.dc-flush,
 .dc-outcomes.dc-flush,
@@ -930,28 +759,10 @@
   margin: 0;
 }
 
-/* Cover page layout override (flex column with more padding) */
-.dc-cover-layout {
-  display: flex;
-  flex-direction: column;
-  padding: 60px 56px;
-}
-
-/* Cover body text */
-.dc-cover-body {
-  font-family: var(--font-body);
-  font-size: var(--fs-body-xs);
-  line-height: 1.6;
-  color: var(--hud-blue-dim);
-  max-width: 46ch;
-  margin-bottom: auto;
-}
-
 /* When markdown wraps a list-item's text in a <p> (loose-list rendering),
    the paragraph's block display + margins push the text below the marker.
    Inline the paragraph so it flows directly after the bullet/number. */
-.dc-skill-card li>p:only-child,
-.dc-ability li>p:only-child {
+.dc-skill-card li>p:only-child {
   display: inline;
   margin: 0;
   padding: 0;
@@ -980,15 +791,6 @@
 /* `.two-column-list` (this tombstone + the base one below + both real
    rules in page-templates.css) is DELETED (2026-09-02) — 0 uses, 0
    emissions; see page-templates.css's note at its old location. */
-
-/* AP cell: prevent table-layout from over-allocating width to the cost
-   pill, which collapses the ability description column. */
-.dc-ability ol li strong:first-of-type {
-  width: 1%;
-  white-space: nowrap;
-  word-break: keep-all;
-  overflow-wrap: normal;
-}
 
 /* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
 p.dc-img-wrapper {

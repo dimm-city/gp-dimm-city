@@ -7,6 +7,153 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-08
+
+**Notes for books upgrading from 1.1.0:**
+
+- A learning-path banner is now an `h3` (was `h2`), and a skill's title an
+  `h4` (was a `span`). A book stylesheet that targets `h2.dc-spray` or
+  `span.dc-tab-title` needs the new tag.
+- Unused components were removed; check `docs/cleanup-backlog.md` and the
+  Removed list below before relying on any of them.
+- Tested against gutterpress 0.11.15-alpha.1, whose `dtrpg` preset now
+  does the DriveThruRPG blank last page and K-only black text.
+
+### Added
+
+- **Heading look classes `.dc-h3`–`.dc-h6`.** A heading keeps its outline
+  level and takes another level's look (`## Useful Items {.dc-h3}`), so a
+  book can stop skipping levels to get a smaller label: gutterpress flags
+  every skip. The section header bar and the in-section accent rule follow
+  the class, not the tag. On a paragraph, the class sets a line in
+  heading type outside the outline. The Field Guide's 13 skipped levels
+  are fixed this way and render pixel-identical. Documented in the
+  design guide's Typography chapter (Level and look).
+
+### Changed
+
+- **Tested against gutterpress 0.11.15-alpha.1** (devDependency, was
+  0.11.13), the release that upstreams this package's two DriveThruRPG
+  workarounds: `preset: dtrpg` now pads to a 4-page signature and always
+  ends on a blank reserved page (`print.reserveLastPage`,
+  dimm-city/gutterpress#332), and prints near-black text on the black plate
+  only in PDF/X builds (`pdfx.blackText: k-only`, dimm-city/gutterpress#331).
+  Verified on the Field Guide with the alpha: its 228 content pages render
+  pixel-identical to 0.11.13, and without any workaround the book ends on
+  4 pure-white pages (232). The design guide's Publishing chapter documents
+  both settings.
+- **Specialty chapters nest in the outline.** A learning path's title was
+  emitted as an `h2`, the same level as the specialty name, and a skill's
+  title as a plain `span`, so the app's contents panel and the PDF
+  bookmarks listed every skill tree beside its specialty and no skills at
+  all. The plugin now emits the heading levels the markdown is written
+  at: specialty (`##`) > learning path (`h3.dc-spray`) > skill
+  (`h4.dc-tab-title`). The CSS follows, and both books render
+  pixel-identical. A stylesheet that targeted `h2.dc-spray` or
+  `span.dc-tab-title` needs the new tag. A real space
+  (`span.dc-path-sep`, carrying the 10px gap the sticker's margin used to
+  give) separates a banner's tree code from its title, so the outline
+  reads "PRX1 Refuse Finality", not "PRX1Refuse Finality".
+
+### Fixed
+
+- **DriveThruRPG PDF/X builds keep live text.** The brick wall was an RGBA
+  tile blended with `background-blend-mode: multiply`, so every walled page
+  carried transparency, which PDF/X-1a cannot represent: Ghostscript
+  flattened each one to a raster image — no live text or embedded fonts
+  (a one-page book failed validation outright), and black text left
+  four-colour, because `pdfx.blackText: k-only` only reaches vector text.
+  The wall is now `images/brick-wall.png`, the same tile multiplied into
+  `--bg` and flattened to an opaque image, painted with no blend mode:
+  it renders the same (design guide wall pages differ by 0.15/255 on
+  average), and with gutterpress 0.11.15-alpha.1 a DriveThruRPG build's
+  body text now prints on the black plate only (separations: C = M = Y = 0
+  under every glyph). A book that retints `--bg` no longer tints the
+  brick; see the note in `dc-native.css` for baking a tile.
+- **Nothing in the package paints transparent.** The 25 other uses of
+  transparency — semi-transparent shadows, tinted fills, `opacity` on
+  stickers, rules, the tape dashes and the pull-quote mark — each flattened
+  their page in PDF/X-1a just as the wall did. Each is now pre-composited
+  with `color-mix()` onto the surface it sits on, so it prints the same
+  colour, opaque. Shadows on the wall mix against the new `--wall-tone`
+  (`#c1beb8`, the tile's measured mean). Measured on both books: layout and
+  page counts unchanged, and no page changes more than 0.7% of its pixels.
+  The AP chip loses its soft 6px blurred shadow, which has no opaque form,
+  and keeps its hard one. Every change, with where to look, is in
+  `docs/print-transparency-inventory.md`. A new convention test fails on
+  any transparency in the stylesheets, with no exemptions (the one
+  translucent holdout, the unused cover-page composite, was removed).
+
+- **No stray ink line across the folio row.** A skill card, learning-path
+  banner or specialty intro that opened a page printed the top 2–4px of its
+  outline at the foot of the PREVIOUS page: a full-width black (or accent)
+  line between the folio and chapter chips. The outlines reached above
+  their component's box (`top: -4px`, `translateY(-2px)`), and Chromium
+  fragments that part onto the page before. Each outline now sits inside
+  its own box: the card starts 4px higher and pads its tab 4px down
+  (`padding-top: 4px; margin-top: -4px`), the banner 2px likewise, and
+  the intro pads its content 2px. Mid-page nothing moves; a component that
+  opens a page sits 2–4px lower. Measured: the line is gone from all 17 Field Guide pages and
+  the 1 design guide page that had it; page counts are unchanged (232, 132) and
+  no text changes page. (It became visible with 1.1.0's DriveThruRPG
+  margins, which moved the page breaks; the cause dates from 1.0.0.)
+
+- **Accent rails print as vectors in PDF/X.** The 3–5px coloured rail down
+  the left of sections, ledes, path banners, the Panel and Shard blocks,
+  and the front-matter and intro panels was a hard-stop
+  `linear-gradient`. The PDF/X conversion turned each gradient into a
+  45 ppi bitmap, so the rail's edge printed soft, and
+  `gutterpress preflight` flagged the pages as low-resolution. Each rail
+  is now an inset `box-shadow` over a flat fill: it looks the same and
+  prints as a vector.
+- **Design guide: preflight checks the right page size.** Its manifest
+  declared 612 × 792 pt (the bare Letter trim), so `gutterpress preflight`
+  failed every build on page size. It now declares the sheet the CSS
+  prints: 621 × 810 pt, the trim plus DriveThruRPG's bleed.
+
+- **`.gp-columns-flow` works.** Core declares it in its own layer, which
+  this package's `column-fill: balance` on every `.gp-columns-2/-3`
+  outranked, so a run marked to flow stayed balanced. The balance rule now
+  skips runs marked `.gp-columns-flow`.
+
+- **Catalog statuses.** `plain`, `img-float`, `full-page` and
+  `printer-page` were marked `unused` although a book uses each: the
+  design guide renders the first two, SysOps uses `full-page`, and the
+  Field Guide still ends on `@page .dc-printer-page` until it builds on a
+  stable gutterpress 0.11.15. They are `live` now.
+### Removed
+
+- `images/brick-bg-01.png`, the RGBA wall tile, is no longer published
+  (it now lives in the repository's `source-art/`). Neither Dimm City book
+  referenced it; a book that did should use `images/brick-wall.png`.
+- **Dead styling, from an orphan audit of the package, the design guide and
+  the Field Guide.** Each item was used by no book (Field Guide, Design
+  Guide, SysOps), and both books render pixel-identical without it:
+  - components: the cover-page composite (`.dc-cover-*`, with
+    `--dc-cover-meta-border`), the contents-page rows (`.dc-toc-row/-no/
+    -title/-page`), `.dc-portrait` (with `--dc-portrait-*`), the roll badges
+    `.dc-roll-lucid/-surreal` (with their colour tokens), `.dc-path-subtitle`,
+    the glossary item `.dc-terms .dc-item` (with `--card-border-color`),
+    `.dc-dashed-rule`, `.dc-tape.dc-margin-sm`, `.dc-sidebar-box-divider`,
+    `.dc-outcome-table` and `.dc-callout`. Their catalog entries are now
+    `retired`.
+  - rules for markup the plugin no longer produces: `.dc-sticker.active`,
+    the `ol`/`li` rules under `.dc-ability` (abilities are no longer
+    lists), and `h5` and `ol > li` inside a two-column skill card (both
+    are converted before they get there).
+  - stale comments naming deleted files or classes (`dc-tokens-print.css`,
+    `components.css`, `tokens.css`, the `.pmd-*` utilities, `.dc-accent-X`,
+    old design-guide chapter names, undeclared tokens).
+  Styling the audit found unused but still reachable is listed in
+  `docs/cleanup-backlog.md` for review.
+
+### Deprecated
+
+- **`@page .dc-printer-page`.** gutterpress 0.11.15+ reserves the blank
+  last page in core. The class still works — a book that keeps it gets one
+  printer page plus padding, still ending blank — and goes in the next
+  major.
+
 ## [1.1.0] - 2026-10-07
 
 **Layout note for books upgrading from 1.0.x:** the page margins now follow

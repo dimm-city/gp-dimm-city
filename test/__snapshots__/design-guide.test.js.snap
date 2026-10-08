@@ -382,9 +382,26 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <h3>Sub-section Label</h3>
 <h4>Item Heading</h4>
 </div>
+<h2>Level and look</h2>
+<p>A heading’s level is its place in the outline, and the outline never skips a level: <code>#</code> is followed by <code>##</code>, never <code>###</code>. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with <code>.dc-h3</code>, <code>.dc-h4</code>, <code>.dc-h5</code> or <code>.dc-h6</code>:</p>
+<pre><code data-source-range="65:74" class="language-markdown"># Cybernetics, Weapons, and Gear
+
+## Useful Items {.dc-h3}
+
+### Base Reality {.dc-h4}
+
+#### Dreamer {.dc-h5}
+</code></pre>
+<p class="dg-result">Result</p>
+<div class="dg-stage">
+<h2 class="dc-h3">Useful Items</h2>
+<h3 class="dc-h4">Base Reality</h3>
+<h4 class="dc-h5">Dreamer</h4>
+</div>
+<p>The look follows the class everywhere: an <code>##</code> with <code>.dc-h3</code> that opens a section takes the subordinate section bar, and a <code>###</code> with <code>.dc-h4</code> inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.</p>
 <h2>Heading chrome</h2>
 <p>Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; <code>.dc-no-top</code> pulls it tight against whatever is above it.</p>
-<pre><code data-source-range="65:72" class="language-markdown"># Augmerc {.dc-chevron}
+<pre><code data-source-range="93:100" class="language-markdown"># Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
 
@@ -392,7 +409,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-banner-demo" data-source-range="77:78"><h1 class="dc-chevron">Augmerc</h1>
+<div class="section dc-banner-demo" data-source-range="105:106"><h1 class="dc-chevron">Augmerc</h1>
 <h2 class="dc-spray">Biting Distance</h2>
 <h3 class="dc-spec-tweak dc-no-top">Spec Tweak: Wired to Kill</h3>
 </div></div>
@@ -400,14 +417,14 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
 <div class="dc-flavor">
-<p data-source-range="95:97">See an opening, ya take it. Best time to hit 'em is when they think it's over.</p>
+<p data-source-range="123:125">See an opening, ya take it. Best time to hit 'em is when they think it's over.</p>
 </div>
 </div>
 <p>Flavor keeps the body size and switches to italic and <code>--ink-smoke</code>. Never set flavor in bold italic — it reads as urgency, not voice.</p>
 <p class="dg-dont-label">Don’t</p>
 <div class="dg-stage dg-dont">
 <div class="dc-flavor">
-<p data-source-range="106:108"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it's over.</strong></em></p>
+<p data-source-range="134:136"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it's over.</strong></em></p>
 </div>
 </div>
 <p><strong>Column-safe headings:</strong> in a two-column layout use <code>###</code> and <code>####</code>. <code>#</code> and <code>##</code> at full print size exceed a 3.5-inch column.</p>
@@ -415,35 +432,35 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The renderer converts ASCII shortcuts as you type: <code>--</code> is an en dash --, <code>---</code> an em dash —, <code>...</code> an ellipsis …, and “straight quotes” curl. No special syntax, no Unicode entry.</p>
 <h2>Font tokens</h2>
 <table>
-<thead data-source-range="119:120">
-<tr data-source-range="119:120">
+<thead data-source-range="147:148">
+<tr data-source-range="147:148">
 <th>Token</th>
 <th>Face</th>
 <th>Used for</th>
 </tr>
 </thead>
-<tbody data-source-range="121:126">
-<tr data-source-range="121:122">
+<tbody data-source-range="149:154">
+<tr data-source-range="149:150">
 <td><code>--font-display</code></td>
 <td>lixdu</td>
 <td>H1–H3, banners</td>
 </tr>
-<tr data-source-range="122:123">
+<tr data-source-range="150:151">
 <td><code>--font-body</code></td>
 <td>Titillium Web</td>
 <td>Body prose, flavor, quotes</td>
 </tr>
-<tr data-source-range="123:124">
+<tr data-source-range="151:152">
 <td><code>--font-mono</code></td>
 <td>Tomorrow</td>
 <td>Code, counters, tabular data</td>
 </tr>
-<tr data-source-range="124:125">
+<tr data-source-range="152:153">
 <td><code>--font-tab</code></td>
 <td>Tomorrow</td>
 <td>Short label text: card tabs, stat labels</td>
 </tr>
-<tr data-source-range="125:126">
+<tr data-source-range="153:154">
 <td><code>--font-quote</code></td>
 <td>Titillium Web</td>
 <td>Italic quotes and attributions</td>
@@ -550,9 +567,10 @@ Right column.
 <div class="gp-column-break" aria-hidden="true" data-source-range="35:36"></div>
 <p>Right column.</p>
 </div></div>
+<p>The package balances a run’s columns, so a short run ends level. A run that carries on over more than one page takes core’s <code>.gp-columns-flow</code> as well (<code>@page .gp-columns-2 .gp-columns-flow</code>): each page’s first column then fills before the second starts. Gutterpress names the runs that need it when it builds.</p>
 <h2>The column panel</h2>
 <p>Add <code>.dc-column-panel</code> and the run sits in a card: substrate, top and bottom rules, and the leading <code>##</code> or <code>###</code> becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.</p>
-<pre><code data-source-range="47:60" class="language-markdown">@section .gp-columns-2 .dc-column-panel
+<pre><code data-source-range="49:62" class="language-markdown">@section .gp-columns-2 .dc-column-panel
 
 ## The City
 
@@ -566,14 +584,14 @@ Nothing here is safe. Nothing here is free.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section gp-columns-2 dc-column-panel" data-source-range="65:66"><h2>The City</h2>
+<div class="section gp-columns-2 dc-column-panel" data-source-range="67:68"><h2>The City</h2>
 <p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="71:72"></div>
+<div class="gp-column-break" aria-hidden="true" data-source-range="73:74"></div>
 <p>Nothing here is safe. Nothing here is free.</p>
 </div></div>
 <h2>Tabbed section</h2>
 <p><code>.dc-tabbed</code> hangs the section’s heading as a tab off the panel edge — a strong break between consecutive topics on one page.</p>
-<pre><code data-source-range="83:92" class="language-markdown">@section .dc-tabbed
+<pre><code data-source-range="85:94" class="language-markdown">@section .dc-tabbed
 
 ## Dreamers
 
@@ -583,12 +601,12 @@ You're a Dreamer, not because you're special, but because you're reckless enough
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-tabbed" data-source-range="97:98"><h2>Dreamers</h2>
+<div class="section dc-tabbed" data-source-range="99:100"><h2>Dreamers</h2>
 <p>You’re a Dreamer, not because you’re special, but because you’re reckless enough to try.</p>
 </div></div>
 <h2>Sidebar</h2>
 <p><code>@sidebar</code> floats a reference panel to the right at 38% width; body text wraps on its left. Give it running prose on both sides so it never strands in white space.</p>
-<pre><code data-source-range="111:124" class="language-markdown">When the Dreamers push past Too Far, the table starts asking how movement works.
+<pre><code data-source-range="113:126" class="language-markdown">When the Dreamers push past Too Far, the table starts asking how movement works.
 
 @sidebar
 
@@ -611,7 +629,7 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 </div>
 <h3>Inset sidebar</h3>
 <p><code>@sidebar .inset</code> is a full-height rail pinned to the page’s edge. It needs the <code>@page .page-sidebar</code> template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.</p>
-<pre><code data-source-range="147:164" class="language-markdown">@page .page-sidebar
+<pre><code data-source-range="149:166" class="language-markdown">@page .page-sidebar
 
 @section
 
@@ -628,15 +646,15 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 @end-sidebar
 </code></pre>
 <p class="dg-next">The inset rail needs a page of its own, so the rendered page is the next page.</p>
-</div><div class="page page-sidebar chapter-4" data-source-range="167:168"><div class="section" data-source-range="169:170"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
+</div><div class="page page-sidebar chapter-4" data-source-range="169:170"><div class="section" data-source-range="171:172"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
 <p>That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.</p>
 </div><div class="dc-sidebar inset">
 <h3>Free, Not Costless</h3>
 <p>One out-of-turn ability per round is <em>free to trigger</em> — but it still spends its listed AP. Each additional out-of-turn use that round costs <strong>+1 AP</strong> on top.</p>
 </div>
-</div><div class="page dg-doc chapter-4" data-source-range="185:186"><h2>Floated images</h2>
+</div><div class="page dg-doc chapter-4" data-source-range="187:188"><h2>Floated images</h2>
 <p>An image on its own line is a figure. <code>.dc-img-float-right</code> or <code>.dc-img-float-left</code> floats it at 44% of the column with text wrapping around it; leave a blank line after the paragraph that should clear it.</p>
-<pre><code data-source-range="191:196" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
+<pre><code data-source-range="193:198" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
 
 Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </code></pre>
@@ -650,26 +668,26 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 <h2>Break control</h2>
 <p>Components keep themselves whole by default: a card, a callout, a section will move to the next page rather than split. Two classes adjust that, and a third forces a break.</p>
 <table>
-<thead data-source-range="215:216">
-<tr data-source-range="215:216">
+<thead data-source-range="217:218">
+<tr data-source-range="217:218">
 <th>You write</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="217:221">
-<tr data-source-range="217:218">
+<tbody data-source-range="219:223">
+<tr data-source-range="219:220">
 <td><code>@section .gp-no-break</code></td>
 <td>Never split this section across pages</td>
 </tr>
-<tr data-source-range="218:219">
+<tr data-source-range="220:221">
 <td><code>@skill {.dc-allow-split}</code> or <code>@section .dc-allow-split</code></td>
 <td>Allow this one tall element to split instead of leaving a page mostly empty</td>
 </tr>
-<tr data-source-range="219:220">
+<tr data-source-range="221:222">
 <td><code>## Heading {.gp-break-before}</code></td>
 <td>Start a new page before this element</td>
 </tr>
-<tr data-source-range="220:221">
+<tr data-source-range="222:223">
 <td><code>@page-break</code></td>
 <td>Start a new page here</td>
 </tr>
@@ -1586,14 +1604,14 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 <div class="dc-specialty augmerc">
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span></div>
 <p><strong>Backbiter Spines:</strong> Reactive spine rigs in the forearms and shins. Spend an action defending and the rig braces, resisting 2 damage from melee and dealing 1 to everything in reach.</p>
 </div>
 <div class="dc-skill-card" name="punishing-counter" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Punishing Counter</span>
+    <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
   </div>
   <div class="dc-card-body">
@@ -1611,7 +1629,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 </div></div></div>
 <div class="dc-skill-card" name="rage-hit" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Rage Hit</span>
+    <h4 class="dc-tab-title">Rage Hit</h4>
     <span class="dc-tab-tier">AUG1.2</span>
   </div>
   <div class="dc-card-body">
@@ -1658,7 +1676,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dirty Work</span>
+    <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
   </div>
   <div class="dc-card-body">
@@ -1723,7 +1741,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card dc-highlight" name="apex-physiology" data-break-inside="avoid">
   <div class="dc-card-tab dc-highlight">
-    <span class="dc-tab-title">Apex Physiology</span>
+    <h4 class="dc-tab-title">Apex Physiology</h4>
     <span class="dc-tab-tier">AUG4.1</span>
   </div>
   <div class="dc-card-body dc-highlight-body">
@@ -1741,7 +1759,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 <div class="dc-skill-card dc-two-col" name="boost-morale" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Boost Morale</span>
+    <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
   </div>
   <div class="dc-card-body">
@@ -1796,7 +1814,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="pain-compliance" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Pain Compliance</span>
+    <h4 class="dc-tab-title">Pain Compliance</h4>
     <span class="dc-tab-tier">AUG1.4</span>
   </div>
   <div class="dc-card-body">
@@ -1855,7 +1873,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="spit-flame" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Spit Flame</span>
+    <h4 class="dc-tab-title">Spit Flame</h4>
     <span class="dc-tab-tier">AUG2.1</span>
   </div>
   <div class="dc-card-body">
@@ -1897,13 +1915,13 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty gutterdruid">
 <div class="dc-learning-path dc-path-block" data-path-ref="GDR1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">GDR1</span>Beastmode</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span><span class="dc-path-sep"> </span>Beastmode</h3>
 <div class="dc-intro">Some adapt and overcome. You mutate and dominate.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span></div>
 </div>
 <div class="dc-skill-card" name="feralmorph" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Feralmorph</span>
+    <h4 class="dc-tab-title">Feralmorph</h4>
     <span class="dc-tab-tier">GDR1.1</span>
   </div>
   <div class="dc-card-body">
@@ -1920,13 +1938,13 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty dualist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Split Discipline</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Split Discipline</h3>
 <div class="dc-intro">Two crafts, one body. You never fully belong to either — and that’s the edge.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Crossover Stance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Reflex</span></div>
 </div>
 <div class="dc-skill-card" name="crossover-stance" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Crossover Stance</span>
+    <h4 class="dc-tab-title">Crossover Stance</h4>
     <span class="dc-tab-tier">PATH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -1943,13 +1961,13 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty generalist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Jack of the Sprawl</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Jack of the Sprawl</h3>
 <div class="dc-intro">Master of none, ready for anything.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Field Improvisation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Adaptive Loadout</span></div>
 </div>
 <div class="dc-skill-card" name="field-improvisation" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Field Improvisation</span>
+    <h4 class="dc-tab-title">Field Improvisation</h4>
     <span class="dc-tab-tier">PATH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2098,7 +2116,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <tr data-source-range="44:45">
 <td><code>@page .dc-printer-page</code></td>
 <td>none</td>
-<td>The book’s last page: completely blank (no wall, no footer), the page DriveThruRPG reserves for printer information. Pair it with <code>print: signature: 4</code> in <code>manifest.yaml</code></td>
+<td><strong>Deprecated.</strong> A completely blank last page for DriveThruRPG’s printer information. gutterpress 0.11.15+ reserves that page itself with <code>preset: dtrpg</code> (see <a href="#ch-publishing" data-gp-source-token="[Publishing](#ch-publishing)" data-gp-source-occurrence="0">Publishing</a>); still works, but no longer needed</td>
 </tr>
 </tbody>
 </table>
@@ -2354,47 +2372,68 @@ gutterpress build my-book --format pdfx --pdfx-flavor x1a --icc CGATS21_CRPC1.ic
 # Static site
 gutterpress build my-book --format html --out ./dist/site
 </code></pre>
+<h2>DriveThruRPG</h2>
+<p>The package’s page geometry follows DriveThruRPG’s print specification: 0.125 in bleed on the three outside edges, all text 0.5 in inside the trim (<a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>). With gutterpress 0.11.15 or later, <code>preset: dtrpg</code> covers the rest:</p>
+<table>
+<thead data-source-range="42:43">
+<tr data-source-range="42:43">
+<th>Setting (preset default)</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody data-source-range="44:46">
+<tr data-source-range="44:45">
+<td><code>print: { signature: 4, reserveLastPage: true }</code></td>
+<td>Pads the interior to DriveThruRPG’s 4-page signature and always ends on a completely blank page — the page reserved for printer information. The build log’s page count is the number to enter in the cover Template Generator.</td>
+</tr>
+<tr data-source-range="45:46">
+<td><code>pdfx.blackText: k-only</code></td>
+<td>In a <code>--format pdfx</code> build, near-black text (the book’s ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black.</td>
+</tr>
+</tbody>
+</table>
+<p><code>@page .dc-printer-page</code>, which did the reserved last page before gutterpress could, is no longer needed: drop it from the last chapter.</p>
 <h2>Flags</h2>
 <table>
-<thead data-source-range="40:41">
-<tr data-source-range="40:41">
+<thead data-source-range="51:52">
+<tr data-source-range="51:52">
 <th>Flag</th>
 <th>Commands</th>
 <th>Purpose</th>
 </tr>
 </thead>
-<tbody data-source-range="42:49">
-<tr data-source-range="42:43">
+<tbody data-source-range="53:60">
+<tr data-source-range="53:54">
 <td><code>--port N</code></td>
 <td>preview</td>
 <td>Port to listen on (default 3579)</td>
 </tr>
-<tr data-source-range="43:44">
+<tr data-source-range="54:55">
 <td><code>--open</code></td>
 <td>preview</td>
 <td>Open the browser</td>
 </tr>
-<tr data-source-range="44:45">
+<tr data-source-range="55:56">
 <td><code>--format</code></td>
 <td>build</td>
 <td><code>html</code>, <code>pdf</code> (default), or <code>pdfx</code></td>
 </tr>
-<tr data-source-range="45:46">
+<tr data-source-range="56:57">
 <td><code>--out</code></td>
 <td>build</td>
 <td>Output directory, or a <code>.pdf</code> path for <code>pdf</code> / <code>pdfx</code></td>
 </tr>
-<tr data-source-range="46:47">
+<tr data-source-range="57:58">
 <td><code>--pdfx-flavor</code></td>
 <td>build</td>
 <td><code>x1a</code> or <code>x3</code>, with <code>--format pdfx</code></td>
 </tr>
-<tr data-source-range="47:48">
+<tr data-source-range="58:59">
 <td><code>--icc</code></td>
 <td>build</td>
 <td>ICC profile; falls back to the manifest’s <code>pdfx.icc</code>, then the embedded profile</td>
 </tr>
-<tr data-source-range="48:49">
+<tr data-source-range="59:60">
 <td><code>--category</code></td>
 <td>validate</td>
 <td><code>source</code>, <code>pdf</code>, <code>asset</code>, or <code>heuristic</code></td>
@@ -2403,7 +2442,7 @@ gutterpress build my-book --format html --out ./dist/site
 </table>
 <h2>Keeping the package current</h2>
 <p>A book pins an exact package version and builds from the copy vendored under <code>plugins/npm/</code>. To see whether a newer version exists and move to it:</p>
-<pre><code data-source-range="54:58" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
+<pre><code data-source-range="65:69" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
 <p>Commit the manifest and <code>plugins/npm/</code> together. The Gutterpress app does the same under Project settings → Features.</p>
@@ -2726,7 +2765,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="93:117">
+<tbody data-source-range="93:116">
 <tr data-source-range="93:94">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code> <code>--dc-section-tab-indent</code> <code>--dc-section-tab-overlap</code></td>
@@ -2819,10 +2858,6 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
 </tr>
-<tr data-source-range="116:117">
-<td>Portrait</td>
-<td><code>--dc-portrait-border</code> <code>--dc-portrait-surface</code></td>
-</tr>
 </tbody>
 </table>
 <p>The brand tokens — <code>--crimson</code>, <code>--orange</code>, <code>--rust</code>, <code>--amber</code>, <code>--blood</code>, <code>--hud-blue</code>, <code>--hud-magenta</code>, <code>--paper-cream</code>, <code>--paper-aged</code>, <code>--ink</code>, <code>--ink-smoke</code>, <code>--bg</code>, and the <code>--font-*</code> family — are in <a href="#ch-palette" data-gp-source-token="[Color](#ch-palette)" data-gp-source-occurrence="0">Color</a> and <a href="#ch-typography" data-gp-source-token="[Typography](#ch-typography)" data-gp-source-occurrence="0">Typography</a>. The machine-readable catalog of every component, with the DOM it emits and the sheet that owns it, is the package’s <code>components.yaml</code>.</p>
@@ -2840,13 +2875,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Dirty Work</span></div>
 </div>
 <div class="dc-skill-card" name="punishing-counter" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Punishing Counter</span>
+    <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2865,13 +2900,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty proxy">
 <div class="dc-learning-path dc-path-block" data-path-ref="PRX1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">PRX1</span>Refuse Finality</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Refuse Finality</h3>
 <div class="dc-intro">Nothing ends while you are still standing.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Zeal Stitch</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Mercy</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Redline Rhythm</span></div>
 </div>
 <div class="dc-skill-card" name="zeal-stitch" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Zeal Stitch</span>
+    <h4 class="dc-tab-title">Zeal Stitch</h4>
     <span class="dc-tab-tier">PRX1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2890,13 +2925,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty streetwarden">
 <div class="dc-learning-path dc-path-block" data-path-ref="STW1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">STW1</span>Streetwise</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">STW1</span><span class="dc-path-sep"> </span>Streetwise</h3>
 <div class="dc-intro">The more you know the less you carry.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Gut Sense</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Quick Fix</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stealth Camp Shroud</span></div>
 </div>
 <div class="dc-skill-card" name="gut-sense" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Gut Sense</span>
+    <h4 class="dc-tab-title">Gut Sense</h4>
     <span class="dc-tab-tier">STW1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2915,13 +2950,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty gutterdruid">
 <div class="dc-learning-path dc-path-block" data-path-ref="GDR1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">GDR1</span>Beastmode</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span><span class="dc-path-sep"> </span>Beastmode</h3>
 <div class="dc-intro">Some adapt and overcome.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Adaptive Mutation</span></div>
 </div>
 <div class="dc-skill-card" name="feralmorph" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Feralmorph</span>
+    <h4 class="dc-tab-title">Feralmorph</h4>
     <span class="dc-tab-tier">GDR1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2940,13 +2975,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty cybersurgeon">
 <div class="dc-learning-path dc-path-block" data-path-ref="CBS1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">CBS1</span>Trauma Economy</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">CBS1</span><span class="dc-path-sep"> </span>Trauma Economy</h3>
 <div class="dc-intro">Doctors are sworn to heal the sick but I require a 2000 cred downpayment to uphold my oath.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Peep and Patch</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Medicated Calm</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Triage Rig</span></div>
 </div>
 <div class="dc-skill-card" name="peep-and-patch" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Peep and Patch</span>
+    <h4 class="dc-tab-title">Peep and Patch</h4>
     <span class="dc-tab-tier">CBS1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2965,13 +3000,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty wirephreak">
 <div class="dc-learning-path dc-path-block" data-path-ref="WPH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">WPH1</span>Professional Courtesy</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">WPH1</span><span class="dc-path-sep"> </span>Professional Courtesy</h3>
 <div class="dc-intro">Every contract should end clean.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Dead or Alive</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Killer Instinct</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Hemorrhage</span></div>
 </div>
 <div class="dc-skill-card" name="dead-or-alive" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dead or Alive</span>
+    <h4 class="dc-tab-title">Dead or Alive</h4>
     <span class="dc-tab-tier">WPH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -2990,13 +3025,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty technosorcerer">
 <div class="dc-learning-path dc-path-block" data-path-ref="TNS1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">TNS1</span>Prestidigitalization</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">TNS1</span><span class="dc-path-sep"> </span>Prestidigitalization</h3>
 <div class="dc-intro">Reality doesn’t have to change. You just have to sell the alternative.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Practical Power</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Digital Chameleon</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Override</span></div>
 </div>
 <div class="dc-skill-card" name="practical-power" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Practical Power</span>
+    <h4 class="dc-tab-title">Practical Power</h4>
     <span class="dc-tab-tier">TNS1.1</span>
   </div>
   <div class="dc-card-body">
@@ -3015,13 +3050,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty etherlock">
 <div class="dc-learning-path dc-path-block" data-path-ref="ETH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">ETH1</span>Mutanthurgy</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">ETH1</span><span class="dc-path-sep"> </span>Mutanthurgy</h3>
 <div class="dc-intro">Matter, momentum, gravity, flesh. None of them are laws. They’re habits. Break them all.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Rubber Soul</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Skyhook</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stolen Momentum</span></div>
 </div>
 <div class="dc-skill-card" name="rubber-soul" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Rubber Soul</span>
+    <h4 class="dc-tab-title">Rubber Soul</h4>
     <span class="dc-tab-tier">ETH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -3040,13 +3075,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty dualist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Split Discipline</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Split Discipline</h3>
 <div class="dc-intro">Two crafts, one body. You never fully belong to either — and that’s the edge.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Crossover Stance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Reflex</span></div>
 </div>
 <div class="dc-skill-card" name="crossover-stance" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Crossover Stance</span>
+    <h4 class="dc-tab-title">Crossover Stance</h4>
     <span class="dc-tab-tier">PATH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -3065,13 +3100,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty generalist">
 <div class="dc-learning-path dc-path-block" data-path-ref="PATH1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">PATH1</span>Jack of the Sprawl</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">PATH1</span><span class="dc-path-sep"> </span>Jack of the Sprawl</h3>
 <div class="dc-intro">Master of none, ready for anything.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Field Improvisation</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Adaptive Loadout</span></div>
 </div>
 <div class="dc-skill-card" name="field-improvisation" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Field Improvisation</span>
+    <h4 class="dc-tab-title">Field Improvisation</h4>
     <span class="dc-tab-tier">PATH1.1</span>
   </div>
   <div class="dc-card-body">
@@ -3093,7 +3128,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dirty Work</span>
+    <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier"></span>
   </div>
   <div class="dc-card-body">
@@ -3112,7 +3147,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dirty Work</span>
+    <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
   </div>
   <div class="dc-card-body">
@@ -3131,7 +3166,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="apex-physiology" data-break-inside="avoid">
   <div class="dc-card-tab dc-highlight">
-    <span class="dc-tab-title">Apex Physiology</span>
+    <h4 class="dc-tab-title">Apex Physiology</h4>
     <span class="dc-tab-tier">AUG4.1</span>
   </div>
   <div class="dc-card-body dc-highlight-body">
@@ -3154,7 +3189,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card dc-highlight" name="apex-physiology" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Apex Physiology</span>
+    <h4 class="dc-tab-title">Apex Physiology</h4>
     <span class="dc-tab-tier">AUG4.1</span>
   </div>
   <div class="dc-card-body">
@@ -3177,7 +3212,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card dc-two-col" name="boost-morale" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Boost Morale</span>
+    <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
   </div>
   <div class="dc-card-body">
@@ -3209,7 +3244,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="spit-flame" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Spit Flame</span>
+    <h4 class="dc-tab-title">Spit Flame</h4>
     <span class="dc-tab-tier">AUG2.1</span>
   </div>
   <div class="dc-card-body">
@@ -3251,7 +3286,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc">
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dirty Work</span>
+    <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
   </div>
   <div class="dc-card-body">
@@ -3275,7 +3310,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty proxy">
 <div class="dc-skill-card" name="borrowed-mercy" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Borrowed Mercy</span>
+    <h4 class="dc-tab-title">Borrowed Mercy</h4>
     <span class="dc-tab-tier"></span>
   </div>
   <div class="dc-card-body">
@@ -4163,7 +4198,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
-<h2 class="dc-spray"><span class="dc-path-sticker">AUG1</span>Biting Distance</h2>
+<h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">3</span>Dirty Work</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">4</span>Pain Compliance</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">5</span>It's Personal</span></div>
 <p><strong>Backbiter Spines:</strong> Anyone who walks the Biting Distance path installs reactive spine rigs in the forearms, shins, or wherever their street doc could wedge the hardware. Beneath the skin sits a row of hungry metal waiting for contact.</p>
@@ -4171,7 +4206,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <div class="dc-skill-card" name="punishing-counter" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Punishing Counter</span>
+    <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
   </div>
   <div class="dc-card-body">
@@ -4194,7 +4229,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div></div></div>
 <div class="dc-skill-card" name="rage-hit" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Rage Hit</span>
+    <h4 class="dc-tab-title">Rage Hit</h4>
     <span class="dc-tab-tier">AUG1.2</span>
   </div>
   <div class="dc-card-body">
@@ -4236,7 +4271,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div></div></div>
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Dirty Work</span>
+    <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
   </div>
   <div class="dc-card-body">
@@ -4284,7 +4319,7 @@ Never fight clean. Fight to finish.</p>
 </div></div></div>
 <div class="dc-skill-card" name="pain-compliance" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">Pain Compliance</span>
+    <h4 class="dc-tab-title">Pain Compliance</h4>
     <span class="dc-tab-tier">AUG1.4</span>
   </div>
   <div class="dc-card-body">
@@ -4307,7 +4342,7 @@ Never fight clean. Fight to finish.</p>
 </div></div></div>
 <div class="dc-skill-card" name="it-s-personal" data-break-inside="avoid">
   <div class="dc-card-tab">
-    <span class="dc-tab-title">It's Personal</span>
+    <h4 class="dc-tab-title">It's Personal</h4>
     <span class="dc-tab-tier">AUG1.5</span>
   </div>
   <div class="dc-card-body">

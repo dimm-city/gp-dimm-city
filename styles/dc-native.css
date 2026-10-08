@@ -35,11 +35,24 @@
    the old `html { background }` content-area layer, the 14 hand-fed empty
    margin boxes, and §4's six refills — 21 tiling origins became one, so the
    wall is seamless: no phase break at a box edge, and no flat --bg patch in
-   the bottom band beside the chips. */
+   the bottom band beside the chips.
+
+   The image is OPAQUE: brick-wall.png is brick-bg-01.png multiplied into
+   --bg (#c8c5bf) and flattened, which is what `background-blend-mode:
+   multiply` used to do at render time. The old RGBA tile made every page
+   transparent, and PDF/X-1a cannot carry transparency: Ghostscript
+   flattened EVERY walled page to a raster image in a DriveThruRPG build —
+   no live text, no embedded fonts, and black text left four-colour, since
+   gutterpress's `pdfx.blackText: k-only` rewrite only reaches vector text.
+   --bg stays as the fill under the tile, but a book that retints --bg no
+   longer tints the brick with it. To bake a tile for another colour, take
+   the RGBA source (source-art/brick-bg-01.png in the repository; it is not
+   published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
+   src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
+   of the new --bg. */
 @page {
-  background: var(--bg) url("../images/brick-bg-01.png") repeat;
+  background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
-  background-blend-mode: multiply;
 }
 
 /* The printer page (page-rules.css) carries no wall: DriveThruRPG wants
@@ -229,7 +242,7 @@
      Introduction. The shadow keeps its side offset and loses the drop; the
      colophon's foot sits under the pinned plate in any case. (Clipping the
      page instead would also clip a pinned or bleed plate on it.) */
-  box-shadow: 2pt 0 0 rgba(0, 0, 0, 0.28);
+  box-shadow: 2pt 0 0 color-mix(in srgb, #000 28%, var(--wall-tone));
 }
 /* The masthead escapes the padding back to the sheet edges — visible paint
    inside the full-width content box. `margin-top: 0` is deliberate: a
@@ -292,9 +305,13 @@ figure {
    p.83, p.111). Measured against the change, under gutterpress 0.11.13:
    the Field Guide's 221 pages render pixel-identical with `balance`, and
    the design guide loses 6 pages of holes. A run that genuinely needs
-   sequential fill opts in with core's `.gp-columns-flow`. */
-.gp-columns-2,
-.gp-columns-3 {
+   sequential fill opts in with core's `.gp-columns-flow`.
+
+   `:not(.gp-columns-flow)` is what makes that opt-in work: core declares
+   `.gp-columns-flow { column-fill: auto }` in its own layer, which every
+   extension layer outranks, so this rule used to win and the class did
+   nothing. `:where()` keeps the specificity at one class. */
+:where(.gp-columns-2, .gp-columns-3):not(.gp-columns-flow) {
   column-fill: balance;
 }
 /* The per-shape exceptions that used to follow — `.dc-citizen-walkthrough
@@ -327,8 +344,7 @@ figure {
    the box's first child to the box start moves the whole start (and, via
    §11, the heading) to the next page. break-inside: avoid is NOT usable
    here: these callouts routinely run taller than a page. */
-.dc-dm-note > :first-child,
-.dc-callout > :first-child {
+.dc-dm-note > :first-child {
   break-before: avoid;
 }
 

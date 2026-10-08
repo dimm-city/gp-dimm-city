@@ -1565,10 +1565,9 @@ export default function dimmCityPlugin(md, options = {}) {
       }
 
       // Removed 2026-05-17: @two-column / @three-column / @no-break.
-      // Use @section .gp-columns-2 / @section .gp-columns-3 / @section .pmd-no-break
-      // instead — markers.js emits identical layout semantics, with the
-      // added `.section` class that picks up `break-inside: avoid` from MARKER_CSS.
-      // See docs/migrations/2026-05-removing-container-syntax.md for the rationale.
+      // Use @section .gp-columns-2 / @section .gp-columns-3 instead — markers.js
+      // emits identical layout semantics, with the added `.section` class that
+      // picks up `break-inside: avoid` from MARKER_CSS.
 
       // --- @gear / @end-gear ---
       // Shorthand for @card .dc-gear — emits a bare `.dc-card.dc-gear`.
@@ -1753,12 +1752,17 @@ export default function dimmCityPlugin(md, options = {}) {
 
       // Inside @learning-path section
       if (inLearningPath && !inSkillMode) {
-        // H3 = Learning path title (banner)
+        // H3 = Learning path title (banner). Emitted as an h3, the level it
+        // was written at: the outline (the app's contents panel, PDF
+        // bookmarks) nests specialty (##) > learning path (###) > skill (####).
+        // .dc-path-sep is a real space between the sticker and the title, so
+        // the heading's text reads "PRX1 Refuse Finality" (outline, bookmarks,
+        // copy, search, screen readers); chrome.css gives it the printed gap.
         if (tok.type === 'heading_open' && tok.tag === 'h3') {
           const inlineTok = tokens[i + 1];
           const titleText = inlineTok && inlineTok.content ? inlineTok.content : '';
           currentLearningPathName = titleText;
-          newTokens.push(makeToken('html_block', '<h2 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span>' + esc(titleText) + '</h2>\n'));
+          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
           learningPathHasTitle = true;
           i += 2; // Skip heading_open, inline, heading_close
           continue;
@@ -1896,7 +1900,7 @@ export default function dimmCityPlugin(md, options = {}) {
 
       // Mark image-only paragraphs so layout rules can target them without
       // relying on p:has(img). The base CSS rule
-      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components.css.
+      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
       // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
       if (tok.type === 'paragraph_open') {
         const inlineTok = tokens[i + 1];
@@ -1967,7 +1971,10 @@ export default function dimmCityPlugin(md, options = {}) {
           const tabBaseClass = 'dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '');
           cardHtml += '  <div class="' + tabBaseClass + '">\n';
           const autoTier = currentLearningPathRef ? currentLearningPathRef + '.' + currentSkillIndex : '';
-          cardHtml += '    <span class="dc-tab-title">' + esc(parsed.name) + '</span>\n';
+          // The skill's name is its `####` heading, kept a heading so the
+          // outline lists it under its learning path. (A continuation card's
+          // repeated title stays a span: it is not a new entry.)
+          cardHtml += '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n';
           cardHtml += '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n';
           cardHtml += '  </div>\n';
 

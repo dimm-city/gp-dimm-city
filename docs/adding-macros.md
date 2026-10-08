@@ -80,6 +80,8 @@ This is a markdown-it parsing constraint, not a plugin limitation. If a macro ap
 ## 1. Design the emitted HTML first
 
 Before touching the parser, decide the exact root class and inner hooks.
+(`dc-intel-card` below is a made-up example; the package ships no such
+component.)
 
 Good shape:
 

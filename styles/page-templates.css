@@ -12,9 +12,8 @@
    - .dc-full-page full-bleed geometry (its named-page assignment,
      `page: full`, lives in page-rules.css alongside `@page full` — see
      that file's "ONE BLOCK PER NAMED PAGE" contract)
-   - General print utilities (.pmd-no-break, .pmd-break-before, .pmd-col-span).
-     `.pmd-suppress-footer`'s named-page wiring (`page: clean`) lives in
-     page-rules.css alongside `@page clean` — same contract as .dc-full-page above
+   (`.dc-suppress-footer`'s named-page wiring, `page: clean`, lives in
+     page-rules.css alongside `@page clean` — same contract as .dc-full-page)
    - Break/overflow control scoped to a page type (.dc-specialty break rules)
 
    NOTE: Page-level typography constraints (orphans/widows on body, break-after
@@ -23,8 +22,8 @@
 
    MUST NOT CONTAIN:
    - @page declarations or named-page geometry (→ page-rules.css)
-   - .dc-* component styles (→ components.css)
-   - :root token definitions (→ tokens.css)
+   - .dc-* component styles (→ components/*.css)
+   - :root token definitions (→ dc-palette.css, dc-component-defaults.css)
    - div.chapter scaffolding unrelated to columns/layout (→ guide.css)
    - @media screen rules (print-only project)
 
@@ -206,14 +205,15 @@
   break-before: page;
 }
 
-/* `.pmd-suppress-footer { page: clean; }` was here and MOVED (dc#35) to
+/* The footer-suppression wiring (`.dc-suppress-footer { page: clean; }`) was here and MOVED (dc#35) to
    page-rules.css, adjacent to `@page clean` — named-page wiring belongs
    with its @page block, not scattered across files. */
 
 /* `.dc-art-top` and `.dc-art-bottom` (+ their shared `img` rule) were here
    and are DELETED (2026-09-02): zero uses of either in any book's rendered
    HTML — `.dc-art-bottom` had documentation mentions only
-   (04-components.md), which does not make it reachable. */
+   (docs/components-and-palette-reference.md), which does not make it
+   reachable. */
 
 /* `.page.full-bleed` was here — DELETED. Zero users in any book's markdown
    (`.dc-full-page` is the live full-bleed template). Its `overflow: hidden` was
@@ -384,16 +384,13 @@
    inherited --shadow-poster combines flush with the lede's right
    shadow above to form one continuous body-column shadow. The number-
    badge accent flips to --frontmatter-accent so the cyber signature
-   persists. Substrate also picks up the lede's 4px magenta gradient
+   persists. Substrate also picks up the lede's 4px magenta
    strip so the rail extends from the top of the lede continuously
    down through the bottom of the TOC. */
 .page.page-toc .dc-toc {
   border: 0;
-  background: linear-gradient(
-    to right,
-    var(--frontmatter-accent) 4px,
-    var(--paper-cream) 4px
-  );
+  background: var(--paper-cream);
+  box-shadow: inset 4px 0 0 var(--frontmatter-accent), var(--shadow-poster); /* rail: see .dc-intro */
 }
 
 .page.page-toc .dc-toc ol > li::before {
@@ -403,7 +400,7 @@
 /* Credits colophon section. Same composite role as the TOC card: it's
    the bottom block of the stack. Carries --shadow-poster so the body
    column on the credits page lifts off the wall the same way the TOC
-   does on page 1. Substrate picks up the lede's 4px magenta gradient
+   does on page 1. Substrate picks up the lede's 4px magenta
    strip so the rail extends continuously from the top of the lede
    down through the bottom of the colophon. The flex column layout
    keeps any trailing publisher-mark image bottom-aligned while the
@@ -414,13 +411,9 @@
   flex-direction: column;
   font-size: 9.5pt;
   line-height: 1.35;
-  background: linear-gradient(
-    to right,
-    var(--frontmatter-accent) 4px,
-    var(--paper-cream) 4px
-  );
+  background: var(--paper-cream);
   padding: 0.18in 0.22in;
-  box-shadow: var(--shadow-poster);
+  box-shadow: inset 4px 0 0 var(--frontmatter-accent), var(--shadow-poster); /* rail: see .dc-intro */
 }
 
 /* Suppress the .section base component's ::before (magenta left strip +
@@ -631,13 +624,9 @@
 /* Section content — paper-cream substrate, magenta 4px left rail
    continuing from the lede, with the poster shadow. */
 .page.page-intro > .section {
-  background: linear-gradient(
-    to right,
-    var(--intro-accent) 4px,
-    var(--paper-cream) 4px
-  );
+  background: var(--paper-cream);
   padding: 0.18in 0.22in;
-  box-shadow: var(--shadow-poster);
+  box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
 }
 
 /* Suppress the .section base ::before (magenta gradient + 18px top-right

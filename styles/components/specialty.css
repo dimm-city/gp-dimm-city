@@ -17,7 +17,8 @@
   /* NO clip-path here — surface + clip are on ::before, the ink outline on
      ::after; an element with clip-path would clip both (dc#28). */
   background: transparent;
-  padding: 1rem 1.25rem 0.75rem;
+  /* +2px top: the outline's top rim is this box's own top 2px (::after). */
+  padding: calc(1rem + 2px) 1.25rem 0.75rem;
   margin: 0;
   /* The ink outline (::after) is a positioned box 2px past this panel on
      every side, and a box past the page content box makes Chromium print
@@ -41,7 +42,7 @@
 .dc-specialty-intro::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 2px 0 0;
   background: var(--dc-specialty-intro-bg);
   clip-path: var(--dc-specialty-intro-clip);
   z-index: -1;
@@ -53,21 +54,19 @@
    in-flow child with its own clip and no outline of its own, so every intro
    clip equals its title shape at both top corners (specialty-identity.css,
    "Title-covered corners").
-   The box starts AT the panel's top and is translated up 2px, rather than
-   starting 2px above it: every field-guide intro opens its chapter at the
-   top of a page, and Chromium pushes a positioned box that would start
-   before the page's content area down to it — the whole outline landed 2px
-   low (measured in the PDF's clip polygons), thinning the top-corner rims
-   to half and hiding the technosorcerer gate's rim under the title. A
-   transform is applied at paint and does not take part in fragmentation. */
+   Nothing reaches ABOVE the panel's box: its top rim is the box's own top
+   2px, with the surface (::before) starting below it. A layer that starts
+   above the box prints wrong when the panel opens a page: `top: -2px` was
+   pushed down to the content area (the outline landed 2px low), and the
+   `translateY(-2px)` that replaced it printed its top 2px at the foot of
+   the PREVIOUS page, a full-width ink line across the folio row. */
 .dc-specialty-intro::after {
   content: '';
   position: absolute;
   top: 0;
   right: -2px;
-  bottom: -4px;
+  bottom: -2px;
   left: -2px;
-  transform: translateY(-2px);
   background: var(--ink);
   clip-path: var(--dc-specialty-intro-clip);
   z-index: -2;
@@ -128,8 +127,9 @@
   padding: 0.08in 0.12in;
 }
 
-/* LIVE inside plugin-emitted specialty sections. */
-.dc-specialty h3 {
+/* LIVE inside plugin-emitted specialty sections. Not the learning-path
+   banner, which is an h3 too (h3.dc-spray) and carries its own chrome. */
+.dc-specialty h3:where(:not(.dc-spray)) {
   margin-top: 0.18in;
   padding-top: 0.08in;
   border-top: var(--bw-thin) solid var(--orange);

@@ -147,7 +147,7 @@ components:
     css: styles/components/data.css
     tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width]
     breaks: "break-inside: avoid (via .dc-prose-panel)"
-    notes: "04-components.md marks the macro as superseded by markdown definition lists; both books still use it."
+    notes: "The design guide (06-panels-and-cards) points a plain term list at a markdown definition list instead; both books still use the macro."
 
   - name: procedure
     status: live
@@ -333,7 +333,7 @@ components:
     origin: plugin
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
-      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h2.dc-spray > span.dc-path-sticker
+      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker + span.dc-path-sep
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)
@@ -345,14 +345,14 @@ components:
       - --dc-path-shell-padding-top
       - --dc-path-shell-padding-bottom
       - --dc-arrow-color
-    breaks: "break-before/after: auto on the block; the h2 stays with what follows"
+    breaks: "break-before/after: auto on the block; the h3 stays with what follows"
 
   - name: skill
     status: live
     origin: plugin
     recipe: "@skill [id=…] [{.dc-allow-split}] [{.dc-two-col}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill (alias @end-skills)"
     emits:
-      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > span.dc-tab-title + span.dc-tab-tier
+      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
       - div.dc-ability > span.dc-ap + p.dc-ability-text
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
@@ -471,7 +471,7 @@ components:
     recipe: "@section .dc-citizen-walkthrough [.gp-columns-2]"
     emits: div.section.dc-citizen-walkthrough
     css: [styles/components/section.css, styles/dc-native.css]
-    notes: "KNOWN DRIFT (2026-09-01 audit, T2): 04-components.md tells authors to override --section-accent / --section-bg at the chapter id; no CSS declares either name. The chassis reads --dc-section-accent / --dc-section-bg (see section). Unprefixed names are outside the check's token scan, so this stays a note until the chapter is corrected."
+    notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
 
   - name: citizen-file-page
     status: live
@@ -544,7 +544,7 @@ components:
     status: live
     origin: author
     recipe: "## Title {.dc-spray}  (also emitted by @learning-path for its title)"
-    emits: h2.dc-spray
+    emits: ["h2.dc-spray (authored)", "h3.dc-spray (a @learning-path title)"]
     css: [styles/components/chrome.css, styles/components/data.css]
     tokens: [--dc-spray-bg, --dc-spray-color]
     breaks: "as a path-shell title: break-before avoid on the element after it"
@@ -614,6 +614,40 @@ components:
     css: styles/components/cards.css
     breaks: "list items and paragraphs break-inside: avoid within the columns"
 
+  - name: plain
+    status: live
+    origin: author
+    recipe: "@section .dc-plain"
+    emits: div.section.dc-plain
+    css: styles/components/section.css
+    notes: "The section-chrome escape hatch (dc#39). The design guide renders it (11-variants)."
+
+  - name: full-page
+    status: live
+    origin: author
+    recipe: "@page .dc-full-page"
+    emits: div.page.dc-full-page
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    breaks: "break-before: page; page: full"
+    notes: "Used by SysOps (chapter-00); the design guide documents it in a fenced example (08-page-templates)."
+
+  - name: printer-page
+    status: live
+    origin: author
+    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
+    emits: div.page.dc-printer-page
+    css: [styles/page-rules.css, styles/dc-native.css]
+    breaks: "page: printer-blank; break-before: page"
+    notes: "DEPRECATED in 1.1.1: gutterpress 0.11.15+ reserves the blank last page itself (dtrpg preset, `print.reserveLastPage`). A completely blank final page — no wall, no footer — kept so books that still use it build unchanged. The Field Guide still ends with it (chapter-05) until it builds on a stable gutterpress 0.11.15; drop it then."
+
+  - name: img-float
+    status: live
+    origin: author
+    recipe: "![alt](src){.dc-img-float-left|.dc-img-float-right}"
+    emits: img.dc-img-float-left|.dc-img-float-right
+    css: styles/components/images.css
+    notes: "Documented and rendered in the design guide (04-layout, 11-variants); no Field Guide use."
+
   # ── Core-owned structure whose public tokens this library declares ─────
   - name: section
     status: live
@@ -642,23 +676,6 @@ components:
     notes: "There is no @chapter-opener macro."
 
   # ── Author classes currently unused by the books ──────────────────────────────
-  - name: plain
-    status: unused
-    origin: author
-    recipe: "@section .dc-plain"
-    emits: div.section.dc-plain
-    css: styles/components/section.css
-    notes: "The section-chrome escape hatch (dc#39)."
-
-  - name: full-page
-    status: unused
-    origin: author
-    recipe: "@page .dc-full-page"
-    emits: div.page.dc-full-page
-    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
-    breaks: "break-before: page; page: full"
-    notes: "Documented in 05-page-templates.md; every occurrence in the guide is inside a fenced example."
-
   - name: suppress-footer
     status: unused
     origin: author
@@ -667,113 +684,86 @@ components:
     css: styles/page-rules.css
     breaks: "page: clean"
 
-  - name: printer-page
-    status: live
-    origin: author
-    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
-    emits: div.page.dc-printer-page
-    css: [styles/page-rules.css, styles/dc-native.css]
-    breaks: "page: printer-blank; break-before: page"
-    notes: "A completely blank final page — no wall, no footer — for DriveThruRPG's reserved printer page. With `print: signature: 4` in the manifest, gutterpress pads to the next multiple of 4, so the book always ends blank. Used by the Field Guide."
-
+  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
   - name: cover-page
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <div class=\"dc-cover-page dc-cover-layout\"> composite"
     emits:
       - div.dc-cover-page.dc-cover-layout > div.dc-cover-bg + div.dc-cover-num + h1.dc-cover-bigword + p.dc-cover-strap
       - div.dc-cover-body + div.dc-cover-meta-row
-    css: styles/components/data.css
-    tokens: [--dc-cover-meta-border]
-    notes: "Documented in 05-page-templates.md inside a fenced example only."
+    notes: "Removed 2026-10-08 (data.css): no book used it, and its translucent gradients were the PDF/X transparency test's only exemption."
 
   - name: toc-rows
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <div class=\"dc-toc-row\"> > .dc-toc-no + .dc-toc-title + .dc-toc-page inside .dc-toc"
     emits: div.dc-toc-row > span.dc-toc-no + span.dc-toc-title + span.dc-toc-page
-    css: styles/components/data.css
-    notes: "Both books' contents pages use a plain list inside .dc-toc."
-
-  - name: img-float
-    status: unused
-    origin: author
-    recipe: "![alt](src){.dc-img-float-left|.dc-img-float-right}"
-    emits: img.dc-img-float-left|.dc-img-float-right
-    css: styles/components/images.css
-    notes: "Documented in 06-layout.md and 07-markdown-reference.md; no live use."
+    notes: "Removed 2026-10-08 (data.css): both books' contents pages use a plain list inside .dc-toc."
 
   - name: portrait
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <div class=\"dc-portrait\"><img></div>"
     emits: div.dc-portrait > img
-    css: styles/components/chrome.css
-    tokens: [--dc-portrait-border, --dc-portrait-surface]
+    notes: "Removed 2026-10-08 (chrome.css) with its --dc-portrait-* tokens: never used."
 
   - name: dashed-rule
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <hr class=\"dc-dashed-rule\">"
     emits: hr.dc-dashed-rule
-    css: styles/components/chrome.css
+    notes: "Removed 2026-10-08: plain `hr` keeps the dashed rule (chrome.css)."
 
   - name: margin-sm
-    status: unused
+    status: retired
     origin: author
     recipe: ".dc-margin-sm modifier (e.g. on .dc-tape)"
     emits: .dc-margin-sm
-    css: styles/components/chrome.css
+    notes: "Removed 2026-10-08 (chrome.css): never used."
 
   - name: path-subtitle
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <div class=\"dc-path-subtitle\">"
     emits: div.dc-path-subtitle
-    css: styles/components/chrome.css
-    notes: "@learning-path emits .dc-intro for its subtitle, not this."
+    notes: "Removed 2026-10-08 (chrome.css): @learning-path emits .dc-intro for its subtitle."
 
   - name: outcome-table
-    status: unused
+    status: retired
     origin: author
     recipe: "(none — no macro or markdown path emits it)"
     emits: .dc-outcome-table
-    css: styles/components/cards.css
-    notes: "A column-span rule inside .dc-two-col; the plugin emits .dc-outcomes."
+    notes: "Removed 2026-10-08 (cards.css): nothing emitted it; the plugin emits .dc-outcomes."
 
   - name: roll-badges
-    status: unused
+    status: retired
     origin: author
     recipe: "(none — no current authoring path)"
     emits: [span.dc-roll-lucid, span.dc-roll-surreal]
-    css: styles/components/data.css
-    tokens: [--dc-roll-lucid-color, --dc-roll-surreal-color]
+    notes: "Removed 2026-10-08 (data.css) with --dc-roll-lucid-color/--dc-roll-surreal-color: no authoring path."
 
   - name: sidebar-box-divider
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <hr class=\"dc-sidebar-box-divider\"> inside a sidebar-box"
     emits: hr.dc-sidebar-box-divider
-    css: styles/components/data.css
+    notes: "Removed 2026-10-08: a plain `hr` inside a sidebar box is the divider (data.css)."
 
   - name: glossary-item
-    status: unused
+    status: retired
     origin: author
     recipe: "raw <div class=\"dc-item\"> inside .dc-terms"
     emits: div.dc-item
-    css: styles/components/images.css
-    breaks: "break-inside: avoid"
-    notes: "The class the CSS styles; the docs and gallery author .dc-terms-item instead (see glossary-item-authored)."
+    notes: "Removed 2026-10-08 (images.css, with --card-border-color): never used; see glossary-item-authored for the open naming question."
 
   - name: callout-generic
-    status: unused
+    status: retired
     origin: author
     recipe: "(none — no macro or markdown path emits it)"
     emits: .dc-callout
-    css: styles/dc-native.css
-    notes: "One stale first-child glue rule in the engine sheet; the alert family emits .dc-alert. Adjacency rules for it were removed 2026-06-21 (chrome.css)."
+    notes: "Removed 2026-10-08 (dc-native.css): nothing emits .dc-callout; the alert family is .dc-alert."
 
-  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
   - name: roll-table
     status: retired
     origin: plugin
@@ -827,7 +817,7 @@ components:
   - name: skill-card-continuation-marker
     status: unimplemented
     origin: plugin
-    recipe: "(described in 04-components.md, 09-component-gallery.md and docs/components-and-palette-reference.md as automatic ▸ / ◂ markers on split skill cards)"
+    recipe: "(described in docs/components-and-palette-reference.md as automatic ▸ / ◂ markers on split skill cards)"
     emits: [.dc-card-cont-marker, .dc-card-fwd-marker]
     notes: "Nothing ever emitted these; they needed a runtime script hook gutterpress does not have (cards.css comment, removed 2026-07-25). The docs describing them are stale."
 
