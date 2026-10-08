@@ -10,7 +10,7 @@ Every element that ships more than one variant, with all of its variants on one 
 
 ## Skill trees — one per specialty
 
-A learning path is a skill tree: the spray title, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card.
+A learning path is a skill tree: the spray title, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
 
 ### Augmerc — `.augmerc`
 
@@ -268,68 +268,6 @@ A learning path is a skill tree: the spray title, the subtitle, the skill sticke
 
 </div>
 
-### Dualist — `.dualist`
-
-<div class="dg-stage">
-
-@specialty .dualist
-
-@learning-path
-
-### Split Discipline
-
-> Two crafts, one body. You never fully belong to either — and that's the edge.
-
-- Crossover Stance
-- Borrowed Reflex
-
-@skill
-
-#### Crossover Stance
-
-> The moment they read you as one thing, you become the other.
-
-1. **1 AP** *Read the Frame:* Declare which discipline an enemy expects. The first technique from the *other* discipline rolls Lucid against them.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
-### Generalist — `.generalist`
-
-<div class="dg-stage">
-
-@specialty .generalist
-
-@learning-path
-
-### Jack of the Sprawl
-
-> Master of none, ready for anything.
-
-- Field Improvisation
-- Adaptive Loadout
-
-@skill
-
-#### Field Improvisation
-
-> No right tool? Every wrong tool works if you swing it hard enough.
-
-1. **1 AP** *Make It Work:* Attempt a task that needs gear or training you don't have. ROLL THE DIE!
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
 ## Skill card variants
 
 Every switch on one card, each under the same Augmerc wrapper. `@continue`, which splits a long card across pages, is shown in [The Specialty System](#ch-specialty).
@@ -450,6 +388,18 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 @end-specialty
 
 </div>
+
+### Two columns for every card — `.dc-cards-two-col`
+
+`@skill {.dc-two-col}` sets one card. To make every skill card under a wrapper two-column, put `.dc-cards-two-col` on any ancestor: the `@specialty` marker, a `@chapter`, a `@page`, a `@section`. Only running text flows in the columns, and a paragraph may break between them so the columns balance; a list item stays whole. The flavor line, ability rows, tables, outcome ladders, sub-heads and rules span the card. A card marked `{.dc-allow-split}` stays single-column. A card that also has its own `{.dc-two-col}` keeps that stricter per-card form (paragraphs whole) and ignores the ancestor's.
+
+```markdown
+@specialty .augmerc .dc-cards-two-col
+
+@skill
+#### Boost Morale | AUG3.4
+…
+```
 
 ### Outcome table — a `| Roll | Outcome |` table inside the card
 

@@ -152,12 +152,10 @@
 /* Token defaults for .dc-specialty-card are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-specialty-card { } above. */
 .dc-specialty-card {
-  /* Stack the optional per-specialty shadow on top of the universal
-     poster-wall shadow. The poster shadow pins the card to the brick
-     wall as a physical object (hard offset, no blur — "stuck on" not
-     "floating"). Specialty themes can add LED-rim insets via the
-     shadow token without losing the wall-pin. */
-  box-shadow: var(--dc-specialty-card-shadow), var(--shadow-poster);
+  /* Only the optional per-specialty inset shadow (LED rim) is declared:
+     clip-path below clips this element's own outer box-shadow, so a
+     --shadow-poster layer here would never paint. */
+  box-shadow: var(--dc-specialty-card-shadow);
   /* Poster-header pattern: thick colored TOP border = the specialty's
      header ribbon. paper-cream body below = the printed flyer substrate.
      Title h3 + body content sit inside the padding box, naturally below
@@ -170,9 +168,8 @@
   display: flow-root;
   overflow: hidden;
   line-height: var(--lh-tight);
-  /* --dc-card-gap is the VISIBLE gap; +4px clears this card's box-shadow
-     bleed (--shadow-poster paints below the border-box) plus the next
-     card's. Note .dc-card-grid below resets this to 0 — the grid packs
+  /* Card spacing: --dc-card-gap plus 4px, kept as-is (layout, not shadow
+     clearance). Note .dc-card-grid below resets this to 0 — the grid packs
      cards deliberately tight and owns its own spacing. */
   margin: 0 0 calc(var(--dc-card-gap) + 4px) 0;
   padding: 0.14in 0.18in 0.18in 0.18in;
@@ -240,7 +237,6 @@
      bright (graphic separation, not body-text rule). Falls back to the
      accent for any specialty that hasn't defined its dark variant. */
   color: var(--dc-specialty-card-title-color);
-  opacity: 1;
   text-align: var(--dc-specialty-card-title-align);
   white-space: normal;
   overflow-wrap: anywhere;
@@ -261,7 +257,7 @@
 .dc-specialty-card[data-position="even"] {
   --dc-specialty-card-title-align: left;
 
-  border-left: 1.5px solid var(--dc-specialty-card-border);
+  border-left: 1.5pt solid var(--dc-specialty-card-border);
   border-right: var(--callout-border-width-small) solid var(--dc-specialty-card-accent);
 }
 

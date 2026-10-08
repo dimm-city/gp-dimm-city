@@ -8,6 +8,22 @@
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
+  --dc-section-break-inside: avoid;           /* `auto` lets a section split across pages/columns (.dc-allow-split, multicol runs) */
+
+  /* Section chrome. A variant sets these on its own rule instead of cancelling
+     .section's panel. Surface/shadow are the `content` of the ::before/::after
+     layers ("" paints, `none` removes the layer); the pads drive .section's
+     padding and the header bar's negative margins. All inherit, so a .section
+     nested inside a variant would pick them up (no book nests one today).
+     Not registered with @property { inherits: false }: a pseudo-element
+     inherits from its host, so a non-inheriting token never reached the
+     ::before/::after that read it. */
+  --dc-section-surface:   "";
+  --dc-section-shadow:    "";
+  --dc-section-pad-top:    var(--space-md);
+  --dc-section-pad-right:  var(--space-lg);
+  --dc-section-pad-bottom: var(--space-md);
+  --dc-section-pad-left:   var(--space-lg);
 
   /* ─── Component Public Token Defaults ────────────────────────────────────
      Override surface for per-chapter and per-project theming. These are the
@@ -19,6 +35,7 @@
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-alert public API */
+  --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
   --dc-alert-bg:             var(--hud-blue-dim);   /* surface-callout alias — player-facing note panel */
   --dc-alert-border:         var(--hud-blue-dark);  /* border-callout-dm alias — left rail */
   --dc-alert-fg:             var(--ink);
@@ -154,12 +171,16 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, rgb(230 0 122) 15%, var(--dc-pullquote-bg));
+  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, var(--dc-pullquote-bg));
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* roll / die callout public API */
   --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
+
+  /* .section.dc-tabbed public API — tab vertical overlap and left indent */
+  --dc-section-tab-overlap:  0px;
+  --dc-section-tab-indent:   0px;
 
   /* .dc-sidebar-box public API */
   --dc-sidebar-box-accent:   var(--hud-blue-dark);
@@ -169,7 +190,7 @@
 
   /* inset-sidebar rail callout (.dc-sidebar.inset hr ~ p, images.css) public API */
   --dc-sidebar-callout-accent: var(--hud-blue);
-  --dc-sidebar-callout-bg:     color-mix(in srgb, rgb(42 106 138) 8%, var(--dc-sidebar-surface));
+  --dc-sidebar-callout-bg:     color-mix(in srgb, var(--tint-hud-teal) 8%, var(--dc-sidebar-surface));
 
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
@@ -190,7 +211,7 @@
 
   /* .dc-tape public API */
   --dc-tape-bg:              var(--paper-aged);
-  --dc-tape-border:          color-mix(in srgb, rgb(212 18 0) 60%, var(--dc-tape-bg));
+  --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, var(--dc-tape-bg));
   --dc-tape-color:           var(--ink-dust);
 
   /* NOTE — the "Semantic Surface Roles" bridge layer that used to close this

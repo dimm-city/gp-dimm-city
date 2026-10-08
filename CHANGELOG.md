@@ -7,6 +7,100 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-10-08
+
+**Notes for books upgrading from 1.1.1:**
+
+- Build on gutterpress 0.11.15 or later and drop `@page .dc-printer-page`
+  and your own `print.signature`: the `dtrpg` preset now does both.
+- Field Guide classes that moved into the package: `.fg-snug` becomes
+  `.dc-snug`, and the book-wide two-column skill cards become
+  `.dc-cards-two-col` on the specialty markers.
+- Section panels, padding and splitting are tokens now. A book that
+  restyled `.section` chrome by overriding properties should set the
+  tokens instead (see the palette reference's Section table).
+
+### Added
+
+- **`.dc-cards-two-col`**: on any ancestor (`@specialty`, `@chapter`,
+  `@page`, `@section`), every skill card inside gets a two-column body.
+  This is the Field Guide's book-wide form as an opt-in. A card's own
+  `.dc-two-col`, or `.dc-allow-split`, keeps its own form.
+- **`.dc-snug`**: tighter paragraph and list-item spacing on a section or
+  page, for one that would otherwise overflow by a line or two (from the
+  Field Guide's `.fg-snug`).
+- **Split skill cards keep their lead-ins with what follows.**
+  `.dc-specialty .dc-skill-card.dc-allow-split` keeps its tab, first
+  blocks and lead-in paragraphs with the next block (from the Field
+  Guide's own sheet).
+- **Section tokens.** A section's panel, shadow and padding now come from
+  tokens (`--dc-section-surface`, `--dc-section-shadow`,
+  `--dc-section-pad-*`), as does whether a box may split
+  (`--dc-section-break-inside`, `--dc-alert-break-inside`). Variants and
+  page templates set tokens instead of cancelling properties.
+- **`test/integrity.test.js`**, which checks that:
+  - every class the books use is styled;
+  - every token that is read, or that the palette reference documents,
+    is declared;
+  - each stylesheet keeps its stated contract.
+
+### Changed
+
+- **Tested against gutterpress 0.11.15** (stable; was 0.11.15-alpha.1).
+- **CSS quick wins from an architecture review.**
+  - New tokens: `--shadow-ink` (the opaque wall-shadow colour, written
+    out five times before) and four exact-value `--tint-*` mix sources
+    for the literal `rgb()` colours inside `color-mix()`.
+  - `--dc-section-tab-overlap` and `--dc-section-tab-indent` are now
+    public `:root` tokens.
+  - The TOC/credits masthead `h1` is now one rule instead of two.
+  - Dead declarations are gone: the `--shadow-poster` layer a specialty
+    card's own `clip-path` clipped away, `page-break-inside`, an empty
+    rule, a no-op height reset, three `opacity: 1`, and the
+    `break-before: always` Chromium ignores on learning paths.
+  - `dc-native.css` loses its tombstones and is renumbered §1–8.
+  - Pixel-identical in both books, except the even specialty cards,
+    whose left border is now `1.5pt` like the rest (was `1.5px`).
+
+- **Section styling is opt-in per variant, not cancelled by a central list.**
+  - `.dc-plain`, `.dc-tabbed`, `.dc-column-panel` and `.dc-card-grid` set
+    the section tokens.
+  - The header bar's negative margins are derived from the padding.
+  - The shared page templates (intro, credits, chapter opener) own their
+    styling in `page-templates.css`; the chapter opener moves there from
+    `section.css`.
+  - Pixel-identical in both books.
+- **The credits colophon shows its 4px front-matter rail again.** A rule in
+  `dc-native.css` had overridden it. This is the one visible change, on
+  each book's credits page.
+- **Box splitting is decided in one place.**
+  - Multi-column runs and `.dc-allow-split` set the break-inside tokens.
+  - This replaces an avoid → auto → avoid override chain.
+
+### Removed
+
+- **`.dc-printer-page` and its `@page printer-blank`** (deprecated in
+  1.1.1). gutterpress 0.11.15's `dtrpg` preset pads the interior to the
+  4-page signature and reserves the blank last page itself, so a book
+  needs neither the marker nor its own `print.signature`. The Field
+  Guide, built on 0.11.15 without either, keeps its 232 pages
+  pixel-identical and still ends on four blank pages.
+- `--shadow-tint`, and `.dc-roll-the-die`'s `box-shadow: var(--shadow-tint)`:
+  a bare colour is not a valid shadow, so it never rendered.
+- `.dc-suppress-footer` and its `@page clean` (and the design guide's
+  mirror of it): no book used footer suppression.
+- The design guide's dual specialist and generalist skill-tree specimens
+  (Variant Gallery; The Specialty System's "One source" section, now
+  "eight shapes"). Those two specialties take their skills from the other
+  eight and have no trees of their own, so the specimens printed a
+  generic `PATH1` sticker for something that cannot exist.
+
+### Fixed
+
+- The catalog's glossary entries: a glossary item is a plain paragraph
+  inside `@glossary`, and no doc or gallery page writes `.dc-terms-item`
+  any more, so `glossary-item-authored` is retired.
+
 ## [1.1.1] - 2026-10-08
 
 **Notes for books upgrading from 1.1.0:**

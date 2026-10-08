@@ -3,7 +3,12 @@
 /* ── Base card: every @section gets a cream surface + left accent strip ──
    Public tokens (defaults declared in dc-component-defaults.css :root):
      --dc-section-bg      — panel background surface
-     --dc-section-accent  — left strip / top bar accent color */
+     --dc-section-accent  — left strip / top bar accent color
+     --dc-section-surface / --dc-section-shadow — `content` of the ::before /
+                            ::after layers: "" paints, `none` removes the layer
+     --dc-section-pad-top/-right/-bottom/-left — padding; the header bar's
+                            negative margins are derived from them
+   A variant or template owns its chrome by setting these on its own rule. */
 .section {
   /* `filter` on this element stops negative-margin heading bars escaping the
      parent's padding area (it creates a stacking context that suppresses
@@ -17,7 +22,7 @@
   /* display: flow-root moved to the :where(.section) rule above — the
      float-containment default must sit at zero specificity so core layout
      classes can own `display`. */
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) var(--dc-section-pad-bottom) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
@@ -38,8 +43,11 @@
      entirely. The resulting dead zone at the end of the previous page is
      intentional design behavior, not a layout failure. Authors keep
      sections short enough to fit; if a section is too tall, split it
-     into multiple @section blocks at logical boundaries. */
-  break-inside: avoid;
+     into multiple @section blocks at logical boundaries. The value is the
+     --dc-section-break-inside token: contexts that let a section split (the
+     .dc-allow-split opt-in below, multicol runs in dc-native.css) set the
+     token rather than re-declaring this property. */
+  break-inside: var(--dc-section-break-inside);
   /* Wall-shadow is the ::after fake-shadow below (vector, same clip-path
      as ::before). Do NOT add filter:drop-shadow here — that would double
      the shadow (raster filter + vector pseudo) per print R9 finding. */
@@ -48,8 +56,9 @@
 /* Optional escape hatch for genuinely long rules sections where atomic-card
    pagination creates unusable dead zones. Use sparingly and only on sections
    that have already been split at logical authoring boundaries. */
+/* It sets the token, not the property, so one declaration above decides. */
 .section.dc-allow-split {
-  break-inside: auto;
+  --dc-section-break-inside: auto;
 }
 
 /* clip-path + left accent band on ::before.
@@ -83,7 +92,7 @@
    stacking context here the negative layers would escape to the nearest one
    above and paint behind the page. */
 .section::before {
-  content: '';
+  content: var(--dc-section-surface);
   position: absolute;
   inset: 0;
   /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). */
@@ -94,13 +103,12 @@
 }
 
 /* Fake shadow via ::after — same clip-path as ::before, shifted 3px right + down.
-   Replaces the removed filter: drop-shadow() while leaving the box model unaffected
-   so negative-margin heading bars can reach the card edges. Base card only — variants
-   with different or no chrome suppress this via content: none below.
-   -2, one step under the card surface: at equal z-index the two pseudos would
-   order by tree position and the shadow (::after) would paint over the card. */
+   A vector layer rather than filter: drop-shadow(), which would rasterise the
+   section (and clip its negative-margin heading bar).
+   z-index -2, one step under the surface: at equal z-index the shadow would
+   paint over the card. */
 .section::after {
-  content: '';
+  content: var(--dc-section-shadow);
   position: absolute;
   top: 3px;
   left: 3px;
@@ -112,51 +120,12 @@
   pointer-events: none;
 }
 
-/* Suppress fake shadow on variants that have different chrome or no chrome */
-/* ── .dc-plain — the one documented escape from .section's panel chrome ──
-   `.section` is CORE's structural class: every @section marker in every book
-   produces one, and this theme paints a full panel card on it by default via
-   the unqualified `::before` (substrate + accent rail + clipped corner) and
-   `::after` (fake shadow) above. Because that chrome is opt-OUT, every
-   non-panel use of @section needed its own bespoke undo — there were four,
-   spread across two files, each re-declaring the same `content: none`.
-
-   `.dc-plain` is now the single documented way to say "this section is a
-   layout wrapper, not a card". The four production sites are listed in the
-   same rule rather than each carrying its own copy, so a future non-panel
-   section is one documented class instead of a fifth bespoke reset.
-
-   Each site keeps EXACTLY the pseudos it suppressed before — `.dc-tabbed` is
-   ::after only, because it deliberately keeps its ::before accent strip (see
-   the tabbed variant below). A blanket `.dc-plain` on all four would strip
-   that strip and change what `.dc-tabbed` renders.
-
-   Lives here, not in page-templates.css, even for the two `.page.*` sites:
-   the chrome these cancel is defined in this file, a dozen lines above, so
-   its opt-out belongs beside it. The chapter-opener composite's own
-   suppression is deliberately NOT folded in — it is part of the frozen
-   composite (CLAUDE.md) and keeps its own higher-specificity rule below. */
-.section.dc-plain::before,
-.section.dc-plain::after,
-.section.dc-tabbed::after,
-.section.dc-column-panel::after,
-.section.dc-card-grid::before,
-.section.dc-card-grid::after,
-.page.page-intro > .section::before,
-.page.page-intro > .section::after,
-.page.page-credits .section.credits-colophon::before,
-.page.page-credits .section.credits-colophon::after {
-  content: none;
-}
-
-/* `.section` already sets `background: transparent` and nothing in the stack
-   sets `filter` on it, so this is belt-and-braces for an author who tints a
-   section and then marks it plain. `.dc-card-grid` is NOT listed: it already
-   declares both in its own rule, and one home per declaration is the
-   convention dc#34 wrote down. */
+/* ── .dc-plain — a section that is a layout wrapper, not a card ──────────
+   One-line token setter: both chrome layers off. Other variants and the
+   front-matter templates set the same tokens on their own rules. */
 .section.dc-plain {
-  filter: none;
-  background: transparent;
+  --dc-section-surface: none;
+  --dc-section-shadow:  none;
 }
 
 /* ── COLUMN PANEL — the section variant for a column run ──────────────────
@@ -175,19 +144,15 @@
    Top/bottom borders only: the base `.section` card's clip-path corner
    breaks multicol, so this variant trades it for flat rules. */
 .section.dc-column-panel {
-  filter: none;
+  --dc-section-surface: none;
+  --dc-section-shadow:  none;
+  --dc-section-pad-top:    var(--space-sm);
+  --dc-section-pad-right:  var(--space-md);
+  --dc-section-pad-bottom: var(--space-sm);
+  --dc-section-pad-left:   var(--space-md);
   background: var(--dc-section-bg);
-  border-top: 3px solid var(--dc-section-accent);
   border-bottom: 2px solid var(--border-hairline);
-  /* Horizontal padding was 0 — Dream Mastery body text + other two/three
-     column sections pressed against the section's left and right edges.
-     Add comfortable horizontal padding so prose has breathing room. */
-  padding: var(--space-sm) var(--space-md);
   margin: 12pt 0;
-}
-
-.section.dc-column-panel::before {
-  display: none;
 }
 
 /* ── Tabbed variant — first-child heading sits ABOVE the section ─────────
@@ -197,8 +162,7 @@
    clamps negative margins on the first in-flow child). `.section::before`
    is absolutely positioned, so flex doesn't disturb the background pseudo. */
 .section.dc-tabbed {
-  --dc-section-tab-overlap: 0px;
-  --dc-section-tab-indent: 0px;
+  --dc-section-shadow: none;
   display: flex;
   flex-direction: column;
   margin-top: calc(var(--space-md) + 1.5em + 5px);
@@ -301,8 +265,8 @@
 .section > h3:first-child {
   background: var(--dc-section-accent);
   color: var(--paper-cream);
-  /* Negative margins pull bar flush with the section border-box edges. */
-  margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-lg)) var(--space-md);
+  /* Negative margins cancel the section's padding: the bar sits flush with its edges. */
+  margin: calc(-1 * var(--dc-section-pad-top)) calc(-1 * var(--dc-section-pad-right)) var(--space-md) calc(-1 * var(--dc-section-pad-left));
   padding: 0.42rem var(--space-lg) 0.28rem;
   border: 0;
   letter-spacing: var(--ls-display);
@@ -328,28 +292,12 @@
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 
-/* ── Column-panel sections — only the deltas from the base rule ───────────
-   column-span:all keeps the bar from being trapped inside column 1.
-   The negative margins must cancel THIS variant's padding, which is
-   `var(--space-sm) var(--space-md)` — smaller than the base section's
-   `var(--space-md) var(--space-lg)`. Both axes need restating: the base
-   rule's -space-lg horizontal pull overshoots -space-md padding by ~3px per
-   side, which pushed the bar outside the card and past the print safe area. */
+/* Column-panel header bar: column-span keeps it from being trapped in column 1.
+   Its margins follow the variant's pad tokens. The bar is the panel's top, so
+   the variant has no border-top. */
 .section.dc-column-panel > h2:first-child,
 .section.dc-column-panel > h3:first-child {
   column-span: all;
-  margin-top: calc(-1 * var(--space-sm));
-  margin-left: calc(-1 * var(--space-md));
-  margin-right: calc(-1 * var(--space-md));
-}
-
-/* Column-panel sections whose first child is a heading: drop the redundant
-   `border-top: 3px solid var(--dc-section-accent)` since the bar IS the top.
-   Unconditional rather than :has(): column panels always lead with a
-   heading in this system, so the two are functionally equivalent and the
-   unconditional form is one selector instead of a tree query. */
-.section.dc-column-panel {
-  border-top: 0;
 }
 
 /* Heading bar followed immediately by a table — give the table head room
@@ -804,16 +752,18 @@ h3 + .section {
    wrapper) plus the per-card density tweaks so all 8 specialty cards fit
    comfortably on one page. */
 
-/* Chrome reset — strip .section's card visuals so the wrapper is invisible */
+/* Card grid: no panel, no padding; the cards carry the visuals. */
 .section.dc-card-grid {
-  background: transparent;
-  padding: 0;
+  --dc-section-surface: none;
+  --dc-section-shadow:  none;
+  --dc-section-pad-top:     0px;
+  --dc-section-pad-right:   0px;
+  --dc-section-pad-bottom:  0px;
+  --dc-section-pad-left:    0px;
   margin: var(--space-md) 0 0;
-  /* Explicit override of .section default (break-inside: avoid) — the grid is a
-     layout wrapper, not a cohesive content block, and may span across pages
-     when the card count exceeds what fits on a single page. */
+  /* A layout wrapper, not a cohesive block: it may span pages when the cards
+     exceed one page. */
   break-inside: auto;
-  filter: none;
 }
 
 /* `.page.dc-chapter-start.two-column`'s ornamental `column-rule` was DELETED
@@ -830,23 +780,6 @@ h3 + .section {
   column-gap: var(--gutter);
   column-fill: balance;
 }
-/* `.section.dc-card-grid::before/::after { content: none }` was here and is now
-   part of the single `.dc-plain` escape rule above, beside the chrome it
-   cancels (dc#39). */
-
-/* The generic `.section > h2:first-child` bar uses negative margins sized to
-   cancel .section's padding so the bar sits flush with the card edge. This
-   wrapper zeroes that padding (above), so those negative margins have nothing
-   to cancel and the bar overhangs the card by the full --space-lg/--space-md
-   on each side — pushing it outside the 0.5in print safe area. Zero them so
-   the bar aligns with the grid it heads. */
-.section.dc-card-grid > h2:first-child,
-.section.dc-card-grid > h3:first-child {
-  margin-top: 0;
-  margin-left: 0;
-  margin-right: 0;
-}
-
 /* Header + intro stay close to the cards below (no orphan break) */
 .dc-card-grid > h2 { break-after: avoid; }
 .dc-card-grid > .dc-intro {
@@ -951,83 +884,12 @@ h3 + .section {
    subtree as a bitmap, so every opener page went to the PDF as a single
    300ppi image with a transparency mask — no live text, and a soft mask
    that PDF/X-1a forbids. The badge takes a box-shadow; the section's own
-   ::after (below) draws its shadow on the same clipped silhouette as its
+   ::after (see page-templates.css) draws its shadow on the same clipped silhouette as its
    substrate, the way the base .section card does. The chevron sits inside
    the section box, so the section's shadow covers it. */
 .chapter-opener {
   box-shadow: var(--dc-chapter-opener-shadow);
 }
-
-/* Section substrate for the chapter-opener intro section. Selector
-   matches a .section that's an immediate child of a chapter-opener intro
-   page (page named "intro" inside a chapter with a label). */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section {
-  /* Right padding (--dc-chapter-opener-pad-right) is larger than
-     the visual clip-tail so body text has breathing room from the
-     clipped substrate edge. */
-  padding: var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-right)
-           var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-side);
-
-  /* Feed the existing section accent / bg surfaces from the
-     chapter-opener tokens so per-chapter overrides flow through. */
-  --dc-section-accent: var(--dc-chapter-opener-accent);
-  --dc-section-bg:     var(--dc-chapter-opener-bg);
-
-  /* Propagate the chapter-opener's clip-tail into --clip-tail so any
-     .dc-chevron descendant's --clip-banner polygon tapers to the same
-     x position as this section's right edge. */
-  --clip-tail: var(--dc-chapter-opener-clip-tail);
-}
-
-/* ::before's right edge is straight-vertical at the clip-tail x. The
-   chevron above tapers from full-width to this same x, so the silhouette
-   transitions diagonal → vertical with no horizontal step at the chevron/
-   section boundary. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::before {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* The chapter-opener section's shadow: the base ::after, offset like
-   --dc-chapter-opener-shadow and clipped to the same straight right edge
-   at the clip-tail as the substrate above. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::after {
-  top: 4px;
-  left: 3px;
-  right: -3px;
-  bottom: -4px;
-  background: color-mix(in srgb, #000 28%, var(--wall-tone));
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* Auto-style the section's first h1 as a chevron banner — no markdown
-   `{.dc-chevron}` attribute required. The chevron banner extends to the
-   section's outer border-box edges (card-header pattern) by claiming back
-   the section's padding via negative margins. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
-  /* Negative margins claim back the section's padding so the chevron
-     banner extends to the section's outer border-box edges (card-header
-     pattern). Margin-right uses --dc-chapter-opener-pad-right (the value that pads
-     body content) so the chevron's outer right edge aligns with the
-     section's outer right edge — its --clip-banner tail then tapers
-     in by --clip-tail, matching where the section substrate ends. */
-  margin-top:   calc(var(--dc-chapter-opener-pad-top)   * -1);
-  margin-left:  calc(var(--dc-chapter-opener-pad-side)  * -1);
-  margin-right: calc(var(--dc-chapter-opener-pad-right) * -1);
-  --dc-chevron-bg: var(--dc-chapter-opener-accent);
-}
-
 
 /* ═════════════════════════════════════════════════════════════════════════
    FICTION EXCERPT — narrative prose with optional inline art

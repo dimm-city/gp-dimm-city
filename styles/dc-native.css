@@ -14,8 +14,8 @@
    - ONE `@page { background }` rule paints the brick wall across the whole
      sheet: the content box, and every margin box that carries no content of
      its own shows it through. The old two-layer paint (`html { background }`
-     for the content area + 14 hand-fed margin boxes + 6 refills in §4) is
-     gone — one origin for the wall instead of twenty-one.
+     for the content area + 14 hand-fed margin boxes + 6 refills) is gone —
+     one origin for the wall instead of twenty-one.
    - Margin boxes support background/border/counter()/fit-content; they do
      NOT support transform: rotate() or box-shadow — the sticker chrome is
      square and unshadowed.
@@ -33,7 +33,7 @@
    A margin box with no content of its own shows the page background through,
    so this single rule paints the content box AND the margin band. It replaces
    the old `html { background }` content-area layer, the 14 hand-fed empty
-   margin boxes, and §4's six refills — 21 tiling origins became one, so the
+   margin boxes, and six refills — 21 tiling origins became one, so the
    wall is seamless: no phase break at a box edge, and no flat --bg patch in
    the bottom band beside the chips.
 
@@ -55,13 +55,7 @@
   background-size: 1.5in auto;
 }
 
-/* The printer page (page-rules.css) carries no wall: DriveThruRPG wants
-   the final page free of any page background. */
-@page printer-blank {
-  background: none;
-}
-
-/* ── 3. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
+/* ── 2. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
    Chrome for the chip content page-rules.css declares on @bottom-left /
    @bottom-right. Sticker identity swaps by spread side in page-rules.css's
    content rules (folio outside, chapter tag inside); the chrome swaps the
@@ -166,10 +160,10 @@
   }
 }
 
-/* ── 4. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
+/* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content — no brick refill needed,
-   which makes page-rules.css's own `@page chapter-start` / `@page clean`
+   which makes page-rules.css's own `@page chapter-start` / `@page full`
    `content: none` blocks sufficient on their own; only `:blank` has no
    counterpart there, so only `:blank` is restated here. */
 @page :blank {
@@ -177,7 +171,7 @@
   @bottom-right { content: none; }
 }
 
-/* ── 5. FRONTMATTER (TOC + Credits): full-bleed composite under native ──────
+/* ── 4. FRONTMATTER (TOC + Credits): full-bleed composite under native ──────
    Target: masthead band edge-to-edge including its own rows, wall behind,
    plate at the sheet bottom of the credits. Native print clips painting at
    the content box and punishes any box past it with whole-document
@@ -235,27 +229,10 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
-  /* The colophon fills to the sheet's bottom edge (this template has no
-     bottom margin), so the poster shadow's 3pt drop landed past the sheet,
-     and Chromium printed that overflow as a hairline across the top of the
-     NEXT sheet — the Field Guide's Contents masthead, the design guide's
-     Introduction. The shadow keeps its side offset and loses the drop; the
-     colophon's foot sits under the pinned plate in any case. (Clipping the
-     page instead would also clip a pinned or bleed plate on it.) */
-  box-shadow: 2pt 0 0 color-mix(in srgb, #000 28%, var(--wall-tone));
+  /* Its box-shadow (rail + side-only shadow) is set in page-templates.css. */
 }
-/* The masthead escapes the padding back to the sheet edges — visible paint
-   inside the full-width content box. `margin-top: 0` is deliberate: a
-   negative top pull here drags a band fragment onto the previous page
-   (measured). The dark strip above is margin-box paint. */
-.page.page-toc h1.dc-chevron,
-.page.page-credits h1.dc-chevron {
-  margin-top: 0;
-  margin-left: -0.625in;
-  margin-right: -0.625in;
-  width: calc(100% + 1.25in);
-  box-sizing: border-box;
-}
+/* The masthead h1 (.page-toc / .page-credits) is defined once, in
+   page-templates.css; it escapes the padding above back to the sheet edges. */
 
 /* In-flow art must never be sliced across a page boundary. */
 p.dc-img-wrapper,
@@ -268,10 +245,11 @@ figure {
   overflow: clip;
 }
 
-/* ── 10. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
-   `.section` carries `break-inside: avoid` from THIS BOOK's own
-   components/*.css (core no longer ships that default, but the book still
-   sets it). Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
+/* ── 5. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
+   `.section` reads `break-inside: var(--dc-section-break-inside)`, default
+   `avoid` (components/section.css; token in dc-component-defaults.css). This
+   rule sets the TOKEN, not the property, so the component keeps the only
+   `break-inside` declaration. Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
    container, columns:2) and the `.section` blocks sit INSIDE it. A section
    taller than one column can then never split, so Chromium drops it whole
    into one column fragment and the facing column dies — the dead-column
@@ -281,15 +259,14 @@ figure {
    Keys on the COUNT class, not `.dc-column-panel`: this is about multicol
    fragmentation, and the wrapper shape is often a `@block` or `@page` that
    never carries the panel chrome at all. */
+/* Selector is the descendant form on purpose: a `.section` that is itself the
+   multicol container keeps the default. */
 .gp-columns-2 .section,
 .gp-columns-3 .section {
-  break-inside: auto;
+  --dc-section-break-inside: auto;
 }
 
-/* ── 10b. COLUMN-FILL is a per-shape decision, and it lives HERE ────────────
-   (10b, not 11: a §11 was deleted from this file before this block existed,
-   and §13 below still cross-references that old §11. Taking the number would
-   silently redirect a live reference at the wrong rules.)
+/* ── 6. COLUMN-FILL is a per-shape decision, and it lives HERE ────────────
    Core deliberately ships no `column-fill` on `.gp-columns-*` (the right
    value depends on whether the run fragments, and only the author knows).
    page-templates.css used to answer `balance` for the whole book; under
@@ -314,12 +291,6 @@ figure {
 :where(.gp-columns-2, .gp-columns-3):not(.gp-columns-flow) {
   column-fill: balance;
 }
-/* The per-shape exceptions that used to follow — `.dc-citizen-walkthrough
-   .gp-columns-2` and `.page.gp-columns-2` set back to `balance` — are gone:
-   the rule above now says `balance` for every run. The Field Guide pages they
-   were measured on (p12/p13 "THE PACK SHOULD BE WEIRD", p243 CORE ELEMENTS,
-   p7 "Image Is Everything") are among the 221 that render pixel-identical. */
-
 /* A PAGE that is itself the multicol container (`@page .gp-columns-2`) and
    ends in a full-width spanner: the spanner's bottom margin pushed the page
    box past its one-sheet minimum height, and the overflow printed as a blank
@@ -329,7 +300,7 @@ figure {
   margin-bottom: 0;
 }
 
-/* ── 12. WALL ART placement is the markdown's, via core's gp-* classes ──────
+/* ── 7. WALL ART placement is the markdown's, via core's gp-* classes ──────
    Do not add a position/float/margin declaration to a `.fg-art-*` class that
    the markdown also pins. A `.fg-art-*` class beats `.gp-pin` at equal
    specificity — the book's sheets load after GUTTERPRESS_CSS — so such a rule
@@ -337,12 +308,12 @@ figure {
    (chapter-01 "At a Glance"), which the markdown authors
    `.gp-pin .gp-bottom .gp-left`. */
 
-/* ── 13. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
-   §11's break-after: avoid keeps a heading with the box that follows, but
-   the box itself can still emit a contentless first fragment (top border +
+/* ── 8. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
+   Core's `break-after: avoid` on headings keeps a heading with the box that
+   follows, but the box itself can still emit a contentless first fragment (top border +
    padding only) at a page bottom — measured: CORE ELEMENTS, p244. Gluing
    the box's first child to the box start moves the whole start (and, via
-   §11, the heading) to the next page. break-inside: avoid is NOT usable
+   the heading's break-after: avoid, the heading) to the next page. break-inside: avoid is NOT usable
    here: these callouts routinely run taller than a page. */
 .dc-dm-note > :first-child {
   break-before: avoid;
@@ -350,14 +321,16 @@ figure {
 
 /* Measured (p243, DOM-inspected): the CORE ELEMENTS heading is a full-width
    spanner inside a .gp-columns-2 section, followed by a dc-alert callout
-   whose break-inside: avoid is UNENFORCEABLE (the card is taller than a
+   whose default break-inside: avoid is UNENFORCEABLE (the card is taller than a
    column). Chromium then emits an empty card fragment under the spanner —
    header stranded, content headerless on the next page. A card that may
    fragment starts filling right under its header instead. Scoped to
    multicol sections only; standalone cards keep their avoid. */
+/* Sets --dc-alert-break-inside (callouts.css reads it); a book restores `avoid`
+   for one instance by setting the token in context. */
 .gp-columns-2 .dc-alert,
 .gp-columns-3 .dc-alert {
-  break-inside: auto;
+  --dc-alert-break-inside: auto;
 }
 
 /* Skill-card tabs (MNEMONIC PLAGUE, p114): the .dc-card-tab chip is a

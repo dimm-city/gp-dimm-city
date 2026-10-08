@@ -45,7 +45,7 @@ The package's page geometry follows DriveThruRPG's print specification: 0.125 in
 | `print: { signature: 4, reserveLastPage: true }` | Pads the interior to DriveThruRPG's 4-page signature and always ends on a completely blank page — the page reserved for printer information. The build log's page count is the number to enter in the cover Template Generator. |
 | `pdfx.blackText: k-only` | In a `--format pdfx` build, near-black text (the book's ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black. |
 
-`@page .dc-printer-page`, which did the reserved last page before gutterpress could, is no longer needed: drop it from the last chapter.
+Don't set `print.signature` yourself, and don't end the book with a blank page of your own: the preset does both. (`@page .dc-printer-page`, the package's stand-in from before gutterpress 0.11.15, was removed in 1.1.2.)
 
 ## Flags
 

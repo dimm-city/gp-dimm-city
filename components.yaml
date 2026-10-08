@@ -234,11 +234,11 @@ components:
   - name: glossary
     status: live
     origin: plugin
-    recipe: "@glossary … @end-glossary  (the macro is used by neither book; the raw <div class=\"dc-terms\"> wrapper is)"
+    recipe: "@glossary … @end-glossary  (items are plain `**term** — gloss` paragraphs)"
     emits: div.dc-terms
     css: styles/components/images.css
     breaks: "break-inside: avoid"
-    notes: "CSS styles the children as .dc-terms .dc-item (see glossary-item); the docs and gallery author .dc-terms-item instead (see glossary-item-authored)."
+    notes: "Used by the design guide (06-panels-and-cards). Items take no class of their own; the old item classes are retired (glossary-item, glossary-item-authored)."
 
   - name: outcome
     status: live
@@ -602,8 +602,8 @@ components:
     origin: author
     recipe: "@skill {.dc-allow-split} or @section .dc-allow-split"
     emits: .dc-allow-split (on the skill card or section it is written on)
-    css: styles/components/section.css
-    breaks: "break-inside: auto — opts a section or skill card out of the default avoid"
+    css: [styles/components/section.css, styles/components/cards.css]
+    breaks: "break-inside: auto — opts a section or skill card out of the default avoid. A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
     notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it."
 
   - name: two-col
@@ -613,6 +613,22 @@ components:
     emits: div.dc-skill-card.dc-two-col
     css: styles/components/cards.css
     breaks: "list items and paragraphs break-inside: avoid within the columns"
+
+  - name: cards-two-col
+    status: live
+    origin: author
+    recipe: "@specialty .augmerc .dc-cards-two-col  (or on @chapter / @page / @section)"
+    emits: .dc-cards-two-col (on the ancestor it is written on; styles the .dc-skill-card inside it)
+    css: styles/components/cards.css
+    breaks: "list items break-inside: avoid; a paragraph may break between columns. Flavor line, ability rows, tables, sub-heads and rules span both columns. A card with .dc-allow-split stays single-column; a card with its own .dc-two-col keeps the per-card form"
+
+  - name: snug
+    status: live
+    origin: author
+    recipe: "@section .dc-snug  /  @page .dc-snug"
+    emits: .dc-snug (on the section or page it is written on)
+    css: styles/page-templates.css
+    notes: "Paragraph and list-item margin-bottom drops to 0.04in so a section or page that overflows by a line or two fits. Type size and leading are untouched."
 
   - name: plain
     status: live
@@ -631,15 +647,6 @@ components:
     breaks: "break-before: page; page: full"
     notes: "Used by SysOps (chapter-00); the design guide documents it in a fenced example (08-page-templates)."
 
-  - name: printer-page
-    status: live
-    origin: author
-    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
-    emits: div.page.dc-printer-page
-    css: [styles/page-rules.css, styles/dc-native.css]
-    breaks: "page: printer-blank; break-before: page"
-    notes: "DEPRECATED in 1.1.1: gutterpress 0.11.15+ reserves the blank last page itself (dtrpg preset, `print.reserveLastPage`). A completely blank final page — no wall, no footer — kept so books that still use it build unchanged. The Field Guide still ends with it (chapter-05) until it builds on a stable gutterpress 0.11.15; drop it then."
-
   - name: img-float
     status: live
     origin: author
@@ -655,9 +662,9 @@ components:
     recipe: "@section  (bare; core markers.js emits the wrapper)"
     emits: div.section
     css: styles/components/section.css
-    tokens: [--dc-section-bg, --dc-section-accent]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     breaks: "break-inside: avoid (core MARKER_CSS)"
-    notes: "The panel chrome is opt-out; .dc-plain is the escape."
+    notes: "Panel chrome is token-driven: variants and templates set --dc-section-surface/-shadow/-pad-* on their own rule; .dc-plain turns both layers off."
 
   - name: chapter-opener
     status: live
@@ -675,16 +682,21 @@ components:
       - --dc-chapter-opener-pad-right
     notes: "There is no @chapter-opener macro."
 
-  # ── Author classes currently unused by the books ──────────────────────────────
+  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  - name: printer-page
+    status: retired
+    origin: author
+    recipe: "@page .dc-printer-page  (the last marker of a book's last chapter)"
+    emits: div.page.dc-printer-page
+    notes: "Removed in 1.1.2 with its @page printer-blank: gutterpress 0.11.15's dtrpg preset pads to the 4-page signature and reserves the blank last page itself (print.reserveLastPage)."
+
   - name: suppress-footer
-    status: unused
+    status: retired
     origin: author
     recipe: "@page .dc-suppress-footer"
     emits: div.page.dc-suppress-footer
-    css: styles/page-rules.css
-    breaks: "page: clean"
+    notes: "Removed 2026-10-08 with its `@page clean` (page-rules.css, and the design guide's mirror): no book used it."
 
-  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
   - name: cover-page
     status: retired
     origin: author
@@ -813,6 +825,13 @@ components:
     emits: [.dc-gear-entry, div.section.dc-gear-list]
     notes: "Removed 2026-08-21 (data.css GEAR ENTRY tombstone); neither could ever match what @gear emits."
 
+  - name: glossary-item-authored
+    status: retired
+    origin: author
+    recipe: "raw <div class=\"dc-terms-item\"> inside .dc-terms"
+    emits: div.dc-terms-item
+    notes: "Never styled, and no doc or gallery page writes it any more (2026-10-08): a glossary item is a plain paragraph inside @glossary."
+
   # ── Unimplemented: documented or authored, never built ────────────────
   - name: skill-card-continuation-marker
     status: unimplemented
@@ -820,12 +839,5 @@ components:
     recipe: "(described in docs/components-and-palette-reference.md as automatic ▸ / ◂ markers on split skill cards)"
     emits: [.dc-card-cont-marker, .dc-card-fwd-marker]
     notes: "Nothing ever emitted these; they needed a runtime script hook gutterpress does not have (cards.css comment, removed 2026-07-25). The docs describing them are stale."
-
-  - name: glossary-item-authored
-    status: unimplemented
-    origin: author
-    recipe: "raw <div class=\"dc-terms-item\"> inside .dc-terms  (as the docs and gallery write it)"
-    emits: div.dc-terms-item
-    notes: "No CSS has ever styled .dc-terms-item — images.css styles .dc-terms .dc-item. The gallery specimen renders unstyled. Resolve by renaming one side; a separate decision."
 
 # Classes a book uses that are not components.

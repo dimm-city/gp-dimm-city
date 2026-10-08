@@ -25,7 +25,8 @@
      tints that land on the wall pre-composite against it: PDF/X-1a carries
      no transparency (see docs/print-transparency-inventory.md). */
   --wall-tone: #c1beb8;
-  --shadow-poster: 2pt 3pt 0 color-mix(in srgb, #000 28%, var(--wall-tone));
+  --shadow-ink: color-mix(in srgb, #000 28%, var(--wall-tone));  /* opaque ink-on-wall shadow colour */
+  --shadow-poster: 2pt 3pt 0 var(--shadow-ink);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ─────────────────── */
   --ink:        #1a1512;  /* near-black with red bias — riso warm black */
@@ -72,8 +73,12 @@
   --bw-thin:         1px;
   --callout-border-width-small: 2px;
 
-  /* ── Shadow color tint ────────────────────────────────────────────────── */
-  --shadow-tint: #b0a898;  /* hex color used as shadow tint — this is a color, not a shadow shorthand */
+  /* ── Mix sources — exact colours blended by color-mix() into opaque tints
+     (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
+  --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source */
+  --tint-hud-teal:     #2a6a8a;  /* inset-sidebar callout mix source */
+  --tint-signal-red:   #d41200;  /* tape border mix source */
+  --tint-brick-red:    #b42828;  /* skill-card header wash mix source */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
@@ -189,7 +194,7 @@
      the existing --shadow-poster token. Applied via filter:drop-shadow
      on the chapter-opener page so it follows the union silhouette
      (badge + tapered chevron + section substrate) as a single shape. */
-  --dc-chapter-opener-shadow: 3px 4px 0 color-mix(in srgb, #000 28%, var(--wall-tone));
+  --dc-chapter-opener-shadow: 3px 4px 0 var(--shadow-ink);
 
   /* ── Fluorescent Fungi Pillar (creaturepunk: bioluminescent organic) ─────
      The 4th creaturepunk register: spore-light, lichen-glow, UV-reactive

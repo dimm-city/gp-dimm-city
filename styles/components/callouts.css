@@ -100,7 +100,7 @@
   line-height: var(--lh-normal);
   padding: var(--space-lg) var(--space-xl);
   margin-top: var(--dc-alert-margin-top);
-  break-inside: avoid;
+  break-inside: var(--dc-alert-break-inside);
   /* Alerts are full-width callouts that interrupt the reading flow; they
      should NEVER overlap a preceding right-floated image (observed 2026-05-25
      with the portrait in the citizen-file intro). Block elements don't wrap
