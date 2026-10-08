@@ -30,6 +30,15 @@ cut a version that has no `## [X.Y.Z]` heading below.
   pixel-identical to 0.11.13, and without any workaround the book ends on
   4 pure-white pages (232). The design guide's Publishing chapter documents
   both settings.
+- **Specialty chapters nest in the outline.** A learning path's title was
+  emitted as an `h2`, the same level as the specialty name, and a skill's
+  title as a plain `span`, so the app's contents panel and the PDF
+  bookmarks listed every skill tree beside its specialty and no skills at
+  all. The plugin now emits the heading levels the markdown is written
+  at: specialty (`##`) > learning path (`h3.dc-spray`) > skill
+  (`h4.dc-tab-title`). The CSS follows, and both books render
+  pixel-identical. A stylesheet that targeted `h2.dc-spray` or
+  `span.dc-tab-title` needs the new tag.
 
 ### Fixed
 

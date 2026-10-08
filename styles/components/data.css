@@ -73,7 +73,7 @@
 
 /* 2px ink outline: the shell shape on a box 2px larger on every side, filled
    with ink, behind the surface. Replaces the 4-way drop-shadow(±2px) filter.
-   The title (h2.dc-spray) is an in-flow child with its own clip and no
+   The title (h3.dc-spray) is an in-flow child with its own clip and no
    outline of its own, so every shell cut equals its title cut at the corner
    the title covers (specialty-identity.css, "Title-covered corners").
    Nothing reaches ABOVE the shell's box: its top rim is the box's own top
@@ -103,7 +103,7 @@
   --dc-path-shell-padding-bottom: 16px;
 }
 
-.dc-path-shell>h2.dc-spray {
+.dc-path-shell>h3.dc-spray {
   width: stretch;
   /* A path banner spans its shell edge to edge, with its tab pulled inside
      (`right: -5px` below): it takes none of the standalone banner's
@@ -111,7 +111,7 @@
   max-width: none;
 }
 
-.dc-path-shell>h2.dc-spray:first-child {
+.dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
   background: var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
@@ -123,16 +123,16 @@
   padding-bottom: 0;
 }
 
-.dc-path-shell>h2.dc-spray:first-child + * {
+.dc-path-shell>h3.dc-spray:first-child + * {
   break-before: avoid;
 }
 
-.dc-path-shell>h2.dc-spray:first-child::before {
+.dc-path-shell>h3.dc-spray:first-child::before {
   background: var(--dc-path-title-bg);
   right: -5px;
 }
 
-.dc-path-shell>h2.dc-spray:first-child::after {
+.dc-path-shell>h3.dc-spray:first-child::after {
   content: '';
   position: absolute;
   left: 0;

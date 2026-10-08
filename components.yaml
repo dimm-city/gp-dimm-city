@@ -333,7 +333,7 @@ components:
     origin: plugin
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
-      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h2.dc-spray > span.dc-path-sticker
+      - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)
@@ -345,14 +345,14 @@ components:
       - --dc-path-shell-padding-top
       - --dc-path-shell-padding-bottom
       - --dc-arrow-color
-    breaks: "break-before/after: auto on the block; the h2 stays with what follows"
+    breaks: "break-before/after: auto on the block; the h3 stays with what follows"
 
   - name: skill
     status: live
     origin: plugin
     recipe: "@skill [id=…] [{.dc-allow-split}] [{.dc-two-col}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill (alias @end-skills)"
     emits:
-      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > span.dc-tab-title + span.dc-tab-tier
+      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
       - div.dc-ability > span.dc-ap + p.dc-ability-text
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
@@ -544,7 +544,7 @@ components:
     status: live
     origin: author
     recipe: "## Title {.dc-spray}  (also emitted by @learning-path for its title)"
-    emits: h2.dc-spray
+    emits: ["h2.dc-spray (authored)", "h3.dc-spray (a @learning-path title)"]
     css: [styles/components/chrome.css, styles/components/data.css]
     tokens: [--dc-spray-bg, --dc-spray-color]
     breaks: "as a path-shell title: break-before avoid on the element after it"

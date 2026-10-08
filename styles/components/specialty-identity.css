@@ -8,7 +8,7 @@
    Shape variable inventory (defined at parent, consumed by components):
      --dc-skill-tab-shape            → .dc-card-tab clip-path
      --dc-skill-body-shape           → .dc-card-body clip-path
-     --dc-path-title-shape           → .dc-path-shell h2.dc-spray clip-path
+     --dc-path-title-shape           → .dc-path-shell h3.dc-spray clip-path
      --dc-path-shell-clip            → .dc-path-shell clip-path
      --dc-specialty-card-shell-shape → .dc-specialty-card clip-path
      --dc-specialty-intro-title-shape → .dc-specialty-intro > h2 clip-path

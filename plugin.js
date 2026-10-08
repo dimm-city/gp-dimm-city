@@ -1753,12 +1753,14 @@ export default function dimmCityPlugin(md, options = {}) {
 
       // Inside @learning-path section
       if (inLearningPath && !inSkillMode) {
-        // H3 = Learning path title (banner)
+        // H3 = Learning path title (banner). Emitted as an h3, the level it
+        // was written at: the outline (the app's contents panel, PDF
+        // bookmarks) nests specialty (##) > learning path (###) > skill (####).
         if (tok.type === 'heading_open' && tok.tag === 'h3') {
           const inlineTok = tokens[i + 1];
           const titleText = inlineTok && inlineTok.content ? inlineTok.content : '';
           currentLearningPathName = titleText;
-          newTokens.push(makeToken('html_block', '<h2 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span>' + esc(titleText) + '</h2>\n'));
+          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span>' + esc(titleText) + '</h3>\n'));
           learningPathHasTitle = true;
           i += 2; // Skip heading_open, inline, heading_close
           continue;
@@ -1967,7 +1969,10 @@ export default function dimmCityPlugin(md, options = {}) {
           const tabBaseClass = 'dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '');
           cardHtml += '  <div class="' + tabBaseClass + '">\n';
           const autoTier = currentLearningPathRef ? currentLearningPathRef + '.' + currentSkillIndex : '';
-          cardHtml += '    <span class="dc-tab-title">' + esc(parsed.name) + '</span>\n';
+          // The skill's name is its `####` heading, kept a heading so the
+          // outline lists it under its learning path. (A continuation card's
+          // repeated title stays a span: it is not a new entry.)
+          cardHtml += '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n';
           cardHtml += '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n';
           cardHtml += '  </div>\n';
 

@@ -170,6 +170,11 @@
   letter-spacing: 0.05em;
   line-height: 1.2;
   word-break: break-word;
+  /* The title is the skill's h4 (plugin.js): clear what the h4 look adds
+     (dc-core.css) so the tab sets exactly as the span it used to be. */
+  margin: 0;
+  font-weight: inherit;
+  text-wrap: wrap;
 }
 
 .dc-tab-tier {

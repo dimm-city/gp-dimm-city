@@ -127,8 +127,9 @@
   padding: 0.08in 0.12in;
 }
 
-/* LIVE inside plugin-emitted specialty sections. */
-.dc-specialty h3 {
+/* LIVE inside plugin-emitted specialty sections. Not the learning-path
+   banner, which is an h3 too (h3.dc-spray) and carries its own chrome. */
+.dc-specialty h3:where(:not(.dc-spray)) {
   margin-top: 0.18in;
   padding-top: 0.08in;
   border-top: var(--bw-thin) solid var(--orange);
