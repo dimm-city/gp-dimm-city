@@ -252,9 +252,10 @@ figure {
 }
 
 /* ── 5. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
-   `.section` carries `break-inside: avoid` from THIS BOOK's own
-   components/*.css (core no longer ships that default, but the book still
-   sets it). Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
+   `.section` reads `break-inside: var(--dc-section-break-inside)`, default
+   `avoid` (components/section.css; token in dc-component-defaults.css). This
+   rule sets the TOKEN, not the property, so the component keeps the only
+   `break-inside` declaration. Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
    container, columns:2) and the `.section` blocks sit INSIDE it. A section
    taller than one column can then never split, so Chromium drops it whole
    into one column fragment and the facing column dies — the dead-column
@@ -264,9 +265,11 @@ figure {
    Keys on the COUNT class, not `.dc-column-panel`: this is about multicol
    fragmentation, and the wrapper shape is often a `@block` or `@page` that
    never carries the panel chrome at all. */
+/* Selector is the descendant form on purpose: a `.section` that is itself the
+   multicol container keeps the default. */
 .gp-columns-2 .section,
 .gp-columns-3 .section {
-  break-inside: auto;
+  --dc-section-break-inside: auto;
 }
 
 /* ── 6. COLUMN-FILL is a per-shape decision, and it lives HERE ────────────
@@ -324,14 +327,16 @@ figure {
 
 /* Measured (p243, DOM-inspected): the CORE ELEMENTS heading is a full-width
    spanner inside a .gp-columns-2 section, followed by a dc-alert callout
-   whose break-inside: avoid is UNENFORCEABLE (the card is taller than a
+   whose default break-inside: avoid is UNENFORCEABLE (the card is taller than a
    column). Chromium then emits an empty card fragment under the spanner —
    header stranded, content headerless on the next page. A card that may
    fragment starts filling right under its header instead. Scoped to
    multicol sections only; standalone cards keep their avoid. */
+/* Sets --dc-alert-break-inside (callouts.css reads it); a book restores `avoid`
+   for one instance by setting the token in context. */
 .gp-columns-2 .dc-alert,
 .gp-columns-3 .dc-alert {
-  break-inside: auto;
+  --dc-alert-break-inside: auto;
 }
 
 /* Skill-card tabs (MNEMONIC PLAGUE, p114): the .dc-card-tab chip is a

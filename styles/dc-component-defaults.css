@@ -8,6 +8,7 @@
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
+  --dc-section-break-inside: avoid;           /* `auto` lets a section split across pages/columns (.dc-allow-split, multicol runs) */
 
   /* Section chrome. A variant sets these on its own rule instead of cancelling
      .section's panel. Surface/shadow are the `content` of the ::before/::after
@@ -34,6 +35,7 @@
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-alert public API */
+  --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
   --dc-alert-bg:             var(--hud-blue-dim);   /* surface-callout alias — player-facing note panel */
   --dc-alert-border:         var(--hud-blue-dark);  /* border-callout-dm alias — left rail */
   --dc-alert-fg:             var(--ink);

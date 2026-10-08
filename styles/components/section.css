@@ -43,8 +43,11 @@
      entirely. The resulting dead zone at the end of the previous page is
      intentional design behavior, not a layout failure. Authors keep
      sections short enough to fit; if a section is too tall, split it
-     into multiple @section blocks at logical boundaries. */
-  break-inside: avoid;
+     into multiple @section blocks at logical boundaries. The value is the
+     --dc-section-break-inside token: contexts that let a section split (the
+     .dc-allow-split opt-in below, multicol runs in dc-native.css) set the
+     token rather than re-declaring this property. */
+  break-inside: var(--dc-section-break-inside);
   /* Wall-shadow is the ::after fake-shadow below (vector, same clip-path
      as ::before). Do NOT add filter:drop-shadow here — that would double
      the shadow (raster filter + vector pseudo) per print R9 finding. */
@@ -53,8 +56,9 @@
 /* Optional escape hatch for genuinely long rules sections where atomic-card
    pagination creates unusable dead zones. Use sparingly and only on sections
    that have already been split at logical authoring boundaries. */
+/* It sets the token, not the property, so one declaration above decides. */
 .section.dc-allow-split {
-  break-inside: auto;
+  --dc-section-break-inside: auto;
 }
 
 /* clip-path + left accent band on ::before.
