@@ -614,6 +614,14 @@ components:
     css: styles/components/cards.css
     breaks: "list items and paragraphs break-inside: avoid within the columns"
 
+  - name: cards-two-col
+    status: live
+    origin: author
+    recipe: "@specialty .augmerc .dc-cards-two-col  (or on @chapter / @page / @section)"
+    emits: .dc-cards-two-col (on the ancestor it is written on; styles the .dc-skill-card inside it)
+    css: styles/components/cards.css
+    breaks: "list items break-inside: avoid; a paragraph may break between columns. Flavor line, ability rows, tables, sub-heads and rules span both columns. A card with .dc-allow-split stays single-column; a card with its own .dc-two-col keeps the per-card form"
+
   - name: snug
     status: live
     origin: author

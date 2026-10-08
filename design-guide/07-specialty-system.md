@@ -340,6 +340,7 @@ Once per round, outside your turn, you exploit a target in reach:
 | Anchor | `@skill id="dirty-work"` | A link target for the card |
 | Highlight | `#### Name \| AUG4.1 \| highlight` with `@skill {.dc-highlight}` | A featured ability: crimson tab halo and body wash |
 | Two columns | `@skill {.dc-two-col}` | Pack a long ability list into two columns |
+| Two columns, every card | `.dc-cards-two-col` on an ancestor, e.g. `@specialty .augmerc .dc-cards-two-col` | Two-column form for all skill cards inside (see Variants) |
 | Allow split | `@skill {.dc-allow-split}` | Let a tall card break across pages |
 
 The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `VAR` or a range is variable (magenta). A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.

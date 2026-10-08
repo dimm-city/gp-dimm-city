@@ -389,6 +389,18 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 </div>
 
+### Two columns for every card — `.dc-cards-two-col`
+
+`@skill {.dc-two-col}` sets one card. To make every skill card under a wrapper two-column, put `.dc-cards-two-col` on any ancestor: the `@specialty` marker, a `@chapter`, a `@page`, a `@section`. Only running text flows in the columns, and a paragraph may break between them so the columns balance; a list item stays whole. The flavor line, ability rows, tables, outcome ladders, sub-heads and rules span the card. A card marked `{.dc-allow-split}` stays single-column. A card that also has its own `{.dc-two-col}` keeps that stricter per-card form (paragraphs whole) and ignores the ancestor's.
+
+```markdown
+@specialty .augmerc .dc-cards-two-col
+
+@skill
+#### Boost Morale | AUG3.4
+…
+```
+
 ### Outcome table — a `| Roll | Outcome |` table inside the card
 
 The table becomes the card's outcome ladder.

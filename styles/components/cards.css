@@ -316,6 +316,52 @@
   break-inside: avoid;
 }
 
+/* ── SKILL-CARD TWO-COLUMN FORM, BY ANCESTOR ───────────────────────────────── */
+/* `.dc-cards-two-col` on ANY ancestor of skill cards (a `@specialty` marker,
+   a `@chapter`/`@page`, a `@section`) makes every skill card inside it
+   two-column: `@specialty .augmerc .dc-cards-two-col`. It is the book-wide
+   counterpart of the per-card `.dc-two-col` above, and the two differ on
+   purpose. Here only running text (paragraphs and lists) flows in the two
+   columns, a paragraph MAY break between them so the columns balance, and a
+   list item stays whole. Everything else spans the card: the flavor line,
+   ability rows (AP pill + text: in a column they ran taller than the whole
+   card and could not balance), tables, outcome ladders, alerts, sub-heads
+   and rules. Per-card `.dc-two-col` instead keeps every paragraph whole and
+   spans only tables.
+   A card with its own `.dc-two-col` keeps the per-card form entirely: every
+   rule below excludes it, so its own, stricter form wins over the inherited
+   one. A card marked `.dc-allow-split` stays single-column: a balanced
+   multicol that fragments across pages leaves the first fragment's right
+   column empty.
+   Column authority for both forms is this file (COLUMNS_ALLOWLIST in
+   test/integrity.test.js): this is component-internal layout of the card
+   body, not a page or section template. */
+.dc-cards-two-col .dc-skill-card:not(.dc-two-col, .dc-allow-split) > .dc-card-body > .dc-card-inner {
+  column-count: 2;
+  column-gap: 16px;
+}
+
+/* The second selector: a text block left alone between two spanning pieces
+   (or at either end) cannot balance and would leave a column empty. */
+.dc-cards-two-col .dc-skill-card:not(.dc-two-col, .dc-allow-split) .dc-card-inner > :not(ul, ol, p:not(.dc-flavor)),
+.dc-cards-two-col .dc-skill-card:not(.dc-two-col, .dc-allow-split) .dc-card-inner > :is(:first-child, :not(ul, ol, p:not(.dc-flavor)) + *):is(:last-child, :has(+ :not(ul, ol, p))) {
+  column-span: all;
+}
+
+.dc-cards-two-col .dc-skill-card:not(.dc-two-col, .dc-allow-split) .dc-card-inner li {
+  break-inside: avoid;
+}
+
+/* An ability row under text that runs in the two columns sat flush on its
+   last line: the column row drops that text's bottom margin at the
+   spanning row. The row is moved down, not given a margin: a 0.08in margin
+   cost two pages in the Field Guide and split a card across a page turn, and
+   0.04in cost one page (measured). */
+.dc-cards-two-col .dc-skill-card:not(.dc-two-col, .dc-allow-split) .dc-card-inner > :is(p:not(.dc-flavor), ul, ol) + :is(p:not(.dc-flavor), ul, ol) + .dc-ability {
+  position: relative;
+  top: 0.06in;
+}
+
 /* A split card (`.dc-allow-split`) never opens with just its tab and a line
    or two at a page foot: its first two blocks (the flavor line and a
    possibly one-line ability) stay with the first two lines of what follows,

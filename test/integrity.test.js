@@ -248,6 +248,7 @@ describe("file contracts", () => {
   const COLUMNS_ALLOWLIST = [
     // [sheet, selector substring, reason] — FINDINGS: both contradict the stated rule; allow-listed until moved.
     ["styles/components/cards.css", ".dc-skill-card.dc-two-col .dc-card-inner", "two-column skill card body (column-count: 2) — no stated exception in css-architecture.md"],
+    ["styles/components/cards.css", ".dc-cards-two-col .dc-skill-card", "ancestor-scoped two-column skill cards — component-internal layout of the card body, same class of exception as .dc-two-col above"],
     ["styles/components/section.css", ".dc-card-grid", "card grid uses columns: 2 — no stated exception in css-architecture.md"],
   ];
   test("`columns` / `column-count` are declared only in page-templates.css", () => {
