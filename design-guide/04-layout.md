@@ -224,6 +224,20 @@ Components keep themselves whole by default: a card, a callout, a section will m
 
 Reach for `.dc-allow-split` only when an element is genuinely taller than the printable area or keeping it whole leaves most of a page blank. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
 
+## Tighter spacing
+
+`.dc-snug` halves the space between paragraphs and list items inside a section or page. Reach for it when a section overflows by a line or two and the last line would otherwise strand on a page of its own. Type size and leading are untouched.
+
+```markdown
+@section .dc-snug
+### Ideal
+
+Paragraph and list-item gaps shrink to 0.04in here.
+@end-section
+
+@page .dc-snug
+```
+
 ## Edge to edge
 
 `.dc-flush` removes a component's side margins so it runs the full column. It is read by tape, stat blocks, sticker chains, and `@outcome flush`.

@@ -602,8 +602,8 @@ components:
     origin: author
     recipe: "@skill {.dc-allow-split} or @section .dc-allow-split"
     emits: .dc-allow-split (on the skill card or section it is written on)
-    css: styles/components/section.css
-    breaks: "break-inside: auto — opts a section or skill card out of the default avoid"
+    css: [styles/components/section.css, styles/components/cards.css]
+    breaks: "break-inside: auto — opts a section or skill card out of the default avoid. A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
     notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it."
 
   - name: two-col
@@ -613,6 +613,14 @@ components:
     emits: div.dc-skill-card.dc-two-col
     css: styles/components/cards.css
     breaks: "list items and paragraphs break-inside: avoid within the columns"
+
+  - name: snug
+    status: live
+    origin: author
+    recipe: "@section .dc-snug  /  @page .dc-snug"
+    emits: .dc-snug (on the section or page it is written on)
+    css: styles/page-templates.css
+    notes: "Paragraph and list-item margin-bottom drops to 0.04in so a section or page that overflows by a line or two fits. Type size and leading are untouched."
 
   - name: plain
     status: live

@@ -560,6 +560,16 @@
   margin-top: 0;
 }
 
+/* ── SNUG — `@section .dc-snug` / `@page .dc-snug` ──────────────────────────
+   Halves the space between paragraphs and list items so a section or page
+   that overflows by a line or two fits. Type size and leading are
+   untouched. Lives in dc.templates so it outranks the dc.components and
+   dc.base paragraph/list margins; only the contents-page rows and the
+   credits colophon, which fix their own spacing here, outrank it. */
+:is(.section, .page).dc-snug :is(p, li) {
+  margin-bottom: 0.04in;
+}
+
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────
    KEEPS the default .dc-chevron heading styling (magenta banner with its
    own bottom-right diagonal clip-path) — that's the established intro

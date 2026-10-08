@@ -694,6 +694,16 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </tbody>
 </table>
 <p>Reach for <code>.dc-allow-split</code> only when an element is genuinely taller than the printable area or keeping it whole leaves most of a page blank. Prefer splitting content at a logical boundary first — <code>@continue</code> for a long skill card.</p>
+<h2>Tighter spacing</h2>
+<p><code>.dc-snug</code> halves the space between paragraphs and list items inside a section or page. Reach for it when a section overflows by a line or two and the last line would otherwise strand on a page of its own. Type size and leading are untouched.</p>
+<pre><code data-source-range="230:239" class="language-markdown">@section .dc-snug
+### Ideal
+
+Paragraph and list-item gaps shrink to 0.04in here.
+@end-section
+
+@page .dc-snug
+</code></pre>
 <h2>Edge to edge</h2>
 <p><code>.dc-flush</code> removes a component’s side margins so it runs the full column. It is read by tape, stat blocks, sticker chains, and <code>@outcome flush</code>.</p>
 </div></div>"

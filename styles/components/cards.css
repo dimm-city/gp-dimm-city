@@ -316,6 +316,25 @@
   break-inside: avoid;
 }
 
+/* A split card (`.dc-allow-split`) never opens with just its tab and a line
+   or two at a page foot: its first two blocks (the flavor line and a
+   possibly one-line ability) stay with the first two lines of what follows,
+   or the card moves to the next page. */
+.dc-specialty .dc-skill-card.dc-allow-split .dc-card-inner > :nth-child(-n+2) {
+  break-after: avoid;
+}
+
+/* In a split card a lead-in stays with what it introduces: an ability row
+   with its first lines, a bold-only pseudo-heading with the paragraph under
+   it, a paragraph with the list or table it opens. CSS cannot see text
+   nodes, so `strong:only-child` also takes a paragraph whose only markup is
+   one bold run. A last child is left out: its break-after would pass up to
+   the card and glue the next path banner to it. */
+.dc-specialty .dc-skill-card.dc-allow-split .dc-card-inner > :is(.dc-ability, p:has(> strong:only-child)):not(:last-child),
+.dc-specialty .dc-skill-card.dc-allow-split .dc-card-inner > p:has(+ :is(ul, ol, table)) {
+  break-after: avoid;
+}
+
 /* Horizontal skill placement — not currently attempted. `.dc-specialty
    .skill-grid { columns: 2 }` and `display: grid` are both worth testing
    before more work goes into the alternatives: the per-skill `.dc-two-col` body
