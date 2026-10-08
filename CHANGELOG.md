@@ -7,8 +7,25 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-10-08
+
+**Notes for books upgrading from 1.1.1:**
+
+- Build on gutterpress 0.11.15 or later and drop `@page .dc-printer-page`
+  and your own `print.signature`: the `dtrpg` preset now does both.
+- Field Guide classes that moved into the package: `.fg-snug` becomes
+  `.dc-snug`, and the book-wide two-column skill cards become
+  `.dc-cards-two-col` on the specialty markers.
+- Section panels, padding and splitting are tokens now. A book that
+  restyled `.section` chrome by overriding properties should set the
+  tokens instead (see the palette reference's Section table).
+
 ### Added
 
+- **`.dc-cards-two-col`**: on any ancestor (`@specialty`, `@chapter`,
+  `@page`, `@section`), every skill card inside gets a two-column body.
+  This is the Field Guide's book-wide form as an opt-in. A card's own
+  `.dc-two-col`, or `.dc-allow-split`, keeps its own form.
 - **`.dc-snug`**: tighter paragraph and list-item spacing on a section or
   page, for one that would otherwise overflow by a line or two (from the
   Field Guide's `.fg-snug`).
