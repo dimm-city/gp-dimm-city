@@ -50,6 +50,13 @@
      Augmerc BODYCOVER/BLITZ seam). Same class of fix as .fg-art-portrait's
      margin-bottom in the book's own sheet (unlayered). */
   margin-bottom: calc(var(--dc-card-gap) + 6px);
+  /* The tab's outline reaches 4px above the tab (.dc-card-tab::after). Above
+     the CARD it printed at the foot of the previous page whenever the card
+     opened a page — a full-width ink-and-accent line across the folio row.
+     The card starts 4px higher and pads the tab 4px down, so the outline
+     stays inside the card's box and nothing moves. */
+  padding-top: 4px;
+  margin-top: -4px;
   max-width: 100%;
   /* 4-way ink outline (2px on each side) + HARD offset poster shadow. The
      hard shadow (2pt 3pt 0, no blur) pins the card to the brick wall as a
@@ -372,7 +379,7 @@
 
 /* ── Continuation card variants ───────────────────────────────────────── */
 .dc-skill-card-cont {
-  margin-top: 0;
+  margin-top: -4px; /* the card's own offset: see .dc-skill-card */
 }
 
 .dc-card-tab-cont {

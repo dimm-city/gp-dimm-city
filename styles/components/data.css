@@ -28,8 +28,11 @@
      Unlike .dc-skill-card, no book-wide instance of this touching was found;
      every live path→card seam already cleared, so this is added breathing
      room rather than a defect fix. */
-  margin: 8px 8px calc(var(--dc-card-gap) + 4px);
-  padding-top:    var(--dc-path-shell-padding-top);
+  /* The top 2px of the box is the ink outline's top rim (see ::after): the
+     shell starts 2px higher (margin 6px, not 8px) and pads its content 2px
+     down, so content and outline sit exactly where they did. */
+  margin: 6px 8px calc(var(--dc-card-gap) + 4px);
+  padding-top:    calc(var(--dc-path-shell-padding-top) + 2px);
   padding-bottom: var(--dc-path-shell-padding-bottom);
   /* Room for `.dc-spray::before`, the skewed tab pinned at `right: -8px` with
      `width: 14px`. Without it that decoration escapes this shell (measured:
@@ -61,7 +64,7 @@
 .dc-path-shell::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 2px 0 0;
   background: linear-gradient(to right, var(--dc-path-accent) 4px, var(--paper-cream) 4px);
   clip-path: var(--dc-path-shell-clip);
   z-index: -1;
@@ -72,18 +75,19 @@
    The title (h2.dc-spray) is an in-flow child with its own clip and no
    outline of its own, so every shell cut equals its title cut at the corner
    the title covers (specialty-identity.css, "Title-covered corners").
-   The box starts AT the shell's top and is translated up 2px: a shell that
-   opens a page (its top margin truncated at the break) would otherwise have
-   Chromium push the outline box down to the page's content area, 2px low —
-   see .dc-specialty-intro::after. */
+   Nothing reaches ABOVE the shell's box: its top rim is the box's own top
+   2px (the surface starts below it). A layer that started above the box —
+   `top: -2px`, or the `translateY(-2px)` this used to use — printed its top
+   2px at the foot of the PREVIOUS page whenever the shell opened a page: a
+   full-width ink line across the folio row (Field Guide, specialty
+   chapters). */
 .dc-path-shell::after {
   content: '';
   position: absolute;
   top: 0;
   right: -2px;
-  bottom: -4px;
+  bottom: -2px;
   left: -2px;
-  transform: translateY(-2px);
   background: var(--ink);
   clip-path: var(--dc-path-shell-clip);
   z-index: -2;

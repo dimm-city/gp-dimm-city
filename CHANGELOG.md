@@ -49,6 +49,20 @@ cut a version that has no `## [X.Y.Z]` heading below.
   any transparency in the stylesheets; the unused `.dc-cover-page`
   composite is its only exemption.
 
+- **No stray ink line across the folio row.** A skill card, learning-path
+  banner or specialty intro that opened a page printed the top 2–4px of its
+  outline at the foot of the PREVIOUS page: a full-width black (or accent)
+  line between the folio and chapter chips. The outlines reached above
+  their component's box (`top: -4px`, `translateY(-2px)`), and Chromium
+  fragments that part onto the page before. Each outline now sits inside
+  its own box: the card starts 4px higher and pads its tab 4px down
+  (`padding-top: 4px; margin-top: -4px`), the banner 2px likewise, and
+  the intro pads its content 2px. Mid-page nothing moves; a component that
+  opens a page sits 2–4px lower. Measured: the line is gone from all 17 Field Guide pages and
+  the 1 design guide page that had it; page counts are unchanged (232, 132) and
+  no text changes page. (It became visible with 1.1.0's DriveThruRPG
+  margins, which moved the page breaks; the cause dates from 1.0.0.)
+
 ### Removed
 
 - `images/brick-bg-01.png`, the RGBA wall tile, is no longer published
