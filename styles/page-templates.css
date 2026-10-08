@@ -12,8 +12,6 @@
    - .dc-full-page full-bleed geometry (its named-page assignment,
      `page: full`, lives in page-rules.css alongside `@page full` — see
      that file's "ONE BLOCK PER NAMED PAGE" contract)
-   (`.dc-suppress-footer`'s named-page wiring, `page: clean`, lives in
-     page-rules.css alongside `@page clean` — same contract as .dc-full-page)
    - Break/overflow control scoped to a page type (.dc-specialty break rules)
 
    NOTE: Page-level typography constraints (orphans/widows on body, break-after
@@ -205,9 +203,8 @@
   break-before: page;
 }
 
-/* The footer-suppression wiring (`.dc-suppress-footer { page: clean; }`) was here and MOVED (dc#35) to
-   page-rules.css, adjacent to `@page clean` — named-page wiring belongs
-   with its @page block, not scattered across files. */
+/* The footer-suppression class `.dc-suppress-footer` (`page: clean`) was
+   removed 2026-10-08: no book used it. */
 
 /* `.dc-art-top` and `.dc-art-bottom` (+ their shared `img` rule) were here
    and are DELETED (2026-09-02): zero uses of either in any book's rendered

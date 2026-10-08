@@ -142,16 +142,6 @@
 .dc-full-page { page: full; }
 
 /* ---------------------------------------------------------------------------
-   Clean — footer suppression on demand. Wired via `.dc-suppress-footer`;
-   no page in either book currently opts in.
-   --------------------------------------------------------------------------- */
-
-@page clean {
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
-}
-
-/* ---------------------------------------------------------------------------
    DEPRECATED (1.1.1): gutterpress 0.11.15+ does this in core — the dtrpg
    preset's `print: { signature: 4, reserveLastPage: true }` appends blank
    pages so the interior always ends blank (dimm-city/gutterpress#332).
@@ -177,10 +167,6 @@
   page: printer-blank;
   break-before: page;
   height: var(--gp-content-h);
-}
-
-.dc-suppress-footer {
-  page: clean;
 }
 
 /* ---------------------------------------------------------------------------

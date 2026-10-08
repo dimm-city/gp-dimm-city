@@ -10,7 +10,7 @@ Every element that ships more than one variant, with all of its variants on one 
 
 ## Skill trees — one per specialty
 
-A learning path is a skill tree: the spray title, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card.
+A learning path is a skill tree: the spray title, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
 
 ### Augmerc — `.augmerc`
 
@@ -259,68 +259,6 @@ A learning path is a skill tree: the spray title, the subtitle, the skill sticke
 > Everything bends. Everything bounces. You just gotta convince it.
 
 1. **2 AP** As your Action, you radically increase the elasticity of yourself, one willing packmate, or one surface or object **In Range** until the end of the encounter. …
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
-### Dualist — `.dualist`
-
-<div class="dg-stage">
-
-@specialty .dualist
-
-@learning-path
-
-### Split Discipline
-
-> Two crafts, one body. You never fully belong to either — and that's the edge.
-
-- Crossover Stance
-- Borrowed Reflex
-
-@skill
-
-#### Crossover Stance
-
-> The moment they read you as one thing, you become the other.
-
-1. **1 AP** *Read the Frame:* Declare which discipline an enemy expects. The first technique from the *other* discipline rolls Lucid against them.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
-### Generalist — `.generalist`
-
-<div class="dg-stage">
-
-@specialty .generalist
-
-@learning-path
-
-### Jack of the Sprawl
-
-> Master of none, ready for anything.
-
-- Field Improvisation
-- Adaptive Loadout
-
-@skill
-
-#### Field Improvisation
-
-> No right tool? Every wrong tool works if you swing it hard enough.
-
-1. **1 AP** *Make It Work:* Attempt a task that needs gear or training you don't have. ROLL THE DIE!
 
 @end-skill
 

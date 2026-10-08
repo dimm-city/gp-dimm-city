@@ -172,11 +172,6 @@ div.chapter[id^="ch-example-"][data-ch] {
   @bottom-right { content: none; }
 }
 
-@page clean {
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
-}
-
 @page :blank {
   @bottom-left  { content: none; }
   @bottom-right { content: none; }

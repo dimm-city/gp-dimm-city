@@ -7,6 +7,22 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Removed
+
+- `.dc-suppress-footer` and its `@page clean` (and the design guide's
+  mirror of it): no book used footer suppression.
+- The design guide's dual specialist and generalist skill-tree specimens
+  (Variant Gallery; The Specialty System's "One source" section, now
+  "eight shapes"). Those two specialties take their skills from the other
+  eight and have no trees of their own, so the specimens printed a
+  generic `PATH1` sticker for something that cannot exist.
+
+### Fixed
+
+- The catalog's glossary entries: a glossary item is a plain paragraph
+  inside `@glossary`, and no doc or gallery page writes `.dc-terms-item`
+  any more, so `glossary-item-authored` is retired.
+
 ## [1.1.1] - 2026-10-08
 
 **Notes for books upgrading from 1.1.0:**

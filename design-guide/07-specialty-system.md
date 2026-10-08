@@ -494,11 +494,11 @@ Result {.dg-result}
 </div>
 
 
-## One source, ten shapes
+## One source, eight shapes {.gp-page-break}
 
-The same path and card markdown, dropped into a different `@specialty`, takes that family's silhouette and color with no change to the source. Gutterdruid, then the two multi-discipline shells:
+The same path and card markdown, dropped into a different `@specialty`, takes that family's silhouette and color with no change to the source. Here it is under Gutterdruid. (The Dualist and Generalist borrow other specialties' skills, so they have no trees of their own.)
 
-<div class="dg-stage dg-tall">
+<div class="dg-stage">
 
 @specialty .gutterdruid
 
@@ -520,60 +520,6 @@ The same path and card markdown, dropped into a different `@specialty`, takes th
 1. **2 AP** *Take the Shape:* Your body rewrites into a natural form, from a mouse to a horse. The form has 6 HP; you gain its movement and senses but cannot use abilities, items, or language.
 
 ##### Some problems need teeth, paws, and claws.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-@specialty .dualist
-
-@learning-path
-
-### Split Discipline
-
-> Two crafts, one body. You never fully belong to either — and that's the edge.
-
-- Crossover Stance
-- Borrowed Reflex
-
-@skill
-
-#### Crossover Stance
-
-> The moment they read you as one thing, you become the other.
-
-1. **1 AP** *Read the Frame:* Declare which discipline an enemy expects. The first technique from the *other* discipline rolls Lucid against them.
-
-##### Belonging to neither means owning the gap between them.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-@specialty .generalist
-
-@learning-path
-
-### Jack of the Sprawl
-
-> Master of none, ready for anything.
-
-- Field Improvisation
-- Adaptive Loadout
-
-@skill
-
-#### Field Improvisation
-
-> No right tool? Every wrong tool works if you swing it hard enough.
-
-1. **1 AP** *Make It Work:* Attempt a task that needs gear or training you don't have. ROLL THE DIE!
-
-##### The specialist quits when the manual ends. You're just getting started.
 
 @end-skill
 

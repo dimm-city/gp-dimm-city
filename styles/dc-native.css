@@ -169,7 +169,7 @@
 /* ── 4. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content — no brick refill needed,
-   which makes page-rules.css's own `@page chapter-start` / `@page clean`
+   which makes page-rules.css's own `@page chapter-start` / `@page full`
    `content: none` blocks sufficient on their own; only `:blank` has no
    counterpart there, so only `:blank` is restated here. */
 @page :blank {
