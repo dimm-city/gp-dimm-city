@@ -7,6 +7,26 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **`.dc-snug`**: tighter paragraph and list-item spacing on a section or
+  page, for one that would otherwise overflow by a line or two (from the
+  Field Guide's `.fg-snug`).
+- **Split skill cards keep their lead-ins with what follows.**
+  `.dc-specialty .dc-skill-card.dc-allow-split` keeps its tab, first
+  blocks and lead-in paragraphs with the next block (from the Field
+  Guide's own sheet).
+- **Section tokens.** A section's panel, shadow and padding now come from
+  tokens (`--dc-section-surface`, `--dc-section-shadow`,
+  `--dc-section-pad-*`), as does whether a box may split
+  (`--dc-section-break-inside`, `--dc-alert-break-inside`). Variants and
+  page templates set tokens instead of cancelling properties.
+- **`test/integrity.test.js`**, which checks that:
+  - every class the books use is styled;
+  - every token that is read, or that the palette reference documents,
+    is declared;
+  - each stylesheet keeps its stated contract.
+
 ### Changed
 
 - **CSS quick wins from an architecture review.**
@@ -23,6 +43,21 @@ cut a version that has no `## [X.Y.Z]` heading below.
   - `dc-native.css` loses its tombstones and is renumbered §1–8.
   - Pixel-identical in both books, except the even specialty cards,
     whose left border is now `1.5pt` like the rest (was `1.5px`).
+
+- **Section styling is opt-in per variant, not cancelled by a central list.**
+  - `.dc-plain`, `.dc-tabbed`, `.dc-column-panel` and `.dc-card-grid` set
+    the section tokens.
+  - The header bar's negative margins are derived from the padding.
+  - The shared page templates (intro, credits, chapter opener) own their
+    styling in `page-templates.css`; the chapter opener moves there from
+    `section.css`.
+  - Pixel-identical in both books.
+- **The credits colophon shows its 4px front-matter rail again.** A rule in
+  `dc-native.css` had overridden it. This is the one visible change, on
+  each book's credits page.
+- **Box splitting is decided in one place.**
+  - Multi-column runs and `.dc-allow-split` set the break-inside tokens.
+  - This replaces an avoid → auto → avoid override chain.
 
 ### Removed
 
