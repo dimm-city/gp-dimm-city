@@ -638,7 +638,7 @@ components:
     emits: div.page.dc-printer-page
     css: [styles/page-rules.css, styles/dc-native.css]
     breaks: "page: printer-blank; break-before: page"
-    notes: "DEPRECATED in 1.2.0: gutterpress 0.11.15+ reserves the blank last page itself (dtrpg preset, `print.reserveLastPage`). A completely blank final page — no wall, no footer — kept so books that still use it build unchanged. The Field Guide still ends with it (chapter-05) until it builds on a stable gutterpress 0.11.15; drop it then."
+    notes: "DEPRECATED in 1.1.1: gutterpress 0.11.15+ reserves the blank last page itself (dtrpg preset, `print.reserveLastPage`). A completely blank final page — no wall, no footer — kept so books that still use it build unchanged. The Field Guide still ends with it (chapter-05) until it builds on a stable gutterpress 0.11.15; drop it then."
 
   - name: img-float
     status: live

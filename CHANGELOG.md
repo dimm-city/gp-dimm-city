@@ -7,6 +7,18 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-08
+
+**Notes for books upgrading from 1.1.0:**
+
+- A learning-path banner is now an `h3` (was `h2`), and a skill's title an
+  `h4` (was a `span`). A book stylesheet that targets `h2.dc-spray` or
+  `span.dc-tab-title` needs the new tag.
+- Unused components were removed; check `docs/cleanup-backlog.md` and the
+  Removed list below before relying on any of them.
+- Tested against gutterpress 0.11.15-alpha.1, whose `dtrpg` preset now
+  does the DriveThruRPG blank last page and K-only black text.
+
 ### Added
 
 - **Heading look classes `.dc-h3`–`.dc-h6`.** A heading keeps its outline

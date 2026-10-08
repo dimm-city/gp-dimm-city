@@ -152,7 +152,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   DEPRECATED (1.2.0): gutterpress 0.11.15+ does this in core — the dtrpg
+   DEPRECATED (1.1.1): gutterpress 0.11.15+ does this in core — the dtrpg
    preset's `print: { signature: 4, reserveLastPage: true }` appends blank
    pages so the interior always ends blank (dimm-city/gutterpress#332).
    Kept so a book that still ends with the marker builds unchanged (one
