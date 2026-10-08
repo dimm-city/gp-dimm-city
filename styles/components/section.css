@@ -310,8 +310,10 @@
   break-after: avoid;
 }
 
-/* H2 — PRIMARY: taller padding + 18px chamfer + orange rule. */
-.section > h2:first-child {
+/* H2 — PRIMARY: taller padding + 18px chamfer + orange rule. An `##` with
+   the h3 look (`{.dc-h3}`, see dc-core.css) takes the subordinate bar below
+   instead; `:where()` keeps this rule's specificity where it was. */
+.section > h2:where(:not(.dc-h3)):first-child {
   font-size: var(--fs-h3);
   padding-top: 0.55rem;
   padding-bottom: 0.40rem;
@@ -320,7 +322,8 @@
 }
 
 /* H3 — SUBORDINATE: hierarchy reads through font size alone. */
-.section > h3:first-child {
+.section > h3:first-child,
+.section > h2.dc-h3:first-child {
   font-size: var(--fs-h4);
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
@@ -384,7 +387,8 @@
    (i.e. NOT the section's header bar) get a left-accent border matching the
    section accent. This visually distinguishes subsection headings from the
    section title bar. Universal across all chapters. */
-.section > h3:not(:first-child) {
+.section > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child),
+.section > h2.dc-h3:not(:first-child) {
   border-left: 3px solid var(--dc-section-accent);
   padding-left: var(--space-sm);
 }

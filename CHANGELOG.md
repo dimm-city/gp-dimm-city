@@ -7,6 +7,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **Heading look classes `.dc-h3`–`.dc-h6`.** A heading keeps its outline
+  level and takes another level's look (`## Useful Items {.dc-h3}`), so a
+  book can stop skipping levels to get a smaller label: gutterpress flags
+  every skip. The section header bar and the in-section accent rule follow
+  the class, not the tag. On a paragraph, the class sets a line in
+  heading type outside the outline. The Field Guide's 13 skipped levels
+  are fixed this way and render pixel-identical. Documented in the
+  design guide's Typography chapter (Level and look).
+
 ### Changed
 
 - **Tested against gutterpress 0.11.15-alpha.1** (devDependency, was
@@ -75,6 +86,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
   declared 612 × 792 pt (the bare Letter trim), so `gutterpress preflight`
   failed every build on page size. It now declares the sheet the CSS
   prints: 621 × 810 pt, the trim plus DriveThruRPG's bleed.
+
+- **`.gp-columns-flow` works.** Core declares it in its own layer, which
+  this package's `column-fill: balance` on every `.gp-columns-2/-3`
+  outranked, so a run marked to flow stayed balanced. The balance rule now
+  skips runs marked `.gp-columns-flow`.
 
 ### Removed
 

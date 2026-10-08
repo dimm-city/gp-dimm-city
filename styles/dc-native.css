@@ -305,9 +305,13 @@ figure {
    p.83, p.111). Measured against the change, under gutterpress 0.11.13:
    the Field Guide's 221 pages render pixel-identical with `balance`, and
    the design guide loses 6 pages of holes. A run that genuinely needs
-   sequential fill opts in with core's `.gp-columns-flow`. */
-.gp-columns-2,
-.gp-columns-3 {
+   sequential fill opts in with core's `.gp-columns-flow`.
+
+   `:not(.gp-columns-flow)` is what makes that opt-in work: core declares
+   `.gp-columns-flow { column-fill: auto }` in its own layer, which every
+   extension layer outranks, so this rule used to win and the class did
+   nothing. `:where()` keeps the specificity at one class. */
+:where(.gp-columns-2, .gp-columns-3):not(.gp-columns-flow) {
   column-fill: balance;
 }
 /* The per-shape exceptions that used to follow — `.dc-citizen-walkthrough

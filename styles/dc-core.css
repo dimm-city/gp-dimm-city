@@ -58,7 +58,16 @@ body {
 }
 
 /* ── HEADINGS ─────────────────────────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+/* A heading's LEVEL is its place in the outline; its LOOK follows the level
+   unless a look class says otherwise. `.dc-h3`–`.dc-h6` give any heading (or
+   a paragraph) the look of that level, so a page can keep an unbroken
+   outline — `#` then `##`, never `#` then `###` — and still print a
+   sub-section label where the outline needs a section:
+     ## Useful Items {.dc-h3}
+   Each look rule below sets every property any level's rule sets, so the
+   class fully replaces the tag's own look (a class outranks an element). */
+h1, h2, h3, h4, h5, h6,
+.dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
   letter-spacing: var(--ls-display);
   line-height: var(--lh-tight);
@@ -94,11 +103,19 @@ h2 {
 }
 
 /* H3 — deep teal: sub-sections (hud-blue-dark gives 6.4:1 on paper-cream vs hud-blue's 3.8:1) */
-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); }
+h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); }
 /* H4–H6 — grim dark ramp: body labels */
-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink-dark);  letter-spacing: 0.06em; }
-h5 { font-size: var(--fs-h5); color: var(--ink-smoke); }
-h6 { font-size: var(--fs-h6); color: var(--ink-dust); }
+h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink-dark);  letter-spacing: 0.06em; }
+h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink-smoke); letter-spacing: var(--ls-display); }
+h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink-dust); letter-spacing: var(--ls-display); }
+/* What h1/h2 add that no lower look has: clear it when a look class is on
+   one of those tags. */
+.dc-h3, .dc-h4, .dc-h5, .dc-h6 {
+  font-weight: var(--fw-bold);
+  margin-bottom: 0.5em;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
 
 
 

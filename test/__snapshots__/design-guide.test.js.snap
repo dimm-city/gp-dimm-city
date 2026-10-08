@@ -382,9 +382,26 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <h3>Sub-section Label</h3>
 <h4>Item Heading</h4>
 </div>
+<h2>Level and look</h2>
+<p>A heading’s level is its place in the outline, and the outline never skips a level: <code>#</code> is followed by <code>##</code>, never <code>###</code>. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with <code>.dc-h3</code>, <code>.dc-h4</code>, <code>.dc-h5</code> or <code>.dc-h6</code>:</p>
+<pre><code data-source-range="65:74" class="language-markdown"># Cybernetics, Weapons, and Gear
+
+## Useful Items {.dc-h3}
+
+### Base Reality {.dc-h4}
+
+#### Dreamer {.dc-h5}
+</code></pre>
+<p class="dg-result">Result</p>
+<div class="dg-stage">
+<h2 class="dc-h3">Useful Items</h2>
+<h3 class="dc-h4">Base Reality</h3>
+<h4 class="dc-h5">Dreamer</h4>
+</div>
+<p>The look follows the class everywhere: an <code>##</code> with <code>.dc-h3</code> that opens a section takes the subordinate section bar, and a <code>###</code> with <code>.dc-h4</code> inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.</p>
 <h2>Heading chrome</h2>
 <p>Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; <code>.dc-no-top</code> pulls it tight against whatever is above it.</p>
-<pre><code data-source-range="65:72" class="language-markdown"># Augmerc {.dc-chevron}
+<pre><code data-source-range="93:100" class="language-markdown"># Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
 
@@ -392,7 +409,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-banner-demo" data-source-range="77:78"><h1 class="dc-chevron">Augmerc</h1>
+<div class="section dc-banner-demo" data-source-range="105:106"><h1 class="dc-chevron">Augmerc</h1>
 <h2 class="dc-spray">Biting Distance</h2>
 <h3 class="dc-spec-tweak dc-no-top">Spec Tweak: Wired to Kill</h3>
 </div></div>
@@ -400,14 +417,14 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
 <div class="dc-flavor">
-<p data-source-range="95:97">See an opening, ya take it. Best time to hit 'em is when they think it's over.</p>
+<p data-source-range="123:125">See an opening, ya take it. Best time to hit 'em is when they think it's over.</p>
 </div>
 </div>
 <p>Flavor keeps the body size and switches to italic and <code>--ink-smoke</code>. Never set flavor in bold italic — it reads as urgency, not voice.</p>
 <p class="dg-dont-label">Don’t</p>
 <div class="dg-stage dg-dont">
 <div class="dc-flavor">
-<p data-source-range="106:108"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it's over.</strong></em></p>
+<p data-source-range="134:136"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it's over.</strong></em></p>
 </div>
 </div>
 <p><strong>Column-safe headings:</strong> in a two-column layout use <code>###</code> and <code>####</code>. <code>#</code> and <code>##</code> at full print size exceed a 3.5-inch column.</p>
@@ -415,35 +432,35 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The renderer converts ASCII shortcuts as you type: <code>--</code> is an en dash --, <code>---</code> an em dash —, <code>...</code> an ellipsis …, and “straight quotes” curl. No special syntax, no Unicode entry.</p>
 <h2>Font tokens</h2>
 <table>
-<thead data-source-range="119:120">
-<tr data-source-range="119:120">
+<thead data-source-range="147:148">
+<tr data-source-range="147:148">
 <th>Token</th>
 <th>Face</th>
 <th>Used for</th>
 </tr>
 </thead>
-<tbody data-source-range="121:126">
-<tr data-source-range="121:122">
+<tbody data-source-range="149:154">
+<tr data-source-range="149:150">
 <td><code>--font-display</code></td>
 <td>lixdu</td>
 <td>H1–H3, banners</td>
 </tr>
-<tr data-source-range="122:123">
+<tr data-source-range="150:151">
 <td><code>--font-body</code></td>
 <td>Titillium Web</td>
 <td>Body prose, flavor, quotes</td>
 </tr>
-<tr data-source-range="123:124">
+<tr data-source-range="151:152">
 <td><code>--font-mono</code></td>
 <td>Tomorrow</td>
 <td>Code, counters, tabular data</td>
 </tr>
-<tr data-source-range="124:125">
+<tr data-source-range="152:153">
 <td><code>--font-tab</code></td>
 <td>Tomorrow</td>
 <td>Short label text: card tabs, stat labels</td>
 </tr>
-<tr data-source-range="125:126">
+<tr data-source-range="153:154">
 <td><code>--font-quote</code></td>
 <td>Titillium Web</td>
 <td>Italic quotes and attributions</td>
@@ -550,9 +567,10 @@ Right column.
 <div class="gp-column-break" aria-hidden="true" data-source-range="35:36"></div>
 <p>Right column.</p>
 </div></div>
+<p>The package balances a run’s columns, so a short run ends level. A run that carries on over more than one page takes core’s <code>.gp-columns-flow</code> as well (<code>@page .gp-columns-2 .gp-columns-flow</code>): each page’s first column then fills before the second starts. Gutterpress names the runs that need it when it builds.</p>
 <h2>The column panel</h2>
 <p>Add <code>.dc-column-panel</code> and the run sits in a card: substrate, top and bottom rules, and the leading <code>##</code> or <code>###</code> becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.</p>
-<pre><code data-source-range="47:60" class="language-markdown">@section .gp-columns-2 .dc-column-panel
+<pre><code data-source-range="49:62" class="language-markdown">@section .gp-columns-2 .dc-column-panel
 
 ## The City
 
@@ -566,14 +584,14 @@ Nothing here is safe. Nothing here is free.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section gp-columns-2 dc-column-panel" data-source-range="65:66"><h2>The City</h2>
+<div class="section gp-columns-2 dc-column-panel" data-source-range="67:68"><h2>The City</h2>
 <p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="71:72"></div>
+<div class="gp-column-break" aria-hidden="true" data-source-range="73:74"></div>
 <p>Nothing here is safe. Nothing here is free.</p>
 </div></div>
 <h2>Tabbed section</h2>
 <p><code>.dc-tabbed</code> hangs the section’s heading as a tab off the panel edge — a strong break between consecutive topics on one page.</p>
-<pre><code data-source-range="83:92" class="language-markdown">@section .dc-tabbed
+<pre><code data-source-range="85:94" class="language-markdown">@section .dc-tabbed
 
 ## Dreamers
 
@@ -583,12 +601,12 @@ You're a Dreamer, not because you're special, but because you're reckless enough
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-tabbed" data-source-range="97:98"><h2>Dreamers</h2>
+<div class="section dc-tabbed" data-source-range="99:100"><h2>Dreamers</h2>
 <p>You’re a Dreamer, not because you’re special, but because you’re reckless enough to try.</p>
 </div></div>
 <h2>Sidebar</h2>
 <p><code>@sidebar</code> floats a reference panel to the right at 38% width; body text wraps on its left. Give it running prose on both sides so it never strands in white space.</p>
-<pre><code data-source-range="111:124" class="language-markdown">When the Dreamers push past Too Far, the table starts asking how movement works.
+<pre><code data-source-range="113:126" class="language-markdown">When the Dreamers push past Too Far, the table starts asking how movement works.
 
 @sidebar
 
@@ -611,7 +629,7 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 </div>
 <h3>Inset sidebar</h3>
 <p><code>@sidebar .inset</code> is a full-height rail pinned to the page’s edge. It needs the <code>@page .page-sidebar</code> template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.</p>
-<pre><code data-source-range="147:164" class="language-markdown">@page .page-sidebar
+<pre><code data-source-range="149:166" class="language-markdown">@page .page-sidebar
 
 @section
 
@@ -628,15 +646,15 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 @end-sidebar
 </code></pre>
 <p class="dg-next">The inset rail needs a page of its own, so the rendered page is the next page.</p>
-</div><div class="page page-sidebar chapter-4" data-source-range="167:168"><div class="section" data-source-range="169:170"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
+</div><div class="page page-sidebar chapter-4" data-source-range="169:170"><div class="section" data-source-range="171:172"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
 <p>That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.</p>
 </div><div class="dc-sidebar inset">
 <h3>Free, Not Costless</h3>
 <p>One out-of-turn ability per round is <em>free to trigger</em> — but it still spends its listed AP. Each additional out-of-turn use that round costs <strong>+1 AP</strong> on top.</p>
 </div>
-</div><div class="page dg-doc chapter-4" data-source-range="185:186"><h2>Floated images</h2>
+</div><div class="page dg-doc chapter-4" data-source-range="187:188"><h2>Floated images</h2>
 <p>An image on its own line is a figure. <code>.dc-img-float-right</code> or <code>.dc-img-float-left</code> floats it at 44% of the column with text wrapping around it; leave a blank line after the paragraph that should clear it.</p>
-<pre><code data-source-range="191:196" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
+<pre><code data-source-range="193:198" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
 
 Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </code></pre>
@@ -650,26 +668,26 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 <h2>Break control</h2>
 <p>Components keep themselves whole by default: a card, a callout, a section will move to the next page rather than split. Two classes adjust that, and a third forces a break.</p>
 <table>
-<thead data-source-range="215:216">
-<tr data-source-range="215:216">
+<thead data-source-range="217:218">
+<tr data-source-range="217:218">
 <th>You write</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="217:221">
-<tr data-source-range="217:218">
+<tbody data-source-range="219:223">
+<tr data-source-range="219:220">
 <td><code>@section .gp-no-break</code></td>
 <td>Never split this section across pages</td>
 </tr>
-<tr data-source-range="218:219">
+<tr data-source-range="220:221">
 <td><code>@skill {.dc-allow-split}</code> or <code>@section .dc-allow-split</code></td>
 <td>Allow this one tall element to split instead of leaving a page mostly empty</td>
 </tr>
-<tr data-source-range="219:220">
+<tr data-source-range="221:222">
 <td><code>## Heading {.gp-break-before}</code></td>
 <td>Start a new page before this element</td>
 </tr>
-<tr data-source-range="220:221">
+<tr data-source-range="222:223">
 <td><code>@page-break</code></td>
 <td>Start a new page here</td>
 </tr>
