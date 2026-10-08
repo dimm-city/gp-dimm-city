@@ -7,8 +7,27 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **CSS quick wins from an architecture review.**
+  - New tokens: `--shadow-ink` (the opaque wall-shadow colour, written
+    out five times before) and four exact-value `--tint-*` mix sources
+    for the literal `rgb()` colours inside `color-mix()`.
+  - `--dc-section-tab-overlap` and `--dc-section-tab-indent` are now
+    public `:root` tokens.
+  - The TOC/credits masthead `h1` is now one rule instead of two.
+  - Dead declarations are gone: the `--shadow-poster` layer a specialty
+    card's own `clip-path` clipped away, `page-break-inside`, an empty
+    rule, a no-op height reset, three `opacity: 1`, and the
+    `break-before: always` Chromium ignores on learning paths.
+  - `dc-native.css` loses its tombstones and is renumbered §1–8.
+  - Pixel-identical in both books, except the even specialty cards,
+    whose left border is now `1.5pt` like the rest (was `1.5px`).
+
 ### Removed
 
+- `--shadow-tint`, and `.dc-roll-the-die`'s `box-shadow: var(--shadow-tint)`:
+  a bare colour is not a valid shadow, so it never rendered.
 - `.dc-suppress-footer` and its `@page clean` (and the design guide's
   mirror of it): no book used footer suppression.
 - The design guide's dual specialist and generalist skill-tree specimens
