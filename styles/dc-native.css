@@ -235,14 +235,7 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
-  /* The colophon fills to the sheet's bottom edge (this template has no
-     bottom margin), so the poster shadow's 3pt drop landed past the sheet,
-     and Chromium printed that overflow as a hairline across the top of the
-     NEXT sheet — the Field Guide's Contents masthead, the design guide's
-     Introduction. The shadow keeps its side offset and loses the drop; the
-     colophon's foot sits under the pinned plate in any case. (Clipping the
-     page instead would also clip a pinned or bleed plate on it.) */
-  box-shadow: 2pt 0 0 var(--shadow-ink);
+  /* Its box-shadow (rail + side-only shadow) is set in page-templates.css. */
 }
 /* The masthead h1 (.page-toc / .page-credits) is defined once, in
    page-templates.css; it escapes the padding above back to the sheet edges. */

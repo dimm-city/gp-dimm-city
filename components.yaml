@@ -663,9 +663,9 @@ components:
     recipe: "@section  (bare; core markers.js emits the wrapper)"
     emits: div.section
     css: styles/components/section.css
-    tokens: [--dc-section-bg, --dc-section-accent]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     breaks: "break-inside: avoid (core MARKER_CSS)"
-    notes: "The panel chrome is opt-out; .dc-plain is the escape."
+    notes: "Panel chrome is token-driven: variants and templates set --dc-section-surface/-shadow/-pad-* on their own rule; .dc-plain turns both layers off."
 
   - name: chapter-opener
     status: live

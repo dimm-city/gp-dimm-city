@@ -398,37 +398,30 @@
   background: var(--frontmatter-accent);
 }
 
-/* Credits colophon section. Same composite role as the TOC card: it's
-   the bottom block of the stack. Carries --shadow-poster so the body
-   column on the credits page lifts off the wall the same way the TOC
-   does on page 1. Substrate picks up the lede's 4px magenta
-   strip so the rail extends continuously from the top of the lede
-   down through the bottom of the colophon. The flex column layout
-   keeps any trailing publisher-mark image bottom-aligned while the
-   inner 2-column grid fills the available height. */
+/* Credits colophon section: the bottom block of the frontmatter stack, a flat
+   paper-cream host (both section chrome layers off) with the lede's 4px
+   rail running down through it. The flex column keeps a trailing
+   publisher-mark image bottom-aligned while the inner grid fills the height.
+   Its shadow is a 2pt right-edge strip, not --shadow-poster: the colophon
+   runs to the sheet's bottom edge (this template has no bottom margin), so
+   the poster shadow's 3pt drop would land past the sheet and print as a
+   hairline across the top of the next one. The strip lines up with the
+   lede's shadow above. */
 .page.page-credits .section.credits-colophon {
+  --dc-section-surface: none;
+  --dc-section-shadow:  none;
+  --dc-section-pad-top:    0.18in;
+  --dc-section-pad-right:  0.22in;
+  --dc-section-pad-bottom: 0.18in;
+  --dc-section-pad-left:   0.22in;
   columns: unset;
   display: flex;
   flex-direction: column;
   font-size: 9.5pt;
   line-height: 1.35;
   background: var(--paper-cream);
-  padding: 0.18in 0.22in;
-  box-shadow: inset 4px 0 0 var(--frontmatter-accent), var(--shadow-poster); /* rail: see .dc-intro */
+  box-shadow: inset 4px 0 0 var(--frontmatter-accent), 2pt 0 0 var(--shadow-ink); /* rail: see .dc-intro */
 }
-
-/* Suppress the .section base component's ::before (magenta left strip +
-   18px top-right clip-path corner cut) and ::after (ink-dark fake-shadow
-   offset 3px down-right). The colophon here is a SUBSTRATE inside the
-   frontmatter composite — not a stand-alone section header card. The
-   base pseudo-elements were creating the visible right-edge step (clip-
-   path cut at the top-right corner) and a doubled shadow at the lede→
-   colophon seam. Once suppressed, the colophon becomes a plain
-   rectangle that matches the TOC's shape on page 1, so the body column
-   reads identically on both pages. */
-/* The colophon's `.section` chrome suppression MOVED (dc#39) into the single
-   `.dc-plain` escape rule in components/*.css, beside the ::before/::after
-   that paint it. */
 
 .page.page-credits .section.credits-colophon .dc-colophon-grid {
   columns: 2;
@@ -631,20 +624,77 @@
   margin-bottom: 0;
 }
 
-/* Section content — paper-cream substrate, magenta 4px left rail
-   continuing from the lede, with the poster shadow. */
+/* Section content — a flat paper-cream host with the magenta 4px rail
+   continuing from the lede and the poster shadow, instead of the chamfered
+   panel (so both chrome layers are off). */
 .page.page-intro > .section {
+  --dc-section-surface: none;
+  --dc-section-shadow:  none;
+  --dc-section-pad-top:    0.18in;
+  --dc-section-pad-right:  0.22in;
+  --dc-section-pad-bottom: 0.18in;
+  --dc-section-pad-left:   0.22in;
   background: var(--paper-cream);
-  padding: 0.18in 0.22in;
   box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
 }
 
-/* Suppress the .section base ::before (magenta gradient + 18px top-right
-   clip-path corner cut) and ::after (ink-dark fake-shadow). Both fought
-   the chevron's clip direction and added doubled shadows. */
-/* The intro composite's `.section` chrome suppression MOVED (dc#39) into the
-   single `.dc-plain` escape rule in components/*.css, beside the
-   ::before/::after that paint it. */
+/* ── PAGE TEMPLATE: CHAPTER OPENER (labelled chapter's intro page) ──────────
+   The opener's .section keeps the panel chrome but restyles it: padding comes
+   from --dc-chapter-opener-pad-*, and both pseudo layers get a
+   straight right edge at the clip-tail so the chevron's diagonal meets the
+   substrate with no step. */
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section {
+  /* Right padding exceeds the clip-tail so body text clears the clipped edge.
+     Set as `padding`, not as pad tokens: every .section on an opener page
+     matches this selector, and only the opener's own h1 cancels these
+     values. A header bar in a later section (a plain panel or column panel)
+     keeps cancelling its own variant's pad tokens, as it always has. */
+  padding: var(--dc-chapter-opener-pad-top)
+           var(--dc-chapter-opener-pad-right)
+           var(--dc-chapter-opener-pad-top)
+           var(--dc-chapter-opener-pad-side);
+
+  /* Per-chapter opener tokens flow into the section's accent and surface. */
+  --dc-section-accent: var(--dc-chapter-opener-accent);
+  --dc-section-bg:     var(--dc-chapter-opener-bg);
+
+  /* A .dc-chevron inside tapers to the same x as this section's right edge. */
+  --clip-tail: var(--dc-chapter-opener-clip-tail);
+}
+
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section::before {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
+    0 100%
+  );
+}
+
+/* Shadow offset like --dc-chapter-opener-shadow, same clip as the substrate. */
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section::after {
+  top: 4px;
+  left: 3px;
+  right: -3px;
+  bottom: -4px;
+  background: var(--shadow-ink);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
+    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
+    0 100%
+  );
+}
+
+/* The section's first h1 is a chevron banner without a `{.dc-chevron}`
+   attribute. Negative margins cancel the section padding so it reaches the
+   section's outer edges; its --clip-banner tail then tapers in by --clip-tail. */
+.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
+  margin-top:   calc(var(--dc-chapter-opener-pad-top)   * -1);
+  margin-left:  calc(var(--dc-chapter-opener-pad-side)  * -1);
+  margin-right: calc(var(--dc-chapter-opener-pad-right) * -1);
+  --dc-chevron-bg: var(--dc-chapter-opener-accent);
+}
 
 /* ── PAGE TEMPLATE: IMAGE — DELETED ─────────────────────────────────────────
    `.image-top` had zero users in any book's markdown. `.image-bottom` had

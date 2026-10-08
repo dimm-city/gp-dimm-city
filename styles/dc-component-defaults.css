@@ -9,6 +9,21 @@
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
 
+  /* Section chrome. A variant sets these on its own rule instead of cancelling
+     .section's panel. Surface/shadow are the `content` of the ::before/::after
+     layers ("" paints, `none` removes the layer); the pads drive .section's
+     padding and the header bar's negative margins. All inherit, so a .section
+     nested inside a variant would pick them up (no book nests one today).
+     Not registered with @property { inherits: false }: a pseudo-element
+     inherits from its host, so a non-inheriting token never reached the
+     ::before/::after that read it. */
+  --dc-section-surface:   "";
+  --dc-section-shadow:    "";
+  --dc-section-pad-top:    var(--space-md);
+  --dc-section-pad-right:  var(--space-lg);
+  --dc-section-pad-bottom: var(--space-md);
+  --dc-section-pad-left:   var(--space-lg);
+
   /* ─── Component Public Token Defaults ────────────────────────────────────
      Override surface for per-chapter and per-project theming. These are the
      defaults that were previously declared inside each component class rule.

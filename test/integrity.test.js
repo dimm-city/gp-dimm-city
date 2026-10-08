@@ -228,9 +228,6 @@ describe("file contracts", () => {
     // [sheet, selector substring, reason]
     ["styles/components/chrome.css", '.chapter[data-chapter-label] > .page[data-page="intro"]', "chapter-opener h1 chevron: component chrome that keys on the opener page"],
     ["styles/components/chrome.css", '.page[data-page="intro"][data-chapter-label]', "chapter-opener composite, same reason"],
-    ["styles/components/section.css", '.chapter[data-chapter-label] > .page[data-page="intro"]', "chapter-opener section chrome (surface, shadow, h1 chevron): FINDING, contradicts the dc.components contract"],
-    ["styles/components/section.css", ".page.page-intro > .section", "section chevron opt-out beside the chevron it suppresses (see file comment 'Lives here, not in page-templates.css')"],
-    ["styles/components/section.css", ".page.page-credits .section.credits-colophon", "same opt-out for the credits colophon"],
   ];
   const allowedPageChapter = (label, selector) => PAGE_CHAPTER_ALLOWLIST.some(([f, sub]) => f === label && selector.includes(sub));
 
