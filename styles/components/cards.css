@@ -7,8 +7,6 @@
      --dc-card-surface         → card body background (default --paper-cream)
      --dc-card-tab-bg          → tab background (default --ink-dark)
      --dc-card-tab-title-color → tab title text color (default --paper-cream)
-     --dc-card-tier-color      → tier-badge fill (default --hud-magenta)
-     --dc-card-tier-border     → tier-badge border (default --hud-magenta)
      --dc-card-body-mark       → decorative ::before mark color (default --crimson)
    Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
    Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)

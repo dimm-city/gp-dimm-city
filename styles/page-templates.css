@@ -240,7 +240,7 @@
    `column-gap`. Nothing in this theme may set `columns` on these names again.
 
    `column-fill` is NOT set here: it is a per-shape decision that depends on
-   whether the run fragments, and dc-native.css §10b owns it with the
+   whether the run fragments, and dc-native.css §6 owns it with the
    measurements behind each value. */
 .gp-columns-2 {
   --gp-column-gap: var(--gutter);
@@ -334,19 +334,23 @@
   --dc-intro-bg: var(--frontmatter-lede-bg);
 }
 
-/* Masthead — full-bleed dark band that covers the page top margin
-   (margin-top: -0.5in pulls it flush to the page box edge).
-   box-sizing: border-box so the 0.625in side padding lives INSIDE the
-   +1.25in width extension (the previous content-box version double-counted
-   it, making the band 1.25in wider than the sheet — invisibly clipped, but
-   the largest single trigger of native print's shrink-to-fit). */
+/* Masthead — full-bleed dark band that escapes the page's 0.625in side
+   padding (dc-native.css §4) back to the sheet edges.
+   `margin-top: 0` is deliberate: a negative top pull drags a band fragment
+   onto the previous page (measured); the dark strip above is margin-box
+   paint. box-sizing: border-box so the 0.625in side padding lives INSIDE the
+   +1.25in width extension (a content-box version double-counted it, making
+   the band 1.25in wider than the sheet — invisibly clipped, but the largest
+   single trigger of native print's shrink-to-fit). The 0.625in is the pages'
+   literal padding in dc-native.css, not a page-margin token (those pages
+   zero their @page side margins). */
 .page.page-toc h1.dc-chevron,
 .page.page-credits h1.dc-chevron {
   display: block;
   width: calc(100% + 1.25in);
   margin-left: -0.625in;
   margin-right: -0.625in;
-  margin-top: -0.5in;
+  margin-top: 0;
   margin-bottom: 0;
   padding: 0.45in 0.625in 0.35in;
   box-sizing: border-box;
@@ -521,12 +525,11 @@
 }
 
 /* ── SPECIALTY BREAK CONTROL (carried from the field guide, 1.0.0) ─────────
-   Each learning path opens on a fresh page so the path-shell banner never
-   strands at the bottom of the previous one. This file owns .dc-specialty
-   break rules, and dc.templates outranks every components sheet exactly as
-   the book layer did. */
+   A learning path is NOT forced onto a new page (the books are laid out
+   around that); the path-shell rule below keeps its banner with its first
+   card. This file owns .dc-specialty break rules, and dc.templates outranks
+   every components sheet exactly as the book layer did. */
 .dc-specialty .dc-learning-path {
-  break-before: always;
   break-inside: auto;
   break-after: auto;
 }
@@ -536,9 +539,9 @@
 }
 
 /* The learning-path BANNER (the shell: title, intro, sticker row) is never
-   split and stays on the page of the first card after it. Note the rule
-   above does NOT do this: Chromium does not support `break-before: always`
-   and drops the declaration (measured by the Field Guide). Targets the
+   split and stays on the page of the first card after it. (The rule above
+   no longer forces a break: `break-before: always` is unsupported in
+   Chromium and was dropped; `break-before: page` adds 4 pages to the Field Guide.) Targets the
    shell, not .dc-learning-path, which usually also holds the path's cards.
    Without it the design guide printed the Biting Distance banner alone on
    a page, with the edge of the first card's tab at the page foot. Carried

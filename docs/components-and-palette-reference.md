@@ -185,7 +185,6 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
 | `--brand-violet` | `#7030b8` | Cyber-violet — ritual+tech |
-| `--ink-bruise` | `#28143c` | Deep purple atmosphere — chapter tabs, depth shadows |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -201,7 +200,6 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | Token | Value | Role |
 |---|---|---|
 | `--fungi-glow` | `#c8e040` | Bioluminescent yellow-green |
-| `--fungi-mid` | `#6aa030` | Luminous lichen mid (reserved) |
 | `--fungi-rot` | `#2a4015` | Deep moldering green — large fill only |
 
 ### Crystal / Mineral
@@ -209,48 +207,16 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 |---|---|---|
 | `--crystal-amethyst` | `#6a3a8a` | Deep mineral violet |
 | `--crystal-aqua` | `#4a98a8` | Pale crystalline aquamarine |
-| `--crystal-citrine` | `#b89a3a` | Burnt mineral gold (reserved) |
 
 ### Shadows & Utility
 | Token | Value | Role |
 |---|---|---|
-| `--shadow-poster` | `2pt 3pt 0 rgba(0,0,0,0.28)` | Card drop-shadow — screen/preview |
-| `--shadow-poster-print` | `2pt 3pt 0 #adaba8` | PDF/X-1a safe companion — use in `dc-tokens-print.css` for Ingram |
-| `--shadow-tint` | `#b0a898` | Shadow tint color (hex, not shorthand) |
-
----
-
-## Semantic Bridge Tokens
-
-These tokens sit between the pillar palette and components. Override them at `:root` in a project stylesheet to reskin the system — no component rules need touching.
-
-### Surface Roles
-| Token | Points to | Role |
-|---|---|---|
-| `--surface-callout` | `--hud-blue-dim` | Default player callout background |
-| `--surface-callout-dm` | `--hud-panel` | DM-only callout background |
-| `--surface-callout-vibe` | `--paper-aged` | Atmospheric / flavor callout background |
-| `--surface-well` | `--paper-stain` | Dark inset wells, sidebar fills |
-| `--surface-panel` | `--paper-light` | Secondary panel — `dc-block` default |
-
-### Text Roles
-| Token | Points to | Role |
-|---|---|---|
-| `--text-on-dark` | `--paper-cream` | Text over dark-fill surfaces |
-| `--text-accent` | `--blood` | Accent / highlighted text |
-| `--text-muted` | `--ink-dust` | Secondary / caption text |
-
-### Border Roles
-| Token | Points to | Role |
-|---|---|---|
-| `--border-callout` | `--hud-blue` | Callout left-rail / rule |
-| `--border-callout-dm` | `--hud-blue-dark` | DM note left-rail |
-| `--border-accent` | `--blood` | Accent border — cards, headings |
-
-### Elevation
-| Token | Points to | Role |
-|---|---|---|
-| `--elevation-card` | `--shadow-poster` | Card-level drop shadow |
+| `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard, opaque offset (PDF/X-1a safe) |
+| `--shadow-ink` | `color-mix(in srgb, #000 28%, var(--wall-tone))` | Opaque ink-on-wall shadow colour (the source of `--shadow-poster`) |
+| `--tint-magenta-rose` | `#e6007a` | Pullquote accent / paper-stain rule mix source |
+| `--tint-hud-teal` | `#2a6a8a` | Inset-sidebar callout mix source |
+| `--tint-signal-red` | `#d41200` | Tape border mix source |
+| `--tint-brick-red` | `#b42828` | Skill-card header wash mix source |
 
 ---
 
@@ -281,8 +247,6 @@ All component tokens live at `:root` so per-chapter overrides can use the cascad
 | `--dc-card-surface` | `--paper-cream` | Card body background |
 | `--dc-card-tab-bg` | `--ink-dark` | Tab strip background |
 | `--dc-card-tab-title-color` | `--paper-cream` | Tab title text |
-| `--dc-card-tier-color` | `--hud-magenta` | Tier badge color |
-| `--dc-card-tier-border` | `--hud-magenta` | Tier badge border |
 | `--dc-card-body-mark` | `--crimson` | Body accent mark |
 
 ### Specialty Intro (`.dc-specialty-intro`)
