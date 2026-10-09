@@ -397,21 +397,6 @@ components:
     breaks: none
     notes: "The plugin emits `variable`; the CSS styles both `.variable` and the raw spelling `.var`. `.standard/.reduced/.increased/.special` (specialty-identity.css) are never emitted, only authored raw — shown in the design guide's Variant Gallery."
 
-  - name: distance-tags
-    status: unused
-    origin: plugin
-    recipe: "| Distance | AP | table inside a skill card"
-    emits: div.dc-sub-header + div.dc-distance-tags > span.dc-dist-tag > span.dc-dist-ap + span.dc-dist-name
-    css: styles/components/data.css
-    tokens: [--dc-dist-tag-surface, --dc-dist-tag-border, --dc-dist-ap-color, --dc-dist-name-color]
-    usage: ["| Distance | AP |"]
-    breaks: none
-    notes: "Emission path exists and is styled; no skill in either book writes a
-      Distance/AP table. The usage literal carries the AP column deliberately: the
-      plugin only transforms a Distance table that sits inside a skill card, and
-      field-guide chapter-05's Schraphose damage table is a four-column Distance
-      table in body prose. A bare '| Distance |' literal counted that as a use."
-
   - name: roll-the-die
     status: live
     origin: plugin
@@ -683,6 +668,13 @@ components:
     notes: "There is no @chapter-opener macro."
 
   # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  - name: distance-tags
+    status: retired
+    origin: plugin
+    recipe: "| Distance | AP | table inside a skill card"
+    emits: div.dc-sub-header + div.dc-distance-tags > span.dc-dist-tag > span.dc-dist-ap + span.dc-dist-name
+    notes: "Removed 2026-10-09 (plugin.js buildDistanceTags, data.css, --dc-dist-* tokens): no book had an AP-by-distance table. A Distance table inside a skill now renders as a plain table."
+
   - name: printer-page
     status: retired
     origin: author

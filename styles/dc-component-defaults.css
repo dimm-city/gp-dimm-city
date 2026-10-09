@@ -125,12 +125,6 @@
   --dc-definition-block-accent-width: 4px;
   --dc-definition-block-surface:      var(--surface-orange-tint);
 
-  /* distribution table (.dc-dist-*) public API */
-  --dc-dist-ap-color:        var(--ink);
-  --dc-dist-name-color:      var(--hud-blue);
-  --dc-dist-tag-border:      var(--hud-blue-dim);
-  --dc-dist-tag-surface:     var(--paper-light);
-
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
 

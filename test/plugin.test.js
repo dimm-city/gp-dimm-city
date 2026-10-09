@@ -1,7 +1,7 @@
 // plugin.test.js — what the plugin emits: the loader contract and the
 // behavioural edge cases that earned a regression test (table pass-through,
 // ROLL THE DIE! boundaries, alert ordering, inline formatting,
-// outcome/distance tables, @continue before core's layout transform, @card
+// outcome tables, @continue before core's layout transform, @card
 // footers). The whole-document regression check is design-guide.test.js,
 // which snapshots every chapter of the design guide.
 //
@@ -52,7 +52,15 @@ describe("behaviour carried from the book repo", () => {
     expect(html).toContain(expectedTable);
     expect(html).toMatch(/<thead>[\s\S]*<th style="text-align:left">Name<\/th>/);
     expect(html).toMatch(/<tbody>[\s\S]*<strong>Alpha<\/strong>/);
-    expect(html).not.toMatch(/dc-outcomes|dc-distance-tags/);
+    expect(html).not.toMatch(/dc-outcomes/);
+  });
+
+  test("renders a Distance table inside a skill as a plain table", () => {
+    const source = ["@skill", "", "#### Close In", "", "| Distance | AP |", "| --- | --- |", "| **Near** | *1 AP* |", "", "@end-skill"].join("\n");
+    const html = createMarkdown().render(source);
+
+    expect(html).toMatch(/<table>[\s\S]*<strong>Near<\/strong>/);
+    expect(html).not.toMatch(/dc-distance-tags|dc-dist-/);
   });
 
   test("transforms only complete roll instructions in markdown text tokens", () => {
@@ -126,7 +134,7 @@ describe("behaviour carried from the book repo", () => {
     expect(skillHtml).toContain(`<p class="dc-ability-text"><em>Move:</em> Keep <em>ability formatting</em> and ${ROLL_HTML}</p>`);
   });
 
-  test("retains custom outcome and distance rendering with safe inline rolls", () => {
+  test("retains custom outcome rendering with safe inline rolls", () => {
     const outcomeTable = [
       "@skill {.dc-allow-split}",
       "",
@@ -138,19 +146,14 @@ describe("behaviour carried from the book repo", () => {
       "",
       "@end-skill",
     ].join("\n");
-    const distanceTable = ["@skill", "", "#### Close In", "", "| Distance | AP |", "| --- | --- |", "| **Near** | *1 AP* |", "", "@end-skill"].join("\n");
     const outcomeMacro = ["@outcome", "20 | Triumph | **ROLL THE DIE!** but not `ROLL THE DIE!`.", "@end-outcome"].join("\n");
 
     const outcomeHtml = createMarkdown().render(outcomeTable);
-    const distanceHtml = createMarkdown().render(distanceTable);
     const macroHtml = createMarkdown().render(outcomeMacro);
 
     expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
     expect(outcomeHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
     expect(outcomeHtml).not.toMatch(/<table>/);
-    expect(distanceHtml).toMatch(
-      /<div class="dc-distance-tags">[\s\S]*<span class="dc-dist-ap"><em>1 AP<\/em><\/span>[\s\S]*<span class="dc-dist-name"><strong>Near<\/strong><\/span>/,
-    );
     expect(countRolls(macroHtml)).toBe(1);
     expect(macroHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
   });

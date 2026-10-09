@@ -363,9 +363,6 @@ function classifyTable(headers) {
   if (headers.includes('roll') && headers.includes('outcome')) {
     return 'outcomes';
   }
-  if (headers.includes('distance')) {
-    return 'distance';
-  }
   return '';
 }
 
@@ -423,29 +420,6 @@ function buildOutcomesBlock(rows, md, needsAvoid = true) {
   return html;
 }
 
-function buildDistanceTags(rows, md) {
-  let html = '<div class="dc-sub-header">AP Cost × Distance</div>\n';
-  html += '<div class="dc-distance-tags">\n';
-
-  rows.forEach(row => {
-    if (row.length < 2) return;
-    const distance = row[0].trim();
-    const cost = row[1].trim();
-
-    // Render markdown inline content
-    const renderedDistance = md.renderInline(distance);
-    const renderedCost = md.renderInline(cost);
-
-    html += '  <span class="dc-dist-tag">\n';
-    html += '    <span class="dc-dist-ap">' + renderedCost + '</span>\n';
-    html += '    <span class="dc-dist-name">' + renderedDistance + '</span>\n';
-    html += '  </span>\n';
-  });
-
-  html += '</div>\n';
-  return html;
-}
-
 function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
   const rows = [];
   let currentRow = [];
@@ -467,10 +441,7 @@ function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
     }
   }
 
-  if (tableClass === 'outcomes') {
-    return buildOutcomesBlock(rows, md, needsAvoid);
-  }
-  return buildDistanceTags(rows, md);
+  return buildOutcomesBlock(rows, md, needsAvoid);
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -2057,7 +2028,7 @@ export default function dimmCityPlugin(md, options = {}) {
           continue;
         }
 
-        // Table = Outcomes or Distance
+        // Table = Outcomes
         if (tok.type === 'table_open' && inSkillCard) {
           const tableTokens = collectTableTokens(tokens, i);
           const headers = getTableHeaders(tableTokens);

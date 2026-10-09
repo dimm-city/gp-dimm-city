@@ -62,14 +62,6 @@
    cannot silently beat an `A + B` gap rule if there is no gap rule.
    Iter-8 (2026-05-25). */
 
-/* When a .dc-intro lede is followed by an alert/callout (the common
-   "lede + supporting note" pattern from How Abilities Work), tighten the
-   gap so they read as a connected pair. (@callout emits .dc-alert — the
-   former .dc-callout adjacency rule was dead and was removed 2026-06-21.) */
-.dc-intro + .dc-alert {
-  margin-top: 6pt;
-}
-
 /* Adjacent callouts/alerts (e.g. Cybersuck followed by SysFAIL after
    the Ego Points table) read as a CONNECTED PAIR rather than two
    independent floating boxes. Per user feedback: "design elements just
@@ -445,15 +437,8 @@ hr {
 
 /* ── Modifier variants — .dc-flush removes margin ─────────────────────────── */
 .dc-stickers.dc-flush,
-.dc-intro.dc-flush,
 .dc-tape.dc-flush {
   margin: 0;
-}
-
-.dc-sub-header.dc-flush {
-  margin: 0;
-  padding-top: 0;
-  border-top: 0;
 }
 
 .dc-spec-tweak.dc-no-top {
