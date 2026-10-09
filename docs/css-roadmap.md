@@ -19,6 +19,8 @@ Every change follows the same verification:
 
 ## Next: medium (days each)
 
+The chapter prefix and the offset tokens are parked under "Still considering" in `cleanup-backlog.md`.
+
 - **Chapter prefix (15).** Make the chapter prefix and the footer-chip chrome configurable, so the design guide can drop the six `@page` blocks and four chip resets it restates.
 - **Offset tokens (14).** Add `--dc-outline`, `--dc-chrome-bleed` and `--dc-z-*`, then derive the hard-coded offsets from them. The "-2px to cancel the 2px outline" offsets are an example.
 - **Wall utility (16).** Add a `.dc-wall` utility and use it in the design guide's stages.
