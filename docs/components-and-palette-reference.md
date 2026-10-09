@@ -118,9 +118,8 @@ These are separate components — not variants of each other.
 - `.dc-terms`
 - `.dc-steps`
 
-### Gear & Distances
+### Gear
 - `.dc-card.dc-gear` / `.dc-gear-callout`
-- `.dc-distance-tags` / `.dc-dist-tag` / `.dc-dist-name` / `.dc-dist-ap`
 
 ### Layout Helpers
 - `.dc-card-grid`

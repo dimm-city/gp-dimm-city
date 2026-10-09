@@ -7,6 +7,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Removed
+
+- Distance tags: the plugin no longer turns a `Distance` table inside a skill
+  into pills (`buildDistanceTags`); it now renders as a plain table. Also
+  removed `.dc-distance-tags`, `.dc-dist-tag`, `.dc-dist-ap`, `.dc-dist-name`
+  and the `--dc-dist-*` tokens. No book had such a table.
+- Unused combinations: `.dc-flush` on `.dc-intro`, `.dc-sub-header` and
+  `.dc-steps`; `.dc-intro + .dc-alert`; `.dc-card-grid > h1/h2/.dc-intro`
+  (put headings and ledes outside the grid); `.section > h2.dc-h3:not(:first-child)`;
+  `.dc-toc ol > li > strong`.
+
 ## [1.1.2] - 2026-10-08
 
 **Notes for books upgrading from 1.1.1:**

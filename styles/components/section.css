@@ -335,8 +335,7 @@
    (i.e. NOT the section's header bar) get a left-accent border matching the
    section accent. This visually distinguishes subsection headings from the
    section title bar. Universal across all chapters. */
-.section > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child),
-.section > h2.dc-h3:not(:first-child) {
+.section > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child) {
   border-left: 3px solid var(--dc-section-accent);
   padding-left: var(--space-sm);
 }
@@ -738,15 +737,13 @@ h3 + .section {
 
      @page .card-grid
      @section .dc-card-grid
-     ## Choose Your Specialty
-     @lede ... @end-lede
      @specialty .augmerc
      @specialty-card ... @end-specialty-card
      @end-specialty
      [repeat for 6+ specialties]
      @end-section
 
-   The column-flow rules (columns:2, column-span:all) live in page-templates.css
+   The column-flow rules (columns:2) live in page-templates.css
    per the architectural contract. Here we own only the chrome-reset (the
    .dc-card-grid section has no card background/shadow — it's a pure layout
    wrapper) plus the per-card density tweaks so all 8 specialty cards fit
@@ -779,13 +776,6 @@ h3 + .section {
   columns: 2;
   column-gap: var(--gutter);
   column-fill: balance;
-}
-/* Header + intro stay close to the cards below (no orphan break) */
-.dc-card-grid > h2 { break-after: avoid; }
-.dc-card-grid > .dc-intro {
-  break-after: avoid;
-  padding: 5px 12px 5px 16px;
-  margin: 0 0 var(--space-md);
 }
 .dc-card-grid .dc-specialty:first-child { break-before: avoid; }
 

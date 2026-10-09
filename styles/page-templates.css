@@ -250,12 +250,6 @@
   --gp-column-gap: 0.18in;  /* narrower than --gutter: three measures, less air */
 }
 
-.dc-card-grid > .dc-intro,
-.dc-card-grid > h1,
-.dc-card-grid > h2 {
-  column-span: all;
-}
-
 .dc-card-grid .dc-specialty,
 .dc-card-grid .dc-specialty-card {
   break-inside: avoid;

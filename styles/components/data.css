@@ -151,7 +151,7 @@
   padding-bottom: 6px;
 }
 
-/* ═══ OUTCOMES + STEPS + DISTANCE ═══ */
+/* ═══ OUTCOMES + STEPS ═══ */
 
 /* ── Procedure / numbered steps ───────────────────────────────────────── */
 .dc-steps {
@@ -356,47 +356,6 @@
 
 .dc-outcome-row.fail {
   --row-color: var(--fungi-rot);
-}
-
-/* ── Distance tags (AP cost × distance block) ─────────────────────────── */
-.dc-distance-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 10px 0;
-}
-
-/* Token contract for distance-tag pills:
-     --dc-dist-tag-surface → cell bg (default --paper-light)
-     --dc-dist-tag-border  → cell border color (default --hud-blue-dim)
-     --dc-dist-ap-color    → AP-cost number color (default --ink)
-     --dc-dist-name-color  → distance-name caption color (default --hud-blue)
-*/
-.dc-dist-tag {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  background: var(--dc-dist-tag-surface);
-  border: 1px solid var(--dc-dist-tag-border);
-  padding: 6px 10px;
-  min-width: 52px;
-}
-
-.dc-dist-ap {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--dc-dist-ap-color);
-  line-height: 1;
-}
-
-.dc-dist-name {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--dc-dist-name-color);
-  margin-top: 3px;
 }
 
 /* ───────── PULL-QUOTE ───────── */
@@ -724,10 +683,6 @@
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
 }
 
-.dc-toc ol>li>strong {
-  color: var(--hud-blue-dark);
-}
-
 .dc-toc ol>li>a {
   font-size: 15pt;
   font-weight: 700;
@@ -751,7 +706,6 @@
 }
 
 .dc-stat.dc-flush,
-.dc-steps.dc-flush,
 .dc-outcomes.dc-flush,
 .dc-pullquote.dc-flush {
   margin: 0;
