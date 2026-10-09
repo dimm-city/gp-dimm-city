@@ -208,26 +208,18 @@ const TOKEN_SHEETS = ["styles/dc-palette.css", "styles/dc-identity.css", "styles
 describe("file contracts", () => {
   // css-architecture.md, dc.components: "MUST NOT contain … `@page` declarations,
   // `div.chapter` scaffolding". callouts.css's header adds "element selectors scoped
-  // to page/chapter context classes". The sheets below legitimately style the
-  // framework's own `.page` / `.chapter` markup (intro-page chevrons, front-matter
-  // page decorations); they are allow-listed per selector, with the reason.
-  const PAGE_CHAPTER_ALLOWLIST = [
-    // [sheet, selector substring, reason]
-    ["styles/components/chrome.css", '.chapter[data-chapter-label] > .page[data-page="intro"]', "chapter-opener h1 chevron: component chrome that keys on the opener page"],
-    ["styles/components/chrome.css", '.page[data-page="intro"][data-chapter-label]', "chapter-opener composite, same reason"],
-  ];
-  const allowedPageChapter = (label, selector) => PAGE_CHAPTER_ALLOWLIST.some(([f, sub]) => f === label && selector.includes(sub));
-
-  test("components/*.css declare no @page and no .chapter/.page selectors (beyond the allow-list)", () => {
+  // to page/chapter context classes". No exceptions: page/chapter styling lives in
+  // page-templates.css, page-rules.css or the book's sheet.
+  test("components/*.css declare no @page and no .chapter/.page selectors", () => {
     const bad = [];
     for (const s of COMPONENT_SHEETS) {
       s.root.walkAtRules("page", (a) => bad.push(`${s.label}: @page rule`));
       for (const { selector } of selectorsOf(s.root)) {
         const cls = classesIn(selector);
-        if ((cls.includes("chapter") || cls.includes("page")) && !allowedPageChapter(s.label, selector)) bad.push(`${s.label}: ${selector}`);
+        if ((cls.includes("chapter") || cls.includes("page"))) bad.push(`${s.label}: ${selector}`);
       }
     }
-    expect(bad, "page/chapter scaffolding belongs in page-templates.css / page-rules.css / the book's sheet; or allow-list it in PAGE_CHAPTER_ALLOWLIST with a reason").toEqual([]);
+    expect(bad, "page/chapter scaffolding belongs in page-templates.css / page-rules.css / the book's sheet").toEqual([]);
   });
 
   // Columns (css-architecture.md, "COLUMNS:N Ownership Rule"): page and section column

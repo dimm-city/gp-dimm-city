@@ -7,6 +7,25 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-10-09
+
+### Changed
+
+- **The chapter-opener chevron rules move from `chrome.css` into the
+  chapter-opener template in `page-templates.css`.** No component sheet
+  selects `.chapter`/`.page` any more, and the integrity test enforces
+  that with no exceptions. Pixel-identical in both books.
+- `docs/cleanup-backlog.md` gains a "Still considering" section:
+  - the Field Guide's sidebar areas, with the inset-rail rules;
+  - the specialty-card redesign;
+  - the configurable chapter prefix;
+  - the offset tokens.
+- `docs/css-roadmap.md` records the warnings that are known and accepted:
+  - the design guide's 8 heading jumps inside component examples, which
+    need an `h4`;
+  - the `clip-path` and `page-containment` lint false positives, reported
+    as dimm-city/gutterpress#339.
+
 ## [1.1.4] - 2026-10-09
 
 ### Changed

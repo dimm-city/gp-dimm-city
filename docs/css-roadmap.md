@@ -19,6 +19,8 @@ Every change follows the same verification:
 
 ## Next: medium (days each)
 
+The chapter prefix and the offset tokens are parked under "Still considering" in `cleanup-backlog.md`.
+
 - **Chapter prefix (15).** Make the chapter prefix and the footer-chip chrome configurable, so the design guide can drop the six `@page` blocks and four chip resets it restates.
 - **Offset tokens (14).** Add `--dc-outline`, `--dc-chrome-bleed` and `--dc-z-*`, then derive the hard-coded offsets from them. The "-2px to cancel the 2px outline" offsets are an example.
 - **Wall utility (16).** Add a `.dc-wall` utility and use it in the design guide's stages.
@@ -42,6 +44,17 @@ Every change follows the same verification:
 - **Field Guide: art.**
   - Eight pages have art below 300 DPI.
   - Cutout art with an alpha channel still flattens a few pages in PDF/X-1a.
+
+## Known, accepted warnings
+
+- **The design guide's 8 "heading level jump" warnings.** Each one is the first heading inside a rendered component example, where the component's syntax requires an `h4`:
+  - a skill card's `####` title;
+  - the NPC stat block;
+  - the citizen walkthrough;
+  - the sidebar box.
+
+  They are correct and are left as they are (reviewed 2026-10-09).
+- **About 33 `printsafe/no-risky-print-effects` warnings on `clip-path`, and the source-level `page-containment` warning on the scoped `.page` clip.** Both are false positives. gutterpress has no per-project setting to silence them; [dimm-city/gutterpress#339](https://github.com/dimm-city/gutterpress/issues/339) asks for one.
 
 ## Keep (what works)
 
