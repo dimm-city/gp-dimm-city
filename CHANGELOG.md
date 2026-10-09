@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-10-09
+
 ### Removed
 
 - Distance tags: the plugin no longer turns a `Distance` table inside a skill
