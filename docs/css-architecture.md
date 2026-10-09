@@ -115,17 +115,23 @@ be pointless — font-family lookup is not a cascade contest.
 |---|---|---|---|
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
-| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | `columns:N` rules, `@page` declarations, `div.chapter` scaffolding |
-| `dc.templates` | `page-templates.css` | ALL **theme** `columns:N` rules (exclusive ownership), `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
+| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | page/section `columns:N` layouts (a component's own internals excepted), `@page` declarations, `div.chapter` scaffolding |
+| `dc.templates` | `page-templates.css` | ALL page and section `columns:N` layouts (exclusive ownership), `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
 | `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, `columns:N` rules |
 | *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
 
 ### COLUMNS:N Ownership Rule
 
-Among the theme's own sheets, `columns:N` lives **exclusively** in
-`page-templates.css` (`@layer dc.templates`). Every other file is
-single-flow. If you find `columns:` in a `components/*.css` file,
-or `page-rules.css`, it is a bug.
+**Page and section column layouts** (`.page.*` templates, `.gp-columns-*`
+runs, any rule that columns a page's or section's content) live
+**exclusively** in `page-templates.css` (`@layer dc.templates`).
+`page-rules.css` is single-flow. A **component** may lay out its *own
+internals* in columns in its own `components/*.css` sheet, provided the rule is
+rooted in that component's `.dc-*` class (e.g. the per-card `.dc-two-col` body
+and `.dc-cards-two-col` in `cards.css`, the `.dc-card-grid` grid in
+`section.css`). If you find `columns:` in `page-rules.css`, or in a component
+sheet on a `.page` / `.chapter` / `.gp-columns-*` selector or a selector not
+rooted in a `.dc-*` class, it is a bug. `test/integrity.test.js` enforces this.
 
 **The generic column vocabulary is not the theme's at all.** Gutterpress core
 ships `.gp-columns-2` / `.gp-columns-3` in `GUTTERPRESS_CSS`, and a theme may

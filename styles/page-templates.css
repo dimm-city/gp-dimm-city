@@ -4,9 +4,10 @@
 
    ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
    OWNS:
-   - ALL THEME columns:N rules — this is the ONLY file that may set columns on
-     a theme selector. Components are always single-flow. It may NOT set
-     columns on core's `.gp-columns-*` (only their `--gp-column-gap`).
+   - ALL page and section columns:N layouts — this is the ONLY file that may
+     set columns on a page template or section run. A component may column its
+     OWN internals in its own sheet (cards.css, section.css .dc-card-grid). It
+     may NOT set columns on core's `.gp-columns-*` (only their `--gp-column-gap`).
    - .page.* content layout rules (columns, flex, grid on page content divs)
    - .page base geometry, .column-break
    - .dc-full-page full-bleed geometry (its named-page assignment,
@@ -26,8 +27,9 @@
    - @media screen rules (print-only project)
 
    COLUMN OWNERSHIP RULE (narrowed, dc#41): if a THEME rule sets columns:N on a PAGE TEMPLATE (.page.*) in this
-   project, it belongs here and ONLY here. Any columns:N found in another file
-   is a bug. Core's `.gp-columns-2` / `.gp-columns-3` are the generic column
+   project, it belongs here and ONLY here. A columns:N on a page/section
+   selector found in another file is a bug (a component's own-internals layout
+   in its sheet is not). Core's `.gp-columns-2` / `.gp-columns-3` are the generic column
    vocabulary and are NOT this file's to redefine — this file may only set
    their `--gp-column-gap`. See the column-runs block below.
 

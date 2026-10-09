@@ -27,20 +27,20 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 
 <div class="dg-face">
 <p class="dg-face-meta"><strong>lixdu</strong> — display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
-<p class="dg-face-sample dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
-<p class="dg-face-sample dg-face-display dg-face-set">Wired to kill</p>
+<p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
+<p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>
 
 <div class="dg-face">
 <p class="dg-face-meta"><strong>Titillium Web</strong> — body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
-<p class="dg-face-sample dg-face-body">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &amp;?!</p>
-<p class="dg-face-sample dg-face-body dg-face-set">Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. <em>Italic carries the in-world voice,</em> and <strong>bold marks a rule.</strong></p>
+<p class="dg-face-body">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &amp;?!</p>
+<p class="dg-face-body dg-face-set">Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. <em>Italic carries the in-world voice,</em> and <strong>bold marks a rule.</strong></p>
 </div>
 
 <div class="dg-face">
 <p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 8–9pt, uppercase, tracking 0.1em</p>
-<p class="dg-face-sample dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
-<p class="dg-face-sample dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
+<p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+<p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
 </div>
 
 ## Heading hierarchy
@@ -103,7 +103,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-banner-demo
+@section
 
 # Augmerc {.dc-chevron}
 

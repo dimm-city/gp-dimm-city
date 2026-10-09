@@ -1022,7 +1022,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 <div class="dg-stage">
 
-@section .dc-banner-demo
+@section
 
 # Augmerc {.dc-chevron}
 

@@ -18,7 +18,7 @@
    - Component-scoped public custom properties (--dc-alert-bg, etc.)
 
    MUST NOT CONTAIN:
-   - columns:N rules of any kind (→ page-templates.css)
+   - page/section columns:N layouts (→ page-templates.css)
    - @page declarations or named-page assignments (→ page-rules.css)
    - div.chapter scaffolding (→ the consuming book's own sheet)
    - :root token definitions (→ dc-component-defaults.css)
