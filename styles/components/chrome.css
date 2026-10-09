@@ -26,13 +26,10 @@
    miscommunicates the semantic (CONTENTS shouldn't read as a warning).
    Rubric: D9 (brand identity per chapter — chroma anchor must match
    the banner's semantic role). */
-/* Chevron banner. Applies to elements explicitly marked `.dc-chevron`
-   AND to the h1 that's the first child of a chapter-opener intro section
-   — so authors don't have to write `{.dc-chevron}` on every chapter h1.
-   The structural-selector branch is the same selector used by the
-   chapter-opener composite rules above. */
-.dc-chevron,
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
+/* Chevron banner on elements marked `.dc-chevron`. The chapter opener's first
+   h1 gets the same treatment without the class; that rule lives with the
+   opener template in page-templates.css. */
+.dc-chevron {
   font-family: var(--font-display);
   font-size: var(--dc-chevron-font-size);
   letter-spacing: 0.06em;
@@ -80,14 +77,6 @@
    must be ≥ 2× at print scale for chapter-punch role). */
 h1.dc-chevron {
   font-size: 1.4rem;
-  line-height: 1.2;
-}
-
-/* Chapter-opener heading runs at a smaller size than other h1.dc-chevron
-   instances so the section body weight stays the focal anchor below the
-   composite badge + banner. User-approved 2026-05-25. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
-  font-size: 1.1rem;
   line-height: 1.2;
 }
 
@@ -412,9 +401,8 @@ hr {
   background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
 }
 
-/* Chapter-opener badge + H1 banner — see the chapter-opener composite
-   block further down (.page[data-page="intro"][data-chapter-label]).
-   The legacy .dc-chapter-opener-no rules previously here were removed
+/* Chapter-opener badge + H1 banner — see "PAGE TEMPLATE: CHAPTER OPENER"
+   in page-templates.css. The legacy .dc-chapter-opener-no rules previously here were removed
    when the legacy @chapter-opener macro was retired. */
 
 /* ── Specialty art full-page plate ─────────────────────────────────────────── */

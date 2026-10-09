@@ -45,6 +45,17 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
   - Eight pages have art below 300 DPI.
   - Cutout art with an alpha channel still flattens a few pages in PDF/X-1a.
 
+## Known, accepted warnings
+
+- **The design guide's 8 "heading level jump" warnings.** Each one is the first heading inside a rendered component example, where the component's syntax requires an `h4`:
+  - a skill card's `####` title;
+  - the NPC stat block;
+  - the citizen walkthrough;
+  - the sidebar box.
+
+  They are correct and are left as they are (reviewed 2026-10-09).
+- **About 33 `printsafe/no-risky-print-effects` warnings on `clip-path`, and the source-level `page-containment` warning on the scoped `.page` clip.** Both are false positives. gutterpress has no per-project setting to silence them; [dimm-city/gutterpress#339](https://github.com/dimm-city/gutterpress/issues/339) asks for one.
+
 ## Keep (what works)
 
 - **Layering.** Named sublayers are declared once, gutterpress wraps the package in `ext.<name>`, and book sheets sit unlayered on top. There is no `!important` anywhere.
