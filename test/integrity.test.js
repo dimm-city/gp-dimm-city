@@ -106,27 +106,14 @@ const isCoreOrFence = (c) => c.startsWith("gp-") || c.startsWith("language-");
 const IDENTITY_HOOKS = {
   // Design guide: chapter/part names written as `@chapter .typography` / `@page .x` / `@chapter .chapter-N`
   // purely so the markup is navigable; nothing styles them (guide.css keys on #ch-* ids).
-  ...Object.fromEntries(["typography", "palette", "layout", "templates", "cli", "reference", "examples", "chapter-6", "chapter-7", "chapter-8", "chapter-9", "chapter-10", "chapter-11"].map((c) => [c, "DG chapter identity label (styled by #id, if at all)"])),
+  ...Object.fromEntries(["typography", "palette", "layout", "templates", "cli", "reference", "examples", "chapter-03", "chapter-6", "chapter-7", "chapter-8", "chapter-9", "chapter-10", "chapter-11"].map((c) => [c, "DG chapter identity label (styled by #id, if at all)"])),
   // Design guide page-template names, shown as `@page .x` in the examples; the template look comes from the page's data-page / other classes.
   "card-grid": "DG page-name label on the specialty catalog example page",
   "specialty-profile": "DG page-name label on the specialty profile example chapter",
   "tech-cybernetics": "DG page-name label on the gear/tech example page",
   "second-page": "DG page-name label on the gear/tech example page",
-  // FINDINGS (unstyled in guide.css or the package, 2026-10): allow-listed until styled or dropped.
-  "dg-face-sample": "FINDING: used on the typography specimen paragraphs, no rule anywhere",
-  "dc-banner-demo": "FINDING: demo-section hook in 02-typography.md / 11-variants.md, no rule anywhere",
-  // Field Guide chapters: `@page .x .chapter-NN` / `@chapter .chapter-N`. The
-  // book addresses chapters by `#chapter-NN` id in fg-overrides.css, so the
-  // class twins are navigation labels only.
-  ...Object.fromEntries(["chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-1", "chapter-2", "chapter-3", "chapter-4", "chapter-5"].map((c) => [c, "FG chapter identity label (styled by #chapter-NN id instead)"])),
-  // Field Guide page names written as `@page .name` for navigation / future per-page art; no rule targets them yet.
-  "choose-specialty": "FG page-name label (chapter-01)",
-  "vibe": "FG page-name label (chapter-01)",
-  "call-home": "FG page-name label (chapter-01)",
-  "ideal": "FG page-name label (chapter-01)",
-  "flaw": "FG page-name label (chapter-01)",
-  "the-players": "FG page-name label (chapter-03)",
-  "scenes": "FG page-name label (chapter-03)",
+  // Both guides: gutterpress core emits `chapter-N` on `@chapter … ch="N"` (not author-written); nothing styles the number-only twin.
+  ...Object.fromEntries(["chapter-1", "chapter-2", "chapter-3", "chapter-4", "chapter-5"].map((c) => [c, "core-emitted chapter-N class from `@chapter ch=\"N\"`"])),
 };
 
 /** All classes in a rendered HTML string, with the first file that carried each. */
@@ -243,24 +230,23 @@ describe("file contracts", () => {
     expect(bad, "page/chapter scaffolding belongs in page-templates.css / page-rules.css / the book's sheet; or allow-list it in PAGE_CHAPTER_ALLOWLIST with a reason").toEqual([]);
   });
 
-  // Columns: page-templates.css owns every THEME `columns:N` (css-architecture.md,
-  // "COLUMNS:N Ownership Rule"). Stated exception: none in the doc — see findings.
-  const COLUMNS_ALLOWLIST = [
-    // [sheet, selector substring, reason] — FINDINGS: both contradict the stated rule; allow-listed until moved.
-    ["styles/components/cards.css", ".dc-skill-card.dc-two-col .dc-card-inner", "two-column skill card body (column-count: 2) — no stated exception in css-architecture.md"],
-    ["styles/components/cards.css", ".dc-cards-two-col .dc-skill-card", "ancestor-scoped two-column skill cards — component-internal layout of the card body, same class of exception as .dc-two-col above"],
-    ["styles/components/section.css", ".dc-card-grid", "card grid uses columns: 2 — no stated exception in css-architecture.md"],
-  ];
-  test("`columns` / `column-count` are declared only in page-templates.css", () => {
+  // Columns (css-architecture.md, "COLUMNS:N Ownership Rule"): page and section column
+  // layouts belong in page-templates.css; page-rules.css is single-flow; a component may
+  // column its OWN internals in its own sheet, on a selector rooted in a `.dc-*` class
+  // and never on page/chapter scaffolding or core's `.gp-columns-*` runs.
+  test("`columns` / `column-count`: page-rules.css has none; component sheets only on `.dc-*`-rooted selectors", () => {
     const bad = [];
+    const rooted = (sel) => /^[a-z0-9]*\.dc-[\w-]+/i.test(sel.trim());
+    const scaffolding = (sel) => classesIn(sel).some((c) => c === "page" || c === "chapter" || c.startsWith("gp-columns-"));
     for (const s of PKG) {
       if (s.label === "styles/page-templates.css") continue;
       s.root.walkDecls(/^(columns|column-count)$/, (d) => {
-        const sel = where(d.parent);
-        if (!COLUMNS_ALLOWLIST.some(([f, sub]) => f === s.label && sel.includes(sub))) bad.push(`${s.label}: ${sel} { ${d.prop}: ${d.value} }`);
+        const sels = d.parent.selectors ?? [];
+        const ok = s.label.startsWith("styles/components/") && sels.length > 0 && sels.every((x) => rooted(x) && !scaffolding(x));
+        if (!ok) bad.push(`${s.label}: ${where(d.parent)} { ${d.prop}: ${d.value} }`);
       });
     }
-    expect(bad, "move it to page-templates.css (css-architecture.md, COLUMNS:N Ownership Rule)").toEqual([]);
+    expect(bad, "page/section column layouts go in page-templates.css; a component sheet may column only its own internals on a `.dc-*`-rooted selector").toEqual([]);
   });
 
   test("page-templates.css never sets columns on core's .gp-columns-* (gap only)", () => {

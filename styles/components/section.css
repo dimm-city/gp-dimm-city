@@ -743,8 +743,8 @@ h3 + .section {
      [repeat for 6+ specialties]
      @end-section
 
-   The column-flow rules (columns:2) live in page-templates.css
-   per the architectural contract. Here we own only the chrome-reset (the
+   The page/section column rules live in page-templates.css; the grid's own
+   columns:2 is a component-internal layout and lives below. Here we also own the chrome-reset (the
    .dc-card-grid section has no card background/shadow — it's a pure layout
    wrapper) plus the per-card density tweaks so all 8 specialty cards fit
    comfortably on one page. */

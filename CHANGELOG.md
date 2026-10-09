@@ -7,6 +7,26 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-10-09
+
+### Changed
+
+- **The columns contract is refined.** Page and section column layouts
+  stay in `page-templates.css`. A component may lay out its own insides in
+  columns in its own sheet, on a selector rooted in its `.dc-*` class (the
+  two-column skill cards, the card grid). The integrity test enforces that
+  rule in place of an exception list. No CSS moved.
+- The integrity test's remaining exceptions are genuine hooks: the outcome
+  tiers, the chapter classes gutterpress adds itself, and the design
+  guide's page labels.
+- `docs/css-roadmap.md` records what the CSS review left to do, and in
+  which order.
+
+### Removed
+
+- Two unused design-guide classes: `dg-face-sample` and the
+  `dc-banner-demo` section class.
+
 ## [1.1.3] - 2026-10-09
 
 ### Removed

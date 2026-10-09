@@ -368,7 +368,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 
 - `.page` / `.chapter` selectors are reserved for **counters, page-templates, TOC IDs, and per-instance positioning**.
 - Component visuals live exclusively in `components/*.css` under the `.dc-*` namespace (kebab-case).
-- `columns: N` rules live exclusively in `page-templates.css` (columns-ownership rule).
+- Page and section `columns: N` layouts live exclusively in `page-templates.css`; a component may column its own internals in its own sheet (columns-ownership rule).
 - `@page` directive class args are limited to **page-template names** (`.dc-chapter-start`, `.card-grid`, etc.).
 
 ### Naming
@@ -397,7 +397,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 | `dc-fonts.css` | `@font-face` |
 | `dc-core.css` | `html`/`body` baseline, element resets, heading defaults, `* { print-color-adjust }` |
 | `components/*.css` | Every `.dc-*` component (base + thin variants + token contracts) |
-| `page-templates.css` | **All `columns:N` rules** (exclusive), `.page.*` layouts, paged wrapper scaffolding |
+| `page-templates.css` | **All page/section `columns:N` layouts** (exclusive), `.page.*` layouts, paged wrapper scaffolding |
 | `page-rules.css` | `@page` declarations, named pages, folio + chapter footers |
 | the design guide's own sheet (unlayered) | `div.chapter` scaffolding, design-guide specimen chrome |
 | a book's own sheet (unlayered) | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |
