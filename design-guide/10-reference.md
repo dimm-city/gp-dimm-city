@@ -25,9 +25,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 |---|---|---|
 | `@lede` | `@end-lede` | — |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `GEAR` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | `variant=` as above (not flavor/pullquote), `label="…"` |
-| `@dm-note` | `@end-dm-note` | `label="…"` |
-| `@tape` | — | `label="…"` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` (`@callout vibe`); `label="…"` |
+| `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard` `.dc-codex`, `label="…"` |
 | `@sidebar` | `@end-sidebar` | `.inset` (needs `@page .page-sidebar`) |
 | `@sidebar-box` | `@end-sidebar-box` | `####` heading, `---`, body |
@@ -52,8 +51,6 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
 | `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
 | `@continue` | — | inside a skill: continuation card |
-
-`@roll-table` and `@options-table` are retired; they parse as nothing. Use a pipe table.
 
 
 ## Classes you can add

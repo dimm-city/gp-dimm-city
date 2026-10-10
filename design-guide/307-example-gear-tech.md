@@ -13,7 +13,7 @@ Wanna level up? In Dimm City, that means slicing yourself open and slotting in s
 
 Install too much, too fast, or too dirty, and the body pushes back. Or worse—the Dream does.
 
-@callout variant=gear label="Remember"
+@callout gear label="Remember"
 
 Every install has a cost. Every edge has a crack. Push too far, and something in you will break.
 
@@ -57,7 +57,7 @@ PCs start clean with 0 EP. But every aug you bolt on scrapes at your mind, tugs 
 9–10 | Extreme instability, system failures likely | SysChk 15–20
 @end-outcome
 
-@callout variant=note label="Cybersuck"
+@callout note label="Cybersuck"
 
 Specialties relying on arcane forces are adversely affected by implant Ego. If you're a Proxy, Gutterdruid, or Etherlock, every Ego Point above 2 makes it harder to use your abilities: **+1 AP cost for every point of EP beyond 2.**
 
@@ -65,7 +65,7 @@ Example: With 4 EP, your abilities cost +2 AP more to activate. Technosorcerers 
 
 @end-callout
 
-@callout variant=gear label="SysFAIL"
+@callout gear label="SysFAIL"
 
 Consequences of a SysFAIL can range from temporary ability loss to total system shutdown.
 

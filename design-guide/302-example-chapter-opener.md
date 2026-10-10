@@ -55,7 +55,7 @@ This chapter will guide you through all the choices you need to make to help you
 
 Before reputation comes recognition. Before recognition comes a glance. Dimmers speed-read bodies like text: names, scars, size, and stance all scanned in a heartbeat. This section defines how you're read when the Dream first lays eyes on you.
 
-@callout variant=origin label="Image Is Everything"
+@callout origin label="Image Is Everything"
 
 **Before You Fill Anything In:**
 

@@ -58,17 +58,17 @@ Every marker takes the same attribute grammar after its name, in any order: `#id
 ```markdown
 @column-panel #core-loop .gp-columns-2
 
-@callout variant=warning label="Heat is shared"
+@callout warning label="Heat is shared"
 ```
 
 Standard markdown elements take attributes too, with braces at the end of the element: `## Title {.dc-spray}`, `![alt](img.png){.dc-img-float-right}`, and `@skill {.dc-allow-split}` for a class on a component macro.
 
 ## The blank-line rule
 
-Put a blank line before and after every marker. Most markers are read even when they sit straight under a list or a line of text, but `@callout`, `@dm-note` and `@tape` are paragraphs to markdown: directly under a list item or paragraph line they become part of that paragraph and are never seen.
+Put a blank line before and after every marker. Gutterpress reads a marker even when it sits straight under a list item or a line of text, but the blank line keeps the page readable and keeps a marker from being mistaken for prose.
 
 ```markdown
-@callout variant=note
+@callout note
 
 Pick a Spec. Spend 6 Spec Points.
 
@@ -79,15 +79,13 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@callout variant=note
+@callout note
 
 Pick a Spec. Spend 6 Spec Points.
 
 @end-callout
 
 </div>
-
-Without the blank line before `@end-callout`, the closer is swallowed by the last line of the callout and the callout stays open to the end of the page.
 
 ## Markdown the system styles
 

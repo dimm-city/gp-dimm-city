@@ -885,7 +885,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout variant=…` for more — both emit the same seven registers.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers.
 
 <div class="dg-stage dg-tall">
 
@@ -1024,11 +1024,11 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 ## Tape
 
-`@tape label="…"`, then the raw form with `.dc-flush`, which removes the tape's outer margin.
+`<div class="dc-tape">…</div>`, then the form with `.dc-flush`, which removes the tape's outer margin.
 
 <div class="dg-stage">
 
-@tape label="Operators"
+<div class="dc-tape">Operators</div>
 
 <div class="dc-tape dc-flush">Operators</div>
 

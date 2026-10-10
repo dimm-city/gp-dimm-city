@@ -91,7 +91,7 @@ const UNSTYLED_ACKNOWLEDGED = [...read("components.yaml").matchAll(/^\s*unstyled
  * Keep this SMALL; every entry needs a reason.
  */
 const HOOK_ALLOWLIST = {
-  // Outcome tiers the roll-table macros emit as modifier classes; the visual
+  // Outcome tiers @outcome emits as modifier classes; the visual
   // difference is carried by a `data-` attribute / table-cell styling instead.
   "tier-crit": "outcome tier hook emitted by the plugin",
   "tier-hit": "outcome tier hook emitted by the plugin",

@@ -243,7 +243,7 @@ describe("declared wrapper markers", () => {
       glossary: "dc-terms",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
@@ -369,12 +369,12 @@ describe("declared specialty, learning path and skill", () => {
       }
     });
 
-    test("hand-written components and wrappers keep working inside a specialty", () => {
+    test("cards, wrappers and callouts keep working inside a specialty", () => {
       const src = doc(
         "@specialty .augmerc", "",
         "@specialty-intro", "", "## Augmerc", "", "@end-specialty-intro", "",
         "@card", "", "#### Title", "", "> Pull", "", "Body.", "", "@end-card", "",
-        "@callout variant=note", "", "Careful.", "", "@end-callout", "",
+        "@callout note", "", "Careful.", "", "@end-callout", "",
         "@end-specialty",
       );
       const { html, warnings } = renderGp(src);
@@ -802,10 +802,10 @@ describe("declared card, outcome and procedure", () => {
       expect(html).toMatch(/dc-card-inner">[\s\S]*<ol class="dc-steps">[\s\S]*<\/ol>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
     });
 
-    test("inside a hand-written @callout it nests there, and the callout closes at its own @end-callout", () => {
-      const src = doc("@callout variant=note", "", "Before.", "", "@procedure", "", "1. One", "2. Two", "@end-procedure", "", "After.", "", "@end-callout", "", "Outside.");
+    test("inside a @callout it nests there, and the callout closes at its own @end-callout", () => {
+      const src = doc("@callout note", "", "Before.", "", "@procedure", "", "1. One", "2. Two", "@end-procedure", "", "After.", "", "@end-callout", "", "Outside.");
       const { html, warnings } = renderGp(src);
-      expect(squash(html)).toMatch(/dc-alert dc-note"><span[^>]*>Note<\/span><p>Before\.<\/p><ol class="dc-steps">.*<\/ol><p>After\.<\/p><\/div><p>Outside\.<\/p>$/);
+      expect(squash(html)).toMatch(/dc-alert dc-note"[^>]*><span[^>]*>Note<\/span><p>Before\.<\/p><ol class="dc-steps">.*<\/ol><p>After\.<\/p><\/div><p>Outside\.<\/p>$/);
       expect(warnings).toEqual([]);
     });
 
@@ -826,5 +826,122 @@ describe("declared card, outcome and procedure", () => {
     const html = createMarkdown().render(doc("@procedure", "", "1. One", "", "@end-procedure"));
     expect(html).toContain("@procedure");
     expect(html).not.toContain("dc-steps");
+  });
+});
+
+// @callout is a declared wrapper (variant = a bare word) and @dm-note is its
+// alias with the `dm` variant preset. The only plugin code is the default label.
+describe("declared callout and dm-note", () => {
+  const doc = (...lines) => lines.join("\n");
+  const problems = (src) => renderGp(src).warnings.filter((w) => w.type === "component_invalid");
+  const callout = (open, body = "Body.", close = "@end-callout") => doc(open, "", body, "", close);
+  const VARIANTS = {
+    note: ["dc-note", "Note"],
+    warning: ["dc-note warning", "Warning"],
+    dm: ["dc-dm-note", "Dream Master Note"],
+    vibe: ["dc-vibe-callout", "Vibe"],
+    origin: ["dc-origin-callout", "Origin"],
+    visit: ["dc-visit-callout", "Visit"],
+    gear: ["dc-gear-callout", "Gear"],
+  };
+
+  test("each variant word gives its class and default label", () => {
+    expect(Object.keys(markers.callout.variants)).toEqual(Object.keys(VARIANTS));
+    for (const [variant, [cls, label]] of Object.entries(VARIANTS)) {
+      const { html, warnings } = renderGp(callout(`@callout ${variant}`));
+      expect(html, variant).toMatch(new RegExp(`^<div class="dc-alert ${cls}" data-callout="${variant}"><span class="dc-alert-label">${label}</span>\n<p>Body\\.</p>\n</div>$`));
+      expect(warnings, variant).toEqual([]);
+    }
+  });
+
+  test("no variant is a note", () => {
+    const { html, warnings } = renderGp(callout("@callout"));
+    expect(html).toBe('<div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>\n<p>Body.</p>\n</div>');
+    expect(warnings).toEqual([]);
+  });
+
+  test("an explicit label wins, escaped, and the variant keeps its class", () => {
+    const { html } = renderGp(callout('@callout vibe label="Hot & <loud>"'));
+    expect(html).toContain('<div class="dc-alert dc-vibe-callout" data-callout="vibe" data-label="Hot &amp; &lt;loud&gt;"><span class="dc-alert-label">Hot &amp; &lt;loud&gt;</span>');
+    expect(html).not.toContain(">Vibe<");
+  });
+
+  test("the default class does not depend on the label: a labelled callout with no variant is still a note", () => {
+    const { html } = renderGp(callout('@callout label="Careful"'));
+    expect(html).toContain('<div class="dc-alert dc-note" data-label="Careful"><span class="dc-alert-label">Careful</span>');
+    expect(renderGp(callout('@callout vibes label="Careful"')).html).toContain('<div class="dc-alert dc-note" data-callout="vibes"');
+  });
+
+  test("author classes sit after the variant's, with the compact or the braces spelling", () => {
+    for (const open of ['@callout .float-right origin label="Image Is Everything"', '@callout {.float-right} origin label="Image Is Everything"']) {
+      const { html, warnings } = renderGp(callout(open));
+      expect(html, open).toContain('<div class="dc-alert dc-origin-callout float-right"');
+      expect(html, open).toContain('<span class="dc-alert-label">Image Is Everything</span>');
+      expect(warnings, open).toEqual([]);
+    }
+    expect(renderGp(callout("@callout .float-right")).html).toContain('<div class="dc-alert dc-note float-right">');
+  });
+
+  test("@dm-note is @callout dm: same HTML, default label, own label, and its own closer", () => {
+    const dm = renderGp(callout("@dm-note", "Body.", "@end-dm-note"));
+    expect(dm.html).toBe(renderGp(callout("@callout dm")).html);
+    expect(dm.html).toContain('<div class="dc-alert dc-dm-note" data-callout="dm"><span class="dc-alert-label">Dream Master Note</span>');
+    expect(dm.warnings).toEqual([]);
+    expect(renderGp(callout('@dm-note label="Running the Setup"', "Body.", "@end-dm-note")).html).toContain('<span class="dc-alert-label">Running the Setup</span>');
+    // the closer ends it: what follows is outside
+    expect(renderGp(doc("@dm-note", "", "In.", "", "@end-dm-note", "", "Out.")).html).toMatch(/<p>In\.<\/p>\n<\/div><p>Out\.<\/p>/);
+  });
+
+  test("a new callout closes the one still open; one left open closes at the end without a warning", () => {
+    const { html, warnings } = renderGp(doc("@callout vibe", "", "A.", "", "@dm-note", "", "B."));
+    expect(html.match(/<div class="dc-alert/g)).toHaveLength(2);
+    expect(html.match(/<\/div>/g)).toHaveLength(2);
+    expect(html).toMatch(/A\.<\/p>\n<\/div><div class="dc-alert dc-dm-note"/);
+    expect(warnings).toEqual([]);
+  });
+
+  test("a stray closer warns", () => {
+    expect(renderGp("@end-callout").warnings.map((w) => w.type)).toEqual(["declared_marker_close_without_open"]);
+    expect(renderGp("@end-dm-note").warnings.map((w) => w.type)).toEqual(["declared_marker_close_without_open"]);
+  });
+
+  test("an unrecognised variant word is a note, and core says so", () => {
+    const { html, warnings } = renderGp(callout("@callout vibes"));
+    expect(html).toContain('<div class="dc-alert dc-note" data-callout="vibes"><span class="dc-alert-label">Note</span>');
+    expect(warnings.map((w) => w.type)).toEqual(["unknown_variant"]);
+    expect(warnings[0].message).toContain('"vibes" is not a variant of @callout');
+  });
+
+  describe("validate: variant= is gone", () => {
+    test("one problem per callout, on the marker's line, naming the bare word to write", () => {
+      const src = doc("Intro.", "", '@callout .float-right variant="origin" label="Image"', "", "A.", "", "@end-callout", "", "@callout variant=note", "", "B.", "", "@end-callout");
+      expect(problems(src).map((p) => [p.line, p.message])).toEqual([
+        [3, '@callout: no longer takes variant=origin; write "@callout origin" instead.'],
+        [9, '@callout: no longer takes variant=note; write "@callout note" instead.'],
+      ]);
+    });
+
+    test("it is not read as a variant: the callout is a plain note, never silently another variant", () => {
+      const { html } = renderGp(callout("@callout variant=vibe"));
+      expect(html).toContain('<div class="dc-alert dc-note" data-variant="vibe">');
+      expect(html).not.toContain("dc-vibe-callout");
+    });
+
+    test("@dm-note says it too, and a bare word raises nothing", () => {
+      expect(problems(callout("@dm-note variant=vibe", "x", "@end-dm-note")).map((p) => p.message)).toEqual(['@dm-note: no longer takes variant=vibe; write "@callout vibe" instead.']);
+      expect(problems(callout("@callout vibe"))).toEqual([]);
+      expect(problems(callout("@dm-note"))).toEqual([]);
+    });
+  });
+
+  test("a callout in a skill's card stays in the card", () => {
+    const { html, warnings } = renderGp(doc("@skill", "", "#### Skill | T1", "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", "", "@callout gear", "", "Tip.", "", "@end-callout"));
+    expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-alert dc-gear-callout"[\s\S]*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
+    expect(warnings).toEqual([]);
+  });
+
+  test("image-only paragraphs are marked, inside a callout too", () => {
+    expect(renderGp(callout("@callout", "![alt](a.png)")).html).toContain('<p class="dc-img-wrapper"><img');
+    expect(renderGp("text ![alt](a.png) text").html).not.toContain("dc-img-wrapper");
   });
 });

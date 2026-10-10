@@ -95,7 +95,7 @@ UniArm 100 / Redi-Mobile Cyberleg / RedEye Optical Prosthetic (could be just one
 
 @end-npc-stat
 
-@tape label="Operators"
+<div class="dc-tape">Operators</div>
 
 ## NPC Stat Block: Operator
 
@@ -130,7 +130,7 @@ UniArm 100 Cyberarm w/Optalanges TechMech kit and Smuggler's Stash Level 1, Ligh
 
 @end-npc-stat
 
-@tape label="Masters"
+<div class="dc-tape">Masters</div>
 
 ## NPC Stat Block: Master
 

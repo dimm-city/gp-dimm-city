@@ -155,10 +155,10 @@ Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-f
 
 ## Callout block
 
-The multi-paragraph form of an alert. `variant` picks the register; `label` replaces the default label.
+The multi-paragraph form of an alert. A variant word after `@callout` picks the register; `label` replaces the default label.
 
 ```markdown
-@callout variant=warning label="Heat is shared"
+@callout warning label="Heat is shared"
 
 **Heat is shared, not personal.** When any member of the crew draws Corporate attention, the whole crew's Heat track ticks up.
 
@@ -171,7 +171,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@callout variant=warning label="Heat is shared"
+@callout warning label="Heat is shared"
 
 **Heat is shared, not personal.** When any member of the crew draws Corporate attention, the whole crew's Heat track ticks up.
 
@@ -183,12 +183,12 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 | Option | Values | Default |
 |---|---|---|
-| `variant` | `note` `warning` `dm` `vibe` `origin` `visit` `gear` | `note` |
+| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `gear` | `note` |
 | `label` | any text | the variant's label |
 
 ## Dream Master note
 
-`@dm-note` is shorthand for `@callout variant=dm`, for the longer GM asides — scene setups, adjudication, design notes.
+`@dm-note` is shorthand for `@callout dm`, for the longer GM asides — scene setups, adjudication, design notes.
 
 ```markdown
 @dm-note label="Running the Setup"
@@ -220,18 +220,18 @@ If the players investigate before accepting, they can smell the trap with a Stre
 A torn-tape strip for a section break or a label between groups — tiers of NPCs, parts of a list.
 
 ```markdown
-@tape label="Operators"
+<div class="dc-tape">Operators</div>
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@tape label="Operators"
+<div class="dc-tape">Operators</div>
 
 </div>
 
-Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`. The raw form `<div class="dc-tape dc-flush">Label</div>` runs edge to edge.
+Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
 
 ## Dashed rule
 

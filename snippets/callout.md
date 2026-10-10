@@ -1,4 +1,4 @@
-@callout variant={{variant}} label="{{label}}"
+@callout note label="{{label}}"
 
 {{body}}
 

@@ -37,6 +37,11 @@
  *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
  *   @procedure           → ol.dc-steps: each numbered list inside becomes the
  *                          zero-padded step list (the wrapper renders nothing)
+ *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
+ *                          Variants (bare word): note, warning, dm, vibe, origin,
+ *                          visit, gear; none is a note. The label is `label="…"`,
+ *                          or the variant's name. `@dm-note` is `@callout dm`
+ *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
  *   open is closed (with everything inside it) when it opens again;
  *   `@end-<name>` closes that marker and what is inside it; `@page`,
@@ -45,12 +50,7 @@
  *   made of rows, a procedure of a numbered list) are the plugin's:
  *   the `validate` of each declaration.
  *
- * HAND-WRITTEN MARKERS (support optional key="value" attributes; handled by
- * the dimm_city_transform below):
- *   @callout            → Start a dc-alert callout (variant=note|warning|dm|vibe|origin|visit|gear)
- *   @end-callout        → End callout wrapper
- *   @dm-note            → Start a Dream Master note (sugar for @callout variant=dm)
- *   @end-dm-note        → End dm-note wrapper
+ * THE REST OF WHAT THIS FILE DOES (plain markdown-it rules, no markers):
  *   @continue           → Continuation marker — inside a skill's card it emits a
  *                          card with a "{name} ▸" tab so an oversized skill card
  *                          can be split across pages while keeping a visible link
@@ -58,7 +58,8 @@
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
- *   @tape               → Inline tape divider (`<div class="dc-tape">— § —</div>`)
+ *   `ROLL THE DIE!`      → span.dc-roll-the-die
+ *   an image-only paragraph gets p.dc-img-wrapper
  *
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
@@ -470,125 +471,6 @@ function parseAbilityFromListItem(html) {
 }
 
 
-// Parse key="value", key='value', key=value, bare .class / #id tokens,
-// and {.class #id} attribute blocks from the body string following a marker keyword.
-//
-// Grammar matches parseMarkerLine() in Gutterpress's markers.js — inlined here
-// rather than imported, because plugin code cannot resolve Gutterpress at runtime:
-//   - Quote-aware tokenization: key="a b" and key='a b' preserve spaces inside quotes
-//   - .classname  — shorthand class (multiple allowed)
-//   - #id         — shorthand id
-//   - key=value   — arbitrary attribute; key="class" splits on whitespace/commas
-//   - bare token  — treated as a class (DC markers have no positional "name" slot)
-//
-// Back-compat: brace blocks {.class #id} are stripped and injected as tokens
-// before the main pass so @specialty {.augmerc} continues to work alongside
-// the new bare-token form @specialty .augmerc.
-function parseAttrs(str) {
-  // Pre-pass: extract brace blocks {.class1 .class2 #id} for back-compat,
-  // then remove them from the string so the main tokenizer doesn't see them.
-  const braceClasses = [];
-  const braceIds = [];
-  const strNoBraces = str.replace(/\{([^}]+)\}/g, (_, inside) => {
-    for (const part of inside.trim().split(/\s+/)) {
-      if (part.startsWith('.')) braceClasses.push(part.slice(1));
-      else if (part.startsWith('#')) braceIds.push(part.slice(1));
-    }
-    return ' ';
-  });
-
-  // Tokenize the remaining string using the same quote-aware tokenizer as
-  // markers.js's parseMarkerLine().
-  const tokens = [];
-  let buf = '';
-  let quote = null;
-  for (let i = 0; i < strNoBraces.length; i++) {
-    const ch = strNoBraces[i];
-    if (quote) {
-      if (ch === quote) quote = null;
-      else buf += ch;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch;
-      continue;
-    }
-    if (/\s/.test(ch)) {
-      if (buf) tokens.push(buf);
-      buf = '';
-      continue;
-    }
-    buf += ch;
-  }
-  if (buf) tokens.push(buf);
-
-  // Process tokens: mirrors parseMarkerLine's attr-accumulation loop.
-  // DC markers have no positional "name" slot — bare tokens become classes.
-  const attrs = {};
-  const classes = [...braceClasses];
-  if (braceIds.length) attrs['id'] = braceIds[braceIds.length - 1];
-
-  for (const t of tokens) {
-    if (t.startsWith('.')) {
-      const c = t.slice(1).trim();
-      if (c) classes.push(c);
-      continue;
-    }
-    if (t.startsWith('#')) {
-      const id = t.slice(1).trim();
-      if (id) attrs['id'] = id;
-      continue;
-    }
-    const eq = t.indexOf('=');
-    if (eq > 0) {
-      const key = t.slice(0, eq).trim();
-      const val = t.slice(eq + 1).trim();
-      if (!key) continue;
-      if (key === 'class') {
-        val.split(/[,\s]+/).filter(Boolean).forEach((c) => classes.push(c));
-      } else if (key === 'id') {
-        if (val) attrs['id'] = val;
-      } else {
-        attrs[key] = val;
-      }
-      continue;
-    }
-    // Bare token (no . # =) — becomes a class for DC markers
-    if (t) classes.push(t);
-  }
-
-  if (classes.length) attrs['class'] = classes.join(' ');
-  return attrs;
-}
-
-// Check if a paragraph contains a marker and extract any attributes
-// Returns { matched: true, attrs: {...} } or { matched: false }
-function parseMarker(tok, tokens, i, marker) {
-  if (tok.type !== 'paragraph_open') return { matched: false };
-  const inline = tokens[i + 1];
-  if (!inline || inline.type !== 'inline') return { matched: false };
-
-  const content = inline.content.trim();
-
-  // Exact match (no attributes)
-  if (content === marker) {
-    return { matched: true, attrs: {} };
-  }
-
-  // Check if starts with marker followed by space
-  if (content.startsWith(marker + ' ')) {
-    const rest = content.slice(marker.length + 1).trim();
-    return { matched: true, attrs: parseAttrs(rest) };
-  }
-
-  return { matched: false };
-}
-
-// Legacy helper for simple marker checks (no attrs needed)
-function isMarker(tok, tokens, i, marker) {
-  return parseMarker(tok, tokens, i, marker).matched;
-}
-
 // Gutterpress owns bare @continue as a generic section marker and parses it
 // before custom core rules run. Claim the exact bare marker first, then decide
 // before Gutterpress's layout transform whether it belongs to a skill card or
@@ -837,6 +719,19 @@ function dcAlertsTransform(state) {
 }
 
 /**
+ * Mark image-only paragraphs with `.dc-img-wrapper`, so layout rules can
+ * target them without relying on `p:has(img)`.
+ */
+function dcImageParagraphs(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i + 2 < tokens.length; i++) {
+    const [open, inline, close] = [tokens[i], tokens[i + 1], tokens[i + 2]];
+    if (open.type !== 'paragraph_open' || inline.type !== 'inline' || close.type !== 'paragraph_close') continue;
+    if (inline.children?.length === 1 && inline.children[0].type === 'image') open.attrSet('class', 'dc-img-wrapper');
+  }
+}
+
+/**
  * `data-position="odd|even"` on every @specialty-card, counted across the
  * document in order so the card grid alternates its tilt/offset. The wrapper
  * itself is a declared marker (see `markers` below); this rule only numbers
@@ -1047,8 +942,8 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // A @card, @outcome or @procedure is content of the skill's card; a
-      // break or another component (@sidebar, @specialty-art, …) ends it.
+      // A @callout, @card, @outcome or @procedure is content of the skill's card;
+      // a break or another component (@sidebar, @specialty-art, …) ends it.
       if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
         let end = i;
         let depth = 0;
@@ -1129,7 +1024,7 @@ function dcSkillCards(state) {
 // run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
 // inside a skill must already be in its final form when the skill's rule
 // reads it. They stay inside the skill's card (see CARD_CONTENT).
-const CARD_CONTENT = new Set(['card', 'outcome', 'procedure']);
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure']);
 
 /**
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
@@ -1223,6 +1118,43 @@ function dcProcedures(state) {
     }
     return [open, ...out, close];
   });
+}
+
+// ── Declared component: @callout (and its alias @dm-note) ──────────────────
+//
+// `@callout note|warning|dm|vibe|origin|visit|gear` is a declared wrapper:
+// core adds `dc-alert`, the variant's class and any author classes. What core
+// cannot know is each variant's default label, so a rule adds it when the
+// author wrote no `label="…"`. A missing or unrecognised variant is a plain
+// note, as it always was.
+const CALLOUTS = {
+  note: { class: 'dc-note', label: 'Note' },
+  warning: { class: 'dc-note warning', label: 'Warning' },
+  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
+  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
+  origin: { class: 'dc-origin-callout', label: 'Origin' },
+  visit: { class: 'dc-visit-callout', label: 'Visit' },
+  gear: { class: 'dc-gear-callout', label: 'Gear' },
+};
+
+function dcCallouts(state) {
+  forEachComponent(state.tokens, 'callout', ([open, ...rest]) => {
+    const variant = Object.hasOwn(CALLOUTS, open.meta.variant) ? open.meta.variant : 'note';
+    if (variant !== open.meta.variant) {
+      // no variant class came from core: the default note keeps its place right after dc-alert
+      open.attrSet('class', open.attrGet('class').replace('dc-alert', 'dc-alert dc-note'));
+    }
+    if (open.meta.labelled) return; // an explicit label="…" wins
+    const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
+    return [open, label, ...rest];
+  });
+}
+
+// `variant=` was the old way to pick one; it now reads as a plain attribute
+// and would silently render a note, so say so once, on the marker's line.
+function validateCallout({ attrs }) {
+  if (attrs.variant === undefined) return [];
+  return [`no longer takes variant=${attrs.variant}; write "@callout ${attrs.variant}" instead.`];
 }
 
 /**
@@ -1329,133 +1261,15 @@ export default function dimmCityPlugin(md, options = {}) {
   // variant chrome, the chevron-styled h1) is provided by CSS attribute
   // selectors in components/*.css matching this structure.
 
-  // The hand-written markers that remain: @callout, @dm-note, @tape and the
-  // retired @roll-table / @options-table no-ops, plus the image-only paragraph class.
-  md.core.ruler.push('dimm_city_transform', function (state) {
-    const tokens = state.tokens;
-    const newTokens = [];
-    let inCallout = false;
-    let inDmNote = false;
+  // Mark image-only paragraphs so layout rules can target them without
+  // relying on p:has(img). The base CSS rule
+  // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
+  // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
+  md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
 
-    // A new @callout or @dm-note closes the one still open.
-    function closeAll() {
-      if (inCallout) newTokens.push(makeToken('html_block', '</div>\n'));
-      if (inDmNote) newTokens.push(makeToken('html_block', '</div>\n'));
-      inCallout = inDmNote = false;
-    }
-
-    for (let i = 0; i < tokens.length; i++) {
-      const tok = tokens[i];
-
-      // --- @roll-table / @options-table (DEPRECATED 17.3.0) ---
-      // These macros emitted tier-colored classes (dc-roll-table*, dc-options-table*)
-      // with ZERO backing CSS and had zero usage in the book. They are now no-ops:
-      // the markers (and their @end- counterparts) are stripped so any stray
-      // occurrence renders nothing. Use standard GFM pipe tables instead — they are
-      // auto-styled by dc-core.
-      if (isMarker(tok, tokens, i, '@roll-table') ||
-          isMarker(tok, tokens, i, '@end-roll-table') ||
-          isMarker(tok, tokens, i, '@options-table') ||
-          isMarker(tok, tokens, i, '@end-options-table')) {
-        i += 2;
-        continue;
-      }
-
-      // --- @callout / @end-callout ---
-      // Block-level alert wrapper. variant="note|warning|dm|vibe|origin|visit|gear"
-      const calloutMarker = parseMarker(tok, tokens, i, '@callout');
-      if (calloutMarker.matched) {
-        closeAll();
-        const variant = (calloutMarker.attrs['variant'] || 'note').toLowerCase();
-        const CALLOUT_VARIANTS = {
-          'note':    { classes: 'dc-note',           label: 'Note' },
-          'warning': { classes: 'dc-note warning',   label: 'Warning' },
-          'dm':      { classes: 'dc-dm-note',        label: 'Dream Master Note' },
-          'vibe':    { classes: 'dc-vibe-callout',   label: 'Vibe' },
-          'origin':  { classes: 'dc-origin-callout', label: 'Origin' },
-          'visit':   { classes: 'dc-visit-callout',  label: 'Visit' },
-          'gear':    { classes: 'dc-gear-callout',   label: 'Gear' },
-        };
-        const cfg = CALLOUT_VARIANTS[variant] || CALLOUT_VARIANTS['note'];
-        const labelOverride = calloutMarker.attrs['label'];
-        const labelText = labelOverride ? esc(labelOverride) : cfg.label;
-        const calloutClass = 'dc-alert ' + cfg.classes +
-          (calloutMarker.attrs['class'] ? ' ' + esc(calloutMarker.attrs['class']) : '');
-        newTokens.push(makeToken('html_block',
-          '<div class="' + calloutClass + '">\n' +
-          '<span class="dc-alert-label">' + labelText + '</span>\n'
-        ));
-        inCallout = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-callout')) {
-        if (inCallout) newTokens.push(makeToken('html_block', '</div>\n'));
-        inCallout = false;
-        i += 2;
-        continue;
-      }
-
-      // --- @dm-note / @end-dm-note ---
-      // Block-level DM note wrapper. Equivalent to > [!DM] but supports multi-paragraph content.
-      const dmNoteMarker = parseMarker(tok, tokens, i, '@dm-note');
-      if (dmNoteMarker.matched) {
-        closeAll();
-        const labelOverride = dmNoteMarker.attrs['label'];
-        const labelText = labelOverride ? esc(labelOverride) : 'Dream Master Note';
-        newTokens.push(makeToken('html_block',
-          '<div class="dc-alert dc-dm-note">\n' +
-          '<span class="dc-alert-label">' + labelText + '</span>\n'
-        ));
-        inDmNote = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-dm-note')) {
-        if (inDmNote) newTokens.push(makeToken('html_block', '</div>\n'));
-        inDmNote = false;
-        i += 2;
-        continue;
-      }
-
-      // --- @tape (single-line tape divider) ---
-      const tapeMarker = parseMarker(tok, tokens, i, '@tape');
-      if (tapeMarker.matched) {
-        const labelAttr = tapeMarker.attrs['label'] || '';
-        const extraClass = tapeMarker.attrs['class'] ? ' ' + esc(tapeMarker.attrs['class']) : '';
-        newTokens.push(makeToken('html_block', '<div class="dc-tape' + extraClass + '">' + esc(labelAttr) + '</div>\n'));
-        i += 2; continue;
-      }
-
-      // Mark image-only paragraphs so layout rules can target them without
-      // relying on p:has(img). The base CSS rule
-      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
-      // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
-      if (tok.type === 'paragraph_open') {
-        const inlineTok = tokens[i + 1];
-        const closeTok = tokens[i + 2];
-        if (inlineTok && inlineTok.type === 'inline' && closeTok && closeTok.type === 'paragraph_close') {
-          const hasOnlyImage = Array.isArray(inlineTok.children)
-            && inlineTok.children.length === 1
-            && inlineTok.children[0].type === 'image';
-          if (hasOnlyImage) {
-            tok.attrSet('class', 'dc-img-wrapper');
-          }
-        }
-      }
-
-      newTokens.push(tok);
-    }
-
-    closeAll(); // a @callout or @dm-note left open closes at the end of the document
-
-    state.tokens = newTokens;
-  });
-
-  // Declared components. Cards, outcomes and procedures go first so one inside
-  // a skill is already rewritten when the skill's rule looks at it.
+  // Declared components. Callouts, cards, outcomes and procedures go first so
+  // one inside a skill is already rewritten when the skill's rule looks at it.
+  md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
   md.core.ruler.push('dc_procedures', dcProcedures);
@@ -1468,7 +1282,7 @@ export default function dimmCityPlugin(md, options = {}) {
  * same relationship `metadata` has). Core parses `@name … @end-name`, merges
  * author classes, threads `data-source-range`, nests containers as a stack and
  * closes them at the next `@page`/`@section`/`@chapter`, so none of this is
- * hand-written in the state machine above. A bare markdown-it instance never
+ * hand-written in a marker parser. A bare markdown-it instance never
  * reads this table: declared markers exist only under Gutterpress.
  *
  * A `section: true` entry declares a section-styled component: core treats it
@@ -1510,6 +1324,16 @@ export const markers = {
   card: wrapper('dc-card'),
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
+
+  // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
+  // the same marker with the `dm` variant preset. A default label comes from
+  // `dcCallouts`, an explicit `label="…"` from core.
+  callout: wrapper('dc-alert', {
+    variants: Object.fromEntries(Object.entries(CALLOUTS).map(([name, { class: cls }]) => [name, cls])),
+    label: { tag: 'span', class: 'dc-alert-label', from: 'attr:label' },
+    validate: validateCallout,
+  }),
+  'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
   sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),

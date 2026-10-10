@@ -28,9 +28,6 @@ const manifest = read("manifest.yaml").replace(/^[ \t]*#.*\n/gm, "");
 /** The chapters, in manifest order — the only `.md` entries in the manifest. */
 const chapters = [...manifest.matchAll(/^\s*-\s*(\S+\.md)\s*$/gm)].map((m) => m[1]);
 
-/** Markers the plugin recognises but deliberately renders as nothing. */
-const DEPRECATED_MARKERS = new Set(["@roll-table", "@options-table"]);
-
 function render(rel) {
   const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
   const env = {};
@@ -77,12 +74,12 @@ describe("coverage", () => {
   const code = readFileSync(path.join(ROOT, "plugin.js"), "utf8");
 
   test("the guide demonstrates every macro the plugin handles", () => {
-    // Every marker literal the plugin matches on, e.g. parseMarker(tok, tokens, i, '@skill'),
-    // plus every marker it declares in its `markers` table.
+    // Every marker literal the plugin names (`'@continue'`), plus every marker it
+    // declares in its `markers` table.
     const declared = Object.keys(markers).map((name) => `@${name}`);
     expect(declared.length).toBeGreaterThan(5);
     const macros = [...new Set([...[...code.matchAll(/'(@[a-z-]+)'/g)].map((m) => m[1]), ...declared])]
-      .filter((m) => !m.startsWith("@end-") && !DEPRECATED_MARKERS.has(m));
+      .filter((m) => !m.startsWith("@end-"));
     expect(macros.length).toBeGreaterThan(20);
     const missing = macros.filter((m) => !new RegExp(`^${m}(\\s|$)`, "m").test(source));
     expect(missing).toEqual([]);
