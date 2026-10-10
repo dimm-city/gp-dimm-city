@@ -45,12 +45,12 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | `###` name, `*tags*`, body |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
-| `@specialty` | `@end-specialty` / next `@specialty` | `.augmerc` … `.generalist` |
+| `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` … `generalist`, as a word or a `.class` |
 | `@specialty-intro` | `@end-specialty-intro` | `##` name, `###` spec tweak |
 | `@specialty-art` | `@end-specialty-art` | one image |
 | `@specialty-card` | `@end-specialty-card` | `#id`; `###` name, image, `>` tagline, pitch |
-| `@learning-path` | `@end-learning-path` / next `@learning-path` | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
-| `@skill` | `@end-skill` / next `@skill` | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
+| `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
+| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
 | `@continue` | — | inside a skill: continuation card |
 
 `@roll-table` and `@options-table` are retired; they parse as nothing. Use a pipe table.

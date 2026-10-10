@@ -21,24 +21,37 @@
  *                        → div.dc-block.dc-<variant> + div.dc-block-title
  *                          (`@block .dc-panel` class form works too)
  *
+ * DECLARED, THEN TRANSFORMED (declared in `markers`, so core opens, nests and
+ * closes them; core rules below rewrite what sits between the open and close
+ * token — see forEachComponent):
+ *   @specialty [name]    → div.dc-specialty.<name>  (`@specialty augmerc` and
+ *                          `@specialty .augmerc` are the same; names in
+ *                          SPECIALTIES, styled by `.dc-specialty.<name>`)
+ *   @learning-path       → div.dc-learning-path.dc-path-block[data-path-ref]
+ *                          > div.dc-path-shell (title, subtitle, stickers) + skills
+ *   @skill               → one div.dc-skill-card per `####` heading
+ *   Core's nesting rule is the only one: a declared marker that is already
+ *   open is closed (with everything inside it) when it opens again;
+ *   `@end-<name>` closes that marker and what is inside it; `@page`,
+ *   `@section`, `@chapter` and `@continue` close them all. The structure
+ *   rules (a skill belongs in a path, a path in a specialty) are the
+ *   plugin's: validateSpecialty / validateSkill.
+ *
  * HAND-WRITTEN MARKERS (support optional key="value" attributes; handled by
  * the dimm_city_transform state machine below):
- *   @specialty          → Start a specialty wrapper (auto-closes any prior specialty,
- *                          learning-path, or skill)
- *   @end-specialty      → Manually end a specialty wrapper
  *   @procedure          → Start a dc-steps procedure wrapper
  *   @end-procedure      → End procedure wrapper (auto-closes on EOF with a warning)
  *   @callout            → Start a dc-alert callout (variant=note|warning|dm|vibe|origin|visit|gear)
  *   @end-callout        → End callout wrapper
  *   @dm-note            → Start a Dream Master note (sugar for @callout variant=dm)
  *   @end-dm-note        → End dm-note wrapper
- *   @learning-path      → Start a learning path section (auto-closes previous sections)
- *   @end-learning-path  → Manually end a learning path section
- *   @skill              → Start a skill card (auto-closes previous skill)
- *   @end-skill          → End skill transformation mode
- *   @continue           → Continuation marker — emits a card with a "{name} ▸"
- *                          tab so an oversized skill card can be split across pages
- *                          while keeping a visible link to its origin card
+ *   @card / @end-card   → Generic card primitive
+ *   @continue           → Continuation marker — inside a skill's card it emits a
+ *                          card with a "{name} ▸" tab so an oversized skill card
+ *                          can be split across pages while keeping a visible link
+ *                          to its origin card (dcContinueClassifier claims it
+ *                          before core's layout transform; anywhere else it is
+ *                          core's section continuation)
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
  *   @outcome            → 5-rung d20 outcome ladder block
  *   @end-outcome
@@ -52,23 +65,16 @@
  * SPECIALTY VARIANTS:
  *   Skill card and learning-path variants are controlled by the .specialty.<name>
  *   parent container (CSS parent-selector model), not per-card attributes.
- *   Authors wrap the entire specialty section in @specialty .augmerc and every
+ *   Authors wrap the entire specialty section in @specialty augmerc and every
  *   card inside automatically inherits the shape and accent colors.
  *
- * ATTRIBUTE SUPPORT:
- *   Markers can include key="value", key='value', or key=value pairs:
+ * ATTRIBUTE SUPPORT (core's marker grammar: .class, #id, key=value, {.class}):
  *
  *   @learning-path data-foo="bar"
- *     → <div class="dc-learning-path dc-path-block" data-foo="bar">
- *
- *   @skill id="my-skill" data-category="combat"
- *     → Extra attributes added to skill-card wrapper
+ *     → <div class="dc-learning-path dc-path-block" data-foo="bar" data-path-ref="PRX1">
  *
  *   @skill {.dc-allow-split}
- *     → <div class="dc-skill-card dc-allow-split" ...>
- *
- *   @learning-path {.custom-path}
- *     → <div class="dc-learning-path dc-path-block custom-path" ...>
+ *     → every card of the skill: <div class="dc-skill-card dc-allow-split" ...>
  *
  * LEARNING PATH FORMAT:
  *   @learning-path
@@ -77,6 +83,7 @@
  *   - Skill A
  *   - Skill B
  *   - Skill C
+ *   @skill … (the skills follow, inside the path)
  *
  * SKILL FORMAT:
  *   @skill
@@ -89,7 +96,8 @@
  *   | --- | --- |
  *   | 20 | Critical |
  *
- * Auto-closes at: EOF, @end-skill, @end-learning-path, @learning-path, or @skill
+ * A skill ends at @end-skill, the next @skill, or when what holds it closes
+ * (@end-learning-path, a new @learning-path, @end-specialty, @page, EOF).
  */
 
 function esc(s) {
@@ -605,40 +613,32 @@ function dcContinueCandidateBlock(state, startLine, endLine, silent) {
   return true;
 }
 
+// Markers that end a skill: its own closer, the markers that start the next
+// path or specialty, and the layout scopes core closes every declared
+// component at. At this point core has not run yet, so each one is still a
+// `layout_marker` token carrying `meta.kind`.
+const SKILL_ENDS = new Set([
+  'end-skill', 'learning-path', 'end-learning-path', 'specialty', 'end-specialty',
+  'chapter', 'spread', 'page', 'section', 'end-section',
+]);
+
 function dcContinueClassifier(state) {
-  let inSkillMode = false;
-  let inSkillCard = false;
+  let inSkill = false;
+  let inCard = false;
 
-  for (let i = 0; i < state.tokens.length; i++) {
-    const token = state.tokens[i];
-    if (parseMarker(token, state.tokens, i, '@skill').matched) {
-      inSkillMode = true;
-      inSkillCard = false;
-      continue;
+  for (const token of state.tokens) {
+    const kind = token.type === 'layout_marker' ? token.meta.kind : null;
+    if (kind === 'skill') {
+      inSkill = true;
+      inCard = false;
+    } else if (SKILL_ENDS.has(kind)) {
+      inSkill = false;
+      inCard = false;
+    } else if (inSkill && token.type === 'heading_open' && token.tag === 'h4') {
+      inCard = true;
+    } else if (token.type === 'dc_continue_candidate') {
+      token.type = inCard ? 'dc_skill_continue' : 'layout_marker';
     }
-    if (isMarker(token, state.tokens, i, '@end-skill') ||
-        isMarker(token, state.tokens, i, '@end-skills') ||
-        isMarker(token, state.tokens, i, '@learning-path') ||
-        isMarker(token, state.tokens, i, '@end-learning-path') ||
-        isMarker(token, state.tokens, i, '@specialty') ||
-        isMarker(token, state.tokens, i, '@end-specialty')) {
-      inSkillMode = false;
-      inSkillCard = false;
-      continue;
-    }
-    if (token.type === 'layout_marker' &&
-        ['chapter', 'spread', 'page', 'section'].includes(token.meta && token.meta.kind)) {
-      inSkillMode = false;
-      inSkillCard = false;
-      continue;
-    }
-    if (inSkillMode && token.type === 'heading_open' && token.tag === 'h4') {
-      inSkillCard = true;
-      continue;
-    }
-    if (token.type !== 'dc_continue_candidate') continue;
-
-    token.type = inSkillMode && inSkillCard ? 'dc_skill_continue' : 'layout_marker';
   }
 }
 
@@ -716,25 +716,6 @@ function collectOrderedListItems(tokens, startIndex, md) {
   }
 
   return { items: items, endIndex: i };
-}
-
-// Attributes that should be emitted verbatim (real HTML attributes).
-// Everything else gets a `data-` prefix to avoid colliding with HTML semantics
-// (e.g. an author writing `title=foo` shouldn't produce a real `title` tooltip;
-// they meant `data-title="foo"`). markers.js does the same for marker attributes.
-const PASSTHROUGH_HTML_ATTRS = new Set(['class', 'id', 'lang', 'dir', 'role', 'tabindex']);
-
-function buildAttrs(userAttrs, baseClass) {
-  let attrs = ' class="' + esc(baseClass + (userAttrs['class'] ? ' ' + userAttrs['class'] : '')) + '"';
-  for (const [key, val] of Object.entries(userAttrs)) {
-    if (key === 'class') continue;
-    if (key.startsWith('data-') || key.startsWith('aria-') || PASSTHROUGH_HTML_ATTRS.has(key)) {
-      attrs += ' ' + key + '="' + esc(val) + '"';
-    } else {
-      attrs += ' data-' + key + '="' + esc(val) + '"';
-    }
-  }
-  return attrs;
 }
 
 function buildProcedureList(items) {
@@ -879,6 +860,305 @@ function dcSpecialtyCardPositions(state) {
   }
 }
 
+// ── Declared components: @specialty, @learning-path, @skill ────────────────
+//
+// All three are declared in `markers` below, so core opens, nests and closes
+// them: each use is a `layout_component_open` … `layout_component_close` pair
+// whose open token's `meta.kind` is the marker name. The rules here are
+// ordinary core rules that rewrite what sits between a pair.
+
+/**
+ * Call `rewrite(run, enclosing)` for every declared component of `kind`, in
+ * document order. `run` is the component's tokens, open token to close token;
+ * `enclosing` is the open tokens of the components it sits in, outermost first.
+ * Return a replacement run, or nothing to leave it as it is.
+ */
+function forEachComponent(tokens, kind, rewrite) {
+  const enclosing = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+    if (tok.type === 'layout_component_close') {
+      enclosing.pop();
+      continue;
+    }
+    if (tok.type !== 'layout_component_open') continue;
+    if (tok.meta.kind !== kind) {
+      enclosing.push(tok);
+      continue;
+    }
+    let end = i;
+    let depth = 0;
+    do depth += tokens[end++].nesting; while (depth > 0);
+    const run = rewrite(tokens.slice(i, end), enclosing) || tokens.slice(i, end);
+    tokens.splice(i, end - i, ...run);
+    i += run.length - 1;
+  }
+}
+
+// What sits in a learning path before its first skill — the title, the
+// subtitle and the sticker chain — rewritten into the path's header markup.
+function pathShell(tokens, ref, md) {
+  const out = [];
+  let titled = false;
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+
+    // H3 = learning path title (banner). Emitted as an h3, the level it was
+    // written at: the outline (the app's contents panel, PDF bookmarks) nests
+    // specialty (##) > learning path (###) > skill (####). .dc-path-sep is a
+    // real space between the sticker and the title, so the heading's text
+    // reads "PRX1 Refuse Finality" (outline, bookmarks, copy, search, screen
+    // readers); chrome.css gives it the printed gap.
+    if (tok.type === 'heading_open' && tok.tag === 'h3') {
+      const titleText = tokens[i + 1].content || '';
+      out.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(ref) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
+      titled = true;
+      i += 2; // skip inline + heading_close
+      continue;
+    }
+
+    // Blockquote after the title = subtitle.
+    if (tok.type === 'blockquote_open' && titled) {
+      let bqContent = '';
+      let j = i + 1;
+      while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
+        if (tokens[j].type === 'inline') bqContent = renderInlineChildren(tokens[j], md);
+        j++;
+      }
+      out.push(makeToken('html_block', '<div class="dc-intro">' + bqContent + '</div>\n'));
+      i = j;
+      continue;
+    }
+
+    // Bullet list = sticker chain.
+    if (tok.type === 'bullet_list_open') {
+      const { items, endIndex } = collectBulletListItems(tokens, i);
+      if (items.length > 0) out.push(makeToken('html_block', buildStickerChain(items)));
+      i = endIndex;
+      continue;
+    }
+
+    out.push(tok);
+  }
+  return out;
+}
+
+/**
+ * `@learning-path`: number it (`data-path-ref`, from the enclosing
+ * `@specialty`'s name — its variant word or its author class — and the path's
+ * place in it) and wrap the path's header in `.dc-path-shell`.
+ */
+function dcLearningPaths(state) {
+  const numbered = new Map(); // enclosing @specialty (or null) → paths numbered so far
+  forEachComponent(state.tokens, 'learning-path', (run, enclosing) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    const specialty = enclosing.findLast((c) => c.meta.kind === 'specialty') || null;
+    const n = (numbered.get(specialty) || 0) + 1;
+    numbered.set(specialty, n);
+    const ref = (specialty ? specialtyCodeFromClass(specialty.attrGet('class')) : '') + n;
+    open.attrSet('data-path-ref', ref);
+
+    const body = run.slice(1, -1);
+    let end = body.findIndex((t) => t.type === 'layout_component_open' && t.meta.kind === 'skill');
+    if (end < 0) end = body.length;
+    return [
+      open,
+      makeToken('html_block', '<div class="dc-path-shell">\n'),
+      ...pathShell(body.slice(0, end), ref, state.md),
+      makeToken('html_block', '</div>\n'),
+      ...body.slice(end),
+      close,
+    ];
+  });
+}
+
+/**
+ * `@skill`: every `####` heading inside it starts a card. The declared
+ * wrapper only carries the author's classes and attributes (`{.dc-allow-split}`,
+ * `id=…`) — it renders nothing itself; each card is rendered from them.
+ *
+ *   h4 title     → card tab (name, tier); a skill in a learning path gets the
+ *                  automatic tier PATHREF.N when it names none
+ *   h5           → sub-header (an "Outcomes" one is dropped: the table has its own label)
+ *   blockquote   → flavor line
+ *   ordered list → ability rows
+ *   Roll | Outcome table → outcomes ladder
+ *   @continue    → closes the card and opens a "{name} ▸" continuation card
+ */
+function dcSkillCards(state) {
+  const md = state.md;
+  const numbered = new Map(); // learning-path open token → cards numbered so far
+  forEachComponent(state.tokens, 'skill', (run, enclosing) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    open.hidden = close.hidden = true;
+    const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
+    // `.dc-allow-split` lets a card taller than a page split; every other card
+    // carries data-break-inside="avoid". An outcomes table or sub-list inside a
+    // splittable card needs its own avoid, because the card has none.
+    const canSplit = (open.attrGet('class') || '').split(/\s+/).includes('dc-allow-split');
+    const content = run.slice(1, -1);
+    const out = [];
+    const emit = (html) => out.push(makeToken('html_block', html));
+    let inCard = false;
+    let title = { name: '', tier: '' }; // the current card's title, for @continue
+
+    const cardOpen = (cont) => {
+      const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
+      attrs.push(['name', slugify(title.name)]);
+      if (!canSplit) attrs.push(['data-break-inside', 'avoid']);
+      return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
+    };
+    const endCard = () => {
+      if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
+      inCard = false;
+    };
+
+    for (let i = 0; i < content.length; i++) {
+      const tok = content[i];
+
+      if (tok.type === 'heading_open' && tok.tag === 'h4') {
+        endCard();
+        const parsed = parseSkillTitle(content[i + 1].content || '');
+        title = { name: parsed.name, tier: parsed.tier };
+        let autoTier = '';
+        if (path) {
+          const n = (numbered.get(path) || 0) + 1;
+          numbered.set(path, n);
+          autoTier = path.attrGet('data-path-ref') + '.' + n;
+        }
+        // The skill's name is its `####` heading, kept a heading so the
+        // outline lists it under its learning path. (A continuation card's
+        // repeated title stays a span: it is not a new entry.)
+        emit(
+          cardOpen(false) +
+          '  <div class="dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '') + '">\n' +
+          '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
+          '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' +
+          '  </div>\n' +
+          '  <div class="dc-card-body' + (parsed.highlight ? ' dc-highlight-body' : '') + '">\n' +
+          '    <div class="dc-card-inner">\n'
+        );
+        inCard = true;
+        i += 2; // skip inline + heading_close
+        continue;
+      }
+
+      if (tok.type === 'dc_skill_continue') {
+        endCard();
+        emit(
+          cardOpen(true) +
+          '  <div class="dc-card-tab dc-card-tab-cont">\n' +
+          '    <span class="dc-tab-title">' + esc(title.name) + ' ▸</span>\n' +
+          (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
+          '  </div>\n' +
+          '  <div class="dc-card-body">\n' +
+          '    <div class="dc-card-inner">\n'
+        );
+        inCard = true;
+        continue;
+      }
+
+      // A break or another component (@sidebar, @specialty-art, …) ends the card.
+      if (tok.type.startsWith('layout_')) endCard();
+
+      if (!inCard) {
+        out.push(tok);
+        continue;
+      }
+
+      if (tok.type === 'heading_open' && tok.tag === 'h5') {
+        const h5Text = content[i + 1].content || '';
+        if (h5Text.toLowerCase() !== 'outcomes') emit('<div class="dc-sub-header">' + esc(h5Text) + '</div>\n');
+        i += 2;
+        continue;
+      }
+
+      if (tok.type === 'blockquote_open') {
+        let bqContent = '';
+        let j = i + 1;
+        while (j < content.length && content[j].type !== 'blockquote_close') {
+          if (content[j].type === 'inline') bqContent = renderInlineChildren(content[j], md);
+          j++;
+        }
+        emit('<p class="dc-flavor">' + bqContent + '</p>\n');
+        i = j;
+        continue;
+      }
+
+      if (tok.type === 'ordered_list_open') {
+        const { items, endIndex } = collectOrderedListItems(content, i, md);
+        items.forEach((itemHtml, idx) => {
+          const ability = parseAbilityFromListItem(itemHtml);
+          if (!ability) {
+            emit('<p>' + itemHtml + '</p>\n'); // not "**N AP** *Name:* text": keep it as a paragraph
+            return;
+          }
+          let posAttrs = '';
+          if (items.length > 1) {
+            if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
+            if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
+          }
+          emit(
+            '<div class="dc-ability"' + posAttrs + '>\n' +
+            '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
+            '  <p class="dc-ability-text">' + ability.text + '</p>\n' +
+            '</div>\n'
+          );
+        });
+        i = endIndex;
+        continue;
+      }
+
+      // Keep short sub-lists whole (e.g. an "Arm:" bullet stranded from "Leg:").
+      if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
+
+      if (tok.type === 'table_open') {
+        const tableTokens = collectTableTokens(content, i);
+        const tableClass = classifyTable(getTableHeaders(tableTokens));
+        // Tables this plugin does not transform pass through untouched, thead
+        // and all (rebuilding them from tbody rows once left 64 of 86 tables
+        // headerless).
+        if (tableClass) {
+          emit(buildTable(tableTokens, tableClass, md, canSplit));
+          i = skipToTableClose(content, i);
+          continue;
+        }
+      }
+
+      out.push(tok);
+    }
+    endCard();
+    return [open, ...out, close];
+  });
+}
+
+/**
+ * Structure checks (core runs these on the declared markers below and reports
+ * them as layout warnings). They are the plugin's rules, not core's: core
+ * only knows that declared markers nest.
+ */
+function validateSpecialty({ blocks }) {
+  return blocks
+    .filter((b) => b.type === 'component' && b.name === 'skill')
+    .map((b) => ({
+      line: b.line,
+      message:
+        'This skill is outside a learning path. If an `@end-learning-path` above it closed the path early, ' +
+        'remove that line; otherwise move the skill into a `@learning-path`.',
+    }));
+}
+
+function validateSkill({ blocks }) {
+  return blocks
+    .filter((b) => b.type === 'component' && (b.name === 'learning-path' || b.name === 'specialty'))
+    .map((b) => ({
+      line: b.line,
+      message:
+        `This @${b.name} starts inside the skill above it, so it is nested in that skill's card. ` +
+        `Close the skill with \`@end-skill\` before it.`,
+    }));
+}
+
 /**
  * Main plugin function - the default export Gutterpress loads
  */
@@ -925,11 +1205,7 @@ export default function dimmCityPlugin(md, options = {}) {
      const tokens = state.tokens;
      const newTokens = [];
 
-     // State tracking
-     let inSpecialty = false;
-     let inLearningPath = false;
-     let inSkillMode = false;
-     let inSkillCard = false;
+      // State tracking
       let inOutcomeBlock = false;
       let outcomeBlockItems = [];
       let outcomeBlockFlush = false;
@@ -946,75 +1222,31 @@ export default function dimmCityPlugin(md, options = {}) {
          removeTokenClass below), so whichever one is open when the card closes
          is the one CSS's own `blockquote:last-of-type` would have picked. */
       let lastCardBodyBlockquote = null;
-     let learningPathHasTitle = false;
-     let inLearningPathShell = false;
-     let currentSkillAttrs = {};
-     let currentSpecialtyCode = '';
-     let currentLearningPathIndex = 0;
-     let currentLearningPathRef = '';
-     let currentLearningPathName = '';
-      let currentSkillIndex = 0;
-      /* Whether the current skill card allows splitting (has .dc-allow-split).
-         Used by outcomes-table to decide if it needs its own break-inside:avoid. */
-      let currentCardCanSplit = false;
-      /* Last skill-card title (parsed name + tier). Used by @continue to render
-        a continuation card with a "{name} ▸" tab so the reader sees the link
-        between Part 1 and the continuation. */
-     let lastCardTitle = '';
-     let lastCardTier = '';
 
-     // Helper to close all open structures EXCEPT specialty (specialty
-     // wraps the entire chapter section and is closed separately).
-      function closeAll() {
-        if (inCard) {
-          if (cardBodyOpen) {
-            newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
-            cardBodyOpen = false;
-          }
-          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
-          inCard = false;
-          cardHeadingDone = false;
-          cardPullDone = false;
-          lastCardBodyBlockquote = null;
+    // Close whatever hand-written wrapper is open (card, callout, dm-note)
+    // before the next one starts. Skills, learning paths and specialties are
+    // declared markers: core opens, nests and closes them.
+    function closeAll() {
+      if (inCard) {
+        if (cardBodyOpen) {
+          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
+          cardBodyOpen = false;
         }
-        if (inSkillCard) {
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-       }
-       if (inLearningPathShell) {
-         newTokens.push(makeToken('html_block', '</div>\n'));
-         inLearningPathShell = false;
-       }
-        if (inLearningPath) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPath = false;
-        }
-        if (inCallout) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inCallout = false;
-        }
-        if (inDmNote) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDmNote = false;
-        }
-        inProcedure = false;
-        learningPathHasTitle = false;
-        inSkillMode = false;
-        currentSkillAttrs = {};
-       currentCardCanSplit = false;
-       currentLearningPathRef = '';
-       currentLearningPathName = '';
-      currentSkillIndex = 0;
-    }
-
-    function closeSpecialty() {
-      closeAll();
-      if (inSpecialty) {
-        newTokens.push(makeToken('html_block', '</div>\n'));
-        inSpecialty = false;
+        newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
+        inCard = false;
+        cardHeadingDone = false;
+        cardPullDone = false;
+        lastCardBodyBlockquote = null;
       }
-       currentSpecialtyCode = '';
-      currentLearningPathIndex = 0;
+      if (inCallout) {
+        newTokens.push(makeToken('html_block', '</div>\n'));
+        inCallout = false;
+      }
+      if (inDmNote) {
+        newTokens.push(makeToken('html_block', '</div>\n'));
+        inDmNote = false;
+      }
+      inProcedure = false;
     }
 
     for (let i = 0; i < tokens.length; i++) {
@@ -1295,183 +1527,6 @@ export default function dimmCityPlugin(md, options = {}) {
         i += 2; continue;
       }
 
-      const specialtyMarker = parseMarker(tok, tokens, i, '@specialty');
-      if (specialtyMarker.matched) {
-        closeSpecialty();
-        const userAttrs = specialtyMarker.attrs;
-        const specClass = 'dc-specialty' + (userAttrs['class'] ? ' ' + userAttrs['class'] : '');
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(userAttrs, 'dc-specialty') + '>\n'));
-        inSpecialty = true;
-        currentSpecialtyCode = specialtyCodeFromClass(specClass);
-        currentLearningPathIndex = 0;
-        i += 2;
-        continue;
-      }
-
-      // Check for @end-specialty marker
-      if (isMarker(tok, tokens, i, '@end-specialty')) {
-        closeSpecialty();
-        i += 2;
-        continue;
-      }
-
-      // Check for @learning-path marker
-      const learningPathMarker = parseMarker(tok, tokens, i, '@learning-path');
-      if (learningPathMarker.matched) {
-        closeAll();
-        inLearningPath = true;
-        inLearningPathShell = true;
-        learningPathHasTitle = false;
-        currentLearningPathIndex++;
-        currentLearningPathRef = currentSpecialtyCode + currentLearningPathIndex;
-        currentLearningPathName = '';
-        currentSkillIndex = 0;
-
-        // Build opening tag with any custom attributes (no variant= — use .specialty.<name> parent)
-        const lpUserAttrs = learningPathMarker.attrs;
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(lpUserAttrs, 'dc-learning-path dc-path-block') + ' data-path-ref="' + esc(currentLearningPathRef) + '">\n<div class="dc-path-shell">\n'));
-        i += 2; // Skip paragraph_open, inline, paragraph_close
-        continue;
-      }
-
-      // Check for @skill marker
-      const skillMarker = parseMarker(tok, tokens, i, '@skill');
-      if (skillMarker.matched) {
-        if (inLearningPathShell) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPathShell = false;
-        }
-        // Close previous skill card if open
-        if (inSkillCard) {
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-        }
-        inSkillMode = true;
-        // Store skill attrs for use when building the card
-        currentSkillAttrs = skillMarker.attrs;
-        i += 2;
-        continue;
-      }
-
-      // Check for @end-skill marker
-      if (isMarker(tok, tokens, i, '@end-skill') || isMarker(tok, tokens, i, '@end-skills')) {
-        closeAll();
-        inSkillMode = false;
-        i += 2;
-        continue;
-      }
-
-      // The bridge above protects skill-card @continue from Gutterpress's
-      // earlier generic section-marker transform. Bare markdown-it instances
-      // still reach this branch as the original paragraph marker.
-      const isBridgedSkillContinue = tok.type === 'dc_skill_continue';
-      if (isBridgedSkillContinue || isMarker(tok, tokens, i, '@continue')) {
-        if (inSkillMode && inSkillCard) {
-          // Close current card
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-
-          // No variant class — shape inherited from .specialty.<name> parent container
-
-          // Honor allow-split on continuation cards too
-          const userClassList = (currentSkillAttrs['class'] || '').split(/\s+/).filter(Boolean);
-          const allowSplitCont = userClassList.includes('dc-allow-split');
-          const breakInsideContAttr = allowSplitCont ? '' : ' data-break-inside="avoid"';
-
-          let cardHtml = '<div' + buildAttrs(currentSkillAttrs, 'dc-skill-card dc-skill-card-cont') + ' name="' + esc(slugify(lastCardTitle)) + '"' + breakInsideContAttr + '>\n';
-          const fullTabClassCont = 'dc-card-tab dc-card-tab-cont';
-          cardHtml += '  <div class="' + fullTabClassCont + '">\n';
-          cardHtml += '    <span class="dc-tab-title">' + esc(lastCardTitle) + ' ▸</span>\n';
-          if (lastCardTier) {
-            cardHtml += '    <span class="dc-tab-tier">' + esc(lastCardTier) + '</span>\n';
-          }
-          cardHtml += '  </div>\n';
-          const fullBodyClassCont = 'dc-card-body';
-          cardHtml += '  <div class="' + fullBodyClassCont + '">\n';
-          cardHtml += '    <div class="dc-card-inner">\n';
-
-          newTokens.push(makeToken('html_block', cardHtml));
-          inSkillCard = true;
-          if (!isBridgedSkillContinue) i += 2;
-          continue;
-        }
-      }
-
-      // Check for @end-learning-path marker
-      if (isMarker(tok, tokens, i, '@end-learning-path')) {
-        if (inLearningPathShell) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPathShell = false;
-        }
-        if (inLearningPath) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPath = false;
-          learningPathHasTitle = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // Inside @learning-path section
-      if (inLearningPath && !inSkillMode) {
-        // H3 = Learning path title (banner). Emitted as an h3, the level it
-        // was written at: the outline (the app's contents panel, PDF
-        // bookmarks) nests specialty (##) > learning path (###) > skill (####).
-        // .dc-path-sep is a real space between the sticker and the title, so
-        // the heading's text reads "PRX1 Refuse Finality" (outline, bookmarks,
-        // copy, search, screen readers); chrome.css gives it the printed gap.
-        if (tok.type === 'heading_open' && tok.tag === 'h3') {
-          const inlineTok = tokens[i + 1];
-          const titleText = inlineTok && inlineTok.content ? inlineTok.content : '';
-          currentLearningPathName = titleText;
-          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
-          learningPathHasTitle = true;
-          i += 2; // Skip heading_open, inline, heading_close
-          continue;
-        }
-
-        // Blockquote = Subtitle/description (after title)
-        if (tok.type === 'blockquote_open' && learningPathHasTitle) {
-          let bqContent = '';
-          let j = i + 1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              bqContent = renderInlineChildren(tokens[j], md);
-            }
-            j++;
-          }
-          newTokens.push(makeToken('html_block', '<div class="dc-intro">' + bqContent + '</div>\n'));
-          i = j;
-          continue;
-        }
-
-        // Bullet list = Sticker chain
-        if (tok.type === 'bullet_list_open') {
-          const { items, endIndex } = collectBulletListItems(tokens, i);
-          if (items.length > 0) {
-            newTokens.push(makeToken('html_block', buildStickerChain(items)));
-          }
-          i = endIndex;
-          continue;
-        }
-
-        // Paragraphs = body prose within the learning path block
-        if (tok.type === 'paragraph_open') {
-          const inlineTok = tokens[i + 1];
-          const closeTok = tokens[i + 2];
-          if (inlineTok && inlineTok.type === 'inline' && closeTok && closeTok.type === 'paragraph_close') {
-            const bodyHtml = renderInlineChildren(inlineTok, md);
-            newTokens.push(makeToken('html_block', '<p>' + bodyHtml + '</p>\n'));
-            i += 2;
-            continue;
-          }
-        }
-
-        // Pass through other content in learning-path
-        newTokens.push(tok);
-        continue;
-      }
-
       // Inside @card section
       // (@end-card is handled by the top-level dispatch above, which runs
       // unconditionally before this block is ever reached.)
@@ -1577,178 +1632,6 @@ export default function dimmCityPlugin(md, options = {}) {
         }
       }
 
-      // Inside @skill section
-      if (inSkillMode) {
-        // Auto-close skill mode before any layout marker.
-        // Example: chapter-02's inline example skill is followed directly by
-        // `@page` with no explicit `@end-skill`. If we pass the layout marker
-        // through while the card is still open, the next page wrapper and all
-        // following content are emitted inside the current .dc-skill-card,
-        // producing malformed HTML.
-        //
-        // This single check covers `@page`, `@section`, `@chapter` and
-        // `@spread`: markers.js tokenizes those lines as `layout_marker`
-        // block tokens and rewrites them into `layout_*` tokens in a core rule
-        // registered with `md.core.ruler.after('block', ...)`, whereas this
-        // plugin registers with `md.core.ruler.push(...)` — so the marker
-        // transform ALWAYS runs first and the raw marker paragraphs no longer
-        // exist by the time we get here.
-        if (tok.type && tok.type.startsWith('layout_')) {
-          closeAll();
-          newTokens.push(tok);
-          continue;
-        }
-
-        // H4 = Skill card title
-        if (tok.type === 'heading_open' && tok.tag === 'h4') {
-          // Close previous card if open
-          if (inSkillCard) {
-            newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          }
-
-          const inlineTok = tokens[i + 1];
-          const h4Text = inlineTok && inlineTok.content ? inlineTok.content : '';
-          const parsed = parseSkillTitle(h4Text);
-          currentSkillIndex++;
-
-          // No variant class — shape is inherited from .specialty.<name> parent container
-
-          // Card splitting strategy:
-          //   - `.dc-allow-split`: omit `data-break-inside="avoid"` so the card
-          //     can split across pages (for cards taller than a page).
-          //   - Default: `data-break-inside="avoid"` keeps card intact.
-          const userClasses = (currentSkillAttrs['class'] || '').split(/\s+/);
-          const allowSplit = userClasses.includes('dc-allow-split');
-          const breakInsideAttr = allowSplit ? '' : ' data-break-inside="avoid"';
-
-          // Track allowSplit for outcomes-table (needs avoid only when card can split)
-          currentCardCanSplit = allowSplit;
-
-          // Track for @continue continuation cards.
-          lastCardTitle = parsed.name;
-          lastCardTier = parsed.tier || '';
-
-          // Build card structure
-          let cardHtml = '<div' + buildAttrs(currentSkillAttrs, 'dc-skill-card') + ' name="' + esc(slugify(parsed.name)) + '"' + breakInsideAttr + '>\n';
-          const tabBaseClass = 'dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '');
-          cardHtml += '  <div class="' + tabBaseClass + '">\n';
-          const autoTier = currentLearningPathRef ? currentLearningPathRef + '.' + currentSkillIndex : '';
-          // The skill's name is its `####` heading, kept a heading so the
-          // outline lists it under its learning path. (A continuation card's
-          // repeated title stays a span: it is not a new entry.)
-          cardHtml += '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n';
-          cardHtml += '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n';
-          cardHtml += '  </div>\n';
-
-          const bodyBaseClass = 'dc-card-body' + (parsed.highlight ? ' dc-highlight-body' : '');
-          cardHtml += '  <div class="' + bodyBaseClass + '">\n';
-          cardHtml += '    <div class="dc-card-inner">\n';
-
-          newTokens.push(makeToken('html_block', cardHtml));
-          inSkillCard = true;
-          i += 2;
-          continue;
-        }
-
-        // H5 = Sub-header (like "Outcomes")
-        if (tok.type === 'heading_open' && tok.tag === 'h5' && inSkillCard) {
-          const inlineTok = tokens[i + 1];
-          const h5Text = inlineTok && inlineTok.content ? inlineTok.content : '';
-          // Skip "Outcomes" header since the table will have its own label
-          if (h5Text.toLowerCase() !== 'outcomes') {
-            newTokens.push(makeToken('html_block', '<div class="dc-sub-header">' + esc(h5Text) + '</div>\n'));
-          }
-          i += 2;
-          continue;
-        }
-
-        // Blockquote = Flavor text (inside skill card)
-        if (tok.type === 'blockquote_open' && inSkillCard) {
-          let bqContent = '';
-          let j = i + 1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              bqContent = renderInlineChildren(tokens[j], md);
-            }
-            j++;
-          }
-          newTokens.push(makeToken('html_block', '<p class="dc-flavor">' + bqContent + '</p>\n'));
-          i = j;
-          continue;
-        }
-
-        // Ordered list = Abilities
-        if (tok.type === 'ordered_list_open' && inSkillCard) {
-          const { items, endIndex } = collectOrderedListItems(tokens, i, md);
-
-          items.forEach((itemHtml, idx) => {
-            const ability = parseAbilityFromListItem(itemHtml);
-            if (ability) {
-              let posAttrs = '';
-              if (items.length > 1) {
-                if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
-                if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
-              }
-              let output = '<div class="dc-ability"' + posAttrs + '>\n';
-              output += '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n';
-              output += '  <p class="dc-ability-text">' + ability.text + '</p>\n';
-              output += '</div>\n';
-              newTokens.push(makeToken('html_block', output));
-            } else {
-              // Fallback: render as paragraph
-              newTokens.push(makeToken('html_block', '<p>' + itemHtml + '</p>\n'));
-            }
-          });
-
-          i = endIndex;
-          continue;
-        }
-
-        // Bullet list inside skill card (e.g., sub-points)
-        if (tok.type === 'bullet_list_open' && inSkillCard) {
-          // When the card can split (allow-split → no card-level avoid), keep
-          // short sub-lists whole so a break can't strand e.g. the "Arm:" bullet
-          // on one page and "Leg:" on the next. Mirrors the table logic below
-          // (buildTable receives currentCardCanSplit as needsAvoid). When the card
-          // is NOT splittable it already carries card-level avoid, so adding a
-          // nested list avoid would create a conflicting inner break boundary.
-          if (currentCardCanSplit) {
-            tok.attrSet('data-break-inside', 'avoid');
-          }
-          newTokens.push(tok);
-          continue;
-        }
-
-        // Table = Outcomes
-        if (tok.type === 'table_open' && inSkillCard) {
-          const tableTokens = collectTableTokens(tokens, i);
-          const headers = getTableHeaders(tableTokens);
-          const tableClass = classifyTable(headers);
-          // Tables this plugin does not transform pass through untouched.
-          // They used to fall into buildTable()'s generic branch, which
-          // rebuilt markup from tbody rows only and dropped the <thead> core
-          // had already emitted correctly — every ordinary table in a skill
-          // card printed headerless (86 tables, only 22 keeping a thead).
-          if (!tableClass) {
-            newTokens.push(tok);
-            continue;
-          }
-          // Pass currentCardCanSplit: outcomes-block needs data-break-inside="avoid"
-          // only when the parent card can be split (no card-level avoid). When the
-          // card already has card-level avoid, a nested outcomes-block avoid creates
-          // a conflicting inner break that splits the card at the outcomes boundary.
-          const tableHtml = buildTable(tableTokens, tableClass, md, currentCardCanSplit);
-
-          newTokens.push(makeToken('html_block', tableHtml));
-          i = skipToTableClose(tokens, i);
-          continue;
-        }
-
-        // Pass through other tokens in skill mode
-        newTokens.push(tok);
-        continue;
-      }
-
       if (inProcedure && tok.type === 'ordered_list_open') {
         const { items, endIndex } = collectOrderedListItems(tokens, i, md);
         if (items.length > 0) {
@@ -1782,11 +1665,15 @@ export default function dimmCityPlugin(md, options = {}) {
       inProcedure = false;
     }
 
-    closeSpecialty();
+    closeAll();
 
     state.tokens = newTokens;
   });
 
+  // Declared components: they run after the transform above so a @card,
+  // @procedure or @outcome inside a skill is already rewritten when they look.
+  md.core.ruler.push('dc_learning_paths', dcLearningPaths);
+  md.core.ruler.push('dc_skill_cards', dcSkillCards);
 }
 
 /**
@@ -1811,7 +1698,23 @@ export default function dimmCityPlugin(md, options = {}) {
  */
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
 
+const SPECIALTIES = [
+  'augmerc', 'proxy', 'streetwarden', 'gutterdruid', 'cybersurgeon',
+  'wirephreak', 'technosorcerer', 'etherlock', 'dualist', 'generalist',
+];
+
 export const markers = {
+  // Specialty > learning path > skill. Core nests them as a stack; the rules
+  // above rewrite their content and `validate` checks their structure.
+  // `@specialty augmerc` and `@specialty .augmerc` both add the class the
+  // styles key on (`.dc-specialty.augmerc`).
+  specialty: wrapper('dc-specialty', {
+    variants: Object.fromEntries(SPECIALTIES.map((name) => [name, name])),
+    validate: validateSpecialty,
+  }),
+  'learning-path': wrapper('dc-learning-path dc-path-block'),
+  skill: wrapper('dc-skill-card', { validate: validateSkill }),
+
   sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
   definition: wrapper('dc-prose-panel dc-definition-block'),

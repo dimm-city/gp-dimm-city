@@ -23,7 +23,7 @@ The richest family in the book. A specialty wrapper sets the shape and color; in
 @end-specialty
 ```
 
-Opening a new `@specialty` closes the previous one, along with any open path or skill. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
+Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
 
 ## Specialty intro
 
@@ -284,10 +284,14 @@ Tokens: `--dc-path-title-bg`, `--dc-path-title-color`, `--dc-path-accent`, `--dc
 
 ## Skill card
 
-The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` — rendered as a cost chip — and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. `@skill` opens the next card and closes the previous; `@end-skill` closes the last.
+The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` — rendered as a cost chip — and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. A skill sits in a learning path. `@skill` opens a skill, and opening the next one closes it; `@end-skill` closes just that skill, never the path around it. A `####` heading starts a card, so one `@skill` with two `####` headings makes two cards.
 
 ```markdown
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -304,6 +308,8 @@ Once per round, outside your turn, you exploit a target in reach:
 ##### You don't need an opening. You make one.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 ```
@@ -314,6 +320,10 @@ Result {.dg-result}
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Dirty Work | AUG1.3
@@ -329,6 +339,8 @@ Once per round, outside your turn, you exploit a target in reach:
 ##### You don't need an opening. You make one.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -350,6 +362,10 @@ The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `V
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill {.dc-highlight}
 
@@ -379,6 +395,8 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 </div>
@@ -391,6 +409,10 @@ When one ability runs past a page, `@continue` inside the card closes it and ope
 ```markdown {.dg-split}
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Pain Compliance | AUG1.4
@@ -407,6 +429,8 @@ When one ability runs past a page, `@continue` inside the card closes it and ope
 ##### Predators don't negotiate.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 ```
@@ -417,6 +441,10 @@ Result {.dg-result}
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Pain Compliance | AUG1.4
@@ -433,6 +461,8 @@ Result {.dg-result}
 ##### Predators don't negotiate.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -445,6 +475,10 @@ A `| Roll | Outcome |` table inside a skill card renders as that card's outcome 
 ```markdown {.dg-split}
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Spit Flame | AUG2.1
@@ -462,6 +496,8 @@ A `| Roll | Outcome |` table inside a skill card renders as that card's outcome 
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 ```
@@ -472,6 +508,10 @@ Result {.dg-result}
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Spit Flame | AUG2.1
@@ -489,6 +529,8 @@ Result {.dg-result}
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 

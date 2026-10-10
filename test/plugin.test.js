@@ -10,6 +10,8 @@
 // are not this plugin's to render). It is never imported at runtime — see
 // conventions.test.js.
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+
 import MarkdownIt from "markdown-it";
 import { createMarkdownRenderer } from "gutterpress/render";
 
@@ -23,6 +25,16 @@ function createMarkdown() {
 
 function createGutterpressMarkdown() {
   return createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: {}, markers }]);
+}
+
+/** Core stamps source ranges and link tokens on blocks; they say nothing about the structure under test. */
+const stripSource = (html) => html.replace(/ data-(source-range|source-line|gp-source-token|gp-source-occurrence)="[^"]*"/g, "");
+
+/** Render through Gutterpress (declared markers need it), with source stamps removed. */
+function renderGp(src) {
+  const env = {};
+  const html = stripSource(createGutterpressMarkdown().render(src, env));
+  return { html, warnings: env.layoutWarnings ?? [] };
 }
 
 function countRolls(html) {
@@ -47,7 +59,7 @@ describe("behaviour carried from the book repo", () => {
     const table = ["| Name | Detail |", "| :--- | ---: |", "| **Alpha** | [Linked](https://example.test) |"].join("\n");
     const source = ["@skill", "", "#### Test Skill | T0", "", table, "", "@end-skill"].join("\n");
     const expectedTable = new MarkdownIt({ html: true }).render(table);
-    const html = createMarkdown().render(source);
+    const { html } = renderGp(source);
 
     expect(html).toContain(expectedTable);
     expect(html).toMatch(/<thead>[\s\S]*<th style="text-align:left">Name<\/th>/);
@@ -57,7 +69,7 @@ describe("behaviour carried from the book repo", () => {
 
   test("renders a Distance table inside a skill as a plain table", () => {
     const source = ["@skill", "", "#### Close In", "", "| Distance | AP |", "| --- | --- |", "| **Near** | *1 AP* |", "", "@end-skill"].join("\n");
-    const html = createMarkdown().render(source);
+    const { html } = renderGp(source);
 
     expect(html).toMatch(/<table>[\s\S]*<strong>Near<\/strong>/);
     expect(html).not.toMatch(/dc-distance-tags|dc-dist-/);
@@ -126,8 +138,8 @@ describe("behaviour carried from the book repo", () => {
       "@end-skill",
     ].join("\n");
 
-    const learningPathHtml = createMarkdown().render(learningPath);
-    const skillHtml = createMarkdown().render(skill);
+    const learningPathHtml = renderGp(learningPath).html;
+    const skillHtml = renderGp(skill).html;
 
     expect(learningPathHtml).toContain(`<div class="dc-intro"><em>Formatted route</em> says ${ROLL_HTML}</div>`);
     expect(skillHtml).toContain(`<p class="dc-flavor"><strong>Formatted flavor</strong> says ${ROLL_HTML}</p>`);
@@ -148,7 +160,7 @@ describe("behaviour carried from the book repo", () => {
     ].join("\n");
     const outcomeMacro = ["@outcome", "20 | Triumph | **ROLL THE DIE!** but not `ROLL THE DIE!`.", "@end-outcome"].join("\n");
 
-    const outcomeHtml = createMarkdown().render(outcomeTable);
+    const outcomeHtml = renderGp(outcomeTable).html;
     const macroHtml = createMarkdown().render(outcomeMacro);
 
     expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
@@ -231,7 +243,8 @@ describe("declared wrapper markers", () => {
       glossary: "dc-terms",
       block: "dc-block",
     };
-    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
+    const rewritten = ["specialty", "learning-path", "skill"]; // declared too, but their content is rewritten: see the next describe block
+    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
       expect(html, name).toContain(`<div class="${cls}">`);
@@ -308,5 +321,308 @@ describe("declared wrapper markers", () => {
 
   test("a bare markdown-it instance ignores the table (declared markers are a Gutterpress feature)", () => {
     expect(createMarkdown().render(wrap("@lede", "@end-lede"))).toContain("@lede");
+  });
+});
+
+// @specialty, @learning-path and @skill are declared markers whose content the
+// plugin rewrites ("declare, then transform"): core opens, nests and closes
+// them, and the plugin's core rules rebuild what sits between each pair.
+describe("declared specialty, learning path and skill", () => {
+  const doc = (...lines) => lines.join("\n");
+  const count = (html, re) => (html.match(re) ?? []).length;
+  const card = (name, ...more) => doc(`#### ${name}`, "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", ...more);
+  const warningTypes = (warnings) => warnings.map((w) => w.type);
+
+  describe("@specialty", () => {
+    test("the variant word and both class spellings give the same wrapper", () => {
+      for (const open of ["@specialty augmerc", "@specialty .augmerc", "@specialty {.augmerc}"]) {
+        const { html, warnings } = renderGp(doc(open, "", "x", "", "@end-specialty"));
+        expect(html, open).toContain('<div class="dc-specialty augmerc"');
+        expect(warnings, open).toEqual([]);
+      }
+    });
+
+    test("every variant is a specialty the stylesheets style", () => {
+      const css = readFileSync(new URL("../styles/components/specialty-identity.css", import.meta.url), "utf8");
+      const variants = Object.keys(markers.specialty.variants);
+      expect(variants.length).toBe(10);
+      for (const name of variants) {
+        expect(markers.specialty.variants[name], name).toBe(name);
+        expect(css, name).toContain(`.dc-specialty.${name}`);
+      }
+    });
+
+    test("author classes and attributes ride along", () => {
+      const { html } = renderGp(doc("@specialty .augmerc .dc-cards-two-col #spec-aug", "", "x"));
+      expect(html).toMatch(/<div class="dc-specialty augmerc dc-cards-two-col" id="spec-aug"/);
+    });
+
+    test("a new @specialty, @end-specialty and @page each close it with everything inside", () => {
+      const inner = doc("@learning-path", "", "### P", "", "@skill", "", card("S"));
+      for (const closer of ["@specialty proxy\n\ny", "@end-specialty", "@page"]) {
+        const { html, warnings } = renderGp(doc("@specialty augmerc", "", inner, "", closer));
+        const balanced = count(html, /<div[\s>]/g) === count(html, /<\/div>/g);
+        expect(balanced, closer).toBe(true);
+        // the skill card sits inside the augmerc wrapper, which ends before whatever closed it
+        expect(html, closer).toMatch(/<div class="dc-specialty augmerc"[\s\S]*dc-skill-card[\s\S]*<\/div>\s*(<div class="(dc-specialty proxy|page)"|$)/);
+        expect(warnings, closer).toEqual([]);
+      }
+    });
+
+    test("hand-written components and wrappers keep working inside a specialty", () => {
+      const src = doc(
+        "@specialty .augmerc", "",
+        "@specialty-intro", "", "## Augmerc", "", "@end-specialty-intro", "",
+        "@card", "", "#### Title", "", "> Pull", "", "Body.", "", "@end-card", "",
+        "@callout variant=note", "", "Careful.", "", "@end-callout", "",
+        "@end-specialty",
+      );
+      const { html, warnings } = renderGp(src);
+      expect(html).toMatch(/<div class="dc-specialty augmerc"[\s\S]*dc-specialty-intro[\s\S]*<div class="dc-card-heading">Title<\/div>[\s\S]*dc-alert dc-note[\s\S]*<\/div>\s*$/);
+      expect(warnings).toEqual([]);
+    });
+  });
+
+  describe("@learning-path", () => {
+    const path = (title, ...rest) => doc("@learning-path", "", `### ${title}`, "", "> Subtitle *here*.", "", "- Alpha", "- Beta", "", ...rest);
+
+    test("the header is rewritten into the shell: title, subtitle, sticker chain", () => {
+      const { html } = renderGp(doc("@specialty .proxy", "", path("Refuse Finality", "@skill", "", card("Alpha"), "", "@end-skill", "", "@end-learning-path")));
+      expect(html).toContain('<div class="dc-learning-path dc-path-block" data-path-ref="PRX1">');
+      expect(html).toContain('<div class="dc-path-shell">');
+      expect(html).toContain('<h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Refuse Finality</h3>');
+      expect(html).toContain('<div class="dc-intro">Subtitle <em>here</em>.</div>');
+      expect(html).toContain('<div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Alpha</span><span class="dc-arrow">»</span>');
+      // the shell closes right before the first skill, which sits in the path
+      expect(html).toMatch(/<\/span><\/div>\n<\/div>\n<div class="dc-skill-card"/);
+    });
+
+    test("data-path-ref comes from the enclosing specialty: variant or class, counted per specialty", () => {
+      const refs = (html) => [...html.matchAll(/data-path-ref="([^"]*)"/g)].map((m) => m[1]);
+      const specialty = (open, n) => doc(open, "", ...Array.from({ length: n }, (_, i) => doc("@learning-path", "", `### P${i}`, "")), "@end-specialty", "");
+      const src = doc(
+        specialty("@specialty augmerc", 2),
+        specialty("@specialty .augmerc", 1),
+        specialty("@specialty {.wirephreak}", 1),
+        specialty("@specialty .proxy", 2),
+        specialty("@specialty .dualist", 1), // no code for it: PATH
+      );
+      expect(refs(renderGp(src).html)).toEqual(["AUG1", "AUG2", "AUG1", "WPH1", "PRX1", "PRX2", "PATH1"]);
+    });
+
+    test("a path outside any specialty is numbered on its own", () => {
+      expect([...renderGp(doc("@learning-path", "", "### A", "", "@learning-path", "", "### B")).html.matchAll(/data-path-ref="([^"]*)"/g)].map((m) => m[1])).toEqual(["1", "2"]);
+    });
+
+    test("author classes and attributes land on the path wrapper", () => {
+      const { html } = renderGp(doc("@learning-path {.custom-path} data-foo=bar", "", "### T"));
+      expect(html).toMatch(/<div class="dc-learning-path dc-path-block custom-path" data-foo="bar" data-path-ref="1">/);
+    });
+
+    test("an @end-skill leaves the path open; @end-learning-path closes the skills inside it", () => {
+      const src = doc(
+        "@specialty .proxy", "", path("P", "@skill", "", card("One"), "", "@end-skill", "", "![plate](plate.png)", "", "@end-learning-path"),
+        "![after](after.png)",
+      );
+      const { html, warnings } = renderGp(src);
+      expect(html.indexOf("plate.png")).toBeLessThan(html.indexOf("after.png"));
+      // the plate is inside the path (before its closing div); the later image is not
+      expect(html).toMatch(/plate\.png[\s\S]*<\/p>\s*<\/div>\s*<p class="dc-img-wrapper"><img[^>]*after\.png/);
+      expect(warnings).toEqual([]);
+    });
+
+    test("a second @learning-path closes the first (and its skills)", () => {
+      const { html, warnings } = renderGp(doc("@specialty .proxy", "", path("One", "@skill", "", card("A")), path("Two"), "@end-specialty"));
+      expect(count(html, /<div class="dc-learning-path/g)).toBe(2);
+      expect(html).toMatch(/dc-skill-card[\s\S]*<\/div>\s*<div class="dc-learning-path dc-path-block" data-path-ref="PRX2">/);
+      expect(warnings).toEqual([]);
+    });
+  });
+
+  describe("@skill", () => {
+    test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
+      const src = doc("@skill {.dc-allow-split .dc-two-col} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const { html } = renderGp(src);
+      expect(count(html, /class="dc-skill-card dc-allow-split dc-two-col"/g)).toBe(2);
+      expect(html).toContain('id="sk" data-variant="2" name="first"');
+      expect(html).toContain('name="second"');
+      // `.dc-allow-split` opts out of the default avoid
+      expect(html).not.toContain("data-break-inside");
+      expect(html).toContain('<div class="dc-card-tab dc-highlight">');
+      expect(html).toContain('<h4 class="dc-tab-title">Second</h4>');
+      expect(html).toContain('<span class="dc-tab-tier">T2</span>');
+    });
+
+    test("a card is kept whole by default and named after its title", () => {
+      const { html } = renderGp(doc("@skill", "", card("Hold the Line")));
+      expect(html).toContain('<div class="dc-skill-card" name="hold-the-line" data-break-inside="avoid">');
+    });
+
+    test("tiers in a path run PATHREF.N across its skills unless the heading names one", () => {
+      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", "@skill", "", card("A"), "", "@skill", "", card("B | AUG9.9"), "", card("C"), "", "@end-learning-path");
+      const tiers = [...renderGp(src).html.matchAll(/<span class="dc-tab-tier">([^<]*)<\/span>/g)].map((m) => m[1]);
+      expect(tiers).toEqual(["AUG1.1", "AUG9.9", "AUG1.3"]);
+      // outside a path there is nothing to compute
+      expect(renderGp(doc("@skill", "", card("A"))).html).toContain('<span class="dc-tab-tier"></span>');
+    });
+
+    test("the card body: flavor, abilities, sub-headers, outcome tables", () => {
+      const src = doc(
+        "@skill", "", card("Gamble"), "",
+        "2. **2-X AP** *Push:* More.", "",
+        "##### Outcomes", "",
+        "| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |", "| 1 | Boom |", "",
+        "##### A real sub-header", "",
+        "- one", "- two",
+      );
+      const { html } = renderGp(src);
+      expect(html).toContain('<p class="dc-flavor">Flavor.</p>');
+      expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
+      expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
+      expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
+      expect(html).toContain('<div class="dc-outcomes">');
+      expect(html).toContain('<div class="dc-outcomes-label">Outcomes</div>');
+      expect(count(html, />Outcomes</g)).toBe(1); // the "##### Outcomes" sub-header is swallowed: the table carries its own label
+      expect(html).not.toContain("<h5");
+      expect(html).toContain('<div class="dc-sub-header">A real sub-header</div>');
+    });
+
+    test("content before the first #### stays outside the card", () => {
+      const { html } = renderGp(doc("@skill", "", "---", "", card("Join")));
+      expect(html).toMatch(/<hr[^>]*>\s*<div class="dc-skill-card"/);
+    });
+
+    test("a page break or another component ends the card; later content is outside it", () => {
+      const { html } = renderGp(doc("@skill", "", card("A"), "", "@page-break", "", "after the break"));
+      expect(html).toMatch(/<\/div><\/div><\/div>\s*<div[^>]*gp-page-break[^>]*><\/div>\s*<p>after the break<\/p>/);
+    });
+
+    test("@card, @outcome and @procedure inside a skill are rewritten like anywhere else", () => {
+      const src = doc(
+        "@skill", "", card("Mixed"), "",
+        "@procedure", "", "1. First step.", "2. Second step.", "", "@end-procedure", "",
+        "@outcome", "20 | Crit | Yes.", "@end-outcome", "",
+      );
+      const { html } = renderGp(src);
+      expect(html).toContain('<ol class="dc-steps">');
+      expect(html).toContain('<div class="dc-outcomes">');
+    });
+
+    test("@end-skill closes only the skill; stray closers warn", () => {
+      const { warnings } = renderGp(doc("@learning-path", "", "### P", "", "@skill", "", card("A"), "", "@end-skill", "", "@end-skill", "", "@end-learning-path", "", "@end-learning-path", "", "@end-specialty"));
+      expect(warnings.map((w) => w.type)).toEqual(["declared_marker_close_without_open", "declared_marker_close_without_open", "declared_marker_close_without_open"]);
+      expect(warnings.map((w) => w.message.match(/@end-[a-z-]+/)[0])).toEqual(["@end-skill", "@end-learning-path", "@end-specialty"]);
+    });
+
+    test("@end-skills is gone: it is not a marker", () => {
+      expect(renderGp(doc("@skill", "", card("A"), "", "@end-skills")).html).toContain("@end-skills");
+    });
+
+    test("a skill, path or specialty left open closes at the end of the document without a warning", () => {
+      expect(renderGp(doc("@specialty .proxy", "", "@learning-path", "", "### P", "", "@skill", "", card("A"))).warnings).toEqual([]);
+    });
+  });
+
+  describe("@continue inside a skill", () => {
+    const skill = (open, ...after) =>
+      doc(open, "", "#### Long Skill | T2", "", "1. **0 AP** *First:* Opening text.", "", "@continue", "", "2. **1 AP** *Second:* Continued text.", "", ...after);
+
+    test("opens a continuation card that keeps the skill's classes, in a specialty and path", () => {
+      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", skill("@skill {.dc-allow-split}", "@end-skill"), "@end-learning-path", "@end-specialty");
+      const { html, warnings } = renderGp(src);
+      expect(count(html, /class="dc-skill-card/g)).toBe(2);
+      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont dc-allow-split" name="long-skill">');
+      expect(html).toContain('<div class="dc-card-tab dc-card-tab-cont">');
+      expect(html).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
+      expect(html).toContain('<span class="dc-tab-tier">T2</span>');
+      expect(html).not.toMatch(/gp-continued/);
+      expect(warnings).toEqual([]);
+    });
+
+    test("a card that is not splittable keeps its avoid on the continuation too", () => {
+      expect(renderGp(skill("@skill", "@end-skill")).html).toMatch(/dc-skill-card-cont" name="long-skill" data-break-inside="avoid"/);
+    });
+
+    test("the continuation is claimed only inside a skill's card; elsewhere @continue is core's section continuation", () => {
+      const afterSkill = doc("@section .panel", "", "first", "", "@skill", "", card("A"), "", "@end-skill", "", "@continue", "", "second", "", "@end-section");
+      const beforeCard = doc("@section .panel", "", "@skill", "", "no heading yet", "", "@continue", "", "second", "", "@end-section");
+      for (const src of [afterSkill, beforeCard]) {
+        const { html, warnings } = renderGp(src);
+        expect(html).toMatch(/class="section panel gp-continued"/);
+        expect(html).not.toContain("dc-skill-card-cont");
+        expect(warningTypes(warnings)).not.toContain("continue_without_section");
+      }
+    });
+
+    test("a @continue after the next @learning-path or @specialty is not a skill continuation", () => {
+      for (const closer of ["@end-learning-path", "@learning-path", "@end-specialty", "@specialty .proxy"]) {
+        const { html } = renderGp(doc("@section", "", "@specialty .augmerc", "", skill("@skill").replace(/@continue[\s\S]*$/, ""), closer, "", "@continue", "", "z"));
+        expect(html, closer).not.toContain("dc-skill-card-cont");
+      }
+    });
+  });
+
+  describe("validate (structure rules)", () => {
+    const problems = (src) => renderGp(src).warnings.filter((w) => w.type === "component_invalid");
+
+    test("a well-formed specialty > path > skill reports nothing", () => {
+      const src = doc("@specialty .augmerc", "", "@specialty-intro", "", "## A", "", "@end-specialty-intro", "", "@learning-path", "", "### P", "", "@skill", "", card("A"), "", "@skill", "", card("B"), "", "@end-learning-path", "", "@learning-path", "", "### Q", "", "@skill", "", card("C"), "", "@end-specialty");
+      expect(renderGp(src).warnings).toEqual([]);
+    });
+
+    test("a skill directly in a specialty is reported at the skill's line", () => {
+      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", "@end-learning-path", "", "@skill", "", card("Loose"), "", "@end-specialty");
+      const found = problems(src);
+      expect(found).toHaveLength(1);
+      expect(found[0].line).toBe(9);
+      expect(found[0].message).toBe(
+        "@specialty: This skill is outside a learning path. If an `@end-learning-path` above it closed the path early, remove that line; otherwise move the skill into a `@learning-path`.",
+      );
+    });
+
+    test("an early @end-learning-path flags every skill it strands, and the path that then nests in a skill", () => {
+      // The shape several Field Guide chapters had: a path closed before its skills.
+      const lines = [
+        "@specialty .proxy", "",
+        "@learning-path", "", "### One", "", "@end-learning-path", "",
+        "@skill", "", ...card("A").split("\n"), "", "@skill", "", ...card("B").split("\n"), "",
+        "@learning-path", "", "### Two", "", "@skill", "", ...card("C").split("\n"), "", "@end-learning-path", "",
+        "@end-specialty",
+      ];
+      const at = (marker, n) => lines.map((l, i) => (l === marker ? i + 1 : 0)).filter(Boolean)[n];
+      const found = problems(lines.join("\n"));
+      // every skill sits directly in the specialty (the @skill inside "Two" closes the skill that held Two) ...
+      const loose = found.filter((p) => p.message.startsWith("@specialty:"));
+      expect(loose.map((p) => p.line)).toEqual([at("@skill", 0), at("@skill", 1), at("@skill", 2)]);
+      // ... and "Two" itself starts inside skill B
+      const nested = found.filter((p) => p.message.startsWith("@skill:"));
+      expect(nested.map((p) => p.line)).toEqual([at("@learning-path", 1)]);
+      expect(nested[0].message).toBe(
+        "@skill: This @learning-path starts inside the skill above it, so it is nested in that skill's card. Close the skill with `@end-skill` before it.",
+      );
+      expect(found).toHaveLength(4);
+    });
+
+    test("a specialty that starts inside a skill is reported too", () => {
+      const found = problems(doc("@skill", "", card("A"), "", "@specialty .proxy", "", "x"));
+      expect(found).toHaveLength(1);
+      expect(found[0].message).toMatch(/^@skill: This @specialty starts inside the skill above it/);
+    });
+
+    test("skills outside any specialty are fine (a book may set skills without one)", () => {
+      expect(renderGp(doc("@skill", "", card("A"), "", "@skill", "", card("B"))).warnings).toEqual([]);
+    });
+
+    test("the rule belongs to the plugin: a bare declaration with no validate says nothing", () => {
+      expect(typeof markers.specialty.validate).toBe("function");
+      expect(typeof markers.skill.validate).toBe("function");
+      expect(markers["learning-path"].validate).toBeUndefined();
+    });
+  });
+
+  test("a bare markdown-it instance leaves the three markers as text (declared markers are a Gutterpress feature)", () => {
+    const html = createMarkdown().render(doc("@specialty .augmerc", "", "@skill", "", card("A")));
+    expect(html).toContain("@specialty .augmerc");
+    expect(html).not.toContain("dc-skill-card");
   });
 });

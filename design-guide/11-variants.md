@@ -274,11 +274,15 @@ Every switch on one card, each under the same Augmerc wrapper. `@continue`, whic
 
 ### Default — `@skill`
 
-A card outside a learning path has no tier on its tab; inside one, the tier is computed from its position (the skill trees above).
+Inside a learning path the tier on a card's tab is computed from its position (the skill trees above), unless the heading names one.
 
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -289,6 +293,8 @@ A card outside a learning path has no tier on its tab; inside one, the tier is c
 1. **1 AP** *Street Tricks:* Snag their balance. Gain Lucidity on your next roll against the target.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -302,6 +308,10 @@ The tier is written on the heading and printed on the tab.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Dirty Work | AUG1.3
@@ -311,6 +321,8 @@ The tier is written on the heading and printed on the tab.
 1. **1 AP** *Street Tricks:* Snag their balance. Gain Lucidity on your next roll against the target.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -324,6 +336,10 @@ The featured tab and body.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Apex Physiology | AUG4.1 | highlight
@@ -334,6 +350,8 @@ The featured tab and body.
 2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -347,6 +365,10 @@ The same register with the class on the card root.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill {.dc-highlight}
 
 #### Apex Physiology | AUG4.1
@@ -357,6 +379,8 @@ The same register with the class on the card root.
 2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -369,6 +393,10 @@ A long ability list packed into two columns.
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill {.dc-two-col}
 
@@ -385,6 +413,8 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 </div>
@@ -395,6 +425,10 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ```markdown
 @specialty .augmerc .dc-cards-two-col
+
+@learning-path
+
+### Example Path
 
 @skill
 #### Boost Morale | AUG3.4
@@ -408,6 +442,10 @@ The table becomes the card's outcome ladder.
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -427,6 +465,8 @@ The table becomes the card's outcome ladder.
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 </div>
@@ -438,6 +478,10 @@ The plugin picks the chip from the cost written in bold at the start of an abili
 <div class="dg-stage dg-on-paper">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -453,9 +497,15 @@ Once per round, outside your turn, you exploit a target in reach:
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 @specialty .proxy
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -467,6 +517,8 @@ Once per round, outside your turn, you exploit a target in reach:
 2. **3-X AP** You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
