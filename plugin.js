@@ -1138,13 +1138,17 @@ function dcSkillCards(state) {
  * only knows that declared markers nest.
  */
 function validateSpecialty({ blocks }) {
-  return blocks
-    .filter((b) => b.type === 'component' && b.name === 'skill')
+  // One problem per run of skills sitting directly in the specialty: the
+  // first skill after a learning path (or at the start). The usual cause is a
+  // single early `@end-learning-path`, which strands every skill after it.
+  const components = blocks.filter((b) => b.type === 'component');
+  return components
+    .filter((b, i) => b.name === 'skill' && components[i - 1]?.name !== 'skill')
     .map((b) => ({
       line: b.line,
       message:
-        'This skill is outside a learning path. If an `@end-learning-path` above it closed the path early, ' +
-        'remove that line; otherwise move the skill into a `@learning-path`.',
+        'This skill (and any right after it) is outside a learning path. If an `@end-learning-path` above it ' +
+        'closed the path early, remove that line; otherwise move the skills into a `@learning-path`.',
     }));
 }
 

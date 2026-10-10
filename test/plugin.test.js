@@ -576,11 +576,11 @@ describe("declared specialty, learning path and skill", () => {
       expect(found).toHaveLength(1);
       expect(found[0].line).toBe(9);
       expect(found[0].message).toBe(
-        "@specialty: This skill is outside a learning path. If an `@end-learning-path` above it closed the path early, remove that line; otherwise move the skill into a `@learning-path`.",
+        "@specialty: This skill (and any right after it) is outside a learning path. If an `@end-learning-path` above it closed the path early, remove that line; otherwise move the skills into a `@learning-path`.",
       );
     });
 
-    test("an early @end-learning-path flags every skill it strands, and the path that then nests in a skill", () => {
+    test("an early @end-learning-path is one problem for the skills it strands, plus one for the path that then nests in a skill", () => {
       // The shape several Field Guide chapters had: a path closed before its skills.
       const lines = [
         "@specialty .proxy", "",
@@ -591,16 +591,17 @@ describe("declared specialty, learning path and skill", () => {
       ];
       const at = (marker, n) => lines.map((l, i) => (l === marker ? i + 1 : 0)).filter(Boolean)[n];
       const found = problems(lines.join("\n"));
-      // every skill sits directly in the specialty (the @skill inside "Two" closes the skill that held Two) ...
+      // every skill sits directly in the specialty (the @skill inside "Two" closes the skill that held Two),
+      // reported once, at the first skill of the run ...
       const loose = found.filter((p) => p.message.startsWith("@specialty:"));
-      expect(loose.map((p) => p.line)).toEqual([at("@skill", 0), at("@skill", 1), at("@skill", 2)]);
+      expect(loose.map((p) => p.line)).toEqual([at("@skill", 0)]);
       // ... and "Two" itself starts inside skill B
       const nested = found.filter((p) => p.message.startsWith("@skill:"));
       expect(nested.map((p) => p.line)).toEqual([at("@learning-path", 1)]);
       expect(nested[0].message).toBe(
         "@skill: This @learning-path starts inside the skill above it, so it is nested in that skill's card. Close the skill with `@end-skill` before it.",
       );
-      expect(found).toHaveLength(4);
+      expect(found).toHaveLength(2);
     });
 
     test("a specialty that starts inside a skill is reported too", () => {

@@ -65,8 +65,9 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   `@specialty {.augmerc}` work unchanged and give the same element.
   `data-path-ref` reads the enclosing specialty's variant or class, so
   `@specialty .augmerc` still gives `AUG1`.
-- **Structure checks, in plain words.** A `@skill` sitting directly in a
-  `@specialty` is reported ("This skill is outside a learning path…"), and so
+- **Structure checks, in plain words.** Skills sitting directly in a
+  `@specialty` are reported once per run, at the first one ("This skill (and
+  any right after it) is outside a learning path…"), and so
   is a `@learning-path` or `@specialty` that starts inside a skill. The usual
   cause is an `@end-learning-path` above the skills it was meant to close.
 - Snippets: `specialty` shows the whole specialty > learning path > skill
