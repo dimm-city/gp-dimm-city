@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 
 import { createMarkdownRenderer } from "gutterpress/render";
 
-import plugin from "../plugin.js";
+import plugin, { markers } from "../plugin.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const GUIDE = path.join(ROOT, "design-guide");
@@ -32,7 +32,7 @@ const chapters = [...manifest.matchAll(/^\s*-\s*(\S+\.md)\s*$/gm)].map((m) => m[
 const DEPRECATED_MARKERS = new Set(["@roll-table", "@options-table"]);
 
 function render(rel) {
-  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]);
+  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
   const env = {};
   const html = md.render(read(rel), env);
   return { html, warnings: env.layoutWarnings ?? [] };
@@ -77,8 +77,11 @@ describe("coverage", () => {
   const code = readFileSync(path.join(ROOT, "plugin.js"), "utf8");
 
   test("the guide demonstrates every macro the plugin handles", () => {
-    // Every marker literal the plugin matches on, e.g. parseMarker(tok, tokens, i, '@skill').
-    const macros = [...new Set([...code.matchAll(/'(@[a-z-]+)'/g)].map((m) => m[1]))]
+    // Every marker literal the plugin matches on, e.g. parseMarker(tok, tokens, i, '@skill'),
+    // plus every marker it declares in its `markers` table.
+    const declared = Object.keys(markers).map((name) => `@${name}`);
+    expect(declared.length).toBeGreaterThan(5);
+    const macros = [...new Set([...[...code.matchAll(/'(@[a-z-]+)'/g)].map((m) => m[1]), ...declared])]
       .filter((m) => !m.startsWith("@end-") && !DEPRECATED_MARKERS.has(m));
     expect(macros.length).toBeGreaterThan(20);
     const missing = macros.filter((m) => !new RegExp(`^${m}(\\s|$)`, "m").test(source));

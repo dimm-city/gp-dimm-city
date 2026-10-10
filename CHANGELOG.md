@@ -7,6 +7,44 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **Eleven plain wrappers are now declared in a `markers` table** instead of
+  being hand-written in the plugin's state machine: `@sidebar`,
+  `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`,
+  `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block`.
+  Gutterpress core now parses, nests and closes them, and the editor lists
+  them. The emitted elements and classes are unchanged; rendering the design
+  guide and both books through the old and new plugin gives the same HTML
+  apart from the attributes listed below. The state machine loses about 300
+  lines.
+- New on these wrappers: `data-source-range`, `data-label="…"` on a labelled
+  `@block`, and `data-sidebar="inset"` when written `@sidebar inset`.
+- `@sidebar inset` works beside `@sidebar .inset`. `@block panel|slate|shard|codex`
+  works beside `@block .dc-panel` (the `.dc-*` class form is unchanged).
+- `@lede`, `@toc` and `@glossary` now accept extra classes and an `#id`,
+  as the other wrappers always did.
+- `@specialty-card`'s `data-position="odd|even"` now comes from a small core
+  rule that numbers the cards in document order, as before.
+- Snippets for `@sidebar-box`, `@glossary`, `@toc` and `@specialty-intro`.
+  The `@block` snippet uses the variant word.
+
+### Removed
+
+- `@block variant=panel`. No book or guide page used it; write `@block panel`.
+
+### Behaviour notes
+
+- Declared wrappers nest as a stack and close at the next `@page`,
+  `@section` or `@chapter`, or at the end of the file. A hand-written marker
+  (`@learning-path`, `@callout`, …) no longer closes a wrapper that is still
+  open. No book relied on that.
+- A wrapper's `key=value` attribute is always `data-key` now: `lang=en` is
+  `data-lang`, where the old code emitted `lang` (likewise `dir`, `role`,
+  `tabindex` and `aria-*`).
+- `@end-<wrapper>` with no open wrapper now warns
+  (`declared_marker_close_without_open`) instead of being ignored.
+
 ## [1.1.5] - 2026-10-09
 
 ### Changed

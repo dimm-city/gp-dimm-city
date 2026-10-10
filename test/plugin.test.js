@@ -13,7 +13,7 @@ import { describe, expect, test } from "bun:test";
 import MarkdownIt from "markdown-it";
 import { createMarkdownRenderer } from "gutterpress/render";
 
-import dimmCityPlugin, { metadata } from "../plugin.js";
+import dimmCityPlugin, { markers, metadata } from "../plugin.js";
 
 const ROLL_HTML = '<span class="dc-roll-the-die">ROLL THE DIE!</span>';
 
@@ -22,7 +22,7 @@ function createMarkdown() {
 }
 
 function createGutterpressMarkdown() {
-  return createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: {} }]);
+  return createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: {}, markers }]);
 }
 
 function countRolls(html) {
@@ -205,5 +205,80 @@ describe("behaviour carried from the book repo", () => {
     expect(twoHtml).toMatch(/<blockquote>\s*<p>Not the footer<\/p>\s*<\/blockquote>/);
     expect(twoHtml).toMatch(/<blockquote class="dc-card-footer">\s*<p>The real footer<\/p>/);
     expect((twoHtml.match(/dc-card-footer/g) ?? []).length).toBe(1);
+  });
+});
+
+// Declared wrappers are a Gutterpress core feature: core reads the plugin's
+// `markers` table, so a bare markdown-it instance never sees them.
+describe("declared wrapper markers", () => {
+  const render = (src) => {
+    const env = {};
+    const html = createGutterpressMarkdown().render(src, env);
+    return { html: html.replace(/ data-source-(range|line)="[^"]*"/g, ""), warnings: env.layoutWarnings ?? [] };
+  };
+  const wrap = (open, close, body = "x") => [open, "", body, "", close].join("\n");
+
+  test("each wrapper emits its element and classes", () => {
+    const expected = {
+      sidebar: "dc-sidebar",
+      "sidebar-box": "dc-prose-panel dc-sidebar-box",
+      definition: "dc-prose-panel dc-definition-block",
+      "specialty-intro": "dc-specialty-intro",
+      "specialty-art": "dc-specialty-art",
+      gear: "dc-card dc-gear",
+      toc: "dc-toc",
+      lede: "dc-intro",
+      glossary: "dc-terms",
+      block: "dc-block",
+    };
+    expect(Object.keys(markers).filter((k) => k !== "specialty-card").sort()).toEqual(Object.keys(expected).sort());
+    for (const [name, cls] of Object.entries(expected)) {
+      const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
+      expect(html, name).toContain(`<div class="${cls}">`);
+      expect(warnings, name).toEqual([]);
+    }
+  });
+
+  test("@sidebar inset and @sidebar .inset both add the inset class", () => {
+    expect(render(wrap("@sidebar inset", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar inset"/);
+    expect(render(wrap("@sidebar .inset", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar inset"/);
+    expect(render(wrap("@sidebar {.top-right .inset}", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar top-right inset"/);
+  });
+
+  test("@block takes a variant word or a class, plus a title from label", () => {
+    for (const [open, cls] of [
+      ['@block panel label="A & B"', "dc-block dc-panel"],
+      ['@block .dc-panel label="A & B"', "dc-block dc-panel"],
+      ['@block slate label="A & B"', "dc-block dc-slate"],
+      ['@block .dc-shard label="A & B"', "dc-block dc-shard"],
+      ['@block codex label="A & B"', "dc-block dc-codex"],
+    ]) {
+      const { html } = render(wrap(open, "@end-block"));
+      expect(html, open).toContain(`<div class="${cls}"`);
+      expect(html, open).toContain('<div class="dc-block-title">A &amp; B</div>');
+    }
+    expect(render(wrap("@block .dc-codex", "@end-block")).html).not.toContain("dc-block-title");
+  });
+
+  test("a wrapper left open closes at the next @section and at end of document without a warning", () => {
+    const { html, warnings } = render(["@lede", "", "x", "", "@section", "", "y", "", "@end-section"].join("\n"));
+    expect(html).toMatch(/<div class="dc-intro"><p>x<\/p>\s*<\/div><div class="section"/);
+    expect(render("@toc\n\nz\n").warnings).toEqual([]);
+    expect(warnings).toEqual([]);
+  });
+
+  test("@specialty-card numbers its cards odd/even across the document", () => {
+    const card = (t) => wrap("@specialty-card", "@end-specialty-card", t);
+    const { html } = render([card("a"), card("b"), card("c")].join("\n\n"));
+    expect([...html.matchAll(/data-position="(\w+)"/g)].map((m) => m[1])).toEqual(["odd", "even", "odd"]);
+  });
+
+  test("hand-written markers next to declared ones raise no unknown_marker warnings", () => {
+    const src = ["@specialty .augmerc", "", "@lede", "", "x", "", "@end-lede", "", "@learning-path", "", "### T", "", "@end-learning-path", "", "@end-specialty"].join("\n");
+    expect(render(src).warnings).toEqual([]);
+  });
+
+  test("a bare markdown-it instance ignores the table (declared markers are a Gutterpress feature)", () => {
+    expect(createMarkdown().render(wrap("@lede", "@end-lede"))).toContain("@lede");
   });
 });
