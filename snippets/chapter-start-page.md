@@ -4,8 +4,8 @@
 
 # {{title}}
 
-@section .dc-fiction-excerpt
+@fiction-excerpt
 
 {{excerpt}}
 
-@end-section
+@end-fiction-excerpt
