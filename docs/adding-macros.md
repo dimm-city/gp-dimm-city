@@ -14,6 +14,37 @@ For new macros, prefer the simplest version that works. In many cases you do not
 
 Card variants (skill cards, path shells, specialty cards, specialty intros) are controlled entirely by the `.specialty.<name>` parent container, not by `variant=` attributes. The `@specialty .augmerc` wrapper applies the augmerc clip-path and accent color to every card inside automatically. Do NOT add `variant=` attributes to `@skill`, `@continue`, or `@learning-path`.
 
+## Declared markers (the default for a plain wrapper)
+
+A wrapper that only needs an element and classes does not belong in the `dimm_city_transform` state machine. It is one line in the `markers` table exported at the bottom of `plugin.js`, and Gutterpress core does the rest: parsing, author classes, `#id`, `data-source-range`, nesting, closing at the next `@page`/`@section`/`@chapter`, and the `unknown_marker` typo check.
+
+```js
+export const markers = {
+  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  block: wrapper('dc-block', {
+    variants: { panel: 'dc-panel', slate: 'dc-slate' },
+    label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
+  }),
+};
+```
+
+`wrapper(cls, extra)` is a two-line helper in `plugin.js` that adds `autoCloseAt: ['eof']`, so a wrapper left open at the end of a file closes silently, as these always have. To add one:
+
+1. Add its line to `markers` (kebab-case name; `end-` names are reserved for the auto-derived closer).
+2. Add `snippets/<name>.md`, whose first line is the marker. The editor inserts it when the author types `@`.
+3. Add the CSS, the `components.yaml` entry and the design-guide specimen as usual.
+
+Things to know:
+
+- A **variant** is a bare word on the marker line (`@sidebar inset`). It adds the mapped class and a `data-<marker>="<variant>"` attribute; nothing else changes. The `.inset` class shorthand keeps working beside it.
+- A **label** (`label="…"`) becomes a child element with the declared class, plus `data-label` on the wrapper.
+- Declared containers nest as a stack. Opening a second one of the same kind closes the first. Hand-written markers do not close them.
+- Attributes follow core's rules: `key=value` becomes `data-key`, `#id` becomes `id`.
+- Declared markers are a Gutterpress feature. Under a bare `new MarkdownIt().use(plugin)` they are not recognised, so tests that cover them render through `createMarkdownRenderer([{ name, plugin, options, markers }])`.
+- A **hand-written** marker whose name is within a couple of edits of a declared one gets a false `unknown_marker` warning from core. `@specialty-card` triggered it next to `@specialty-art`, so it is declared too; its odd/even `data-position` comes from a small core rule (`dcSpecialtyCardPositions`) that numbers the open tokens.
+
+Declared today: `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Everything else below is still hand-written in `plugin.js`.
+
 ## Currently registered macros
 
 `@chapter`, `@page`, `@section`, `@end-section`, `@spread`, `@page-break`, `@column-break`, `@specialty`, `@end-specialty`,
@@ -119,7 +150,7 @@ Rules:
 
 ## 2. Add the marker to `plugin.js`
 
-For a simple wrapper macro, follow the `@sidebar-box` and `@definition` pattern.
+For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. Hand-written handlers are for macros that rebuild their content, like `@skill`; the pattern is:
 
 ```js
 const intelMarker = parseMarker(tok, tokens, i, '@intel-card');

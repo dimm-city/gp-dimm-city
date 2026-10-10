@@ -9,6 +9,8 @@ All classes emitted by `plugin.js` must use the `dc-` prefix
 always check that the emitted class name has a matching CSS rule before shipping.
 
 
+**Declared markers.** `@sidebar` (`inset`), `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block` (`panel`, `slate`, `shard`, `codex`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them. See [adding-macros.md](./adding-macros.md#declared-markers-the-default-for-a-plain-wrapper) for how to add one.
+
 **All shipped macros:**
 `@chapter`, `@page`, `@section`, `@end-section`, `@spread`, `@page-break`, `@column-break`, `@specialty`, `@end-specialty`,
 `@specialty-intro`, `@end-specialty-intro`, `@specialty-art`, `@end-specialty-art`,

@@ -1,4 +1,4 @@
-@block .dc-panel label="{{label}}"
+@block panel label="{{label}}"
 
 {{body}}
 

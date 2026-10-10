@@ -4,26 +4,34 @@
  * IMPORTANT: This plugin only transforms content marked with special markers.
  * Regular markdown content passes through unchanged.
  *
- * MARKERS (support optional key="value" attributes):
- *   @sidebar            → Start a dc-sidebar wrapper
- *   @end-sidebar        → End sidebar wrapper
- *   @sidebar-box        → Start a dc-sidebar-box wrapper
- *   @end-sidebar-box    → End sidebar-box wrapper
+ * DECLARED MARKERS (the `markers` export at the bottom of this file — core
+ * Gutterpress parses, nests, closes and source-maps these; this file only
+ * names the element, classes and variants). Each also has an `@end-<name>`:
+ *   @sidebar [inset]     → div.dc-sidebar (`.inset` shorthand works too)
+ *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
+ *   @definition          → div.dc-prose-panel.dc-definition-block
+ *   @specialty-intro     → div.dc-specialty-intro
+ *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
+ *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
+ *   @gear                → div.dc-card.dc-gear
+ *   @toc                 → div.dc-toc
+ *   @lede                → div.dc-intro
+ *   @glossary            → div.dc-terms
+ *   @block [panel|slate|shard|codex] label="Title"
+ *                        → div.dc-block.dc-<variant> + div.dc-block-title
+ *                          (`@block .dc-panel` class form works too)
+ *
+ * HAND-WRITTEN MARKERS (support optional key="value" attributes; handled by
+ * the dimm_city_transform state machine below):
  *   @specialty          → Start a specialty wrapper (auto-closes any prior specialty,
  *                          learning-path, or skill)
  *   @end-specialty      → Manually end a specialty wrapper
- *   @definition         → Start a dc-definition-block wrapper
- *   @end-definition     → End definition wrapper
  *   @procedure          → Start a dc-steps procedure wrapper
  *   @end-procedure      → End procedure wrapper (auto-closes on EOF with a warning)
  *   @callout            → Start a dc-alert callout (variant=note|warning|dm|vibe|origin|visit|gear)
  *   @end-callout        → End callout wrapper
  *   @dm-note            → Start a Dream Master note (sugar for @callout variant=dm)
  *   @end-dm-note        → End dm-note wrapper
- *   @block              → Section enclosure card (.dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title")
- *   @end-block          → End block enclosure
- *   @lede               → Start a dc-intro lede wrapper
- *   @end-lede           → End lede wrapper
  *   @learning-path      → Start a learning path section (auto-closes previous sections)
  *   @end-learning-path  → Manually end a learning path section
  *   @skill              → Start a skill card (auto-closes previous skill)
@@ -31,19 +39,7 @@
  *   @continue           → Continuation marker — emits a card with a "{name} ▸"
  *                          tab so an oversized skill card can be split across pages
  *                          while keeping a visible link to its origin card
- *   @specialty-intro    → Cosmetic specialty intro wrapper
- *   @end-specialty-intro
- *   @specialty-card     → Individual specialty card
- *   @end-specialty-card
- *   @specialty-art      → Full-bleed specialty art panel (.dc-specialty-art)
- *   @end-specialty-art
- *   @gear               → Gear card (shorthand for @card .dc-gear)
- *   @end-gear
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
- *   @toc                → Table-of-contents wrapper
- *   @end-toc
- *   @glossary           → Glossary wrapper
- *   @end-glossary
  *   @outcome            → 5-rung d20 outcome ladder block
  *   @end-outcome
  *   @tape               → Inline tape divider (`<div class="dc-tape">— § —</div>`)
@@ -867,6 +863,23 @@ function dcAlertsTransform(state) {
 }
 
 /**
+ * `data-position="odd|even"` on every @specialty-card, counted across the
+ * document in order so the card grid alternates its tilt/offset. The wrapper
+ * itself is a declared marker (see `markers` below); this rule only numbers
+ * the open tokens core produced. It never runs under bare markdown-it, which
+ * has no declared markers.
+ */
+function dcSpecialtyCardPositions(state) {
+  let count = 0;
+  for (const tok of state.tokens) {
+    if (tok.type !== 'layout_component_open') continue;
+    if (!(tok.attrGet('class') || '').split(/\s+/).includes('dc-specialty-card')) continue;
+    count++;
+    tok.attrSet('data-position', count % 2 === 0 ? 'even' : 'odd');
+  }
+}
+
+/**
  * Main plugin function - the default export Gutterpress loads
  */
 export default function dimmCityPlugin(md, options = {}) {
@@ -884,6 +897,8 @@ export default function dimmCityPlugin(md, options = {}) {
   md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
     '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
+
+  md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
 
   // NOTE: Chapter-opener composite behaviour is intentionally NOT handled
   // by the plugin. The author markdown
@@ -918,21 +933,10 @@ export default function dimmCityPlugin(md, options = {}) {
       let inOutcomeBlock = false;
       let outcomeBlockItems = [];
       let outcomeBlockFlush = false;
-      let inLede = false;
-      let inSidebar = false;
-      let inSidebarBox = false;
-      let inDefinition = false;
       let inProcedure = false;
       let inCallout = false;
       let inDmNote = false;
-      let inBlock = false;
       let inCard = false;
-      let inGear = false;
-      let inToc = false;
-      let inGlossary = false;
-      let inSpecialtyCard = false;
-      let inSpecialtyIntro = false;
-      let inSpecialtyArt = false;
       let cardHeadingDone = false;
       let cardPullDone = false;
       let cardBodyOpen = false;
@@ -958,7 +962,6 @@ export default function dimmCityPlugin(md, options = {}) {
         between Part 1 and the continuation. */
      let lastCardTitle = '';
      let lastCardTier = '';
-     let specialtyCardCount = 0;  // resets per-specialty; used to emit data-position="even/odd"
 
      // Helper to close all open structures EXCEPT specialty (specialty
      // wraps the entire chapter section and is closed separately).
@@ -973,22 +976,6 @@ export default function dimmCityPlugin(md, options = {}) {
           cardHeadingDone = false;
           cardPullDone = false;
           lastCardBodyBlockquote = null;
-        }
-        if (inLede) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLede = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
         }
         if (inSkillCard) {
           newTokens.push(makeToken('html_block', '</div></div></div>\n'));
@@ -1010,34 +997,6 @@ export default function dimmCityPlugin(md, options = {}) {
           newTokens.push(makeToken('html_block', '</div>\n'));
           inDmNote = false;
         }
-        if (inBlock) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inBlock = false;
-        }
-        if (inGear) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGear = false;
-        }
-        if (inSpecialtyCard) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyCard = false;
-        }
-        if (inSpecialtyIntro) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyIntro = false;
-        }
-        if (inSpecialtyArt) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyArt = false;
-        }
-        if (inToc) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inToc = false;
-        }
-        if (inGlossary) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGlossary = false;
-        }
         inProcedure = false;
         learningPathHasTitle = false;
         inSkillMode = false;
@@ -1056,43 +1015,10 @@ export default function dimmCityPlugin(md, options = {}) {
       }
        currentSpecialtyCode = '';
       currentLearningPathIndex = 0;
-      // specialtyCardCount intentionally NOT reset here — it counts
-      // all cards emitted in the current section so even/odd alternation
-      // works across multiple @specialty blocks in the same card-grid.
     }
 
     for (let i = 0; i < tokens.length; i++) {
       const tok = tokens[i];
-
-      // --- @sidebar / @end-sidebar ---
-      const sidebarMarker = parseMarker(tok, tokens, i, '@sidebar');
-      if (sidebarMarker.matched) {
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(sidebarMarker.attrs, 'dc-sidebar') + '>\n'));
-        inSidebar = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-sidebar')) {
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        i += 2;
-        continue;
-      }
 
       // --- @roll-table / @options-table (DEPRECATED 17.3.0) ---
       // These macros emitted tier-colored classes (dc-roll-table*, dc-options-table*)
@@ -1231,66 +1157,6 @@ export default function dimmCityPlugin(md, options = {}) {
         continue;
       }
 
-      // Check for @specialty marker (must come before @learning-path/@skill
-      // since it auto-closes everything else)
-      const sidebarBoxMarker = parseMarker(tok, tokens, i, '@sidebar-box');
-      if (sidebarBoxMarker.matched) {
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(sidebarBoxMarker.attrs, 'dc-prose-panel dc-sidebar-box') + '>\n'));
-        inSidebarBox = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-sidebar-box')) {
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      const definitionMarker = parseMarker(tok, tokens, i, '@definition');
-      if (definitionMarker.matched) {
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(definitionMarker.attrs, 'dc-prose-panel dc-definition-block') + '>\n'));
-        inDefinition = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-definition')) {
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        i += 2;
-        continue;
-      }
-
       const procedureMarker = parseMarker(tok, tokens, i, '@procedure');
       if (procedureMarker.matched) {
         // @procedure auto-closes any prior open section so a forgotten
@@ -1371,40 +1237,6 @@ export default function dimmCityPlugin(md, options = {}) {
         continue;
       }
 
-      // --- @block (section enclosures) ---
-      // Reusable card-like text section enclosures. Four variants with distinct
-      // clip-path geometry, surface, and accent colors. Each emits a .dc-block
-      // container with an optional titled header band (.dc-block-title).
-      //
-      // Syntax:   @block .dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title"
-
-      const blockUnifiedMarker = parseMarker(tok, tokens, i, '@block');
-      if (blockUnifiedMarker.matched) {
-        closeAll();
-        const blockLabel = blockUnifiedMarker.attrs['label'] ? esc(blockUnifiedMarker.attrs['label']) : '';
-        const blockTitleHtml = blockLabel ? '<div class="dc-block-title">' + blockLabel + '</div>\n' : '';
-        let blockClass = 'dc-block';
-        if (blockUnifiedMarker.attrs['class']) {
-          blockClass += ' ' + blockUnifiedMarker.attrs['class'];
-        } else if (blockUnifiedMarker.attrs['variant']) {
-          blockClass += ' dc-' + blockUnifiedMarker.attrs['variant'].toLowerCase();
-        }
-        newTokens.push(makeToken('html_block', '<div class="' + blockClass + '">\n' + blockTitleHtml));
-        inBlock = true;
-        i += 2;
-        continue;
-      }
-
-
-      if (isMarker(tok, tokens, i, '@end-block')) {
-        if (inBlock) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inBlock = false;
-        }
-        i += 2;
-        continue;
-      }
-
       // --- @card / @end-card ---
       // Generic card primitive. Emits .dc-card with optional sub-elements:
       //   .dc-card-heading  — first h4 after @card
@@ -1454,153 +1286,12 @@ export default function dimmCityPlugin(md, options = {}) {
         continue;
       }
 
-      // --- @specialty-card / @end-specialty-card ---
-      // Summary card used in the choose-specialty overview grid.
-      // Shape and color inherited from .specialty.<name> parent container.
-      const specialtyCardMarker = parseMarker(tok, tokens, i, '@specialty-card');
-      if (specialtyCardMarker.matched) {
-        closeAll();
-        specialtyCardCount++;
-        const positionAttr = ' data-position="' + (specialtyCardCount % 2 === 0 ? 'even' : 'odd') + '"';
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyCardMarker.attrs, 'dc-specialty-card') + positionAttr + '>\n'));
-        inSpecialtyCard = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-card')) {
-        if (inSpecialtyCard) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyCard = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @specialty-intro / @end-specialty-intro ---
-      // Full-page specialty intro panel. Shape/color from .specialty.<name> parent.
-      const specialtyIntroMarker = parseMarker(tok, tokens, i, '@specialty-intro');
-      if (specialtyIntroMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyIntroMarker.attrs, 'dc-specialty-intro') + '>\n'));
-        inSpecialtyIntro = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-intro')) {
-        if (inSpecialtyIntro) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyIntro = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @specialty-art / @end-specialty-art ---
-      // Full-bleed art panel for a specialty profile. Emits .dc-specialty-art
-      // (CSS: components/*.css + page-rules.css `.dc-specialty-art { page: full; }`).
-      const specialtyArtMarker = parseMarker(tok, tokens, i, '@specialty-art');
-      if (specialtyArtMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyArtMarker.attrs, 'dc-specialty-art') + '>\n'));
-        inSpecialtyArt = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-art')) {
-        if (inSpecialtyArt) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyArt = false;
-        }
-        i += 2;
-        continue;
-      }
-
-
-      // --- @toc / @end-toc ---
-      const tocMarker = parseMarker(tok, tokens, i, '@toc');
-      if (tocMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-toc">\n'));
-        inToc = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-toc')) {
-        if (inToc) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inToc = false;
-        }
-        i += 2; continue;
-      }
-
-      // Removed 2026-05-17: @two-column / @three-column / @no-break.
-      // Use @section .gp-columns-2 / @section .gp-columns-3 instead — markers.js
-      // emits identical layout semantics, with the added `.section` class that
-      // picks up `break-inside: avoid` from MARKER_CSS.
-
-      // --- @gear / @end-gear ---
-      // Shorthand for @card .dc-gear — emits a bare `.dc-card.dc-gear`.
-      // NOTE: there is NO .section.dc-gear-list wrapper (an earlier comment
-      // claimed one, and components/*.css carried ~40 lines of CSS keyed on
-      // it that could never match). Style `.dc-card.dc-gear` directly.
-      const gearMarker = parseMarker(tok, tokens, i, '@gear');
-      if (gearMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(gearMarker.attrs, 'dc-card dc-gear') + '>\n'));
-        inGear = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-gear')) {
-        if (inGear) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGear = false;
-        }
-        i += 2; continue;
-      }
-
       // --- @tape (single-line tape divider) ---
       const tapeMarker = parseMarker(tok, tokens, i, '@tape');
       if (tapeMarker.matched) {
         const labelAttr = tapeMarker.attrs['label'] || '';
         const extraClass = tapeMarker.attrs['class'] ? ' ' + esc(tapeMarker.attrs['class']) : '';
         newTokens.push(makeToken('html_block', '<div class="dc-tape' + extraClass + '">' + esc(labelAttr) + '</div>\n'));
-        i += 2; continue;
-      }
-
-      // --- @lede / @end-lede ---
-      // Emits .dc-intro (canonical). The legacy bare `lede` class was removed
-      // 2026-05-17 — there were no CSS rules using it, only the dc-prefixed
-      // form is styled.
-      const ledeMarker = parseMarker(tok, tokens, i, '@lede');
-      if (ledeMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-intro">\n'));
-        inLede = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-lede')) {
-        if (inLede) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLede = false;
-        }
-        i += 2; continue;
-      }
-
-      // --- @glossary / @end-glossary ---
-      const glossaryMarker = parseMarker(tok, tokens, i, '@glossary');
-      if (glossaryMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-terms">\n'));
-        inGlossary = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-glossary')) {
-        if (inGlossary) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGlossary = false;
-        }
         i += 2; continue;
       }
 
@@ -2097,6 +1788,42 @@ export default function dimmCityPlugin(md, options = {}) {
   });
 
 }
+
+/**
+ * Declared markers — plain data Gutterpress core reads off this module (the
+ * same relationship `metadata` has). Core parses `@name … @end-name`, merges
+ * author classes, threads `data-source-range`, nests containers as a stack and
+ * closes them at the next `@page`/`@section`/`@chapter`, so none of this is
+ * hand-written in the state machine above. A bare markdown-it instance never
+ * reads this table: declared markers exist only under Gutterpress.
+ *
+ * To add a plain wrapper, add one line here (element + classes), a snippet in
+ * `snippets/<name>.md`, and the usual catalog/guide entries — see
+ * docs/adding-macros.md.
+ *
+ * Variants are a bare word on the marker line (`@sidebar inset`) and only add
+ * a class, so `.inset`-style class shorthand keeps working beside them.
+ * `autoCloseAt: ['eof']` keeps these silent at end-of-document: they have
+ * never needed an explicit `@end-…`.
+ */
+const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
+
+export const markers = {
+  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
+  definition: wrapper('dc-prose-panel dc-definition-block'),
+  'specialty-intro': wrapper('dc-specialty-intro'),
+  'specialty-art': wrapper('dc-specialty-art'),
+  'specialty-card': wrapper('dc-specialty-card'),
+  gear: wrapper('dc-card dc-gear'),
+  toc: wrapper('dc-toc'),
+  lede: wrapper('dc-intro'),
+  glossary: wrapper('dc-terms'),
+  block: wrapper('dc-block', {
+    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard', codex: 'dc-codex' },
+    label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
+  }),
+};
 
 /**
  * Plugin metadata (the package version in package.json is the only version).

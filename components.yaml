@@ -18,7 +18,7 @@
 #   styles/) · breaks (documentation; omitted where the component has no
 #   fragmentation rule of its own — variants inherit their parent's) · usage
 #   (literal strings that mark a use of a component with no marker or class:
-#   `ROLL THE DIE!`, `| highlight`, `variant=panel`, …) · unstyled (emitted
+#   `ROLL THE DIE!`, `| highlight`, …) · unstyled (emitted
 #   classes acknowledged to have no CSS) · notes.
 #
 #   Status meanings (measured against the Dimm City books that consume this
@@ -115,7 +115,7 @@ components:
   - name: sidebar
     status: live
     origin: plugin
-    recipe: "@sidebar [.inset] … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
+    recipe: "@sidebar [inset | .inset] … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
     emits: div.dc-sidebar
     css: [styles/components/images.css, styles/page-templates.css]
     tokens:
@@ -160,21 +160,20 @@ components:
   - name: block
     status: live
     origin: plugin
-    recipe: "@block .dc-panel|.dc-slate|.dc-shard|.dc-codex label=\"Title\" … @end-block"
+    recipe: "@block panel|slate|shard|codex label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
     css: styles/components/section.css
     tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg]
     breaks: "break-inside: avoid"
-    notes: "The variant class is author-supplied (see block-variants; also accepted as variant=panel). Design guide only."
+    notes: "A declared marker: the variant word (or the .dc-* class) selects the treatment (see block-variants). The old variant=panel attribute form was dropped; no book used it. Design guide only."
 
   - name: block-variants
     status: live
     origin: author
-    recipe: "@block .dc-panel | .dc-slate | .dc-shard | .dc-codex"
+    recipe: "@block panel | slate | shard | codex"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard|.dc-codex
     css: styles/components/section.css
-    usage: [variant=panel, variant=slate, variant=shard, variant=codex]
-    notes: "Four clip-path/surface treatments on .dc-block; the class is passed through from the marker, or built by the plugin from variant=x (a concatenation the check's plugin scan cannot see — hence origin: author and the usage literals)."
+    notes: "Four clip-path/surface treatments on .dc-block. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
 
   - name: card
     status: live

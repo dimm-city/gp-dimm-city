@@ -41,10 +41,8 @@ This is what you type.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-intro">
-<p>This is what you type.</p>
-</div>
-</div>
+<div class="dc-intro" data-source-range="58:59"><p>This is what you type.</p>
+</div></div>
 <p>Three rules carry through the whole system, and they are worth knowing before anything else:</p>
 <ol>
 <li data-source-range="68:69"><strong>A marker is a line that starts with <code>@</code>.</strong> <code>@lede</code> opens a block, <code>@end-lede</code> closes it. Leave a blank line on each side of every marker.</li>
@@ -621,11 +619,9 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
 <p>When the Dreamers push past Too Far, the table starts asking how movement works.</p>
-<div class="dc-sidebar">
-<h3>Distance, Fast</h3>
+<div class="dc-sidebar" data-source-range="133:134"><h3>Distance, Fast</h3>
 <p>Three bands, no grid. <strong>In Reach</strong> is one swing away. <strong>Nearby</strong> is a burned Move. <strong>Too Far</strong> might as well be the other side of the ether.</p>
-</div>
-<p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there — let them, and let it cost.</p>
+</div><p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there — let them, and let it cost.</p>
 </div>
 <h3>Inset sidebar</h3>
 <p><code>@sidebar .inset</code> is a full-height rail pinned to the page’s edge. It needs the <code>@page .page-sidebar</code> template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.</p>
@@ -648,11 +644,9 @@ One out-of-turn ability per round is free to trigger — but it still spends its
 <p class="dg-next">The inset rail needs a page of its own, so the rendered page is the next page.</p>
 </div><div class="page page-sidebar chapter-4" data-source-range="169:170"><div class="section" data-source-range="171:172"><p>Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.</p>
 <p>That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.</p>
-</div><div class="dc-sidebar inset">
-<h3>Free, Not Costless</h3>
+</div><div class="dc-sidebar inset" data-source-range="179:180"><h3>Free, Not Costless</h3>
 <p>One out-of-turn ability per round is <em>free to trigger</em> — but it still spends its listed AP. Each additional out-of-turn use that round costs <strong>+1 AP</strong> on top.</p>
-</div>
-</div><div class="page dg-doc chapter-4" data-source-range="187:188"><h2>Floated images</h2>
+</div></div><div class="page dg-doc chapter-4" data-source-range="187:188"><h2>Floated images</h2>
 <p>An image on its own line is a figure. <code>.dc-img-float-right</code> or <code>.dc-img-float-left</code> floats it at 44% of the column with text wrapping around it; leave a blank line after the paragraph that should clear it.</p>
 <pre><code data-source-range="193:198" class="language-markdown">![Scavenger](img/scavenger.png){.dc-img-float-right}
 
@@ -723,10 +717,8 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-intro">
-<p>The city didn’t go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.</p>
-</div>
-</div>
+<div class="dc-intro" data-source-range="27:28"><p>The city didn’t go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.</p>
+</div></div>
 <p>Tokens: <code>--dc-intro-bg</code>, <code>--dc-intro-accent</code>.</p>
 <h2>Flavor</h2>
 <p>In-world voice: italic, accent-railed, spoken from inside the fiction. Inside a <code>@skill</code> card the first <code>&gt;</code> line is flavor automatically; anywhere else, tag the quote.</p>
@@ -982,15 +974,13 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-block dc-panel">
-<div class="dc-block-title">Action Economy</div>
+<div class="dc-block dc-panel" data-label="Action Economy" data-source-range="30:31"><div class="dc-block-title">Action Economy</div>
 <p>On your turn you get <strong>one Move and one Action</strong>. Spend Augment Points to push past it.</p>
 <ul>
 <li data-source-range="34:35"><strong>Move:</strong> shift one Distance band. Free.</li>
 <li data-source-range="35:37"><strong>Action:</strong> attack, hack, or trigger an ability.</li>
 </ul>
-</div>
-</div>
+</div></div>
 <table>
 <thead data-source-range="41:42">
 <tr data-source-range="41:42">
@@ -1023,20 +1013,15 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 </tbody>
 </table>
 <div class="dg-stage">
-<div class="dc-block dc-slate">
-<div class="dc-block-title">The Core Loop</div>
+<div class="dc-block dc-slate" data-label="The Core Loop" data-source-range="50:51"><div class="dc-block-title">The Core Loop</div>
 <ol>
 <li data-source-range="52:53">The <strong>Dream Master</strong> presents a situation.</li>
 <li data-source-range="53:54">The <strong>Dreamers</strong> declare intent.</li>
 <li data-source-range="54:56">The <strong>fiction resolves</strong> — sometimes on a die, sometimes on a word.</li>
 </ol>
-</div>
-<div class="dc-block dc-shard">
-<div class="dc-block-title">The Neon Bazaar</div>
+</div><div class="dc-block dc-shard" data-label="The Neon Bazaar" data-source-range="58:59"><div class="dc-block-title">The Neon Bazaar</div>
 <p>Hologram haze cuts the gloom you’re stumbling through. Flickering ads claw the air above blades of neon, and the scent of burnt oil rides over hot garbage.</p>
-</div>
-<div class="dc-block dc-codex">
-<div class="dc-block-title">Outcome Ladder (d20)</div>
+</div><div class="dc-block dc-codex" data-label="Outcome Ladder (d20)" data-source-range="64:65"><div class="dc-block-title">Outcome Ladder (d20)</div>
 <table>
 <thead data-source-range="66:67">
 <tr data-source-range="66:67">
@@ -1073,8 +1058,7 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+</div></div>
 <p>Tokens: <code>--dc-block-bg</code>, <code>--dc-block-fg</code>, <code>--dc-block-accent</code>, <code>--dc-block-title-bg</code>, <code>--dc-block-title-fg</code>.</p>
 <h2>Sidebar box</h2>
 <p>A standalone reference box with its own heading and an internal dashed divider — rules etiquette, a standalone ruling, anything that needs its own boundary.</p>
@@ -1090,12 +1074,10 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-prose-panel dc-sidebar-box">
-<h4>Dice Etiquette</h4>
+<div class="dc-prose-panel dc-sidebar-box" data-source-range="101:102"><h4>Dice Etiquette</h4>
 <hr data-source-range="105:106">
 <p>Roll your dice in the open. If a die lands off the table, it doesn’t count: reroll it.</p>
-</div>
-</div>
+</div></div>
 <p>Tokens: <code>--dc-sidebar-box-surface</code>, <code>--dc-sidebar-box-border</code>, <code>--dc-sidebar-box-accent</code>, <code>--dc-sidebar-box-rail</code>.</p>
 <h2>Definition</h2>
 <p>A short italic callout for one term — in-world vocabulary, an NPC type, an item category. Stack several in a two-column panel for a glossary of callouts.</p>
@@ -1107,20 +1089,12 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section gp-columns-2 dc-column-panel" data-source-range="131:132"><div class="dc-prose-panel dc-definition-block">
-<p><strong>Tick / Tic:</strong> A heartbeat. The space between deciding and doing. Used in ability text to mean <em>immediate</em>.</p>
-</div>
-<div class="dc-prose-panel dc-definition-block">
-<p><strong>Shortly / Shorty:</strong> Roughly a scene. Long enough to cross a district, tend a wound, or shake a tail.</p>
-</div>
-<div class="gp-column-break" aria-hidden="true" data-source-range="145:146"></div>
-<div class="dc-prose-panel dc-definition-block">
-<p><strong>Fixer:</strong> The person who slides into the booth with a dirty envelope and a job you’ll regret.</p>
-</div>
-<div class="dc-prose-panel dc-definition-block">
-<p><strong>Sporo:</strong> A native of Dimm City wearing an animal form.</p>
-</div>
-</div></div>
+<div class="section gp-columns-2 dc-column-panel" data-source-range="131:132"><div class="dc-prose-panel dc-definition-block" data-source-range="133:134"><p><strong>Tick / Tic:</strong> A heartbeat. The space between deciding and doing. Used in ability text to mean <em>immediate</em>.</p>
+</div><div class="dc-prose-panel dc-definition-block" data-source-range="139:140"><p><strong>Shortly / Shorty:</strong> Roughly a scene. Long enough to cross a district, tend a wound, or shake a tail.</p>
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="145:146"></div>
+<div class="dc-prose-panel dc-definition-block" data-source-range="147:148"><p><strong>Fixer:</strong> The person who slides into the booth with a dirty envelope and a job you’ll regret.</p>
+</div><div class="dc-prose-panel dc-definition-block" data-source-range="153:154"><p><strong>Sporo:</strong> A native of Dimm City wearing an animal form.</p>
+</div></div></div>
 <p>Tokens: <code>--dc-definition-block-surface</code>, <code>--dc-definition-block-accent</code>, <code>--dc-definition-block-accent-width</code>. For a plain term list, a markdown definition list (<code>Term</code> / <code>: meaning</code>) needs no macro — see <a href="#ch-writing" data-gp-source-token="[Writing a Page](#ch-writing)" data-gp-source-occurrence="0">Writing a Page</a>.</p>
 <h2>Glossary</h2>
 <p>A run of <strong>term</strong> — gloss paragraphs as one connected register, the form of an appendix glossary.</p>
@@ -1134,11 +1108,9 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-terms">
-<p><strong>Heat</strong> — The running tally of attention you’ve drawn.</p>
+<div class="dc-terms" data-source-range="183:184"><p><strong>Heat</strong> — The running tally of attention you’ve drawn.</p>
 <p><strong>Hard Choice</strong> — A roll of 6–10. The fiction advances, but it costs you.</p>
-</div>
-</div>
+</div></div>
 <h2>Procedure</h2>
 <p>A zero-padded step list for anything the table runs in order.</p>
 <pre><code data-source-range="198:208" class="language-markdown">@procedure
@@ -1264,18 +1236,14 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-card dc-gear">
-<h3>Throwaway Blaster</h3>
+<div class="dc-card dc-gear" data-source-range="351:352"><h3>Throwaway Blaster</h3>
 <p><em>Ranged. Pistol. CQC Locked, Pack Fed.</em></p>
 <p><strong>Range</strong> Reach to Near only. <strong>Damage</strong> 2 on a Hit, 4 on a Triumph. Disposable after the run; serial-clean and untraceable.</p>
-</div>
-<hr data-source-range="361:362">
-<div class="dc-card dc-gear">
-<h3>Snake Cable</h3>
+</div><hr data-source-range="361:362">
+<div class="dc-card dc-gear" data-source-range="363:364"><h3>Snake Cable</h3>
 <p><em>Utility. Mechanized. Reach 50 ft.</em></p>
 <p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
-</div>
-</div>
+</div></div>
 <h2>Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
 <pre><code data-source-range="380:387" class="language-markdown">| Augment | Slot | Cost | Effect |
@@ -1478,13 +1446,11 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <div class="dc-specialty augmerc">
-<div class="dc-specialty-intro">
-<h2>Augmerc</h2>
+<div class="dc-specialty-intro" data-source-range="55:56"><h2>Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.</p>
 <h3>Spec Tweak: <strong>Wired to Kill</strong></h3>
 <p>Augmerc learning paths assume combat-grade augmentations. Without the implants, the Augmerc spends 1 extra AP to activate a path’s abilities.</p>
-</div>
-</div>
+</div></div>
 </div>
 <p>Tokens: <code>--dc-specialty-intro-bg</code>, <code>--dc-specialty-intro-title-bg</code>, <code>--dc-specialty-intro-title-color</code>.</p>
 <h2>Specialty art</h2>
@@ -1500,10 +1466,8 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 @end-specialty
 </code></pre>
 <div class="dc-specialty augmerc">
-<div class="dc-specialty-art">
-<p class="dc-img-wrapper"><img src="https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
-</div>
-</div>
+<div class="dc-specialty-art" data-source-range="91:92"><p class="dc-img-wrapper"><img src="https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
+</div></div>
 <h2>Specialty card</h2>
 <p>The catalog card for a “choose your specialty” page: portrait, a <code>&gt;</code> tagline, and a short pitch, inside a <code>@section .dc-card-grid</code> that lays the cards out two across. Each card sits in its own <code>@specialty</code> so it carries its own color.</p>
 <pre><code class="dg-split language-markdown" data-source-range="104:141">@section .dc-card-grid
@@ -1545,25 +1509,21 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <div class="section dc-card-grid" data-source-range="146:147"><div class="dc-specialty augmerc">
-<div class="dc-specialty-card" id="card-augmerc" data-position="odd">
-<h3>Augmerc</h3>
+<div class="dc-specialty-card" id="card-augmerc" data-position="odd" data-source-range="150:151"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="156:157">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty gutterdruid">
-<div class="dc-specialty-card" id="card-gutterdruid" data-position="even">
-<h3>Gutterdruid</h3>
+<div class="dc-specialty-card" id="card-gutterdruid" data-position="even" data-source-range="166:167"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="172:173">Feral Shapeshifter</p>
 </blockquote>
 <p>Gutterdruids rewrite their own flesh to match the wasteland around them.</p>
-</div>
-</div>
+</div></div>
 </div></div>
 <p>The full ten-card grid is in <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>. Tokens: <code>--dc-specialty-card-bg</code>, <code>--dc-specialty-card-border</code>, <code>--dc-specialty-card-accent</code>, <code>--dc-specialty-card-media-height</code>, <code>--dc-specialty-card-title-color</code>, <code>--dc-specialty-card-shadow</code>.</p>
 <h2>Learning path</h2>
@@ -3300,187 +3260,147 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><code>@specialty-intro</code> inside each <code>@specialty</code>: the same panel, ten title bands. Intro text is the opening of each Field Guide profile.</p>
 <div class="dg-stage">
 <div class="dc-specialty augmerc">
-<div class="dc-specialty-intro">
-<h2>Augmerc</h2>
+<div class="dc-specialty-intro" data-source-range="495:496"><h2>Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty proxy">
-<div class="dc-specialty-intro">
-<h2>Proxy</h2>
+<div class="dc-specialty-intro" data-source-range="511:512"><h2>Proxy</h2>
 <p>Belief burns bright in Dimm City, and Proxies carry the sparks others cannot hold. A word that stops a heart, a prayer that drags a soul back to its feet.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty streetwarden">
-<div class="dc-specialty-intro">
-<h2>Streetwarden</h2>
+<div class="dc-specialty-intro" data-source-range="527:528"><h2>Streetwarden</h2>
 <p>Dimm City may look like a concrete jungle, but its sentient population is far outnumbered by the insects, animals, fungi, protista, and monera that thrive throughout its shadowed sprawl. …</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty gutterdruid">
-<div class="dc-specialty-intro">
-<h2>Gutterdruid</h2>
+<div class="dc-specialty-intro" data-source-range="543:544"><h2>Gutterdruid</h2>
 <p>Nature thrives in Dimm City, but it grows meaner here. It roots in drains, nests in vents, blooms on corpses, cracks through concrete, and feeds on carrion, heat, rust, blood, and whatever the city throws on the curb. …</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty cybersurgeon">
-<div class="dc-specialty-intro">
-<h2>Cybersurgeon</h2>
+<div class="dc-specialty-intro" data-source-range="559:560"><h2>Cybersurgeon</h2>
 <p>Need a new arm? Sit down. Need a neuroimplant wired so the Datasphere crawls behind your eyes? That’s extra.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty wirephreak">
-<div class="dc-specialty-intro">
-<h2>Wirephreak</h2>
+<div class="dc-specialty-intro" data-source-range="575:576"><h2>Wirephreak</h2>
 <p>The invisible professionals of Dimm City. Corporations, syndicates, governments, and private clients alike rely on Wirephreaks when information must be acquired, facilities infiltrated, witnesses eliminated, or valuable assets extracted without leaving a trace.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty technosorcerer">
-<div class="dc-specialty-intro">
-<h2>Technosorcerer</h2>
+<div class="dc-specialty-intro" data-source-range="591:592"><h2>Technosorcerer</h2>
 <p>Technosorcerers see the world as one enormous operating system. Magic, cybernetics, matter, even the laws of existence are simply different layers of the same source code waiting to be understood—and rewritten.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty etherlock">
-<div class="dc-specialty-intro">
-<h2>Etherlock</h2>
+<div class="dc-specialty-intro" data-source-range="607:608"><h2>Etherlock</h2>
 <p>Dimm City leaks magic. Raw ether and elements seep through fractures between substantialities, saturating matter and space, feeding the strange ecology of Dimm City itself.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty dualist">
-<div class="dc-specialty-intro">
-<h2>Dualist</h2>
+<div class="dc-specialty-intro" data-source-range="623:624"><h2>Dualist</h2>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either.</p>
-</div>
-</div>
+</div></div>
 </div>
 <div class="dg-stage">
 <div class="dc-specialty generalist">
-<div class="dc-specialty-intro">
-<h2>Generalist</h2>
+<div class="dc-specialty-intro" data-source-range="639:640"><h2>Generalist</h2>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects.</p>
-</div>
-</div>
+</div></div>
 </div>
 <h2>Specialty cards</h2>
 <p><code>@specialty-card</code> inside each <code>@specialty</code>, in a <code>@section .dc-card-grid</code>. Cards alternate <code>data-position=&quot;odd|even&quot;</code> down the grid.</p>
 <div class="dg-stage dg-tall">
 <div class="section dc-card-grid" data-source-range="657:658"><div class="dc-specialty augmerc">
-<div class="dc-specialty-card" data-position="odd">
-<h3>Augmerc</h3>
+<div class="dc-specialty-card" data-position="odd" data-source-range="661:662"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="667:668">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad. They charge the front, soak the pain, and unload hell using brute strength and brutal tech. Combat-born, augged to kill, and never outgunned.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty proxy">
-<div class="dc-specialty-card" data-position="even">
-<h3>Proxy</h3>
+<div class="dc-specialty-card" data-position="even" data-source-range="677:678"><h3>Proxy</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Proxy" alt="Proxy" data-gp-source-token="![Proxy](https://placehold.co/300x340/png?text=Proxy)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="683:684">Militant Monolith</p>
 </blockquote>
 <p>Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty streetwarden">
-<div class="dc-specialty-card" data-position="odd">
-<h3>Streetwarden</h3>
+<div class="dc-specialty-card" data-position="odd" data-source-range="693:694"><h3>Streetwarden</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Streetwarden" alt="Streetwarden" data-gp-source-token="![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="699:700">Sprawl Sentinel</p>
 </blockquote>
 <p>They don’t wear badges—they are the law when no one else shows. Streetwardens guard the city’s broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty gutterdruid">
-<div class="dc-specialty-card" data-position="even">
-<h3>Gutterdruid</h3>
+<div class="dc-specialty-card" data-position="even" data-source-range="709:710"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="715:716">Wold Witch</p>
 </blockquote>
 <p>They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty cybersurgeon">
-<div class="dc-specialty-card" data-position="odd">
-<h3>Cybersurgeon</h3>
+<div class="dc-specialty-card" data-position="odd" data-source-range="725:726"><h3>Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Cybersurgeon" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="731:732">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty wirephreak">
-<div class="dc-specialty-card" data-position="even">
-<h3>Wirephreak</h3>
+<div class="dc-specialty-card" data-position="even" data-source-range="741:742"><h3>Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Wirephreak" alt="Wirephreak" data-gp-source-token="![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="747:748">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty technosorcerer">
-<div class="dc-specialty-card" data-position="odd">
-<h3>Technosorcerer</h3>
+<div class="dc-specialty-card" data-position="odd" data-source-range="757:758"><h3>Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Technosorcerer" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="763:764">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty etherlock">
-<div class="dc-specialty-card" data-position="even">
-<h3>Etherlock</h3>
+<div class="dc-specialty-card" data-position="even" data-source-range="773:774"><h3>Etherlock</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Etherlock" alt="Etherlock" data-gp-source-token="![Etherlock](https://placehold.co/300x340/png?text=Etherlock)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="779:780">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty dualist">
-<div class="dc-specialty-card" data-position="odd">
-<h3>Dualist</h3>
+<div class="dc-specialty-card" data-position="odd" data-source-range="789:790"><h3>Dualist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Dualist" alt="Dualist" data-gp-source-token="![Dualist](https://placehold.co/300x340/png?text=Dualist)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="795:796">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty generalist">
-<div class="dc-specialty-card" data-position="even">
-<h3>Generalist</h3>
+<div class="dc-specialty-card" data-position="even" data-source-range="805:806"><h3>Generalist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Generalist" alt="Generalist" data-gp-source-token="![Generalist](https://placehold.co/300x340/png?text=Generalist)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="811:812">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
-</div>
-</div>
+</div></div>
 </div></div>
 <h2>Class tags</h2>
 <p><code>&lt;span class=&quot;dc-classtag &lt;specialty&gt;&quot;&gt;</code>, one per specialty.</p>
@@ -3515,23 +3435,15 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Blocks</h2>
 <p><code>@block .dc-panel | .dc-slate | .dc-shard | .dc-codex</code>.</p>
 <div class="dg-stage">
-<div class="dc-block dc-panel">
-<div class="dc-block-title">Panel</div>
+<div class="dc-block dc-panel" data-label="Panel" data-source-range="868:869"><div class="dc-block-title">Panel</div>
 <p>Player-facing rules summaries and structured data.</p>
-</div>
-<div class="dc-block dc-slate">
-<div class="dc-block-title">Slate</div>
+</div><div class="dc-block dc-slate" data-label="Slate" data-source-range="874:875"><div class="dc-block-title">Slate</div>
 <p>Binding rulings and Dream Master directives.</p>
-</div>
-<div class="dc-block dc-shard">
-<div class="dc-block-title">Shard</div>
+</div><div class="dc-block dc-shard" data-label="Shard" data-source-range="880:881"><div class="dc-block-title">Shard</div>
 <p>Fiction, atmosphere, and setting asides.</p>
-</div>
-<div class="dc-block dc-codex">
-<div class="dc-block-title">Codex</div>
+</div><div class="dc-block dc-codex" data-label="Codex" data-source-range="886:887"><div class="dc-block-title">Codex</div>
 <p>Glossaries, lookups, and compendium entries.</p>
-</div>
-</div>
+</div></div>
 <h2>Choice cards</h2>
 <p><code>@card</code> inside <code>@section .dc-flaws</code>, <code>.dc-ideals</code> or <code>.dc-dreams</code>.</p>
 <div class="dg-stage">
@@ -3676,11 +3588,9 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><code>@sidebar</code> floats beside the text; <code>@sidebar .inset</code> is a full-height rail and needs its own <code>@page .page-sidebar</code> — see <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
 <div class="dg-stage dg-on-paper">
 <p>When the Dreamers push past Too Far, the table starts asking how movement works.</p>
-<div class="dc-sidebar">
-<h3>Distance, Fast</h3>
+<div class="dc-sidebar" data-source-range="1100:1101"><h3>Distance, Fast</h3>
 <p>Three bands, no grid. <strong>In Reach</strong> is one swing away. <strong>Nearby</strong> is a burned Move.</p>
-</div>
-<p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there.</p>
+</div><p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there.</p>
 </div>
 <h2>Image floats</h2>
 <p><code>{.dc-img-float-left}</code> and <code>{.dc-img-float-right}</code>.</p>
@@ -3767,11 +3677,8 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 
 exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = `
 "<div class="chapter dg-guide" id="ch-example-front-matter" data-ch="1" data-source-range="0:1"><div class="page page-toc chapter-1" data-source-range="2:3"><h1 class="dc-chevron">Contents</h1>
-<div class="dc-intro">
-<p>Twelve chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn’t care where you start.</p>
-</div>
-<div class="dc-toc">
-<ol>
+<div class="dc-intro" data-source-range="6:7"><p>Twelve chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn’t care where you start.</p>
+</div><div class="dc-toc" data-source-range="12:13"><ol>
 <li data-source-range="14:15">Who Do You Dream to Be? — Citizen file, vibe, origins, ideals, flaws.</li>
 <li data-source-range="15:16">What Do You Dream of Doing? — How abilities work. Choose a specialty.</li>
 <li data-source-range="16:17">The Augmerc — Muscle for hire. Backbiters and worse.</li>
@@ -3786,13 +3693,10 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 <li data-source-range="25:26">Dream Mastery &amp; Cosmology — NPCs, traits, time, districts.</li>
 <li data-source-range="26:28">Cybernetics, Weapons, and Gear — Useful items, tech, blasters, blades.</li>
 </ol>
-</div>
-</div><div class="page page-credits dc-credits chapter-1" data-source-range="30:31"><h1 class="dc-chevron">Credits</h1>
-<div class="dc-intro">
-<p><strong>Special Thanks:</strong> Don and Cindy Ward, Ted Bonnah, Joseph Woodworth, Ben McDonough, Michael Giordono, Adam Tripp, Nathan Hays, Nathanael Elkins, Chelanna Leigh, Thomas Amundrud, Virgina Horine, Gena Pini, Madeleine Pini, Ken Pini, Mary Jo Pini, Davide Cavadini</p>
+</div></div><div class="page page-credits dc-credits chapter-1" data-source-range="30:31"><h1 class="dc-chevron">Credits</h1>
+<div class="dc-intro" data-source-range="34:35"><p><strong>Special Thanks:</strong> Don and Cindy Ward, Ted Bonnah, Joseph Woodworth, Ben McDonough, Michael Giordono, Adam Tripp, Nathan Hays, Nathanael Elkins, Chelanna Leigh, Thomas Amundrud, Virgina Horine, Gena Pini, Madeleine Pini, Ken Pini, Mary Jo Pini, Davide Cavadini</p>
 <p><strong>Dedicated to the memory of Donovan Henry Callender.</strong> Don was a player in our 2E AD&amp;D group throughout our youth and was a dear friend for even longer. He was taken too soon from us and we wish he were here to dream in Dimm City with us today.</p>
-</div>
-<div class="section credits-colophon" data-source-range="42:43"><div class="dc-colophon-grid">
+</div><div class="section credits-colophon" data-source-range="42:43"><div class="dc-colophon-grid">
 <p><strong>Designers:</strong> TWard and ITLackey</p>
 <p><strong>Artist:</strong> Scott Georges</p>
 <p><strong>Creative Director:</strong> Matt Pini</p>
@@ -3807,10 +3711,8 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 </div>
 </div><p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house gp-pin gp-bottom gp-full" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
 </div><div class="page page-intro dg-intro chapter-1" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
-<div class="dc-intro">
-<p>The city didn’t go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.</p>
-</div>
-<div class="section" data-source-range="84:85"><div class="dc-pullquote dc-flush">
+<div class="dc-intro" data-source-range="78:79"><p>The city didn’t go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.</p>
+</div><div class="section" data-source-range="84:85"><div class="dc-pullquote dc-flush">
 <p data-source-range="86:88">&quot;How bright's it ay?!&quot;</p>
 </div>
 <p>They wore glossy slab-armor that flexed like chitin and burned like synthlight. Opposite them? A pack of ragged rabbits with wiry limbs and twitch-fast reflexes, zipping through the sprawl with street-born magic and muscle memory. Then the world erupted.</p>
@@ -3967,121 +3869,97 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 <p>The door didn’t explode. It failed. Metal screamed, folded, and vanished inward under a synchronized impact that shook dust from the ceiling and sent shockwaves crawling down the corridor beyond.</p>
 <p>Five shadows moved as one, already inside, already gone.</p>
 </div></div><div class="page card-grid chapter-2" data-chapter-label="C.02" data-source-range="27:28"><h2 class="dc-chevron">Choose Your Specialty</h2>
-<div class="dc-intro">
-<p>A specialty is your primary ability set — the collection of learned techniques, augments, and practices that defines what you bring to the crew. Every specialty has three learning paths, each containing five abilities. You don’t pick a path at character creation. You grow into it.</p>
+<div class="dc-intro" data-source-range="31:32"><p>A specialty is your primary ability set — the collection of learned techniques, augments, and practices that defines what you bring to the crew. Every specialty has three learning paths, each containing five abilities. You don’t pick a path at character creation. You grow into it.</p>
 <p>Each specialty produces a different kind of operative. The Augmerc hits hard in close range. The Wirephreak slides through systems undetected. The Proxy bends probability and conviction into force. What you choose here shapes how the Dream plays.</p>
 <p>Every dreamer’s got a sharp edge — your specialty is where it starts.</p>
-</div>
-<div class="section dc-card-grid" data-source-range="41:42"><div class="dc-specialty augmerc">
-<div class="dc-specialty-card" id="specialty-augmerc" data-position="odd">
-<h3>Augmerc</h3>
+</div><div class="section dc-card-grid" data-source-range="41:42"><div class="dc-specialty augmerc">
+<div class="dc-specialty-card" id="specialty-augmerc" data-position="odd" data-source-range="45:46"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="51:52">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad. They charge the front, soak the pain, and unload hell using brute strength and brutal tech. Combat-born, augged to kill, and never outgunned.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty proxy">
-<div class="dc-specialty-card" id="specialty-proxy" data-position="even">
-<h3>Proxy</h3>
+<div class="dc-specialty-card" id="specialty-proxy" data-position="even" data-source-range="61:62"><h3>Proxy</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Proxy" alt="Proxy" data-gp-source-token="![Proxy](https://placehold.co/300x340/png?text=Proxy)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="67:68">Militant Monolith</p>
 </blockquote>
 <p>Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty streetwarden">
-<div class="dc-specialty-card" id="specialty-streetwarden" data-position="odd">
-<h3>Streetwarden</h3>
+<div class="dc-specialty-card" id="specialty-streetwarden" data-position="odd" data-source-range="77:78"><h3>Streetwarden</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Streetwarden" alt="Streetwarden" data-gp-source-token="![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="83:84">Sprawl Sentinel</p>
 </blockquote>
 <p>They don’t wear badges—they are the law when no one else shows. Streetwardens guard the city’s broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty gutterdruid">
-<div class="dc-specialty-card" id="specialty-gutterdruid" data-position="even">
-<h3>Gutterdruid</h3>
+<div class="dc-specialty-card" id="specialty-gutterdruid" data-position="even" data-source-range="93:94"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="99:100">Wold Witch</p>
 </blockquote>
 <p>They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty cybersurgeon">
-<div class="dc-specialty-card" id="specialty-cybersurgeon" data-position="odd">
-<h3>Cybersurgeon</h3>
+<div class="dc-specialty-card" id="specialty-cybersurgeon" data-position="odd" data-source-range="109:110"><h3>Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Cybersurgeon" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="115:116">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty wirephreak">
-<div class="dc-specialty-card" id="specialty-wirephreak" data-position="even">
-<h3>Wirephreak</h3>
+<div class="dc-specialty-card" id="specialty-wirephreak" data-position="even" data-source-range="125:126"><h3>Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Wirephreak" alt="Wirephreak" data-gp-source-token="![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="131:132">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty technosorcerer">
-<div class="dc-specialty-card" id="specialty-technosorcerer" data-position="odd">
-<h3>Technosorcerer</h3>
+<div class="dc-specialty-card" id="specialty-technosorcerer" data-position="odd" data-source-range="141:142"><h3>Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Technosorcerer" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="147:148">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty etherlock">
-<div class="dc-specialty-card" id="specialty-etherlock" data-position="even">
-<h3>Etherlock</h3>
+<div class="dc-specialty-card" id="specialty-etherlock" data-position="even" data-source-range="157:158"><h3>Etherlock</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Etherlock" alt="Etherlock" data-gp-source-token="![Etherlock](https://placehold.co/300x340/png?text=Etherlock)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="163:164">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty dualist">
-<div class="dc-specialty-card" id="specialty-dualist" data-position="odd">
-<h3>Dualist</h3>
+<div class="dc-specialty-card" id="specialty-dualist" data-position="odd" data-source-range="173:174"><h3>Dualist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Dualist" alt="Dualist" data-gp-source-token="![Dualist](https://placehold.co/300x340/png?text=Dualist)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="179:180">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div>
-</div>
+</div></div>
 <div class="dc-specialty generalist">
-<div class="dc-specialty-card" id="specialty-generalist" data-position="even">
-<h3>Generalist</h3>
+<div class="dc-specialty-card" id="specialty-generalist" data-position="even" data-source-range="189:190"><h3>Generalist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Generalist" alt="Generalist" data-gp-source-token="![Generalist](https://placehold.co/300x340/png?text=Generalist)" data-gp-source-occurrence="0"></p>
 <blockquote>
 <p data-source-range="195:196">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
-</div>
-</div>
+</div></div>
 </div><div class="section" data-source-range="205:206"><h3>Choosing by Playstyle</h3>
 <p><strong>Want to hit things hard?</strong> Augmerc. <strong>Want to control the battlefield?</strong> Streetwarden or Proxy. <strong>Want to slide through systems undetected?</strong> Wirephreak. <strong>Want raw arcane force?</strong> Technosorcerer, Gutterdruid, or Etherlock. <strong>Want to rebuild your body as your toolkit?</strong> Cybersurgeon. <strong>Want two paths at once?</strong> Dualist. <strong>Want a scrap of everything?</strong> Generalist.</p>
 <p>Every specialty excels at one thing and has a path toward a second. Your first specialty is your identity. What you pick up later is your legend.</p>
 <p>Don’t agonize over the choice. Most Dreamers don’t know their specialty until the city forces it out of them — under fire, under stress, or under the kind of debt that doesn’t go away. Pick the one that sounds like the way you’d bleed if you had to. You’ll grow into the rest whether you want to or not.</p>
 </div><h2 class="dc-spray">How Abilities Work</h2>
-<div class="dc-intro">
-<p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
+<div class="dc-intro" data-source-range="219:220"><p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
 <p>In Dimm City, abilities aren’t just what you can do. They’re learned techniques, invasive augments, practiced rituals, and raw instinct working as one.</p>
-</div>
-<div class="section" data-source-range="227:228"><h3>The Core Loop of a Dream</h3>
+</div><div class="section" data-source-range="227:228"><h3>The Core Loop of a Dream</h3>
 <ol class="dc-steps">
   <li><span class="dc-step-no">01</span><span>The Dream Master describes the situation.</span></li>
   <li><span class="dc-step-no">02</span><span>A Dreamer declares an action.</span></li>
@@ -4098,8 +3976,7 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 
 exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1`] = `
 "<div class="chapter dg-guide" id="ch-example-specialty-profile" data-ch="3" data-source-range="0:1"><div class="page specialty-profile chapter-3" data-source-range="2:3"><div class="dc-specialty augmerc">
-<div class="dc-specialty-intro">
-<h2>Augmerc</h2>
+<div class="dc-specialty-intro" data-source-range="6:7"><h2>Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original. Some run with packs, some lone-wolf it. Either way, most don’t get paid until the job is done.</p>
 <p>This heavy fights with skill, weapons, and tuned augmentation. The best are trained-up, tooled-up, and rebuilt with chrome, grafts, and salvaged tech. How much meat, metal, or monster your Augmerc carries is up to you.</p>
 <p>If you want to start quickly, choose these abilities: Punishing Counter, Rage Hit, Spit Flame, Bodycover, Rub Some Dirt on It!, and Size Up.</p>
@@ -4109,11 +3986,8 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 <p>Each Augmerc learning path lists a Signature Augment—a common piece of cyberware that enables the techniques within that path.</p>
 <p>You do not need to track these implants as separate equipment unless the Dream Master decides damage, upgrades, or removal become part of the story. Without the implants, the Augmerc spends 1 extra AP to activate the paths abilities.</p>
 <p>They are simply part of what makes an Augmerc dangerous.</p>
-</div>
-<div class="dc-specialty-art">
-<p class="dc-img-wrapper"><img src="https://placehold.co/600x800/1a1512/cc3399/png?text=AUGMERC" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/600x800/1a1512/cc3399/png?text=AUGMERC)" data-gp-source-occurrence="0"></p>
-</div>
-<div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
+</div><div class="dc-specialty-art" data-source-range="30:31"><p class="dc-img-wrapper"><img src="https://placehold.co/600x800/1a1512/cc3399/png?text=AUGMERC" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/600x800/1a1512/cc3399/png?text=AUGMERC)" data-gp-source-occurrence="0"></p>
+</div><div class="dc-learning-path dc-path-block" data-path-ref="AUG1">
 <div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
@@ -4364,16 +4238,12 @@ The streets look solid, but they shift like a glitch in a hallucination—half a
 <p>No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite back.</p>
 </div><div class="section gp-columns-2 dc-column-panel" data-source-range="104:105"><h3>Lucid &amp; Surreal</h3>
 <p>Some abilities shift your odds.</p>
-<div class="dc-prose-panel dc-definition-block">
-<h4>Lucid</h4>
+<div class="dc-prose-panel dc-definition-block" data-source-range="110:111"><h4>Lucid</h4>
 <p>Roll 2d20, take the higher. You’re sharp, aligned, in control. When you roll a 20 in the dream, your next roll is Lucid!</p>
-</div>
-<div class="gp-column-break" aria-hidden="true" data-source-range="118:119"></div>
-<div class="dc-prose-panel dc-definition-block">
-<h4>Surreal</h4>
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="118:119"></div>
+<div class="dc-prose-panel dc-definition-block" data-source-range="120:121"><h4>Surreal</h4>
 <p>Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.</p>
-</div>
-</div><div class="section" data-source-range="130:131"><h3>Augment Points</h3>
+</div></div><div class="section" data-source-range="130:131"><h3>Augment Points</h3>
 <p><strong>AP</strong> is your push. Your burn. Your “I’m doing this anyway.”</p>
 <p>If an ability lists an AP cost, you spend it and the effect happens. No charge-up. No waiting.</p>
 <ul>
@@ -4708,55 +4578,39 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
 <hr data-source-range="79:80">
 <h2>Example Gear Entries</h2>
 <div class="section gp-columns-2 dc-column-panel" data-source-range="83:84"><h3>Useful Items</h3>
-<div class="dc-card dc-gear">
-<h3>Shadowbit Token</h3>
+<div class="dc-card dc-gear" data-source-range="87:88"><h3>Shadowbit Token</h3>
 <p><em>Untraceable blockchain chip. The city’s off-book currency.</em></p>
 <p><strong>20–500 DC · Nil</strong></p>
 <p>Encrypted Dream Credits chip. Completely anonymous. If you can’t pay clean, pay with one of these.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>Patchkit</h3>
+</div><div class="dc-card dc-gear" data-source-range="98:99"><h3>Patchkit</h3>
 <p><em>Combat field dressing. Seal it, move on.</em></p>
 <p><strong>80 DC · 0.5 kg</strong></p>
 <p>Restores 2 HP when used as an action. Sterile enough. Nothing fancy.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>Signal Jammer</h3>
+</div><div class="dc-card dc-gear" data-source-range="109:110"><h3>Signal Jammer</h3>
 <p><em>Dead air on demand. No comms, no coordination.</em></p>
 <p><strong>200 DC · 1 kg</strong></p>
 <p>Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>Breaching Charge</h3>
+</div><div class="dc-card dc-gear" data-source-range="120:121"><h3>Breaching Charge</h3>
 <p><em>Knock knock.</em></p>
 <p><strong>350 DC · 2 kg</strong></p>
 <p>Destroys standard doors, locks, and light barriers. Very loud. Single use. Don’t stand in front of it.</p>
-</div>
-</div><div class="gp-page-break" aria-hidden="true" data-source-range="133:134"></div>
+</div></div><div class="gp-page-break" aria-hidden="true" data-source-range="133:134"></div>
 <div class="section gp-columns-2 dc-column-panel" data-source-range="135:136"><h3>Common Cybernetics</h3>
-<div class="dc-card dc-gear">
-<h3>UniArm 100</h3>
+<div class="dc-card dc-gear" data-source-range="139:140"><h3>UniArm 100</h3>
 <p><em>Cybernetic arm. Street grade. Reliable.</em></p>
 <p><strong>1 EP · Cybersurgeon installation required</strong></p>
 <p>Full arm functionality. +1 to Reach attacks. Comes in matte black or brushed chrome.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>RedEye Optical</h3>
+</div><div class="dc-card dc-gear" data-source-range="150:151"><h3>RedEye Optical</h3>
 <p><em>See in the dark. See far. See everything.</em></p>
 <p><strong>1 EP · Cybersurgeon installation required</strong></p>
 <p>Enhanced optical implant. Night vision + zoom to Far range. Compatible with targeting overlays.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>Neurolink Mk2</h3>
+</div><div class="dc-card dc-gear" data-source-range="161:162"><h3>Neurolink Mk2</h3>
 <p><em>Jack in. The city’s yours.</em></p>
 <p><strong>2 EP · Cybersurgeon installation required</strong></p>
 <p>Neural interface chip. Connect to digital systems at Near range. Required for most high-tier augments.</p>
-</div>
-<div class="dc-card dc-gear">
-<h3>Reflex Accel­erator</h3>
+</div><div class="dc-card dc-gear" data-source-range="172:173"><h3>Reflex Accel­erator</h3>
 <p><em>You move before they think.</em></p>
 <p><strong>3 EP · Cybersurgeon installation required</strong></p>
 <p>Combat processor wired into your nervous system. +1 AP per round. Cannot be Stunned. High EP cost — you’ll feel it.</p>
-</div>
-</div></div></div>"
+</div></div></div></div>"
 `;
