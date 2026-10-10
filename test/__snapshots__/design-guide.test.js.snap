@@ -1145,8 +1145,7 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-outcomes">
-  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="244:245">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome. You do it, and the moment breaks your way.</span>
@@ -1167,8 +1166,7 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div>
-</div>
+</div></div>
 <p>Tokens: <code>--dc-outcomes-surface</code>, <code>--dc-outcomes-border</code>, <code>--dc-outcomes-label-bg</code>, <code>--dc-outcomes-label-color</code>, <code>--dc-outcome-key-color</code>, <code>--dc-outcome-name-color</code>.</p>
 <h2>Card</h2>
 <p>A choice card: heading, body, and a closing quote that becomes the card’s footer. Wrap a run of cards in <code>@flaws</code>, <code>@ideals</code>, or <code>@dreams</code> to color the accent for that step of character creation.</p>
@@ -1188,28 +1186,24 @@ You chase instant gratification without weighing the consequences. The city alwa
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-flaws" data-source-range="283:284"><div class="dc-card">
-<div class="dc-card-body">
+<div class="section dc-flaws" data-source-range="283:284"><div class="dc-card" data-source-range="285:286"><div class="dc-card-body">
 <h3>Addictive Personality</h3>
 <p>You chase instant gratification without weighing the consequences. The city always has one more hit on offer.</p>
 <blockquote class="dc-card-footer">
 <p data-source-range="291:292">“Just one more, and then I’ll quit.”</p>
 </blockquote>
 </div>
-</div>
-</div></div>
+</div></div></div>
 <p>The same card under <code>.dc-ideals</code> takes the ideal accent:</p>
 <div class="dg-stage">
-<div class="section dc-ideals" data-source-range="303:304"><div class="dc-card">
-<div class="dc-card-body">
+<div class="section dc-ideals" data-source-range="303:304"><div class="dc-card" data-source-range="305:306"><div class="dc-card-body">
 <h3>Honor</h3>
 <p>You believe in a code, and upholding it is your duty no matter the cost.</p>
 <blockquote class="dc-card-footer">
 <p data-source-range="311:312">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
 </blockquote>
 </div>
-</div>
-</div></div>
+</div></div></div>
 <h2>Gear</h2>
 <p>An item entry: a display-face name, an italic tagline of tags, then the mechanics. Separate entries with <code>---</code>.</p>
 <pre><code class="dg-split language-markdown" data-source-range="323:346">@gear
@@ -3428,39 +3422,32 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Choice cards</h2>
 <p><code>@card</code> inside <code>@flaws</code>, <code>@ideals</code> or <code>@dreams</code>.</p>
 <div class="dg-stage">
-<div class="section dc-flaws" data-source-range="952:953"><div class="dc-card">
-<div class="dc-card-body">
+<div class="section dc-flaws" data-source-range="952:953"><div class="dc-card" data-source-range="954:955"><div class="dc-card-body">
 <h3>Addictive Personality</h3>
 <p>You chase instant gratification without weighing the consequences.</p>
 <blockquote class="dc-card-footer">
 <p data-source-range="960:961">“Just one more, and then I’ll quit.”</p>
 </blockquote>
 </div>
-</div>
-</div><div class="section dc-ideals" data-source-range="966:967"><div class="dc-card">
-<div class="dc-card-body">
+</div></div><div class="section dc-ideals" data-source-range="966:967"><div class="dc-card" data-source-range="968:969"><div class="dc-card-body">
 <h3>Honor</h3>
 <p>You believe in a code, and upholding it is your duty no matter the cost.</p>
 <blockquote class="dc-card-footer">
 <p data-source-range="974:975">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
 </blockquote>
 </div>
-</div>
-</div><div class="section dc-dreams" data-source-range="980:981"><div class="dc-card">
-<div class="dc-card-body">
+</div></div><div class="section dc-dreams" data-source-range="980:981"><div class="dc-card" data-source-range="982:983"><div class="dc-card-body">
 <h3>Settle a Score</h3>
 <p>Settle a score from my past. Your Drive should pull you toward trouble, hard choices, and things worth risking your hide for.</p>
 <blockquote class="dc-card-footer">
 <p data-source-range="988:989">If chasing it can’t change you, it ain’t big enough.</p>
 </blockquote>
 </div>
-</div>
-</div></div>
+</div></div></div>
 <h2>Outcome ladder</h2>
 <p><code>@outcome</code>, then <code>@outcome flush</code>. <code>flush</code> removes the ladder’s outer margin, so the difference is the spacing around it, not the ladder itself.</p>
 <div class="dg-stage">
-<div class="dc-outcomes">
-  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="1002:1003">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -3481,9 +3468,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div>
-<div class="dc-outcomes dc-flush">
-  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="1012:1013">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -3504,8 +3489,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div>
-</div>
+</div></div>
 <h2>Tape</h2>
 <p><code>@tape label=&quot;…&quot;</code>, then the raw form with <code>.dc-flush</code>, which removes the tape’s outer margin.</p>
 <div class="dg-stage">
@@ -3928,6 +3912,7 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
   <li><span class="dc-step-no">04</span><span>The result determines what happens next.</span></li>
   <li><span class="dc-step-no">05</span><span>The scene evolves and the Dream continues.</span></li>
 </ol>
+
 <p>Everything in this chapter exists to support that loop. Abilities bend it. Dice decide it. Dreamers drive it. The Monoverse responds.</p>
 </div><div class="section" data-source-range="245:246"><h3>What Comes Next</h3>
 <p>The next chapter walks through what each specialty actually does at the table — the abilities, the augmentations, the rituals, the way each one breaks the laws of a city that wants you breaking them anyway. Read your pick first. Then read the others. Specialties don’t stand alone in Dimm City; the crews that survive are the ones whose specialties chew off each other’s edges.</p>
@@ -4140,6 +4125,7 @@ Never fight clean. Fight to finish.</p>
   <li><span class="dc-step-no">02</span><span><strong>Need</strong> — the Dreamer attempted something outside their specialty and succeeded by improvising</span></li>
   <li><span class="dc-step-no">03</span><span><strong>Commitment</strong> — the Dreamer actively seeks out the knowledge (spends downtime, finds a teacher, risks something to learn it)</span></li>
 </ol>
+
 <p>All three should be present. One alone is a coincidence. Three is a turning point.</p>
 <p>A Dreamer who trains with an Augmerc but never fights should not gain Augmerc abilities. A Dreamer who picks up a skill mid-combat without context should not retain it. The city teaches the desperate, not the curious.</p>
 </div><div class="dc-alert dc-dm-note">
@@ -4257,8 +4243,7 @@ The streets look solid, but they shift like a glitch in a hallucination—half a
 <p>On a success, the condition ends. Conditions usually end when the encounter ends, unless the effect specifies otherwise. In unclear situations, it’s DM’s call.</p>
 </div>
 </div><div class="section" data-source-range="170:171"><h3>Rolling the Die — Full Outcome Ladder</h3>
-<div class="dc-outcomes">
-  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="174:175">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome, extra impact</span>
@@ -4279,8 +4264,7 @@ The streets look solid, but they shift like a glitch in a hallucination—half a
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse</span>
   </div>
-</div>
-<h3>Distance Tags</h3>
+</div><h3>Distance Tags</h3>
 <p>Most abilities specify which distances they work at. <strong>Reach</strong> means adjacent — close enough to touch. <strong>Near</strong> means the same room or line of sight. <strong>Far</strong> means across a street or a different room. When in doubt, ask if you could throw something at it and hit — that’s Near.</p>
 </div></div></div>"
 `;
@@ -4438,6 +4422,7 @@ Master — Medium</p>
   <li><span class="dc-step-no">02</span><span><strong>Changes the environment</strong> — Undertow in a flood district isn’t just dangerous, they’re regenerating while you’re slowing down</span></li>
   <li><span class="dc-step-no">03</span><span><strong>Rewards specific counters</strong> — a Patchhead mob with Bloodlust rewards hitting hard fast; a Grease Monkey rewards disrupting their tech before they rig the battlefield</span></li>
 </ol>
+
 <p>Equipment and Cybernetics add texture and loot. They don’t need to be tracked unless the DM decides they matter to the story.</p>
 </div><hr data-source-range="207:208">
 <div class="section" data-source-range="209:210"><h3>Quick NPC Builder</h3>
@@ -4494,8 +4479,7 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
 <p data-source-range="45:46">How many implants 'til your brain bluescreens for good?</p>
 </blockquote>
 <p>PCs start clean with 0 EP. But every aug you bolt on scrapes at your mind, tugs at your guts, and dials up the system errors. Ten is the cap—go past it, and your character crashes. Full body-hack burnout.</p>
-</div><div class="dc-outcomes">
-  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes" data-source-range="51:52">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Slim chance of control issues</span><span class="dc-outcome-roll">1–2</span></span>
     <span class="dc-outcome-text">SysChk 6–7</span>
@@ -4516,8 +4500,7 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Extreme instability, system failures likely</span><span class="dc-outcome-roll">9–10</span></span>
     <span class="dc-outcome-text">SysChk 15–20</span>
   </div>
-</div>
-<div class="dc-alert dc-note">
+</div><div class="dc-alert dc-note">
 <span class="dc-alert-label">Cybersuck</span>
 <p>Specialties relying on arcane forces are adversely affected by implant Ego. If you’re a Proxy, Gutterdruid, or Etherlock, every Ego Point above 2 makes it harder to use your abilities: <strong>+1 AP cost for every point of EP beyond 2.</strong></p>
 <p>Example: With 4 EP, your abilities cost +2 AP more to activate. Technosorcerers are exempt—they’ve already sold their soul to the static. But even they risk system overload and are still subject to <code>SysChk</code> rolls.</p>

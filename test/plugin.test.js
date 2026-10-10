@@ -161,7 +161,7 @@ describe("behaviour carried from the book repo", () => {
     const outcomeMacro = ["@outcome", "20 | Triumph | **ROLL THE DIE!** but not `ROLL THE DIE!`.", "@end-outcome"].join("\n");
 
     const outcomeHtml = renderGp(outcomeTable).html;
-    const macroHtml = createMarkdown().render(outcomeMacro);
+    const macroHtml = renderGp(outcomeMacro).html;
 
     expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
     expect(outcomeHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
@@ -204,8 +204,8 @@ describe("behaviour carried from the book repo", () => {
     const singleFooter = ["@card .dc-flaws", "", "#### Title", "", "> Pull quote", "", "Body paragraph.", "", "> Footer blockquote", "", "@end-card"].join("\n");
     const twoBodyBlockquotes = ["@card", "", "#### Title", "", "> Pull quote", "", "> Not the footer", "", "> The real footer", "", "@end-card"].join("\n");
 
-    const singleHtml = createMarkdown().render(singleFooter);
-    const twoHtml = createMarkdown().render(twoBodyBlockquotes);
+    const singleHtml = renderGp(singleFooter).html;
+    const twoHtml = renderGp(twoBodyBlockquotes).html;
 
     // The pull quote (first blockquote, before the body opens) renders as a
     // plain .dc-card-pull div, so it is never a footer candidate.
@@ -243,7 +243,7 @@ describe("declared wrapper markers", () => {
       glossary: "dc-terms",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill"]; // declared too, but their content is rewritten: see the next describe block
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
@@ -625,5 +625,206 @@ describe("declared specialty, learning path and skill", () => {
     const html = createMarkdown().render(doc("@specialty .augmerc", "", "@skill", "", card("A")));
     expect(html).toContain("@specialty .augmerc");
     expect(html).not.toContain("dc-skill-card");
+  });
+});
+
+// @card, @outcome and @procedure are declared the same way: core opens, nests
+// and closes them, and ordinary core rules rewrite what sits inside.
+describe("declared card, outcome and procedure", () => {
+  const doc = (...lines) => lines.join("\n");
+  const count = (html, re) => (html.match(re) ?? []).length;
+  /** Markup only: core writes no newline after a component's tags. */
+  const squash = (html) => html.replace(/>\s+</g, "><").trim();
+  const types = (warnings) => warnings.map((w) => w.type);
+  const problems = (src) => renderGp(src).warnings.filter((w) => w.type === "component_invalid");
+  const skill = (...inside) => doc("@skill", "", "#### Skill | T1", "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", "", ...inside);
+
+  describe("@card", () => {
+    const body = ["#### Title", "", "> Pull *quote*", "", "Body.", "", "> Footer", ""];
+
+    test("heading, pull quote, body and footer", () => {
+      const { html, warnings } = renderGp(doc("@card", "", ...body, "@end-card"));
+      expect(squash(html)).toBe(
+        '<div class="dc-card"><div class="dc-card-heading">Title</div>' +
+          '<div class="dc-card-pull">Pull <em>quote</em></div>' +
+          '<div class="dc-card-body"><p>Body.</p><blockquote class="dc-card-footer"><p>Footer</p></blockquote></div></div>',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    test("the classes, id and attributes a card could always take", () => {
+      for (const open of ["@card .dc-flaws .wide", "@card {.dc-flaws .wide}", "@card class=dc-flaws,wide"]) {
+        expect(renderGp(doc(open, "", "x", "", "@end-card")).html, open).toContain('<div class="dc-card dc-flaws wide">');
+      }
+      expect(renderGp(doc("@card #pick data-tone=red", "", "x", "", "@end-card")).html).toContain('<div class="dc-card" id="pick" data-tone="red">');
+    });
+
+    test("a card with only a heading has no body; one with no #### heading is all body", () => {
+      expect(squash(renderGp(doc("@card", "", "#### Only", "", "@end-card")).html)).toBe('<div class="dc-card"><div class="dc-card-heading">Only</div></div>');
+      expect(squash(renderGp(doc("@card", "", "### Not an h4", "", "Text.", "", "@end-card")).html)).toBe('<div class="dc-card"><div class="dc-card-body"><h3>Not an h4</h3><p>Text.</p></div></div>');
+    });
+
+    test("an @end-card straight under a quote is a closer, not part of the quote", () => {
+      const { html, warnings } = renderGp(doc("@card", "", "#### T", "", "> pull", "", "Body", "", "> footer", "@end-card", "", "after"));
+      expect(html).toContain('<blockquote class="dc-card-footer">');
+      expect(html).not.toContain("@end-card");
+      expect(squash(html)).toMatch(/<\/blockquote><\/div><\/div><p>after<\/p>$/);
+      expect(warnings).toEqual([]);
+    });
+
+    test("a new @card closes the one before it; one left open closes at the end of the document without a warning", () => {
+      const { html, warnings } = renderGp(doc("@card", "", "#### One", "", "@card", "", "#### Two"));
+      expect(squash(html)).toBe('<div class="dc-card"><div class="dc-card-heading">One</div></div><div class="dc-card"><div class="dc-card-heading">Two</div></div>');
+      expect(warnings).toEqual([]);
+    });
+
+    test("a stray @end-card warns", () => {
+      expect(types(renderGp("@end-card").warnings)).toEqual(["declared_marker_close_without_open"]);
+    });
+
+    test("a card after a skill's card stays inside it, and its own #### is not a new skill card", () => {
+      const { html } = renderGp(skill("@card", "", ...body, "@end-card"));
+      expect(count(html, /class="dc-skill-card/g)).toBe(1);
+      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-card"><div class="dc-card-heading">Title<\/div>[\s\S]*dc-card-body[\s\S]*(<\/div>\s*){4}$/);
+      expect(count(html, /<div[\s>]/g)).toBe(count(html, /<\/div>/g));
+    });
+  });
+
+  describe("@outcome", () => {
+    const rows = ["20 | Triumph | Best **case**.", "11–19 | Success | You do it.", "6–10 | Hard Choice | It costs.", "2–5 | Failure | Nope.", "1 | Catastrophe | Worse."];
+
+    test("one row per line, coloured by position, with the label bar", () => {
+      const { html, warnings } = renderGp(doc("@outcome", "", ...rows, "", "@end-outcome"));
+      expect(html).toContain('<div class="dc-outcomes">');
+      expect(html).toContain('<div class="dc-outcomes-label">Outcomes</div>');
+      expect([...html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1])).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+      expect([...html.matchAll(/dc-outcome-name">([^<]*)</g)].map((m) => m[1])).toEqual(["Triumph", "Success", "Hard Choice", "Failure", "Catastrophe"]);
+      expect([...html.matchAll(/dc-outcome-roll">([^<]*)</g)].map((m) => m[1])).toEqual(["20", "11–19", "6–10", "2–5", "1"]);
+      expect(html).toContain('<span class="dc-outcome-text">Best <strong>case</strong>.</span>');
+      expect(warnings).toEqual([]);
+    });
+
+    test("a sixth row is a plain hit; rows in separate paragraphs and the compact form read the same", () => {
+      const six = renderGp(doc("@outcome", "", ...rows, "0 | Extra | More.", "", "@end-outcome")).html;
+      expect([...six.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1]).at(-1)).toBe("hit");
+      const apart = renderGp(doc("@outcome", "", "20 | A | one", "", "1 | B | two", "", "@end-outcome"));
+      const compact = renderGp(doc("@outcome", "20 | A | one", "", "1 | B | two", "@end-outcome"));
+      expect(squash(compact.html)).toBe(squash(apart.html));
+      expect(count(apart.html, /dc-outcome-row/g)).toBe(2);
+      expect(compact.warnings).toEqual([]);
+    });
+
+    test("flush, and any class, ride on the wrapper", () => {
+      for (const open of ["@outcome flush", "@outcome .flush-me .dc-flush", "@outcome {.dc-flush}"]) {
+        expect(renderGp(doc(open, "", "20 | A | x", "", "@end-outcome")).html, open).toMatch(/<div class="dc-outcomes [^"]*dc-flush/);
+      }
+      expect(renderGp(doc("@outcome", "", "20 | A | x", "", "@end-outcome")).html).not.toContain("dc-flush");
+    });
+
+    test("an outcome table in a skill card and an @outcome in it sit side by side in the card", () => {
+      const table = ["| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |"];
+      const { html } = renderGp(skill(...table, "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
+      expect(count(html, /class="dc-skill-card/g)).toBe(1);
+      expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
+      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+    });
+
+    test("one left open at the end of the document warns, with core's own message", () => {
+      const { warnings } = renderGp(doc("@outcome", "", "20 | A | x"));
+      expect(types(warnings)).toEqual(["declared_marker_eof_close"]);
+      expect(warnings[0].message).toMatch(/^An open @outcome reached end-of-document/);
+    });
+
+    test("a stray @end-outcome warns", () => {
+      expect(types(renderGp("@end-outcome").warnings)).toEqual(["declared_marker_close_without_open"]);
+    });
+
+    describe("validate", () => {
+      test("a well-formed ladder reports nothing", () => {
+        expect(problems(doc("@outcome", "", ...rows, "", "@end-outcome"))).toEqual([]);
+      });
+
+      test("a line that is not roll | name | text is one problem, at its own line", () => {
+        const found = problems(doc("@outcome", "", "20 | Crit | Yes.", "11 Hit You do it", "1 | Fumble", "", "@end-outcome"));
+        expect(found.map((p) => p.line)).toEqual([4, 5]);
+        expect(found[0].message).toBe('@outcome: "11 Hit You do it" is not a row. Write each one as `roll | name | text`, for example `20 | Crit | You flow.`');
+      });
+
+      test("anything but rows (a table, a list, a heading) is reported once and left out", () => {
+        const found = problems(doc("@outcome", "", "20 | Crit | Yes.", "", "| Roll | Outcome |", "| --- | --- |", "| 1 | Boom |", "", "- stray", "", "@end-outcome"));
+        expect(found.map((p) => p.message)).toEqual([
+          "@outcome: Only lines written as `roll | name | text` are used here, so this table is left out.",
+          "@outcome: Only lines written as `roll | name | text` are used here, so this list is left out.",
+        ]);
+        const html = renderGp(doc("@outcome", "", "20 | Crit | Yes.", "", "- stray", "", "@end-outcome")).html;
+        expect(count(html, /dc-outcome-row/g)).toBe(1);
+      });
+
+      test("an outcome with nothing in it says so", () => {
+        const found = problems(doc("@outcome", "", "@end-outcome"));
+        expect(found).toHaveLength(1);
+        expect(found[0].message).toBe("@outcome: This outcome has no rows. Add one `roll | name | text` line per result.");
+      });
+    });
+  });
+
+  describe("@procedure", () => {
+    test("a numbered list becomes the zero-padded step list, with no wrapper of its own", () => {
+      const { html, warnings } = renderGp(doc("@procedure", "", "1. First *step*.", "2. Second step.", "", "@end-procedure"));
+      expect(squash(html)).toBe(
+        '<ol class="dc-steps"><li><span class="dc-step-no">01</span><span>First <em>step</em>.</span></li>' +
+          '<li><span class="dc-step-no">02</span><span>Second step.</span></li></ol>',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    test("an @end-procedure straight under the last step closes it, so later lists are left alone", () => {
+      const { html, warnings } = renderGp(doc("@procedure", "", "1. One", "2. Two", "@end-procedure", "", "1. Plain", "2. List"));
+      expect(count(html, /class="dc-steps"/g)).toBe(1);
+      expect(html).not.toContain("@end-procedure");
+      expect(html).toMatch(/<\/ol>\s*<ol>\s*<li>Plain<\/li>/);
+      expect(warnings).toEqual([]);
+    });
+
+    test("one left open at the end of the document warns, with core's own message", () => {
+      const { warnings } = renderGp(doc("@procedure", "", "1. One"));
+      expect(types(warnings)).toEqual(["declared_marker_eof_close"]);
+      expect(warnings[0].message).toMatch(/^An open @procedure reached end-of-document/);
+    });
+
+    test("a stray @end-procedure warns", () => {
+      expect(types(renderGp("@end-procedure").warnings)).toEqual(["declared_marker_close_without_open"]);
+    });
+
+    test("inside a skill's card it stays in the card", () => {
+      const { html } = renderGp(skill("@procedure", "", "1. One", "", "@end-procedure"));
+      expect(count(html, /class="dc-skill-card/g)).toBe(1);
+      expect(html).toMatch(/dc-card-inner">[\s\S]*<ol class="dc-steps">[\s\S]*<\/ol>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
+    });
+
+    test("inside a hand-written @callout it nests there, and the callout closes at its own @end-callout", () => {
+      const src = doc("@callout variant=note", "", "Before.", "", "@procedure", "", "1. One", "2. Two", "@end-procedure", "", "After.", "", "@end-callout", "", "Outside.");
+      const { html, warnings } = renderGp(src);
+      expect(squash(html)).toMatch(/dc-alert dc-note"><span[^>]*>Note<\/span><p>Before\.<\/p><ol class="dc-steps">.*<\/ol><p>After\.<\/p><\/div><p>Outside\.<\/p>$/);
+      expect(warnings).toEqual([]);
+    });
+
+    describe("validate", () => {
+      test("a procedure with a numbered list reports nothing", () => {
+        expect(problems(doc("@procedure", "", "Intro.", "", "1. One", "", "@end-procedure"))).toEqual([]);
+      });
+
+      test("a procedure with no numbered list is one problem (a bullet list does not count)", () => {
+        const message = "@procedure: It has no numbered list, so no steps are drawn. Write the steps as `1.`, `2.`, `3.` between @procedure and @end-procedure.";
+        expect(problems(doc("@procedure", "", "- a", "- b", "", "@end-procedure")).map((p) => [p.line, p.message])).toEqual([[1, message]]);
+        expect(problems(doc("x", "", "@procedure", "", "Just text.", "", "@end-procedure")).map((p) => p.line)).toEqual([3]);
+      });
+    });
+  });
+
+  test("a bare markdown-it instance leaves the three markers as text (declared markers are a Gutterpress feature)", () => {
+    const html = createMarkdown().render(doc("@procedure", "", "1. One", "", "@end-procedure"));
+    expect(html).toContain("@procedure");
+    expect(html).not.toContain("dc-steps");
   });
 });

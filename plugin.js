@@ -30,22 +30,27 @@
  *   @learning-path       → div.dc-learning-path.dc-path-block[data-path-ref]
  *                          > div.dc-path-shell (title, subtitle, stickers) + skills
  *   @skill               → one div.dc-skill-card per `####` heading
+ *   @card                → div.dc-card > .dc-card-heading (first ####),
+ *                          .dc-card-pull (a quote right after it), .dc-card-body
+ *                          (the rest; its last blockquote is .dc-card-footer)
+ *   @outcome [flush]     → div.dc-outcomes[.dc-flush]: the d20 ladder, one row
+ *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
+ *   @procedure           → ol.dc-steps: each numbered list inside becomes the
+ *                          zero-padded step list (the wrapper renders nothing)
  *   Core's nesting rule is the only one: a declared marker that is already
  *   open is closed (with everything inside it) when it opens again;
  *   `@end-<name>` closes that marker and what is inside it; `@page`,
  *   `@section`, `@chapter` and `@continue` close them all. The structure
- *   rules (a skill belongs in a path, a path in a specialty) are the
- *   plugin's: validateSpecialty / validateSkill.
+ *   rules (a skill belongs in a path, a path in a specialty, an outcome is
+ *   made of rows, a procedure of a numbered list) are the plugin's:
+ *   the `validate` of each declaration.
  *
  * HAND-WRITTEN MARKERS (support optional key="value" attributes; handled by
- * the dimm_city_transform state machine below):
- *   @procedure          → Start a dc-steps procedure wrapper
- *   @end-procedure      → End procedure wrapper (auto-closes on EOF with a warning)
+ * the dimm_city_transform below):
  *   @callout            → Start a dc-alert callout (variant=note|warning|dm|vibe|origin|visit|gear)
  *   @end-callout        → End callout wrapper
  *   @dm-note            → Start a Dream Master note (sugar for @callout variant=dm)
  *   @end-dm-note        → End dm-note wrapper
- *   @card / @end-card   → Generic card primitive
  *   @continue           → Continuation marker — inside a skill's card it emits a
  *                          card with a "{name} ▸" tab so an oversized skill card
  *                          can be split across pages while keeping a visible link
@@ -53,8 +58,6 @@
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
- *   @outcome            → 5-rung d20 outcome ladder block
- *   @end-outcome
  *   @tape               → Inline tape divider (`<div class="dc-tape">— § —</div>`)
  *
  * GFM ALERT SYNTAX:
@@ -139,30 +142,12 @@ function makeToken(type, content, nesting) {
   };
 }
 
-// Add/remove one class on a token's existing `class` attribute without
-// disturbing any other class already there. Used to tag the LAST blockquote
-// in a @card body as `.dc-card-footer` (dc#44): the plugin sees each body
-// blockquote as it streams past and has no lookahead, so it tags the
-// current one and untags whichever one it previously tagged — the tag
-// only ever sits on the most recently seen blockquote, which is exactly
-// the one `blockquote:last-of-type` will match once the card closes.
+// Add one class to a token's existing `class` attribute, keeping the others.
 function addTokenClass(tok, cls) {
   const current = (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
   if (!current.includes(cls)) {
     current.push(cls);
     tok.attrSet('class', current.join(' '));
-  }
-}
-
-function removeTokenClass(tok, cls) {
-  const current = (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
-  const next = current.filter((c) => c !== cls);
-  if (next.length === current.length) return;
-  if (next.length) {
-    tok.attrSet('class', next.join(' '));
-  } else {
-    const idx = tok.attrIndex('class');
-    if (idx >= 0) tok.attrs.splice(idx, 1);
   }
 }
 
@@ -329,6 +314,19 @@ function renderInlineChildren(inlineTok, md) {
   return md.renderer.render(inlineTok.children, md.options, {});
 }
 
+// The blockquote opening at tokens[i], as rendered text (the last paragraph in
+// it, the way every component that turns a quote into a line has always read
+// it), and the index of its close.
+function quoteHtml(tokens, i, md) {
+  let html = '';
+  let end = i + 1;
+  while (end < tokens.length && tokens[end].type !== 'blockquote_close') {
+    if (tokens[end].type === 'inline') html = renderInlineChildren(tokens[end], md);
+    end++;
+  }
+  return { html, end };
+}
+
 function collectTableTokens(tokens, start) {
   const result = [];
   let depth = 0;
@@ -385,6 +383,23 @@ function getRollTier(text) {
   return 'hit';
 }
 
+const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
+const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
+
+// The ladder's label bar and one row per `{ tier, name, roll, text }`; `text`
+// is markdown, so **bold** and ROLL THE DIE! render as they do anywhere else.
+function outcomeRowsHtml(rows, md) {
+  let html = '  <div class="dc-outcomes-label">Outcomes</div>\n';
+  rows.forEach(({ tier, name, roll, text }) => {
+    html += '  <div class="dc-outcome-row ' + tier + '">\n';
+    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll) + '</span></span>\n';
+    html += '    <span class="dc-outcome-text">' + md.renderInline(text) + '</span>\n';
+    html += '  </div>\n';
+  });
+  return html;
+}
+
+// A `| Roll | Outcome |` table in a skill card: tier and name come from the roll.
 function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // data-break-inside="avoid" is added when the parent card can be split (has
   // allow-split) — the polyfill needs this to keep the
@@ -394,34 +409,14 @@ function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // by splitting the card at the outcomes boundary, leaving a headless
   // card-body on one page and the outcomes-only continuation on the next.
   const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  let html = '<div class="dc-outcomes"' + avoidAttr + '>\n';
-  html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-
-  rows.forEach(row => {
-    if (row.length < 2) return;
-    const rollVal = row[0].trim();
-    const outcomeText = row[1].trim();
-    const tier = getRollTier(rollVal);
-
-    // Render markdown inline content (e.g., **bold**, *italic*)
-    const renderedOutcome = md.renderInline(outcomeText);
-
-    const outcomeNameMap = {
-      crit: 'Crit',
-      hit: 'Hit',
-      mixed: 'Hard Choice',
-      miss: 'Miss',
-      fail: 'Catastrophe',
-    };
-
-    html += '  <div class="dc-outcome-row ' + tier + '">\n';
-    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + outcomeNameMap[tier] + '</span><span class="dc-outcome-roll">' + esc(rollVal) + '</span></span>\n';
-    html += '    <span class="dc-outcome-text">' + renderedOutcome + '</span>\n';
-    html += '  </div>\n';
-  });
-
-  html += '</div>\n';
-  return html;
+  const ladder = rows
+    .filter((row) => row.length >= 2)
+    .map((row) => {
+      const roll = row[0].trim();
+      const tier = getRollTier(roll);
+      return { tier, name: OUTCOME_NAMES[tier], roll, text: row[1].trim() };
+    });
+  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(ladder, md) + '</div>\n';
 }
 
 function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
@@ -722,9 +717,7 @@ function buildProcedureList(items) {
   let html = '<ol class="dc-steps">\n';
   items.forEach((itemHtml, idx) => {
     const stepNo = String(idx + 1).padStart(2, '0');
-    // Strip @end-procedure if markdown-it consumed it as continuation of the last item
-    const cleaned = itemHtml.replace(/\n?@end-procedure\s*$/g, '').trimEnd();
-    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + cleaned + '</span></li>\n';
+    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + itemHtml.trimEnd() + '</span></li>\n';
   });
   html += '</ol>\n';
   return html;
@@ -919,14 +912,9 @@ function pathShell(tokens, ref, md) {
 
     // Blockquote after the title = subtitle.
     if (tok.type === 'blockquote_open' && titled) {
-      let bqContent = '';
-      let j = i + 1;
-      while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-        if (tokens[j].type === 'inline') bqContent = renderInlineChildren(tokens[j], md);
-        j++;
-      }
-      out.push(makeToken('html_block', '<div class="dc-intro">' + bqContent + '</div>\n'));
-      i = j;
+      const quote = quoteHtml(tokens, i, md);
+      out.push(makeToken('html_block', '<div class="dc-intro">' + quote.html + '</div>\n'));
+      i = quote.end;
       continue;
     }
 
@@ -1000,6 +988,7 @@ function dcSkillCards(state) {
     const out = [];
     const emit = (html) => out.push(makeToken('html_block', html));
     let inCard = false;
+    const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
     let title = { name: '', tier: '' }; // the current card's title, for @continue
 
     const cardOpen = (cont) => {
@@ -1058,8 +1047,15 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // A break or another component (@sidebar, @specialty-art, …) ends the card.
-      if (tok.type.startsWith('layout_')) endCard();
+      // A @card, @outcome or @procedure is content of the skill's card; a
+      // break or another component (@sidebar, @specialty-art, …) ends it.
+      if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
+        let end = i;
+        let depth = 0;
+        do depth += content[end++].nesting; while (depth > 0);
+        belongsToCard.add(tok).add(content[end - 1]);
+      }
+      if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
 
       if (!inCard) {
         out.push(tok);
@@ -1074,14 +1070,9 @@ function dcSkillCards(state) {
       }
 
       if (tok.type === 'blockquote_open') {
-        let bqContent = '';
-        let j = i + 1;
-        while (j < content.length && content[j].type !== 'blockquote_close') {
-          if (content[j].type === 'inline') bqContent = renderInlineChildren(content[j], md);
-          j++;
-        }
-        emit('<p class="dc-flavor">' + bqContent + '</p>\n');
-        i = j;
+        const quote = quoteHtml(content, i, md);
+        emit('<p class="dc-flavor">' + quote.html + '</p>\n');
+        i = quote.end;
         continue;
       }
 
@@ -1132,6 +1123,108 @@ function dcSkillCards(state) {
   });
 }
 
+// ── Declared components: @card, @outcome, @procedure ───────────────────────
+//
+// Declared in `markers` like the three above, rewritten by core rules that
+// run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
+// inside a skill must already be in its final form when the skill's rule
+// reads it. They stay inside the skill's card (see CARD_CONTENT).
+const CARD_CONTENT = new Set(['card', 'outcome', 'procedure']);
+
+/**
+ * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
+ * the first `####` becomes `.dc-card-heading`, a blockquote straight after it
+ * becomes `.dc-card-pull`, and everything else goes in `.dc-card-body`; the
+ * last blockquote in the body is tagged `.dc-card-footer` (dc#44). A card with
+ * nothing after its heading has no body.
+ */
+function dcCards(state) {
+  const md = state.md;
+  const html = (text) => makeToken('html_block', text);
+  forEachComponent(state.tokens, 'card', (run) => {
+    const out = [];
+    let headed = false;
+    let bodied = false;
+    let footer = null;
+    const openBody = () => {
+      if (!bodied) out.push(html('<div class="dc-card-body">\n'));
+      bodied = true;
+    };
+
+    const content = run.slice(1, -1);
+    for (let i = 0; i < content.length; i++) {
+      const tok = content[i];
+      if (tok.type === 'heading_open' && tok.tag === 'h4' && !headed) {
+        out.push(html('<div class="dc-card-heading">' + renderInlineChildren(content[i + 1], md) + '</div>\n'));
+        headed = true;
+        i += 2; // skip inline + heading_close
+        continue;
+      }
+      if (tok.type === 'blockquote_open' && headed && !bodied) {
+        const quote = quoteHtml(content, i, md);
+        out.push(html('<div class="dc-card-pull">' + quote.html + '</div>\n'));
+        openBody();
+        i = quote.end;
+        continue;
+      }
+      openBody();
+      if (tok.type === 'blockquote_open') footer = tok;
+      out.push(tok);
+    }
+    if (footer) addTokenClass(footer, 'dc-card-footer');
+    if (bodied) out.push(html('</div>\n'));
+    return [run[0], ...out, run[run.length - 1]];
+  });
+}
+
+/**
+ * `@outcome [flush]`: the wrapper is `div.dc-outcomes` (`flush` adds
+ * `.dc-flush`). Each `roll | name | text` line becomes a row, coloured by
+ * position: crit, hit, mixed, miss, fail.
+ */
+function dcOutcomes(state) {
+  forEachComponent(state.tokens, 'outcome', (run) => {
+    const lines = [];
+    let depth = 0;
+    for (let i = 1; i < run.length - 1; i++) {
+      // a row is a line of the outcome's own paragraphs; a list or heading in it is not
+      if (run[i].type === 'inline' && depth === 1 && run[i - 1].type === 'paragraph_open') lines.push(...run[i].content.split('\n'));
+      depth += run[i].nesting;
+    }
+    const rows = lines
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((line, i) => {
+        const [roll = '', name = '', text = ''] = line.split('|').map((cell) => cell.trim());
+        return { tier: OUTCOME_TIERS[i] || 'hit', name, roll, text };
+      });
+    return [run[0], makeToken('html_block', outcomeRowsHtml(rows, state.md)), run[run.length - 1]];
+  });
+}
+
+/**
+ * `@procedure`: every numbered list inside becomes the zero-padded step list
+ * (`ol.dc-steps`). The declared wrapper renders nothing itself: the list is
+ * the element, as it has always been.
+ */
+function dcProcedures(state) {
+  forEachComponent(state.tokens, 'procedure', (run) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    open.hidden = close.hidden = true;
+    const out = [];
+    for (let i = 1; i < run.length - 1; i++) {
+      if (run[i].type !== 'ordered_list_open') {
+        out.push(run[i]);
+        continue;
+      }
+      const { items, endIndex } = collectOrderedListItems(run, i, state.md);
+      if (items.length > 0) out.push(makeToken('html_block', buildProcedureList(items)));
+      i = endIndex;
+    }
+    return [open, ...out, close];
+  });
+}
+
 /**
  * Structure checks (core runs these on the declared markers below and reports
  * them as layout warnings). They are the plugin's rules, not core's: core
@@ -1161,6 +1254,38 @@ function validateSkill({ blocks }) {
         `This @${b.name} starts inside the skill above it, so it is nested in that skill's card. ` +
         `Close the skill with \`@end-skill\` before it.`,
     }));
+}
+
+function validateOutcome({ blocks }) {
+  const problems = [];
+  let rows = 0;
+  for (const block of blocks) {
+    if (block.type !== 'paragraph') {
+      problems.push({
+        line: block.line,
+        message: `Only lines written as \`roll | name | text\` are used here, so this ${block.type} is left out.`,
+      });
+      continue;
+    }
+    block.text.split('\n').forEach((raw, k) => {
+      const row = raw.trim();
+      if (!row || row.startsWith('#')) return;
+      rows++;
+      if (row.split('|').length < 3) {
+        problems.push({
+          line: block.line + k,
+          message: `"${row.length > 40 ? row.slice(0, 40) + '…' : row}" is not a row. Write each one as \`roll | name | text\`, for example \`20 | Crit | You flow.\``,
+        });
+      }
+    });
+  }
+  if (!rows && !problems.length) problems.push('This outcome has no rows. Add one `roll | name | text` line per result.');
+  return problems;
+}
+
+function validateProcedure({ blocks }) {
+  if (blocks.some((b) => b.type === 'list' && b.ordered)) return [];
+  return ['It has no numbered list, so no steps are drawn. Write the steps as `1.`, `2.`, `3.` between @procedure and @end-procedure.'];
 }
 
 /**
@@ -1204,53 +1329,19 @@ export default function dimmCityPlugin(md, options = {}) {
   // variant chrome, the chevron-styled h1) is provided by CSS attribute
   // selectors in components/*.css matching this structure.
 
-  // Transform tokens after parsing
-   md.core.ruler.push('dimm_city_transform', function (state) {
-     const tokens = state.tokens;
-     const newTokens = [];
+  // The hand-written markers that remain: @callout, @dm-note, @tape and the
+  // retired @roll-table / @options-table no-ops, plus the image-only paragraph class.
+  md.core.ruler.push('dimm_city_transform', function (state) {
+    const tokens = state.tokens;
+    const newTokens = [];
+    let inCallout = false;
+    let inDmNote = false;
 
-      // State tracking
-      let inOutcomeBlock = false;
-      let outcomeBlockItems = [];
-      let outcomeBlockFlush = false;
-      let inProcedure = false;
-      let inCallout = false;
-      let inDmNote = false;
-      let inCard = false;
-      let cardHeadingDone = false;
-      let cardPullDone = false;
-      let cardBodyOpen = false;
-      /* dc#44: the real markdown-it blockquote_open token most recently seen
-         inside the current @card's body — the candidate for `.dc-card-footer`.
-         Re-pointed every time a new body blockquote appears (see addTokenClass/
-         removeTokenClass below), so whichever one is open when the card closes
-         is the one CSS's own `blockquote:last-of-type` would have picked. */
-      let lastCardBodyBlockquote = null;
-
-    // Close whatever hand-written wrapper is open (card, callout, dm-note)
-    // before the next one starts. Skills, learning paths and specialties are
-    // declared markers: core opens, nests and closes them.
+    // A new @callout or @dm-note closes the one still open.
     function closeAll() {
-      if (inCard) {
-        if (cardBodyOpen) {
-          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
-          cardBodyOpen = false;
-        }
-        newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
-        inCard = false;
-        cardHeadingDone = false;
-        cardPullDone = false;
-        lastCardBodyBlockquote = null;
-      }
-      if (inCallout) {
-        newTokens.push(makeToken('html_block', '</div>\n'));
-        inCallout = false;
-      }
-      if (inDmNote) {
-        newTokens.push(makeToken('html_block', '</div>\n'));
-        inDmNote = false;
-      }
-      inProcedure = false;
+      if (inCallout) newTokens.push(makeToken('html_block', '</div>\n'));
+      if (inDmNote) newTokens.push(makeToken('html_block', '</div>\n'));
+      inCallout = inDmNote = false;
     }
 
     for (let i = 0; i < tokens.length; i++) {
@@ -1266,146 +1357,6 @@ export default function dimmCityPlugin(md, options = {}) {
           isMarker(tok, tokens, i, '@end-roll-table') ||
           isMarker(tok, tokens, i, '@options-table') ||
           isMarker(tok, tokens, i, '@end-options-table')) {
-        i += 2;
-        continue;
-      }
-
-      // --- @outcome / @end-outcome ---
-      // Collects pipe-separated rows and emits a styled dc-outcomes block.
-      // Syntax:
-      //   @outcome [flush]
-      //   20 | Crit | You flow. Automatic success — no roll needed.
-      //   11–19 | Hit | You succeed cleanly.
-      //   @end-outcome
-      // Row ordering determines tier class: crit, hit, mixed, miss, fail.
-      // Also handles the compact form where @outcome, rows, and @end-outcome
-      // are all in one paragraph block (no blank lines between them).
-      //
-      // The compact form arrives as ONE multi-line inline token, so it must
-      // fall through to the compact handler below. Without the multi-line
-      // guard `@outcome flush` + rows matches here (content starts with
-      // "@outcome ") and `i += 2` skips the whole inline — swallowing every
-      // row AND the inline @end-outcome, and leaving inOutcomeBlock stuck on.
-      const ocInline = tokens[i + 1];
-      const ocIsCompact = tok.type === 'paragraph_open' && ocInline
-        && ocInline.type === 'inline' && ocInline.content.indexOf('\n') !== -1;
-      if (!ocIsCompact && isMarker(tok, tokens, i, '@outcome')) {
-        inOutcomeBlock = true;
-        outcomeBlockItems = [];
-        // Check for flush modifier
-        const ocContent = ocInline ? ocInline.content.trim() : '';
-        outcomeBlockFlush = /\bflush\b/.test(ocContent.replace('@outcome', ''));
-        i += 2;
-        continue;
-      }
-
-      // Handle compact multiline @outcome block: all rows + @end-outcome in one paragraph
-      if (tok.type === 'paragraph_open' && !inOutcomeBlock) {
-        const inlineTok = tokens[i + 1];
-        if (inlineTok && inlineTok.type === 'inline') {
-          const firstLine = inlineTok.content.split('\n')[0].trim();
-          if (firstLine === '@outcome' || firstLine.startsWith('@outcome ')) {
-            // This is a compact outcome block — process all lines inline
-            inOutcomeBlock = false; // We'll handle it fully here
-            const isFlush = /\bflush\b/.test(firstLine.replace('@outcome', ''));
-            const rows = [];
-            const allLines = inlineTok.content.split('\n');
-            let inBlock = false;
-            for (const line of allLines) {
-              const trimmed = line.trim();
-              if (trimmed === '@outcome' || trimmed.startsWith('@outcome ')) { inBlock = true; continue; }
-              if (trimmed === '@end-outcome') { inBlock = false; continue; }
-              if (inBlock && trimmed && !trimmed.startsWith('#')) rows.push(trimmed);
-            }
-            if (rows.length > 0) {
-              const tierClasses = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-              const wrapperClass = 'dc-outcomes' + (isFlush ? ' dc-flush' : '');
-              let html = '<div class="' + wrapperClass + '">\n';
-              html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-              rows.forEach((line, idx) => {
-                const parts = line.split('|').map(s => s.trim());
-                const range = parts[0] || '';
-                const name  = parts[1] || '';
-                const desc  = parts[2] || '';
-                const tier  = tierClasses[idx] || 'hit';
-                html += '  <div class="dc-outcome-row ' + tier + '">\n';
-                html += '    <span class="dc-outcome-key tier-' + tier + '">';
-                html += '<span class="dc-outcome-name">' + esc(name) + '</span>';
-                html += '<span class="dc-outcome-roll">' + esc(range) + '</span>';
-                html += '</span>\n';
-                html += '    <span class="dc-outcome-text">' + md.renderInline(desc) + '</span>\n';
-                html += '  </div>\n';
-              });
-              html += '</div>\n';
-              newTokens.push(makeToken('html_block', html));
-              i += 2; // skip inline + paragraph_close
-              continue;
-            }
-          }
-        }
-      }
-
-      if (inOutcomeBlock) {
-        // Collect inline tokens (each inline contains one or more lines)
-        if (tok.type === 'inline') {
-          // Each inline token can have newlines — split into lines
-          const lines = tok.content.split('\n');
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed && !trimmed.startsWith('#')) {
-              outcomeBlockItems.push(trimmed);
-            }
-          }
-          continue;
-        }
-        // @end-outcome — emit the block
-        if (isMarker(tok, tokens, i, '@end-outcome')) {
-          inOutcomeBlock = false;
-          const tierClasses = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-          const wrapperClass = 'dc-outcomes' + (outcomeBlockFlush ? ' dc-flush' : '');
-          let html = '<div class="' + wrapperClass + '">\n';
-          html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-          outcomeBlockItems.forEach((line, idx) => {
-            const parts = line.split('|').map(s => s.trim());
-            const range = parts[0] || '';
-            const name  = parts[1] || '';
-            const desc  = parts[2] || '';
-            const tier  = tierClasses[idx] || 'hit';
-            html += '  <div class="dc-outcome-row ' + tier + '">\n';
-            html += '    <span class="dc-outcome-key tier-' + tier + '">';
-            html += '<span class="dc-outcome-name">' + esc(name) + '</span>';
-            html += '<span class="dc-outcome-roll">' + esc(range) + '</span>';
-            html += '</span>\n';
-            html += '    <span class="dc-outcome-text">' + md.renderInline(desc) + '</span>\n';
-            html += '  </div>\n';
-          });
-          html += '</div>\n';
-          newTokens.push(makeToken('html_block', html));
-          outcomeBlockItems = [];
-          i += 2;
-          continue;
-        }
-        // Skip paragraph open/close wrapper tokens — we only want inline content
-        if (tok.type === 'paragraph_open' || tok.type === 'paragraph_close') {
-          continue;
-        }
-        // Pass through anything else (shouldn't normally occur)
-        continue;
-      }
-
-      const procedureMarker = parseMarker(tok, tokens, i, '@procedure');
-      if (procedureMarker.matched) {
-        // @procedure auto-closes any prior open section so a forgotten
-        // @end-procedure can't strand the previous transform open. closeAll()
-        // also clears inProcedure, so set the flag AFTER closing.
-        closeAll();
-        inProcedure = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-procedure')) {
-        inProcedure = false;
         i += 2;
         continue;
       }
@@ -1440,10 +1391,8 @@ export default function dimmCityPlugin(md, options = {}) {
       }
 
       if (isMarker(tok, tokens, i, '@end-callout')) {
-        if (inCallout) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inCallout = false;
-        }
+        if (inCallout) newTokens.push(makeToken('html_block', '</div>\n'));
+        inCallout = false;
         i += 2;
         continue;
       }
@@ -1465,59 +1414,8 @@ export default function dimmCityPlugin(md, options = {}) {
       }
 
       if (isMarker(tok, tokens, i, '@end-dm-note')) {
-        if (inDmNote) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDmNote = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @card / @end-card ---
-      // Generic card primitive. Emits .dc-card with optional sub-elements:
-      //   .dc-card-heading  — first h4 after @card
-      //   .dc-card-pull     — first blockquote after the heading (move outside body)
-      //   .dc-card-body     — all remaining content
-      // Author syntax:
-      //   @card .dc-flaws
-      //   #### Title
-      //   > Pull quote
-      //   Body paragraph.
-      //   > Footer blockquote
-      //
-      //   @end-card
-      //
-      // IMPORTANT: @end-card must be preceded by a blank line when the last
-      // content before it is a blockquote. Without the blank line markdown-it
-      // lazily continues the blockquote and absorbs the @end-card marker.
-      const cardMarker = parseMarker(tok, tokens, i, '@card');
-      if (cardMarker.matched) {
-        closeAll();
-        const userAttrs = cardMarker.attrs;
-        const extraClass = userAttrs['class'] ? ' ' + userAttrs['class'] : '';
-        const extraId = userAttrs['id'] ? ' id="' + esc(userAttrs['id']) + '"' : '';
-        newTokens.push(makeToken('html_block', '<div class="dc-card' + extraClass + '"' + extraId + '>\n'));
-        inCard = true;
-        cardHeadingDone = false;
-        cardPullDone = false;
-        cardBodyOpen = false;
-        lastCardBodyBlockquote = null;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-card')) {
-        if (inCard) {
-          if (cardBodyOpen) {
-            newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
-            cardBodyOpen = false;
-          }
-          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
-          inCard = false;
-          cardHeadingDone = false;
-          cardPullDone = false;
-          lastCardBodyBlockquote = null;
-        }
+        if (inDmNote) newTokens.push(makeToken('html_block', '</div>\n'));
+        inDmNote = false;
         i += 2;
         continue;
       }
@@ -1529,94 +1427,6 @@ export default function dimmCityPlugin(md, options = {}) {
         const extraClass = tapeMarker.attrs['class'] ? ' ' + esc(tapeMarker.attrs['class']) : '';
         newTokens.push(makeToken('html_block', '<div class="dc-tape' + extraClass + '">' + esc(labelAttr) + '</div>\n'));
         i += 2; continue;
-      }
-
-      // Inside @card section
-      // (@end-card is handled by the top-level dispatch above, which runs
-      // unconditionally before this block is ever reached.)
-      if (inCard) {
-        // h4 = card heading (first h4 only)
-        if (tok.type === 'heading_open' && tok.tag === 'h4' && !cardHeadingDone) {
-          const inlineTok = tokens[i + 1];
-          const headingHtml = inlineTok && inlineTok.children
-            ? md.renderer.render(inlineTok.children, md.options, {})
-            : esc(inlineTok ? inlineTok.content || '' : '');
-          newTokens.push(makeToken('html_block', '<div class="dc-card-heading">' + headingHtml + '</div>\n'));
-          cardHeadingDone = true;
-          i += 2; // skip inline + heading_close
-          continue;
-        }
-
-        // First blockquote after heading (before body opens) = pull quote
-        if (tok.type === 'blockquote_open' && cardHeadingDone && !cardPullDone && !cardBodyOpen) {
-          let bqContent = '';
-          let j = i + 1;
-          let blockquoteCloseIdx = -1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              // The inline content may have @end-card appended as a lazy continuation.
-              // Extract text, strip the trailing marker, render the inline children.
-              let rawText = tokens[j].content || '';
-              // Remove lazy continuation @end-card from the end
-              rawText = rawText.replace(/\n@end-card\s*$/, '').replace(/\s+@end-card\s*$/, '').trim();
-
-              // Render children, but strip @end-card from the rendered HTML if it appears
-              bqContent = tokens[j].children
-                ? md.renderer.render(tokens[j].children, md.options, {})
-                : esc(rawText);
-              // Strip @end-card from rendered output as a fallback
-              bqContent = bqContent.replace(/\s*@end-card\s*$/, '').replace(/@end-card\s*<\/p>/, '</p>');
-            }
-            j++;
-          }
-          blockquoteCloseIdx = j;
-          newTokens.push(makeToken('html_block', '<div class="dc-card-pull">' + bqContent + '</div>\n'));
-          newTokens.push(makeToken('html_block', '<div class="dc-card-body">\n'));
-          cardPullDone = true;
-          cardBodyOpen = true;
-          i = blockquoteCloseIdx; // for-loop i++ lands at token after blockquote_close
-          continue;
-        }
-
-        // Open body for any non-heading, non-pull content that arrived before body was opened
-        if (!cardBodyOpen) {
-          newTokens.push(makeToken('html_block', '<div class="dc-card-body">\n'));
-          cardBodyOpen = true;
-          // Do NOT skip tok — fall through to passthrough below
-        }
-
-        // Inside body: strip @end-card from blockquotes (lazy continuation artifact)
-        if (tok.type === 'blockquote_open') {
-          let j = i + 1;
-          let blockquoteCloseIdx = -1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              // Strip @end-card from inline content
-              let rawText = tokens[j].content || '';
-              rawText = rawText.replace(/\n@end-card\s*$/, '').replace(/\s+@end-card\s*$/, '').trim();
-              tokens[j].content = rawText;
-            }
-            j++;
-          }
-
-          // dc#44: tag the current blockquote as the card-footer candidate and
-          // untag whichever one held that title before. The plugin streams
-          // tokens once with no lookahead, so it can't know in advance which
-          // body blockquote will turn out to be last — instead it keeps the
-          // tag on exactly one token at a time, moving it forward on every
-          // new body blockquote, so whichever one is tagged when the card
-          // closes is the one `blockquote:last-of-type` would also match.
-          // The CSS selector stays as the fallback for one release (dc#44).
-          if (lastCardBodyBlockquote) {
-            removeTokenClass(lastCardBodyBlockquote, 'dc-card-footer');
-          }
-          addTokenClass(tok, 'dc-card-footer');
-          lastCardBodyBlockquote = tok;
-        }
-
-        // Pass through card body content unchanged
-        newTokens.push(tok);
-        continue;
       }
 
       // Mark image-only paragraphs so layout rules can target them without
@@ -1636,46 +1446,19 @@ export default function dimmCityPlugin(md, options = {}) {
         }
       }
 
-      if (inProcedure && tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectOrderedListItems(tokens, i, md);
-        if (items.length > 0) {
-          newTokens.push(makeToken('html_block', buildProcedureList(items)));
-        }
-        i = endIndex;
-        continue;
-      }
-
-      if (inProcedure && tok.type === 'ordered_list_close') {
-        continue;
-      }
-
-      // Outside any special section - pass through unchanged
       newTokens.push(tok);
     }
 
-    // Close any open structures at EOF
-
-    // Warn if @procedure was opened without a matching @end-procedure.
-    // The transform is stateless (no open <div> to close) but every ordered
-    // list after the marker was being silently hijacked into step-list mode.
-    if (inProcedure) {
-      if (!state.env.layoutWarnings) state.env.layoutWarnings = [];
-      state.env.layoutWarnings.push({
-        type: 'unclosed_procedure',
-        message: '@procedure was opened but never closed with @end-procedure. ' +
-                 'Ordered lists after the marker may have been transformed into ' +
-                 'step-lists unintentionally.',
-      });
-      inProcedure = false;
-    }
-
-    closeAll();
+    closeAll(); // a @callout or @dm-note left open closes at the end of the document
 
     state.tokens = newTokens;
   });
 
-  // Declared components: they run after the transform above so a @card,
-  // @procedure or @outcome inside a skill is already rewritten when they look.
+  // Declared components. Cards, outcomes and procedures go first so one inside
+  // a skill is already rewritten when the skill's rule looks at it.
+  md.core.ruler.push('dc_cards', dcCards);
+  md.core.ruler.push('dc_outcomes', dcOutcomes);
+  md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
 }
@@ -1718,6 +1501,15 @@ export const markers = {
   }),
   'learning-path': wrapper('dc-learning-path dc-path-block'),
   skill: wrapper('dc-skill-card', { validate: validateSkill }),
+
+  // Content components. `@card` closes silently at the end of a document, as it
+  // always has. `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
+  // open at the end gets core's `declared_marker_eof_close` warning: what
+  // follows an open one is read as its rows or its steps. `@procedure` has no
+  // class (its rule hides the wrapper: the step list is the element).
+  card: wrapper('dc-card'),
+  outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
+  procedure: { validate: validateProcedure },
 
   sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
