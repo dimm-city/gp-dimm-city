@@ -410,7 +410,7 @@ function warningDelta(baseW, headW) {
   return { removed: only(b, h), added: only(h, b) };
 }
 
-const fmtWarning = (w) => `line ${w.line ?? "?"} [${w.type ?? "?"}${w.marker ? ` @${w.marker}` : ""}] ${w.message}`;
+const fmtWarning = (w) => `line ${w.line ?? "?"} [${w.type ?? "?"}${w.marker ? ` @${w.marker.kind ?? w.marker}` : ""}] ${w.message}`;
 const safeName = (s) => s.replace(/\.md$/i, "").replace(/[^\w.-]+/g, "_");
 
 // ---------------------------------------------------------------------------
