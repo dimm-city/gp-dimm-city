@@ -69,7 +69,7 @@
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
-    "gutterpress": "0.11.15",
+    "gutterpress": "0.11.16-alpha.2",
     "markdown-it": "^14.1.0"
   },
   "peerDependencies": {
