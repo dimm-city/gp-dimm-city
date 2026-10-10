@@ -9,8 +9,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [1.2.0] - prerelease
 
-Requires Gutterpress 0.11.16-alpha.2 or newer (the desktop app or CLI at
-that version): older versions reject the `section: true` markers below.
+Requires Gutterpress 0.11.16-alpha.5 or newer (the desktop app or CLI at
+that version): older versions reject the `section: true` markers below, and
+alpha.5 adds the `unknown_variant` warning that reports a mistyped `@callout`
+variant.
 Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
 
 ### Changed
@@ -94,12 +96,49 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   cause is an `@end-learning-path` above the skills it was meant to close.
 - Snippets: `specialty` shows the whole specialty > learning path > skill
   hierarchy, and `learning-path` shows its skills.
-- devDependency `gutterpress` is `0.11.16-alpha.2`.
+- **`@callout` and `@dm-note` are declared, and the state machine is gone.**
+  `@callout` is a declared wrapper (`div.dc-alert` + the variant's class,
+  author classes and `label="…"` as before) and `@dm-note` is its alias with
+  the `dm` variant preset, so `@dm-note` is `@callout dm` and `@end-dm-note`
+  still closes it. One small core rule (`dcCallouts`) adds the variant's
+  default label ("Note", "Warning", "Dream Master Note", "Vibe", "Origin",
+  "Visit", "Gear") when there is no `label="…"`; an explicit label wins. A
+  missing or unrecognised variant is a plain note, as before. With `@tape`
+  and the retired `@roll-table` / `@options-table` stripper gone too,
+  `dimm_city_transform` and its `closeAll()` are deleted. What is left are
+  four small core rules: the `@continue` bridge into skill cards, `> [!TYPE]`
+  alerts, `ROLL THE DIE!`, and the image-only paragraph class (now
+  `dcImageParagraphs`). `plugin.js` goes from 1,557 to 1,381 lines.
+  The emitted callout is the same element, classes and label span as before.
+  Core adds `data-callout="<variant>"` (and `data-label` when labelled) and
+  `data-source-range`, and writes no newline between the wrapper and its label.
+- `docs/adding-macros.md` and `docs/macros.md` now describe a plugin with no
+  hand-written markers: the "hand-written marker" recipe is gone.
+- devDependency `gutterpress` is `0.11.16-alpha.5` (was `0.11.16-alpha.2`).
 - `docs/plans/specialty-section-variants.md`: the plan for styling section
   components per specialty (`@npc-stat wirephreak`), for a later release.
 
 ### Removed
 
+- **`@callout variant=…` is gone**, with no compatibility mapping: the variant
+  is a bare word (`@callout note`, `@callout vibe`, `@callout .float-right
+  origin label="…"`). Core reads `variant=origin` as a plain attribute, so the
+  callout would render as a note; instead every `@callout` or `@dm-note`
+  written that way gets one Problems message on its line: `@callout: no longer
+  takes variant=origin; write "@callout origin" instead.` Edit the books:
+  `variant=note` to `note`, `variant="vibe"` to `vibe`, `variant=origin` or
+  `variant="origin"` to `origin`.
+- **`@tape` is removed.** The marker was one line with no body and no
+  `@end-tape`, which a declared marker cannot express yet: a `selfClosing`
+  marker feature was requested upstream as gutterpress#344, and `@tape` can
+  return as a declared marker once it exists. Until then write the raw
+  `<div class="dc-tape">Label</div>` (`dc-flush` to run edge to edge), which
+  renders the same HTML; the `.dc-tape` CSS stays. The design guide's
+  examples use the raw form. A leftover `@tape label="…"` line now prints as
+  the text it is.
+- **The `@roll-table` / `@options-table` no-op handling** (deprecated in
+  17.3.0), its `roll-table` entry in `components.yaml` and the design guide's
+  note. Neither is a marker any more, so a stray one prints as text.
 - `@block variant=panel`. No book or guide page used it; write `@block panel`.
 - `@end-skills` (no book used it; it is plain text now).
 - `@end-skill` no longer closes the `@learning-path` around the skill. It
@@ -139,13 +178,25 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   swallow the rest of the file without a word. `@card` still closes silently.
 - `@end-card`, `@end-outcome` and `@end-procedure` with nothing open now warn
   (`declared_marker_close_without_open`) instead of being ignored.
-- `@callout` and `@dm-note` are still hand-written, so they no longer close a
-  `@card` or `@procedure` that is open, and a card or procedure no longer
-  closes them. `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a
+- `@callout` and `@dm-note` nest like every declared marker: a new one closes
+  the one still open (with what is inside it), `@end-callout` and
+  `@end-dm-note` close it, and `@page`, `@section`, `@chapter` and `@continue`
+  close it (a callout left open at a `@page` used to run on, and the next
+  page's `<div>` ended up inside it). `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a
   callout with the procedure in it. One book chapter wrote exactly that; it
   used to close the callout at the `@procedure` and leave the steps and the
   closing paragraph outside its box, and now renders them inside it, as
   written.
+- A callout written in a skill (even after its card, with no `@end-skill`)
+  stays in the skill's card, as before. A stray `@end-callout` or
+  `@end-dm-note` warns (`declared_marker_close_without_open`) instead of being
+  ignored, and a bare word that is not a variant (`@callout vibes`) is a note
+  with core's `unknown_variant` warning.
+- `@dm-note` now takes author classes and an `#id` like `@callout` (it used to
+  ignore them).
+- A callout or `@dm-note` glued to the line above it (no blank line) is now a
+  marker, as every declared marker is; it used to be folded into the
+  paragraph.
 - A bare word after `@card`, `@outcome` or `@procedure` is no longer a class
   (core reads it as a variant, and only `flush` is one): write `@card .wide`.
   No book or guide page used one.

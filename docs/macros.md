@@ -28,9 +28,15 @@ always check that the emitted class name has a matching CSS rule before shipping
 - `@outcome` is `div.dc-outcomes`, one row per `roll | name | text` line, coloured by position (crit, hit, mixed, miss, fail; a sixth row is a plain hit). `@outcome flush` (or `.dc-flush`) adds `.dc-flush`. The lines can be in one paragraph or several, with or without blank lines around the markers.
 - `@procedure` turns each numbered list inside it into the zero-padded step list (`ol.dc-steps`). It has no element of its own, so it adds no wrapper to the HTML.
 - They nest like every declared marker. A `@card`, `@outcome` or `@procedure` written in a skill (even after its card, with no `@end-skill`) is part of that skill's card, so an outcome ladder under a skill's abilities is where it should be. A new one closes the one before it, `@end-<name>` closes it, and `@page`, `@section`, `@chapter` and `@continue` close them all. A closer directly under a list item or a quote is a closer: `@end-card` no longer needs a blank line before it.
-- The hand-written `@callout` and `@dm-note` are not closed by them, and do not close them: `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a callout with a procedure in it.
+- `@callout` and `@dm-note` (below) are declared too, and nest the same way: `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a callout with a procedure in it. One in a skill stays in the skill's card.
 - A `@card` left open at the end of the document closes silently. A `@procedure` or `@outcome` left open gets core's `declared_marker_eof_close` warning, because whatever follows it is read as its steps or its rows. A closer with nothing open warns (`declared_marker_close_without_open`).
 - The plugin reports, in plain words with the fix: an `@outcome` line that is not `roll | name | text`, a table, list or heading inside an `@outcome` (they are left out), an `@outcome` with no rows, and a `@procedure` with no numbered list (a bullet list does not count).
+
+**Callouts.** `@callout` is a declared wrapper, `div.dc-alert` with the variant's class, and `@dm-note` is its alias with the `dm` variant preset (`@dm-note` is `@callout dm`; `@end-dm-note` closes it). The variant is a bare word: `note`, `warning`, `dm`, `vibe`, `origin`, `visit` or `gear`, as in `@callout vibe` or `@callout .float-right origin label="Image Is Everything"`. A core rule (`dcCallouts`) adds the variant's name as the label (`Dream Master Note` for `dm`) unless `label="…"` is given. No variant is a note.
+
+- `variant=` is no longer accepted: `@callout variant=note` is read as a plain attribute, so the callout would be a note. The plugin reports each one in plain words, on its line: `@callout: no longer takes variant=note; write "@callout note" instead.`
+- A bare word that is not a variant (`@callout vibes`) is a note, and core warns (`unknown_variant`).
+- `> [!TYPE]` is the one-paragraph form of the same callouts (plus `FLAVOR` and `PULLQUOTE`).
 
 **All shipped macros:**
 `@chapter`, `@page`, `@section`, `@end-section`, `@spread`, `@page-break`, `@column-break`, `@specialty`, `@end-specialty`,
@@ -42,12 +48,10 @@ always check that the emitted class name has a matching CSS rule before shipping
 `@definition`, `@end-definition`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@tape`, `@lede`, `@end-lede`,
+`@gear`, `@end-gear`, `@lede`, `@end-lede`,
 `@glossary`, `@end-glossary`,
 `@column-panel`, `@end-column-panel`, `@tabbed`, `@end-tabbed`, `@card-grid`, `@end-card-grid`,
 `@citizen-walkthrough`, `@end-citizen-walkthrough`, `@fiction-excerpt`, `@end-fiction-excerpt`,
 `@npc-stat`, `@end-npc-stat`, `@flaws`, `@end-flaws`, `@ideals`, `@end-ideals`, `@dreams`, `@end-dreams`
 
-**Deprecated (removed in plugin 17.3.0):** `@roll-table`, `@end-roll-table`, `@options-table`, `@end-options-table`. These markers are stripped as no-ops and emit no HTML or styling. Do not use them in new content.
-
-**Retired — not implemented, do not use:** `@chapter-opener` (the chapter-opener composite is markup-driven now — see the design guide's page-templates chapter) and `@class-entry` / `@end-class-entry` (retired 2026-05-24; its CSS was parked in `css/deprecated.css`). Neither marker is recognised by the plugin, so both pass through as literal text.
+**Retired — not implemented, do not use:** `@tape` (removed in 1.2.0: write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344), `@roll-table` / `@options-table` (use `@outcome` or a pipe table), `@chapter-opener` (the chapter-opener composite is markup-driven now — see the design guide's page-templates chapter) and `@class-entry` / `@end-class-entry` (retired 2026-05-24; its CSS was parked in `css/deprecated.css`). Neither marker is recognised by the plugin, so both pass through as literal text.

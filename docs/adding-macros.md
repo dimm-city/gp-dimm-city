@@ -16,7 +16,7 @@ Card variants (skill cards, path shells, specialty cards, specialty intros) are 
 
 ## Declared markers (the default for a plain wrapper)
 
-A wrapper that only needs an element and classes does not belong in the `dimm_city_transform` state machine. It is one line in the `markers` table exported at the bottom of `plugin.js`, and Gutterpress core does the rest: parsing, author classes, `#id`, `data-source-range`, nesting, closing at the next `@page`/`@section`/`@chapter`, and the `unknown_marker` typo check.
+A wrapper that only needs an element and classes needs no code of its own. It is one line in the `markers` table exported at the bottom of `plugin.js`, and Gutterpress core does the rest: parsing, author classes, `#id`, `data-source-range`, nesting, closing at the next `@page`/`@section`/`@chapter`, and the `unknown_marker` typo check.
 
 ```js
 export const markers = {
@@ -41,7 +41,7 @@ Things to know:
 - Declared containers nest as a stack. Opening a second one of the same kind closes the first and everything opened after it; `@end-<name>` closes that container and everything inside it; `@page`, `@section`, `@chapter` and `@continue` close them all. Hand-written markers do not close them.
 - Attributes follow core's rules: `key=value` becomes `data-key`, `#id` becomes `id`.
 - Declared markers are a Gutterpress feature. Under a bare `new MarkdownIt().use(plugin)` they are not recognised, so tests that cover them render through `createMarkdownRenderer([{ name, plugin, options, markers }])`.
-- A **hand-written** marker whose name is within a couple of edits of a declared one gets a false `unknown_marker` warning from core. `@specialty-card` triggered it next to `@specialty-art`, so it is declared too; its odd/even `data-position` comes from a small core rule (`dcSpecialtyCardPositions`) that numbers the open tokens.
+- A marker a plugin parses itself (its own markdown-it block rule) whose name is within a couple of edits of a declared one gets a false `unknown_marker` warning from core. `@specialty-card` triggered it next to `@specialty-art`, so it is declared too; its odd/even `data-position` comes from a small core rule (`dcSpecialtyCardPositions`) that numbers the open tokens.
 
 ### A section-styled component
 
@@ -55,7 +55,26 @@ Core rewrites `@npc-stat` into `@section .dc-npc-stat` (plus any author classes)
 
 Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-plain` and `.dc-snug` stay author classes.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`. Still hand-written in `plugin.js`: `@callout`, `@dm-note` and `@tape`.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+
+### An alias with a preset
+
+A marker that is another marker with a variant already chosen is an alias, not a second declaration:
+
+```js
+callout: wrapper('dc-alert', { variants: { note: 'dc-note', dm: 'dc-dm-note', … }, label: { … } }),
+'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
+```
+
+`@dm-note` renders exactly what `@callout dm` does, `@end-dm-note` closes it, and a variant written on the line (`@dm-note vibe`) wins over the preset. An alias has no fields of its own beyond `preset`: element, classes, label and `validate` all come from the target. Aliasing an alias is not allowed.
+
+### A marker with a default the declaration cannot express
+
+`@callout` has a default label per variant, and core's `label` only reads `label="…"`. The plugin adds the rest in a small core rule over the declared tokens (`dcCallouts`): core reports whether a label was written (`open.meta.labelled`), and the rule inserts the default one when it was not. Do the same for any default that depends on the variant: read `open.meta.variant`, change the open token's attributes or insert a token after it.
+
+### Retiring an attribute
+
+When a declared marker stops taking an attribute (`@callout variant=…` became the bare word), core still reads it as `key=value` and renders a `data-` attribute, so the old spelling would fail silently. Say so in `validate`, one message per marker, with the replacement: `validateCallout` reads `attrs.variant` and returns `no longer takes variant=origin; write "@callout origin" instead.` (core adds the `@callout:` prefix and the marker's line).
 
 ### Declare, then transform (a macro that rebuilds its content)
 
@@ -98,10 +117,10 @@ Rules of thumb:
 `@definition`, `@end-definition`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@tape`, `@lede`, `@end-lede`,
+`@gear`, `@end-gear`, `@lede`, `@end-lede`,
 `@glossary`, `@end-glossary`
 
-> **Deprecated (removed in plugin 17.3.0):** `@roll-table`, `@end-roll-table`, `@options-table`, `@end-options-table` are stripped as no-ops and emit no HTML or styling. Do not use them in new content.
+> **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@roll-table` / `@options-table` (use `@outcome` or a pipe table).
 >
 > **Deprecated (2026-05-24):** `@class-entry` / `@end-class-entry` and the
 > `.section.dc-class-entry` CSS were retired after zero production usage. The
@@ -117,14 +136,13 @@ Rules of thumb:
 > `.chapter[data-chapter-label] > .page[data-page="intro"] > .section` chain.
 > The plugin registers no `@chapter-opener` marker.
 
-## Blank-line requirement for markers
+## Blank-line habit for markers
 
-The hand-written markers (`@callout`, `@dm-note`, `@tape`) **must** be separated from surrounding content by blank lines. Without them, markdown-it merges the marker line into the preceding or following paragraph and the macro is silently ignored. Markers Gutterpress core knows, which includes every declared marker (`@card`, `@outcome`, `@procedure`, `@skill`, …), are recognised even straight under a paragraph line, a list item or a quote; a blank line is still the habit to keep.
-
-Correct:
+Every marker the plugin ships is declared, so Gutterpress core reads it even straight under a paragraph line, a list item or a quote: `@end-callout` directly under the last line of the callout closes it. Authors should still put a blank line before and after every marker, because that is what keeps the markdown readable in any other tool.
 
 ```markdown
-@callout
+@callout note
+
 This is the callout body.
 
 More content here.
@@ -132,20 +150,7 @@ More content here.
 @end-callout
 ```
 
-Wrong (markers merged into paragraph — macro never fires):
-
-```markdown
-@callout
-This is the callout body.
-@end-callout
-```
-
-The rule applies to a hand-written open marker (`@callout`) and close marker (`@end-callout`):
-
-- Open marker: must have a blank line **after** it before the first content line.
-- Close marker: must have a blank line **before** it after the last content line.
-
-This is a markdown-it parsing constraint, not a plugin limitation. If a hand-written macro appears to render nothing, missing blank lines around its markers are the first thing to check.
+(A marker the plugin parsed itself, with its own block rule, would not get that: markdown-it folds a marker line into the paragraph above it unless a blank line separates them. Declare the marker instead.)
 
 ## 1. Design the emitted HTML first
 
@@ -189,31 +194,13 @@ Rules:
 
 ## 2. Add the marker to `plugin.js`
 
-For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. A macro that rebuilds its content, like `@skill`, is declared too and transformed by a core rule (see "Declare, then transform" above). The hand-written `dimm_city_transform` handlers that remain (`@callout`, `@dm-note`, `@tape`) follow this pattern, and are not the one to copy for a new macro:
+Declare it in the `markers` table (see "Declared markers" above): one line for a plain wrapper, plus a core rule if it rebuilds its content. A hypothetical `@intel-card` with two variants and an `#id`:
 
 ```js
-const intelMarker = parseMarker(tok, tokens, i, '@intel-card');
-if (intelMarker.matched) {
-  const userAttrs = { ...intelMarker.attrs };
-  const variant = userAttrs['variant'] ? ' variant-' + esc(userAttrs['variant']) : '';
-  delete userAttrs['variant'];
-
-  newTokens.push(
-    makeToken(
-      'html_block',
-      '<section' + buildAttrs(userAttrs, 'dc-intel-card' + variant) + '>\n'
-    )
-  );
-  i += 2;
-  continue;
-}
-
-if (isMarker(tok, tokens, i, '@end-intel-card')) {
-  newTokens.push(makeToken('html_block', '</section>\n'));
-  i += 2;
-  continue;
-}
+'intel-card': wrapper('dc-intel-card', { tag: 'section', variants: { two: 'variant-2', three: 'variant-3' } }),
 ```
+
+Core parses `@intel-card two #black-site`, adds the classes and the `id`, and closes it at `@end-intel-card`, the next `@intel-card`, or the next `@page`/`@section`/`@chapter`. No parser, no closer and no state to write.
 
 If the macro has structure, parse markdown tokens into named child elements the same way `@skill` turns:
 
@@ -221,9 +208,9 @@ If the macro has structure, parse markdown tokens into named child elements the 
 - `>` into flavor text
 - ordered lists into ability rows
 
-That is usually better than asking authors to write raw HTML.
+That is usually better than asking authors to write raw HTML. Write it as a core rule over the declared tokens ("Declare, then transform" above).
 
-If the macro is just a shell around normal markdown content, do less: open the wrapper, let standard markdown render `h3`, `p`, `ul`, and `li`, then close the wrapper. That keeps the parser logic small and avoids creating extra internal hook classes you do not really need.
+If the macro is just a shell around normal markdown content, do less: declare the wrapper, let standard markdown render `h3`, `p`, `ul`, and `li`. That keeps the plugin small and avoids creating extra internal hook classes you do not really need.
 
 ## 3. Add CSS in `styles/components/cards.css`
 
@@ -325,7 +312,7 @@ Variants should override only the small public API or a truly exceptional proper
 }
 ```
 
-Use semantic variant names when they represent meaning. Numeric `variant="N"` is a valid pattern for new macros when the variants are just preset visual shells.
+Use semantic variant names when they represent meaning. A variant is a bare word on the marker line (`@intel-card two`), never `variant=`.
 
 > **DC-specific rule:** Do NOT use `variant=` on `@skill`, `@continue`, or `@learning-path`. Those macros derive their visual shape entirely from the `.specialty.<name>` parent container — a `@specialty .augmerc` wrapper applies the correct clip-path and accent to every card inside automatically. `variant=` on a skill or path card is a no-op and must be removed.
 
@@ -334,7 +321,7 @@ Use semantic variant names when they represent meaning. Numeric `variant="N"` is
 Simple wrapper example:
 
 ```markdown
-@intel-card variant="2" #black-site
+@intel-card two #black-site
 ### Black Site
 The vault is below street level.
 
@@ -346,7 +333,7 @@ The vault is below street level.
 Simplest authoring form:
 
 ```markdown
-@intel-card variant="2" #black-site
+@intel-card two #black-site
 ### Black Site
 The vault is below street level.
 
@@ -360,7 +347,7 @@ The plugin does not need to convert `###`, paragraphs, or lists into custom inte
 If you want the macro to behave more like `@skill`, document the intended structure explicitly:
 
 ```markdown
-@intel-card variant="3"
+@intel-card three
 #### Black Site
 > Quiet on the outside. Surgical on the inside.
 1. **Entry:** Service lift behind the noodle stand.

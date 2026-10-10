@@ -26,8 +26,7 @@
 #     live           at least one class styled; used at least once in a book;
 #                    plugin-origin entries must actually be emitted/parsed
 #     unused         styled or emitted, but used by no book
-#     retired        no class styled, none emitted, none used (a retired marker
-#                    may still be parsed as a no-op stripper)
+#     retired        no class styled, none emitted, none used
 #     unimplemented  no class styled, none emitted — documented or authored,
 #                    never built.
 #
@@ -72,7 +71,7 @@ components:
   - name: callout
     status: live
     origin: plugin
-    recipe: "@callout variant=note|warning|dm|vibe|origin|visit|gear label=\"…\" … @end-callout"
+    recipe: "@callout [note|warning|dm|vibe|origin|visit|gear] label=\"…\" … @end-callout"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning
@@ -83,7 +82,7 @@ components:
       - div.dc-alert.dc-gear-callout
     css: styles/components/callouts.css
     breaks: "as alert"
-    notes: "Same DOM and tokens as alert; the macro form allows multiple paragraphs and a custom label."
+    notes: "Same DOM and tokens as alert; the macro form allows multiple paragraphs and a custom label. The variant is a bare word (`@callout vibe`); `variant=` is no longer accepted and is reported as a problem. With no label=\"…\" the variant's name is the label."
 
   - name: dm-note
     status: live
@@ -92,7 +91,7 @@ components:
     emits: div.dc-alert.dc-dm-note > span.dc-alert-label
     css: [styles/components/callouts.css, styles/dc-native.css]
     breaks: "as alert; first child glued to the box start (dc-native.css)"
-    notes: "Sugar for @callout variant=dm. Used by the design guide only."
+    notes: "An alias of @callout with the dm variant preset: `@dm-note` is `@callout dm`. Used by the design guide only."
 
   - name: flavor
     status: live
@@ -217,12 +216,13 @@ components:
 
   - name: tape
     status: live
-    origin: plugin
-    recipe: "@tape label=\"…\"  (also authored as raw <div class=\"dc-tape dc-flush\">…</div>)"
+    origin: author
+    recipe: "<div class=\"dc-tape\">…</div>  (add dc-flush to run edge to edge)"
     emits: div.dc-tape
     css: styles/components/chrome.css
     tokens: [--dc-tape-bg, --dc-tape-border, --dc-tape-color]
     breaks: "break-inside: avoid"
+    notes: "Raw HTML only. The @tape marker was removed in 1.2.0: a one-line marker with no body and no @end- needs a selfClosing declaration core does not have yet (gutterpress#344)."
 
   - name: toc
     status: live
@@ -770,13 +770,6 @@ components:
     recipe: "(none — no macro or markdown path emits it)"
     emits: .dc-callout
     notes: "Removed 2026-10-08 (dc-native.css): nothing emits .dc-callout; the alert family is .dc-alert."
-
-  - name: roll-table
-    status: retired
-    origin: plugin
-    recipe: "@roll-table … @end-roll-table / @options-table … @end-options-table"
-    emits: []
-    notes: "Removed in plugin 17.3.0; the markers are still parsed and stripped as no-ops. Use @outcome or a plain table."
 
   - name: rules-definition
     status: retired

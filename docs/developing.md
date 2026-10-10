@@ -105,9 +105,8 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
 6. `design-guide/10-reference.md` — the one-line grammar entry.
 
 Markers want a blank line on each side. Declared markers and Gutterpress's
-own are read even straight under a list item or a quote, but `@callout`,
-`@dm-note` and `@tape` are plain paragraphs to markdown: `@end-callout`
-directly under a line of text is folded into it and never closes.
+own are read even straight under a list item or a quote; the blank line is
+the habit that keeps a page readable.
 
 ## Verify
 

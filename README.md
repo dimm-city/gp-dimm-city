@@ -43,7 +43,7 @@ byte for byte on every build.
   `@specialty-art` / `@specialty-card`, `@learning-path`, `@skill` (with
   `@continue` for a card that spans a page break), `@outcome`, `@callout`,
   `@dm-note`, `@sidebar`, `@sidebar-box`, `@block`, `@card`, `@gear`,
-  `@definition`, `@procedure`, `@lede`, `@toc`, `@tape`, `@glossary`, GFM
+  `@definition`, `@procedure`, `@lede`, `@toc`, `@glossary`, GFM
   alerts (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`,
   `[!VISIT]`, `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic
   `ROLL THE DIE!` chip. `docs/macros.md` is the inventory;
