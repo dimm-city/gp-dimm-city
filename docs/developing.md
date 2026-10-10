@@ -126,6 +126,36 @@ refresh the snapshot and review that diff alongside your code.
 `npm run build` is what CI does on every PR, and the PDF it uploads as the
 `design-guide-pdf` artifact is the whole-book view of your change.
 
+## Diffing a change against the real books
+
+`bun test` proves the plugin against the design guide. Before a plugin
+refactor ships, prove it against the books that pin it too:
+
+```sh
+bun run book-diff -- --base main --head ./plugin.js \
+  --book ../dc-op-manual/field-guide --book ../dc-op-manual/SysOps \
+  --design-guide --out ~/book-diff-report
+```
+
+`scripts/book-diff.mjs` renders every chapter of each `--book` (its
+`source.files`, else every `.md` sorted) through `gutterpress/render` twice,
+once with the `--base` plugin (a git ref, read with `git show <ref>:plugin.js`,
+or a path) and once with `--head` (default `./plugin.js`), passing the
+plugin's `markers` export as well. It diffs the normalised HTML and the
+per-chapter `env.layoutWarnings`, prints a summary, and writes a unified diff
+per differing chapter under `--out`. Exit 0 means identical, 1 means diffs.
+
+What it normalises (printed in every report): `data-source-range`,
+`data-source-line`, `data-label` and `data-<marker>` for each declared marker;
+attribute order; class order inside `class="…"`. The class set itself is
+compared exactly. Review every remaining diff; there is no allow-list.
+
+The books are private. Reports quote their text, so `--out` defaults to a
+temp dir and the script refuses a directory inside this repository. Never
+commit a report. Only the Dimm City plugin is swapped: other extensions a book
+lists (such as `gutterpress-gfm-alerts`) are not loadable through Gutterpress's
+public API and are listed as not exercised.
+
 ## Ship
 
 1. Branch, commit, open a PR to `main`. CI runs the tests and builds the PDF.

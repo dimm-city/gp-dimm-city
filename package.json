@@ -65,6 +65,7 @@
     "lint": "gutterpress lint design-guide",
     "test": "bun test",
     "test:update-snapshot": "bun test --update-snapshots",
+    "book-diff": "bun scripts/book-diff.mjs",
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
