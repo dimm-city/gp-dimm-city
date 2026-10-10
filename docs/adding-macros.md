@@ -2,17 +2,17 @@
 
 This is the shortest safe path for adding a new Dimm City plugin macro.
 
-Use the existing `@skill` implementation in `plugin.js` as the main reference. It follows the right model:
+Use the existing `@skill` implementation in `plugin.js` as the main reference (the `skill` entry in `markers` and the `dcSkillCards` rule). It follows the right model:
 
 - one real root class: `.dc-skill-card`
-- **no per-card variant** — shapes come from the `.specialty.<name>` parent container (CSS parent-selector model, not card-level attributes)
+- **no per-card variant** — shapes come from the `.dc-specialty.<name>` parent container (CSS parent-selector model, not card-level attributes)
 - internal styling through descendant selectors: `.dc-skill-card .dc-card-tab`, `.dc-skill-card .dc-card-body`, `.dc-skill-card .dc-ability`
 
 For new macros, prefer the simplest version that works. In many cases you do not need extra child classes at all. A root shell plus descendant element selectors is often enough, which keeps both the plugin and the markdown simpler.
 
 ## Variant system note
 
-Card variants (skill cards, path shells, specialty cards, specialty intros) are controlled entirely by the `.specialty.<name>` parent container, not by `variant=` attributes. The `@specialty .augmerc` wrapper applies the augmerc clip-path and accent color to every card inside automatically. Do NOT add `variant=` attributes to `@skill`, `@continue`, or `@learning-path`.
+Card variants (skill cards, path shells, specialty cards, specialty intros) are controlled entirely by the `.specialty.<name>` parent container, not by `variant=` attributes. The `@specialty augmerc` (or `@specialty .augmerc`) wrapper applies the augmerc clip-path and accent color to every card inside automatically. Do NOT add `variant=` attributes to `@skill`, `@continue`, or `@learning-path`.
 
 ## Declared markers (the default for a plain wrapper)
 
@@ -38,7 +38,7 @@ Things to know:
 
 - A **variant** is a bare word on the marker line (`@sidebar inset`). It adds the mapped class and a `data-<marker>="<variant>"` attribute; nothing else changes. The `.inset` class shorthand keeps working beside it.
 - A **label** (`label="…"`) becomes a child element with the declared class, plus `data-label` on the wrapper.
-- Declared containers nest as a stack. Opening a second one of the same kind closes the first. Hand-written markers do not close them.
+- Declared containers nest as a stack. Opening a second one of the same kind closes the first and everything opened after it; `@end-<name>` closes that container and everything inside it; `@page`, `@section`, `@chapter` and `@continue` close them all. Hand-written markers do not close them.
 - Attributes follow core's rules: `key=value` becomes `data-key`, `#id` becomes `id`.
 - Declared markers are a Gutterpress feature. Under a bare `new MarkdownIt().use(plugin)` they are not recognised, so tests that cover them render through `createMarkdownRenderer([{ name, plugin, options, markers }])`.
 - A **hand-written** marker whose name is within a couple of edits of a declared one gets a false `unknown_marker` warning from core. `@specialty-card` triggered it next to `@specialty-art`, so it is declared too; its odd/even `data-position` comes from a small core rule (`dcSpecialtyCardPositions`) that numbers the open tokens.
@@ -55,7 +55,36 @@ Core rewrites `@npc-stat` into `@section .dc-npc-stat` (plus any author classes)
 
 Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-plain` and `.dc-snug` stay author classes.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Everything else below is still hand-written in `plugin.js`.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`. Everything else below is still hand-written in `plugin.js`.
+
+### Declare, then transform (a macro that rebuilds its content)
+
+A macro that turns its markdown into its own structure (a `####` into a card tab, a list into sticker chips) is still declared in `markers`. Core then parses, nests, closes and source-maps it, and gives the plugin a token pair to work on: a `layout_component_open` / `layout_component_close` whose open token carries `meta = { line, component, kind, variant, attrs, labelled }`. `kind` is the marker name. The plugin writes an ordinary markdown-it core rule that finds those pairs and rewrites the tokens between them. No flags, no state machine, no closing logic: core already did the nesting.
+
+```js
+// declare it: core owns the parsing and the closing
+'learning-path': wrapper('dc-learning-path dc-path-block'),
+
+// transform it: a core rule over the tokens between each open/close pair
+function dcLearningPaths(state) {
+  forEachComponent(state.tokens, 'learning-path', (run, enclosing) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    open.attrSet('data-path-ref', refFor(enclosing));   // enclosing: the open tokens of its parents
+    return [open, ...rewrite(run.slice(1, -1)), close]; // or return nothing to leave the run alone
+  });
+}
+md.core.ruler.push('dc_learning_paths', dcLearningPaths); // in the plugin function
+```
+
+`forEachComponent(tokens, kind, rewrite)` is a small helper in `plugin.js` (about 20 lines, inlined because plugin code cannot import anything). It calls `rewrite(run, enclosing)` for each component whose `meta.kind` matches, in document order.
+
+Rules of thumb:
+
+- Register the rule with `md.core.ruler.push` after `dimm_city_transform`, so a `@card` or `@procedure` inside the component is already rewritten when your rule looks at it.
+- The declared token renders as `<div class="…">` with the author's classes and `data-*` attributes. Keep it as the element when that is what you want (`@learning-path`), or set `open.hidden = close.hidden = true` and render its attributes yourself when one marker makes several elements (`@skill`: one card per `####`).
+- Read the enclosing components from `enclosing`, not from a global: `@learning-path` takes its `data-path-ref` from the enclosing `@specialty`, whichever way the specialty was spelled.
+- Structure rules (what may sit inside what) go in the declaration's `validate(component)`, not in the transform. It receives `{ name, variant, attrs, line, text, blocks }`, where a nested marker is `{ type: 'component', name, line }`, and returns problem messages (or `{ message, line }`) in plain language, with the fix. Core reports them as layout warnings, so they reach `gutterpress validate`, the Problems panel and the build log.
+- Test through `createMarkdownRenderer([{ name, plugin, options, markers }])`: a bare `new MarkdownIt().use(plugin)` never sees `markers`.
 
 ## Currently registered macros
 
@@ -162,7 +191,7 @@ Rules:
 
 ## 2. Add the marker to `plugin.js`
 
-For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. Hand-written handlers are for macros that rebuild their content, like `@skill`; the pattern is:
+For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. A macro that rebuilds its content, like `@skill`, is declared too and transformed by a core rule (see "Declare, then transform" above). The hand-written `dimm_city_transform` handlers that remain (`@card`, `@outcome`, `@procedure`, `@callout`, `@dm-note`, `@tape`) follow this pattern, and are not the one to copy for a new macro:
 
 ```js
 const intelMarker = parseMarker(tok, tokens, i, '@intel-card');

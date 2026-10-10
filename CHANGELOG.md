@@ -45,6 +45,32 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   new markers; `components.yaml` lists them as plugin-origin, and its
   `card-variants` entry now describes `.section.dc-flaws` (the class the CSS
   actually selects).
+- **`@specialty`, `@learning-path` and `@skill` are declared too, then
+  transformed** ("declare, then transform"). Core now opens, nests and closes
+  them, and two ordinary markdown-it core rules (`dcLearningPaths`,
+  `dcSkillCards`, over a small inlined `forEachComponent` helper) rewrite what
+  sits inside: the path's title, subtitle and sticker chain, `data-path-ref`,
+  and one skill card per `####` heading. The state machine drops from 865 to
+  468 lines (`plugin.js` is 97 lines shorter overall, new rules included):
+  its skill, path and specialty flags and branches are gone; the rest of the
+  machine (`@card`, `@outcome`,
+  `@procedure`, `@callout`, `@dm-note`, `@tape`) is untouched and keeps
+  working inside them. `@continue` inside a skill's card still opens the
+  `{name} ▸` continuation card; the classifier that claims it ahead of core
+  now reads core's marker tokens instead of the raw paragraphs.
+- `@specialty augmerc` is the new spelling for a specialty (names:
+  `augmerc`, `proxy`, `streetwarden`, `gutterdruid`, `cybersurgeon`,
+  `wirephreak`, `technosorcerer`, `etherlock`, `dualist`, `generalist`, each
+  styled by `.dc-specialty.<name>`). `@specialty .augmerc` and
+  `@specialty {.augmerc}` work unchanged and give the same element.
+  `data-path-ref` reads the enclosing specialty's variant or class, so
+  `@specialty .augmerc` still gives `AUG1`.
+- **Structure checks, in plain words.** A `@skill` sitting directly in a
+  `@specialty` is reported ("This skill is outside a learning path…"), and so
+  is a `@learning-path` or `@specialty` that starts inside a skill. The usual
+  cause is an `@end-learning-path` above the skills it was meant to close.
+- Snippets: `specialty` shows the whole specialty > learning path > skill
+  hierarchy, and `learning-path` shows its skills.
 - devDependency `gutterpress` is `0.11.16-alpha.2`.
 - `docs/plans/specialty-section-variants.md`: the plan for styling section
   components per specialty (`@npc-stat wirephreak`), for a later release.
@@ -52,6 +78,10 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
 ### Removed
 
 - `@block variant=panel`. No book or guide page used it; write `@block panel`.
+- `@end-skills` (no book used it; it is plain text now).
+- `@end-skill` no longer closes the `@learning-path` around the skill. It
+  closes the skill, like every declared closer; `@end-learning-path` ends the
+  path.
 
 ### Behaviour notes
 
@@ -63,7 +93,27 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   `data-lang`, where the old code emitted `lang` (likewise `dir`, `role`,
   `tabindex` and `aria-*`).
 - `@end-<wrapper>` with no open wrapper now warns
-  (`declared_marker_close_without_open`) instead of being ignored.
+  (`declared_marker_close_without_open`) instead of being ignored. That now
+  includes a stray `@end-skill`, `@end-learning-path` and `@end-specialty`.
+- Specialties, paths and skills close like every declared marker: a new one
+  of the same kind closes the previous and what is inside it, `@end-<name>`
+  closes it and what is inside it, and `@page`, `@section`, `@chapter` and
+  `@continue` close all of them. A `@page` written inside a specialty used to
+  leave the specialty open across the page; it now ends the specialty. Use
+  `@page-break` to break a page inside one.
+- A `@skill` glued to the line above it (no blank line) is now a marker, as
+  every declared marker is; it used to print as the text "@skill".
+- A skill inside a learning path is numbered `PATHREF.N` by its place in the
+  path. An `@end-skill` in the middle of a path used to end the path (the
+  skills after it lost their tier); the path now stays open.
+- A `@procedure` whose `@end-procedure` is swallowed into the last list item
+  was closed by accident by a later `@end-skill`; it now stays open to the end
+  of the file and `unclosed_procedure` says so. Put a blank line before
+  `@end-procedure`.
+- Core drops a declared marker that is already open and nests the next one, so
+  a book that closes a path early (`@end-learning-path` above its skills) now
+  has its next `@learning-path` nested in the last skill. The checks above name
+  each place; remove the early `@end-learning-path`.
 
 ## [1.1.5] - 2026-10-09
 

@@ -264,7 +264,7 @@ components:
   - name: specialty
     status: live
     origin: plugin
-    recipe: "@specialty .augmerc|.proxy|.streetwarden|.gutterdruid|.cybersurgeon|.wirephreak|.technosorcerer|.etherlock|.dualist|.generalist … @end-specialty"
+    recipe: "@specialty augmerc|proxy|streetwarden|gutterdruid|cybersurgeon|wirephreak|technosorcerer|etherlock|dualist|generalist (or .augmerc, {.augmerc}) … @end-specialty"
     emits: div.dc-specialty.<name>
     css:
       - styles/components/specialty-identity.css
@@ -285,7 +285,7 @@ components:
       - --dc-specialty-intro-title-shape
       - --dc-specialty-intro-clip
     breaks: "none on the wrapper; children carry their own"
-    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Auto-closes any open path or skill."
+    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Declared marker: the word and the .class spelling give the same wrapper. A new @specialty, @end-specialty, @page, @section or @chapter closes it with every path and skill inside; a skill sitting directly in it (outside a learning path) is reported."
 
   - name: specialty-intro
     status: live
@@ -345,11 +345,12 @@ components:
       - --dc-path-shell-padding-bottom
       - --dc-arrow-color
     breaks: "break-before/after: auto on the block; the h3 stays with what follows"
+    notes: "Declared marker. data-path-ref is the enclosing specialty's code and the path's number in it (AUG1, PRX2; PATH1 for a specialty with no code). @end-learning-path closes the path and the skills inside it; a new @learning-path closes the previous one."
 
   - name: skill
     status: live
     origin: plugin
-    recipe: "@skill [id=…] [{.dc-allow-split}] [{.dc-two-col}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill (alias @end-skills)"
+    recipe: "@skill [id=…] [{.dc-allow-split}] [{.dc-two-col}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
     emits:
       - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
@@ -364,7 +365,7 @@ components:
       - --dc-card-gap
       - --dc-card-tab-shadow
     breaks: "data-break-inside=avoid by default; {.dc-allow-split} opts into splitting (see allow-split); tab break-after: avoid; last two abilities glued"
-    notes: "A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label)."
+    notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label)."
 
   - name: skill-highlight
     status: live

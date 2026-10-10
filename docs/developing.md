@@ -83,7 +83,7 @@ Rules worth knowing before you write CSS (the long form is
 
 The short path is [adding-macros.md](./adding-macros.md). The checklist:
 
-1. `plugin.js` — the marker handler (copy the `@skill` shape).
+1. `plugin.js` — declare the marker in `markers`. If it rebuilds its content, add a core rule that rewrites the tokens between its open and close (copy `@skill`: `dcSkillCards`). See [adding-macros.md](./adding-macros.md#declare-then-transform-a-macro-that-rebuilds-its-content).
 2. `styles/components/<sheet>.css` — its rules, inside that sheet's layer.
 3. `components.yaml` — the catalog entry.
 4. `snippets/<name>.md` — with at least one `{{placeholder}}`.
