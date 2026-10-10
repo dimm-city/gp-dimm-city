@@ -2,7 +2,7 @@
 
 @page intro
 
-@section .dc-fiction-excerpt
+@fiction-excerpt
 
 # Who Do You Dream to Be?
 
@@ -40,7 +40,7 @@ Da bats froze mid-flight, shrieking an tumbling outta da sky.
 
 I locked in da hack, jacked out, an leapt clean onto a passing airbus like I meant to do it all along.
 
-@end-section
+@end-fiction-excerpt
 
 ---{.column-break}
 
@@ -67,7 +67,7 @@ Visit **dimm.city** for a form-fillable PDF version of the Citizen File.
 
 @end-section
 
-@section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .gp-columns-2 .dc-column-panel
 
 #### What's Yr Handle?
 
@@ -87,12 +87,12 @@ Do your best to address your fellow Dreamers as they wish to be addressed.
 
 Names and pronouns matter when life itself is constantly trying to strip both away.
 
-@end-section
+@end-citizen-walkthrough
 
 
 @page .dc-citizen-file-page .gp-columns-2
 
-@section .dc-citizen-walkthrough
+@citizen-walkthrough
 
 #### Species
 
@@ -100,9 +100,9 @@ In Dimm City, you're not human—you never were. Every Dreamer is an anthropomor
 
 Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.
 
-@end-section
+@end-citizen-walkthrough
 
-@section .dc-citizen-walkthrough
+@citizen-walkthrough
 
 #### Origins
 
@@ -112,9 +112,9 @@ Origins tell the Dream Master how your character fits the city's grid. A corpora
 
 Choose one: **EntD rat**, **Corp exile**, **District-born**, **Offworld arrival**, **Street-raised**, or **Something the city made and hasn't claimed yet**.
 
-@end-section
+@end-citizen-walkthrough
 
-@section .dc-citizen-walkthrough
+@citizen-walkthrough
 
 #### Scars & Survival
 
@@ -134,9 +134,9 @@ Expressing age in years means little in Dimm City. Here, age is experiential, no
 
 Survival, scars, augmentation, and memory say far more than a number ever could.
 
-@end-section
+@end-citizen-walkthrough
 
-@section .dc-citizen-walkthrough
+@citizen-walkthrough
 
 #### Size
 
@@ -149,4 +149,4 @@ Size carries no mechanical advantage. It's a narrative choice that shapes how yo
 |  |**Medium:** About 1.6–2.5 meters tall. The city is built for bodies like yours.|
 |  |**Big:** Over 2.5 to 4 meters tall. Your presence fills rooms and draws eyes.|
 
-@end-section
+@end-citizen-walkthrough

@@ -3,7 +3,7 @@
 
 @page .tech-cybernetics .second-page
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Tech and Cybernetics
 
@@ -19,7 +19,7 @@ Every install has a cost. Every edge has a crack. Push too far, and something in
 
 @end-callout
 
-@end-section
+@end-column-panel
 
 ---
 
@@ -81,7 +81,7 @@ The affected PC rolls each round to regain control. Specialties like the Cybersu
 
 ## Example Gear Entries
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Useful Items
 
@@ -129,11 +129,11 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 
 @end-gear
 
-@end-section
+@end-column-panel
 
 @page-break
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Common Cybernetics
 
@@ -181,4 +181,4 @@ Combat processor wired into your nervous system. +1 AP per round. Cannot be Stun
 
 @end-gear
 
-@end-section
+@end-column-panel

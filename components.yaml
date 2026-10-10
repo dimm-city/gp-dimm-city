@@ -178,7 +178,7 @@ components:
   - name: card
     status: live
     origin: plugin
-    recipe: "@card [.dc-flaws|.dc-ideals|.dc-dreams] / #### Heading / > pull quote / body / > footer … @end-card"
+    recipe: "@card / #### Heading / > pull quote / body / > footer … @end-card"
     emits:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
@@ -187,11 +187,11 @@ components:
 
   - name: card-variants
     status: live
-    origin: author
-    recipe: "@card .dc-flaws | .dc-ideals | .dc-dreams"
-    emits: div.dc-card.dc-flaws|.dc-ideals|.dc-dreams
+    origin: plugin
+    recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section .dc-flaws | .dc-ideals | .dc-dreams)"
+    emits: div.section.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
-    notes: "Citizen-file card accents; the class is passed through from the marker."
+    notes: "Citizen-file card accents: a section of @card blocks whose class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
 
   - name: gear
     status: live
@@ -426,16 +426,16 @@ components:
   # ── Author classes on core markers, attrs and raw HTML ────────────────
   - name: column-panel
     status: live
-    origin: author
-    recipe: "@section .gp-columns-2 .dc-column-panel"
+    origin: plugin
+    recipe: "@column-panel [.gp-columns-2] … @end-column-panel  (or @section .gp-columns-2 .dc-column-panel)"
     emits: div.section.dc-column-panel
     css: styles/components/section.css
     breaks: "first heading glued to its first paragraph"
 
   - name: tabbed
     status: live
-    origin: author
-    recipe: "@section .dc-tabbed"
+    origin: plugin
+    recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
     emits: div.section.dc-tabbed
     css: styles/components/section.css
     tokens: [--dc-section-tab-indent, --dc-section-tab-overlap]
@@ -443,16 +443,16 @@ components:
 
   - name: card-grid
     status: live
-    origin: author
-    recipe: "@section .dc-card-grid"
+    origin: plugin
+    recipe: "@card-grid … @end-card-grid  (or @section .dc-card-grid)"
     emits: div.section.dc-card-grid
     css: [styles/components/section.css, styles/page-templates.css]
     breaks: "break-inside: auto on the grid; each specialty card avoid"
 
   - name: citizen-walkthrough
     status: live
-    origin: author
-    recipe: "@section .dc-citizen-walkthrough [.gp-columns-2]"
+    origin: plugin
+    recipe: "@citizen-walkthrough [.gp-columns-2] … @end-citizen-walkthrough  (or @section .dc-citizen-walkthrough)"
     emits: div.section.dc-citizen-walkthrough
     css: [styles/components/section.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
@@ -467,8 +467,8 @@ components:
 
   - name: fiction-excerpt
     status: live
-    origin: author
-    recipe: "@section .dc-fiction-excerpt"
+    origin: plugin
+    recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section .dc-fiction-excerpt)"
     emits: div.section.dc-fiction-excerpt
     css: [styles/components/section.css]
     tokens:
@@ -482,8 +482,8 @@ components:
 
   - name: npc-stat
     status: live
-    origin: author
-    recipe: "@section .dc-npc-stat"
+    origin: plugin
+    recipe: "@npc-stat … @end-npc-stat  (or @section .dc-npc-stat)"
     emits: div.section.dc-npc-stat
     css: [styles/components/section.css]
     tokens:

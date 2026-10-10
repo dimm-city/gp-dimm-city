@@ -100,10 +100,10 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 ## Specialty card
 
-The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@section .dc-card-grid` that lays the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
+The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid` that lays the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
 
 ```markdown {.dg-split}
-@section .dc-card-grid
+@card-grid
 
 @specialty .augmerc
 
@@ -137,14 +137,14 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 @end-specialty
 
-@end-section
+@end-card-grid
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-card-grid
+@card-grid
 
 @specialty .augmerc
 
@@ -178,7 +178,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 @end-specialty
 
-@end-section
+@end-card-grid
 
 </div>
 

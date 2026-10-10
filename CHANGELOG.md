@@ -28,6 +28,18 @@ cut a version that has no `## [X.Y.Z]` heading below.
   rule that numbers the cards in document order, as before.
 - Snippets for `@sidebar-box`, `@glossary`, `@toc` and `@specialty-intro`.
   The `@block` snippet uses the variant word.
+- **Nine section-styled components are declared as real core sections**
+  (Gutterpress 0.11.16-alpha.2, `section: true`): `@column-panel`, `@tabbed`,
+  `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
+  `@flaws`, `@ideals` and `@dreams`, each with an `@end-…` closer and a
+  snippet. `@npc-stat` is exactly `@section .dc-npc-stat`: same element, same
+  classes, so every book that writes `@section .dc-…` renders as before.
+  Modifier classes stay author classes (`@column-panel .gp-columns-2`). No
+  variants: none of these is styled per specialty. The design guide uses the
+  new markers; `components.yaml` lists them as plugin-origin, and its
+  `card-variants` entry now describes `.section.dc-flaws` (the class the CSS
+  actually selects).
+- devDependency `gutterpress` is `0.11.16-alpha.2`.
 
 ### Removed
 

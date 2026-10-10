@@ -651,11 +651,11 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Specialty cards
 
-`@specialty-card` inside each `@specialty`, in a `@section .dc-card-grid`. Cards alternate `data-position="odd|even"` down the grid.
+`@specialty-card` inside each `@specialty`, in a `@card-grid`. Cards alternate `data-position="odd|even"` down the grid.
 
 <div class="dg-stage dg-tall">
 
-@section .dc-card-grid
+@card-grid
 
 @specialty .augmerc
 
@@ -817,7 +817,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 @end-specialty
 
-@end-section
+@end-card-grid
 
 </div>
 
@@ -894,11 +894,11 @@ Glossaries, lookups, and compendium entries.
 
 ## Choice cards
 
-`@card` inside `@section .dc-flaws`, `.dc-ideals` or `.dc-dreams`.
+`@card` inside `@flaws`, `@ideals` or `@dreams`.
 
 <div class="dg-stage">
 
-@section .dc-flaws
+@flaws
 
 @card
 
@@ -910,9 +910,9 @@ You chase instant gratification without weighing the consequences.
 
 @end-card
 
-@end-section
+@end-flaws
 
-@section .dc-ideals
+@ideals
 
 @card
 
@@ -924,9 +924,9 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 @end-card
 
-@end-section
+@end-ideals
 
-@section .dc-dreams
+@dreams
 
 @card
 
@@ -938,7 +938,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 @end-card
 
-@end-section
+@end-dreams
 
 </div>
 
@@ -1040,7 +1040,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section chassis
 
-A bare `@section`, `@section .dc-plain`, `@section .dc-tabbed` with an `##` and a `###` tab, and `@section .gp-columns-2 .dc-column-panel`.
+A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and `@column-panel .gp-columns-2`.
 
 <div class="dg-stage dg-tall">
 
@@ -1060,23 +1060,23 @@ No substrate, rail or shadow: the text sits on whatever is behind it. A first he
 
 @end-section
 
-@section .dc-tabbed
+@tabbed
 
 ## Tabbed, H2
 
 The heading hangs off the panel edge as the primary tab.
 
-@end-section
+@end-tabbed
 
-@section .dc-tabbed
+@tabbed
 
 ### Tabbed, H3
 
 The subordinate tab: smaller type, tighter padding.
 
-@end-section
+@end-tabbed
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Column panel
 
@@ -1086,7 +1086,7 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-section
+@end-column-panel
 
 </div>
 

@@ -231,7 +231,7 @@ describe("declared wrapper markers", () => {
       glossary: "dc-terms",
       block: "dc-block",
     };
-    expect(Object.keys(markers).filter((k) => k !== "specialty-card").sort()).toEqual(Object.keys(expected).sort());
+    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
       expect(html, name).toContain(`<div class="${cls}">`);
@@ -258,6 +258,34 @@ describe("declared wrapper markers", () => {
       expect(html, open).toContain('<div class="dc-block-title">A &amp; B</div>');
     }
     expect(render(wrap("@block .dc-codex", "@end-block")).html).not.toContain("dc-block-title");
+  });
+
+  test("section markers are core sections: same HTML as the @section spelling", () => {
+    const expected = {
+      "column-panel": "dc-column-panel",
+      tabbed: "dc-tabbed",
+      "card-grid": "dc-card-grid",
+      "citizen-walkthrough": "dc-citizen-walkthrough",
+      "fiction-excerpt": "dc-fiction-excerpt",
+      "npc-stat": "dc-npc-stat",
+      flaws: "dc-flaws",
+      ideals: "dc-ideals",
+      dreams: "dc-dreams",
+    };
+    expect(Object.keys(markers).filter((k) => markers[k].section).sort()).toEqual(Object.keys(expected).sort());
+    for (const [name, cls] of Object.entries(expected)) {
+      const declared = render(wrap(`@${name} .gp-columns-2`, `@end-${name}`, "## T"));
+      const written = render(wrap(`@section .${cls} .gp-columns-2`, "@end-section", "## T"));
+      expect(declared.html, name).toContain(`<div class="section ${cls} gp-columns-2"`);
+      expect(declared.html, name).toBe(written.html);
+      expect(declared.warnings, name).toEqual([]);
+    }
+  });
+
+  test("a section marker closes at the next @section like any section, and @continue keeps its class", () => {
+    const { html, warnings } = render(["@npc-stat", "", "x", "", "@section", "", "y", "", "@end-section"].join("\n"));
+    expect(html).toMatch(/<div class="section dc-npc-stat"><p>x<\/p>\s*<\/div><div class="section"/);
+    expect(warnings).toEqual([]);
   });
 
   test("a wrapper left open closes at the next @section and at end of document without a warning", () => {

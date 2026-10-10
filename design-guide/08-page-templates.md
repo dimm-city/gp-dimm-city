@@ -106,14 +106,14 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@section .dc-fiction-excerpt` sets narrative typography and floats the first image in the flow. `---{.column-break}` splits fiction from the rules column that follows.
+A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow. `---{.column-break}` splits fiction from the rules column that follows.
 
 ```markdown {.dg-split}
 @chapter C.01 #ch-citizen ch="1"
 
 @page intro
 
-@section .dc-fiction-excerpt
+@fiction-excerpt
 
 # Who Do You Dream to Be?
 
@@ -123,7 +123,7 @@ A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its f
 
 I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out.
 
-@end-section
+@end-fiction-excerpt
 
 ---{.column-break}
 
@@ -142,12 +142,12 @@ The footer-free variant is `@page .page-chapter-start .dc-chapter-start` with a 
 
 ## Citizen File walkthrough
 
-`@section .dc-citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Add `.gp-columns-2 .dc-column-panel` to put two short fields side by side. Pair it with `@page .dc-citizen-file-page` for the running header.
+`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Add `.gp-columns-2 .dc-column-panel` to put two short fields side by side. Pair it with `@page .dc-citizen-file-page` for the running header.
 
 ```markdown
 @page .dc-citizen-file-page
 
-@section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .gp-columns-2 .dc-column-panel
 
 #### What's Yr Handle?
 
@@ -157,14 +157,14 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
 
-@end-section
+@end-citizen-walkthrough
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .gp-columns-2 .dc-column-panel
 
 #### What's Yr Handle?
 
@@ -174,14 +174,14 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
 
-@end-section
+@end-citizen-walkthrough
 
 </div>
 
 
 ## Specialty catalog page
 
-`@page .card-grid` plus a `@section .dc-card-grid` of specialty cards, each in its own `@specialty`. Keep the cards uniform — identical chrome is what makes the choices comparable.
+`@page .card-grid` plus a `@card-grid` of specialty cards, each in its own `@specialty`. Keep the cards uniform — identical chrome is what makes the choices comparable.
 
 ```markdown {.dg-split}
 @page .card-grid
@@ -194,7 +194,7 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 
 @end-lede
 
-@section .dc-card-grid
+@card-grid
 
 @specialty .augmerc
 
@@ -212,7 +212,7 @@ Heavily armed and wired for war.
 
 @end-specialty
 
-@end-section
+@end-card-grid
 ```
 
 Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview).
@@ -264,10 +264,10 @@ Rendered: [Specialty Profile](#ch-example-specialty-profile).
 
 ## Choice page
 
-Flaws, ideals, and dreams: a `@section .dc-flaws` (or `.dc-ideals`, `.dc-dreams`) of `@card` blocks. The section class colors every card's accent. Cards stack in one column; use a tape divider between runs rather than columns.
+Flaws, ideals, and dreams: a `@flaws` (or `@ideals`, `@dreams`) of `@card` blocks. The section class colors every card's accent. Cards stack in one column; use a tape divider between runs rather than columns.
 
 ```markdown
-@section .dc-ideals
+@ideals
 
 ## 4. Ideal
 
@@ -283,7 +283,7 @@ You believe in a code, and it's your duty to uphold it.
 
 @end-card
 
-@end-section
+@end-ideals
 ```
 
 ## Running headers and footers

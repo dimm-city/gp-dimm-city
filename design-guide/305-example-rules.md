@@ -2,7 +2,7 @@
 
 @page intro
 
-@section .dc-fiction-excerpt
+@fiction-excerpt
 
 # Are You Lucid Yet?
 
@@ -20,7 +20,7 @@ Behind him, a chorus of giggles breaks from the shadows moving closer.
 
 What's your next move?
 
-@end-section
+@end-fiction-excerpt
 
 ---{.column-break}
 
@@ -50,7 +50,7 @@ In Dimm City RPG, you're not "pretending to be someone else." You're fighting fo
 
 @end-section
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## The City
 
@@ -66,20 +66,20 @@ Nothing here is safe. Nothing here is free. If you want something in this rottin
 
 Other worlds dream of heroes and chosen ones. Dimm City dreams of people desperate enough to matter.
 
-@end-section
+@end-column-panel
 
 
-@section .dc-tabbed
+@tabbed
 ## Dreamers
 
 You're a Dreamer, not because you're special, but because you're reckless enough to try. You open your mouth, your character speaks. You make a move, your character bleeds for it. You want something? Take it.
 
 The city doesn't care if you're heroic. It only remembers the ones who leave scars. A rare few burn bright enough to get noticed. Dimm City calls them Luminaries, not because they shine, but because they leave burn marks.
 
-@end-section
+@end-tabbed
 
 
-@section .dc-tabbed
+@tabbed
 ## The Dream Master
 
 Across the table sits the Dream Master: not your boss, not your babysitter, not your damn referee. They're the city's gut reaction. They show the danger, keep the consequences sharp, and laugh when your plans dissolve like cheap plastic.
@@ -90,9 +90,9 @@ Across the table sits the Dream Master: not your boss, not your babysitter, not 
 
 They don't stop you. They don't protect you. They just make sure the pain fits the crime.
 
-@end-section
+@end-tabbed
 
-@section .dc-tabbed
+@tabbed
 
 ### ROLL A DIE! {#c1-rolling-the-die}
 
@@ -100,9 +100,9 @@ When something matters—really matters—the DM might call for a roll. One toss
 
 No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite back.
 
-@end-section
+@end-tabbed
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Lucid & Surreal
 
@@ -126,7 +126,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 @end-definition
 
-@end-section
+@end-column-panel
 
 @section
 

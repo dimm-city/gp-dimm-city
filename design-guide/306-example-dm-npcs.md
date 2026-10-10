@@ -4,7 +4,7 @@
 
 @page
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## Dream Mastery
 
@@ -24,7 +24,7 @@ Crank up the tension—then let it breathe. When they win, make 'em feel it. Whe
 
 You're not here to run a game. You're here to make the Dream burn bright.
 
-@end-section
+@end-column-panel
 
 ### Core Elements
 
@@ -62,7 +62,7 @@ Bury the math inside the moment and build scenes that hit harder than the dice e
 
 ## NPC Stat Block: Fodder
 
-@section .dc-npc-stat
+@npc-stat
 
 ### Fodder
 
@@ -93,13 +93,13 @@ Patchheads will sometimes carry makeshift weapons like weighted chains, shivs, o
 
 UniArm 100 / Redi-Mobile Cyberleg / RedEye Optical Prosthetic (could be just one or all)
 
-@end-section
+@end-npc-stat
 
 @tape label="Operators"
 
 ## NPC Stat Block: Operator
 
-@section .dc-npc-stat
+@npc-stat
 
 ### Operators
 
@@ -128,13 +128,13 @@ Operator — Medium
 
 UniArm 100 Cyberarm w/Optalanges TechMech kit and Smuggler's Stash Level 1, Light Blaster Pistol
 
-@end-section
+@end-npc-stat
 
 @tape label="Masters"
 
 ## NPC Stat Block: Master
 
-@section .dc-npc-stat
+@npc-stat
 
 ### Masters
 
@@ -161,7 +161,7 @@ Master — Medium
 
 **Swim:** Undertow has the ability to move through water with the same speed as they would otherwise move on land.
 
-@end-section
+@end-npc-stat
 
 ---
 

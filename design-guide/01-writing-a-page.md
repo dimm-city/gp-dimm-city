@@ -49,14 +49,14 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis.
+A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
 
 ## Attributes
 
 Every marker takes the same attribute grammar after its name, in any order: `#id` sets an id, `.class` adds a class, `key=value` or `key="quoted value"` sets a named option.
 
 ```markdown
-@section #core-loop .gp-columns-2 .dc-column-panel
+@column-panel #core-loop .gp-columns-2
 
 @callout variant=warning label="Heat is shared"
 ```
@@ -219,7 +219,7 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 ```markdown
 @chapter #ch-rules ch="4"
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## Augment Points
 
@@ -230,7 +230,7 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-section
+@end-column-panel
 
 > [!NOTE]
 > You start every dream with 10 AP.
@@ -240,7 +240,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## Augment Points
 
@@ -251,7 +251,7 @@ Result {.dg-result}
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-section
+@end-column-panel
 
 > [!NOTE]
 > You start every dream with 10 AP.

@@ -48,7 +48,7 @@ The package balances a run's columns, so a short run ends level. A run that carr
 Add `.dc-column-panel` and the run sits in a card: substrate, top and bottom rules, and the leading `##` or `###` becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.
 
 ```markdown
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## The City
 
@@ -58,14 +58,14 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-section
+@end-column-panel
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## The City
 
@@ -75,7 +75,7 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-section
+@end-column-panel
 
 </div>
 
@@ -84,26 +84,26 @@ Nothing here is safe. Nothing here is free.
 `.dc-tabbed` hangs the section's heading as a tab off the panel edge — a strong break between consecutive topics on one page.
 
 ```markdown
-@section .dc-tabbed
+@tabbed
 
 ## Dreamers
 
 You're a Dreamer, not because you're special, but because you're reckless enough to try.
 
-@end-section
+@end-tabbed
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-tabbed
+@tabbed
 
 ## Dreamers
 
 You're a Dreamer, not because you're special, but because you're reckless enough to try.
 
-@end-section
+@end-tabbed
 
 </div>
 
@@ -209,7 +209,7 @@ DimmCitz scattered, vanished into bolted dens and reinforced rooftops. The air s
 
 </div>
 
-A `@section .dc-fiction-excerpt` places its first image for you — see [Page Templates](#ch-templates).
+A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch-templates).
 
 ## Break control
 

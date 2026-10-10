@@ -35,7 +35,14 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@glossary` | `@end-glossary` | `**term** — gloss` paragraphs |
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
-| `@card` | `@end-card` | inside `@section .dc-flaws` / `.dc-ideals` / `.dc-dreams` |
+| `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
+| `@column-panel` | `@end-column-panel` | usually with `.gp-columns-2`; a card-less run is a bare `@section .gp-columns-2` |
+| `@tabbed` | `@end-tabbed` | first heading (`##` or `###`) hangs as the tab |
+| `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` |
+| `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose |
+| `@fiction-excerpt` | `@end-fiction-excerpt` | prose; the first image floats |
+| `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels |
+| `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | `###` name, `*tags*`, body |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
 | `@specialty` | `@end-specialty` / next `@specialty` | `.augmerc` … `.generalist` |
@@ -54,7 +61,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Class | Goes on | Effect |
 |---|---|---|
 | `.gp-columns-2` · `.gp-columns-3` | `@section` | Two or three columns |
-| `.dc-column-panel` | `@section` with columns | Card substrate, spanning heading bar |
+| `.dc-column-panel` | `@section` with columns (or write `@column-panel`) | Card substrate, spanning heading bar |
 | `.dc-tabbed` | `@section` | Heading hung as a tab |
 | `.dc-plain` | `@section` | No panel chrome |
 | `.gp-no-break` | `@section` | Never split across pages |
