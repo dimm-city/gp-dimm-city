@@ -7,6 +7,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.2.0] - prerelease
+
+Requires Gutterpress 0.11.16-alpha.2 or newer (the desktop app or CLI at
+that version): older versions reject the `section: true` markers below.
+Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
+
 ### Changed
 
 - **Eleven plain wrappers are now declared in a `markers` table** instead of
@@ -40,6 +46,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `card-variants` entry now describes `.section.dc-flaws` (the class the CSS
   actually selects).
 - devDependency `gutterpress` is `0.11.16-alpha.2`.
+- `docs/plans/specialty-section-variants.md`: the plan for styling section
+  components per specialty (`@npc-stat wirephreak`), for a later release.
 
 ### Removed
 
