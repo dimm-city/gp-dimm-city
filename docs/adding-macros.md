@@ -55,7 +55,7 @@ Core rewrites `@npc-stat` into `@section .dc-npc-stat` (plus any author classes)
 
 Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-plain` and `.dc-snug` stay author classes.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`. Everything else below is still hand-written in `plugin.js`.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`. Still hand-written in `plugin.js`: `@callout`, `@dm-note` and `@tape`.
 
 ### Declare, then transform (a macro that rebuilds its content)
 
@@ -80,8 +80,8 @@ md.core.ruler.push('dc_learning_paths', dcLearningPaths); // in the plugin funct
 
 Rules of thumb:
 
-- Register the rule with `md.core.ruler.push` after `dimm_city_transform`, so a `@card` or `@procedure` inside the component is already rewritten when your rule looks at it.
-- The declared token renders as `<div class="…">` with the author's classes and `data-*` attributes. Keep it as the element when that is what you want (`@learning-path`), or set `open.hidden = close.hidden = true` and render its attributes yourself when one marker makes several elements (`@skill`: one card per `####`).
+- Register the rule with `md.core.ruler.push`, innermost components first. `@card`, `@outcome` and `@procedure` (`dcCards`, `dcOutcomes`, `dcProcedures`) are registered before `dcLearningPaths` and `dcSkillCards`, because they sit inside skills and must already be rewritten when the skill's rule reads them. A rule that rewrites the content of a component other components sit in (`dcSkillCards`) lists the ones that belong in its output (`CARD_CONTENT`) so it does not end its card at them.
+- The declared token renders as `<div class="…">` with the author's classes and `data-*` attributes. Keep it as the element when that is what you want (`@learning-path`), or set `open.hidden = close.hidden = true` when the marker is not an element of its own: `@skill` renders its attributes itself (one card per `####`), `@procedure` renders nothing (the step list is the element).
 - Read the enclosing components from `enclosing`, not from a global: `@learning-path` takes its `data-path-ref` from the enclosing `@specialty`, whichever way the specialty was spelled.
 - Structure rules (what may sit inside what) go in the declaration's `validate(component)`, not in the transform. It receives `{ name, variant, attrs, line, text, blocks }`, where a nested marker is `{ type: 'component', name, line }`, and returns problem messages (or `{ message, line }`) in plain language, with the fix. Core reports them as layout warnings, so they reach `gutterpress validate`, the Problems panel and the build log.
 - Test through `createMarkdownRenderer([{ name, plugin, options, markers }])`: a bare `new MarkdownIt().use(plugin)` never sees `markers`.
@@ -119,7 +119,7 @@ Rules of thumb:
 
 ## Blank-line requirement for markers
 
-Macro open and close markers **must** be separated from surrounding content by blank lines. Without the blank lines, markdown-it merges the marker line into the preceding or following paragraph and the macro is silently ignored.
+The hand-written markers (`@callout`, `@dm-note`, `@tape`) **must** be separated from surrounding content by blank lines. Without them, markdown-it merges the marker line into the preceding or following paragraph and the macro is silently ignored. Markers Gutterpress core knows, which includes every declared marker (`@card`, `@outcome`, `@procedure`, `@skill`, …), are recognised even straight under a paragraph line, a list item or a quote; a blank line is still the habit to keep.
 
 Correct:
 
@@ -140,14 +140,12 @@ This is the callout body.
 @end-callout
 ```
 
-The rule applies to every open marker (`@macro-name`) and every close marker (`@end-macro-name`):
+The rule applies to a hand-written open marker (`@callout`) and close marker (`@end-callout`):
 
 - Open marker: must have a blank line **after** it before the first content line.
 - Close marker: must have a blank line **before** it after the last content line.
 
-When two macros appear back-to-back (e.g. multiple `@skill` cards inside a `@learning-path`), each open/close pair must still follow this rule — no two markers should share the same paragraph block.
-
-This is a markdown-it parsing constraint, not a plugin limitation. If a macro appears to render nothing, missing blank lines around its markers are the first thing to check.
+This is a markdown-it parsing constraint, not a plugin limitation. If a hand-written macro appears to render nothing, missing blank lines around its markers are the first thing to check.
 
 ## 1. Design the emitted HTML first
 
@@ -191,7 +189,7 @@ Rules:
 
 ## 2. Add the marker to `plugin.js`
 
-For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. A macro that rebuilds its content, like `@skill`, is declared too and transformed by a core rule (see "Declare, then transform" above). The hand-written `dimm_city_transform` handlers that remain (`@card`, `@outcome`, `@procedure`, `@callout`, `@dm-note`, `@tape`) follow this pattern, and are not the one to copy for a new macro:
+For a simple wrapper macro, use the `markers` table above instead of the hand-written pattern below. A macro that rebuilds its content, like `@skill`, is declared too and transformed by a core rule (see "Declare, then transform" above). The hand-written `dimm_city_transform` handlers that remain (`@callout`, `@dm-note`, `@tape`) follow this pattern, and are not the one to copy for a new macro:
 
 ```js
 const intelMarker = parseMarker(tok, tokens, i, '@intel-card');

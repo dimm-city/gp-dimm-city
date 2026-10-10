@@ -1,8 +1,9 @@
 @outcome
 
-20 | Crit | {{crit}}
-15 | Success | {{success}}
-10 | Partial | {{partial}}
-1 | Fumble | {{fumble}}
+20 | Triumph | {{triumph}}
+11–19 | Success | {{success}}
+6–10 | Hard Choice | {{hard-choice}}
+2–5 | Failure | {{failure}}
+1 | Catastrophe | {{catastrophe}}
 
 @end-outcome

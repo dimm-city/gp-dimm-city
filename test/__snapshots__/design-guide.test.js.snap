@@ -132,33 +132,32 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 </code></pre>
 <p>Standard markdown elements take attributes too, with braces at the end of the element: <code>## Title {.dc-spray}</code>, <code>![alt](img.png){.dc-img-float-right}</code>, and <code>@skill {.dc-allow-split}</code> for a class on a component macro.</p>
 <h2>The blank-line rule</h2>
-<p>Markers are paragraphs to markdown. A marker directly under a list item or paragraph line becomes part of that paragraph and is never seen. Put a blank line before and after every marker.</p>
-<pre><code data-source-range="69:77" class="language-markdown">@procedure
+<p>Put a blank line before and after every marker. Most markers are read even when they sit straight under a list or a line of text, but <code>@callout</code>, <code>@dm-note</code> and <code>@tape</code> are paragraphs to markdown: directly under a list item or paragraph line they become part of that paragraph and are never seen.</p>
+<pre><code data-source-range="69:76" class="language-markdown">@callout variant=note
 
-1. Pick a Spec.
-2. Spend 6 Spec Points.
+Pick a Spec. Spend 6 Spec Points.
 
-@end-procedure
+@end-callout
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<ol class="dc-steps">
-  <li><span class="dc-step-no">01</span><span>Pick a Spec.</span></li>
-  <li><span class="dc-step-no">02</span><span>Spend 6 Spec Points.</span></li>
-</ol>
+<div class="dc-alert dc-note">
+<span class="dc-alert-label">Note</span>
+<p>Pick a Spec. Spend 6 Spec Points.</p>
 </div>
-<p>Without the blank line before <code>@end-procedure</code>, the closer is swallowed by the last list item and the procedure stays open to the end of the page.</p>
+</div>
+<p>Without the blank line before <code>@end-callout</code>, the closer is swallowed by the last line of the callout and the callout stays open to the end of the page.</p>
 <h2>Markdown the system styles</h2>
 <p>Nothing below needs a class or a marker. The package styles the standard elements the way a Dimm City page expects.</p>
 <h3>Headings</h3>
-<pre><code data-source-range="99:105" class="language-markdown"># Chapter title
+<pre><code data-source-range="97:103" class="language-markdown"># Chapter title
 ## Section heading
 ### Sub-section
 #### Item heading
 </code></pre>
 <p><code>#</code> opens a chapter or a specialty. <code>##</code> is a section with an accent rule. <code>###</code> labels a column or a sub-topic. <code>####</code> is an item: a skill, a gear entry, a stat-block name. In a two-column layout, <code>###</code> and <code>####</code> are the workhorses — <code>#</code> and <code>##</code> are too wide for a 3.5-inch column.</p>
 <h3>Emphasis and inline code</h3>
-<pre><code data-source-range="110:115" class="language-markdown">**Bold** lands in burnt orange.
+<pre><code data-source-range="108:113" class="language-markdown">**Bold** lands in burnt orange.
 *Italic* shifts to warm smoke.
 \`SysChk\` marks a keyword that is also a mechanic.
 </code></pre>
@@ -166,7 +165,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 <p><strong>Bold</strong> lands in burnt orange. <em>Italic</em> shifts to warm smoke. <code>SysChk</code> marks a keyword that is also a mechanic.</p>
 </div>
 <h3>Lists</h3>
-<pre><code data-source-range="124:131" class="language-markdown">- A loose list
+<pre><code data-source-range="122:129" class="language-markdown">- A loose list
 - of short items
 
 1. An ordered list
@@ -174,35 +173,35 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 </code></pre>
 <div class="dg-stage dg-on-paper">
 <ul>
-<li data-source-range="134:135">A loose list</li>
-<li data-source-range="135:137">of short items</li>
+<li data-source-range="132:133">A loose list</li>
+<li data-source-range="133:135">of short items</li>
 </ul>
 <ol>
-<li data-source-range="137:138">An ordered list</li>
-<li data-source-range="138:140">for sequences</li>
+<li data-source-range="135:136">An ordered list</li>
+<li data-source-range="136:138">for sequences</li>
 </ol>
 </div>
 <h3>Tables</h3>
 <p>Pipe tables get the header band, alternating fills, and the data type size. Roll tables, option tables, and stat references are all plain tables.</p>
-<pre><code data-source-range="146:152" class="language-markdown">| Band | Range |
+<pre><code data-source-range="144:150" class="language-markdown">| Band | Range |
 |---|---|
 | **Reach** | Adjacent |
 | **Near** | Same room |
 </code></pre>
 <div class="dg-stage">
 <table>
-<thead data-source-range="155:156">
-<tr data-source-range="155:156">
+<thead data-source-range="153:154">
+<tr data-source-range="153:154">
 <th>Band</th>
 <th>Range</th>
 </tr>
 </thead>
-<tbody data-source-range="157:159">
-<tr data-source-range="157:158">
+<tbody data-source-range="155:157">
+<tr data-source-range="155:156">
 <td><strong>Reach</strong></td>
 <td>Adjacent</td>
 </tr>
-<tr data-source-range="158:159">
+<tr data-source-range="156:157">
 <td><strong>Near</strong></td>
 <td>Same room</td>
 </tr>
@@ -211,19 +210,19 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 </div>
 <h3>Blockquote</h3>
 <p>A plain <code>&gt;</code> quote is an epigraph: accent rail, italic body. Inside a skill card the first <code>&gt;</code> line is the card’s flavor.</p>
-<pre><code data-source-range="166:171" class="language-markdown">&gt; Every city has a language.
+<pre><code data-source-range="164:169" class="language-markdown">&gt; Every city has a language.
 &gt;
 &gt; — Hollis Vance
 </code></pre>
 <div class="dg-stage">
 <blockquote>
-<p data-source-range="174:175">Every city has a language.</p>
-<p data-source-range="176:177">— Hollis Vance</p>
+<p data-source-range="172:173">Every city has a language.</p>
+<p data-source-range="174:175">— Hollis Vance</p>
 </blockquote>
 </div>
 <h3>Definition list</h3>
 <p>A term line and a <code>: definition</code> line render as the on-brand glossary form.</p>
-<pre><code data-source-range="184:191" class="language-markdown">Tick
+<pre><code data-source-range="182:189" class="language-markdown">Tick
 : A heartbeat. Used in ability text to mean *immediately*.
 
 Reach
@@ -231,21 +230,21 @@ Reach
 </code></pre>
 <div class="dg-stage">
 <dl>
-<dt data-source-range="194:194">Tick</dt>
-<dd data-source-range="195:197">A heartbeat. Used in ability text to mean <em>immediately</em>.</dd>
-<dt data-source-range="197:197">Reach</dt>
-<dd data-source-range="197:200">Close enough to touch.</dd>
+<dt data-source-range="192:192">Tick</dt>
+<dd data-source-range="193:195">A heartbeat. Used in ability text to mean <em>immediately</em>.</dd>
+<dt data-source-range="195:195">Reach</dt>
+<dd data-source-range="195:198">Close enough to touch.</dd>
 </dl>
 </div>
 <h3>Smart typography and footnotes</h3>
 <p><code>--</code> becomes an en dash, <code>---</code> an em dash, <code>...</code> an ellipsis, and straight quotes curl. Footnotes use <code>[^label]</code> inline and <code>[^label]: text</code> anywhere in the file; they render at the end of the content flow.</p>
 <h3>Images</h3>
 <p>An image on its own line is a figure. Place it in the flow where it should sit; floats and framing are classes, described in <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
-<pre><code data-source-range="210:213" class="language-markdown">![Scavenger](img/scavenger.png)
+<pre><code data-source-range="208:211" class="language-markdown">![Scavenger](img/scavenger.png)
 </code></pre>
 <h2>A complete page</h2>
 <p>Putting the pieces together — the shape of an ordinary body page in a Dimm City book:</p>
-<pre><code data-source-range="218:237" class="language-markdown">@chapter #ch-rules ch=&quot;4&quot;
+<pre><code data-source-range="216:235" class="language-markdown">@chapter #ch-rules ch=&quot;4&quot;
 
 @column-panel .gp-columns-2
 
@@ -265,15 +264,15 @@ Reach
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-column-panel gp-columns-2" data-source-range="242:243"><h2>Augment Points</h2>
+<div class="section dc-column-panel gp-columns-2" data-source-range="240:241"><h2>Augment Points</h2>
 <p><strong>AP</strong> is your push. If an ability lists an AP cost, you spend it and the effect happens.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="248:249"></div>
+<div class="gp-column-break" aria-hidden="true" data-source-range="246:247"></div>
 <ul>
-<li data-source-range="250:251"><strong>0 AP</strong> — Free to use. Not always safe.</li>
-<li data-source-range="251:253"><strong>1–X AP</strong> — You choose how hard you push.</li>
+<li data-source-range="248:249"><strong>0 AP</strong> — Free to use. Not always safe.</li>
+<li data-source-range="249:251"><strong>1–X AP</strong> — You choose how hard you push.</li>
 </ul>
 </div><div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
-<p data-source-range="255:257">You start every dream with 10 AP.</p>
+<p data-source-range="253:255">You start every dream with 10 AP.</p>
 </div>
 </div>
 </div></div>"

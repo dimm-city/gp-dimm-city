@@ -156,6 +156,7 @@ components:
     emits: ol.dc-steps > li > span.dc-step-no
     css: styles/components/data.css
     breaks: "break-inside: avoid"
+    notes: "Declared marker; no element of its own (its wrapper renders nothing), each numbered list inside is the step list. Left open at the end of the file it warns (declared_marker_eof_close); with no numbered list inside it is reported."
 
   - name: block
     status: live
@@ -184,6 +185,7 @@ components:
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
     css: styles/components/section.css
     breaks: "break-inside: avoid"
+    notes: "Declared marker, no variants: author classes (@card .dc-flaws), #id and key=value attributes ride on the wrapper. Inside a skill it stays in the skill's card. Left open at the end of the file it closes silently."
 
   - name: card-variants
     status: live
@@ -242,7 +244,7 @@ components:
   - name: outcome
     status: live
     origin: plugin
-    recipe: "@outcome [flush] / 20 | Crit | text … @end-outcome, or a | Roll | Outcome | table inside a skill card"
+    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or a | Roll | Outcome | table inside a skill card"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
@@ -260,6 +262,7 @@ components:
       - --dc-outcome-name-opacity
     usage: ["| Roll | Outcome"]
     breaks: "break-inside: avoid; the skill-table form adds data-break-inside=avoid only when the parent card allows splitting"
+    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported."
 
   - name: specialty
     status: live

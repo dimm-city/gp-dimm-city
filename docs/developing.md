@@ -104,8 +104,10 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
    if the plugin handles a macro the guide never demonstrates.
 6. `design-guide/10-reference.md` — the one-line grammar entry.
 
-Markers want a blank line on each side. `@end-procedure` directly under a
-list item is folded into the item by markdown and never closes.
+Markers want a blank line on each side. Declared markers and Gutterpress's
+own are read even straight under a list item or a quote, but `@callout`,
+`@dm-note` and `@tape` are plain paragraphs to markdown: `@end-callout`
+directly under a line of text is folded into it and never closes.
 
 ## Verify
 

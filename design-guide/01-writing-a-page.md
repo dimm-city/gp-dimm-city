@@ -65,31 +65,29 @@ Standard markdown elements take attributes too, with braces at the end of the el
 
 ## The blank-line rule
 
-Markers are paragraphs to markdown. A marker directly under a list item or paragraph line becomes part of that paragraph and is never seen. Put a blank line before and after every marker.
+Put a blank line before and after every marker. Most markers are read even when they sit straight under a list or a line of text, but `@callout`, `@dm-note` and `@tape` are paragraphs to markdown: directly under a list item or paragraph line they become part of that paragraph and are never seen.
 
 ```markdown
-@procedure
+@callout variant=note
 
-1. Pick a Spec.
-2. Spend 6 Spec Points.
+Pick a Spec. Spend 6 Spec Points.
 
-@end-procedure
+@end-callout
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@procedure
+@callout variant=note
 
-1. Pick a Spec.
-2. Spend 6 Spec Points.
+Pick a Spec. Spend 6 Spec Points.
 
-@end-procedure
+@end-callout
 
 </div>
 
-Without the blank line before `@end-procedure`, the closer is swallowed by the last list item and the procedure stays open to the end of the page.
+Without the blank line before `@end-callout`, the closer is swallowed by the last line of the callout and the callout stays open to the end of the page.
 
 ## Markdown the system styles
 

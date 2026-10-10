@@ -22,6 +22,16 @@ always check that the emitted class name has a matching CSS rule before shipping
 - `@continue` inside a skill's card closes the card and opens a `{name} ▸` continuation card. Anywhere else it is core's section continuation.
 - `@end-skills` no longer exists, and `@end-skill` no longer closes the learning path around the skill.
 
+**Content components.** `@card`, `@outcome` and `@procedure` are declared the same way, and rules (`dcCards`, `dcOutcomes`, `dcProcedures`) rewrite what sits inside each:
+
+- `@card` is `div.dc-card`. Inside it the first `####` is `.dc-card-heading`, a quote straight after the heading is `.dc-card-pull`, everything else is `.dc-card-body`, and the last quote in the body is tagged `.dc-card-footer`. A card with only a heading has no body. It takes classes, `#id` and `key=value` attributes (`@card .dc-flaws`, `@card {.dc-flaws}`, `@card class=dc-flaws`).
+- `@outcome` is `div.dc-outcomes`, one row per `roll | name | text` line, coloured by position (crit, hit, mixed, miss, fail; a sixth row is a plain hit). `@outcome flush` (or `.dc-flush`) adds `.dc-flush`. The lines can be in one paragraph or several, with or without blank lines around the markers.
+- `@procedure` turns each numbered list inside it into the zero-padded step list (`ol.dc-steps`). It has no element of its own, so it adds no wrapper to the HTML.
+- They nest like every declared marker. A `@card`, `@outcome` or `@procedure` written in a skill (even after its card, with no `@end-skill`) is part of that skill's card, so an outcome ladder under a skill's abilities is where it should be. A new one closes the one before it, `@end-<name>` closes it, and `@page`, `@section`, `@chapter` and `@continue` close them all. A closer directly under a list item or a quote is a closer: `@end-card` no longer needs a blank line before it.
+- The hand-written `@callout` and `@dm-note` are not closed by them, and do not close them: `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a callout with a procedure in it.
+- A `@card` left open at the end of the document closes silently. A `@procedure` or `@outcome` left open gets core's `declared_marker_eof_close` warning, because whatever follows it is read as its steps or its rows. A closer with nothing open warns (`declared_marker_close_without_open`).
+- The plugin reports, in plain words with the fix: an `@outcome` line that is not `roll | name | text`, a table, list or heading inside an `@outcome` (they are left out), an `@outcome` with no rows, and a `@procedure` with no numbered list (a bullet list does not count).
+
 **All shipped macros:**
 `@chapter`, `@page`, `@section`, `@end-section`, `@spread`, `@page-break`, `@column-break`, `@specialty`, `@end-specialty`,
 `@specialty-intro`, `@end-specialty-intro`, `@specialty-art`, `@end-specialty-art`,

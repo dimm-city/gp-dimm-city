@@ -52,12 +52,34 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   sits inside: the path's title, subtitle and sticker chain, `data-path-ref`,
   and one skill card per `####` heading. The state machine drops from 865 to
   468 lines (`plugin.js` is 97 lines shorter overall, new rules included):
-  its skill, path and specialty flags and branches are gone; the rest of the
-  machine (`@card`, `@outcome`,
-  `@procedure`, `@callout`, `@dm-note`, `@tape`) is untouched and keeps
-  working inside them. `@continue` inside a skill's card still opens the
+  its skill, path and specialty flags and branches are gone. `@continue`
+  inside a skill's card still opens the
   `{name} ▸` continuation card; the classifier that claims it ahead of core
   now reads core's marker tokens instead of the raw paragraphs.
+- **`@card`, `@outcome` and `@procedure` are declared and transformed the same
+  way.** Three more core rules (`dcCards`, `dcOutcomes`, `dcProcedures`) run
+  ahead of the skill rules and rewrite what sits inside each. The state
+  machine drops from 468 to 122 lines: it now holds only `@callout`,
+  `@dm-note`, `@tape`, the retired `@roll-table` / `@options-table` no-ops and
+  the image-only paragraph class. `plugin.js` is another 208 lines shorter
+  (1,765 to 1,557), new rules, validation and docs comments included. The
+  emitted HTML is unchanged: rendering the design guide and both books
+  through the old and new plugin gives the same markup apart from the
+  attributes and the one page listed below.
+  - `@card` is `div.dc-card` with its heading, pull quote, body and footer as
+    before, and takes classes, `#id` and `key=value` as before.
+  - `@outcome` is `div.dc-outcomes`; `flush` is now a declared variant (it
+    adds `.dc-flush` and `data-outcome="flush"`), and `@outcome .dc-flush`
+    works too. The compact form (rows with no blank lines) still works.
+  - `@procedure` still renders only the `ol.dc-steps`: its declared wrapper is
+    hidden, so no `div` appears in the HTML.
+  - A `@card`, `@outcome` or `@procedure` inside a skill stays inside the
+    skill's card, as before.
+  - New on cards and outcomes: `data-source-range`, so the editor can map them.
+- **More structure checks.** An `@outcome` line that is not `roll | name |
+  text`, a table, list or heading inside an `@outcome` (they are left out), an
+  `@outcome` with no rows, and a `@procedure` with no numbered list are
+  reported in plain words, at the line.
 - `@specialty augmerc` is the new spelling for a specialty (names:
   `augmerc`, `proxy`, `streetwarden`, `gutterdruid`, `cybersurgeon`,
   `wirephreak`, `technosorcerer`, `etherlock`, `dualist`, `generalist`, each
@@ -107,10 +129,28 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
 - A skill inside a learning path is numbered `PATHREF.N` by its place in the
   path. An `@end-skill` in the middle of a path used to end the path (the
   skills after it lost their tier); the path now stays open.
-- A `@procedure` whose `@end-procedure` is swallowed into the last list item
-  was closed by accident by a later `@end-skill`; it now stays open to the end
-  of the file and `unclosed_procedure` says so. Put a blank line before
-  `@end-procedure`.
+- A closer straight under a list item or a quote is a closer now, because core
+  reads declared markers there: `@end-procedure` under the last step and
+  `@end-card` under the footer quote no longer need a blank line (they used to
+  be folded into the item or the quote and never closed).
+- `@procedure` and `@outcome` left open at the end of a file warn with core's
+  `declared_marker_eof_close` ("An open @procedure reached end-of-document…"),
+  replacing the plugin's `unclosed_procedure`. An unclosed `@outcome` used to
+  swallow the rest of the file without a word. `@card` still closes silently.
+- `@end-card`, `@end-outcome` and `@end-procedure` with nothing open now warn
+  (`declared_marker_close_without_open`) instead of being ignored.
+- `@callout` and `@dm-note` are still hand-written, so they no longer close a
+  `@card` or `@procedure` that is open, and a card or procedure no longer
+  closes them. `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a
+  callout with the procedure in it. One book chapter wrote exactly that; it
+  used to close the callout at the `@procedure` and leave the steps and the
+  closing paragraph outside its box, and now renders them inside it, as
+  written.
+- A bare word after `@card`, `@outcome` or `@procedure` is no longer a class
+  (core reads it as a variant, and only `flush` is one): write `@card .wide`.
+  No book or guide page used one.
+- An `@outcome` shows only the lines of its own paragraphs: a list or heading
+  inside it is no longer read as a row (it is reported instead).
 - Core drops a declared marker that is already open and nests the next one, so
   a book that closes a path early (`@end-learning-path` above its skills) now
   has its next `@learning-path` nested in the last skill. The checks above name
