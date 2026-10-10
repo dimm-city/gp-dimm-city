@@ -4,49 +4,62 @@
  * IMPORTANT: This plugin only transforms content marked with special markers.
  * Regular markdown content passes through unchanged.
  *
- * MARKERS (support optional key="value" attributes):
- *   @sidebar            → Start a dc-sidebar wrapper
- *   @end-sidebar        → End sidebar wrapper
- *   @sidebar-box        → Start a dc-sidebar-box wrapper
- *   @end-sidebar-box    → End sidebar-box wrapper
- *   @specialty          → Start a specialty wrapper (auto-closes any prior specialty,
- *                          learning-path, or skill)
- *   @end-specialty      → Manually end a specialty wrapper
- *   @definition         → Start a dc-definition-block wrapper
- *   @end-definition     → End definition wrapper
- *   @procedure          → Start a dc-steps procedure wrapper
- *   @end-procedure      → End procedure wrapper (auto-closes on EOF with a warning)
- *   @callout            → Start a dc-alert callout (variant=note|warning|dm|vibe|origin|visit|gear)
- *   @end-callout        → End callout wrapper
- *   @dm-note            → Start a Dream Master note (sugar for @callout variant=dm)
- *   @end-dm-note        → End dm-note wrapper
- *   @block              → Section enclosure card (.dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title")
- *   @end-block          → End block enclosure
- *   @lede               → Start a dc-intro lede wrapper
- *   @end-lede           → End lede wrapper
- *   @learning-path      → Start a learning path section (auto-closes previous sections)
- *   @end-learning-path  → Manually end a learning path section
- *   @skill              → Start a skill card (auto-closes previous skill)
- *   @end-skill          → End skill transformation mode
- *   @continue           → Continuation marker — emits a card with a "{name} ▸"
- *                          tab so an oversized skill card can be split across pages
- *                          while keeping a visible link to its origin card
- *   @specialty-intro    → Cosmetic specialty intro wrapper
- *   @end-specialty-intro
- *   @specialty-card     → Individual specialty card
- *   @end-specialty-card
- *   @specialty-art      → Full-bleed specialty art panel (.dc-specialty-art)
- *   @end-specialty-art
- *   @gear               → Gear card (shorthand for @card .dc-gear)
- *   @end-gear
+ * DECLARED MARKERS (the `markers` export at the bottom of this file — core
+ * Gutterpress parses, nests, closes and source-maps these; this file only
+ * names the element, classes and variants). Each also has an `@end-<name>`:
+ *   @sidebar [inset]     → div.dc-sidebar (`.inset` shorthand works too)
+ *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
+ *   @definition          → div.dc-prose-panel.dc-definition-block
+ *   @specialty-intro     → div.dc-specialty-intro
+ *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
+ *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
+ *   @gear                → div.dc-card.dc-gear
+ *   @toc                 → div.dc-toc
+ *   @lede                → div.dc-intro
+ *   @glossary            → div.dc-terms
+ *   @block [panel|slate|shard|codex] label="Title"
+ *                        → div.dc-block.dc-<variant> + div.dc-block-title
+ *                          (`@block .dc-panel` class form works too)
+ *
+ * DECLARED, THEN TRANSFORMED (declared in `markers`, so core opens, nests and
+ * closes them; core rules below rewrite what sits between the open and close
+ * token — see forEachComponent):
+ *   @specialty [name]    → div.dc-specialty.<name>  (`@specialty augmerc` and
+ *                          `@specialty .augmerc` are the same; names in
+ *                          SPECIALTIES, styled by `.dc-specialty.<name>`)
+ *   @learning-path       → div.dc-learning-path.dc-path-block[data-path-ref]
+ *                          > div.dc-path-shell (title, subtitle, stickers) + skills
+ *   @skill               → one div.dc-skill-card per `####` heading
+ *   @card                → div.dc-card > .dc-card-heading (first ####),
+ *                          .dc-card-pull (a quote right after it), .dc-card-body
+ *                          (the rest; its last blockquote is .dc-card-footer)
+ *   @outcome [flush]     → div.dc-outcomes[.dc-flush]: the d20 ladder, one row
+ *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
+ *   @procedure           → ol.dc-steps: each numbered list inside becomes the
+ *                          zero-padded step list (the wrapper renders nothing)
+ *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
+ *                          Variants (bare word): note, warning, dm, vibe, origin,
+ *                          visit, gear; none is a note. The label is `label="…"`,
+ *                          or the variant's name. `@dm-note` is `@callout dm`
+ *                          (an alias). `variant=` is gone: validate reports it.
+ *   Core's nesting rule is the only one: a declared marker that is already
+ *   open is closed (with everything inside it) when it opens again;
+ *   `@end-<name>` closes that marker and what is inside it; `@page`,
+ *   `@section`, `@chapter` and `@continue` close them all. The structure
+ *   rules (a skill belongs in a path, a path in a specialty, an outcome is
+ *   made of rows, a procedure of a numbered list) are the plugin's:
+ *   the `validate` of each declaration.
+ *
+ * THE REST OF WHAT THIS FILE DOES (plain markdown-it rules, no markers):
+ *   @continue           → Continuation marker — inside a skill's card it emits a
+ *                          card with a "{name} ▸" tab so an oversized skill card
+ *                          can be split across pages while keeping a visible link
+ *                          to its origin card (dcContinueClassifier claims it
+ *                          before core's layout transform; anywhere else it is
+ *                          core's section continuation)
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
- *   @toc                → Table-of-contents wrapper
- *   @end-toc
- *   @glossary           → Glossary wrapper
- *   @end-glossary
- *   @outcome            → 5-rung d20 outcome ladder block
- *   @end-outcome
- *   @tape               → Inline tape divider (`<div class="dc-tape">— § —</div>`)
+ *   `ROLL THE DIE!`      → span.dc-roll-the-die
+ *   an image-only paragraph gets p.dc-img-wrapper
  *
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
@@ -56,23 +69,16 @@
  * SPECIALTY VARIANTS:
  *   Skill card and learning-path variants are controlled by the .specialty.<name>
  *   parent container (CSS parent-selector model), not per-card attributes.
- *   Authors wrap the entire specialty section in @specialty .augmerc and every
+ *   Authors wrap the entire specialty section in @specialty augmerc and every
  *   card inside automatically inherits the shape and accent colors.
  *
- * ATTRIBUTE SUPPORT:
- *   Markers can include key="value", key='value', or key=value pairs:
+ * ATTRIBUTE SUPPORT (core's marker grammar: .class, #id, key=value, {.class}):
  *
  *   @learning-path data-foo="bar"
- *     → <div class="dc-learning-path dc-path-block" data-foo="bar">
- *
- *   @skill id="my-skill" data-category="combat"
- *     → Extra attributes added to skill-card wrapper
+ *     → <div class="dc-learning-path dc-path-block" data-foo="bar" data-path-ref="PRX1">
  *
  *   @skill {.dc-allow-split}
- *     → <div class="dc-skill-card dc-allow-split" ...>
- *
- *   @learning-path {.custom-path}
- *     → <div class="dc-learning-path dc-path-block custom-path" ...>
+ *     → every card of the skill: <div class="dc-skill-card dc-allow-split" ...>
  *
  * LEARNING PATH FORMAT:
  *   @learning-path
@@ -81,6 +87,7 @@
  *   - Skill A
  *   - Skill B
  *   - Skill C
+ *   @skill … (the skills follow, inside the path)
  *
  * SKILL FORMAT:
  *   @skill
@@ -93,7 +100,8 @@
  *   | --- | --- |
  *   | 20 | Critical |
  *
- * Auto-closes at: EOF, @end-skill, @end-learning-path, @learning-path, or @skill
+ * A skill ends at @end-skill, the next @skill, or when what holds it closes
+ * (@end-learning-path, a new @learning-path, @end-specialty, @page, EOF).
  */
 
 function esc(s) {
@@ -135,30 +143,12 @@ function makeToken(type, content, nesting) {
   };
 }
 
-// Add/remove one class on a token's existing `class` attribute without
-// disturbing any other class already there. Used to tag the LAST blockquote
-// in a @card body as `.dc-card-footer` (dc#44): the plugin sees each body
-// blockquote as it streams past and has no lookahead, so it tags the
-// current one and untags whichever one it previously tagged — the tag
-// only ever sits on the most recently seen blockquote, which is exactly
-// the one `blockquote:last-of-type` will match once the card closes.
+// Add one class to a token's existing `class` attribute, keeping the others.
 function addTokenClass(tok, cls) {
   const current = (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
   if (!current.includes(cls)) {
     current.push(cls);
     tok.attrSet('class', current.join(' '));
-  }
-}
-
-function removeTokenClass(tok, cls) {
-  const current = (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
-  const next = current.filter((c) => c !== cls);
-  if (next.length === current.length) return;
-  if (next.length) {
-    tok.attrSet('class', next.join(' '));
-  } else {
-    const idx = tok.attrIndex('class');
-    if (idx >= 0) tok.attrs.splice(idx, 1);
   }
 }
 
@@ -325,6 +315,19 @@ function renderInlineChildren(inlineTok, md) {
   return md.renderer.render(inlineTok.children, md.options, {});
 }
 
+// The blockquote opening at tokens[i], as rendered text (the last paragraph in
+// it, the way every component that turns a quote into a line has always read
+// it), and the index of its close.
+function quoteHtml(tokens, i, md) {
+  let html = '';
+  let end = i + 1;
+  while (end < tokens.length && tokens[end].type !== 'blockquote_close') {
+    if (tokens[end].type === 'inline') html = renderInlineChildren(tokens[end], md);
+    end++;
+  }
+  return { html, end };
+}
+
 function collectTableTokens(tokens, start) {
   const result = [];
   let depth = 0;
@@ -381,6 +384,23 @@ function getRollTier(text) {
   return 'hit';
 }
 
+const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
+const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
+
+// The ladder's label bar and one row per `{ tier, name, roll, text }`; `text`
+// is markdown, so **bold** and ROLL THE DIE! render as they do anywhere else.
+function outcomeRowsHtml(rows, md) {
+  let html = '  <div class="dc-outcomes-label">Outcomes</div>\n';
+  rows.forEach(({ tier, name, roll, text }) => {
+    html += '  <div class="dc-outcome-row ' + tier + '">\n';
+    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll) + '</span></span>\n';
+    html += '    <span class="dc-outcome-text">' + md.renderInline(text) + '</span>\n';
+    html += '  </div>\n';
+  });
+  return html;
+}
+
+// A `| Roll | Outcome |` table in a skill card: tier and name come from the roll.
 function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // data-break-inside="avoid" is added when the parent card can be split (has
   // allow-split) — the polyfill needs this to keep the
@@ -390,34 +410,14 @@ function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // by splitting the card at the outcomes boundary, leaving a headless
   // card-body on one page and the outcomes-only continuation on the next.
   const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  let html = '<div class="dc-outcomes"' + avoidAttr + '>\n';
-  html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-
-  rows.forEach(row => {
-    if (row.length < 2) return;
-    const rollVal = row[0].trim();
-    const outcomeText = row[1].trim();
-    const tier = getRollTier(rollVal);
-
-    // Render markdown inline content (e.g., **bold**, *italic*)
-    const renderedOutcome = md.renderInline(outcomeText);
-
-    const outcomeNameMap = {
-      crit: 'Crit',
-      hit: 'Hit',
-      mixed: 'Hard Choice',
-      miss: 'Miss',
-      fail: 'Catastrophe',
-    };
-
-    html += '  <div class="dc-outcome-row ' + tier + '">\n';
-    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + outcomeNameMap[tier] + '</span><span class="dc-outcome-roll">' + esc(rollVal) + '</span></span>\n';
-    html += '    <span class="dc-outcome-text">' + renderedOutcome + '</span>\n';
-    html += '  </div>\n';
-  });
-
-  html += '</div>\n';
-  return html;
+  const ladder = rows
+    .filter((row) => row.length >= 2)
+    .map((row) => {
+      const roll = row[0].trim();
+      const tier = getRollTier(roll);
+      return { tier, name: OUTCOME_NAMES[tier], roll, text: row[1].trim() };
+    });
+  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(ladder, md) + '</div>\n';
 }
 
 function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
@@ -471,125 +471,6 @@ function parseAbilityFromListItem(html) {
 }
 
 
-// Parse key="value", key='value', key=value, bare .class / #id tokens,
-// and {.class #id} attribute blocks from the body string following a marker keyword.
-//
-// Grammar matches parseMarkerLine() in Gutterpress's markers.js — inlined here
-// rather than imported, because plugin code cannot resolve Gutterpress at runtime:
-//   - Quote-aware tokenization: key="a b" and key='a b' preserve spaces inside quotes
-//   - .classname  — shorthand class (multiple allowed)
-//   - #id         — shorthand id
-//   - key=value   — arbitrary attribute; key="class" splits on whitespace/commas
-//   - bare token  — treated as a class (DC markers have no positional "name" slot)
-//
-// Back-compat: brace blocks {.class #id} are stripped and injected as tokens
-// before the main pass so @specialty {.augmerc} continues to work alongside
-// the new bare-token form @specialty .augmerc.
-function parseAttrs(str) {
-  // Pre-pass: extract brace blocks {.class1 .class2 #id} for back-compat,
-  // then remove them from the string so the main tokenizer doesn't see them.
-  const braceClasses = [];
-  const braceIds = [];
-  const strNoBraces = str.replace(/\{([^}]+)\}/g, (_, inside) => {
-    for (const part of inside.trim().split(/\s+/)) {
-      if (part.startsWith('.')) braceClasses.push(part.slice(1));
-      else if (part.startsWith('#')) braceIds.push(part.slice(1));
-    }
-    return ' ';
-  });
-
-  // Tokenize the remaining string using the same quote-aware tokenizer as
-  // markers.js's parseMarkerLine().
-  const tokens = [];
-  let buf = '';
-  let quote = null;
-  for (let i = 0; i < strNoBraces.length; i++) {
-    const ch = strNoBraces[i];
-    if (quote) {
-      if (ch === quote) quote = null;
-      else buf += ch;
-      continue;
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch;
-      continue;
-    }
-    if (/\s/.test(ch)) {
-      if (buf) tokens.push(buf);
-      buf = '';
-      continue;
-    }
-    buf += ch;
-  }
-  if (buf) tokens.push(buf);
-
-  // Process tokens: mirrors parseMarkerLine's attr-accumulation loop.
-  // DC markers have no positional "name" slot — bare tokens become classes.
-  const attrs = {};
-  const classes = [...braceClasses];
-  if (braceIds.length) attrs['id'] = braceIds[braceIds.length - 1];
-
-  for (const t of tokens) {
-    if (t.startsWith('.')) {
-      const c = t.slice(1).trim();
-      if (c) classes.push(c);
-      continue;
-    }
-    if (t.startsWith('#')) {
-      const id = t.slice(1).trim();
-      if (id) attrs['id'] = id;
-      continue;
-    }
-    const eq = t.indexOf('=');
-    if (eq > 0) {
-      const key = t.slice(0, eq).trim();
-      const val = t.slice(eq + 1).trim();
-      if (!key) continue;
-      if (key === 'class') {
-        val.split(/[,\s]+/).filter(Boolean).forEach((c) => classes.push(c));
-      } else if (key === 'id') {
-        if (val) attrs['id'] = val;
-      } else {
-        attrs[key] = val;
-      }
-      continue;
-    }
-    // Bare token (no . # =) — becomes a class for DC markers
-    if (t) classes.push(t);
-  }
-
-  if (classes.length) attrs['class'] = classes.join(' ');
-  return attrs;
-}
-
-// Check if a paragraph contains a marker and extract any attributes
-// Returns { matched: true, attrs: {...} } or { matched: false }
-function parseMarker(tok, tokens, i, marker) {
-  if (tok.type !== 'paragraph_open') return { matched: false };
-  const inline = tokens[i + 1];
-  if (!inline || inline.type !== 'inline') return { matched: false };
-
-  const content = inline.content.trim();
-
-  // Exact match (no attributes)
-  if (content === marker) {
-    return { matched: true, attrs: {} };
-  }
-
-  // Check if starts with marker followed by space
-  if (content.startsWith(marker + ' ')) {
-    const rest = content.slice(marker.length + 1).trim();
-    return { matched: true, attrs: parseAttrs(rest) };
-  }
-
-  return { matched: false };
-}
-
-// Legacy helper for simple marker checks (no attrs needed)
-function isMarker(tok, tokens, i, marker) {
-  return parseMarker(tok, tokens, i, marker).matched;
-}
-
 // Gutterpress owns bare @continue as a generic section marker and parses it
 // before custom core rules run. Claim the exact bare marker first, then decide
 // before Gutterpress's layout transform whether it belongs to a skill card or
@@ -609,40 +490,32 @@ function dcContinueCandidateBlock(state, startLine, endLine, silent) {
   return true;
 }
 
+// Markers that end a skill: its own closer, the markers that start the next
+// path or specialty, and the layout scopes core closes every declared
+// component at. At this point core has not run yet, so each one is still a
+// `layout_marker` token carrying `meta.kind`.
+const SKILL_ENDS = new Set([
+  'end-skill', 'learning-path', 'end-learning-path', 'specialty', 'end-specialty',
+  'chapter', 'spread', 'page', 'section', 'end-section',
+]);
+
 function dcContinueClassifier(state) {
-  let inSkillMode = false;
-  let inSkillCard = false;
+  let inSkill = false;
+  let inCard = false;
 
-  for (let i = 0; i < state.tokens.length; i++) {
-    const token = state.tokens[i];
-    if (parseMarker(token, state.tokens, i, '@skill').matched) {
-      inSkillMode = true;
-      inSkillCard = false;
-      continue;
+  for (const token of state.tokens) {
+    const kind = token.type === 'layout_marker' ? token.meta.kind : null;
+    if (kind === 'skill') {
+      inSkill = true;
+      inCard = false;
+    } else if (SKILL_ENDS.has(kind)) {
+      inSkill = false;
+      inCard = false;
+    } else if (inSkill && token.type === 'heading_open' && token.tag === 'h4') {
+      inCard = true;
+    } else if (token.type === 'dc_continue_candidate') {
+      token.type = inCard ? 'dc_skill_continue' : 'layout_marker';
     }
-    if (isMarker(token, state.tokens, i, '@end-skill') ||
-        isMarker(token, state.tokens, i, '@end-skills') ||
-        isMarker(token, state.tokens, i, '@learning-path') ||
-        isMarker(token, state.tokens, i, '@end-learning-path') ||
-        isMarker(token, state.tokens, i, '@specialty') ||
-        isMarker(token, state.tokens, i, '@end-specialty')) {
-      inSkillMode = false;
-      inSkillCard = false;
-      continue;
-    }
-    if (token.type === 'layout_marker' &&
-        ['chapter', 'spread', 'page', 'section'].includes(token.meta && token.meta.kind)) {
-      inSkillMode = false;
-      inSkillCard = false;
-      continue;
-    }
-    if (inSkillMode && token.type === 'heading_open' && token.tag === 'h4') {
-      inSkillCard = true;
-      continue;
-    }
-    if (token.type !== 'dc_continue_candidate') continue;
-
-    token.type = inSkillMode && inSkillCard ? 'dc_skill_continue' : 'layout_marker';
   }
 }
 
@@ -722,32 +595,11 @@ function collectOrderedListItems(tokens, startIndex, md) {
   return { items: items, endIndex: i };
 }
 
-// Attributes that should be emitted verbatim (real HTML attributes).
-// Everything else gets a `data-` prefix to avoid colliding with HTML semantics
-// (e.g. an author writing `title=foo` shouldn't produce a real `title` tooltip;
-// they meant `data-title="foo"`). markers.js does the same for marker attributes.
-const PASSTHROUGH_HTML_ATTRS = new Set(['class', 'id', 'lang', 'dir', 'role', 'tabindex']);
-
-function buildAttrs(userAttrs, baseClass) {
-  let attrs = ' class="' + esc(baseClass + (userAttrs['class'] ? ' ' + userAttrs['class'] : '')) + '"';
-  for (const [key, val] of Object.entries(userAttrs)) {
-    if (key === 'class') continue;
-    if (key.startsWith('data-') || key.startsWith('aria-') || PASSTHROUGH_HTML_ATTRS.has(key)) {
-      attrs += ' ' + key + '="' + esc(val) + '"';
-    } else {
-      attrs += ' data-' + key + '="' + esc(val) + '"';
-    }
-  }
-  return attrs;
-}
-
 function buildProcedureList(items) {
   let html = '<ol class="dc-steps">\n';
   items.forEach((itemHtml, idx) => {
     const stepNo = String(idx + 1).padStart(2, '0');
-    // Strip @end-procedure if markdown-it consumed it as continuation of the last item
-    const cleaned = itemHtml.replace(/\n?@end-procedure\s*$/g, '').trimEnd();
-    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + cleaned + '</span></li>\n';
+    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + itemHtml.trimEnd() + '</span></li>\n';
   });
   html += '</ol>\n';
   return html;
@@ -867,6 +719,508 @@ function dcAlertsTransform(state) {
 }
 
 /**
+ * Mark image-only paragraphs with `.dc-img-wrapper`, so layout rules can
+ * target them without relying on `p:has(img)`.
+ */
+function dcImageParagraphs(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i + 2 < tokens.length; i++) {
+    const [open, inline, close] = [tokens[i], tokens[i + 1], tokens[i + 2]];
+    if (open.type !== 'paragraph_open' || inline.type !== 'inline' || close.type !== 'paragraph_close') continue;
+    if (inline.children?.length === 1 && inline.children[0].type === 'image') open.attrSet('class', 'dc-img-wrapper');
+  }
+}
+
+/**
+ * `data-position="odd|even"` on every @specialty-card, counted across the
+ * document in order so the card grid alternates its tilt/offset. The wrapper
+ * itself is a declared marker (see `markers` below); this rule only numbers
+ * the open tokens core produced. It never runs under bare markdown-it, which
+ * has no declared markers.
+ */
+function dcSpecialtyCardPositions(state) {
+  let count = 0;
+  for (const tok of state.tokens) {
+    if (tok.type !== 'layout_component_open') continue;
+    if (!(tok.attrGet('class') || '').split(/\s+/).includes('dc-specialty-card')) continue;
+    count++;
+    tok.attrSet('data-position', count % 2 === 0 ? 'even' : 'odd');
+  }
+}
+
+// ── Declared components: @specialty, @learning-path, @skill ────────────────
+//
+// All three are declared in `markers` below, so core opens, nests and closes
+// them: each use is a `layout_component_open` … `layout_component_close` pair
+// whose open token's `meta.kind` is the marker name. The rules here are
+// ordinary core rules that rewrite what sits between a pair.
+
+/**
+ * Call `rewrite(run, enclosing)` for every declared component of `kind`, in
+ * document order. `run` is the component's tokens, open token to close token;
+ * `enclosing` is the open tokens of the components it sits in, outermost first.
+ * Return a replacement run, or nothing to leave it as it is.
+ */
+function forEachComponent(tokens, kind, rewrite) {
+  const enclosing = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+    if (tok.type === 'layout_component_close') {
+      enclosing.pop();
+      continue;
+    }
+    if (tok.type !== 'layout_component_open') continue;
+    if (tok.meta.kind !== kind) {
+      enclosing.push(tok);
+      continue;
+    }
+    let end = i;
+    let depth = 0;
+    do depth += tokens[end++].nesting; while (depth > 0);
+    const run = rewrite(tokens.slice(i, end), enclosing) || tokens.slice(i, end);
+    tokens.splice(i, end - i, ...run);
+    i += run.length - 1;
+  }
+}
+
+// What sits in a learning path before its first skill — the title, the
+// subtitle and the sticker chain — rewritten into the path's header markup.
+function pathShell(tokens, ref, md) {
+  const out = [];
+  let titled = false;
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+
+    // H3 = learning path title (banner). Emitted as an h3, the level it was
+    // written at: the outline (the app's contents panel, PDF bookmarks) nests
+    // specialty (##) > learning path (###) > skill (####). .dc-path-sep is a
+    // real space between the sticker and the title, so the heading's text
+    // reads "PRX1 Refuse Finality" (outline, bookmarks, copy, search, screen
+    // readers); chrome.css gives it the printed gap.
+    if (tok.type === 'heading_open' && tok.tag === 'h3') {
+      const titleText = tokens[i + 1].content || '';
+      out.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(ref) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
+      titled = true;
+      i += 2; // skip inline + heading_close
+      continue;
+    }
+
+    // Blockquote after the title = subtitle.
+    if (tok.type === 'blockquote_open' && titled) {
+      const quote = quoteHtml(tokens, i, md);
+      out.push(makeToken('html_block', '<div class="dc-intro">' + quote.html + '</div>\n'));
+      i = quote.end;
+      continue;
+    }
+
+    // Bullet list = sticker chain.
+    if (tok.type === 'bullet_list_open') {
+      const { items, endIndex } = collectBulletListItems(tokens, i);
+      if (items.length > 0) out.push(makeToken('html_block', buildStickerChain(items)));
+      i = endIndex;
+      continue;
+    }
+
+    out.push(tok);
+  }
+  return out;
+}
+
+/**
+ * `@learning-path`: number it (`data-path-ref`, from the enclosing
+ * `@specialty`'s name — its variant word or its author class — and the path's
+ * place in it) and wrap the path's header in `.dc-path-shell`.
+ */
+function dcLearningPaths(state) {
+  const numbered = new Map(); // enclosing @specialty (or null) → paths numbered so far
+  forEachComponent(state.tokens, 'learning-path', (run, enclosing) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    const specialty = enclosing.findLast((c) => c.meta.kind === 'specialty') || null;
+    const n = (numbered.get(specialty) || 0) + 1;
+    numbered.set(specialty, n);
+    const ref = (specialty ? specialtyCodeFromClass(specialty.attrGet('class')) : '') + n;
+    open.attrSet('data-path-ref', ref);
+
+    const body = run.slice(1, -1);
+    let end = body.findIndex((t) => t.type === 'layout_component_open' && t.meta.kind === 'skill');
+    if (end < 0) end = body.length;
+    return [
+      open,
+      makeToken('html_block', '<div class="dc-path-shell">\n'),
+      ...pathShell(body.slice(0, end), ref, state.md),
+      makeToken('html_block', '</div>\n'),
+      ...body.slice(end),
+      close,
+    ];
+  });
+}
+
+/**
+ * `@skill`: every `####` heading inside it starts a card. The declared
+ * wrapper only carries the author's classes and attributes (`{.dc-allow-split}`,
+ * `id=…`) — it renders nothing itself; each card is rendered from them.
+ *
+ *   h4 title     → card tab (name, tier); a skill in a learning path gets the
+ *                  automatic tier PATHREF.N when it names none
+ *   h5           → sub-header (an "Outcomes" one is dropped: the table has its own label)
+ *   blockquote   → flavor line
+ *   ordered list → ability rows
+ *   Roll | Outcome table → outcomes ladder
+ *   @continue    → closes the card and opens a "{name} ▸" continuation card
+ */
+function dcSkillCards(state) {
+  const md = state.md;
+  const numbered = new Map(); // learning-path open token → cards numbered so far
+  forEachComponent(state.tokens, 'skill', (run, enclosing) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    open.hidden = close.hidden = true;
+    const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
+    // `.dc-allow-split` lets a card taller than a page split; every other card
+    // carries data-break-inside="avoid". An outcomes table or sub-list inside a
+    // splittable card needs its own avoid, because the card has none.
+    const canSplit = (open.attrGet('class') || '').split(/\s+/).includes('dc-allow-split');
+    const content = run.slice(1, -1);
+    const out = [];
+    const emit = (html) => out.push(makeToken('html_block', html));
+    let inCard = false;
+    const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
+    let title = { name: '', tier: '' }; // the current card's title, for @continue
+
+    const cardOpen = (cont) => {
+      const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
+      attrs.push(['name', slugify(title.name)]);
+      if (!canSplit) attrs.push(['data-break-inside', 'avoid']);
+      return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
+    };
+    const endCard = () => {
+      if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
+      inCard = false;
+    };
+
+    for (let i = 0; i < content.length; i++) {
+      const tok = content[i];
+
+      if (tok.type === 'heading_open' && tok.tag === 'h4') {
+        endCard();
+        const parsed = parseSkillTitle(content[i + 1].content || '');
+        title = { name: parsed.name, tier: parsed.tier };
+        let autoTier = '';
+        if (path) {
+          const n = (numbered.get(path) || 0) + 1;
+          numbered.set(path, n);
+          autoTier = path.attrGet('data-path-ref') + '.' + n;
+        }
+        // The skill's name is its `####` heading, kept a heading so the
+        // outline lists it under its learning path. (A continuation card's
+        // repeated title stays a span: it is not a new entry.)
+        emit(
+          cardOpen(false) +
+          '  <div class="dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '') + '">\n' +
+          '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
+          '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' +
+          '  </div>\n' +
+          '  <div class="dc-card-body' + (parsed.highlight ? ' dc-highlight-body' : '') + '">\n' +
+          '    <div class="dc-card-inner">\n'
+        );
+        inCard = true;
+        i += 2; // skip inline + heading_close
+        continue;
+      }
+
+      if (tok.type === 'dc_skill_continue') {
+        endCard();
+        emit(
+          cardOpen(true) +
+          '  <div class="dc-card-tab dc-card-tab-cont">\n' +
+          '    <span class="dc-tab-title">' + esc(title.name) + ' ▸</span>\n' +
+          (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
+          '  </div>\n' +
+          '  <div class="dc-card-body">\n' +
+          '    <div class="dc-card-inner">\n'
+        );
+        inCard = true;
+        continue;
+      }
+
+      // A @callout, @card, @outcome or @procedure is content of the skill's card;
+      // a break or another component (@sidebar, @specialty-art, …) ends it.
+      if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
+        let end = i;
+        let depth = 0;
+        do depth += content[end++].nesting; while (depth > 0);
+        belongsToCard.add(tok).add(content[end - 1]);
+      }
+      if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
+
+      if (!inCard) {
+        out.push(tok);
+        continue;
+      }
+
+      if (tok.type === 'heading_open' && tok.tag === 'h5') {
+        const h5Text = content[i + 1].content || '';
+        if (h5Text.toLowerCase() !== 'outcomes') emit('<div class="dc-sub-header">' + esc(h5Text) + '</div>\n');
+        i += 2;
+        continue;
+      }
+
+      if (tok.type === 'blockquote_open') {
+        const quote = quoteHtml(content, i, md);
+        emit('<p class="dc-flavor">' + quote.html + '</p>\n');
+        i = quote.end;
+        continue;
+      }
+
+      if (tok.type === 'ordered_list_open') {
+        const { items, endIndex } = collectOrderedListItems(content, i, md);
+        items.forEach((itemHtml, idx) => {
+          const ability = parseAbilityFromListItem(itemHtml);
+          if (!ability) {
+            emit('<p>' + itemHtml + '</p>\n'); // not "**N AP** *Name:* text": keep it as a paragraph
+            return;
+          }
+          let posAttrs = '';
+          if (items.length > 1) {
+            if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
+            if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
+          }
+          emit(
+            '<div class="dc-ability"' + posAttrs + '>\n' +
+            '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
+            '  <p class="dc-ability-text">' + ability.text + '</p>\n' +
+            '</div>\n'
+          );
+        });
+        i = endIndex;
+        continue;
+      }
+
+      // Keep short sub-lists whole (e.g. an "Arm:" bullet stranded from "Leg:").
+      if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
+
+      if (tok.type === 'table_open') {
+        const tableTokens = collectTableTokens(content, i);
+        const tableClass = classifyTable(getTableHeaders(tableTokens));
+        // Tables this plugin does not transform pass through untouched, thead
+        // and all (rebuilding them from tbody rows once left 64 of 86 tables
+        // headerless).
+        if (tableClass) {
+          emit(buildTable(tableTokens, tableClass, md, canSplit));
+          i = skipToTableClose(content, i);
+          continue;
+        }
+      }
+
+      out.push(tok);
+    }
+    endCard();
+    return [open, ...out, close];
+  });
+}
+
+// ── Declared components: @card, @outcome, @procedure ───────────────────────
+//
+// Declared in `markers` like the three above, rewritten by core rules that
+// run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
+// inside a skill must already be in its final form when the skill's rule
+// reads it. They stay inside the skill's card (see CARD_CONTENT).
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure']);
+
+/**
+ * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
+ * the first `####` becomes `.dc-card-heading`, a blockquote straight after it
+ * becomes `.dc-card-pull`, and everything else goes in `.dc-card-body`; the
+ * last blockquote in the body is tagged `.dc-card-footer` (dc#44). A card with
+ * nothing after its heading has no body.
+ */
+function dcCards(state) {
+  const md = state.md;
+  const html = (text) => makeToken('html_block', text);
+  forEachComponent(state.tokens, 'card', (run) => {
+    const out = [];
+    let headed = false;
+    let bodied = false;
+    let footer = null;
+    const openBody = () => {
+      if (!bodied) out.push(html('<div class="dc-card-body">\n'));
+      bodied = true;
+    };
+
+    const content = run.slice(1, -1);
+    for (let i = 0; i < content.length; i++) {
+      const tok = content[i];
+      if (tok.type === 'heading_open' && tok.tag === 'h4' && !headed) {
+        out.push(html('<div class="dc-card-heading">' + renderInlineChildren(content[i + 1], md) + '</div>\n'));
+        headed = true;
+        i += 2; // skip inline + heading_close
+        continue;
+      }
+      if (tok.type === 'blockquote_open' && headed && !bodied) {
+        const quote = quoteHtml(content, i, md);
+        out.push(html('<div class="dc-card-pull">' + quote.html + '</div>\n'));
+        openBody();
+        i = quote.end;
+        continue;
+      }
+      openBody();
+      if (tok.type === 'blockquote_open') footer = tok;
+      out.push(tok);
+    }
+    if (footer) addTokenClass(footer, 'dc-card-footer');
+    if (bodied) out.push(html('</div>\n'));
+    return [run[0], ...out, run[run.length - 1]];
+  });
+}
+
+/**
+ * `@outcome [flush]`: the wrapper is `div.dc-outcomes` (`flush` adds
+ * `.dc-flush`). Each `roll | name | text` line becomes a row, coloured by
+ * position: crit, hit, mixed, miss, fail.
+ */
+function dcOutcomes(state) {
+  forEachComponent(state.tokens, 'outcome', (run) => {
+    const lines = [];
+    let depth = 0;
+    for (let i = 1; i < run.length - 1; i++) {
+      // a row is a line of the outcome's own paragraphs; a list or heading in it is not
+      if (run[i].type === 'inline' && depth === 1 && run[i - 1].type === 'paragraph_open') lines.push(...run[i].content.split('\n'));
+      depth += run[i].nesting;
+    }
+    const rows = lines
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((line, i) => {
+        const [roll = '', name = '', text = ''] = line.split('|').map((cell) => cell.trim());
+        return { tier: OUTCOME_TIERS[i] || 'hit', name, roll, text };
+      });
+    return [run[0], makeToken('html_block', outcomeRowsHtml(rows, state.md)), run[run.length - 1]];
+  });
+}
+
+/**
+ * `@procedure`: every numbered list inside becomes the zero-padded step list
+ * (`ol.dc-steps`). The declared wrapper renders nothing itself: the list is
+ * the element, as it has always been.
+ */
+function dcProcedures(state) {
+  forEachComponent(state.tokens, 'procedure', (run) => {
+    const [open, close] = [run[0], run[run.length - 1]];
+    open.hidden = close.hidden = true;
+    const out = [];
+    for (let i = 1; i < run.length - 1; i++) {
+      if (run[i].type !== 'ordered_list_open') {
+        out.push(run[i]);
+        continue;
+      }
+      const { items, endIndex } = collectOrderedListItems(run, i, state.md);
+      if (items.length > 0) out.push(makeToken('html_block', buildProcedureList(items)));
+      i = endIndex;
+    }
+    return [open, ...out, close];
+  });
+}
+
+// ── Declared component: @callout (and its alias @dm-note) ──────────────────
+//
+// `@callout note|warning|dm|vibe|origin|visit|gear` is a declared wrapper:
+// core adds `dc-alert`, the variant's class and any author classes. What core
+// cannot know is each variant's default label, so a rule adds it when the
+// author wrote no `label="…"`. A missing or unrecognised variant is a plain
+// note, as it always was.
+const CALLOUTS = {
+  note: { class: 'dc-note', label: 'Note' },
+  warning: { class: 'dc-note warning', label: 'Warning' },
+  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
+  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
+  origin: { class: 'dc-origin-callout', label: 'Origin' },
+  visit: { class: 'dc-visit-callout', label: 'Visit' },
+  gear: { class: 'dc-gear-callout', label: 'Gear' },
+};
+
+function dcCallouts(state) {
+  forEachComponent(state.tokens, 'callout', ([open, ...rest]) => {
+    const variant = Object.hasOwn(CALLOUTS, open.meta.variant) ? open.meta.variant : 'note';
+    if (variant !== open.meta.variant) {
+      // no variant class came from core: the default note keeps its place right after dc-alert
+      open.attrSet('class', open.attrGet('class').replace('dc-alert', 'dc-alert dc-note'));
+    }
+    if (open.meta.labelled) return; // an explicit label="…" wins
+    const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
+    return [open, label, ...rest];
+  });
+}
+
+// `variant=` was the old way to pick one; it now reads as a plain attribute
+// and would silently render a note, so say so once, on the marker's line.
+function validateCallout({ attrs }) {
+  if (attrs.variant === undefined) return [];
+  return [`no longer takes variant=${attrs.variant}; write "@callout ${attrs.variant}" instead.`];
+}
+
+/**
+ * Structure checks (core runs these on the declared markers below and reports
+ * them as layout warnings). They are the plugin's rules, not core's: core
+ * only knows that declared markers nest.
+ */
+function validateSpecialty({ blocks }) {
+  // One problem per run of skills sitting directly in the specialty: the
+  // first skill after a learning path (or at the start). The usual cause is a
+  // single early `@end-learning-path`, which strands every skill after it.
+  const components = blocks.filter((b) => b.type === 'component');
+  return components
+    .filter((b, i) => b.name === 'skill' && components[i - 1]?.name !== 'skill')
+    .map((b) => ({
+      line: b.line,
+      message:
+        'This skill (and any right after it) is outside a learning path. If an `@end-learning-path` above it ' +
+        'closed the path early, remove that line; otherwise move the skills into a `@learning-path`.',
+    }));
+}
+
+function validateSkill({ blocks }) {
+  return blocks
+    .filter((b) => b.type === 'component' && (b.name === 'learning-path' || b.name === 'specialty'))
+    .map((b) => ({
+      line: b.line,
+      message:
+        `This @${b.name} starts inside the skill above it, so it is nested in that skill's card. ` +
+        `Close the skill with \`@end-skill\` before it.`,
+    }));
+}
+
+function validateOutcome({ blocks }) {
+  const problems = [];
+  let rows = 0;
+  for (const block of blocks) {
+    if (block.type !== 'paragraph') {
+      problems.push({
+        line: block.line,
+        message: `Only lines written as \`roll | name | text\` are used here, so this ${block.type} is left out.`,
+      });
+      continue;
+    }
+    block.text.split('\n').forEach((raw, k) => {
+      const row = raw.trim();
+      if (!row || row.startsWith('#')) return;
+      rows++;
+      if (row.split('|').length < 3) {
+        problems.push({
+          line: block.line + k,
+          message: `"${row.length > 40 ? row.slice(0, 40) + '…' : row}" is not a row. Write each one as \`roll | name | text\`, for example \`20 | Crit | You flow.\``,
+        });
+      }
+    });
+  }
+  if (!rows && !problems.length) problems.push('This outcome has no rows. Add one `roll | name | text` line per result.');
+  return problems;
+}
+
+function validateProcedure({ blocks }) {
+  if (blocks.some((b) => b.type === 'list' && b.ordered)) return [];
+  return ['It has no numbered list, so no steps are drawn. Write the steps as `1.`, `2.`, `3.` between @procedure and @end-procedure.'];
+}
+
+/**
  * Main plugin function - the default export Gutterpress loads
  */
 export default function dimmCityPlugin(md, options = {}) {
@@ -884,6 +1238,8 @@ export default function dimmCityPlugin(md, options = {}) {
   md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
     '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
+
+  md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
 
   // NOTE: Chapter-opener composite behaviour is intentionally NOT handled
   // by the plugin. The author markdown
@@ -905,1198 +1261,114 @@ export default function dimmCityPlugin(md, options = {}) {
   // variant chrome, the chevron-styled h1) is provided by CSS attribute
   // selectors in components/*.css matching this structure.
 
-  // Transform tokens after parsing
-   md.core.ruler.push('dimm_city_transform', function (state) {
-     const tokens = state.tokens;
-     const newTokens = [];
-
-     // State tracking
-     let inSpecialty = false;
-     let inLearningPath = false;
-     let inSkillMode = false;
-     let inSkillCard = false;
-      let inOutcomeBlock = false;
-      let outcomeBlockItems = [];
-      let outcomeBlockFlush = false;
-      let inLede = false;
-      let inSidebar = false;
-      let inSidebarBox = false;
-      let inDefinition = false;
-      let inProcedure = false;
-      let inCallout = false;
-      let inDmNote = false;
-      let inBlock = false;
-      let inCard = false;
-      let inGear = false;
-      let inToc = false;
-      let inGlossary = false;
-      let inSpecialtyCard = false;
-      let inSpecialtyIntro = false;
-      let inSpecialtyArt = false;
-      let cardHeadingDone = false;
-      let cardPullDone = false;
-      let cardBodyOpen = false;
-      /* dc#44: the real markdown-it blockquote_open token most recently seen
-         inside the current @card's body — the candidate for `.dc-card-footer`.
-         Re-pointed every time a new body blockquote appears (see addTokenClass/
-         removeTokenClass below), so whichever one is open when the card closes
-         is the one CSS's own `blockquote:last-of-type` would have picked. */
-      let lastCardBodyBlockquote = null;
-     let learningPathHasTitle = false;
-     let inLearningPathShell = false;
-     let currentSkillAttrs = {};
-     let currentSpecialtyCode = '';
-     let currentLearningPathIndex = 0;
-     let currentLearningPathRef = '';
-     let currentLearningPathName = '';
-      let currentSkillIndex = 0;
-      /* Whether the current skill card allows splitting (has .dc-allow-split).
-         Used by outcomes-table to decide if it needs its own break-inside:avoid. */
-      let currentCardCanSplit = false;
-      /* Last skill-card title (parsed name + tier). Used by @continue to render
-        a continuation card with a "{name} ▸" tab so the reader sees the link
-        between Part 1 and the continuation. */
-     let lastCardTitle = '';
-     let lastCardTier = '';
-     let specialtyCardCount = 0;  // resets per-specialty; used to emit data-position="even/odd"
-
-     // Helper to close all open structures EXCEPT specialty (specialty
-     // wraps the entire chapter section and is closed separately).
-      function closeAll() {
-        if (inCard) {
-          if (cardBodyOpen) {
-            newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
-            cardBodyOpen = false;
-          }
-          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
-          inCard = false;
-          cardHeadingDone = false;
-          cardPullDone = false;
-          lastCardBodyBlockquote = null;
-        }
-        if (inLede) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLede = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        if (inSkillCard) {
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-       }
-       if (inLearningPathShell) {
-         newTokens.push(makeToken('html_block', '</div>\n'));
-         inLearningPathShell = false;
-       }
-        if (inLearningPath) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPath = false;
-        }
-        if (inCallout) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inCallout = false;
-        }
-        if (inDmNote) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDmNote = false;
-        }
-        if (inBlock) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inBlock = false;
-        }
-        if (inGear) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGear = false;
-        }
-        if (inSpecialtyCard) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyCard = false;
-        }
-        if (inSpecialtyIntro) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyIntro = false;
-        }
-        if (inSpecialtyArt) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyArt = false;
-        }
-        if (inToc) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inToc = false;
-        }
-        if (inGlossary) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGlossary = false;
-        }
-        inProcedure = false;
-        learningPathHasTitle = false;
-        inSkillMode = false;
-        currentSkillAttrs = {};
-       currentCardCanSplit = false;
-       currentLearningPathRef = '';
-       currentLearningPathName = '';
-      currentSkillIndex = 0;
-    }
-
-    function closeSpecialty() {
-      closeAll();
-      if (inSpecialty) {
-        newTokens.push(makeToken('html_block', '</div>\n'));
-        inSpecialty = false;
-      }
-       currentSpecialtyCode = '';
-      currentLearningPathIndex = 0;
-      // specialtyCardCount intentionally NOT reset here — it counts
-      // all cards emitted in the current section so even/odd alternation
-      // works across multiple @specialty blocks in the same card-grid.
-    }
-
-    for (let i = 0; i < tokens.length; i++) {
-      const tok = tokens[i];
-
-      // --- @sidebar / @end-sidebar ---
-      const sidebarMarker = parseMarker(tok, tokens, i, '@sidebar');
-      if (sidebarMarker.matched) {
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(sidebarMarker.attrs, 'dc-sidebar') + '>\n'));
-        inSidebar = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-sidebar')) {
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @roll-table / @options-table (DEPRECATED 17.3.0) ---
-      // These macros emitted tier-colored classes (dc-roll-table*, dc-options-table*)
-      // with ZERO backing CSS and had zero usage in the book. They are now no-ops:
-      // the markers (and their @end- counterparts) are stripped so any stray
-      // occurrence renders nothing. Use standard GFM pipe tables instead — they are
-      // auto-styled by dc-core.
-      if (isMarker(tok, tokens, i, '@roll-table') ||
-          isMarker(tok, tokens, i, '@end-roll-table') ||
-          isMarker(tok, tokens, i, '@options-table') ||
-          isMarker(tok, tokens, i, '@end-options-table')) {
-        i += 2;
-        continue;
-      }
-
-      // --- @outcome / @end-outcome ---
-      // Collects pipe-separated rows and emits a styled dc-outcomes block.
-      // Syntax:
-      //   @outcome [flush]
-      //   20 | Crit | You flow. Automatic success — no roll needed.
-      //   11–19 | Hit | You succeed cleanly.
-      //   @end-outcome
-      // Row ordering determines tier class: crit, hit, mixed, miss, fail.
-      // Also handles the compact form where @outcome, rows, and @end-outcome
-      // are all in one paragraph block (no blank lines between them).
-      //
-      // The compact form arrives as ONE multi-line inline token, so it must
-      // fall through to the compact handler below. Without the multi-line
-      // guard `@outcome flush` + rows matches here (content starts with
-      // "@outcome ") and `i += 2` skips the whole inline — swallowing every
-      // row AND the inline @end-outcome, and leaving inOutcomeBlock stuck on.
-      const ocInline = tokens[i + 1];
-      const ocIsCompact = tok.type === 'paragraph_open' && ocInline
-        && ocInline.type === 'inline' && ocInline.content.indexOf('\n') !== -1;
-      if (!ocIsCompact && isMarker(tok, tokens, i, '@outcome')) {
-        inOutcomeBlock = true;
-        outcomeBlockItems = [];
-        // Check for flush modifier
-        const ocContent = ocInline ? ocInline.content.trim() : '';
-        outcomeBlockFlush = /\bflush\b/.test(ocContent.replace('@outcome', ''));
-        i += 2;
-        continue;
-      }
-
-      // Handle compact multiline @outcome block: all rows + @end-outcome in one paragraph
-      if (tok.type === 'paragraph_open' && !inOutcomeBlock) {
-        const inlineTok = tokens[i + 1];
-        if (inlineTok && inlineTok.type === 'inline') {
-          const firstLine = inlineTok.content.split('\n')[0].trim();
-          if (firstLine === '@outcome' || firstLine.startsWith('@outcome ')) {
-            // This is a compact outcome block — process all lines inline
-            inOutcomeBlock = false; // We'll handle it fully here
-            const isFlush = /\bflush\b/.test(firstLine.replace('@outcome', ''));
-            const rows = [];
-            const allLines = inlineTok.content.split('\n');
-            let inBlock = false;
-            for (const line of allLines) {
-              const trimmed = line.trim();
-              if (trimmed === '@outcome' || trimmed.startsWith('@outcome ')) { inBlock = true; continue; }
-              if (trimmed === '@end-outcome') { inBlock = false; continue; }
-              if (inBlock && trimmed && !trimmed.startsWith('#')) rows.push(trimmed);
-            }
-            if (rows.length > 0) {
-              const tierClasses = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-              const wrapperClass = 'dc-outcomes' + (isFlush ? ' dc-flush' : '');
-              let html = '<div class="' + wrapperClass + '">\n';
-              html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-              rows.forEach((line, idx) => {
-                const parts = line.split('|').map(s => s.trim());
-                const range = parts[0] || '';
-                const name  = parts[1] || '';
-                const desc  = parts[2] || '';
-                const tier  = tierClasses[idx] || 'hit';
-                html += '  <div class="dc-outcome-row ' + tier + '">\n';
-                html += '    <span class="dc-outcome-key tier-' + tier + '">';
-                html += '<span class="dc-outcome-name">' + esc(name) + '</span>';
-                html += '<span class="dc-outcome-roll">' + esc(range) + '</span>';
-                html += '</span>\n';
-                html += '    <span class="dc-outcome-text">' + md.renderInline(desc) + '</span>\n';
-                html += '  </div>\n';
-              });
-              html += '</div>\n';
-              newTokens.push(makeToken('html_block', html));
-              i += 2; // skip inline + paragraph_close
-              continue;
-            }
-          }
-        }
-      }
-
-      if (inOutcomeBlock) {
-        // Collect inline tokens (each inline contains one or more lines)
-        if (tok.type === 'inline') {
-          // Each inline token can have newlines — split into lines
-          const lines = tok.content.split('\n');
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed && !trimmed.startsWith('#')) {
-              outcomeBlockItems.push(trimmed);
-            }
-          }
-          continue;
-        }
-        // @end-outcome — emit the block
-        if (isMarker(tok, tokens, i, '@end-outcome')) {
-          inOutcomeBlock = false;
-          const tierClasses = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-          const wrapperClass = 'dc-outcomes' + (outcomeBlockFlush ? ' dc-flush' : '');
-          let html = '<div class="' + wrapperClass + '">\n';
-          html += '  <div class="dc-outcomes-label">Outcomes</div>\n';
-          outcomeBlockItems.forEach((line, idx) => {
-            const parts = line.split('|').map(s => s.trim());
-            const range = parts[0] || '';
-            const name  = parts[1] || '';
-            const desc  = parts[2] || '';
-            const tier  = tierClasses[idx] || 'hit';
-            html += '  <div class="dc-outcome-row ' + tier + '">\n';
-            html += '    <span class="dc-outcome-key tier-' + tier + '">';
-            html += '<span class="dc-outcome-name">' + esc(name) + '</span>';
-            html += '<span class="dc-outcome-roll">' + esc(range) + '</span>';
-            html += '</span>\n';
-            html += '    <span class="dc-outcome-text">' + md.renderInline(desc) + '</span>\n';
-            html += '  </div>\n';
-          });
-          html += '</div>\n';
-          newTokens.push(makeToken('html_block', html));
-          outcomeBlockItems = [];
-          i += 2;
-          continue;
-        }
-        // Skip paragraph open/close wrapper tokens — we only want inline content
-        if (tok.type === 'paragraph_open' || tok.type === 'paragraph_close') {
-          continue;
-        }
-        // Pass through anything else (shouldn't normally occur)
-        continue;
-      }
-
-      // Check for @specialty marker (must come before @learning-path/@skill
-      // since it auto-closes everything else)
-      const sidebarBoxMarker = parseMarker(tok, tokens, i, '@sidebar-box');
-      if (sidebarBoxMarker.matched) {
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(sidebarBoxMarker.attrs, 'dc-prose-panel dc-sidebar-box') + '>\n'));
-        inSidebarBox = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-sidebar-box')) {
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      const definitionMarker = parseMarker(tok, tokens, i, '@definition');
-      if (definitionMarker.matched) {
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        if (inSidebar) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebar = false;
-        }
-        if (inSidebarBox) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSidebarBox = false;
-        }
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(definitionMarker.attrs, 'dc-prose-panel dc-definition-block') + '>\n'));
-        inDefinition = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-definition')) {
-        if (inDefinition) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDefinition = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      const procedureMarker = parseMarker(tok, tokens, i, '@procedure');
-      if (procedureMarker.matched) {
-        // @procedure auto-closes any prior open section so a forgotten
-        // @end-procedure can't strand the previous transform open. closeAll()
-        // also clears inProcedure, so set the flag AFTER closing.
-        closeAll();
-        inProcedure = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-procedure')) {
-        inProcedure = false;
-        i += 2;
-        continue;
-      }
-
-      // --- @callout / @end-callout ---
-      // Block-level alert wrapper. variant="note|warning|dm|vibe|origin|visit|gear"
-      const calloutMarker = parseMarker(tok, tokens, i, '@callout');
-      if (calloutMarker.matched) {
-        closeAll();
-        const variant = (calloutMarker.attrs['variant'] || 'note').toLowerCase();
-        const CALLOUT_VARIANTS = {
-          'note':    { classes: 'dc-note',           label: 'Note' },
-          'warning': { classes: 'dc-note warning',   label: 'Warning' },
-          'dm':      { classes: 'dc-dm-note',        label: 'Dream Master Note' },
-          'vibe':    { classes: 'dc-vibe-callout',   label: 'Vibe' },
-          'origin':  { classes: 'dc-origin-callout', label: 'Origin' },
-          'visit':   { classes: 'dc-visit-callout',  label: 'Visit' },
-          'gear':    { classes: 'dc-gear-callout',   label: 'Gear' },
-        };
-        const cfg = CALLOUT_VARIANTS[variant] || CALLOUT_VARIANTS['note'];
-        const labelOverride = calloutMarker.attrs['label'];
-        const labelText = labelOverride ? esc(labelOverride) : cfg.label;
-        const calloutClass = 'dc-alert ' + cfg.classes +
-          (calloutMarker.attrs['class'] ? ' ' + esc(calloutMarker.attrs['class']) : '');
-        newTokens.push(makeToken('html_block',
-          '<div class="' + calloutClass + '">\n' +
-          '<span class="dc-alert-label">' + labelText + '</span>\n'
-        ));
-        inCallout = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-callout')) {
-        if (inCallout) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inCallout = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @dm-note / @end-dm-note ---
-      // Block-level DM note wrapper. Equivalent to > [!DM] but supports multi-paragraph content.
-      const dmNoteMarker = parseMarker(tok, tokens, i, '@dm-note');
-      if (dmNoteMarker.matched) {
-        closeAll();
-        const labelOverride = dmNoteMarker.attrs['label'];
-        const labelText = labelOverride ? esc(labelOverride) : 'Dream Master Note';
-        newTokens.push(makeToken('html_block',
-          '<div class="dc-alert dc-dm-note">\n' +
-          '<span class="dc-alert-label">' + labelText + '</span>\n'
-        ));
-        inDmNote = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-dm-note')) {
-        if (inDmNote) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inDmNote = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @block (section enclosures) ---
-      // Reusable card-like text section enclosures. Four variants with distinct
-      // clip-path geometry, surface, and accent colors. Each emits a .dc-block
-      // container with an optional titled header band (.dc-block-title).
-      //
-      // Syntax:   @block .dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title"
-
-      const blockUnifiedMarker = parseMarker(tok, tokens, i, '@block');
-      if (blockUnifiedMarker.matched) {
-        closeAll();
-        const blockLabel = blockUnifiedMarker.attrs['label'] ? esc(blockUnifiedMarker.attrs['label']) : '';
-        const blockTitleHtml = blockLabel ? '<div class="dc-block-title">' + blockLabel + '</div>\n' : '';
-        let blockClass = 'dc-block';
-        if (blockUnifiedMarker.attrs['class']) {
-          blockClass += ' ' + blockUnifiedMarker.attrs['class'];
-        } else if (blockUnifiedMarker.attrs['variant']) {
-          blockClass += ' dc-' + blockUnifiedMarker.attrs['variant'].toLowerCase();
-        }
-        newTokens.push(makeToken('html_block', '<div class="' + blockClass + '">\n' + blockTitleHtml));
-        inBlock = true;
-        i += 2;
-        continue;
-      }
-
-
-      if (isMarker(tok, tokens, i, '@end-block')) {
-        if (inBlock) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inBlock = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @card / @end-card ---
-      // Generic card primitive. Emits .dc-card with optional sub-elements:
-      //   .dc-card-heading  — first h4 after @card
-      //   .dc-card-pull     — first blockquote after the heading (move outside body)
-      //   .dc-card-body     — all remaining content
-      // Author syntax:
-      //   @card .dc-flaws
-      //   #### Title
-      //   > Pull quote
-      //   Body paragraph.
-      //   > Footer blockquote
-      //
-      //   @end-card
-      //
-      // IMPORTANT: @end-card must be preceded by a blank line when the last
-      // content before it is a blockquote. Without the blank line markdown-it
-      // lazily continues the blockquote and absorbs the @end-card marker.
-      const cardMarker = parseMarker(tok, tokens, i, '@card');
-      if (cardMarker.matched) {
-        closeAll();
-        const userAttrs = cardMarker.attrs;
-        const extraClass = userAttrs['class'] ? ' ' + userAttrs['class'] : '';
-        const extraId = userAttrs['id'] ? ' id="' + esc(userAttrs['id']) + '"' : '';
-        newTokens.push(makeToken('html_block', '<div class="dc-card' + extraClass + '"' + extraId + '>\n'));
-        inCard = true;
-        cardHeadingDone = false;
-        cardPullDone = false;
-        cardBodyOpen = false;
-        lastCardBodyBlockquote = null;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-card')) {
-        if (inCard) {
-          if (cardBodyOpen) {
-            newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card-body
-            cardBodyOpen = false;
-          }
-          newTokens.push(makeToken('html_block', '</div>\n')); // close .dc-card
-          inCard = false;
-          cardHeadingDone = false;
-          cardPullDone = false;
-          lastCardBodyBlockquote = null;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @specialty-card / @end-specialty-card ---
-      // Summary card used in the choose-specialty overview grid.
-      // Shape and color inherited from .specialty.<name> parent container.
-      const specialtyCardMarker = parseMarker(tok, tokens, i, '@specialty-card');
-      if (specialtyCardMarker.matched) {
-        closeAll();
-        specialtyCardCount++;
-        const positionAttr = ' data-position="' + (specialtyCardCount % 2 === 0 ? 'even' : 'odd') + '"';
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyCardMarker.attrs, 'dc-specialty-card') + positionAttr + '>\n'));
-        inSpecialtyCard = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-card')) {
-        if (inSpecialtyCard) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyCard = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @specialty-intro / @end-specialty-intro ---
-      // Full-page specialty intro panel. Shape/color from .specialty.<name> parent.
-      const specialtyIntroMarker = parseMarker(tok, tokens, i, '@specialty-intro');
-      if (specialtyIntroMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyIntroMarker.attrs, 'dc-specialty-intro') + '>\n'));
-        inSpecialtyIntro = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-intro')) {
-        if (inSpecialtyIntro) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyIntro = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // --- @specialty-art / @end-specialty-art ---
-      // Full-bleed art panel for a specialty profile. Emits .dc-specialty-art
-      // (CSS: components/*.css + page-rules.css `.dc-specialty-art { page: full; }`).
-      const specialtyArtMarker = parseMarker(tok, tokens, i, '@specialty-art');
-      if (specialtyArtMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(specialtyArtMarker.attrs, 'dc-specialty-art') + '>\n'));
-        inSpecialtyArt = true;
-        i += 2;
-        continue;
-      }
-
-      if (isMarker(tok, tokens, i, '@end-specialty-art')) {
-        if (inSpecialtyArt) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inSpecialtyArt = false;
-        }
-        i += 2;
-        continue;
-      }
-
-
-      // --- @toc / @end-toc ---
-      const tocMarker = parseMarker(tok, tokens, i, '@toc');
-      if (tocMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-toc">\n'));
-        inToc = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-toc')) {
-        if (inToc) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inToc = false;
-        }
-        i += 2; continue;
-      }
-
-      // Removed 2026-05-17: @two-column / @three-column / @no-break.
-      // Use @section .gp-columns-2 / @section .gp-columns-3 instead — markers.js
-      // emits identical layout semantics, with the added `.section` class that
-      // picks up `break-inside: avoid` from MARKER_CSS.
-
-      // --- @gear / @end-gear ---
-      // Shorthand for @card .dc-gear — emits a bare `.dc-card.dc-gear`.
-      // NOTE: there is NO .section.dc-gear-list wrapper (an earlier comment
-      // claimed one, and components/*.css carried ~40 lines of CSS keyed on
-      // it that could never match). Style `.dc-card.dc-gear` directly.
-      const gearMarker = parseMarker(tok, tokens, i, '@gear');
-      if (gearMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(gearMarker.attrs, 'dc-card dc-gear') + '>\n'));
-        inGear = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-gear')) {
-        if (inGear) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGear = false;
-        }
-        i += 2; continue;
-      }
-
-      // --- @tape (single-line tape divider) ---
-      const tapeMarker = parseMarker(tok, tokens, i, '@tape');
-      if (tapeMarker.matched) {
-        const labelAttr = tapeMarker.attrs['label'] || '';
-        const extraClass = tapeMarker.attrs['class'] ? ' ' + esc(tapeMarker.attrs['class']) : '';
-        newTokens.push(makeToken('html_block', '<div class="dc-tape' + extraClass + '">' + esc(labelAttr) + '</div>\n'));
-        i += 2; continue;
-      }
-
-      // --- @lede / @end-lede ---
-      // Emits .dc-intro (canonical). The legacy bare `lede` class was removed
-      // 2026-05-17 — there were no CSS rules using it, only the dc-prefixed
-      // form is styled.
-      const ledeMarker = parseMarker(tok, tokens, i, '@lede');
-      if (ledeMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-intro">\n'));
-        inLede = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-lede')) {
-        if (inLede) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLede = false;
-        }
-        i += 2; continue;
-      }
-
-      // --- @glossary / @end-glossary ---
-      const glossaryMarker = parseMarker(tok, tokens, i, '@glossary');
-      if (glossaryMarker.matched) {
-        closeAll();
-        newTokens.push(makeToken('html_block', '<div class="dc-terms">\n'));
-        inGlossary = true;
-        i += 2; continue;
-      }
-      if (isMarker(tok, tokens, i, '@end-glossary')) {
-        if (inGlossary) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inGlossary = false;
-        }
-        i += 2; continue;
-      }
-
-      const specialtyMarker = parseMarker(tok, tokens, i, '@specialty');
-      if (specialtyMarker.matched) {
-        closeSpecialty();
-        const userAttrs = specialtyMarker.attrs;
-        const specClass = 'dc-specialty' + (userAttrs['class'] ? ' ' + userAttrs['class'] : '');
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(userAttrs, 'dc-specialty') + '>\n'));
-        inSpecialty = true;
-        currentSpecialtyCode = specialtyCodeFromClass(specClass);
-        currentLearningPathIndex = 0;
-        i += 2;
-        continue;
-      }
-
-      // Check for @end-specialty marker
-      if (isMarker(tok, tokens, i, '@end-specialty')) {
-        closeSpecialty();
-        i += 2;
-        continue;
-      }
-
-      // Check for @learning-path marker
-      const learningPathMarker = parseMarker(tok, tokens, i, '@learning-path');
-      if (learningPathMarker.matched) {
-        closeAll();
-        inLearningPath = true;
-        inLearningPathShell = true;
-        learningPathHasTitle = false;
-        currentLearningPathIndex++;
-        currentLearningPathRef = currentSpecialtyCode + currentLearningPathIndex;
-        currentLearningPathName = '';
-        currentSkillIndex = 0;
-
-        // Build opening tag with any custom attributes (no variant= — use .specialty.<name> parent)
-        const lpUserAttrs = learningPathMarker.attrs;
-        newTokens.push(makeToken('html_block', '<div' + buildAttrs(lpUserAttrs, 'dc-learning-path dc-path-block') + ' data-path-ref="' + esc(currentLearningPathRef) + '">\n<div class="dc-path-shell">\n'));
-        i += 2; // Skip paragraph_open, inline, paragraph_close
-        continue;
-      }
-
-      // Check for @skill marker
-      const skillMarker = parseMarker(tok, tokens, i, '@skill');
-      if (skillMarker.matched) {
-        if (inLearningPathShell) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPathShell = false;
-        }
-        // Close previous skill card if open
-        if (inSkillCard) {
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-        }
-        inSkillMode = true;
-        // Store skill attrs for use when building the card
-        currentSkillAttrs = skillMarker.attrs;
-        i += 2;
-        continue;
-      }
-
-      // Check for @end-skill marker
-      if (isMarker(tok, tokens, i, '@end-skill') || isMarker(tok, tokens, i, '@end-skills')) {
-        closeAll();
-        inSkillMode = false;
-        i += 2;
-        continue;
-      }
-
-      // The bridge above protects skill-card @continue from Gutterpress's
-      // earlier generic section-marker transform. Bare markdown-it instances
-      // still reach this branch as the original paragraph marker.
-      const isBridgedSkillContinue = tok.type === 'dc_skill_continue';
-      if (isBridgedSkillContinue || isMarker(tok, tokens, i, '@continue')) {
-        if (inSkillMode && inSkillCard) {
-          // Close current card
-          newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          inSkillCard = false;
-
-          // No variant class — shape inherited from .specialty.<name> parent container
-
-          // Honor allow-split on continuation cards too
-          const userClassList = (currentSkillAttrs['class'] || '').split(/\s+/).filter(Boolean);
-          const allowSplitCont = userClassList.includes('dc-allow-split');
-          const breakInsideContAttr = allowSplitCont ? '' : ' data-break-inside="avoid"';
-
-          let cardHtml = '<div' + buildAttrs(currentSkillAttrs, 'dc-skill-card dc-skill-card-cont') + ' name="' + esc(slugify(lastCardTitle)) + '"' + breakInsideContAttr + '>\n';
-          const fullTabClassCont = 'dc-card-tab dc-card-tab-cont';
-          cardHtml += '  <div class="' + fullTabClassCont + '">\n';
-          cardHtml += '    <span class="dc-tab-title">' + esc(lastCardTitle) + ' ▸</span>\n';
-          if (lastCardTier) {
-            cardHtml += '    <span class="dc-tab-tier">' + esc(lastCardTier) + '</span>\n';
-          }
-          cardHtml += '  </div>\n';
-          const fullBodyClassCont = 'dc-card-body';
-          cardHtml += '  <div class="' + fullBodyClassCont + '">\n';
-          cardHtml += '    <div class="dc-card-inner">\n';
-
-          newTokens.push(makeToken('html_block', cardHtml));
-          inSkillCard = true;
-          if (!isBridgedSkillContinue) i += 2;
-          continue;
-        }
-      }
-
-      // Check for @end-learning-path marker
-      if (isMarker(tok, tokens, i, '@end-learning-path')) {
-        if (inLearningPathShell) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPathShell = false;
-        }
-        if (inLearningPath) {
-          newTokens.push(makeToken('html_block', '</div>\n'));
-          inLearningPath = false;
-          learningPathHasTitle = false;
-        }
-        i += 2;
-        continue;
-      }
-
-      // Inside @learning-path section
-      if (inLearningPath && !inSkillMode) {
-        // H3 = Learning path title (banner). Emitted as an h3, the level it
-        // was written at: the outline (the app's contents panel, PDF
-        // bookmarks) nests specialty (##) > learning path (###) > skill (####).
-        // .dc-path-sep is a real space between the sticker and the title, so
-        // the heading's text reads "PRX1 Refuse Finality" (outline, bookmarks,
-        // copy, search, screen readers); chrome.css gives it the printed gap.
-        if (tok.type === 'heading_open' && tok.tag === 'h3') {
-          const inlineTok = tokens[i + 1];
-          const titleText = inlineTok && inlineTok.content ? inlineTok.content : '';
-          currentLearningPathName = titleText;
-          newTokens.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(currentLearningPathRef) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
-          learningPathHasTitle = true;
-          i += 2; // Skip heading_open, inline, heading_close
-          continue;
-        }
-
-        // Blockquote = Subtitle/description (after title)
-        if (tok.type === 'blockquote_open' && learningPathHasTitle) {
-          let bqContent = '';
-          let j = i + 1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              bqContent = renderInlineChildren(tokens[j], md);
-            }
-            j++;
-          }
-          newTokens.push(makeToken('html_block', '<div class="dc-intro">' + bqContent + '</div>\n'));
-          i = j;
-          continue;
-        }
-
-        // Bullet list = Sticker chain
-        if (tok.type === 'bullet_list_open') {
-          const { items, endIndex } = collectBulletListItems(tokens, i);
-          if (items.length > 0) {
-            newTokens.push(makeToken('html_block', buildStickerChain(items)));
-          }
-          i = endIndex;
-          continue;
-        }
-
-        // Paragraphs = body prose within the learning path block
-        if (tok.type === 'paragraph_open') {
-          const inlineTok = tokens[i + 1];
-          const closeTok = tokens[i + 2];
-          if (inlineTok && inlineTok.type === 'inline' && closeTok && closeTok.type === 'paragraph_close') {
-            const bodyHtml = renderInlineChildren(inlineTok, md);
-            newTokens.push(makeToken('html_block', '<p>' + bodyHtml + '</p>\n'));
-            i += 2;
-            continue;
-          }
-        }
-
-        // Pass through other content in learning-path
-        newTokens.push(tok);
-        continue;
-      }
-
-      // Inside @card section
-      // (@end-card is handled by the top-level dispatch above, which runs
-      // unconditionally before this block is ever reached.)
-      if (inCard) {
-        // h4 = card heading (first h4 only)
-        if (tok.type === 'heading_open' && tok.tag === 'h4' && !cardHeadingDone) {
-          const inlineTok = tokens[i + 1];
-          const headingHtml = inlineTok && inlineTok.children
-            ? md.renderer.render(inlineTok.children, md.options, {})
-            : esc(inlineTok ? inlineTok.content || '' : '');
-          newTokens.push(makeToken('html_block', '<div class="dc-card-heading">' + headingHtml + '</div>\n'));
-          cardHeadingDone = true;
-          i += 2; // skip inline + heading_close
-          continue;
-        }
-
-        // First blockquote after heading (before body opens) = pull quote
-        if (tok.type === 'blockquote_open' && cardHeadingDone && !cardPullDone && !cardBodyOpen) {
-          let bqContent = '';
-          let j = i + 1;
-          let blockquoteCloseIdx = -1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              // The inline content may have @end-card appended as a lazy continuation.
-              // Extract text, strip the trailing marker, render the inline children.
-              let rawText = tokens[j].content || '';
-              // Remove lazy continuation @end-card from the end
-              rawText = rawText.replace(/\n@end-card\s*$/, '').replace(/\s+@end-card\s*$/, '').trim();
-
-              // Render children, but strip @end-card from the rendered HTML if it appears
-              bqContent = tokens[j].children
-                ? md.renderer.render(tokens[j].children, md.options, {})
-                : esc(rawText);
-              // Strip @end-card from rendered output as a fallback
-              bqContent = bqContent.replace(/\s*@end-card\s*$/, '').replace(/@end-card\s*<\/p>/, '</p>');
-            }
-            j++;
-          }
-          blockquoteCloseIdx = j;
-          newTokens.push(makeToken('html_block', '<div class="dc-card-pull">' + bqContent + '</div>\n'));
-          newTokens.push(makeToken('html_block', '<div class="dc-card-body">\n'));
-          cardPullDone = true;
-          cardBodyOpen = true;
-          i = blockquoteCloseIdx; // for-loop i++ lands at token after blockquote_close
-          continue;
-        }
-
-        // Open body for any non-heading, non-pull content that arrived before body was opened
-        if (!cardBodyOpen) {
-          newTokens.push(makeToken('html_block', '<div class="dc-card-body">\n'));
-          cardBodyOpen = true;
-          // Do NOT skip tok — fall through to passthrough below
-        }
-
-        // Inside body: strip @end-card from blockquotes (lazy continuation artifact)
-        if (tok.type === 'blockquote_open') {
-          let j = i + 1;
-          let blockquoteCloseIdx = -1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              // Strip @end-card from inline content
-              let rawText = tokens[j].content || '';
-              rawText = rawText.replace(/\n@end-card\s*$/, '').replace(/\s+@end-card\s*$/, '').trim();
-              tokens[j].content = rawText;
-            }
-            j++;
-          }
-
-          // dc#44: tag the current blockquote as the card-footer candidate and
-          // untag whichever one held that title before. The plugin streams
-          // tokens once with no lookahead, so it can't know in advance which
-          // body blockquote will turn out to be last — instead it keeps the
-          // tag on exactly one token at a time, moving it forward on every
-          // new body blockquote, so whichever one is tagged when the card
-          // closes is the one `blockquote:last-of-type` would also match.
-          // The CSS selector stays as the fallback for one release (dc#44).
-          if (lastCardBodyBlockquote) {
-            removeTokenClass(lastCardBodyBlockquote, 'dc-card-footer');
-          }
-          addTokenClass(tok, 'dc-card-footer');
-          lastCardBodyBlockquote = tok;
-        }
-
-        // Pass through card body content unchanged
-        newTokens.push(tok);
-        continue;
-      }
-
-      // Mark image-only paragraphs so layout rules can target them without
-      // relying on p:has(img). The base CSS rule
-      // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
-      // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
-      if (tok.type === 'paragraph_open') {
-        const inlineTok = tokens[i + 1];
-        const closeTok = tokens[i + 2];
-        if (inlineTok && inlineTok.type === 'inline' && closeTok && closeTok.type === 'paragraph_close') {
-          const hasOnlyImage = Array.isArray(inlineTok.children)
-            && inlineTok.children.length === 1
-            && inlineTok.children[0].type === 'image';
-          if (hasOnlyImage) {
-            tok.attrSet('class', 'dc-img-wrapper');
-          }
-        }
-      }
-
-      // Inside @skill section
-      if (inSkillMode) {
-        // Auto-close skill mode before any layout marker.
-        // Example: chapter-02's inline example skill is followed directly by
-        // `@page` with no explicit `@end-skill`. If we pass the layout marker
-        // through while the card is still open, the next page wrapper and all
-        // following content are emitted inside the current .dc-skill-card,
-        // producing malformed HTML.
-        //
-        // This single check covers `@page`, `@section`, `@chapter` and
-        // `@spread`: markers.js tokenizes those lines as `layout_marker`
-        // block tokens and rewrites them into `layout_*` tokens in a core rule
-        // registered with `md.core.ruler.after('block', ...)`, whereas this
-        // plugin registers with `md.core.ruler.push(...)` — so the marker
-        // transform ALWAYS runs first and the raw marker paragraphs no longer
-        // exist by the time we get here.
-        if (tok.type && tok.type.startsWith('layout_')) {
-          closeAll();
-          newTokens.push(tok);
-          continue;
-        }
-
-        // H4 = Skill card title
-        if (tok.type === 'heading_open' && tok.tag === 'h4') {
-          // Close previous card if open
-          if (inSkillCard) {
-            newTokens.push(makeToken('html_block', '</div></div></div>\n'));
-          }
-
-          const inlineTok = tokens[i + 1];
-          const h4Text = inlineTok && inlineTok.content ? inlineTok.content : '';
-          const parsed = parseSkillTitle(h4Text);
-          currentSkillIndex++;
-
-          // No variant class — shape is inherited from .specialty.<name> parent container
-
-          // Card splitting strategy:
-          //   - `.dc-allow-split`: omit `data-break-inside="avoid"` so the card
-          //     can split across pages (for cards taller than a page).
-          //   - Default: `data-break-inside="avoid"` keeps card intact.
-          const userClasses = (currentSkillAttrs['class'] || '').split(/\s+/);
-          const allowSplit = userClasses.includes('dc-allow-split');
-          const breakInsideAttr = allowSplit ? '' : ' data-break-inside="avoid"';
-
-          // Track allowSplit for outcomes-table (needs avoid only when card can split)
-          currentCardCanSplit = allowSplit;
-
-          // Track for @continue continuation cards.
-          lastCardTitle = parsed.name;
-          lastCardTier = parsed.tier || '';
-
-          // Build card structure
-          let cardHtml = '<div' + buildAttrs(currentSkillAttrs, 'dc-skill-card') + ' name="' + esc(slugify(parsed.name)) + '"' + breakInsideAttr + '>\n';
-          const tabBaseClass = 'dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '');
-          cardHtml += '  <div class="' + tabBaseClass + '">\n';
-          const autoTier = currentLearningPathRef ? currentLearningPathRef + '.' + currentSkillIndex : '';
-          // The skill's name is its `####` heading, kept a heading so the
-          // outline lists it under its learning path. (A continuation card's
-          // repeated title stays a span: it is not a new entry.)
-          cardHtml += '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n';
-          cardHtml += '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n';
-          cardHtml += '  </div>\n';
-
-          const bodyBaseClass = 'dc-card-body' + (parsed.highlight ? ' dc-highlight-body' : '');
-          cardHtml += '  <div class="' + bodyBaseClass + '">\n';
-          cardHtml += '    <div class="dc-card-inner">\n';
-
-          newTokens.push(makeToken('html_block', cardHtml));
-          inSkillCard = true;
-          i += 2;
-          continue;
-        }
-
-        // H5 = Sub-header (like "Outcomes")
-        if (tok.type === 'heading_open' && tok.tag === 'h5' && inSkillCard) {
-          const inlineTok = tokens[i + 1];
-          const h5Text = inlineTok && inlineTok.content ? inlineTok.content : '';
-          // Skip "Outcomes" header since the table will have its own label
-          if (h5Text.toLowerCase() !== 'outcomes') {
-            newTokens.push(makeToken('html_block', '<div class="dc-sub-header">' + esc(h5Text) + '</div>\n'));
-          }
-          i += 2;
-          continue;
-        }
-
-        // Blockquote = Flavor text (inside skill card)
-        if (tok.type === 'blockquote_open' && inSkillCard) {
-          let bqContent = '';
-          let j = i + 1;
-          while (j < tokens.length && tokens[j].type !== 'blockquote_close') {
-            if (tokens[j].type === 'inline') {
-              bqContent = renderInlineChildren(tokens[j], md);
-            }
-            j++;
-          }
-          newTokens.push(makeToken('html_block', '<p class="dc-flavor">' + bqContent + '</p>\n'));
-          i = j;
-          continue;
-        }
-
-        // Ordered list = Abilities
-        if (tok.type === 'ordered_list_open' && inSkillCard) {
-          const { items, endIndex } = collectOrderedListItems(tokens, i, md);
-
-          items.forEach((itemHtml, idx) => {
-            const ability = parseAbilityFromListItem(itemHtml);
-            if (ability) {
-              let posAttrs = '';
-              if (items.length > 1) {
-                if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
-                if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
-              }
-              let output = '<div class="dc-ability"' + posAttrs + '>\n';
-              output += '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n';
-              output += '  <p class="dc-ability-text">' + ability.text + '</p>\n';
-              output += '</div>\n';
-              newTokens.push(makeToken('html_block', output));
-            } else {
-              // Fallback: render as paragraph
-              newTokens.push(makeToken('html_block', '<p>' + itemHtml + '</p>\n'));
-            }
-          });
-
-          i = endIndex;
-          continue;
-        }
-
-        // Bullet list inside skill card (e.g., sub-points)
-        if (tok.type === 'bullet_list_open' && inSkillCard) {
-          // When the card can split (allow-split → no card-level avoid), keep
-          // short sub-lists whole so a break can't strand e.g. the "Arm:" bullet
-          // on one page and "Leg:" on the next. Mirrors the table logic below
-          // (buildTable receives currentCardCanSplit as needsAvoid). When the card
-          // is NOT splittable it already carries card-level avoid, so adding a
-          // nested list avoid would create a conflicting inner break boundary.
-          if (currentCardCanSplit) {
-            tok.attrSet('data-break-inside', 'avoid');
-          }
-          newTokens.push(tok);
-          continue;
-        }
-
-        // Table = Outcomes
-        if (tok.type === 'table_open' && inSkillCard) {
-          const tableTokens = collectTableTokens(tokens, i);
-          const headers = getTableHeaders(tableTokens);
-          const tableClass = classifyTable(headers);
-          // Tables this plugin does not transform pass through untouched.
-          // They used to fall into buildTable()'s generic branch, which
-          // rebuilt markup from tbody rows only and dropped the <thead> core
-          // had already emitted correctly — every ordinary table in a skill
-          // card printed headerless (86 tables, only 22 keeping a thead).
-          if (!tableClass) {
-            newTokens.push(tok);
-            continue;
-          }
-          // Pass currentCardCanSplit: outcomes-block needs data-break-inside="avoid"
-          // only when the parent card can be split (no card-level avoid). When the
-          // card already has card-level avoid, a nested outcomes-block avoid creates
-          // a conflicting inner break that splits the card at the outcomes boundary.
-          const tableHtml = buildTable(tableTokens, tableClass, md, currentCardCanSplit);
-
-          newTokens.push(makeToken('html_block', tableHtml));
-          i = skipToTableClose(tokens, i);
-          continue;
-        }
-
-        // Pass through other tokens in skill mode
-        newTokens.push(tok);
-        continue;
-      }
-
-      if (inProcedure && tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectOrderedListItems(tokens, i, md);
-        if (items.length > 0) {
-          newTokens.push(makeToken('html_block', buildProcedureList(items)));
-        }
-        i = endIndex;
-        continue;
-      }
-
-      if (inProcedure && tok.type === 'ordered_list_close') {
-        continue;
-      }
-
-      // Outside any special section - pass through unchanged
-      newTokens.push(tok);
-    }
-
-    // Close any open structures at EOF
-
-    // Warn if @procedure was opened without a matching @end-procedure.
-    // The transform is stateless (no open <div> to close) but every ordered
-    // list after the marker was being silently hijacked into step-list mode.
-    if (inProcedure) {
-      if (!state.env.layoutWarnings) state.env.layoutWarnings = [];
-      state.env.layoutWarnings.push({
-        type: 'unclosed_procedure',
-        message: '@procedure was opened but never closed with @end-procedure. ' +
-                 'Ordered lists after the marker may have been transformed into ' +
-                 'step-lists unintentionally.',
-      });
-      inProcedure = false;
-    }
-
-    closeSpecialty();
-
-    state.tokens = newTokens;
-  });
-
+  // Mark image-only paragraphs so layout rules can target them without
+  // relying on p:has(img). The base CSS rule
+  // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
+  // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
+  md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
+
+  // Declared components. Callouts, cards, outcomes and procedures go first so
+  // one inside a skill is already rewritten when the skill's rule looks at it.
+  md.core.ruler.push('dc_callouts', dcCallouts);
+  md.core.ruler.push('dc_cards', dcCards);
+  md.core.ruler.push('dc_outcomes', dcOutcomes);
+  md.core.ruler.push('dc_procedures', dcProcedures);
+  md.core.ruler.push('dc_learning_paths', dcLearningPaths);
+  md.core.ruler.push('dc_skill_cards', dcSkillCards);
 }
+
+/**
+ * Declared markers — plain data Gutterpress core reads off this module (the
+ * same relationship `metadata` has). Core parses `@name … @end-name`, merges
+ * author classes, threads `data-source-range`, nests containers as a stack and
+ * closes them at the next `@page`/`@section`/`@chapter`, so none of this is
+ * hand-written in a marker parser. A bare markdown-it instance never
+ * reads this table: declared markers exist only under Gutterpress.
+ *
+ * A `section: true` entry declares a section-styled component: core treats it
+ * as a real `@section` carrying the entry's class (see below).
+ *
+ * To add a plain wrapper, add one line here (element + classes), a snippet in
+ * `snippets/<name>.md`, and the usual catalog/guide entries — see
+ * docs/adding-macros.md.
+ *
+ * Variants are a bare word on the marker line (`@sidebar inset`) and only add
+ * a class, so `.inset`-style class shorthand keeps working beside them.
+ * `autoCloseAt: ['eof']` keeps these silent at end-of-document: they have
+ * never needed an explicit `@end-…`.
+ */
+const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
+
+const SPECIALTIES = [
+  'augmerc', 'proxy', 'streetwarden', 'gutterdruid', 'cybersurgeon',
+  'wirephreak', 'technosorcerer', 'etherlock', 'dualist', 'generalist',
+];
+
+export const markers = {
+  // Specialty > learning path > skill. Core nests them as a stack; the rules
+  // above rewrite their content and `validate` checks their structure.
+  // `@specialty augmerc` and `@specialty .augmerc` both add the class the
+  // styles key on (`.dc-specialty.augmerc`).
+  specialty: wrapper('dc-specialty', {
+    variants: Object.fromEntries(SPECIALTIES.map((name) => [name, name])),
+    validate: validateSpecialty,
+  }),
+  'learning-path': wrapper('dc-learning-path dc-path-block'),
+  skill: wrapper('dc-skill-card', { validate: validateSkill }),
+
+  // Content components. `@card` closes silently at the end of a document, as it
+  // always has. `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
+  // open at the end gets core's `declared_marker_eof_close` warning: what
+  // follows an open one is read as its rows or its steps. `@procedure` has no
+  // class (its rule hides the wrapper: the step list is the element).
+  card: wrapper('dc-card'),
+  outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
+  procedure: { validate: validateProcedure },
+
+  // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
+  // the same marker with the `dm` variant preset. A default label comes from
+  // `dcCallouts`, an explicit `label="…"` from core.
+  callout: wrapper('dc-alert', {
+    variants: Object.fromEntries(Object.entries(CALLOUTS).map(([name, { class: cls }]) => [name, cls])),
+    label: { tag: 'span', class: 'dc-alert-label', from: 'attr:label' },
+    validate: validateCallout,
+  }),
+  'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
+
+  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
+  definition: wrapper('dc-prose-panel dc-definition-block'),
+  'specialty-intro': wrapper('dc-specialty-intro'),
+  'specialty-art': wrapper('dc-specialty-art'),
+  'specialty-card': wrapper('dc-specialty-card'),
+  gear: wrapper('dc-card dc-gear'),
+  toc: wrapper('dc-toc'),
+  lede: wrapper('dc-intro'),
+  glossary: wrapper('dc-terms'),
+  block: wrapper('dc-block', {
+    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard', codex: 'dc-codex' },
+    label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
+  }),
+
+  // Section-styled components. `section: true` makes each one a real core
+  // @section: `@npc-stat` is exactly `@section .dc-npc-stat` (same element, same
+  // classes), so the books' existing `@section .dc-…` spellings keep working
+  // unchanged. Each class has its CSS on `.section.dc-…` in
+  // styles/components/section.css. No variants: none of these is styled per
+  // specialty (that lives on `.dc-specialty.<name>`, from `@specialty`), and
+  // modifiers such as `.dc-plain`, `.dc-snug`, `.dc-allow-split` and
+  // `.gp-columns-2` stay author classes (`@column-panel .gp-columns-2`).
+  'column-panel': { section: true, class: 'dc-column-panel' },
+  tabbed: { section: true, class: 'dc-tabbed' },
+  'card-grid': { section: true, class: 'dc-card-grid' },
+  'citizen-walkthrough': { section: true, class: 'dc-citizen-walkthrough' },
+  'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
+  'npc-stat': { section: true, class: 'dc-npc-stat' },
+  // Citizen-file card runs: the class sets the accent of every `@card` inside.
+  flaws: { section: true, class: 'dc-flaws' },
+  ideals: { section: true, class: 'dc-ideals' },
+  dreams: { section: true, class: 'dc-dreams' },
+};
 
 /**
  * Plugin metadata (the package version in package.json is the only version).

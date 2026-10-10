@@ -129,7 +129,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 @definition
 
@@ -157,7 +157,7 @@ Result {.dg-result}
 
 @end-definition
 
-@end-section
+@end-column-panel
 
 </div>
 
@@ -259,10 +259,10 @@ Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg
 
 ## Card
 
-A choice card: heading, body, and a closing quote that becomes the card's footer. Wrap a run of cards in `@section .dc-flaws`, `.dc-ideals`, or `.dc-dreams` to color the accent for that step of character creation.
+A choice card: heading, body, and a closing quote that becomes the card's footer. Wrap a run of cards in `@flaws`, `@ideals`, or `@dreams` to color the accent for that step of character creation.
 
 ```markdown
-@section .dc-flaws
+@flaws
 
 @card
 
@@ -274,14 +274,14 @@ You chase instant gratification without weighing the consequences. The city alwa
 
 @end-card
 
-@end-section
+@end-flaws
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-flaws
+@flaws
 
 @card
 
@@ -293,7 +293,7 @@ You chase instant gratification without weighing the consequences. The city alwa
 
 @end-card
 
-@end-section
+@end-flaws
 
 </div>
 
@@ -301,7 +301,7 @@ The same card under `.dc-ideals` takes the ideal accent:
 
 <div class="dg-stage">
 
-@section .dc-ideals
+@ideals
 
 @card
 
@@ -313,7 +313,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 @end-card
 
-@end-section
+@end-ideals
 
 </div>
 
@@ -413,10 +413,10 @@ A roll table is the same thing with a `Roll` column:
 
 ## NPC stat block
 
-The narrative form a Dream Master reads aloud: `@section .dc-npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment.
+The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment.
 
 ```markdown
-@section .dc-npc-stat
+@npc-stat
 
 #### Patchhead
 
@@ -433,14 +433,14 @@ Fodder — Usually Small to Medium
 
 Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
-@end-section
+@end-npc-stat
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .dc-npc-stat
+@npc-stat
 
 #### Patchhead
 
@@ -457,7 +457,7 @@ Fodder — Usually Small to Medium
 
 Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
-@end-section
+@end-npc-stat
 
 </div>
 

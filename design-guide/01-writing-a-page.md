@@ -49,47 +49,43 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis.
+A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
 
 ## Attributes
 
 Every marker takes the same attribute grammar after its name, in any order: `#id` sets an id, `.class` adds a class, `key=value` or `key="quoted value"` sets a named option.
 
 ```markdown
-@section #core-loop .gp-columns-2 .dc-column-panel
+@column-panel #core-loop .gp-columns-2
 
-@callout variant=warning label="Heat is shared"
+@callout warning label="Heat is shared"
 ```
 
 Standard markdown elements take attributes too, with braces at the end of the element: `## Title {.dc-spray}`, `![alt](img.png){.dc-img-float-right}`, and `@skill {.dc-allow-split}` for a class on a component macro.
 
 ## The blank-line rule
 
-Markers are paragraphs to markdown. A marker directly under a list item or paragraph line becomes part of that paragraph and is never seen. Put a blank line before and after every marker.
+Put a blank line before and after every marker. Gutterpress reads a marker even when it sits straight under a list item or a line of text, but the blank line keeps the page readable and keeps a marker from being mistaken for prose.
 
 ```markdown
-@procedure
+@callout note
 
-1. Pick a Spec.
-2. Spend 6 Spec Points.
+Pick a Spec. Spend 6 Spec Points.
 
-@end-procedure
+@end-callout
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@procedure
+@callout note
 
-1. Pick a Spec.
-2. Spend 6 Spec Points.
+Pick a Spec. Spend 6 Spec Points.
 
-@end-procedure
+@end-callout
 
 </div>
-
-Without the blank line before `@end-procedure`, the closer is swallowed by the last list item and the procedure stays open to the end of the page.
 
 ## Markdown the system styles
 
@@ -219,7 +215,7 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 ```markdown
 @chapter #ch-rules ch="4"
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## Augment Points
 
@@ -230,7 +226,7 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-section
+@end-column-panel
 
 > [!NOTE]
 > You start every dream with 10 AP.
@@ -240,7 +236,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ## Augment Points
 
@@ -251,7 +247,7 @@ Result {.dg-result}
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-section
+@end-column-panel
 
 > [!NOTE]
 > You start every dream with 10 AP.

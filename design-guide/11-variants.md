@@ -274,11 +274,15 @@ Every switch on one card, each under the same Augmerc wrapper. `@continue`, whic
 
 ### Default — `@skill`
 
-A card outside a learning path has no tier on its tab; inside one, the tier is computed from its position (the skill trees above).
+Inside a learning path the tier on a card's tab is computed from its position (the skill trees above), unless the heading names one.
 
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -289,6 +293,8 @@ A card outside a learning path has no tier on its tab; inside one, the tier is c
 1. **1 AP** *Street Tricks:* Snag their balance. Gain Lucidity on your next roll against the target.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -302,6 +308,10 @@ The tier is written on the heading and printed on the tab.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Dirty Work | AUG1.3
@@ -311,6 +321,8 @@ The tier is written on the heading and printed on the tab.
 1. **1 AP** *Street Tricks:* Snag their balance. Gain Lucidity on your next roll against the target.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -324,6 +336,10 @@ The featured tab and body.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill
 
 #### Apex Physiology | AUG4.1 | highlight
@@ -334,6 +350,8 @@ The featured tab and body.
 2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -347,6 +365,10 @@ The same register with the class on the card root.
 
 @specialty .augmerc
 
+@learning-path
+
+### Example Path
+
 @skill {.dc-highlight}
 
 #### Apex Physiology | AUG4.1
@@ -357,6 +379,8 @@ The same register with the class on the card root.
 2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -369,6 +393,10 @@ A long ability list packed into two columns.
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill {.dc-two-col}
 
@@ -385,6 +413,8 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 </div>
@@ -395,6 +425,10 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ```markdown
 @specialty .augmerc .dc-cards-two-col
+
+@learning-path
+
+### Example Path
 
 @skill
 #### Boost Morale | AUG3.4
@@ -408,6 +442,10 @@ The table becomes the card's outcome ladder.
 <div class="dg-stage">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -427,6 +465,8 @@ The table becomes the card's outcome ladder.
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 </div>
@@ -438,6 +478,10 @@ The plugin picks the chip from the cost written in bold at the start of an abili
 <div class="dg-stage dg-on-paper">
 
 @specialty .augmerc
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -453,9 +497,15 @@ Once per round, outside your turn, you exploit a target in reach:
 
 @end-skill
 
+@end-learning-path
+
 @end-specialty
 
 @specialty .proxy
+
+@learning-path
+
+### Example Path
 
 @skill
 
@@ -467,6 +517,8 @@ Once per round, outside your turn, you exploit a target in reach:
 2. **3-X AP** You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.
 
 @end-skill
+
+@end-learning-path
 
 @end-specialty
 
@@ -651,11 +703,11 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Specialty cards
 
-`@specialty-card` inside each `@specialty`, in a `@section .dc-card-grid`. Cards alternate `data-position="odd|even"` down the grid.
+`@specialty-card` inside each `@specialty`, in a `@card-grid`. Cards alternate `data-position="odd|even"` down the grid.
 
 <div class="dg-stage dg-tall">
 
-@section .dc-card-grid
+@card-grid
 
 @specialty .augmerc
 
@@ -817,7 +869,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 @end-specialty
 
-@end-section
+@end-card-grid
 
 </div>
 
@@ -833,7 +885,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout variant=…` for more — both emit the same seven registers.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers.
 
 <div class="dg-stage dg-tall">
 
@@ -894,11 +946,11 @@ Glossaries, lookups, and compendium entries.
 
 ## Choice cards
 
-`@card` inside `@section .dc-flaws`, `.dc-ideals` or `.dc-dreams`.
+`@card` inside `@flaws`, `@ideals` or `@dreams`.
 
 <div class="dg-stage">
 
-@section .dc-flaws
+@flaws
 
 @card
 
@@ -910,9 +962,9 @@ You chase instant gratification without weighing the consequences.
 
 @end-card
 
-@end-section
+@end-flaws
 
-@section .dc-ideals
+@ideals
 
 @card
 
@@ -924,9 +976,9 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 @end-card
 
-@end-section
+@end-ideals
 
-@section .dc-dreams
+@dreams
 
 @card
 
@@ -938,7 +990,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 @end-card
 
-@end-section
+@end-dreams
 
 </div>
 
@@ -972,11 +1024,11 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 ## Tape
 
-`@tape label="…"`, then the raw form with `.dc-flush`, which removes the tape's outer margin.
+`<div class="dc-tape">…</div>`, then the form with `.dc-flush`, which removes the tape's outer margin.
 
 <div class="dg-stage">
 
-@tape label="Operators"
+<div class="dc-tape">Operators</div>
 
 <div class="dc-tape dc-flush">Operators</div>
 
@@ -1040,7 +1092,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section chassis
 
-A bare `@section`, `@section .dc-plain`, `@section .dc-tabbed` with an `##` and a `###` tab, and `@section .gp-columns-2 .dc-column-panel`.
+A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and `@column-panel .gp-columns-2`.
 
 <div class="dg-stage dg-tall">
 
@@ -1060,23 +1112,23 @@ No substrate, rail or shadow: the text sits on whatever is behind it. A first he
 
 @end-section
 
-@section .dc-tabbed
+@tabbed
 
 ## Tabbed, H2
 
 The heading hangs off the panel edge as the primary tab.
 
-@end-section
+@end-tabbed
 
-@section .dc-tabbed
+@tabbed
 
 ### Tabbed, H3
 
 The subordinate tab: smaller type, tighter padding.
 
-@end-section
+@end-tabbed
 
-@section .gp-columns-2 .dc-column-panel
+@column-panel .gp-columns-2
 
 ### Column panel
 
@@ -1086,7 +1138,7 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-section
+@end-column-panel
 
 </div>
 

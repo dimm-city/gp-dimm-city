@@ -25,9 +25,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 |---|---|---|
 | `@lede` | `@end-lede` | — |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `GEAR` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | `variant=` as above (not flavor/pullquote), `label="…"` |
-| `@dm-note` | `@end-dm-note` | `label="…"` |
-| `@tape` | — | `label="…"` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` (`@callout vibe`); `label="…"` |
+| `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard` `.dc-codex`, `label="…"` |
 | `@sidebar` | `@end-sidebar` | `.inset` (needs `@page .page-sidebar`) |
 | `@sidebar-box` | `@end-sidebar-box` | `####` heading, `---`, body |
@@ -35,18 +34,23 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@glossary` | `@end-glossary` | `**term** — gloss` paragraphs |
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
-| `@card` | `@end-card` | inside `@section .dc-flaws` / `.dc-ideals` / `.dc-dreams` |
+| `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
+| `@column-panel` | `@end-column-panel` | usually with `.gp-columns-2`; a card-less run is a bare `@section .gp-columns-2` |
+| `@tabbed` | `@end-tabbed` | first heading (`##` or `###`) hangs as the tab |
+| `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` |
+| `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose |
+| `@fiction-excerpt` | `@end-fiction-excerpt` | prose; the first image floats |
+| `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels |
+| `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | `###` name, `*tags*`, body |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
-| `@specialty` | `@end-specialty` / next `@specialty` | `.augmerc` … `.generalist` |
+| `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` … `generalist`, as a word or a `.class` |
 | `@specialty-intro` | `@end-specialty-intro` | `##` name, `###` spec tweak |
 | `@specialty-art` | `@end-specialty-art` | one image |
 | `@specialty-card` | `@end-specialty-card` | `#id`; `###` name, image, `>` tagline, pitch |
-| `@learning-path` | `@end-learning-path` / next `@learning-path` | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
-| `@skill` | `@end-skill` / next `@skill` | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
+| `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
+| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
 | `@continue` | — | inside a skill: continuation card |
-
-`@roll-table` and `@options-table` are retired; they parse as nothing. Use a pipe table.
 
 
 ## Classes you can add
@@ -54,7 +58,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Class | Goes on | Effect |
 |---|---|---|
 | `.gp-columns-2` · `.gp-columns-3` | `@section` | Two or three columns |
-| `.dc-column-panel` | `@section` with columns | Card substrate, spanning heading bar |
+| `.dc-column-panel` | `@section` with columns (or write `@column-panel`) | Card substrate, spanning heading bar |
 | `.dc-tabbed` | `@section` | Heading hung as a tab |
 | `.dc-plain` | `@section` | No panel chrome |
 | `.gp-no-break` | `@section` | Never split across pages |

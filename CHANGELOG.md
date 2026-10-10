@@ -7,6 +7,206 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-10
+
+Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older
+versions reject the `section: true` markers below and do not report a
+mistyped `@callout` variant (`unknown_variant`).
+Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
+
+### Changed
+
+- **Eleven plain wrappers are now declared in a `markers` table** instead of
+  being hand-written in the plugin's state machine: `@sidebar`,
+  `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`,
+  `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block`.
+  Gutterpress core now parses, nests and closes them, and the editor lists
+  them. The emitted elements and classes are unchanged; rendering the design
+  guide and both books through the old and new plugin gives the same HTML
+  apart from the attributes listed below. The state machine loses about 300
+  lines.
+- New on these wrappers: `data-source-range`, `data-label="…"` on a labelled
+  `@block`, and `data-sidebar="inset"` when written `@sidebar inset`.
+- `@sidebar inset` works beside `@sidebar .inset`. `@block panel|slate|shard|codex`
+  works beside `@block .dc-panel` (the `.dc-*` class form is unchanged).
+- `@lede`, `@toc` and `@glossary` now accept extra classes and an `#id`,
+  as the other wrappers always did.
+- `@specialty-card`'s `data-position="odd|even"` now comes from a small core
+  rule that numbers the cards in document order, as before.
+- Snippets for `@sidebar-box`, `@glossary`, `@toc` and `@specialty-intro`.
+  The `@block` snippet uses the variant word, and the chapter-start snippet
+  opens its excerpt with `@fiction-excerpt`.
+- **Nine section-styled components are declared as real core sections**
+  (Gutterpress 0.11.16, `section: true`): `@column-panel`, `@tabbed`,
+  `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
+  `@flaws`, `@ideals` and `@dreams`, each with an `@end-…` closer and a
+  snippet. `@npc-stat` is exactly `@section .dc-npc-stat`: same element, same
+  classes, so every book that writes `@section .dc-…` renders as before.
+  Modifier classes stay author classes (`@column-panel .gp-columns-2`). No
+  variants: none of these is styled per specialty. The design guide uses the
+  new markers; `components.yaml` lists them as plugin-origin, and its
+  `card-variants` entry now describes `.section.dc-flaws` (the class the CSS
+  actually selects).
+- **`@specialty`, `@learning-path` and `@skill` are declared too, then
+  transformed** ("declare, then transform"). Core now opens, nests and closes
+  them, and two ordinary markdown-it core rules (`dcLearningPaths`,
+  `dcSkillCards`, over a small inlined `forEachComponent` helper) rewrite what
+  sits inside: the path's title, subtitle and sticker chain, `data-path-ref`,
+  and one skill card per `####` heading. The state machine drops from 865 to
+  468 lines (`plugin.js` is 97 lines shorter overall, new rules included):
+  its skill, path and specialty flags and branches are gone. `@continue`
+  inside a skill's card still opens the
+  `{name} ▸` continuation card; the classifier that claims it ahead of core
+  now reads core's marker tokens instead of the raw paragraphs.
+- **`@card`, `@outcome` and `@procedure` are declared and transformed the same
+  way.** Three more core rules (`dcCards`, `dcOutcomes`, `dcProcedures`) run
+  ahead of the skill rules and rewrite what sits inside each. The state
+  machine drops from 468 to 122 lines: it now holds only `@callout`,
+  `@dm-note`, `@tape`, the retired `@roll-table` / `@options-table` no-ops and
+  the image-only paragraph class. `plugin.js` is another 208 lines shorter
+  (1,765 to 1,557), new rules, validation and docs comments included. The
+  emitted HTML is unchanged: rendering the design guide and both books
+  through the old and new plugin gives the same markup apart from the
+  attributes and the one page listed below.
+  - `@card` is `div.dc-card` with its heading, pull quote, body and footer as
+    before, and takes classes, `#id` and `key=value` as before.
+  - `@outcome` is `div.dc-outcomes`; `flush` is now a declared variant (it
+    adds `.dc-flush` and `data-outcome="flush"`), and `@outcome .dc-flush`
+    works too. The compact form (rows with no blank lines) still works.
+  - `@procedure` still renders only the `ol.dc-steps`: its declared wrapper is
+    hidden, so no `div` appears in the HTML.
+  - A `@card`, `@outcome` or `@procedure` inside a skill stays inside the
+    skill's card, as before.
+  - New on cards and outcomes: `data-source-range`, so the editor can map them.
+- **More structure checks.** An `@outcome` line that is not `roll | name |
+  text`, a table, list or heading inside an `@outcome` (they are left out), an
+  `@outcome` with no rows, and a `@procedure` with no numbered list are
+  reported in plain words, at the line.
+- `@specialty augmerc` is the new spelling for a specialty (names:
+  `augmerc`, `proxy`, `streetwarden`, `gutterdruid`, `cybersurgeon`,
+  `wirephreak`, `technosorcerer`, `etherlock`, `dualist`, `generalist`, each
+  styled by `.dc-specialty.<name>`). `@specialty .augmerc` and
+  `@specialty {.augmerc}` work unchanged and give the same element.
+  `data-path-ref` reads the enclosing specialty's variant or class, so
+  `@specialty .augmerc` still gives `AUG1`.
+- **Structure checks, in plain words.** Skills sitting directly in a
+  `@specialty` are reported once per run, at the first one ("This skill (and
+  any right after it) is outside a learning path…"), and so
+  is a `@learning-path` or `@specialty` that starts inside a skill. The usual
+  cause is an `@end-learning-path` above the skills it was meant to close.
+- Snippets: `specialty` shows the whole specialty > learning path > skill
+  hierarchy, and `learning-path` shows its skills.
+- **`@callout` and `@dm-note` are declared, and the state machine is gone.**
+  `@callout` is a declared wrapper (`div.dc-alert` + the variant's class,
+  author classes and `label="…"` as before) and `@dm-note` is its alias with
+  the `dm` variant preset, so `@dm-note` is `@callout dm` and `@end-dm-note`
+  still closes it. One small core rule (`dcCallouts`) adds the variant's
+  default label ("Note", "Warning", "Dream Master Note", "Vibe", "Origin",
+  "Visit", "Gear") when there is no `label="…"`; an explicit label wins. A
+  missing or unrecognised variant is a plain note, as before. With `@tape`
+  and the retired `@roll-table` / `@options-table` stripper gone too,
+  `dimm_city_transform` and its `closeAll()` are deleted. What is left are
+  four small core rules: the `@continue` bridge into skill cards, `> [!TYPE]`
+  alerts, `ROLL THE DIE!`, and the image-only paragraph class (now
+  `dcImageParagraphs`). `plugin.js` goes from 1,557 to 1,381 lines.
+  The emitted callout is the same element, classes and label span as before.
+  Core adds `data-callout="<variant>"` (and `data-label` when labelled) and
+  `data-source-range`, and writes no newline between the wrapper and its label.
+- `docs/adding-macros.md` and `docs/macros.md` now describe a plugin with no
+  hand-written markers: the "hand-written marker" recipe is gone.
+- devDependency `gutterpress` is `0.11.16`.
+- `docs/plans/specialty-section-variants.md`: the plan for styling section
+  components per specialty (`@npc-stat wirephreak`), for a later release.
+
+### Removed
+
+- **`@callout variant=…` is gone**, with no compatibility mapping: the variant
+  is a bare word (`@callout note`, `@callout vibe`, `@callout .float-right
+  origin label="…"`). Core reads `variant=origin` as a plain attribute, so the
+  callout would render as a note; instead every `@callout` or `@dm-note`
+  written that way gets one Problems message on its line: `@callout: no longer
+  takes variant=origin; write "@callout origin" instead.` Edit the books:
+  `variant=note` to `note`, `variant="vibe"` to `vibe`, `variant=origin` or
+  `variant="origin"` to `origin`.
+- **`@tape` is removed.** The marker was one line with no body and no
+  `@end-tape`, which a declared marker cannot express yet: a `selfClosing`
+  marker feature was requested upstream as gutterpress#344, and `@tape` can
+  return as a declared marker once it exists. Until then write the raw
+  `<div class="dc-tape">Label</div>` (`dc-flush` to run edge to edge), which
+  renders the same HTML; the `.dc-tape` CSS stays. The design guide's
+  examples use the raw form. A leftover `@tape label="…"` line now prints as
+  the text it is.
+- **The `@roll-table` / `@options-table` no-op handling** (deprecated in
+  17.3.0), its `roll-table` entry in `components.yaml` and the design guide's
+  note. Neither is a marker any more, so a stray one prints as text.
+- `@block variant=panel`. No book or guide page used it; write `@block panel`.
+- `@end-skills` (no book used it; it is plain text now).
+- `@end-skill` no longer closes the `@learning-path` around the skill. It
+  closes the skill, like every declared closer; `@end-learning-path` ends the
+  path.
+
+### Behaviour notes
+
+- Declared wrappers nest as a stack and close at the next `@page`,
+  `@section` or `@chapter`, or at the end of the file. A hand-written marker
+  (`@learning-path`, `@callout`, …) no longer closes a wrapper that is still
+  open. No book relied on that.
+- A wrapper's `key=value` attribute is always `data-key` now: `lang=en` is
+  `data-lang`, where the old code emitted `lang` (likewise `dir`, `role`,
+  `tabindex` and `aria-*`).
+- `@end-<wrapper>` with no open wrapper now warns
+  (`declared_marker_close_without_open`) instead of being ignored. That now
+  includes a stray `@end-skill`, `@end-learning-path` and `@end-specialty`.
+- Specialties, paths and skills close like every declared marker: a new one
+  of the same kind closes the previous and what is inside it, `@end-<name>`
+  closes it and what is inside it, and `@page`, `@section`, `@chapter` and
+  `@continue` close all of them. A `@page` written inside a specialty used to
+  leave the specialty open across the page; it now ends the specialty. Use
+  `@page-break` to break a page inside one.
+- A `@skill` glued to the line above it (no blank line) is now a marker, as
+  every declared marker is; it used to print as the text "@skill".
+- A skill inside a learning path is numbered `PATHREF.N` by its place in the
+  path. An `@end-skill` in the middle of a path used to end the path (the
+  skills after it lost their tier); the path now stays open.
+- A closer straight under a list item or a quote is a closer now, because core
+  reads declared markers there: `@end-procedure` under the last step and
+  `@end-card` under the footer quote no longer need a blank line (they used to
+  be folded into the item or the quote and never closed).
+- `@procedure` and `@outcome` left open at the end of a file warn with core's
+  `declared_marker_eof_close` ("An open @procedure reached end-of-document…"),
+  replacing the plugin's `unclosed_procedure`. An unclosed `@outcome` used to
+  swallow the rest of the file without a word. `@card` still closes silently.
+- `@end-card`, `@end-outcome` and `@end-procedure` with nothing open now warn
+  (`declared_marker_close_without_open`) instead of being ignored.
+- `@callout` and `@dm-note` nest like every declared marker: a new one closes
+  the one still open (with what is inside it), `@end-callout` and
+  `@end-dm-note` close it, and `@page`, `@section`, `@chapter` and `@continue`
+  close it (a callout left open at a `@page` used to run on, and the next
+  page's `<div>` ended up inside it). `@callout`, `@procedure`, `@end-procedure`, `@end-callout` is a
+  callout with the procedure in it. One book chapter wrote exactly that; it
+  used to close the callout at the `@procedure` and leave the steps and the
+  closing paragraph outside its box, and now renders them inside it, as
+  written.
+- A callout written in a skill (even after its card, with no `@end-skill`)
+  stays in the skill's card, as before. A stray `@end-callout` or
+  `@end-dm-note` warns (`declared_marker_close_without_open`) instead of being
+  ignored, and a bare word that is not a variant (`@callout vibes`) is a note
+  with core's `unknown_variant` warning.
+- `@dm-note` now takes author classes and an `#id` like `@callout` (it used to
+  ignore them).
+- A callout or `@dm-note` glued to the line above it (no blank line) is now a
+  marker, as every declared marker is; it used to be folded into the
+  paragraph.
+- A bare word after `@card`, `@outcome` or `@procedure` is no longer a class
+  (core reads it as a variant, and only `flush` is one): write `@card .wide`.
+  No book or guide page used one.
+- An `@outcome` shows only the lines of its own paragraphs: a list or heading
+  inside it is no longer read as a row (it is reported instead).
+- Core drops a declared marker that is already open and nests the next one, so
+  a book that closes a path early (`@end-learning-path` above its skills) now
+  has its next `@learning-path` nested in the last skill. The checks above name
+  each place; remove the early `@end-learning-path`.
+
 ## [1.1.5] - 2026-10-09
 
 ### Changed

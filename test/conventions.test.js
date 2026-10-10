@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 
 import { createMarkdownRenderer } from "gutterpress/render";
 
-import plugin from "../plugin.js";
+import plugin, { markers } from "../plugin.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(path.join(ROOT, rel), "utf8");
@@ -67,7 +67,7 @@ describe("what the plugin emits", () => {
   const chapters = [...read("design-guide/manifest.yaml").matchAll(/^\s*-\s*(\S+\.md)\s*$/gm)].map((m) => m[1]);
   const source = chapters.map((f) => readFileSync(path.join(GUIDE, f), "utf8")).join("\n");
   const classesOf = (md) => new Set(chapters.flatMap((f) => [...md.render(readFileSync(path.join(GUIDE, f), "utf8"), {}).matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/))));
-  const withPlugin = classesOf(createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]));
+  const withPlugin = classesOf(createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]));
   const coreOnly = classesOf(createMarkdownRenderer([]));
   const authored = new Set([...source.matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]));
   const added = [...withPlugin].filter((c) => !coreOnly.has(c) && !authored.has(c));
@@ -144,7 +144,7 @@ describe("stylesheets", () => {
 
 describe("snippets", () => {
   test("every snippet renders through the plugin without a layout warning", () => {
-    const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]);
+    const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
     const dir = path.join(ROOT, pkg.gutterpress.snippets);
     for (const f of readdirSync(dir)) {
       if (!statSync(path.join(dir, f)).isFile()) continue;

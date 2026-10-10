@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import postcss from "postcss";
 import { createMarkdownRenderer } from "gutterpress/render";
 
-import plugin from "../plugin.js";
+import plugin, { markers } from "../plugin.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(path.join(ROOT, rel), "utf8");
@@ -91,7 +91,7 @@ const UNSTYLED_ACKNOWLEDGED = [...read("components.yaml").matchAll(/^\s*unstyled
  * Keep this SMALL; every entry needs a reason.
  */
 const HOOK_ALLOWLIST = {
-  // Outcome tiers the roll-table macros emit as modifier classes; the visual
+  // Outcome tiers @outcome emits as modifier classes; the visual
   // difference is carried by a `data-` attribute / table-cell styling instead.
   "tier-crit": "outcome tier hook emitted by the plugin",
   "tier-hit": "outcome tier hook emitted by the plugin",
@@ -118,7 +118,7 @@ const IDENTITY_HOOKS = {
 
 /** All classes in a rendered HTML string, with the first file that carried each. */
 function classesOfBook(chapterFiles) {
-  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {} }]);
+  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
   const seen = new Map();
   for (const file of chapterFiles) {
     const html = md.render(readFileSync(file, "utf8"), {});

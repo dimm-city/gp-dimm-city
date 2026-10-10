@@ -37,9 +37,9 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 | Chapter | Page templates | Components |
 |---|---|---|
 | Front Matter | `.page-toc`, `.page-credits .dc-credits`, `.page-intro` | `@toc`, `@lede`, `.credits-colophon`, `[!PULLQUOTE]`, floated art |
-| Chapter Opener | labelled `@chapter` + `@page intro`, `.dc-citizen-file-page` | `.dc-fiction-excerpt`, `---{.column-break}`, `@callout variant=origin`, `.dc-citizen-walkthrough` |
+| Chapter Opener | labelled `@chapter` + `@page intro`, `.dc-citizen-file-page` | `.dc-fiction-excerpt`, `---{.column-break}`, `@callout origin`, `.dc-citizen-walkthrough` |
 | Specialty Overview | `@page intro`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
-| Rules Pages | `@page intro` | `.dc-tabbed`, `.dc-column-panel`, `@definition`, `@callout variant=note`, `@outcome`, a conditions table |
+| Rules Pages | `@page intro` | `.dc-tabbed`, `.dc-column-panel`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |
-| Gear & Tech | `@page` | `@callout variant=gear`, `@outcome`, `@gear` in `.dc-column-panel` columns |
+| Gear & Tech | `@page` | `@callout gear`, `@outcome`, `@gear` in `.dc-column-panel` columns |

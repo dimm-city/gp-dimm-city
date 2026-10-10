@@ -83,7 +83,7 @@ Rules worth knowing before you write CSS (the long form is
 
 The short path is [adding-macros.md](./adding-macros.md). The checklist:
 
-1. `plugin.js` — the marker handler (copy the `@skill` shape).
+1. `plugin.js` — declare the marker in `markers`. If it rebuilds its content, add a core rule that rewrites the tokens between its open and close (copy `@skill`: `dcSkillCards`). See [adding-macros.md](./adding-macros.md#declare-then-transform-a-macro-that-rebuilds-its-content).
 2. `styles/components/<sheet>.css` — its rules, inside that sheet's layer.
 3. `components.yaml` — the catalog entry.
 4. `snippets/<name>.md` — with at least one `{{placeholder}}`.
@@ -104,8 +104,9 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
    if the plugin handles a macro the guide never demonstrates.
 6. `design-guide/10-reference.md` — the one-line grammar entry.
 
-Markers want a blank line on each side. `@end-procedure` directly under a
-list item is folded into the item by markdown and never closes.
+Markers want a blank line on each side. Declared markers and Gutterpress's
+own are read even straight under a list item or a quote; the blank line is
+the habit that keeps a page readable.
 
 ## Verify
 
@@ -125,6 +126,36 @@ refresh the snapshot and review that diff alongside your code.
 
 `npm run build` is what CI does on every PR, and the PDF it uploads as the
 `design-guide-pdf` artifact is the whole-book view of your change.
+
+## Diffing a change against the real books
+
+`bun test` proves the plugin against the design guide. Before a plugin
+refactor ships, prove it against the books that pin it too:
+
+```sh
+bun run book-diff -- --base main --head ./plugin.js \
+  --book ../dc-op-manual/field-guide --book ../dc-op-manual/SysOps \
+  --design-guide --out ~/book-diff-report
+```
+
+`scripts/book-diff.mjs` renders every chapter of each `--book` (its
+`source.files`, else every `.md` sorted) through `gutterpress/render` twice,
+once with the `--base` plugin (a git ref, read with `git show <ref>:plugin.js`,
+or a path) and once with `--head` (default `./plugin.js`), passing the
+plugin's `markers` export as well. It diffs the normalised HTML and the
+per-chapter `env.layoutWarnings`, prints a summary, and writes a unified diff
+per differing chapter under `--out`. Exit 0 means identical, 1 means diffs.
+
+What it normalises (printed in every report): `data-source-range`,
+`data-source-line`, `data-label` and `data-<marker>` for each declared marker;
+attribute order; class order inside `class="…"`. The class set itself is
+compared exactly. Review every remaining diff; there is no allow-list.
+
+The books are private. Reports quote their text, so `--out` defaults to a
+temp dir and the script refuses a directory inside this repository. Never
+commit a report. Only the Dimm City plugin is swapped: other extensions a book
+lists (such as `gutterpress-gfm-alerts`) are not loadable through Gutterpress's
+public API and are listed as not exercised.
 
 ## Ship
 
