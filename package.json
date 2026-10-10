@@ -1,6 +1,6 @@
 {
   "name": "gp-dimm-city",
-  "version": "1.1.5",
+  "version": "1.2.0-alpha.1",
   "description": "Dimm City design system for Gutterpress: the markdown-it macros (@skill, @specialty, @learning-path, @callout, …), print stylesheets, design tokens, fonts and page templates the Dimm City TTRPG books are set in.",
   "type": "module",
   "main": "plugin.js",
