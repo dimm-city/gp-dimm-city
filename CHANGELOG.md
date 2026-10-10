@@ -7,12 +7,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
-## [1.2.0] - prerelease
+## [1.2.0] - 2026-10-10
 
-Requires Gutterpress 0.11.16-alpha.5 or newer (the desktop app or CLI at
-that version): older versions reject the `section: true` markers below, and
-alpha.5 adds the `unknown_variant` warning that reports a mistyped `@callout`
-variant.
+Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older
+versions reject the `section: true` markers below and do not report a
+mistyped `@callout` variant (`unknown_variant`).
 Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
 
 ### Changed
@@ -35,9 +34,10 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
 - `@specialty-card`'s `data-position="odd|even"` now comes from a small core
   rule that numbers the cards in document order, as before.
 - Snippets for `@sidebar-box`, `@glossary`, `@toc` and `@specialty-intro`.
-  The `@block` snippet uses the variant word.
+  The `@block` snippet uses the variant word, and the chapter-start snippet
+  opens its excerpt with `@fiction-excerpt`.
 - **Nine section-styled components are declared as real core sections**
-  (Gutterpress 0.11.16-alpha.2, `section: true`): `@column-panel`, `@tabbed`,
+  (Gutterpress 0.11.16, `section: true`): `@column-panel`, `@tabbed`,
   `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
   `@flaws`, `@ideals` and `@dreams`, each with an `@end-…` closer and a
   snippet. `@npc-stat` is exactly `@section .dc-npc-stat`: same element, same
@@ -114,7 +114,7 @@ Books pinned to an earlier gp-dimm-city are unaffected until re-pinned.
   `data-source-range`, and writes no newline between the wrapper and its label.
 - `docs/adding-macros.md` and `docs/macros.md` now describe a plugin with no
   hand-written markers: the "hand-written marker" recipe is gone.
-- devDependency `gutterpress` is `0.11.16-alpha.5` (was `0.11.16-alpha.2`).
+- devDependency `gutterpress` is `0.11.16`.
 - `docs/plans/specialty-section-variants.md`: the plan for styling section
   components per specialty (`@npc-stat wirephreak`), for a later release.
 
