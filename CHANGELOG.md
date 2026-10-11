@@ -7,6 +7,15 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- **`@npc-stat` blocks with `####` entries no longer split a creature across
+  pages or columns** (#16). The block may now break between entries (so
+  `@npc-stat .gp-columns-2` no longer jumps whole to the next page and leaves
+  a large empty area), the title bar stays with the first entry, and each
+  entry's name, stat lines and traits are kept together. Add `.dc-allow-split`
+  for an unusually long entry. A block with no `####` is unchanged.
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older

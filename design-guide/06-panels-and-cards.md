@@ -461,6 +461,8 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
 </div>
 
+A block with several `####` entries breaks between creatures and never inside one, in one column or in `@npc-stat .gp-columns-2`; the title bar stays with the first entry. A block with no `####` is one creature and stays whole. Add `.dc-allow-split` (`@npc-stat {.dc-allow-split}`) for an unusually long entry: it may then break after its name and stat lines.
+
 Tokens: `--dc-npc-stat-label-color`, `--dc-npc-stat-primary`, `--dc-npc-stat-secondary`, `--dc-npc-stat-rule`, `--dc-npc-stat-rule-width`.
 
 ## Stat grid and at-a-glance cards

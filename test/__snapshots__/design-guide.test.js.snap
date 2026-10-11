@@ -1334,10 +1334,11 @@ Fodder — Usually Small to Medium</p>
 <h5>Equipment</h5>
 <p>Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.</p>
 </div></div>
+<p>A block with several <code>####</code> entries breaks between creatures and never inside one, in one column or in <code>@npc-stat .gp-columns-2</code>; the title bar stays with the first entry. A block with no <code>####</code> is one creature and stays whole. Add <code>.dc-allow-split</code> (<code>@npc-stat {.dc-allow-split}</code>) for an unusually long entry: it may then break after its name and stat lines.</p>
 <p>Tokens: <code>--dc-npc-stat-label-color</code>, <code>--dc-npc-stat-primary</code>, <code>--dc-npc-stat-secondary</code>, <code>--dc-npc-stat-rule</code>, <code>--dc-npc-stat-rule-width</code>.</p>
 <h2>Stat grid and at-a-glance cards</h2>
 <p>Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one label and one value per card.</p>
-<pre><code data-source-range="469:490" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
+<pre><code data-source-range="471:492" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
     &lt;div class=&quot;dc-stat-class&quot;&gt;— Contact · Ripperdoc —&lt;/div&gt;
@@ -1380,7 +1381,7 @@ Fodder — Usually Small to Medium</p>
 </div>
 <h2>NPC sidebar</h2>
 <p>A contact capsule floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>.</p>
-<pre><code data-source-range="521:527" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
+<pre><code data-source-range="523:529" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
 &lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; — Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
