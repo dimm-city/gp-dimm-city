@@ -7,6 +7,21 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-10-11
+
+### Fixed
+
+- **A splittable section that ends flush at a page foot no longer leaves a
+  nearly blank page after it.** When a `.dc-allow-split` section (or an
+  `@npc-stat` with `####` entries) filled its last page to the foot, its
+  bottom padding, and the card edge and shadow that cover it, moved to the
+  next page as a thin strip. The card's bottom edge now takes no layout space
+  on those sections: the surface and shadow layers hang below the box into the
+  margin, and the margin below grows by the same amount, so nothing after the
+  card moves. Sections that cannot split are unchanged. An element with a
+  top margin over 12pt (such as `.dc-tape`) directly after a splittable
+  section now sits up to one padding closer to it.
+
 ## [1.4.0] - 2026-10-11
 
 One way to set content in columns: Gutterpress core's `@columns N` …

@@ -8,6 +8,17 @@
                             ::after layers: "" paints, `none` removes the layer
      --dc-section-pad-top/-right/-bottom/-left — padding; the header bar's
                             negative margins are derived from them
+     --dc-section-edge  — how far the card's bottom edge hangs below the box
+                            instead of sitting in its padding. 0px (the card's
+                            padding is layout space) except where the section
+                            may split across pages: there it is the bottom
+                            padding, so a section that ends flush at a page foot
+                            has no padding left to spill onto the next page.
+                            Mechanism: padding-bottom shrinks by the edge, the
+                            ::before/::after layers extend below the box by it,
+                            and margin-bottom grows by it. A box that paints
+                            its own surface (background / box-shadow) keeps it
+                            at 0px.
    A variant or template owns its chrome by setting these on its own rule. */
 .section {
   /* `filter` on this element stops negative-margin heading bars escaping the
@@ -22,7 +33,8 @@
   /* display: flow-root moved to the :where(.section) rule above — the
      float-containment default must sit at zero specificity so core layout
      classes can own `display`. */
-  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) var(--dc-section-pad-bottom) var(--dc-section-pad-left);
+  --dc-section-edge: 0px;
+  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
@@ -36,7 +48,7 @@
      711px against a 708px content box. Giving the decoration room is the
      fix; clipping it back was only ever hiding it. Same shape as
      .dc-path-shell's padding-right. */
-  margin: 0 3px 12pt 0;
+  margin: 0 3px calc(12pt + var(--dc-section-edge)) 0;
   position: relative;
   /* Sections are atomic units — they MUST NOT span pages. If a section
      does not fit on the remaining page space, it moves to the next page
@@ -59,6 +71,7 @@
 /* It sets the token, not the property, so one declaration above decides. */
 .section.dc-allow-split {
   --dc-section-break-inside: auto;
+  --dc-section-edge: var(--dc-section-pad-bottom);
 }
 
 /* clip-path + left accent band on ::before.
@@ -94,7 +107,7 @@
 .section::before {
   content: var(--dc-section-surface);
   position: absolute;
-  inset: 0;
+  inset: 0 0 calc(-1 * var(--dc-section-edge)) 0;
   /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). */
   background: var(--dc-section-bg);
   box-shadow: inset 5px 0 0 var(--dc-section-accent);
@@ -113,7 +126,7 @@
   top: 3px;
   left: 3px;
   right: -3px;
-  bottom: -3px;
+  bottom: calc(-3px - var(--dc-section-edge));
   background: var(--ink-dark);
   clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
   z-index: -2;
@@ -638,6 +651,7 @@ h3 + .section {
    both. */
 .section.dc-npc-stat:is(:has(> h4), :has(> .gp-columns > h4)) {
   --dc-section-break-inside: auto;
+  --dc-section-edge: var(--dc-section-pad-bottom);
 }
 .section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
   break-after: avoid;
