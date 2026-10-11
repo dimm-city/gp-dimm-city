@@ -6,7 +6,7 @@ Chapter 4 {.dg-kicker}
 
 # Layout
 
-How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
+How content is arranged inside a page: columns, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
 
 
 ## Columns
@@ -43,14 +43,16 @@ Right column.
 
 `@columns 3` is the same marker with a 3. A run's columns balance, so a short run ends level. Whatever wants columns goes inside `@columns`: paragraphs, a list, a run of entries. The components in this guide take it the same way, for example `@columns 2` inside a `@skill`, a `@card-grid` or an `@npc-stat`.
 
-## The column panel
+## A card with columns
 
-Add `.dc-column-panel` and the run sits in a card: substrate, top and bottom rules, and the leading `##` or `###` becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.
+A column run inside a plain `@section` sits in the standard card: the leading `##` or `###` is the heading bar at full width, and `@columns 2` below it splits the body.
 
 ```markdown
-@column-panel .gp-columns-2
+@section
 
 ## The City
+
+@columns 2
 
 Dimm City twitches like a clamped nerve at the edge of existence.
 
@@ -58,16 +60,20 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-column-panel
+@end-columns
+
+@end-section
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@column-panel .gp-columns-2
+@section
 
 ## The City
+
+@columns 2
 
 Dimm City twitches like a clamped nerve at the edge of existence.
 
@@ -75,7 +81,9 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 </div>
 

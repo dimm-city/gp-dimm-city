@@ -3,13 +3,13 @@
 
 @page .tech-cybernetics .second-page
 
-@column-panel .gp-columns-2
+@section
 
 ### Tech and Cybernetics
 
 Wanna level up? In Dimm City, that means slicing yourself open and slotting in something stronger. Flesh breaks. Metal remembers. Cybernetics give you reach, power, speed—whatever the job demands. But every upgrade scrapes away at what makes you you.
 
-@column-break
+@columns 2
 
 Install too much, too fast, or too dirty, and the body pushes back. Or worse—the Dream does.
 
@@ -19,7 +19,9 @@ Every install has a cost. Every edge has a crack. Push too far, and something in
 
 @end-callout
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 ---
 
@@ -81,9 +83,11 @@ The affected PC rolls each round to regain control. Specialties like the Cybersu
 
 ## Example Gear Entries
 
-@column-panel .gp-columns-2
+@section
 
 ### Useful Items
+
+@columns 2
 
 @gear
 ### Shadowbit Token
@@ -129,13 +133,17 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 
 @end-gear
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 @page-break
 
-@column-panel .gp-columns-2
+@section
 
 ### Common Cybernetics
+
+@columns 2
 
 @gear
 ### UniArm 100
@@ -181,4 +189,6 @@ Combat processor wired into your nervous system. +1 AP per round. Cannot be Stun
 
 @end-gear
 
-@end-column-panel
+@end-columns
+
+@end-section

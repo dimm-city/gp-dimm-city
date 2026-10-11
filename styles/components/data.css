@@ -220,7 +220,7 @@
      shadow, not an absolutely positioned `::after` box: an absolutely
      positioned box inside a multicol run stops Chromium balancing the run's
      last fragment (it stretches to the full page height), which a
-     `@column-panel .gp-columns-2` ending in an `@outcome` showed. */
+     column run (`@columns 2`) ending in an `@outcome` showed. */
   box-shadow:
     inset 0 0 0 4px var(--dc-outcomes-surface),
     inset 0 0 0 5px var(--dc-outcomes-inner-border);

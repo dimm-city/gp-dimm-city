@@ -29,9 +29,7 @@
    the rule (`--gp-column-rule`, same place) and `column-fill`. No sheet here
    sets `columns`, `column-count`, `column-gap`, `column-fill` or `column-rule`
    (test/integrity.test.js enforces it). What this package may still own is
-   chrome AROUND a run (`.dc-column-panel`, whose header bar spans with
-   `column-span`) and component rules that react to sitting inside one
-   (dc-native.css §5). The grids inside a single component (`.dc-stat-grid`,
+   component rules that react to sitting inside a run (dc-native.css §5). The grids inside a single component (`.dc-stat-grid`,
    `.dc-steps`, `.dc-outcome-row`) are not column layout.
 
    AGENT RULE: "Does this selector start with .page.*, a general print
@@ -215,8 +213,8 @@
    every other column rule of this package: `@columns N` is the one way to
    column content, and it is core's. The gap and the hairline are two tokens
    set at `:root` in dc-component-defaults.css (`--gp-column-gap`,
-   `--gp-column-rule`), with no column selector. The card around a run is
-   `.dc-column-panel` (components/section.css). */
+   `--gp-column-rule`), with no column selector. A card that wants columns is
+   a plain `@section` with its body in `@columns N`. */
 
 .dc-card-grid .dc-specialty,
 .dc-card-grid .dc-specialty-card {

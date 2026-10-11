@@ -429,14 +429,6 @@ components:
     breaks: none
 
   # ── Author classes on core markers, attrs and raw HTML ────────────────
-  - name: column-panel
-    status: live
-    origin: plugin
-    recipe: "@column-panel [.gp-columns-2] … @end-column-panel  (or @section .gp-columns-2 .dc-column-panel)"
-    emits: div.section.dc-column-panel
-    css: styles/components/section.css
-    breaks: "first heading glued to its first paragraph"
-
   - name: tabbed
     status: live
     origin: plugin

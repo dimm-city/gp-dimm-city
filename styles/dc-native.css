@@ -262,12 +262,11 @@ figure {
    collapse. Removing this override cost 3 pages of pagination churn when
    measured (302pp vs 299pp), so it is load-bearing, not legacy.
 
-   Keys on the run, not `.dc-column-panel`: this is about multicol
-   fragmentation, and the wrapper is often a `@columns` run that never carries
-   the panel chrome at all. A run is `.gp-columns` (what `@columns` emits) or
-   a count class on its own (`@column-panel .gp-columns-2`), so the selector
-   takes either: `[class*="gp-columns-"]` is the count classes, and the
-   rule reads the same for -1 to -5. */
+   Keys on the run, not on any card around it: this is about multicol
+   fragmentation, and the wrapper is a `@columns` run. A run is `.gp-columns`
+   (what `@columns` emits) or a count class on its own, so the selector takes
+   either: `[class*="gp-columns-"]` is the count classes, and the rule reads
+   the same for -1 to -5. */
 /* Selector is the descendant form on purpose: a `.section` that is itself the
    multicol container keeps the default. */
 :is(.gp-columns, [class*="gp-columns-"]) .section {
@@ -275,10 +274,9 @@ figure {
 }
 
 /* `column-fill` is not set anywhere in this package. `balance` is the CSS
-   initial value and what a column run gets; a run that genuinely needs
-   sequential fill opts in with core's `.gp-columns-flow`. (A rule here used to
-   restate `balance` for `.gp-columns-2/-3`; it was a no-op that only needed a
-   `:not(.gp-columns-flow)` guard to stop it defeating that opt-in.) */
+   initial value and what a column run gets; core has no sequential-fill
+   opt-in. (A rule here used to restate `balance` for `.gp-columns-2/-3`; it
+   was a no-op.) */
 
 /* ── 7. WALL ART placement is the markdown's, via core's gp-* classes ──────
    Do not add a position/float/margin declaration to a `.fg-art-*` class that

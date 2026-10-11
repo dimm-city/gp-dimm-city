@@ -4,11 +4,13 @@
 
 @page
 
-@column-panel .gp-columns-2
+@section
 
 ## Dream Mastery
 
 Every Dream needs someone to light the fuse. That's you—the Dream Master.
+
+@columns 2
 
 You're not just the voice behind the curtain. You are the curtain. The smoke. The shadows in the alley. You set the tone, build the streets, throw curveballs, and breathe fire into the frame.
 
@@ -24,7 +26,9 @@ Crank up the tension—then let it breathe. When they win, make 'em feel it. Whe
 
 You're not here to run a game. You're here to make the Dream burn bright.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 ### Core Elements
 

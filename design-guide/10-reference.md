@@ -36,7 +36,6 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
 | `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
-| `@column-panel` | `@end-column-panel` | usually with `.gp-columns-2`; a card-less run is `@columns 2` |
 | `@tabbed` | `@end-tabbed` | first heading (`##` or `###`) hangs as the tab |
 | `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` inside `@columns 2` |
 | `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose; `@columns 2` inside sets two fields side by side |
@@ -58,8 +57,6 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.gp-columns-2` · `.gp-columns-3` | `@column-panel` | The panel's column count (everywhere else, `@columns N`) |
-| `.dc-column-panel` | `@section` with columns (or write `@column-panel`) | Card substrate, spanning heading bar |
 | `.dc-tabbed` | `@section` | Heading hung as a tab |
 | `.dc-plain` | `@section` | No panel chrome |
 | `.gp-no-break` | `@section` | Never split across pages |

@@ -1084,7 +1084,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section chassis
 
-A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and `@column-panel .gp-columns-2`.
+A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and a `@section` with its body in `@columns 2`.
 
 <div class="dg-stage dg-tall">
 
@@ -1120,9 +1120,11 @@ The subordinate tab: smaller type, tighter padding.
 
 @end-tabbed
 
-@column-panel .gp-columns-2
+@section
 
-### Column panel
+### Section with columns
+
+@columns 2
 
 Dimm City twitches like a clamped nerve at the edge of existence.
 
@@ -1130,7 +1132,9 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 
 Nothing here is safe. Nothing here is free.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 </div>
 

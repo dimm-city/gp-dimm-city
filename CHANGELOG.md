@@ -64,6 +64,12 @@ Gutterpress** for the column hairline (`--gp-column-rule`) and for a bare
   default is a plain `:where(.section) { display: flow-root }` again, and the
   grid-row spans for a panel's header bar are gone. A long run of gear entries
   packs two-up in `@columns 2` inside a `@section .dc-allow-split`.
+- **`@column-panel` / `.dc-column-panel` are gone.** Columns have one spelling,
+  core's `@columns N`. Write a plain `@section` with the body in `@columns 2`;
+  the heading and intro paragraph stay above the run, full width. Before:
+  `@column-panel .gp-columns-2` … `@end-column-panel`; after: `@section` / `##
+  Heading` / `@columns 2` … `@end-columns` / `@end-section`. The migrated
+  panel looks like a normal `@section` card.
 
 ## [1.3.0] - 2026-10-11
 

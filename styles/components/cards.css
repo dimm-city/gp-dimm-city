@@ -330,7 +330,7 @@
 /* Scoped to the skill card on purpose. This mark is an absolutely positioned
    box, and an absolutely positioned box inside a multicol run stops Chromium
    balancing the run's last fragment: it stretches to the full page height
-   instead of shrinking to its content, so a `@column-panel .gp-columns-2`
+   instead of shrinking to its content, so a column run (`@columns 2`)
    that ends in a `@card` took a page of its own and spilled its bottom edge
    onto one more. The `@card` primitive shares the `.dc-card-body` class and
    never meant to carry this tick (its tokens are the skill card's). */

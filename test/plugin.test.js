@@ -316,7 +316,6 @@ describe("declared wrapper markers", () => {
 
   test("section markers are core sections: same HTML as the @section spelling", () => {
     const expected = {
-      "column-panel": "dc-column-panel",
       tabbed: "dc-tabbed",
       "card-grid": "dc-card-grid",
       "citizen-walkthrough": "dc-citizen-walkthrough",

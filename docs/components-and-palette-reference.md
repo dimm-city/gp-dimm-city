@@ -124,7 +124,6 @@ These are separate components — not variants of each other.
 ### Layout Helpers
 - `.dc-card-grid`
 - `.dc-at-a-glance-card` (three across in `@columns 3`)
-- `.dc-column-panel` (section-variant card for a `.gp-columns-2` run)
 - `.dc-citizen-walkthrough` (two fields side by side in `@columns 2`)
 
 Note: there are no `.dc-accent-X` utility classes. Retheme a chapter by setting the component tokens at its id (`#chapter-03 { --dc-section-accent: var(--rust); }`).
@@ -233,7 +232,7 @@ All component tokens live at `:root` so per-chapter overrides can use the cascad
 | `--dc-section-pad-top` / `-bottom` | `--space-md` | Section padding; the header bar's negative margins follow it |
 | `--dc-section-pad-right` / `-left` | `--space-lg` | Same, horizontal |
 
-Variants and templates set these on their own rule (`.dc-plain`, `.dc-tabbed`, `.dc-column-panel`, `.dc-card-grid`, the intro and credits pages, the chapter opener). The tokens inherit, so do not nest a `.section` inside one that turns its chrome off.
+Variants and templates set these on their own rule (`.dc-plain`, `.dc-tabbed`, `.dc-card-grid`, the intro and credits pages, the chapter opener). The tokens inherit, so do not nest a `.section` inside one that turns its chrome off.
 
 ### Alert / Callout (`.dc-alert`)
 | Token | Default | Role |

@@ -147,20 +147,18 @@ in `dc-component-defaults.css`, with no column selector:
 
 `--gp-column-rule` needs a Gutterpress that reads it; older ones ignore it and
 draw no hairline. `column-fill` is not set anywhere: `balance` is the CSS
-initial value, and a run that needs sequential fill opts in with core's
-`.gp-columns-flow`.
+initial value, and core has no sequential-fill opt-in.
 
 What the package still owns around a run:
 
 | Concern | Owner | Selector |
 |---|---|---|
 | How many columns, the gap, the rule, the fill | Gutterpress core | `@columns N` |
-| The card around a column run — substrate, top/bottom rules, spanning heading bar, shared preamble paragraph, gear-entry min-heights | `components/section.css` (`@layer dc.components`) | `.dc-column-panel` (authors still write the count on it: `@column-panel .gp-columns-2`; ownership of that count is pending a decision) |
 | Components reacting to sitting inside a run (a `.section` or `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `dc-native.css` §5, `components/section.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
 | Grids inside ONE component (not column layout) | `components/data.css` | `.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row` |
 
-A column run with no chrome is `@columns 2` on its own; a card around one is
-`@column-panel .gp-columns-2`.
+A column run is `@columns 2`; a card around one is a plain `@section` with the
+run inside it, so the heading bar sits full width above the columns.
 
 ### Layer Contract Rules
 

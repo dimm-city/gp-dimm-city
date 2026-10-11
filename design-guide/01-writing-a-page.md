@@ -50,14 +50,14 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
+A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
 
 ## Attributes
 
 Every marker takes the same attribute grammar after its name, in any order: `#id` sets an id, `.class` adds a class, `key=value` or `key="quoted value"` sets a named option.
 
 ```markdown
-@column-panel #core-loop .gp-columns-2
+@section #core-loop .dc-plain
 
 @callout warning label="Heat is shared"
 ```
@@ -216,9 +216,11 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 ```markdown
 @chapter #ch-rules ch="4"
 
-@column-panel .gp-columns-2
+@section
 
 ## Augment Points
+
+@columns 2
 
 **AP** is your push. If an ability lists an AP cost, you spend it and the effect happens.
 
@@ -227,7 +229,9 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 > [!NOTE]
 > You start every dream with 10 AP.
@@ -237,9 +241,11 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@column-panel .gp-columns-2
+@section
 
 ## Augment Points
+
+@columns 2
 
 **AP** is your push. If an ability lists an AP cost, you spend it and the effect happens.
 
@@ -248,7 +254,9 @@ Result {.dg-result}
 - **0 AP** — Free to use. Not always safe.
 - **1–X AP** — You choose how hard you push.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 > [!NOTE]
 > You start every dream with 10 AP.

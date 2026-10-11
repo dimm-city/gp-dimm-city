@@ -115,7 +115,7 @@ Tokens: `--dc-sidebar-box-surface`, `--dc-sidebar-box-border`, `--dc-sidebar-box
 
 ## Definition
 
-A short italic callout for one term — in-world vocabulary, an NPC type, an item category. Stack several in a two-column panel for a glossary of callouts.
+A short italic callout for one term — in-world vocabulary, an NPC type, an item category. Stack several in an `@columns 2` run for a glossary of callouts.
 
 ```markdown
 @definition
@@ -129,7 +129,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@column-panel .gp-columns-2
+@columns 2
 
 @definition
 
@@ -157,7 +157,7 @@ Result {.dg-result}
 
 @end-definition
 
-@end-column-panel
+@end-columns
 
 </div>
 

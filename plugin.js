@@ -1377,8 +1377,7 @@ export const markers = {
   // styles/components/section.css. No variants: none of these is styled per
   // specialty (that lives on `.dc-specialty.<name>`, from `@specialty`), and
   // modifiers such as `.dc-plain`, `.dc-snug`, `.dc-allow-split` and
-  // `.gp-columns-2` stay author classes (`@column-panel .gp-columns-2`).
-  'column-panel': { section: true, class: 'dc-column-panel' },
+  // `.gp-columns-2` stay author classes.
   tabbed: { section: true, class: 'dc-tabbed' },
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-citizen-walkthrough' },
