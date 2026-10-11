@@ -394,8 +394,8 @@ describe("declared specialty, learning path and skill", () => {
     });
 
     test("author classes and attributes ride along", () => {
-      const { html } = renderGp(doc("@specialty .augmerc .dc-cards-two-col #spec-aug", "", "x"));
-      expect(html).toMatch(/<div class="dc-specialty augmerc dc-cards-two-col" id="spec-aug"/);
+      const { html } = renderGp(doc("@specialty .augmerc .my-class #spec-aug", "", "x"));
+      expect(html).toMatch(/<div class="dc-specialty augmerc my-class" id="spec-aug"/);
     });
 
     test("a new @specialty, @end-specialty and @page each close it with everything inside", () => {
