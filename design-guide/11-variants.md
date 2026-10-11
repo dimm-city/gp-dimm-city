@@ -386,9 +386,9 @@ The same register with the class on the card root.
 
 </div>
 
-### Two columns — `@skill {.dc-two-col}`
+### Two columns — `@columns 2` inside a `@skill`
 
-A long ability list packed into two columns.
+A long ability list packed into two columns. The columns are core's `@columns 2` … `@end-columns` around just that part of the body; the flavor line and the lead paragraph stay full width.
 
 <div class="dg-stage">
 
@@ -398,7 +398,7 @@ A long ability list packed into two columns.
 
 ### Example Path
 
-@skill {.dc-two-col}
+@skill
 
 #### Boost Morale | AUG3.4
 
@@ -406,10 +406,14 @@ A long ability list packed into two columns.
 
 When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.
 
+@columns 2
+
 1. **2 AP** *Push the Fail:* A Failure becomes a Hard Choice.
 2. **1 AP** *Salvage the Choice:* A Hard Choice becomes a Success.
 3. **3 AP** *Make It Legend:* A Success becomes a Triumph.
 4. **4 AP** *Drag It Up:* A Catastrophe becomes a Hard Choice.
+
+@end-columns
 
 @end-skill
 
@@ -693,6 +697,8 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 @card-grid
 
+@columns 2
+
 @specialty .augmerc
 
 @specialty-card
@@ -852,6 +858,8 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 @end-specialty-card
 
 @end-specialty
+
+@end-columns
 
 @end-card-grid
 

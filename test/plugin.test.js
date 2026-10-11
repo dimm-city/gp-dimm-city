@@ -482,9 +482,9 @@ describe("declared specialty, learning path and skill", () => {
 
   describe("@skill", () => {
     test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
-      const src = doc("@skill {.dc-allow-split .dc-two-col} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const src = doc("@skill {.dc-allow-split .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
       const { html } = renderGp(src);
-      expect(count(html, /class="dc-skill-card dc-allow-split dc-two-col"/g)).toBe(2);
+      expect(count(html, /class="dc-skill-card dc-allow-split my-class"/g)).toBe(2);
       expect(html).toContain('id="sk" data-variant="2" name="first"');
       expect(html).toContain('name="second"');
       // `.dc-allow-split` opts out of the default avoid
@@ -536,6 +536,36 @@ describe("declared specialty, learning path and skill", () => {
     test("a page break or another component ends the card; later content is outside it", () => {
       const { html } = renderGp(doc("@skill", "", card("A"), "", "@page-break", "", "after the break"));
       expect(html).toMatch(/<\/div><\/div><\/div>\s*<div[^>]*gp-page-break[^>]*><\/div>\s*<p>after the break<\/p>/);
+    });
+
+    test("@columns, @column-break and @end-columns inside a card stay in its body, in place", () => {
+      const src = doc(
+        "@skill", "", card("Split"), "",
+        "@columns 2", "", "- one", "- two", "", "@column-break", "", "- three", "", "@end-columns", "",
+        "Closing line.", "", card("Next"),
+      );
+      const { html, warnings } = renderGp(src);
+      expect(warnings).toEqual([]);
+      expect(count(html, /class="dc-skill-card"/g)).toBe(2);
+      // the run sits inside the first card's .dc-card-inner, before the card closes
+      expect(html).toMatch(
+        /<div class="dc-card-inner">[\s\S]*<div class="gp-columns gp-columns-2"[^>]*>[\s\S]*<li>two<\/li>[\s\S]*<div class="gp-column-break"[^>]*><\/div>[\s\S]*<li>three<\/li>[\s\S]*<\/div>\s*<p>Closing line\.<\/p>\s*<\/div><\/div><\/div>/,
+      );
+      // the first card holds the whole run and the closing line: nothing leaks out between the cards
+      const firstCard = html.slice(html.indexOf('name="split"'), html.indexOf('name="next"'));
+      expect(firstCard).toContain("<li>three</li>");
+      expect(firstCard).toContain("Closing line.");
+    });
+
+    test("a card after a columns run still starts as a card, and a stray @column-break still ends one", () => {
+      const { html } = renderGp(doc("@skill", "", card("A"), "", "@columns 2", "", "text", "", "@end-columns", "", card("B"), "", "@column-break", "", "after"));
+      expect(count(html, /class="dc-skill-card"/g)).toBe(2);
+      expect(html).toMatch(/<\/div><\/div><\/div>\s*<div[^>]*gp-column-break[^>]*><\/div>\s*<p>after<\/p>/);
+    });
+
+    test("a columns run opened before the cards wraps them; the cards are not inside the card of an earlier one", () => {
+      const { html } = renderGp(doc("@columns 2", "", "@skill", "", card("A"), "", card("B"), "", "@end-skill", "", "@end-columns"));
+      expect(html).toMatch(/<div class="gp-columns gp-columns-2"[^>]*>\s*<div class="dc-skill-card"[\s\S]*name="b"[\s\S]*<\/div><\/div><\/div>\s*<\/div>/);
     });
 
     test("@card, @outcome and @procedure inside a skill are rewritten like anywhere else", () => {

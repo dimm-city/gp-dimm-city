@@ -41,6 +41,8 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 
 @card-grid
 
+@columns 2
+
 @specialty .augmerc
 
 @specialty-card #specialty-augmerc
@@ -200,6 +202,8 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 @end-specialty-card
 
 @end-specialty
+
+@end-columns
 
 @end-card-grid
 

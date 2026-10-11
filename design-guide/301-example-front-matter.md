@@ -42,7 +42,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 @section .credits-colophon
 
-<div class="dc-colophon-grid">
+@columns 2
 
 **Designers:** TWard and ITLackey
 
@@ -66,7 +66,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 **Published by:** Dimm City LLC · 2026.
 
-</div>
+@end-columns
 
 @end-section
 

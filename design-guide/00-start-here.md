@@ -67,7 +67,7 @@ This is what you type.
 Three rules carry through the whole system, and they are worth knowing before anything else:
 
 1. **A marker is a line that starts with `@`.** `@lede` opens a block, `@end-lede` closes it. Leave a blank line on each side of every marker.
-2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section #rules .gp-columns-2`.
+2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section #rules .dc-plain`.
 3. **Classes on a parent change everything inside it.** `@specialty .augmerc` gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.
 
 ## Quick start

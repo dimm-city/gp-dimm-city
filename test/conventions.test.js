@@ -20,18 +20,16 @@ const pkg = JSON.parse(read("package.json"));
 
 /** Core hooks the stylesheets legitimately reference. Add to this list on purpose, never by accident. */
 const CORE_HOOKS_READ_BY_CSS = [
-  ".gp-columns-2",
-  ".gp-columns-3",
-  ".gp-columns-", // attribute/prefix selectors such as [class*="gp-columns-"]
-  ".gp-grid-2",
-  ".gp-grid-",
+  ".gp-columns", // what `@columns N` emits (the run itself)
+  ".gp-columns-", // count classes, and attribute/prefix selectors such as [class*="gp-columns-"]
   ".gp-pin",
   ".gp-bottom",
   ".gp-left",
   ".gp-bleed",
   ".gp-behind",
   ".gp-page-break",
-  "--gp-column-gap", // the one core property this package is allowed to SET (page-templates.css)
+  "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
+  "--gp-column-rule", //   and to reset on a component that wants none
   "--gp-content-h", // read only
 ];
 
@@ -103,7 +101,7 @@ describe("stylesheets", () => {
     for (const rel of sheets) {
       const css = stripComments(read(rel));
       const declared = [...css.matchAll(/(--gp-[a-z0-9-]+)\s*:/g)].map((m) => m[1]);
-      expect(declared.filter((p) => p !== "--gp-column-gap"), `${rel} declares a core property`).toEqual([]);
+      expect(declared.filter((p) => !["--gp-column-gap", "--gp-column-rule"].includes(p)), `${rel} declares a core property`).toEqual([]);
     }
   });
 

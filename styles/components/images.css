@@ -146,15 +146,10 @@
    absolute-positioned copy that used to live here unioned with that rule
    and produced an incoherent box model — no rule belongs here. */
 
-/* Column ornament on core's two-column primitive. `columns`/`column-gap` are
-   core's (`GUTTERPRESS_CSS`, `.gp-columns-2`); this only paints the hairline
-   between the columns. It keys on the COUNT class, not the panel variant
-   below, because every two-column container in the book gets the rule —
-   `@block .gp-columns-2` and `@page … .gp-columns-2` included, neither of
-   which is a `.section`. */
-.gp-columns-2 {
-  column-rule: 1pt solid var(--border-hairline);
-}
+/* The hairline between columns is `--gp-column-rule`, set once at `:root` in
+   dc-component-defaults.css. There is no column selector here: a rule on
+   core's column classes would outrank core's own (this package's layer wins),
+   and the token is the hook core reads. */
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -182,16 +177,8 @@
    Safe w.r.t. margin collapsing: .section's non-zero vertical padding
    already blocks parent/child margin collapse, so flow-root changes no
    spacing for any variant that keeps that padding.
-   It is a default, not a mandate, and `:where()` alone does not make it one:
-   core's `.gp-grid-*` lives in the earlier `gp.vocab` layer, and a rule in
-   any later layer beats it at ANY specificity, zero included. Measured:
-   `:where(.section) { display: flow-root }` still computed flow-root on
-   `@section .gp-grid-2` (a silent no-op, one card per row) while the same
-   class on a `@page` laid out as a grid. So the default steps aside for the
-   one core class that owns `display` (`.gp-columns-*` set `columns`, not
-   `display`, and coexist with flow-root). `:where()` keeps the specificity
-   at zero for the rest. */
-:where(.section:not(.gp-grid-2, .gp-grid-3)) {
+   It is a default, not a mandate; `:where()` keeps the specificity at zero. */
+:where(.section) {
   display: flow-root;
 }
 

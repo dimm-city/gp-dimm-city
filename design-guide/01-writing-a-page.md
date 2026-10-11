@@ -17,9 +17,10 @@ Gutterpress itself provides the structural markers. They wrap everything that fo
 | `@chapter #id ch="N"` | next `@chapter` / end of file | A chapter. `ch="N"` prints the `c.N` footer on every page of it |
 | `@page .class` | next `@page` | A page. Classes pick a page template ([Page Templates](#ch-templates)) |
 | `@spread` | next `@spread` / `@page` | Two facing pages kept together |
-| `@section .class` | `@end-section` | A region on the page: columns, a panel, a named component chassis |
+| `@section .class` | `@end-section` | A region on the page: a panel, a named component chassis |
+| `@columns 2` | `@end-columns` | Set what is between in 2 to 5 columns |
 | `@page-break` | — | Force a new page here |
-| `@column-break` | — | Force the next column, inside a multi-column `@section` |
+| `@column-break` | — | Force the next column, inside `@columns` |
 
 A chapter is one file. A `@chapter` line opens each file, and the chapter ends where the file ends.
 
@@ -49,7 +50,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for columns and named chassis. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
+A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
 
 ## Attributes
 

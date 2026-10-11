@@ -4,12 +4,8 @@
 
    ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
    OWNS:
-   - ALL page and section columns:N layouts — this is the ONLY file that may
-     set columns on a page template or section run. A component may column its
-     OWN internals in its own sheet (cards.css, section.css .dc-card-grid). It
-     may NOT set columns on core's `.gp-columns-*` (only their `--gp-column-gap`).
-   - .page.* content layout rules (columns, flex, grid on page content divs)
-   - .page base geometry, .column-break
+   - .page.* content layout rules (flex, grid on page content divs)
+   - .page base geometry
    - .dc-full-page full-bleed geometry (its named-page assignment,
      `page: full`, lives in page-rules.css alongside `@page full` — see
      that file's "ONE BLOCK PER NAMED PAGE" contract)
@@ -23,19 +19,23 @@
    - @page declarations or named-page geometry (→ page-rules.css)
    - .dc-* component styles (→ components/*.css)
    - :root token definitions (→ dc-palette.css, dc-component-defaults.css)
-   - div.chapter scaffolding unrelated to columns/layout (→ guide.css)
+   - div.chapter scaffolding unrelated to layout (→ guide.css)
    - @media screen rules (print-only project)
 
-   COLUMN OWNERSHIP RULE (narrowed, dc#41): if a THEME rule sets columns:N on a PAGE TEMPLATE (.page.*) in this
-   project, it belongs here and ONLY here. A columns:N on a page/section
-   selector found in another file is a bug (a component's own-internals layout
-   in its sheet is not). Core's `.gp-columns-2` / `.gp-columns-3` are the generic column
-   vocabulary and are NOT this file's to redefine — this file may only set
-   their `--gp-column-gap`. See the column-runs block below.
+   COLUMN OWNERSHIP RULE: this package owns NO column layout. There is one way
+   to put content in columns, and it is Gutterpress core's: `@columns N` …
+   `@column-break` … `@end-columns` (N from 1 to 5). Core owns the count, the
+   gap (`--gp-column-gap`, set once at `:root` in dc-component-defaults.css),
+   the rule (`--gp-column-rule`, same place) and `column-fill`. No sheet here
+   sets `columns`, `column-count`, `column-gap`, `column-fill` or `column-rule`
+   (test/integrity.test.js enforces it). What this package may still own is
+   chrome AROUND a run (`.dc-column-panel`, whose header bar spans with
+   `column-span`) and component rules that react to sitting inside one
+   (dc-native.css §5). The grids inside a single component (`.dc-stat-grid`,
+   `.dc-steps`, `.dc-outcome-row`) are not column layout.
 
    AGENT RULE: "Does this selector start with .page.*, a general print
-   utility, or a div.chapter layout rule that sets columns?" — if NO, use
-   another file.
+   utility, or a div.chapter layout rule?" — if NO, use another file.
    ──────────────────────────────────────────────────────────────────────── */
 
 @layer dc.templates {
@@ -129,7 +129,7 @@
    is not a sheet — it is a content run that fragments across as many sheets
    as it needs. The component gallery's wrapper measured 27,272px tall (~27
    sheets, 149 children), so an automatic `:has()` reservation squeezed the
-   right column out of all 27 — measured: it pushed `.dc-at-a-glance-cards`
+   right column out of all 27 — measured: it pushed an at-a-glance card row
    156px past its own grid box 22 sheets away. The rail only makes sense on a
    wrapper that IS one sheet, and `@page` is how an author declares one. So
    opting in is the feature, not a papercut.
@@ -172,20 +172,10 @@
    rendered HTML (`--format html`, grepped for exact class="..." tokens)
    before deleting.
 
-   `.column-break` (unprefixed) is NOT dead and stays: the design guide's
-   302-example-chapter-opener.md and 305-example-rules.md author it
-   directly as `---{.column-break}` (a markdown-it-attrs class on a `---`
-   thematic break), which is a different code path from the `@column-break`
-   marker line core recognizes (markers.js's parseMarkerLine only matches
-   lines starting with `@`) and renders `<hr class="column-break">` with no
-   `gp-` class at all. The rendered-HTML check that cleared every other
-   rule in this pass initially cleared this one too on a broken grep
-   pipeline; re-run correctly, it is present in the design guide's DOM. */
-.column-break {
-  color: var(--hud-magenta);
-  visibility: hidden;
-  break-after: column;
-}
+   `.column-break` (unprefixed, `---{.column-break}` on a thematic break) was
+   here and is DELETED: it was a third spelling of core's `@column-break`.
+   The marker line works wherever the `---` did (between blocks, on its own
+   line). */
 
 /* Specialty card image sizing lives in components/*.css (.dc-specialty-card img)
    via --dc-specialty-card-media-width/height tokens; no page-template override
@@ -220,37 +210,13 @@
    to the page box instead of letting it reach the sheet edge. */
 
 
-/* ── COLUMN RUNS: the theme sets THE GAP, core sets the columns ────────────── */
-/* `.two-column` / `.three-column` are GONE (2026-08-21). They were the book's
-   own generic spelling of core's `.gp-columns-2` / `.gp-columns-3`, and
-   gutterpress's CLAUDE.md §6 forbids exactly that — a theme redefining
-   `columns:` under a rival generic name leaves an author unable to tell which
-   vocabulary they are getting.
-
-   The name was doing two unrelated jobs, which is why the fix was not a
-   rename. Job one, the column COUNT, is core's and is deleted from this file:
-   nothing here sets `columns` for a column run any more. Job two, a SECTION
-   VARIANT (card substrate, the `column-span: all` heading bar, its shared
-   preamble paragraph, break-orphan guards, gear-entry min-heights) had no
-   business riding on a count class at all; it now has its own name,
-   `.dc-column-panel`, in components/*.css. Authors write both:
-   `@section .gp-columns-2 .dc-column-panel`.
-
-   What survives here is the one genuine theme addition — the gap. Core reads
-   `--gp-column-gap` (its own default is 1.5em) so the book's structural
-   `--gutter` is expressed through core's hook rather than by re-declaring
-   `column-gap`. Nothing in this theme may set `columns` on these names again.
-
-   `column-fill` is NOT set here: it is a per-shape decision that depends on
-   whether the run fragments, and dc-native.css §6 owns it with the
-   measurements behind each value. */
-.gp-columns-2 {
-  --gp-column-gap: var(--gutter);
-}
-
-.gp-columns-3 {
-  --gp-column-gap: 0.18in;  /* narrower than --gutter: three measures, less air */
-}
+/* ── COLUMN RUNS: nothing here ────────────────────────────────────────────── */
+/* `.two-column` / `.three-column` are GONE (2026-08-21), and since then so is
+   every other column rule of this package: `@columns N` is the one way to
+   column content, and it is core's. The gap and the hairline are two tokens
+   set at `:root` in dc-component-defaults.css (`--gp-column-gap`,
+   `--gp-column-rule`), with no column selector. The card around a run is
+   `.dc-column-panel` (components/section.css). */
 
 .dc-card-grid .dc-specialty,
 .dc-card-grid .dc-specialty-card {
@@ -271,10 +237,10 @@
      # Credits {.dc-chevron}
      @lede ... @end-lede
      @section .credits-colophon
-     <div class="dc-colophon-grid">
-       **Role:** Names
-       ...
-     </div>
+     @columns 2
+     **Role:** Names
+     ...
+     @end-columns
 
    ── Template public API ──────────────────────────────────────────────────
    --frontmatter-accent    Single recolor knob. Drives the lede left-strip,
@@ -397,7 +363,7 @@
 /* Credits colophon section: the bottom block of the frontmatter stack, a flat
    paper-cream host (both section chrome layers off) with the lede's 4px
    rail running down through it. The flex column keeps a trailing
-   publisher-mark image bottom-aligned while the inner grid fills the height.
+   publisher-mark image bottom-aligned while the `@columns 2` run fills the height.
    Its shadow is a 2pt right-edge strip, not --shadow-poster: the colophon
    runs to the sheet's bottom edge (this template has no bottom margin), so
    the poster shadow's 3pt drop would land past the sheet and print as a
@@ -410,7 +376,7 @@
   --dc-section-pad-right:  0.22in;
   --dc-section-pad-bottom: 0.18in;
   --dc-section-pad-left:   0.22in;
-  columns: unset;
+  --gp-column-rule: none;  /* the names run in two plain columns, as they always have */
   display: flex;
   flex-direction: column;
   font-size: 9.5pt;
@@ -419,10 +385,7 @@
   box-shadow: inset 4px 0 0 var(--frontmatter-accent), 2pt 0 0 var(--shadow-ink); /* rail: see .dc-intro */
 }
 
-.page.page-credits .section.credits-colophon .dc-colophon-grid {
-  columns: 2;
-  column-gap: var(--gutter);
-  column-fill: balance;
+.page.page-credits .section.credits-colophon > .gp-columns {
   flex-grow: 1;
 }
 

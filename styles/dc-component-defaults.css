@@ -10,6 +10,13 @@
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
   --dc-section-break-inside: avoid;           /* `auto` lets a section split across pages/columns (.dc-allow-split, multicol runs) */
 
+  /* Column runs (`@columns N`). Core owns every column property; these are its
+     two author hooks, set once, with no column selector. Gap: the book's
+     structural gutter. Rule: the hairline between columns (needs a Gutterpress
+     that reads `--gp-column-rule`; older ones ignore it). */
+  --gp-column-gap:  var(--gutter);
+  --gp-column-rule: 1pt solid var(--border-hairline);
+
   /* Section chrome. A variant sets these on its own rule instead of cancelling
      .section's panel. Surface/shadow are the `content` of the ::before/::after
      layers ("" paints, `none` removes the layer); the pads drive .section's

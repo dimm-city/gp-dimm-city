@@ -374,107 +374,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 
 
-A long run packs tighter two-up. Put the entries in a core grid: `.gp-grid-2` on a `@column-panel` places each child in the next cell, across then down, and the heading bar takes the first row. A row is as tall as its taller entry, so keep neighbours about the same length. Every child is a cell, so leave prose outside the run, and add `.dc-allow-split` so a run longer than a page breaks between rows.
-
-```markdown {.dg-split}
-@column-panel .gp-grid-2 .dc-allow-split
-
-### Useful Items
-
-@gear
-
-### Throwaway Blaster
-
-*Ranged. Pistol. CQC Locked, Pack Fed.*
-
-**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
-
-@end-gear
-
-@gear
-
-### Snake Cable
-
-*Utility. Mechanized. Reach 50 ft.*
-
-A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
-
-@end-gear
-
-@gear
-
-### Patchkit
-
-*Medical. Disposable.*
-
-Restores 2 HP when used as an action. Sterile enough.
-
-@end-gear
-
-@gear
-
-### Signal Jammer
-
-*Utility. Electronic. Near range.*
-
-Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
-
-@end-gear
-
-@end-column-panel
-```
-
-Result {.dg-result}
-
-<div class="dg-stage">
-
-@column-panel .gp-grid-2 .dc-allow-split
-
-### Useful Items
-
-@gear
-
-### Throwaway Blaster
-
-*Ranged. Pistol. CQC Locked, Pack Fed.*
-
-**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
-
-@end-gear
-
-@gear
-
-### Snake Cable
-
-*Utility. Mechanized. Reach 50 ft.*
-
-A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
-
-@end-gear
-
-@gear
-
-### Patchkit
-
-*Medical. Disposable.*
-
-Restores 2 HP when used as an action. Sterile enough.
-
-@end-gear
-
-@gear
-
-### Signal Jammer
-
-*Utility. Electronic. Near range.*
-
-Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
-
-@end-gear
-
-@end-column-panel
-
-</div>
+A long run packs tighter two-up in a `@column-panel .gp-columns-2`: entries fill the first column, then the second, and the heading bar spans both. Add `.dc-allow-split` so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows it.
 
 
 ## Tables
@@ -564,7 +464,85 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
 </div>
 
-A block with several `####` entries breaks between creatures and never inside one, in one column or in `@npc-stat .gp-columns-2`; the title bar stays with the first entry. A block with no `####` is one creature and stays whole. Add `.dc-allow-split` (`@npc-stat {.dc-allow-split}`) for an unusually long entry: it may then break after its name and stat lines.
+A block with several `####` entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no `####` is one creature and stays whole. Add `.dc-allow-split` (`@npc-stat {.dc-allow-split}`) for an unusually long entry: it may then break after its name and stat lines.
+
+To set the entries in columns, put them in `@columns 2` inside the block: the bar and an optional intro stay above, full width.
+
+```markdown
+@npc-stat
+
+### Street Crews
+
+Two crews that work the same block.
+
+@columns 2
+
+#### Patchhead
+
+> See a Patchhead comin' at you, you best move.
+
+2 HP — 1 Damage
+Fodder — Small to Medium
+
+##### Traits
+
+**Bloodlust:** Patchheads add 1 to their Damage whenever they hit a creature that is missing Hit Points.
+
+#### Grease Monkey
+
+> Hold still, this'll only sting a lot.
+
+3 HP — 1 Damage
+Fodder — Medium
+
+##### Traits
+
+**Quick Fix:** A Grease Monkey patches an ally for 1 HP once per scene.
+
+@end-columns
+
+@end-npc-stat
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@npc-stat
+
+### Street Crews
+
+Two crews that work the same block.
+
+@columns 2
+
+#### Patchhead
+
+> See a Patchhead comin' at you, you best move.
+
+2 HP — 1 Damage
+Fodder — Small to Medium
+
+##### Traits
+
+**Bloodlust:** Patchheads add 1 to their Damage whenever they hit a creature that is missing Hit Points.
+
+#### Grease Monkey
+
+> Hold still, this'll only sting a lot.
+
+3 HP — 1 Damage
+Fodder — Medium
+
+##### Traits
+
+**Quick Fix:** A Grease Monkey patches an ally for 1 HP once per scene.
+
+@end-columns
+
+@end-npc-stat
+
+</div>
 
 Tokens: `--dc-npc-stat-label-color`, `--dc-npc-stat-primary`, `--dc-npc-stat-secondary`, `--dc-npc-stat-rule`, `--dc-npc-stat-rule-width`.
 
@@ -587,11 +565,13 @@ Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
 
-<div class="dc-at-a-glance-cards">
-  <div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
-  <div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
-  <div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
-</div>
+@columns 3
+
+<div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
+<div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
+<div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
+
+@end-columns
 ```
 
 Result {.dg-result}
@@ -612,11 +592,13 @@ Result {.dg-result}
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
 
-<div class="dc-at-a-glance-cards">
-  <div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
-  <div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
-  <div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
-</div>
+@columns 3
+
+<div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
+<div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
+<div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
+
+@end-columns
 
 </div>
 

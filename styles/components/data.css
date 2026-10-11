@@ -762,13 +762,6 @@ p.dc-img-wrapper {
   width: 100%;
 }
 
-.dc-at-a-glance-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin: 0 0 18px;
-}
-
 .dc-at-a-glance-card {
   background: var(--paper-light);
   border: 1px solid var(--paper-aged);

@@ -17,6 +17,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@page [.class…]` | next `@page` | Page classes: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [.class…]` | `@end-section` | A region; bare = styled panel, `.dc-plain` = no chrome |
+| `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
 | `@page-break` · `@column-break` | — | Forced breaks |
 
 ## Components (this package)
@@ -35,12 +36,12 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
 | `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
-| `@column-panel` | `@end-column-panel` | usually with `.gp-columns-2`; a card-less run is a bare `@section .gp-columns-2` |
+| `@column-panel` | `@end-column-panel` | usually with `.gp-columns-2`; a card-less run is `@columns 2` |
 | `@tabbed` | `@end-tabbed` | first heading (`##` or `###`) hangs as the tab |
-| `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` |
-| `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose |
+| `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` inside `@columns 2` |
+| `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose; `@columns 2` inside sets two fields side by side |
 | `@fiction-excerpt` | `@end-fiction-excerpt` | prose; the first image floats |
-| `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels |
+| `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels; `@columns 2` inside sets the entries in columns |
 | `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | `###` name, `*tags*`, body |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
@@ -49,7 +50,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@specialty-art` | `@end-specialty-art` | one image |
 | `@specialty-card` | `@end-specialty-card` | `#id`; `###` name, image, `>` tagline, pitch |
 | `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
-| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-two-col}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]` |
+| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]`; `@columns 2` around part of the body |
 | `@continue` | — | inside a skill: continuation card |
 
 
@@ -57,7 +58,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.gp-columns-2` · `.gp-columns-3` | `@section` | Two or three columns |
+| `.gp-columns-2` · `.gp-columns-3` | `@column-panel` | The panel's column count (everywhere else, `@columns N`) |
 | `.dc-column-panel` | `@section` with columns (or write `@column-panel`) | Card substrate, spanning heading bar |
 | `.dc-tabbed` | `@section` | Heading hung as a tab |
 | `.dc-plain` | `@section` | No panel chrome |
@@ -67,7 +68,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-npc-stat` | `@section` | Narrative NPC stat block |
 | `.dc-fiction-excerpt` | `@section` | Narrative typography, auto art float |
 | `.dc-citizen-walkthrough` | `@section` | Citizen File field chassis |
-| `.dc-card-grid` | `@section` | Two-across grid of specialty cards |
+| `.dc-card-grid` | `@section` | Chrome and density for a run of specialty cards (set in `@columns 2`) |
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | Card accent per step |
 | `.credits-colophon` | `@section` on the credits page | Colophon chrome |
 | `.dc-chevron` | `#` heading | Chevron banner |
@@ -85,7 +86,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `<span class="dc-ap">2 AP</span>` · `.free` · `.var` | AP chip in prose |
 | `<div class="dc-tape dc-flush">Label</div>` | tape, edge to edge |
 | `<div class="dc-stat [dc-flush]">…</div>` | four-cell stat grid ([Panels, Cards & Data](#ch-panels)) |
-| `<div class="dc-at-a-glance-cards">…</div>` | label/value cards |
+| `<div class="dc-at-a-glance-card">…</div>` in `@columns 3` | label/value cards |
 | `<div class="dc-sidebar"><div class="dc-human-callout">…` | floated NPC capsule |
 
 

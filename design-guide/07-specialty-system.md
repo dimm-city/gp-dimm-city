@@ -100,10 +100,12 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 ## Specialty card
 
-The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid` that lays the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
+The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
 
 ```markdown {.dg-split}
 @card-grid
+
+@columns 2
 
 @specialty .augmerc
 
@@ -136,6 +138,8 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 @end-specialty-card
 
 @end-specialty
+
+@end-columns
 
 @end-card-grid
 ```
@@ -146,6 +150,8 @@ Result {.dg-result}
 
 @card-grid
 
+@columns 2
+
 @specialty .augmerc
 
 @specialty-card #card-augmerc
@@ -177,6 +183,8 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 @end-specialty-card
 
 @end-specialty
+
+@end-columns
 
 @end-card-grid
 
@@ -351,12 +359,12 @@ Once per round, outside your turn, you exploit a target in reach:
 | Tier | `#### Name \| AUG1.3` | Override the computed tier on the tab |
 | Anchor | `@skill id="dirty-work"` | A link target for the card |
 | Highlight | `#### Name \| AUG4.1 \| highlight` with `@skill {.dc-highlight}` | A featured ability: crimson tab halo and body wash |
-| Two columns | `@skill {.dc-two-col}` | Pack a long ability list into two columns |
+| Two columns | `@columns 2` … `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
 | Allow split | `@skill {.dc-allow-split}` | Let a tall card break across pages |
 
 The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `VAR` or a range is variable (magenta). A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
 
-### Highlight and two-column variants
+### Highlight and two columns
 
 <div class="dg-stage">
 
@@ -377,7 +385,7 @@ The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `V
 
 ##### Violence begins in the bones.
 
-@skill {.dc-two-col}
+@skill
 
 #### Boost Morale | AUG3.4
 
@@ -385,10 +393,14 @@ The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `V
 
 When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.
 
+@columns 2
+
 1. **2 AP** *Push the Fail:* A Failure becomes a Hard Choice.
 2. **1 AP** *Salvage the Choice:* A Hard Choice becomes a Success.
 3. **3 AP** *Make It Legend:* A Success becomes a Triumph.
 4. **4 AP** *Drag It Up:* A Catastrophe becomes a Hard Choice.
+
+@end-columns
 
 ##### Courage spreads. So does panic.
 

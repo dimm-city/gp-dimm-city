@@ -22,7 +22,7 @@ What's your next move?
 
 @end-fiction-excerpt
 
----{.column-break}
+@column-break
 
 @section
 

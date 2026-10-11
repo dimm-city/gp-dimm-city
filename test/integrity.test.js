@@ -222,32 +222,48 @@ describe("file contracts", () => {
     expect(bad, "page/chapter scaffolding belongs in page-templates.css / page-rules.css / the book's sheet").toEqual([]);
   });
 
-  // Columns (css-architecture.md, "COLUMNS:N Ownership Rule"): page and section column
-  // layouts belong in page-templates.css; page-rules.css is single-flow; a component may
-  // column its OWN internals in its own sheet, on a selector rooted in a `.dc-*` class
-  // and never on page/chapter scaffolding or core's `.gp-columns-*` runs.
-  test("`columns` / `column-count`: page-rules.css has none; component sheets only on `.dc-*`-rooted selectors", () => {
+  // Columns (css-architecture.md, "Column ownership"): this package owns NO column
+  // layout. `@columns N` is core's, and so are the count, the gap, the rule and the
+  // fill. The package sets the two author hooks (`--gp-column-gap`, `--gp-column-rule`)
+  // once at :root, and `column-span` stays with the column panel's header bar. The
+  // grids inside one component (`.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row`) are
+  // `grid-template-columns`, which is not column layout.
+  test("no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`, `column-fill` or `column-rule`", () => {
     const bad = [];
-    const rooted = (sel) => /^[a-z0-9]*\.dc-[\w-]+/i.test(sel.trim());
-    const scaffolding = (sel) => classesIn(sel).some((c) => c === "page" || c === "chapter" || c.startsWith("gp-columns-"));
     for (const s of PKG) {
-      if (s.label === "styles/page-templates.css") continue;
-      s.root.walkDecls(/^(columns|column-count)$/, (d) => {
-        const sels = d.parent.selectors ?? [];
-        const ok = s.label.startsWith("styles/components/") && sels.length > 0 && sels.every((x) => rooted(x) && !scaffolding(x));
-        if (!ok) bad.push(`${s.label}: ${where(d.parent)} { ${d.prop}: ${d.value} }`);
+      s.root.walkDecls(/^(columns|column-count|column-width|column-gap|column-fill|column-rule)$/, (d) => {
+        bad.push(`${s.label}: ${where(d.parent)} { ${d.prop}: ${d.value} }`);
       });
     }
-    expect(bad, "page/section column layouts go in page-templates.css; a component sheet may column only its own internals on a `.dc-*`-rooted selector").toEqual([]);
+    expect(bad, "columns are core's `@columns N`; set `--gp-column-gap` / `--gp-column-rule` at :root instead").toEqual([]);
   });
 
-  test("page-templates.css never sets columns on core's .gp-columns-* (gap only)", () => {
-    const s = PKG.find((x) => x.label === "styles/page-templates.css");
-    const bad = [];
-    s.root.walkDecls(/^(columns|column-count)$/, (d) => {
-      if (d.parent.selectors?.some((sel) => classesIn(sel).some((c) => c.startsWith("gp-columns-")))) bad.push(`${where(d.parent)} { ${d.prop} }`);
-    });
-    expect(bad).toEqual([]);
+  test("the only component-internal grids are the three approved ones", () => {
+    const APPROVED = new Set([".dc-stat-grid", ".dc-steps>li", ".dc-outcome-row"]);
+    const found = new Set();
+    for (const s of PKG) {
+      s.root.walkDecls("grid-template-columns", (d) => {
+        for (const sel of d.parent.selectors ?? []) found.add(sel.replace(/\s+/g, "").replace(/^[a-z0-9]+(?=\.)/, ""));
+      });
+    }
+    expect([...found].filter((x) => !APPROVED.has(x)), "a grid is not a way to lay out columns of content; use `@columns N`").toEqual([]);
+  });
+
+  test("`--gp-column-gap` and `--gp-column-rule` are set once, at :root, in dc-component-defaults.css", () => {
+    const sets = [];
+    for (const s of PKG) {
+      s.root.walkDecls(/^--gp-column-(gap|rule)$/, (d) => {
+        const sels = (d.parent.selectors ?? []).map((x) => x.trim());
+        sets.push({ label: s.label, prop: d.prop, sels, value: d.value });
+      });
+    }
+    for (const prop of ["--gp-column-gap", "--gp-column-rule"]) {
+      const atRoot = sets.filter((x) => x.prop === prop && x.sels.includes(":root"));
+      expect(atRoot.map((x) => x.label), `${prop} at :root`).toEqual(["styles/dc-component-defaults.css"]);
+    }
+    // Anywhere else it may only be reset to `none` (a component that wants no hairline).
+    const elsewhere = sets.filter((x) => !x.sels.includes(":root") && x.value !== "none");
+    expect(elsewhere, "only `--gp-column-rule: none` may be set on a component").toEqual([]);
   });
 
   // dc#34 (callouts.css TOKEN CONVENTION) + css-architecture.md "Tokens flow downward only":

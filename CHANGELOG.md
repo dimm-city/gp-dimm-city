@@ -7,17 +7,61 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+One way to set content in columns: Gutterpress core's `@columns N` …
+`@column-break` … `@end-columns`. Everything else this package did with
+columns is removed or now takes that marker. **This release needs the next
+Gutterpress** for the column hairline (`--gp-column-rule`) and for a bare
+`@columns` meaning two; write `@columns 2` until then.
+
+### Changed
+
+- **`@columns` works inside a `@skill` card.** A `@columns 2` … `@end-columns`
+  run (and any `@column-break` in it) used to end the card at the marker, so
+  the columns and everything after them landed outside the card. They now stay
+  in the card's body, in place.
+- **`@card-grid`, `@npc-stat`, `@citizen-walkthrough` and the credits
+  colophon take `@columns 2` inside them.** `@card-grid` no longer sets its own
+  columns: write `@columns 2` around its cards (the grid keeps its chrome reset
+  and card density). An `@npc-stat` keeps creatures whole and breaks between
+  entries whether they sit directly in the block or in an `@columns` run in it;
+  a walkthrough keeps the two-line heading height in its column runs. The
+  credits snippet writes the colophon names in `@columns 2` instead of a
+  `dc-colophon-grid` div.
+- **The column gap and hairline are two tokens, set once.** `--gp-column-gap`
+  (the gutter) and `--gp-column-rule` (a 1pt hairline) are set at `:root`
+  instead of by rules on `.gp-columns-2` / `.gp-columns-3`. Three columns now
+  use the same gap as two (0.15in, was 0.18in). The hairline needs the next
+  Gutterpress; until then no column rule is drawn. `.dc-card-grid` and the
+  credits colophon set `--gp-column-rule: none`, as they never drew one.
+- The rules that let a section or a callout fragment inside a column run now
+  match any run (`@columns N`, or a count class on a panel), not only the
+  two- and three-column count classes; the guard on a page that was itself a
+  column run (`@page .gp-columns-2`) is gone with that form.
+
 ### Removed
 
+- **`.dc-two-col` (`@skill {.dc-two-col}`) is gone.** A card that wants columns
+  wraps just that part of its body in `@columns 2`; the flavor line and sub-headers
+  stay full width. Books that wrote the class should replace it.
 - **`.dc-cards-two-col` is gone.** Written on a wrapper (typically
   `@specialty .augmerc .dc-cards-two-col`), it set every skill card inside
   two-column, which broke the layout of cards that should not be columned:
   short blocks split into one-line fragments, a lone line in the right
   column, list blocks divided unevenly. A wrapper no longer decides its
   cards' columns. A card that needs two columns says so itself with
-  `@skill {.dc-two-col}`, and a section of running text uses core's
+  `@columns 2` inside it, and a section of running text uses core's
   `@columns 2`. Books that wrote the class should delete it from their
   `@specialty` lines; until they do it does nothing.
+- **`.column-break`** (`---{.column-break}`, an `<hr>`): write core's
+  `@column-break`.
+- **`.dc-colophon-grid`**, **`.dc-at-a-glance-cards`** (a three-across grid;
+  keep the `.dc-at-a-glance-card` cards and set them in `@columns 3`), and the
+  `column-fill: balance` rule on `.gp-columns-2` / `.gp-columns-3` (it restated
+  the CSS default).
+- The `.gp-grid-2` / `.gp-grid-3` support added in 1.3.0: the float-containment
+  default is a plain `:where(.section) { display: flow-root }` again, and the
+  grid-row spans for a panel's header bar are gone. A long run of gear entries
+  packs two-up in `@column-panel .gp-columns-2 .dc-allow-split`.
 
 ## [1.3.0] - 2026-10-11
 

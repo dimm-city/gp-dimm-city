@@ -72,7 +72,7 @@ Use this to choose the right callout type before reaching for a class name.
 - `.dc-sidebar-box`
 
 ### Skill Cards
-- `.dc-skill-card` / `.dc-skill-card.dc-two-col` / `.dc-skill-card.dc-highlight`
+- `.dc-skill-card` / `.dc-skill-card.dc-highlight`
 - `.dc-skill-card-cont` — card container
 - `.dc-ability` / `.dc-ability-text`
 - `.dc-ap` — action point cost (`.free`, `.reduced`, `.increased`, `.var`, `.standard`, `.special`)
@@ -123,9 +123,9 @@ These are separate components — not variants of each other.
 
 ### Layout Helpers
 - `.dc-card-grid`
-- `.dc-at-a-glance-card` / `.dc-at-a-glance-cards`
-- `.dc-column-panel` (section-variant card for a `.gp-columns-2` / `.gp-columns-3` run)
-- `.dc-citizen-walkthrough.gp-columns-2`
+- `.dc-at-a-glance-card` (three across in `@columns 3`)
+- `.dc-column-panel` (section-variant card for a `.gp-columns-2` run)
+- `.dc-citizen-walkthrough` (two fields side by side in `@columns 2`)
 
 Note: there are no `.dc-accent-X` utility classes. Retheme a chapter by setting the component tokens at its id (`#chapter-03 { --dc-section-accent: var(--rust); }`).
 

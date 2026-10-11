@@ -73,7 +73,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Credits page
 
-A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.
+A chevron title, a lede for thanks and dedications, and the colophon, set in `@columns 2`: bold lead-ins become role labels.
 
 ```markdown {.dg-split}
 @page .page-credits .dc-credits
@@ -88,7 +88,7 @@ A chevron title, a lede for thanks and dedications, and the colophon grid: bold 
 
 @section .credits-colophon
 
-<div class="dc-colophon-grid">
+@columns 2
 
 **Designers:** TWard and ITLackey
 
@@ -96,7 +96,7 @@ A chevron title, a lede for thanks and dedications, and the colophon grid: bold 
 
 **Edition & ISBN:** First Edition · ISBN pending.
 
-</div>
+@end-columns
 
 @end-section
 ```
@@ -106,7 +106,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow. `---{.column-break}` splits fiction from the rules column that follows.
+A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow. `@column-break` splits fiction from the rules column that follows.
 
 ```markdown {.dg-split}
 @chapter C.01 #ch-citizen ch="1"
@@ -125,7 +125,7 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 @end-fiction-excerpt
 
----{.column-break}
+@column-break
 
 @section
 
@@ -142,12 +142,14 @@ The footer-free variant is `@page .page-chapter-start .dc-chapter-start` with a 
 
 ## Citizen File walkthrough
 
-`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Add `.gp-columns-2 .dc-column-panel` to put two short fields side by side. Pair it with `@page .dc-citizen-file-page` for the running header.
+`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Add `.dc-column-panel` for the card chrome and put two short fields side by side in `@columns 2`. Pair it with `@page .dc-citizen-file-page` for the running header.
 
 ```markdown
 @page .dc-citizen-file-page
 
-@citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .dc-column-panel
+
+@columns 2
 
 #### What's Yr Handle?
 
@@ -156,6 +158,8 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 #### Designation
 
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
+
+@end-columns
 
 @end-citizen-walkthrough
 ```
@@ -164,7 +168,9 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .dc-column-panel
+
+@columns 2
 
 #### What's Yr Handle?
 
@@ -173,6 +179,8 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 #### Designation
 
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
+
+@end-columns
 
 @end-citizen-walkthrough
 
@@ -196,6 +204,8 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 
 @card-grid
 
+@columns 2
+
 @specialty .augmerc
 
 @specialty-card #specialty-augmerc
@@ -211,6 +221,8 @@ Heavily armed and wired for war.
 @end-specialty-card
 
 @end-specialty
+
+@end-columns
 
 @end-card-grid
 ```

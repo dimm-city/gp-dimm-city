@@ -6,15 +6,15 @@ Chapter 4 {.dg-kicker}
 
 # Layout
 
-How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a class on `@section`, `@page`, or an image. {.dg-lede}
+How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
 
 
-## Two and three columns
+## Columns
 
-`.gp-columns-2` and `.gp-columns-3` are Gutterpress's own column vocabulary. Text fills the first column and overflows into the next; `@column-break` forces the next column.
+`@columns` is Gutterpress's one way to set content in columns: `@columns 2` to `@columns 5`, closed by `@end-columns`. Text fills the first column and overflows into the next; `@column-break` forces the next column.
 
 ```markdown
-@section .gp-columns-2
+@columns 2
 
 Left column. Text fills top to bottom and overflows right.
 
@@ -22,14 +22,14 @@ Left column. Text fills top to bottom and overflows right.
 
 Right column.
 
-@end-section
+@end-columns
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage dg-on-paper">
 
-@section .gp-columns-2
+@columns 2
 
 Left column. Text fills top to bottom and overflows right.
 
@@ -37,11 +37,11 @@ Left column. Text fills top to bottom and overflows right.
 
 Right column.
 
-@end-section
+@end-columns
 
 </div>
 
-The package balances a run's columns, so a short run ends level. A run that carries on over more than one page takes core's `.gp-columns-flow` as well (`@page .gp-columns-2 .gp-columns-flow`): each page's first column then fills before the second starts. Gutterpress names the runs that need it when it builds.
+`@columns 3` is the same marker with a 3. A run's columns balance, so a short run ends level. Whatever wants columns goes inside `@columns`: paragraphs, a list, a run of entries. The components in this guide take it the same way, for example `@columns 2` inside a `@skill`, a `@card-grid` or an `@npc-stat`.
 
 ## The column panel
 

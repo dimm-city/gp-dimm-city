@@ -886,6 +886,8 @@ function dcSkillCards(state) {
     const emit = (html) => out.push(makeToken('html_block', html));
     let inCard = false;
     const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
+    let columnsDepth = 0; // how many `@columns` runs sit open inside the current card
+    const columnsCloses = new Set(); // their close tokens
     let title = { name: '', tier: '' }; // the current card's title, for @continue
 
     const cardOpen = (cont) => {
@@ -902,7 +904,9 @@ function dcSkillCards(state) {
     for (let i = 0; i < content.length; i++) {
       const tok = content[i];
 
-      if (tok.type === 'heading_open' && tok.tag === 'h4') {
+      // An h4 inside a `@columns` run in a card is a plain heading: a card
+      // cannot start in the middle of another card's columns.
+      if (tok.type === 'heading_open' && tok.tag === 'h4' && columnsDepth === 0) {
         endCard();
         const parsed = parseSkillTitle(content[i + 1].content || '');
         title = { name: parsed.name, tier: parsed.tier };
@@ -952,6 +956,20 @@ function dcSkillCards(state) {
         do depth += content[end++].nesting; while (depth > 0);
         belongsToCard.add(tok).add(content[end - 1]);
       }
+      // `@columns` … `@end-columns` and the `@column-break`s between are content of
+      // the card too when they sit inside one: the columns run stays in the
+      // card's body, in place. (A run that opens before the card, around
+      // several cards, is not the card's: it ends the card as any layout token does.)
+      if (inCard && tok.type === 'layout_component_open' && tok.meta.kind === 'columns') {
+        let end = i;
+        let depth = 0;
+        do depth += content[end++].nesting; while (depth > 0);
+        belongsToCard.add(tok).add(content[end - 1]);
+        columnsCloses.add(content[end - 1]);
+        columnsDepth++;
+      }
+      if (columnsCloses.has(tok)) columnsDepth--;
+      if (tok.type === 'layout_column_break' && columnsDepth > 0) belongsToCard.add(tok);
       if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
 
       if (!inCard) {

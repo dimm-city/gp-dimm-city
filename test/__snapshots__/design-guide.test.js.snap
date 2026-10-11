@@ -46,7 +46,7 @@ This is what you type.
 <p>Three rules carry through the whole system, and they are worth knowing before anything else:</p>
 <ol>
 <li data-source-range="68:69"><strong>A marker is a line that starts with <code>@</code>.</strong> <code>@lede</code> opens a block, <code>@end-lede</code> closes it. Leave a blank line on each side of every marker.</li>
-<li data-source-range="69:70"><strong>Markers take attributes</strong> — <code>#id</code>, <code>.class</code>, and <code>key=&quot;value&quot;</code> — in any order after the name: <code>@section #rules .gp-columns-2</code>.</li>
+<li data-source-range="69:70"><strong>Markers take attributes</strong> — <code>#id</code>, <code>.class</code>, and <code>key=&quot;value&quot;</code> — in any order after the name: <code>@section #rules .dc-plain</code>.</li>
 <li data-source-range="70:72"><strong>Classes on a parent change everything inside it.</strong> <code>@specialty .augmerc</code> gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.</li>
 </ol>
 <h2>Quick start</h2>
@@ -74,7 +74,7 @@ exports[`rendered output 01-writing-a-page.md matches its snapshot 1`] = `
 <th>What it is</th>
 </tr>
 </thead>
-<tbody data-source-range="16:22">
+<tbody data-source-range="16:23">
 <tr data-source-range="16:17">
 <td><code>@chapter #id ch=&quot;N&quot;</code></td>
 <td>next <code>@chapter</code> / end of file</td>
@@ -93,22 +93,27 @@ exports[`rendered output 01-writing-a-page.md matches its snapshot 1`] = `
 <tr data-source-range="19:20">
 <td><code>@section .class</code></td>
 <td><code>@end-section</code></td>
-<td>A region on the page: columns, a panel, a named component chassis</td>
+<td>A region on the page: a panel, a named component chassis</td>
 </tr>
 <tr data-source-range="20:21">
+<td><code>@columns 2</code></td>
+<td><code>@end-columns</code></td>
+<td>Set what is between in 2 to 5 columns</td>
+</tr>
+<tr data-source-range="21:22">
 <td><code>@page-break</code></td>
 <td>—</td>
 <td>Force a new page here</td>
 </tr>
-<tr data-source-range="21:22">
+<tr data-source-range="22:23">
 <td><code>@column-break</code></td>
 <td>—</td>
-<td>Force the next column, inside a multi-column <code>@section</code></td>
+<td>Force the next column, inside <code>@columns</code></td>
 </tr>
 </tbody>
 </table>
 <p>A chapter is one file. A <code>@chapter</code> line opens each file, and the chapter ends where the file ends.</p>
-<pre><code data-source-range="25:36" class="language-markdown">@chapter #ch-augmerc ch=&quot;3&quot;
+<pre><code data-source-range="26:37" class="language-markdown">@chapter #ch-augmerc ch=&quot;3&quot;
 
 @section
 
@@ -120,20 +125,20 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section" data-source-range="41:42"><h2>The Augmerc</h2>
+<div class="section" data-source-range="42:43"><h2>The Augmerc</h2>
 <p>Muscle for hire. The difference is gear, grafts, and how much of them is still original.</p>
 </div></div>
-<p>A bare <code>@section</code> is a styled panel — the section chassis with its accent rule and substrate. Add <code>.dc-plain</code> to get an unstyled grouping, or one of the classes in <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a> for columns and named chassis. The named chassis also have a marker of their own: <code>@npc-stat</code> is the same section as <code>@section .dc-npc-stat</code>, and likewise <code>@column-panel</code>, <code>@tabbed</code>, <code>@card-grid</code>, <code>@citizen-walkthrough</code>, <code>@fiction-excerpt</code>, <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code>. Either spelling renders the same.</p>
+<p>A bare <code>@section</code> is a styled panel — the section chassis with its accent rule and substrate. Add <code>.dc-plain</code> to get an unstyled grouping, or one of the classes in <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a> for a named chassis. For columns, wrap the content in <code>@columns 2</code>. The named chassis also have a marker of their own: <code>@npc-stat</code> is the same section as <code>@section .dc-npc-stat</code>, and likewise <code>@column-panel</code>, <code>@tabbed</code>, <code>@card-grid</code>, <code>@citizen-walkthrough</code>, <code>@fiction-excerpt</code>, <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code>. Either spelling renders the same.</p>
 <h2>Attributes</h2>
 <p>Every marker takes the same attribute grammar after its name, in any order: <code>#id</code> sets an id, <code>.class</code> adds a class, <code>key=value</code> or <code>key=&quot;quoted value&quot;</code> sets a named option.</p>
-<pre><code data-source-range="57:62" class="language-markdown">@column-panel #core-loop .gp-columns-2
+<pre><code data-source-range="58:63" class="language-markdown">@column-panel #core-loop .gp-columns-2
 
 @callout warning label=&quot;Heat is shared&quot;
 </code></pre>
 <p>Standard markdown elements take attributes too, with braces at the end of the element: <code>## Title {.dc-spray}</code>, <code>![alt](img.png){.dc-img-float-right}</code>, and <code>@skill {.dc-allow-split}</code> for a class on a component macro.</p>
 <h2>The blank-line rule</h2>
 <p>Put a blank line before and after every marker. Gutterpress reads a marker even when it sits straight under a list item or a line of text, but the blank line keeps the page readable and keeps a marker from being mistaken for prose.</p>
-<pre><code data-source-range="69:76" class="language-markdown">@callout note
+<pre><code data-source-range="70:77" class="language-markdown">@callout note
 
 Pick a Spec. Spend 6 Spec Points.
 
@@ -141,20 +146,20 @@ Pick a Spec. Spend 6 Spec Points.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-alert dc-note" data-callout="note" data-source-range="81:82"><span class="dc-alert-label">Note</span>
+<div class="dc-alert dc-note" data-callout="note" data-source-range="82:83"><span class="dc-alert-label">Note</span>
 <p>Pick a Spec. Spend 6 Spec Points.</p>
 </div></div>
 <h2>Markdown the system styles</h2>
 <p>Nothing below needs a class or a marker. The package styles the standard elements the way a Dimm City page expects.</p>
 <h3>Headings</h3>
-<pre><code data-source-range="95:101" class="language-markdown"># Chapter title
+<pre><code data-source-range="96:102" class="language-markdown"># Chapter title
 ## Section heading
 ### Sub-section
 #### Item heading
 </code></pre>
 <p><code>#</code> opens a chapter or a specialty. <code>##</code> is a section with an accent rule. <code>###</code> labels a column or a sub-topic. <code>####</code> is an item: a skill, a gear entry, a stat-block name. In a two-column layout, <code>###</code> and <code>####</code> are the workhorses — <code>#</code> and <code>##</code> are too wide for a 3.5-inch column.</p>
 <h3>Emphasis and inline code</h3>
-<pre><code data-source-range="106:111" class="language-markdown">**Bold** lands in burnt orange.
+<pre><code data-source-range="107:112" class="language-markdown">**Bold** lands in burnt orange.
 *Italic* shifts to warm smoke.
 \`SysChk\` marks a keyword that is also a mechanic.
 </code></pre>
@@ -162,7 +167,7 @@ Pick a Spec. Spend 6 Spec Points.
 <p><strong>Bold</strong> lands in burnt orange. <em>Italic</em> shifts to warm smoke. <code>SysChk</code> marks a keyword that is also a mechanic.</p>
 </div>
 <h3>Lists</h3>
-<pre><code data-source-range="120:127" class="language-markdown">- A loose list
+<pre><code data-source-range="121:128" class="language-markdown">- A loose list
 - of short items
 
 1. An ordered list
@@ -170,35 +175,35 @@ Pick a Spec. Spend 6 Spec Points.
 </code></pre>
 <div class="dg-stage dg-on-paper">
 <ul>
-<li data-source-range="130:131">A loose list</li>
-<li data-source-range="131:133">of short items</li>
+<li data-source-range="131:132">A loose list</li>
+<li data-source-range="132:134">of short items</li>
 </ul>
 <ol>
-<li data-source-range="133:134">An ordered list</li>
-<li data-source-range="134:136">for sequences</li>
+<li data-source-range="134:135">An ordered list</li>
+<li data-source-range="135:137">for sequences</li>
 </ol>
 </div>
 <h3>Tables</h3>
 <p>Pipe tables get the header band, alternating fills, and the data type size. Roll tables, option tables, and stat references are all plain tables.</p>
-<pre><code data-source-range="142:148" class="language-markdown">| Band | Range |
+<pre><code data-source-range="143:149" class="language-markdown">| Band | Range |
 |---|---|
 | **Reach** | Adjacent |
 | **Near** | Same room |
 </code></pre>
 <div class="dg-stage">
 <table>
-<thead data-source-range="151:152">
-<tr data-source-range="151:152">
+<thead data-source-range="152:153">
+<tr data-source-range="152:153">
 <th>Band</th>
 <th>Range</th>
 </tr>
 </thead>
-<tbody data-source-range="153:155">
-<tr data-source-range="153:154">
+<tbody data-source-range="154:156">
+<tr data-source-range="154:155">
 <td><strong>Reach</strong></td>
 <td>Adjacent</td>
 </tr>
-<tr data-source-range="154:155">
+<tr data-source-range="155:156">
 <td><strong>Near</strong></td>
 <td>Same room</td>
 </tr>
@@ -207,19 +212,19 @@ Pick a Spec. Spend 6 Spec Points.
 </div>
 <h3>Blockquote</h3>
 <p>A plain <code>&gt;</code> quote is an epigraph: accent rail, italic body. Inside a skill card the first <code>&gt;</code> line is the card’s flavor.</p>
-<pre><code data-source-range="162:167" class="language-markdown">&gt; Every city has a language.
+<pre><code data-source-range="163:168" class="language-markdown">&gt; Every city has a language.
 &gt;
 &gt; — Hollis Vance
 </code></pre>
 <div class="dg-stage">
 <blockquote>
-<p data-source-range="170:171">Every city has a language.</p>
-<p data-source-range="172:173">— Hollis Vance</p>
+<p data-source-range="171:172">Every city has a language.</p>
+<p data-source-range="173:174">— Hollis Vance</p>
 </blockquote>
 </div>
 <h3>Definition list</h3>
 <p>A term line and a <code>: definition</code> line render as the on-brand glossary form.</p>
-<pre><code data-source-range="180:187" class="language-markdown">Tick
+<pre><code data-source-range="181:188" class="language-markdown">Tick
 : A heartbeat. Used in ability text to mean *immediately*.
 
 Reach
@@ -227,21 +232,21 @@ Reach
 </code></pre>
 <div class="dg-stage">
 <dl>
-<dt data-source-range="190:190">Tick</dt>
-<dd data-source-range="191:193">A heartbeat. Used in ability text to mean <em>immediately</em>.</dd>
-<dt data-source-range="193:193">Reach</dt>
-<dd data-source-range="193:196">Close enough to touch.</dd>
+<dt data-source-range="191:191">Tick</dt>
+<dd data-source-range="192:194">A heartbeat. Used in ability text to mean <em>immediately</em>.</dd>
+<dt data-source-range="194:194">Reach</dt>
+<dd data-source-range="194:197">Close enough to touch.</dd>
 </dl>
 </div>
 <h3>Smart typography and footnotes</h3>
 <p><code>--</code> becomes an en dash, <code>---</code> an em dash, <code>...</code> an ellipsis, and straight quotes curl. Footnotes use <code>[^label]</code> inline and <code>[^label]: text</code> anywhere in the file; they render at the end of the content flow.</p>
 <h3>Images</h3>
 <p>An image on its own line is a figure. Place it in the flow where it should sit; floats and framing are classes, described in <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
-<pre><code data-source-range="206:209" class="language-markdown">![Scavenger](img/scavenger.png)
+<pre><code data-source-range="207:210" class="language-markdown">![Scavenger](img/scavenger.png)
 </code></pre>
 <h2>A complete page</h2>
 <p>Putting the pieces together — the shape of an ordinary body page in a Dimm City book:</p>
-<pre><code data-source-range="214:233" class="language-markdown">@chapter #ch-rules ch=&quot;4&quot;
+<pre><code data-source-range="215:234" class="language-markdown">@chapter #ch-rules ch=&quot;4&quot;
 
 @column-panel .gp-columns-2
 
@@ -261,15 +266,15 @@ Reach
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-column-panel gp-columns-2" data-source-range="238:239"><h2>Augment Points</h2>
+<div class="section dc-column-panel gp-columns-2" data-source-range="239:240"><h2>Augment Points</h2>
 <p><strong>AP</strong> is your push. If an ability lists an AP cost, you spend it and the effect happens.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="244:245"></div>
+<div class="gp-column-break" aria-hidden="true" data-source-range="245:246"></div>
 <ul>
-<li data-source-range="246:247"><strong>0 AP</strong> — Free to use. Not always safe.</li>
-<li data-source-range="247:249"><strong>1–X AP</strong> — You choose how hard you push.</li>
+<li data-source-range="247:248"><strong>0 AP</strong> — Free to use. Not always safe.</li>
+<li data-source-range="248:250"><strong>1–X AP</strong> — You choose how hard you push.</li>
 </ul>
 </div><div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
-<p data-source-range="251:253">You start every dream with 10 AP.</p>
+<p data-source-range="252:254">You start every dream with 10 AP.</p>
 </div>
 </div>
 </div></div>"
@@ -542,10 +547,10 @@ exports[`rendered output 03-palette.md matches its snapshot 1`] = `
 exports[`rendered output 04-layout.md matches its snapshot 1`] = `
 "<div class="chapter layout dg-guide" id="ch-layout" data-ch="4" data-source-range="0:1"><div class="page dg-doc chapter-4" data-source-range="2:3"><p class="dg-kicker">Chapter 4</p>
 <h1>Layout</h1>
-<p class="dg-lede">How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a class on <code>@section</code>, <code>@page</code>, or an image.</p>
-<h2>Two and three columns</h2>
-<p><code>.gp-columns-2</code> and <code>.gp-columns-3</code> are Gutterpress’s own column vocabulary. Text fills the first column and overflows into the next; <code>@column-break</code> forces the next column.</p>
-<pre><code data-source-range="15:26" class="language-markdown">@section .gp-columns-2
+<p class="dg-lede">How content is arranged inside a page: columns, the column panel, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on <code>@section</code>, <code>@page</code>, or an image.</p>
+<h2>Columns</h2>
+<p><code>@columns</code> is Gutterpress’s one way to set content in columns: <code>@columns 2</code> to <code>@columns 5</code>, closed by <code>@end-columns</code>. Text fills the first column and overflows into the next; <code>@column-break</code> forces the next column.</p>
+<pre><code data-source-range="15:26" class="language-markdown">@columns 2
 
 Left column. Text fills top to bottom and overflows right.
 
@@ -553,15 +558,15 @@ Left column. Text fills top to bottom and overflows right.
 
 Right column.
 
-@end-section
+@end-columns
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
-<div class="section gp-columns-2" data-source-range="31:32"><p>Left column. Text fills top to bottom and overflows right.</p>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="31:32"><p>Left column. Text fills top to bottom and overflows right.</p>
 <div class="gp-column-break" aria-hidden="true" data-source-range="35:36"></div>
 <p>Right column.</p>
 </div></div>
-<p>The package balances a run’s columns, so a short run ends level. A run that carries on over more than one page takes core’s <code>.gp-columns-flow</code> as well (<code>@page .gp-columns-2 .gp-columns-flow</code>): each page’s first column then fills before the second starts. Gutterpress names the runs that need it when it builds.</p>
+<p><code>@columns 3</code> is the same marker with a 3. A run’s columns balance, so a short run ends level. Whatever wants columns goes inside <code>@columns</code>: paragraphs, a list, a run of entries. The components in this guide take it the same way, for example <code>@columns 2</code> inside a <code>@skill</code>, a <code>@card-grid</code> or an <code>@npc-stat</code>.</p>
 <h2>The column panel</h2>
 <p>Add <code>.dc-column-panel</code> and the run sits in a card: substrate, top and bottom rules, and the leading <code>##</code> or <code>###</code> becomes a full-width bar spanning both columns, with its first paragraph as a shared preamble. This is the workhorse layout for rules pages.</p>
 <pre><code data-source-range="49:62" class="language-markdown">@column-panel .gp-columns-2
@@ -1230,72 +1235,10 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p><em>Utility. Mechanized. Reach 50 ft.</em></p>
 <p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
 </div></div>
-<p>A long run packs tighter two-up. Put the entries in a core grid: <code>.gp-grid-2</code> on a <code>@column-panel</code> places each child in the next cell, across then down, and the heading bar takes the first row. A row is as tall as its taller entry, so keep neighbours about the same length. Every child is a cell, so leave prose outside the run, and add <code>.dc-allow-split</code> so a run longer than a page breaks between rows.</p>
-<pre><code class="dg-split language-markdown" data-source-range="378:425">@column-panel .gp-grid-2 .dc-allow-split
-
-### Useful Items
-
-@gear
-
-### Throwaway Blaster
-
-*Ranged. Pistol. CQC Locked, Pack Fed.*
-
-**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
-
-@end-gear
-
-@gear
-
-### Snake Cable
-
-*Utility. Mechanized. Reach 50 ft.*
-
-A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
-
-@end-gear
-
-@gear
-
-### Patchkit
-
-*Medical. Disposable.*
-
-Restores 2 HP when used as an action. Sterile enough.
-
-@end-gear
-
-@gear
-
-### Signal Jammer
-
-*Utility. Electronic. Near range.*
-
-Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
-
-@end-gear
-
-@end-column-panel
-</code></pre>
-<p class="dg-result">Result</p>
-<div class="dg-stage">
-<div class="section dc-column-panel gp-grid-2 dc-allow-split" data-source-range="430:431"><h3>Useful Items</h3>
-<div class="dc-card dc-gear" data-source-range="434:435"><h3>Throwaway Blaster</h3>
-<p><em>Ranged. Pistol. CQC Locked, Pack Fed.</em></p>
-<p><strong>Range</strong> Reach to Near only. <strong>Damage</strong> 2 on a Hit, 4 on a Triumph.</p>
-</div><div class="dc-card dc-gear" data-source-range="444:445"><h3>Snake Cable</h3>
-<p><em>Utility. Mechanized. Reach 50 ft.</em></p>
-<p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
-</div><div class="dc-card dc-gear" data-source-range="454:455"><h3>Patchkit</h3>
-<p><em>Medical. Disposable.</em></p>
-<p>Restores 2 HP when used as an action. Sterile enough.</p>
-</div><div class="dc-card dc-gear" data-source-range="464:465"><h3>Signal Jammer</h3>
-<p><em>Utility. Electronic. Near range.</em></p>
-<p>Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.</p>
-</div></div></div>
+<p>A long run packs tighter two-up in a <code>@column-panel .gp-columns-2</code>: entries fill the first column, then the second, and the heading bar spans both. Add <code>.dc-allow-split</code> so a run longer than a page breaks between entries. <a href="#ch-example-gear-tech" data-gp-source-token="[Gear &amp; Tech](#ch-example-gear-tech)" data-gp-source-occurrence="0">Gear &amp; Tech</a> shows it.</p>
 <h2>Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
-<pre><code data-source-range="483:490" class="language-markdown">| Augment | Slot | Cost | Effect |
+<pre><code data-source-range="383:390" class="language-markdown">| Augment | Slot | Cost | Effect |
 |---|---|---|---|
 | Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
 | Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
@@ -1304,28 +1247,28 @@ Kills all wireless communications in Near range for 3 rounds. Loud to anyone wat
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="495:496">
-<tr data-source-range="495:496">
+<thead data-source-range="395:396">
+<tr data-source-range="395:396">
 <th>Augment</th>
 <th>Slot</th>
 <th>Cost</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="497:500">
-<tr data-source-range="497:498">
+<tbody data-source-range="397:400">
+<tr data-source-range="397:398">
 <td>Reflex Booster</td>
 <td>Legs</td>
 <td>1,200</td>
 <td>+2 to initiative rolls</td>
 </tr>
-<tr data-source-range="498:499">
+<tr data-source-range="398:399">
 <td>Subdermal Plating</td>
 <td>Torso</td>
 <td>1,800</td>
 <td>Reduce bludgeoning damage by 1</td>
 </tr>
-<tr data-source-range="499:500">
+<tr data-source-range="399:400">
 <td>Optic Splice</td>
 <td>Head</td>
 <td>900</td>
@@ -1337,26 +1280,26 @@ Kills all wireless communications in Near range for 3 rounds. Loud to anyone wat
 <p>A roll table is the same thing with a <code>Roll</code> column:</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="507:508">
-<tr data-source-range="507:508">
+<thead data-source-range="407:408">
+<tr data-source-range="407:408">
 <th>Roll</th>
 <th>Encounter</th>
 </tr>
 </thead>
-<tbody data-source-range="509:513">
-<tr data-source-range="509:510">
+<tbody data-source-range="409:413">
+<tr data-source-range="409:410">
 <td>1–4</td>
 <td>A patchhead swarm picks a fight over nothing</td>
 </tr>
-<tr data-source-range="510:511">
+<tr data-source-range="410:411">
 <td>5–8</td>
 <td>A fixer slides into the booth with a dirty envelope</td>
 </tr>
-<tr data-source-range="511:512">
+<tr data-source-range="411:412">
 <td>9–12</td>
 <td>A SercDog patrol sweeps the block; lie low or run</td>
 </tr>
-<tr data-source-range="512:513">
+<tr data-source-range="412:413">
 <td>13–20</td>
 <td>You find a sealed crate the corps forgot to log</td>
 </tr>
@@ -1365,7 +1308,7 @@ Kills all wireless communications in Near range for 3 rounds. Loud to anyone wat
 </div>
 <h2>NPC stat block</h2>
 <p>The narrative form a Dream Master reads aloud: <code>@npc-stat</code> with a <code>####</code> name, a <code>&gt;</code> flavor line, the stat lines, and <code>#####</code> sub-headings for traits and equipment.</p>
-<pre><code data-source-range="520:540" class="language-markdown">@npc-stat
+<pre><code data-source-range="420:440" class="language-markdown">@npc-stat
 
 #### Patchhead
 
@@ -1386,9 +1329,9 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-npc-stat" data-source-range="545:546"><h4>Patchhead</h4>
+<div class="section dc-npc-stat" data-source-range="445:446"><h4>Patchhead</h4>
 <blockquote>
-<p data-source-range="549:550">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
+<p data-source-range="449:450">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
 </blockquote>
 <p>2 HP — 1 Damage
 Fodder — Usually Small to Medium</p>
@@ -1397,11 +1340,67 @@ Fodder — Usually Small to Medium</p>
 <h5>Equipment</h5>
 <p>Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.</p>
 </div></div>
-<p>A block with several <code>####</code> entries breaks between creatures and never inside one, in one column or in <code>@npc-stat .gp-columns-2</code>; the title bar stays with the first entry. A block with no <code>####</code> is one creature and stays whole. Add <code>.dc-allow-split</code> (<code>@npc-stat {.dc-allow-split}</code>) for an unusually long entry: it may then break after its name and stat lines.</p>
+<p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code> is one creature and stays whole. Add <code>.dc-allow-split</code> (<code>@npc-stat {.dc-allow-split}</code>) for an unusually long entry: it may then break after its name and stat lines.</p>
+<p>To set the entries in columns, put them in <code>@columns 2</code> inside the block: the bar and an optional intro stay above, full width.</p>
+<pre><code data-source-range="470:505" class="language-markdown">@npc-stat
+
+### Street Crews
+
+Two crews that work the same block.
+
+@columns 2
+
+#### Patchhead
+
+&gt; See a Patchhead comin' at you, you best move.
+
+2 HP — 1 Damage
+Fodder — Small to Medium
+
+##### Traits
+
+**Bloodlust:** Patchheads add 1 to their Damage whenever they hit a creature that is missing Hit Points.
+
+#### Grease Monkey
+
+&gt; Hold still, this'll only sting a lot.
+
+3 HP — 1 Damage
+Fodder — Medium
+
+##### Traits
+
+**Quick Fix:** A Grease Monkey patches an ally for 1 HP once per scene.
+
+@end-columns
+
+@end-npc-stat
+</code></pre>
+<p class="dg-result">Result</p>
+<div class="dg-stage">
+<div class="section dc-npc-stat" data-source-range="510:511"><h3>Street Crews</h3>
+<p>Two crews that work the same block.</p>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="516:517"><h4>Patchhead</h4>
+<blockquote>
+<p data-source-range="520:521">See a Patchhead comin’ at you, you best move.</p>
+</blockquote>
+<p>2 HP — 1 Damage
+Fodder — Small to Medium</p>
+<h5>Traits</h5>
+<p><strong>Bloodlust:</strong> Patchheads add 1 to their Damage whenever they hit a creature that is missing Hit Points.</p>
+<h4>Grease Monkey</h4>
+<blockquote>
+<p data-source-range="531:532">Hold still, this’ll only sting a lot.</p>
+</blockquote>
+<p>3 HP — 1 Damage
+Fodder — Medium</p>
+<h5>Traits</h5>
+<p><strong>Quick Fix:</strong> A Grease Monkey patches an ally for 1 HP once per scene.</p>
+</div></div></div>
 <p>Tokens: <code>--dc-npc-stat-label-color</code>, <code>--dc-npc-stat-primary</code>, <code>--dc-npc-stat-secondary</code>, <code>--dc-npc-stat-rule</code>, <code>--dc-npc-stat-rule-width</code>.</p>
 <h2>Stat grid and at-a-glance cards</h2>
 <p>Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one label and one value per card.</p>
-<pre><code data-source-range="574:595" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
+<pre><code data-source-range="552:575" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
     &lt;div class=&quot;dc-stat-class&quot;&gt;— Contact · Ripperdoc —&lt;/div&gt;
@@ -1415,11 +1414,13 @@ Fodder — Usually Small to Medium</p>
   &lt;div class=&quot;dc-stat-line&quot;&gt;&lt;strong&gt;Patch Job:&lt;/strong&gt; treats wounds between scenes for FEE × severity.&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;div class=&quot;dc-at-a-glance-cards&quot;&gt;
-  &lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;HP&lt;/h4&gt;&lt;p&gt;14&lt;/p&gt;&lt;/div&gt;
-  &lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;Speed&lt;/h4&gt;&lt;p&gt;Near&lt;/p&gt;&lt;/div&gt;
-  &lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;Heat&lt;/h4&gt;&lt;p&gt;3&lt;/p&gt;&lt;/div&gt;
-&lt;/div&gt;
+@columns 3
+
+&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;HP&lt;/h4&gt;&lt;p&gt;14&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;Speed&lt;/h4&gt;&lt;p&gt;Near&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;&lt;h4&gt;Heat&lt;/h4&gt;&lt;p&gt;3&lt;/p&gt;&lt;/div&gt;
+
+@end-columns
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
@@ -1436,15 +1437,13 @@ Fodder — Usually Small to Medium</p>
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
-<div class="dc-at-a-glance-cards">
-  <div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
-  <div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
-  <div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
-</div>
-</div>
+<div class="gp-columns gp-columns-3" data-columns="3" data-source-range="594:595"><div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
+<div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
+<div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
+</div></div>
 <h2>NPC sidebar</h2>
 <p>A contact capsule floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>.</p>
-<pre><code data-source-range="626:632" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
+<pre><code data-source-range="608:614" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
 &lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; — Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
@@ -1515,8 +1514,10 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 </code></pre>
 <div class="dc-specialty augmerc" data-source-range="89:90"><div class="dc-specialty-art" data-source-range="91:92"><p class="dc-img-wrapper"><img src="https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 </div></div><h2>Specialty card</h2>
-<p>The catalog card for a “choose your specialty” page: portrait, a <code>&gt;</code> tagline, and a short pitch, inside a <code>@card-grid</code> that lays the cards out two across. Each card sits in its own <code>@specialty</code> so it carries its own color.</p>
-<pre><code class="dg-split language-markdown" data-source-range="104:141">@card-grid
+<p>The catalog card for a “choose your specialty” page: portrait, a <code>&gt;</code> tagline, and a short pitch, inside a <code>@card-grid</code>, with <code>@columns 2</code> laying the cards out two across. Each card sits in its own <code>@specialty</code> so it carries its own color.</p>
+<pre><code class="dg-split language-markdown" data-source-range="104:145">@card-grid
+
+@columns 2
 
 @specialty .augmerc
 
@@ -1550,27 +1551,29 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 @end-specialty
 
+@end-columns
+
 @end-card-grid
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-card-grid" data-source-range="146:147"><div class="dc-specialty augmerc" data-source-range="148:149"><div class="dc-specialty-card" id="card-augmerc" data-position="odd" data-source-range="150:151"><h3>Augmerc</h3>
+<div class="section dc-card-grid" data-source-range="150:151"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="152:153"><div class="dc-specialty augmerc" data-source-range="154:155"><div class="dc-specialty-card" id="card-augmerc" data-position="odd" data-source-range="156:157"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="156:157">Cybernetic Commando</p>
+<p data-source-range="162:163">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad.</p>
-</div></div><div class="dc-specialty gutterdruid" data-source-range="164:165"><div class="dc-specialty-card" id="card-gutterdruid" data-position="even" data-source-range="166:167"><h3>Gutterdruid</h3>
+</div></div><div class="dc-specialty gutterdruid" data-source-range="170:171"><div class="dc-specialty-card" id="card-gutterdruid" data-position="even" data-source-range="172:173"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="172:173">Feral Shapeshifter</p>
+<p data-source-range="178:179">Feral Shapeshifter</p>
 </blockquote>
 <p>Gutterdruids rewrite their own flesh to match the wasteland around them.</p>
-</div></div></div></div>
+</div></div></div></div></div>
 <p>The full ten-card grid is in <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>. Tokens: <code>--dc-specialty-card-bg</code>, <code>--dc-specialty-card-border</code>, <code>--dc-specialty-card-accent</code>, <code>--dc-specialty-card-media-height</code>, <code>--dc-specialty-card-title-color</code>, <code>--dc-specialty-card-shadow</code>.</p>
 <h2>Learning path</h2>
 <p>A named path: a <code>###</code> title (rendered as a spray banner with the path’s code), a <code>&gt;</code> subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path’s signature augment. Skill cards follow inside the path. The code (<code>AUG1</code>) and each card’s tier (<code>AUG1.1</code>, <code>AUG1.2</code>, …) are computed from position.</p>
-<pre><code class="dg-split language-markdown" data-source-range="191:233">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="199:241">@specialty .augmerc
 
 @learning-path
 
@@ -1613,7 +1616,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-tall">
-<div class="dc-specialty augmerc" data-source-range="238:239"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="240:241"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="246:247"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="248:249"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Biting Distance</h3>
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span></div>
@@ -1659,7 +1662,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 <p>Tokens: <code>--dc-path-title-bg</code>, <code>--dc-path-title-color</code>, <code>--dc-path-accent</code>, <code>--dc-arrow-color</code>.</p>
 <h2>Skill card</h2>
 <p>The anatomy of one card: a <code>####</code> name, optionally <code>| Tier</code> to override the computed tier; a <code>&gt;</code> flavor line; an ordered list where each item starts with <code>**N AP**</code> — rendered as a cost chip — and an italic ability name; and a closing <code>#####</code> line that becomes the card’s sub-header sticker. A skill sits in a learning path. <code>@skill</code> opens a skill, and opening the next one closes it; <code>@end-skill</code> closes just that skill, never the path around it. A <code>####</code> heading starts a card, so one <code>@skill</code> with two <code>####</code> headings makes two cards.</p>
-<pre><code data-source-range="288:315" class="language-markdown">@specialty .augmerc
+<pre><code data-source-range="296:323" class="language-markdown">@specialty .augmerc
 
 @learning-path
 
@@ -1687,7 +1690,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="320:321"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="322:323"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="328:329"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="330:331"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
@@ -1715,35 +1718,35 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 </div></div></div>
 <table>
-<thead data-source-range="348:349">
-<tr data-source-range="348:349">
+<thead data-source-range="356:357">
+<tr data-source-range="356:357">
 <th>Option</th>
 <th>You write</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="350:355">
-<tr data-source-range="350:351">
+<tbody data-source-range="358:363">
+<tr data-source-range="358:359">
 <td>Tier</td>
 <td><code>#### Name | AUG1.3</code></td>
 <td>Override the computed tier on the tab</td>
 </tr>
-<tr data-source-range="351:352">
+<tr data-source-range="359:360">
 <td>Anchor</td>
 <td><code>@skill id=&quot;dirty-work&quot;</code></td>
 <td>A link target for the card</td>
 </tr>
-<tr data-source-range="352:353">
+<tr data-source-range="360:361">
 <td>Highlight</td>
 <td><code>#### Name | AUG4.1 | highlight</code> with <code>@skill {.dc-highlight}</code></td>
 <td>A featured ability: crimson tab halo and body wash</td>
 </tr>
-<tr data-source-range="353:354">
+<tr data-source-range="361:362">
 <td>Two columns</td>
-<td><code>@skill {.dc-two-col}</code></td>
-<td>Pack a long ability list into two columns</td>
+<td><code>@columns 2</code> … <code>@end-columns</code> around part of the body</td>
+<td>Pack a long ability list into two columns; the flavor line and sub-header stay full width</td>
 </tr>
-<tr data-source-range="354:355">
+<tr data-source-range="362:363">
 <td>Allow split</td>
 <td><code>@skill {.dc-allow-split}</code></td>
 <td>Let a tall card break across pages</td>
@@ -1751,9 +1754,9 @@ Once per round, outside your turn, you exploit a target in reach:
 </tbody>
 </table>
 <p>The AP chip reads the number: <code>0 AP</code> is free (crimson), a number is standard, <code>VAR</code> or a range is variable (magenta). A raw <code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> makes a chip in prose.</p>
-<h3>Highlight and two-column variants</h3>
+<h3>Highlight and two columns</h3>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="362:363"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="364:365"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="370:371"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="372:373"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card dc-highlight" name="apex-physiology" data-break-inside="avoid">
@@ -1774,7 +1777,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div>
 <div class="dc-sub-header">Violence begins in the bones.</div>
 </div></div></div>
-<div class="dc-skill-card dc-two-col" name="boost-morale" data-break-inside="avoid">
+<div class="dc-skill-card" name="boost-morale" data-break-inside="avoid">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
@@ -1783,7 +1786,7 @@ Once per round, outside your turn, you exploit a target in reach:
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
 <p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
-<div class="dc-ability">
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="395:396"><div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
 </div>
@@ -1799,12 +1802,12 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
-<div class="dc-sub-header">Courage spreads. So does panic.</div>
+</div><div class="dc-sub-header">Courage spreads. So does panic.</div>
 </div></div></div>
 </div></div></div>
 <h2>Continuing a long card</h2>
 <p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a <code>▸</code> on its tab, keeping the same specialty shape. Prefer this to <code>.dc-allow-split</code>: the break lands at a boundary you chose.</p>
-<pre><code class="dg-split language-markdown" data-source-range="407:435">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="419:447">@specialty .augmerc
 
 @learning-path
 
@@ -1833,7 +1836,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="440:441"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="442:443"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="452:453"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="454:455"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="pain-compliance" data-break-inside="avoid">
@@ -1869,7 +1872,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 <h2>Outcomes inside a card</h2>
 <p>A <code>| Roll | Outcome |</code> table inside a skill card renders as that card’s outcome ladder.</p>
-<pre><code class="dg-split language-markdown" data-source-range="473:502">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="485:514">@specialty .augmerc
 
 @learning-path
 
@@ -1899,7 +1902,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="507:508"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="509:510"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="519:520"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="521:522"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="spit-flame" data-break-inside="avoid">
@@ -1942,7 +1945,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <h2 class="gp-page-break">One source, eight shapes</h2>
 <p>The same path and card markdown, dropped into a different <code>@specialty</code>, takes that family’s silhouette and color with no change to the source. Here it is under Gutterdruid. (The Dualist and Generalist borrow other specialties’ skills, so they have no trees of their own.)</p>
 <div class="dg-stage">
-<div class="dc-specialty gutterdruid" data-source-range="544:545"><div class="dc-learning-path dc-path-block" data-path-ref="GDR1" data-source-range="546:547"><div class="dc-path-shell">
+<div class="dc-specialty gutterdruid" data-source-range="556:557"><div class="dc-learning-path dc-path-block" data-path-ref="GDR1" data-source-range="558:559"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">GDR1</span><span class="dc-path-sep"> </span>Beastmode</h3>
 <div class="dc-intro">Some adapt and overcome. You mutate and dominate.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span><span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span></div>
@@ -2113,7 +2116,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 </code></pre>
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Credits page</h2>
-<p>A chevron title, a lede for thanks and dedications, and the colophon grid: bold lead-ins become role labels.</p>
+<p>A chevron title, a lede for thanks and dedications, and the colophon, set in <code>@columns 2</code>: bold lead-ins become role labels.</p>
 <pre><code class="dg-split language-markdown" data-source-range="77:102">@page .page-credits .dc-credits
 
 # Credits {.dc-chevron}
@@ -2126,7 +2129,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 
 @section .credits-colophon
 
-&lt;div class=&quot;dc-colophon-grid&quot;&gt;
+@columns 2
 
 **Designers:** TWard and ITLackey
 
@@ -2134,13 +2137,13 @@ Twelve chapters of dreams, dirt, and what bites back.
 
 **Edition &amp; ISBN:** First Edition · ISBN pending.
 
-&lt;/div&gt;
+@end-columns
 
 @end-section
 </code></pre>
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Chapter opener</h2>
-<p>A labelled <code>@chapter</code> plus <code>@page intro</code> gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow. <code>---{.column-break}</code> splits fiction from the rules column that follows.</p>
+<p>A labelled <code>@chapter</code> plus <code>@page intro</code> gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow. <code>@column-break</code> splits fiction from the rules column that follows.</p>
 <pre><code class="dg-split language-markdown" data-source-range="110:137">@chapter C.01 #ch-citizen ch=&quot;1&quot;
 
 @page intro
@@ -2157,7 +2160,7 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 @end-fiction-excerpt
 
----{.column-break}
+@column-break
 
 @section
 
@@ -2170,10 +2173,12 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>Rendered: <a href="#ch-example-chapter-opener" data-gp-source-token="[Chapter Opener](#ch-example-chapter-opener)" data-gp-source-occurrence="0">Chapter Opener</a>. Tokens for the badge: <code>--dc-chapter-opener-bg</code>, <code>--dc-chapter-opener-accent</code>; for the excerpt: <code>--dc-fiction-bg</code>, <code>--dc-fiction-art-float</code>, <code>--dc-fiction-art-width</code>.</p>
 <p>The footer-free variant is <code>@page .page-chapter-start .dc-chapter-start</code> with a <code># Title</code> — the snippet picker’s <em>Chapter Start Page</em>.</p>
 <h2>Citizen File walkthrough</h2>
-<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Add <code>.gp-columns-2 .dc-column-panel</code> to put two short fields side by side. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
-<pre><code data-source-range="146:161" class="language-markdown">@page .dc-citizen-file-page
+<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Add <code>.dc-column-panel</code> for the card chrome and put two short fields side by side in <code>@columns 2</code>. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
+<pre><code data-source-range="146:165" class="language-markdown">@page .dc-citizen-file-page
 
-@citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough .dc-column-panel
+
+@columns 2
 
 #### What's Yr Handle?
 
@@ -2183,18 +2188,20 @@ Choose a name. Pull it from a book, a show, a half-remembered dream.
 
 Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.
 
+@end-columns
+
 @end-citizen-walkthrough
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="166:167"><h4>What’s Yr Handle?</h4>
+<div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="170:171"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="172:173"><h4>What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4>Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
-</div></div>
+</div></div></div>
 <h2>Specialty catalog page</h2>
 <p><code>@page .card-grid</code> plus a <code>@card-grid</code> of specialty cards, each in its own <code>@specialty</code>. Keep the cards uniform — identical chrome is what makes the choices comparable.</p>
-<pre><code class="dg-split language-markdown" data-source-range="185:216">@page .card-grid
+<pre><code class="dg-split language-markdown" data-source-range="193:228">@page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -2205,6 +2212,8 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 @end-lede
 
 @card-grid
+
+@columns 2
 
 @specialty .augmerc
 
@@ -2222,12 +2231,14 @@ Heavily armed and wired for war.
 
 @end-specialty
 
+@end-columns
+
 @end-card-grid
 </code></pre>
 <p>Rendered with all ten cards: <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>.</p>
 <h2>Specialty profile</h2>
 <p>Intro, art plate, then learning paths with their skill cards, all inside one <code>@specialty</code>. The art plate takes its own page.</p>
-<pre><code class="dg-split language-markdown" data-source-range="223:261">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="235:273">@specialty .augmerc
 
 @specialty-intro
 
@@ -2267,7 +2278,7 @@ Heavily armed and wired for war.
 <p>Rendered: <a href="#ch-example-specialty-profile" data-gp-source-token="[Specialty Profile](#ch-example-specialty-profile)" data-gp-source-occurrence="0">Specialty Profile</a>.</p>
 <h2>Choice page</h2>
 <p>Flaws, ideals, and dreams: a <code>@flaws</code> (or <code>@ideals</code>, <code>@dreams</code>) of <code>@card</code> blocks. The section class colors every card’s accent. Cards stack in one column; use a tape divider between runs rather than columns.</p>
-<pre><code data-source-range="268:287" class="language-markdown">@ideals
+<pre><code data-source-range="280:299" class="language-markdown">@ideals
 
 ## 4. Ideal
 
@@ -2434,7 +2445,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Notes</th>
 </tr>
 </thead>
-<tbody data-source-range="15:20">
+<tbody data-source-range="15:21">
 <tr data-source-range="15:16">
 <td><code>@chapter #id ch=&quot;N&quot; [C.NN]</code></td>
 <td>next <code>@chapter</code> / EOF</td>
@@ -2456,6 +2467,11 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>A region; bare = styled panel, <code>.dc-plain</code> = no chrome</td>
 </tr>
 <tr data-source-range="19:20">
+<td><code>@columns N</code></td>
+<td><code>@end-columns</code></td>
+<td><code>N</code> is 1 to 5. The one way to set content in columns; <code>@column-break</code> inside it starts the next column</td>
+</tr>
+<tr data-source-range="20:21">
 <td><code>@page-break</code> · <code>@column-break</code></td>
 <td>—</td>
 <td>Forced breaks</td>
@@ -2464,150 +2480,150 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2>Components (this package)</h2>
 <table>
-<thead data-source-range="23:24">
-<tr data-source-range="23:24">
+<thead data-source-range="24:25">
+<tr data-source-range="24:25">
 <th>Marker</th>
 <th>Closes</th>
 <th>Options</th>
 </tr>
 </thead>
-<tbody data-source-range="25:53">
-<tr data-source-range="25:26">
+<tbody data-source-range="26:54">
+<tr data-source-range="26:27">
 <td><code>@lede</code></td>
 <td><code>@end-lede</code></td>
 <td>—</td>
 </tr>
-<tr data-source-range="26:27">
+<tr data-source-range="27:28">
 <td><code>&gt; [!TYPE]</code></td>
 <td>end of blockquote</td>
 <td><code>NOTE</code> <code>WARNING</code> <code>DM</code> <code>VIBE</code> <code>ORIGIN</code> <code>VISIT</code> <code>GEAR</code> <code>FLAVOR</code> <code>PULLQUOTE</code></td>
 </tr>
-<tr data-source-range="27:28">
+<tr data-source-range="28:29">
 <td><code>@callout</code></td>
 <td><code>@end-callout</code></td>
 <td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>visit</code> <code>gear</code> (<code>@callout vibe</code>); <code>label=&quot;…&quot;</code></td>
 </tr>
-<tr data-source-range="28:29">
+<tr data-source-range="29:30">
 <td><code>@dm-note</code></td>
 <td><code>@end-dm-note</code></td>
 <td><code>label=&quot;…&quot;</code> (it is <code>@callout dm</code>)</td>
 </tr>
-<tr data-source-range="29:30">
+<tr data-source-range="30:31">
 <td><code>@block</code></td>
 <td><code>@end-block</code></td>
 <td><code>.dc-panel</code> <code>.dc-slate</code> <code>.dc-shard</code> <code>.dc-codex</code>, <code>label=&quot;…&quot;</code></td>
 </tr>
-<tr data-source-range="30:31">
+<tr data-source-range="31:32">
 <td><code>@sidebar</code></td>
 <td><code>@end-sidebar</code></td>
 <td><code>.inset</code> (needs <code>@page .page-sidebar</code>)</td>
 </tr>
-<tr data-source-range="31:32">
+<tr data-source-range="32:33">
 <td><code>@sidebar-box</code></td>
 <td><code>@end-sidebar-box</code></td>
 <td><code>####</code> heading, <code>---</code>, body</td>
 </tr>
-<tr data-source-range="32:33">
+<tr data-source-range="33:34">
 <td><code>@definition</code></td>
 <td><code>@end-definition</code></td>
 <td>—</td>
 </tr>
-<tr data-source-range="33:34">
+<tr data-source-range="34:35">
 <td><code>@glossary</code></td>
 <td><code>@end-glossary</code></td>
 <td><code>**term** — gloss</code> paragraphs</td>
 </tr>
-<tr data-source-range="34:35">
+<tr data-source-range="35:36">
 <td><code>@procedure</code></td>
 <td><code>@end-procedure</code></td>
 <td>an ordered list</td>
 </tr>
-<tr data-source-range="35:36">
+<tr data-source-range="36:37">
 <td><code>@outcome</code></td>
 <td><code>@end-outcome</code></td>
 <td><code>flush</code>; rows <code>roll | name | text</code></td>
 </tr>
-<tr data-source-range="36:37">
+<tr data-source-range="37:38">
 <td><code>@card</code></td>
 <td><code>@end-card</code></td>
 <td>inside <code>@flaws</code> / <code>@ideals</code> / <code>@dreams</code></td>
 </tr>
-<tr data-source-range="37:38">
+<tr data-source-range="38:39">
 <td><code>@column-panel</code></td>
 <td><code>@end-column-panel</code></td>
-<td>usually with <code>.gp-columns-2</code>; a card-less run is a bare <code>@section .gp-columns-2</code></td>
+<td>usually with <code>.gp-columns-2</code>; a card-less run is <code>@columns 2</code></td>
 </tr>
-<tr data-source-range="38:39">
+<tr data-source-range="39:40">
 <td><code>@tabbed</code></td>
 <td><code>@end-tabbed</code></td>
 <td>first heading (<code>##</code> or <code>###</code>) hangs as the tab</td>
 </tr>
-<tr data-source-range="39:40">
+<tr data-source-range="40:41">
 <td><code>@card-grid</code></td>
 <td><code>@end-card-grid</code></td>
-<td>a run of <code>@specialty</code> / <code>@specialty-card</code></td>
-</tr>
-<tr data-source-range="40:41">
-<td><code>@citizen-walkthrough</code></td>
-<td><code>@end-citizen-walkthrough</code></td>
-<td><code>####</code> field names and prose</td>
+<td>a run of <code>@specialty</code> / <code>@specialty-card</code> inside <code>@columns 2</code></td>
 </tr>
 <tr data-source-range="41:42">
+<td><code>@citizen-walkthrough</code></td>
+<td><code>@end-citizen-walkthrough</code></td>
+<td><code>####</code> field names and prose; <code>@columns 2</code> inside sets two fields side by side</td>
+</tr>
+<tr data-source-range="42:43">
 <td><code>@fiction-excerpt</code></td>
 <td><code>@end-fiction-excerpt</code></td>
 <td>prose; the first image floats</td>
 </tr>
-<tr data-source-range="42:43">
+<tr data-source-range="43:44">
 <td><code>@npc-stat</code></td>
 <td><code>@end-npc-stat</code></td>
-<td><code>####</code> name, <code>&gt;</code> flavor, stat lines, <code>#####</code> labels</td>
+<td><code>####</code> name, <code>&gt;</code> flavor, stat lines, <code>#####</code> labels; <code>@columns 2</code> inside sets the entries in columns</td>
 </tr>
-<tr data-source-range="43:44">
+<tr data-source-range="44:45">
 <td><code>@flaws</code> · <code>@ideals</code> · <code>@dreams</code></td>
 <td><code>@end-flaws</code> · <code>@end-ideals</code> · <code>@end-dreams</code></td>
 <td>a run of <code>@card</code> blocks</td>
 </tr>
-<tr data-source-range="44:45">
+<tr data-source-range="45:46">
 <td><code>@gear</code></td>
 <td><code>@end-gear</code></td>
 <td><code>###</code> name, <code>*tags*</code>, body</td>
 </tr>
-<tr data-source-range="45:46">
+<tr data-source-range="46:47">
 <td><code>@toc</code></td>
 <td><code>@end-toc</code></td>
 <td>an ordered list of <code>[title](#id) — blurb</code></td>
 </tr>
-<tr data-source-range="46:47">
+<tr data-source-range="47:48">
 <td><code>@specialty</code></td>
 <td><code>@end-specialty</code> / next <code>@specialty</code> / <code>@page</code> / <code>@section</code> / <code>@chapter</code></td>
 <td><code>augmerc</code> … <code>generalist</code>, as a word or a <code>.class</code></td>
 </tr>
-<tr data-source-range="47:48">
+<tr data-source-range="48:49">
 <td><code>@specialty-intro</code></td>
 <td><code>@end-specialty-intro</code></td>
 <td><code>##</code> name, <code>###</code> spec tweak</td>
 </tr>
-<tr data-source-range="48:49">
+<tr data-source-range="49:50">
 <td><code>@specialty-art</code></td>
 <td><code>@end-specialty-art</code></td>
 <td>one image</td>
 </tr>
-<tr data-source-range="49:50">
+<tr data-source-range="50:51">
 <td><code>@specialty-card</code></td>
 <td><code>@end-specialty-card</code></td>
 <td><code>#id</code>; <code>###</code> name, image, <code>&gt;</code> tagline, pitch</td>
 </tr>
-<tr data-source-range="50:51">
+<tr data-source-range="51:52">
 <td><code>@learning-path</code></td>
 <td><code>@end-learning-path</code> / next <code>@learning-path</code> / end of its specialty</td>
 <td><code>###</code> title, <code>&gt;</code> subtitle, <code>- skills</code>, <code>**Augment:**</code></td>
 </tr>
-<tr data-source-range="51:52">
+<tr data-source-range="52:53">
 <td><code>@skill</code></td>
 <td><code>@end-skill</code> / next <code>@skill</code> / end of its path</td>
-<td><code>id=&quot;…&quot;</code>, <code>{.dc-allow-split}</code> <code>{.dc-two-col}</code> <code>{.dc-highlight}</code>; <code>#### Name | Tier [| highlight]</code></td>
+<td><code>id=&quot;…&quot;</code>, <code>{.dc-allow-split}</code> <code>{.dc-highlight}</code>; <code>#### Name | Tier [| highlight]</code>; <code>@columns 2</code> around part of the body</td>
 </tr>
-<tr data-source-range="52:53">
+<tr data-source-range="53:54">
 <td><code>@continue</code></td>
 <td>—</td>
 <td>inside a skill: continuation card</td>
@@ -2616,100 +2632,100 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2>Classes you can add</h2>
 <table>
-<thead data-source-range="57:58">
-<tr data-source-range="57:58">
+<thead data-source-range="58:59">
+<tr data-source-range="58:59">
 <th>Class</th>
 <th>Goes on</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="59:77">
-<tr data-source-range="59:60">
-<td><code>.gp-columns-2</code> · <code>.gp-columns-3</code></td>
-<td><code>@section</code></td>
-<td>Two or three columns</td>
-</tr>
+<tbody data-source-range="60:78">
 <tr data-source-range="60:61">
+<td><code>.gp-columns-2</code> · <code>.gp-columns-3</code></td>
+<td><code>@column-panel</code></td>
+<td>The panel’s column count (everywhere else, <code>@columns N</code>)</td>
+</tr>
+<tr data-source-range="61:62">
 <td><code>.dc-column-panel</code></td>
 <td><code>@section</code> with columns (or write <code>@column-panel</code>)</td>
 <td>Card substrate, spanning heading bar</td>
 </tr>
-<tr data-source-range="61:62">
+<tr data-source-range="62:63">
 <td><code>.dc-tabbed</code></td>
 <td><code>@section</code></td>
 <td>Heading hung as a tab</td>
 </tr>
-<tr data-source-range="62:63">
+<tr data-source-range="63:64">
 <td><code>.dc-plain</code></td>
 <td><code>@section</code></td>
 <td>No panel chrome</td>
 </tr>
-<tr data-source-range="63:64">
+<tr data-source-range="64:65">
 <td><code>.gp-no-break</code></td>
 <td><code>@section</code></td>
 <td>Never split across pages</td>
 </tr>
-<tr data-source-range="64:65">
+<tr data-source-range="65:66">
 <td><code>.dc-allow-split</code></td>
 <td><code>@section</code>, <code>@skill</code></td>
 <td>Allow a tall element to split</td>
 </tr>
-<tr data-source-range="65:66">
+<tr data-source-range="66:67">
 <td><code>.gp-break-before</code></td>
 <td>a heading</td>
 <td>New page before it</td>
 </tr>
-<tr data-source-range="66:67">
+<tr data-source-range="67:68">
 <td><code>.dc-npc-stat</code></td>
 <td><code>@section</code></td>
 <td>Narrative NPC stat block</td>
 </tr>
-<tr data-source-range="67:68">
+<tr data-source-range="68:69">
 <td><code>.dc-fiction-excerpt</code></td>
 <td><code>@section</code></td>
 <td>Narrative typography, auto art float</td>
 </tr>
-<tr data-source-range="68:69">
+<tr data-source-range="69:70">
 <td><code>.dc-citizen-walkthrough</code></td>
 <td><code>@section</code></td>
 <td>Citizen File field chassis</td>
 </tr>
-<tr data-source-range="69:70">
+<tr data-source-range="70:71">
 <td><code>.dc-card-grid</code></td>
 <td><code>@section</code></td>
-<td>Two-across grid of specialty cards</td>
+<td>Chrome and density for a run of specialty cards (set in <code>@columns 2</code>)</td>
 </tr>
-<tr data-source-range="70:71">
+<tr data-source-range="71:72">
 <td><code>.dc-flaws</code> · <code>.dc-ideals</code> · <code>.dc-dreams</code></td>
 <td><code>@section</code> of <code>@card</code></td>
 <td>Card accent per step</td>
 </tr>
-<tr data-source-range="71:72">
+<tr data-source-range="72:73">
 <td><code>.credits-colophon</code></td>
 <td><code>@section</code> on the credits page</td>
 <td>Colophon chrome</td>
 </tr>
-<tr data-source-range="72:73">
+<tr data-source-range="73:74">
 <td><code>.dc-chevron</code></td>
 <td><code>#</code> heading</td>
 <td>Chevron banner</td>
 </tr>
-<tr data-source-range="73:74">
+<tr data-source-range="74:75">
 <td><code>.dc-spray</code></td>
 <td><code>##</code> heading</td>
 <td>Spray banner</td>
 </tr>
-<tr data-source-range="74:75">
+<tr data-source-range="75:76">
 <td><code>.dc-spec-tweak</code> · <code>.dc-no-top</code></td>
 <td><code>###</code> heading</td>
 <td>Spec-tweak rule; no top margin</td>
 </tr>
-<tr data-source-range="75:76">
+<tr data-source-range="76:77">
 <td><code>.dc-img-float-left</code> · <code>.dc-img-float-right</code></td>
 <td>an image</td>
 <td>Float at 44% width</td>
 </tr>
-<tr data-source-range="76:77">
+<tr data-source-range="77:78">
 <td><code>.dc-flush</code></td>
 <td>tape, stat block, stickers</td>
 <td>Edge to edge</td>
@@ -2718,38 +2734,38 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2>Inline HTML</h2>
 <table>
-<thead data-source-range="80:81">
-<tr data-source-range="80:81">
+<thead data-source-range="81:82">
+<tr data-source-range="81:82">
 <th>You write</th>
 <th>Renders</th>
 </tr>
 </thead>
-<tbody data-source-range="82:89">
-<tr data-source-range="82:83">
+<tbody data-source-range="83:90">
+<tr data-source-range="83:84">
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt;</code></td>
 <td>keyword pill</td>
 </tr>
-<tr data-source-range="83:84">
+<tr data-source-range="84:85">
 <td><code>&lt;span class=&quot;dc-classtag augmerc&quot;&gt;Augmerc&lt;/span&gt;</code></td>
 <td>specialty identity pill</td>
 </tr>
-<tr data-source-range="84:85">
+<tr data-source-range="85:86">
 <td><code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> · <code>.free</code> · <code>.var</code></td>
 <td>AP chip in prose</td>
 </tr>
-<tr data-source-range="85:86">
+<tr data-source-range="86:87">
 <td><code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code></td>
 <td>tape, edge to edge</td>
 </tr>
-<tr data-source-range="86:87">
+<tr data-source-range="87:88">
 <td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;…&lt;/div&gt;</code></td>
 <td>four-cell stat grid (<a href="#ch-panels" data-gp-source-token="[Panels, Cards &amp; Data](#ch-panels)" data-gp-source-occurrence="0">Panels, Cards &amp; Data</a>)</td>
 </tr>
-<tr data-source-range="87:88">
-<td><code>&lt;div class=&quot;dc-at-a-glance-cards&quot;&gt;…&lt;/div&gt;</code></td>
+<tr data-source-range="88:89">
+<td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;…&lt;/div&gt;</code> in <code>@columns 3</code></td>
 <td>label/value cards</td>
 </tr>
-<tr data-source-range="88:89">
+<tr data-source-range="89:90">
 <td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;…</code></td>
 <td>floated NPC capsule</td>
 </tr>
@@ -2758,102 +2774,102 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <h2>Tokens by component</h2>
 <p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(…)</code> clip-paths.</p>
 <table>
-<thead data-source-range="95:96">
-<tr data-source-range="95:96">
+<thead data-source-range="96:97">
+<tr data-source-range="96:97">
 <th>Component</th>
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="97:120">
-<tr data-source-range="97:98">
+<tbody data-source-range="98:121">
+<tr data-source-range="98:99">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code> <code>--dc-section-tab-indent</code> <code>--dc-section-tab-overlap</code></td>
 </tr>
-<tr data-source-range="98:99">
+<tr data-source-range="99:100">
 <td>Lede</td>
 <td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code></td>
 </tr>
-<tr data-source-range="99:100">
+<tr data-source-range="100:101">
 <td>Flavor</td>
 <td><code>--dc-flavor-accent</code> <code>--dc-flavor-accent-width</code> <code>--dc-flavor-color</code></td>
 </tr>
-<tr data-source-range="100:101">
+<tr data-source-range="101:102">
 <td>Pull quote</td>
 <td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-accent-soft</code> <code>--dc-pullquote-bg</code></td>
 </tr>
-<tr data-source-range="101:102">
+<tr data-source-range="102:103">
 <td>Alerts, callout, DM note</td>
 <td><code>--dc-alert-bg</code> <code>--dc-alert-border</code> <code>--dc-alert-fg</code> <code>--dc-alert-label-color</code> <code>--dc-alert-border-width</code> <code>--dc-alert-label-size</code> <code>--dc-alert-body-size</code></td>
 </tr>
-<tr data-source-range="102:103">
+<tr data-source-range="103:104">
 <td>Tape</td>
 <td><code>--dc-tape-bg</code> <code>--dc-tape-border</code> <code>--dc-tape-color</code></td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="104:105">
 <td>Chevron · Spray</td>
 <td><code>--dc-chevron-bg</code> <code>--dc-chevron-color</code> <code>--dc-chevron-font-size</code> · <code>--dc-spray-bg</code> <code>--dc-spray-color</code></td>
 </tr>
-<tr data-source-range="104:105">
+<tr data-source-range="105:106">
 <td>Class tag</td>
 <td><code>--dc-classtag-color</code></td>
 </tr>
-<tr data-source-range="105:106">
+<tr data-source-range="106:107">
 <td>Roll the die</td>
 <td><code>--dc-roll-the-die-color</code> <code>--dc-roll-the-die-border</code></td>
 </tr>
-<tr data-source-range="106:107">
+<tr data-source-range="107:108">
 <td>Block</td>
 <td><code>--dc-block-bg</code> <code>--dc-block-fg</code> <code>--dc-block-accent</code> <code>--dc-block-title-bg</code> <code>--dc-block-title-fg</code></td>
 </tr>
-<tr data-source-range="107:108">
+<tr data-source-range="108:109">
 <td>Sidebar</td>
 <td><code>--dc-sidebar-surface</code> <code>--dc-sidebar-border</code> <code>--dc-sidebar-accent</code> <code>--dc-sidebar-inset-column</code> <code>--dc-sidebar-inset-gutter</code></td>
 </tr>
-<tr data-source-range="108:109">
+<tr data-source-range="109:110">
 <td>Sidebar box</td>
 <td><code>--dc-sidebar-box-surface</code> <code>--dc-sidebar-box-border</code> <code>--dc-sidebar-box-accent</code> <code>--dc-sidebar-box-rail</code></td>
 </tr>
-<tr data-source-range="109:110">
+<tr data-source-range="110:111">
 <td>Definition</td>
 <td><code>--dc-definition-block-surface</code> <code>--dc-definition-block-accent</code> <code>--dc-definition-block-accent-width</code></td>
 </tr>
-<tr data-source-range="110:111">
+<tr data-source-range="111:112">
 <td>Outcome ladder</td>
 <td><code>--dc-outcomes-surface</code> <code>--dc-outcomes-border</code> <code>--dc-outcomes-inner-border</code> <code>--dc-outcomes-label-bg</code> <code>--dc-outcomes-label-color</code> <code>--dc-outcome-key-color</code> <code>--dc-outcome-name-color</code> <code>--dc-outcome-name-opacity</code></td>
 </tr>
-<tr data-source-range="111:112">
+<tr data-source-range="112:113">
 <td>NPC stat block</td>
 <td><code>--dc-npc-stat-primary</code> <code>--dc-npc-stat-secondary</code> <code>--dc-npc-stat-label-color</code> <code>--dc-npc-stat-rule</code> <code>--dc-npc-stat-rule-width</code></td>
 </tr>
-<tr data-source-range="112:113">
+<tr data-source-range="113:114">
 <td>Fiction excerpt</td>
 <td><code>--dc-fiction-bg</code> <code>--dc-fiction-line-height</code> <code>--dc-fiction-art-float</code> <code>--dc-fiction-art-width</code> <code>--dc-fiction-art-outline</code> <code>--dc-fiction-art-shadow</code></td>
 </tr>
-<tr data-source-range="113:114">
+<tr data-source-range="114:115">
 <td>Chapter badge</td>
 <td><code>--dc-chapter-opener-bg</code> <code>--dc-chapter-opener-accent</code> <code>--dc-chapter-opener-shadow</code> <code>--dc-chapter-opener-clip-tail</code> <code>--dc-chapter-opener-pad-top</code> <code>--dc-chapter-opener-pad-side</code></td>
 </tr>
-<tr data-source-range="114:115">
+<tr data-source-range="115:116">
 <td>Specialty wrapper</td>
 <td><code>--spec-accent</code> <code>--spec-mid</code> <code>--spec-dark</code> <code>--dc-skill-tab-shape</code> <code>--dc-skill-body-shape</code> <code>--dc-path-title-shape</code> <code>--dc-path-shell-clip</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-intro-title-shape</code> <code>--dc-specialty-intro-clip</code></td>
 </tr>
-<tr data-source-range="115:116">
+<tr data-source-range="116:117">
 <td>Specialty intro</td>
 <td><code>--dc-specialty-intro-bg</code> <code>--dc-specialty-intro-title-bg</code> <code>--dc-specialty-intro-title-color</code></td>
 </tr>
-<tr data-source-range="116:117">
+<tr data-source-range="117:118">
 <td>Specialty card</td>
 <td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-border</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-height</code> <code>--dc-specialty-card-shadow</code> <code>--dc-specialty-card-title-color</code></td>
 </tr>
-<tr data-source-range="117:118">
+<tr data-source-range="118:119">
 <td>Learning path</td>
 <td><code>--dc-path-title-bg</code> <code>--dc-path-title-color</code> <code>--dc-path-accent</code> <code>--dc-path-shell-padding-top</code> <code>--dc-path-shell-padding-bottom</code> <code>--dc-arrow-color</code></td>
 </tr>
-<tr data-source-range="118:119">
+<tr data-source-range="119:120">
 <td>Skill card</td>
 <td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-body-mark</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code></td>
 </tr>
-<tr data-source-range="119:120">
+<tr data-source-range="120:121">
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
 </tr>
@@ -3127,13 +3143,13 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </div>
 </div></div></div>
 </div></div></div>
-<h3>Two columns — <code>@skill {.dc-two-col}</code></h3>
-<p>A long ability list packed into two columns.</p>
+<h3>Two columns — <code>@columns 2</code> inside a <code>@skill</code></h3>
+<p>A long ability list packed into two columns. The columns are core’s <code>@columns 2</code> … <code>@end-columns</code> around just that part of the body; the flavor line and the lead paragraph stay full width.</p>
 <div class="dg-stage">
 <div class="dc-specialty augmerc" data-source-range="394:395"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="396:397"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card dc-two-col" name="boost-morale" data-break-inside="avoid">
+<div class="dc-skill-card" name="boost-morale" data-break-inside="avoid">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
@@ -3142,7 +3158,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
 <p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
-<div class="dc-ability">
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="408:409"><div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
 </div>
@@ -3158,12 +3174,12 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
-</div></div></div>
+</div></div></div></div>
 </div></div></div>
 <h3>Outcome table — a <code>| Roll | Outcome |</code> table inside the card</h3>
 <p>The table becomes the card’s outcome ladder.</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="427:428"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="429:430"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="431:432"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="433:434"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="spit-flame" data-break-inside="avoid">
@@ -3206,7 +3222,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>AP chips</h2>
 <p>The plugin picks the chip from the cost written in bold at the start of an ability. The cards are the Augmerc’s Dirty Work and the Proxy’s Borrowed Mercy (its range line excerpted). The last four registers have no markdown form; they are raw spans.</p>
 <div class="dg-stage dg-on-paper">
-<div class="dc-specialty augmerc" data-source-range="463:464"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="465:466"><div class="dc-path-shell">
+<div class="dc-specialty augmerc" data-source-range="467:468"><div class="dc-learning-path dc-path-block" data-path-ref="AUG1" data-source-range="469:470"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="dirty-work" data-break-inside="avoid">
@@ -3231,7 +3247,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
 </div></div></div>
-</div></div><div class="dc-specialty proxy" data-source-range="487:488"><div class="dc-learning-path dc-path-block" data-path-ref="PRX1" data-source-range="489:490"><div class="dc-path-shell">
+</div></div><div class="dc-specialty proxy" data-source-range="491:492"><div class="dc-learning-path dc-path-block" data-path-ref="PRX1" data-source-range="493:494"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
 <div class="dc-skill-card" name="borrowed-mercy" data-break-inside="avoid">
@@ -3254,50 +3270,50 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </div></div><p><span class="dc-ap standard">2 AP</span> <span class="dc-ap reduced">1 AP</span> <span class="dc-ap increased">3 AP</span> <span class="dc-ap special">SPC</span></p>
 </div>
 <table>
-<thead data-source-range="512:513">
-<tr data-source-range="512:513">
+<thead data-source-range="516:517">
+<tr data-source-range="516:517">
 <th>Chip, in order</th>
 <th>You write</th>
 <th>Class</th>
 </tr>
 </thead>
-<tbody data-source-range="514:522">
-<tr data-source-range="514:515">
+<tbody data-source-range="518:526">
+<tr data-source-range="518:519">
 <td>Free</td>
 <td><code>**0 AP**</code></td>
 <td><code>.dc-ap.free</code></td>
 </tr>
-<tr data-source-range="515:516">
+<tr data-source-range="519:520">
 <td>Standard</td>
 <td><code>**1 AP**</code>, <code>**2 AP**</code></td>
 <td><code>.dc-ap</code></td>
 </tr>
-<tr data-source-range="516:517">
+<tr data-source-range="520:521">
 <td>Variable</td>
 <td><code>**VAR AP**</code></td>
 <td><code>.dc-ap.variable</code></td>
 </tr>
-<tr data-source-range="517:518">
+<tr data-source-range="521:522">
 <td>Variable</td>
 <td><code>**3-X AP**</code>, any range or <code>X</code></td>
 <td><code>.dc-ap.variable</code></td>
 </tr>
-<tr data-source-range="518:519">
+<tr data-source-range="522:523">
 <td>Standard, explicit</td>
 <td><code>&lt;span class=&quot;dc-ap standard&quot;&gt;</code></td>
 <td><code>.dc-ap.standard</code></td>
 </tr>
-<tr data-source-range="519:520">
+<tr data-source-range="523:524">
 <td>Reduced</td>
 <td><code>&lt;span class=&quot;dc-ap reduced&quot;&gt;</code></td>
 <td><code>.dc-ap.reduced</code></td>
 </tr>
-<tr data-source-range="520:521">
+<tr data-source-range="524:525">
 <td>Increased</td>
 <td><code>&lt;span class=&quot;dc-ap increased&quot;&gt;</code></td>
 <td><code>.dc-ap.increased</code></td>
 </tr>
-<tr data-source-range="521:522">
+<tr data-source-range="525:526">
 <td>Special</td>
 <td><code>&lt;span class=&quot;dc-ap special&quot;&gt;</code></td>
 <td><code>.dc-ap.special</code></td>
@@ -3307,109 +3323,109 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Specialty intros</h2>
 <p><code>@specialty-intro</code> inside each <code>@specialty</code>: the same panel, ten title bands. Intro text is the opening of each Field Guide profile.</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="529:530"><div class="dc-specialty-intro" data-source-range="531:532"><h2>Augmerc</h2>
+<div class="dc-specialty augmerc" data-source-range="533:534"><div class="dc-specialty-intro" data-source-range="535:536"><h2>Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty proxy" data-source-range="545:546"><div class="dc-specialty-intro" data-source-range="547:548"><h2>Proxy</h2>
+<div class="dc-specialty proxy" data-source-range="549:550"><div class="dc-specialty-intro" data-source-range="551:552"><h2>Proxy</h2>
 <p>Belief burns bright in Dimm City, and Proxies carry the sparks others cannot hold. A word that stops a heart, a prayer that drags a soul back to its feet.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty streetwarden" data-source-range="561:562"><div class="dc-specialty-intro" data-source-range="563:564"><h2>Streetwarden</h2>
+<div class="dc-specialty streetwarden" data-source-range="565:566"><div class="dc-specialty-intro" data-source-range="567:568"><h2>Streetwarden</h2>
 <p>Dimm City may look like a concrete jungle, but its sentient population is far outnumbered by the insects, animals, fungi, protista, and monera that thrive throughout its shadowed sprawl. …</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty gutterdruid" data-source-range="577:578"><div class="dc-specialty-intro" data-source-range="579:580"><h2>Gutterdruid</h2>
+<div class="dc-specialty gutterdruid" data-source-range="581:582"><div class="dc-specialty-intro" data-source-range="583:584"><h2>Gutterdruid</h2>
 <p>Nature thrives in Dimm City, but it grows meaner here. It roots in drains, nests in vents, blooms on corpses, cracks through concrete, and feeds on carrion, heat, rust, blood, and whatever the city throws on the curb. …</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty cybersurgeon" data-source-range="593:594"><div class="dc-specialty-intro" data-source-range="595:596"><h2>Cybersurgeon</h2>
+<div class="dc-specialty cybersurgeon" data-source-range="597:598"><div class="dc-specialty-intro" data-source-range="599:600"><h2>Cybersurgeon</h2>
 <p>Need a new arm? Sit down. Need a neuroimplant wired so the Datasphere crawls behind your eyes? That’s extra.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty wirephreak" data-source-range="609:610"><div class="dc-specialty-intro" data-source-range="611:612"><h2>Wirephreak</h2>
+<div class="dc-specialty wirephreak" data-source-range="613:614"><div class="dc-specialty-intro" data-source-range="615:616"><h2>Wirephreak</h2>
 <p>The invisible professionals of Dimm City. Corporations, syndicates, governments, and private clients alike rely on Wirephreaks when information must be acquired, facilities infiltrated, witnesses eliminated, or valuable assets extracted without leaving a trace.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty technosorcerer" data-source-range="625:626"><div class="dc-specialty-intro" data-source-range="627:628"><h2>Technosorcerer</h2>
+<div class="dc-specialty technosorcerer" data-source-range="629:630"><div class="dc-specialty-intro" data-source-range="631:632"><h2>Technosorcerer</h2>
 <p>Technosorcerers see the world as one enormous operating system. Magic, cybernetics, matter, even the laws of existence are simply different layers of the same source code waiting to be understood—and rewritten.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty etherlock" data-source-range="641:642"><div class="dc-specialty-intro" data-source-range="643:644"><h2>Etherlock</h2>
+<div class="dc-specialty etherlock" data-source-range="645:646"><div class="dc-specialty-intro" data-source-range="647:648"><h2>Etherlock</h2>
 <p>Dimm City leaks magic. Raw ether and elements seep through fractures between substantialities, saturating matter and space, feeding the strange ecology of Dimm City itself.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty dualist" data-source-range="657:658"><div class="dc-specialty-intro" data-source-range="659:660"><h2>Dualist</h2>
+<div class="dc-specialty dualist" data-source-range="661:662"><div class="dc-specialty-intro" data-source-range="663:664"><h2>Dualist</h2>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty generalist" data-source-range="673:674"><div class="dc-specialty-intro" data-source-range="675:676"><h2>Generalist</h2>
+<div class="dc-specialty generalist" data-source-range="677:678"><div class="dc-specialty-intro" data-source-range="679:680"><h2>Generalist</h2>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects.</p>
 </div></div></div>
 <h2>Specialty cards</h2>
 <p><code>@specialty-card</code> inside each <code>@specialty</code>, in a <code>@card-grid</code>. Cards alternate <code>data-position=&quot;odd|even&quot;</code> down the grid.</p>
 <div class="dg-stage dg-tall">
-<div class="section dc-card-grid" data-source-range="693:694"><div class="dc-specialty augmerc" data-source-range="695:696"><div class="dc-specialty-card" data-position="odd" data-source-range="697:698"><h3>Augmerc</h3>
+<div class="section dc-card-grid" data-source-range="697:698"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="699:700"><div class="dc-specialty augmerc" data-source-range="701:702"><div class="dc-specialty-card" data-position="odd" data-source-range="703:704"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="703:704">Cybernetic Commando</p>
+<p data-source-range="709:710">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad. They charge the front, soak the pain, and unload hell using brute strength and brutal tech. Combat-born, augged to kill, and never outgunned.</p>
-</div></div><div class="dc-specialty proxy" data-source-range="711:712"><div class="dc-specialty-card" data-position="even" data-source-range="713:714"><h3>Proxy</h3>
+</div></div><div class="dc-specialty proxy" data-source-range="717:718"><div class="dc-specialty-card" data-position="even" data-source-range="719:720"><h3>Proxy</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Proxy" alt="Proxy" data-gp-source-token="![Proxy](https://placehold.co/300x340/png?text=Proxy)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="719:720">Militant Monolith</p>
+<p data-source-range="725:726">Militant Monolith</p>
 </blockquote>
 <p>Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.</p>
-</div></div><div class="dc-specialty streetwarden" data-source-range="727:728"><div class="dc-specialty-card" data-position="odd" data-source-range="729:730"><h3>Streetwarden</h3>
+</div></div><div class="dc-specialty streetwarden" data-source-range="733:734"><div class="dc-specialty-card" data-position="odd" data-source-range="735:736"><h3>Streetwarden</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Streetwarden" alt="Streetwarden" data-gp-source-token="![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="735:736">Sprawl Sentinel</p>
+<p data-source-range="741:742">Sprawl Sentinel</p>
 </blockquote>
 <p>They don’t wear badges—they are the law when no one else shows. Streetwardens guard the city’s broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.</p>
-</div></div><div class="dc-specialty gutterdruid" data-source-range="743:744"><div class="dc-specialty-card" data-position="even" data-source-range="745:746"><h3>Gutterdruid</h3>
+</div></div><div class="dc-specialty gutterdruid" data-source-range="749:750"><div class="dc-specialty-card" data-position="even" data-source-range="751:752"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="751:752">Wold Witch</p>
+<p data-source-range="757:758">Wold Witch</p>
 </blockquote>
 <p>They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.</p>
-</div></div><div class="dc-specialty cybersurgeon" data-source-range="759:760"><div class="dc-specialty-card" data-position="odd" data-source-range="761:762"><h3>Cybersurgeon</h3>
+</div></div><div class="dc-specialty cybersurgeon" data-source-range="765:766"><div class="dc-specialty-card" data-position="odd" data-source-range="767:768"><h3>Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Cybersurgeon" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="767:768">Mech Medic</p>
+<p data-source-range="773:774">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div></div><div class="dc-specialty wirephreak" data-source-range="775:776"><div class="dc-specialty-card" data-position="even" data-source-range="777:778"><h3>Wirephreak</h3>
+</div></div><div class="dc-specialty wirephreak" data-source-range="781:782"><div class="dc-specialty-card" data-position="even" data-source-range="783:784"><h3>Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Wirephreak" alt="Wirephreak" data-gp-source-token="![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="783:784">Ping Predator</p>
+<p data-source-range="789:790">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div></div><div class="dc-specialty technosorcerer" data-source-range="791:792"><div class="dc-specialty-card" data-position="odd" data-source-range="793:794"><h3>Technosorcerer</h3>
+</div></div><div class="dc-specialty technosorcerer" data-source-range="797:798"><div class="dc-specialty-card" data-position="odd" data-source-range="799:800"><h3>Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Technosorcerer" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="799:800">Modular Magician</p>
+<p data-source-range="805:806">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div></div><div class="dc-specialty etherlock" data-source-range="807:808"><div class="dc-specialty-card" data-position="even" data-source-range="809:810"><h3>Etherlock</h3>
+</div></div><div class="dc-specialty etherlock" data-source-range="813:814"><div class="dc-specialty-card" data-position="even" data-source-range="815:816"><h3>Etherlock</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Etherlock" alt="Etherlock" data-gp-source-token="![Etherlock](https://placehold.co/300x340/png?text=Etherlock)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="815:816">Manifold Magus</p>
+<p data-source-range="821:822">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div></div><div class="dc-specialty dualist" data-source-range="823:824"><div class="dc-specialty-card" data-position="odd" data-source-range="825:826"><h3>Dualist</h3>
+</div></div><div class="dc-specialty dualist" data-source-range="829:830"><div class="dc-specialty-card" data-position="odd" data-source-range="831:832"><h3>Dualist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Dualist" alt="Dualist" data-gp-source-token="![Dualist](https://placehold.co/300x340/png?text=Dualist)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="831:832">Two-Path Walker</p>
+<p data-source-range="837:838">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div></div><div class="dc-specialty generalist" data-source-range="839:840"><div class="dc-specialty-card" data-position="even" data-source-range="841:842"><h3>Generalist</h3>
+</div></div><div class="dc-specialty generalist" data-source-range="845:846"><div class="dc-specialty-card" data-position="even" data-source-range="847:848"><h3>Generalist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Generalist" alt="Generalist" data-gp-source-token="![Generalist](https://placehold.co/300x340/png?text=Generalist)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="847:848">Sprawl Survivor</p>
+<p data-source-range="853:854">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
-</div></div></div></div>
+</div></div></div></div></div>
 <h2>Class tags</h2>
 <p><code>&lt;span class=&quot;dc-classtag &lt;specialty&gt;&quot;&gt;</code>, one per specialty.</p>
 <div class="dg-stage dg-on-paper">
@@ -3419,68 +3435,68 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same seven registers.</p>
 <div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
-<p data-source-range="875:877">A character may hold no more than one Signature Augment at a time.</p>
+<p data-source-range="883:885">A character may hold no more than one Signature Augment at a time.</p>
 </div>
 <div class="dc-alert dc-note warning"><span class="dc-alert-label">Warning</span>
-<p data-source-range="878:880">Trauma Patches stabilize a dying character but do not restore HP.</p>
+<p data-source-range="886:888">Trauma Patches stabilize a dying character but do not restore HP.</p>
 </div>
 <div class="dc-alert dc-dm-note"><span class="dc-alert-label">Dream Master Note</span>
-<p data-source-range="881:883">If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack.</p>
+<p data-source-range="889:891">If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack.</p>
 </div>
 <div class="dc-alert dc-vibe-callout"><span class="dc-alert-label">Vibe</span>
-<p data-source-range="884:886">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
+<p data-source-range="892:894">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
 </div>
 <div class="dc-alert dc-origin-callout"><span class="dc-alert-label">Origin</span>
-<p data-source-range="887:889">You didn't choose the street — the street chose you.</p>
+<p data-source-range="895:897">You didn't choose the street — the street chose you.</p>
 </div>
 <div class="dc-alert dc-visit-callout"><span class="dc-alert-label">Visit</span>
-<p data-source-range="890:892">The Neon Bazaar doesn't close.</p>
+<p data-source-range="898:900">The Neon Bazaar doesn't close.</p>
 </div>
 <div class="dc-alert dc-gear-callout"><span class="dc-alert-label">Gear</span>
-<p data-source-range="893:895"><strong>Ripper Blades (Mk II)</strong> — Melee. Damage 1d8+STR.</p>
+<p data-source-range="901:903"><strong>Ripper Blades (Mk II)</strong> — Melee. Damage 1d8+STR.</p>
 </div>
 </div>
 <h2>Blocks</h2>
 <p><code>@block .dc-panel | .dc-slate | .dc-shard | .dc-codex</code>.</p>
 <div class="dg-stage">
-<div class="dc-block dc-panel" data-label="Panel" data-source-range="904:905"><div class="dc-block-title">Panel</div>
+<div class="dc-block dc-panel" data-label="Panel" data-source-range="912:913"><div class="dc-block-title">Panel</div>
 <p>Player-facing rules summaries and structured data.</p>
-</div><div class="dc-block dc-slate" data-label="Slate" data-source-range="910:911"><div class="dc-block-title">Slate</div>
+</div><div class="dc-block dc-slate" data-label="Slate" data-source-range="918:919"><div class="dc-block-title">Slate</div>
 <p>Binding rulings and Dream Master directives.</p>
-</div><div class="dc-block dc-shard" data-label="Shard" data-source-range="916:917"><div class="dc-block-title">Shard</div>
+</div><div class="dc-block dc-shard" data-label="Shard" data-source-range="924:925"><div class="dc-block-title">Shard</div>
 <p>Fiction, atmosphere, and setting asides.</p>
-</div><div class="dc-block dc-codex" data-label="Codex" data-source-range="922:923"><div class="dc-block-title">Codex</div>
+</div><div class="dc-block dc-codex" data-label="Codex" data-source-range="930:931"><div class="dc-block-title">Codex</div>
 <p>Glossaries, lookups, and compendium entries.</p>
 </div></div>
 <h2>Choice cards</h2>
 <p><code>@card</code> inside <code>@flaws</code>, <code>@ideals</code> or <code>@dreams</code>.</p>
 <div class="dg-stage">
-<div class="section dc-flaws" data-source-range="936:937"><div class="dc-card" data-source-range="938:939"><div class="dc-card-body">
+<div class="section dc-flaws" data-source-range="944:945"><div class="dc-card" data-source-range="946:947"><div class="dc-card-body">
 <h3>Addictive Personality</h3>
 <p>You chase instant gratification without weighing the consequences.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="944:945">“Just one more, and then I’ll quit.”</p>
+<p data-source-range="952:953">“Just one more, and then I’ll quit.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-ideals" data-source-range="950:951"><div class="dc-card" data-source-range="952:953"><div class="dc-card-body">
+</div></div><div class="section dc-ideals" data-source-range="958:959"><div class="dc-card" data-source-range="960:961"><div class="dc-card-body">
 <h3>Honor</h3>
 <p>You believe in a code, and upholding it is your duty no matter the cost.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="958:959">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
+<p data-source-range="966:967">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-dreams" data-source-range="964:965"><div class="dc-card" data-source-range="966:967"><div class="dc-card-body">
+</div></div><div class="section dc-dreams" data-source-range="972:973"><div class="dc-card" data-source-range="974:975"><div class="dc-card-body">
 <h3>Settle a Score</h3>
 <p>Settle a score from my past. Your Drive should pull you toward trouble, hard choices, and things worth risking your hide for.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="972:973">If chasing it can’t change you, it ain’t big enough.</p>
+<p data-source-range="980:981">If chasing it can’t change you, it ain’t big enough.</p>
 </blockquote>
 </div>
 </div></div></div>
 <h2>Outcome ladder</h2>
 <p><code>@outcome</code>, then <code>@outcome flush</code>. <code>flush</code> removes the ladder’s outer margin, so the difference is the spacing around it, not the ladder itself.</p>
 <div class="dg-stage">
-<div class="dc-outcomes" data-source-range="986:987">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="994:995">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -3501,7 +3517,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="996:997">  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="1004:1005">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -3560,7 +3576,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Heading chrome</h2>
 <p><code>{.dc-chevron}</code>, <code>{.dc-spray}</code>, <code>{.dc-spec-tweak}</code> and <code>{.dc-spec-tweak .dc-no-top}</code>.</p>
 <div class="dg-stage">
-<div class="section" data-source-range="1060:1061"><h1 class="dc-chevron">Augmerc</h1>
+<div class="section" data-source-range="1068:1069"><h1 class="dc-chevron">Augmerc</h1>
 <h2 class="dc-spray">Biting Distance</h2>
 <h3 class="dc-spec-tweak">Spec Tweak: Wired to Kill</h3>
 <p>Augmerc learning paths assume combat-grade augmentations.</p>
@@ -3569,24 +3585,24 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Section chassis</h2>
 <p>A bare <code>@section</code>, <code>@section .dc-plain</code>, <code>@tabbed</code> with an <code>##</code> and a <code>###</code> tab, and <code>@column-panel .gp-columns-2</code>.</p>
 <div class="dg-stage dg-tall">
-<div class="section" data-source-range="1082:1083"><h3>Bare section</h3>
+<div class="section" data-source-range="1090:1091"><h3>Bare section</h3>
 <p>The panel chrome: substrate, accent rule, and the first heading as a bar.</p>
-</div><div class="section dc-plain" data-source-range="1090:1091"><h3>Plain section</h3>
+</div><div class="section dc-plain" data-source-range="1098:1099"><h3>Plain section</h3>
 <p>No substrate, rail or shadow: the text sits on whatever is behind it. A first heading still prints as a bar.</p>
-</div><div class="section dc-tabbed" data-source-range="1098:1099"><h2>Tabbed, H2</h2>
+</div><div class="section dc-tabbed" data-source-range="1106:1107"><h2>Tabbed, H2</h2>
 <p>The heading hangs off the panel edge as the primary tab.</p>
-</div><div class="section dc-tabbed" data-source-range="1106:1107"><h3>Tabbed, H3</h3>
+</div><div class="section dc-tabbed" data-source-range="1114:1115"><h3>Tabbed, H3</h3>
 <p>The subordinate tab: smaller type, tighter padding.</p>
-</div><div class="section dc-column-panel gp-columns-2" data-source-range="1114:1115"><h3>Column panel</h3>
+</div><div class="section dc-column-panel gp-columns-2" data-source-range="1122:1123"><h3>Column panel</h3>
 <p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="1120:1121"></div>
+<div class="gp-column-break" aria-hidden="true" data-source-range="1128:1129"></div>
 <p>Nothing here is safe. Nothing here is free.</p>
 </div></div>
 <h2>Sidebars</h2>
 <p><code>@sidebar</code> floats beside the text; <code>@sidebar .inset</code> is a full-height rail and needs its own <code>@page .page-sidebar</code> — see <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
 <div class="dg-stage dg-on-paper">
 <p>When the Dreamers push past Too Far, the table starts asking how movement works.</p>
-<div class="dc-sidebar" data-source-range="1136:1137"><h3>Distance, Fast</h3>
+<div class="dc-sidebar" data-source-range="1144:1145"><h3>Distance, Fast</h3>
 <p>Three bands, no grid. <strong>In Reach</strong> is one swing away. <strong>Nearby</strong> is a burned Move.</p>
 </div><p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there.</p>
 </div>
@@ -3641,7 +3657,7 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 <tr data-source-range="39:40">
 <td>Chapter Opener</td>
 <td>labelled <code>@chapter</code> + <code>@page intro</code>, <code>.dc-citizen-file-page</code></td>
-<td><code>.dc-fiction-excerpt</code>, <code>---{.column-break}</code>, <code>@callout origin</code>, <code>.dc-citizen-walkthrough</code></td>
+<td><code>.dc-fiction-excerpt</code>, <code>@column-break</code>, <code>@callout origin</code>, <code>.dc-citizen-walkthrough</code></td>
 </tr>
 <tr data-source-range="40:41">
 <td>Specialty Overview</td>
@@ -3694,8 +3710,7 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 </div></div><div class="page page-credits dc-credits chapter-1" data-source-range="30:31"><h1 class="dc-chevron">Credits</h1>
 <div class="dc-intro" data-source-range="34:35"><p><strong>Special Thanks:</strong> Don and Cindy Ward, Ted Bonnah, Joseph Woodworth, Ben McDonough, Michael Giordono, Adam Tripp, Nathan Hays, Nathanael Elkins, Chelanna Leigh, Thomas Amundrud, Virgina Horine, Gena Pini, Madeleine Pini, Ken Pini, Mary Jo Pini, Davide Cavadini</p>
 <p><strong>Dedicated to the memory of Donovan Henry Callender.</strong> Don was a player in our 2E AD&amp;D group throughout our youth and was a dear friend for even longer. He was taken too soon from us and we wish he were here to dream in Dimm City with us today.</p>
-</div><div class="section credits-colophon" data-source-range="42:43"><div class="dc-colophon-grid">
-<p><strong>Designers:</strong> TWard and ITLackey</p>
+</div><div class="section credits-colophon" data-source-range="42:43"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="44:45"><p><strong>Designers:</strong> TWard and ITLackey</p>
 <p><strong>Artist:</strong> Scott Georges</p>
 <p><strong>Creative Director:</strong> Matt Pini</p>
 <p><strong>Editing &amp; Layout:</strong> Dimm City Field Office</p>
@@ -3706,8 +3721,7 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 <p><strong>Edition &amp; ISBN:</strong> First Edition · Version 0.1.x · ISBN pending. Printed on demand via DriveThruRPG and Founders House direct.</p>
 <p><strong>Trademarks:</strong> Dimm City, the Creaturepunk trademarked by Dimm City LLC. All rights reserved.</p>
 <p><strong>Published by:</strong> Dimm City LLC · 2026.</p>
-</div>
-</div><p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house gp-pin gp-bottom gp-full" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
+</div></div><p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house gp-pin gp-bottom gp-full" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
 </div><div class="page page-intro dg-intro chapter-1" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
 <div class="dc-intro" data-source-range="78:79"><p>The city didn’t go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.</p>
 </div><div class="section" data-source-range="84:85"><div class="dc-pullquote dc-flush">
@@ -3753,7 +3767,7 @@ Fur half a tick, I taught I wuz dead.</p>
 <p>A BANANACOM™ ADdrone caught me in a hard dip, jolting mai spine, but I stayed alive. I slapped dee access panel, jacked in wit a hard line, an blasted a warning yelp at max pitch. Sound ripped through da air like a prison shank.</p>
 <p>Da bats froze mid-flight, shrieking an tumbling outta da sky.</p>
 <p>I locked in da hack, jacked out, an leapt clean onto a passing airbus like I meant to do it all along.</p>
-</div><hr class="column-break" data-source-range="44:45">
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="44:45"></div>
 <div class="section" data-source-range="46:47"><h2 id="c2-character-profile">Citizen File</h2>
 <p>Thump is a PC created for dreams in Dimm City by an actual dreamer. Their personality, looks, vibe, equipment, and skills are all chosen by the dreamer themselves. You can do the same by filling in the blanks on a character profile to create your very own character. For many dreamers, this is one of the most exciting parts of this experience: thinking about a character you want to play and designing them for the dream to come.</p>
 <p><img src="https://placehold.co/600x400/png?text=Portrait" alt="Image is everything" class="fg-art-portrait" data-gp-source-token="![Image is everything](https://placehold.co/600x400/png?text=Portrait)" data-gp-source-occurrence="0">
@@ -3763,7 +3777,7 @@ This chapter will guide you through all the choices you need to make to help you
 <p><strong>Before You Fill Anything In:</strong></p>
 <p>Don’t start with numbers. Start with a body, a vibe, and a reason you’re still breathing in Dimm City. This file isn’t about optimization, it’s about creating a CREATUREPUNK. If a choice would make Dimm City react to you, it belongs here. If it only makes you stronger, it probably comes later.</p>
 <p>Visit <strong>dimm.city</strong> for a form-fillable PDF version of the Citizen File.</p>
-</div></div><div class="section dc-citizen-walkthrough gp-columns-2 dc-column-panel" data-source-range="69:70"><h4>What’s Yr Handle?</h4>
+</div></div><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="69:70"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="71:72"><h4>What’s Yr Handle?</h4>
 <p>Choose a name.</p>
 <p>It can come from any culture, any language, or straight out of your imagination.</p>
 <p>Pull it from a book, a show, a half-remembered dream, or invent something that sounds right for the city.</p>
@@ -3772,48 +3786,49 @@ This chapter will guide you through all the choices you need to make to help you
 <p>She/her, he/him, they/them, or something else entirely.</p>
 <p>Do your best to address your fellow Dreamers as they wish to be addressed.</p>
 <p>Names and pronouns matter when life itself is constantly trying to strip both away.</p>
-</div></div><div class="page dc-citizen-file-page gp-columns-2 chapter-1" data-chapter-label="C.01" data-source-range="92:93"><div class="section dc-citizen-walkthrough" data-source-range="94:95"><h4>Species</h4>
+</div></div></div><div class="page dc-citizen-file-page chapter-1" data-chapter-label="C.01" data-source-range="96:97"><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="98:99"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="100:101"><h4>Species</h4>
 <p>In Dimm City, you’re not human—you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.</p>
 <p>Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.</p>
-</div><div class="section dc-citizen-walkthrough" data-source-range="104:105"><h4>Origins</h4>
+<div class="gp-column-break" aria-hidden="true" data-source-range="108:109"></div>
+<h4>Origins</h4>
 <p>Where did you start, and how far is that from where you are now?</p>
 <p>Origins tell the Dream Master how your character fits the city’s grid. A corporate-born Dreamer walks alleys differently than someone who grew up in the Flats. They know different people, owe different debts, and have different reasons to still be breathing.</p>
 <p>Choose one: <strong>EntD rat</strong>, <strong>Corp exile</strong>, <strong>District-born</strong>, <strong>Offworld arrival</strong>, <strong>Street-raised</strong>, or <strong>Something the city made and hasn’t claimed yet</strong>.</p>
-</div><div class="section dc-citizen-walkthrough" data-source-range="116:117"><h4>Scars &amp; Survival</h4>
+</div></div><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="122:123"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="124:125"><h4>Scars &amp; Survival</h4>
 <p>Choose the stage of life your character is in:</p>
 <table>
-<thead data-source-range="122:123">
-<tr data-source-range="122:123">
+<thead data-source-range="130:131">
+<tr data-source-range="130:131">
 <th></th>
 <th></th>
 </tr>
 </thead>
-<tbody data-source-range="124:131">
-<tr data-source-range="124:125">
+<tbody data-source-range="132:139">
+<tr data-source-range="132:133">
 <td></td>
 <td>childhood</td>
 </tr>
-<tr data-source-range="125:126">
+<tr data-source-range="133:134">
 <td></td>
 <td>adolescence</td>
 </tr>
-<tr data-source-range="126:127">
+<tr data-source-range="134:135">
 <td></td>
 <td>young adulthood</td>
 </tr>
-<tr data-source-range="127:128">
+<tr data-source-range="135:136">
 <td></td>
 <td>adulthood</td>
 </tr>
-<tr data-source-range="128:129">
+<tr data-source-range="136:137">
 <td></td>
 <td>middle age</td>
 </tr>
-<tr data-source-range="129:130">
+<tr data-source-range="137:138">
 <td></td>
 <td>old age</td>
 </tr>
-<tr data-source-range="130:131">
+<tr data-source-range="138:139">
 <td></td>
 <td>extreme old age</td>
 </tr>
@@ -3821,35 +3836,36 @@ This chapter will guide you through all the choices you need to make to help you
 </table>
 <p>Expressing age in years means little in Dimm City. Here, age is experiential, not chronological.</p>
 <p>Survival, scars, augmentation, and memory say far more than a number ever could.</p>
-</div><div class="section dc-citizen-walkthrough" data-source-range="138:139"><h4>Size</h4>
+<div class="gp-column-break" aria-hidden="true" data-source-range="144:145"></div>
+<h4>Size</h4>
 <p>Size carries no mechanical advantage. It’s a narrative choice that shapes how you move through the city, how others perceive you, and how easily you stay with your crew:</p>
 <table>
-<thead data-source-range="144:145">
-<tr data-source-range="144:145">
+<thead data-source-range="150:151">
+<tr data-source-range="150:151">
 <th></th>
 <th></th>
 </tr>
 </thead>
-<tbody data-source-range="146:150">
-<tr data-source-range="146:147">
+<tbody data-source-range="152:156">
+<tr data-source-range="152:153">
 <td></td>
 <td><strong>Tiny:</strong> Under 1 meter tall. You move through Dimm City like a rumor.</td>
 </tr>
-<tr data-source-range="147:148">
+<tr data-source-range="153:154">
 <td></td>
 <td><strong>Small:</strong> About 1–1.5 meters tall. You fit where the city pinches.</td>
 </tr>
-<tr data-source-range="148:149">
+<tr data-source-range="154:155">
 <td></td>
 <td><strong>Medium:</strong> About 1.6–2.5 meters tall. The city is built for bodies like yours.</td>
 </tr>
-<tr data-source-range="149:150">
+<tr data-source-range="155:156">
 <td></td>
 <td><strong>Big:</strong> Over 2.5 to 4 meters tall. Your presence fills rooms and draws eyes.</td>
 </tr>
 </tbody>
 </table>
-</div></div></div>"
+</div></div></div></div>"
 `;
 
 exports[`rendered output 303-example-specialty-overview.md matches its snapshot 1`] = `
@@ -3868,74 +3884,74 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 <div class="dc-intro" data-source-range="31:32"><p>A specialty is your primary ability set — the collection of learned techniques, augments, and practices that defines what you bring to the crew. Every specialty has three learning paths, each containing five abilities. You don’t pick a path at character creation. You grow into it.</p>
 <p>Each specialty produces a different kind of operative. The Augmerc hits hard in close range. The Wirephreak slides through systems undetected. The Proxy bends probability and conviction into force. What you choose here shapes how the Dream plays.</p>
 <p>Every dreamer’s got a sharp edge — your specialty is where it starts.</p>
-</div><div class="section dc-card-grid" data-source-range="41:42"><div class="dc-specialty augmerc" data-source-range="43:44"><div class="dc-specialty-card" id="specialty-augmerc" data-position="odd" data-source-range="45:46"><h3>Augmerc</h3>
+</div><div class="section dc-card-grid" data-source-range="41:42"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="43:44"><div class="dc-specialty augmerc" data-source-range="45:46"><div class="dc-specialty-card" id="specialty-augmerc" data-position="odd" data-source-range="47:48"><h3>Augmerc</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Augmerc" alt="Augmerc" data-gp-source-token="![Augmerc](https://placehold.co/300x340/png?text=Augmerc)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="51:52">Cybernetic Commando</p>
+<p data-source-range="53:54">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad. They charge the front, soak the pain, and unload hell using brute strength and brutal tech. Combat-born, augged to kill, and never outgunned.</p>
-</div></div><div class="dc-specialty proxy" data-source-range="59:60"><div class="dc-specialty-card" id="specialty-proxy" data-position="even" data-source-range="61:62"><h3>Proxy</h3>
+</div></div><div class="dc-specialty proxy" data-source-range="61:62"><div class="dc-specialty-card" id="specialty-proxy" data-position="even" data-source-range="63:64"><h3>Proxy</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Proxy" alt="Proxy" data-gp-source-token="![Proxy](https://placehold.co/300x340/png?text=Proxy)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="67:68">Militant Monolith</p>
+<p data-source-range="69:70">Militant Monolith</p>
 </blockquote>
 <p>Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.</p>
-</div></div><div class="dc-specialty streetwarden" data-source-range="75:76"><div class="dc-specialty-card" id="specialty-streetwarden" data-position="odd" data-source-range="77:78"><h3>Streetwarden</h3>
+</div></div><div class="dc-specialty streetwarden" data-source-range="77:78"><div class="dc-specialty-card" id="specialty-streetwarden" data-position="odd" data-source-range="79:80"><h3>Streetwarden</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Streetwarden" alt="Streetwarden" data-gp-source-token="![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="83:84">Sprawl Sentinel</p>
+<p data-source-range="85:86">Sprawl Sentinel</p>
 </blockquote>
 <p>They don’t wear badges—they are the law when no one else shows. Streetwardens guard the city’s broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.</p>
-</div></div><div class="dc-specialty gutterdruid" data-source-range="91:92"><div class="dc-specialty-card" id="specialty-gutterdruid" data-position="even" data-source-range="93:94"><h3>Gutterdruid</h3>
+</div></div><div class="dc-specialty gutterdruid" data-source-range="93:94"><div class="dc-specialty-card" id="specialty-gutterdruid" data-position="even" data-source-range="95:96"><h3>Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Gutterdruid" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="99:100">Wold Witch</p>
+<p data-source-range="101:102">Wold Witch</p>
 </blockquote>
 <p>They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.</p>
-</div></div><div class="dc-specialty cybersurgeon" data-source-range="107:108"><div class="dc-specialty-card" id="specialty-cybersurgeon" data-position="odd" data-source-range="109:110"><h3>Cybersurgeon</h3>
+</div></div><div class="dc-specialty cybersurgeon" data-source-range="109:110"><div class="dc-specialty-card" id="specialty-cybersurgeon" data-position="odd" data-source-range="111:112"><h3>Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Cybersurgeon" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="115:116">Mech Medic</p>
+<p data-source-range="117:118">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div></div><div class="dc-specialty wirephreak" data-source-range="123:124"><div class="dc-specialty-card" id="specialty-wirephreak" data-position="even" data-source-range="125:126"><h3>Wirephreak</h3>
+</div></div><div class="dc-specialty wirephreak" data-source-range="125:126"><div class="dc-specialty-card" id="specialty-wirephreak" data-position="even" data-source-range="127:128"><h3>Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Wirephreak" alt="Wirephreak" data-gp-source-token="![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="131:132">Ping Predator</p>
+<p data-source-range="133:134">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div></div><div class="dc-specialty technosorcerer" data-source-range="139:140"><div class="dc-specialty-card" id="specialty-technosorcerer" data-position="odd" data-source-range="141:142"><h3>Technosorcerer</h3>
+</div></div><div class="dc-specialty technosorcerer" data-source-range="141:142"><div class="dc-specialty-card" id="specialty-technosorcerer" data-position="odd" data-source-range="143:144"><h3>Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Technosorcerer" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="147:148">Modular Magician</p>
+<p data-source-range="149:150">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div></div><div class="dc-specialty etherlock" data-source-range="155:156"><div class="dc-specialty-card" id="specialty-etherlock" data-position="even" data-source-range="157:158"><h3>Etherlock</h3>
+</div></div><div class="dc-specialty etherlock" data-source-range="157:158"><div class="dc-specialty-card" id="specialty-etherlock" data-position="even" data-source-range="159:160"><h3>Etherlock</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Etherlock" alt="Etherlock" data-gp-source-token="![Etherlock](https://placehold.co/300x340/png?text=Etherlock)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="163:164">Manifold Magus</p>
+<p data-source-range="165:166">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div></div><div class="dc-specialty dualist" data-source-range="171:172"><div class="dc-specialty-card" id="specialty-dualist" data-position="odd" data-source-range="173:174"><h3>Dualist</h3>
+</div></div><div class="dc-specialty dualist" data-source-range="173:174"><div class="dc-specialty-card" id="specialty-dualist" data-position="odd" data-source-range="175:176"><h3>Dualist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Dualist" alt="Dualist" data-gp-source-token="![Dualist](https://placehold.co/300x340/png?text=Dualist)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="179:180">Two-Path Walker</p>
+<p data-source-range="181:182">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div></div><div class="dc-specialty generalist" data-source-range="187:188"><div class="dc-specialty-card" id="specialty-generalist" data-position="even" data-source-range="189:190"><h3>Generalist</h3>
+</div></div><div class="dc-specialty generalist" data-source-range="189:190"><div class="dc-specialty-card" id="specialty-generalist" data-position="even" data-source-range="191:192"><h3>Generalist</h3>
 <p class="dc-img-wrapper"><img src="https://placehold.co/300x340/png?text=Generalist" alt="Generalist" data-gp-source-token="![Generalist](https://placehold.co/300x340/png?text=Generalist)" data-gp-source-occurrence="0"></p>
 <blockquote>
-<p data-source-range="195:196">Sprawl Survivor</p>
+<p data-source-range="197:198">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
-</div></div></div><div class="section" data-source-range="205:206"><h3>Choosing by Playstyle</h3>
+</div></div></div></div><div class="section" data-source-range="209:210"><h3>Choosing by Playstyle</h3>
 <p><strong>Want to hit things hard?</strong> Augmerc. <strong>Want to control the battlefield?</strong> Streetwarden or Proxy. <strong>Want to slide through systems undetected?</strong> Wirephreak. <strong>Want raw arcane force?</strong> Technosorcerer, Gutterdruid, or Etherlock. <strong>Want to rebuild your body as your toolkit?</strong> Cybersurgeon. <strong>Want two paths at once?</strong> Dualist. <strong>Want a scrap of everything?</strong> Generalist.</p>
 <p>Every specialty excels at one thing and has a path toward a second. Your first specialty is your identity. What you pick up later is your legend.</p>
 <p>Don’t agonize over the choice. Most Dreamers don’t know their specialty until the city forces it out of them — under fire, under stress, or under the kind of debt that doesn’t go away. Pick the one that sounds like the way you’d bleed if you had to. You’ll grow into the rest whether you want to or not.</p>
 </div><h2 class="dc-spray">How Abilities Work</h2>
-<div class="dc-intro" data-source-range="219:220"><p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
+<div class="dc-intro" data-source-range="223:224"><p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
 <p>In Dimm City, abilities aren’t just what you can do. They’re learned techniques, invasive augments, practiced rituals, and raw instinct working as one.</p>
-</div><div class="section" data-source-range="227:228"><h3>The Core Loop of a Dream</h3>
+</div><div class="section" data-source-range="231:232"><h3>The Core Loop of a Dream</h3>
 <ol class="dc-steps">
   <li><span class="dc-step-no">01</span><span>The Dream Master describes the situation.</span></li>
   <li><span class="dc-step-no">02</span><span>A Dreamer declares an action.</span></li>
@@ -3945,7 +3961,7 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 </ol>
 
 <p>Everything in this chapter exists to support that loop. Abilities bend it. Dice decide it. Dreamers drive it. The Monoverse responds.</p>
-</div><div class="section" data-source-range="245:246"><h3>What Comes Next</h3>
+</div><div class="section" data-source-range="249:250"><h3>What Comes Next</h3>
 <p>The next chapter walks through what each specialty actually does at the table — the abilities, the augmentations, the rituals, the way each one breaks the laws of a city that wants you breaking them anyway. Read your pick first. Then read the others. Specialties don’t stand alone in Dimm City; the crews that survive are the ones whose specialties chew off each other’s edges.</p>
 <p>If you’re still on the fence, that’s fine. The Dream Master will give you a few sessions to feel which way the city pushes you. The character you bring in is a draft. The character that walks out of the first heist is the one that’s yours.</p>
 </div></div></div>"
@@ -4176,7 +4192,7 @@ exports[`rendered output 305-example-rules.md matches its snapshot 1`] = `
 <p>Behind him, a chorus of giggles breaks from the shadows moving closer.</p>
 <p>“Hand over that cap,” he growls. “Or we’ll make you a bite late for yr appointy.”</p>
 <p>What’s your next move?</p>
-</div><hr class="column-break" data-source-range="24:25">
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="24:25"></div>
 <div class="section" data-source-range="26:27"><p>In Dimm City, stakes is high and the death rate is higher. The scenario, like the one above, is presented to you by the Dream Master. Your role as the dreamer is to act how your character would act. The more fun you make for yourself and your friends through playing your characters well, the better the experience will be for everyone.</p>
 </div><div class="section" data-source-range="33:34"><h2>How to Play</h2>
 <p>Each player takes on the role of a Dreamer — a character living and scraping through Dimm City. One player takes on the role of Dream Master and runs the world, its inhabitants, and its consequences.</p>
