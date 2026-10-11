@@ -311,8 +311,15 @@
 }
 
 /* Column-break orphan protection: keep first paragraph with the spanning bar.
-   `break-after: avoid` on the bar guards page breaks; these guards also cover
-   column-break orphaning that can strand a bar above an empty column. */
+   MEASURED LIMIT (Chromium, no plugin CSS needed to show it): `break-after:
+   avoid` on a `column-span: all` box is honoured when the next box is also a
+   spanner (the intro paragraph below), but NOT between the spanner and the
+   column row after it. When the first block of that row does not fit, the
+   row moves to the next page and the bar stays behind. `break-before:
+   avoid` on the first block, `avoid-page` and `break-inside: avoid` do not
+   change it (the last one leaves the bar stranded more often). So the guards
+   here only help the spanning-paragraph case; they are kept because they cost
+   nothing and take effect when Chromium honours the avoid. */
 .section.dc-column-panel > h2:first-child + *,
 .section.dc-column-panel > h3:first-child + * {
   break-before: avoid;

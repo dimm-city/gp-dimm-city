@@ -7,6 +7,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- A callout label (`@callout gear label="SPECS"`, `[!NOTE]`, any variant) no
+  longer sits alone at the foot of a column or page with its body in the next
+  one: `.dc-alert-label` now carries `break-after: avoid`, which matters in the
+  multicol runs where a callout is allowed to split. A `@column-panel` header
+  bar can still be left at a page foot when its first block is not a
+  paragraph; that is a Chromium limit (it ignores `break-after: avoid` on a
+  `column-span: all` box), documented in `section.css`. (#14)
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older
