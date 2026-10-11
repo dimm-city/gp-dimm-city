@@ -1230,9 +1230,72 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p><em>Utility. Mechanized. Reach 50 ft.</em></p>
 <p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
 </div></div>
+<p>A long run packs tighter two-up. Put the entries in a core grid: <code>.gp-grid-2</code> on a <code>@column-panel</code> places each child in the next cell, across then down, and the heading bar takes the first row. A row is as tall as its taller entry, so keep neighbours about the same length. Every child is a cell, so leave prose outside the run, and add <code>.dc-allow-split</code> so a run longer than a page breaks between rows.</p>
+<pre><code class="dg-split language-markdown" data-source-range="378:425">@column-panel .gp-grid-2 .dc-allow-split
+
+### Useful Items
+
+@gear
+
+### Throwaway Blaster
+
+*Ranged. Pistol. CQC Locked, Pack Fed.*
+
+**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
+
+@end-gear
+
+@gear
+
+### Snake Cable
+
+*Utility. Mechanized. Reach 50 ft.*
+
+A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
+
+@end-gear
+
+@gear
+
+### Patchkit
+
+*Medical. Disposable.*
+
+Restores 2 HP when used as an action. Sterile enough.
+
+@end-gear
+
+@gear
+
+### Signal Jammer
+
+*Utility. Electronic. Near range.*
+
+Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
+
+@end-gear
+
+@end-column-panel
+</code></pre>
+<p class="dg-result">Result</p>
+<div class="dg-stage">
+<div class="section dc-column-panel gp-grid-2 dc-allow-split" data-source-range="430:431"><h3>Useful Items</h3>
+<div class="dc-card dc-gear" data-source-range="434:435"><h3>Throwaway Blaster</h3>
+<p><em>Ranged. Pistol. CQC Locked, Pack Fed.</em></p>
+<p><strong>Range</strong> Reach to Near only. <strong>Damage</strong> 2 on a Hit, 4 on a Triumph.</p>
+</div><div class="dc-card dc-gear" data-source-range="444:445"><h3>Snake Cable</h3>
+<p><em>Utility. Mechanized. Reach 50 ft.</em></p>
+<p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
+</div><div class="dc-card dc-gear" data-source-range="454:455"><h3>Patchkit</h3>
+<p><em>Medical. Disposable.</em></p>
+<p>Restores 2 HP when used as an action. Sterile enough.</p>
+</div><div class="dc-card dc-gear" data-source-range="464:465"><h3>Signal Jammer</h3>
+<p><em>Utility. Electronic. Near range.</em></p>
+<p>Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.</p>
+</div></div></div>
 <h2>Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
-<pre><code data-source-range="380:387" class="language-markdown">| Augment | Slot | Cost | Effect |
+<pre><code data-source-range="483:490" class="language-markdown">| Augment | Slot | Cost | Effect |
 |---|---|---|---|
 | Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
 | Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
@@ -1241,28 +1304,28 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="392:393">
-<tr data-source-range="392:393">
+<thead data-source-range="495:496">
+<tr data-source-range="495:496">
 <th>Augment</th>
 <th>Slot</th>
 <th>Cost</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="394:397">
-<tr data-source-range="394:395">
+<tbody data-source-range="497:500">
+<tr data-source-range="497:498">
 <td>Reflex Booster</td>
 <td>Legs</td>
 <td>1,200</td>
 <td>+2 to initiative rolls</td>
 </tr>
-<tr data-source-range="395:396">
+<tr data-source-range="498:499">
 <td>Subdermal Plating</td>
 <td>Torso</td>
 <td>1,800</td>
 <td>Reduce bludgeoning damage by 1</td>
 </tr>
-<tr data-source-range="396:397">
+<tr data-source-range="499:500">
 <td>Optic Splice</td>
 <td>Head</td>
 <td>900</td>
@@ -1274,26 +1337,26 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p>A roll table is the same thing with a <code>Roll</code> column:</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="404:405">
-<tr data-source-range="404:405">
+<thead data-source-range="507:508">
+<tr data-source-range="507:508">
 <th>Roll</th>
 <th>Encounter</th>
 </tr>
 </thead>
-<tbody data-source-range="406:410">
-<tr data-source-range="406:407">
+<tbody data-source-range="509:513">
+<tr data-source-range="509:510">
 <td>1–4</td>
 <td>A patchhead swarm picks a fight over nothing</td>
 </tr>
-<tr data-source-range="407:408">
+<tr data-source-range="510:511">
 <td>5–8</td>
 <td>A fixer slides into the booth with a dirty envelope</td>
 </tr>
-<tr data-source-range="408:409">
+<tr data-source-range="511:512">
 <td>9–12</td>
 <td>A SercDog patrol sweeps the block; lie low or run</td>
 </tr>
-<tr data-source-range="409:410">
+<tr data-source-range="512:513">
 <td>13–20</td>
 <td>You find a sealed crate the corps forgot to log</td>
 </tr>
@@ -1302,7 +1365,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 <h2>NPC stat block</h2>
 <p>The narrative form a Dream Master reads aloud: <code>@npc-stat</code> with a <code>####</code> name, a <code>&gt;</code> flavor line, the stat lines, and <code>#####</code> sub-headings for traits and equipment.</p>
-<pre><code data-source-range="417:437" class="language-markdown">@npc-stat
+<pre><code data-source-range="520:540" class="language-markdown">@npc-stat
 
 #### Patchhead
 
@@ -1323,9 +1386,9 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-npc-stat" data-source-range="442:443"><h4>Patchhead</h4>
+<div class="section dc-npc-stat" data-source-range="545:546"><h4>Patchhead</h4>
 <blockquote>
-<p data-source-range="446:447">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
+<p data-source-range="549:550">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
 </blockquote>
 <p>2 HP — 1 Damage
 Fodder — Usually Small to Medium</p>
@@ -1338,7 +1401,7 @@ Fodder — Usually Small to Medium</p>
 <p>Tokens: <code>--dc-npc-stat-label-color</code>, <code>--dc-npc-stat-primary</code>, <code>--dc-npc-stat-secondary</code>, <code>--dc-npc-stat-rule</code>, <code>--dc-npc-stat-rule-width</code>.</p>
 <h2>Stat grid and at-a-glance cards</h2>
 <p>Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one label and one value per card.</p>
-<pre><code data-source-range="471:492" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
+<pre><code data-source-range="574:595" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
     &lt;div class=&quot;dc-stat-class&quot;&gt;— Contact · Ripperdoc —&lt;/div&gt;
@@ -1381,7 +1444,7 @@ Fodder — Usually Small to Medium</p>
 </div>
 <h2>NPC sidebar</h2>
 <p>A contact capsule floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>.</p>
-<pre><code data-source-range="523:529" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
+<pre><code data-source-range="626:632" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
 &lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; — Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
