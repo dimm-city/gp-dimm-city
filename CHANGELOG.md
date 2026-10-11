@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-11
+
 One way to set content in columns: Gutterpress core's `@columns N` …
 `@column-break` … `@end-columns`. Everything else this package did with
 columns is removed or now takes that marker. **This release needs
