@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-10-11
+
 ### Fixed
 
 - **A splittable section that ends flush at a page foot no longer leaves a
