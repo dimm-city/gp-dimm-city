@@ -65,7 +65,7 @@ components:
       - --dc-alert-label-spacing
       - --dc-alert-label-margin
       - --dc-alert-margin-top
-    breaks: "break-inside: avoid, relaxed to auto inside .gp-columns-2/-3 (dc-native.css)"
+    breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
     notes: "`warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
@@ -202,7 +202,7 @@ components:
     css: styles/components/section.css
     unstyled: [dc-gear]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in a core grid: `@column-panel .gp-grid-2 .dc-allow-split`."
+    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@columns 2` inside a `@section .dc-allow-split`."
 
   - name: lede
     status: live
@@ -353,7 +353,7 @@ components:
   - name: skill
     status: live
     origin: plugin
-    recipe: "@skill [id=…] [{.dc-allow-split}] [{.dc-two-col}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
+    recipe: "@skill [id=…] [{.dc-allow-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
     emits:
       - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
@@ -368,7 +368,7 @@ components:
       - --dc-card-gap
       - --dc-card-tab-shadow
     breaks: "data-break-inside=avoid by default; {.dc-allow-split} opts into splitting (see allow-split); tab break-after: avoid; last two abilities glued"
-    notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label)."
+    notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-highlight
     status: live
@@ -429,14 +429,6 @@ components:
     breaks: none
 
   # ── Author classes on core markers, attrs and raw HTML ────────────────
-  - name: column-panel
-    status: live
-    origin: plugin
-    recipe: "@column-panel [.gp-columns-2] … @end-column-panel  (or @section .gp-columns-2 .dc-column-panel)"
-    emits: div.section.dc-column-panel
-    css: styles/components/section.css
-    breaks: "first heading glued to its first paragraph"
-
   - name: tabbed
     status: live
     origin: plugin
@@ -449,15 +441,16 @@ components:
   - name: card-grid
     status: live
     origin: plugin
-    recipe: "@card-grid … @end-card-grid  (or @section .dc-card-grid)"
-    emits: div.section.dc-card-grid
+    recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section .dc-card-grid)"
+    emits: div.section.dc-card-grid > div.gp-columns.gp-columns-2
     css: [styles/components/section.css, styles/page-templates.css]
     breaks: "break-inside: auto on the grid; each specialty card avoid"
+    notes: "Sets no columns of its own: the cards go in `@columns 2` inside it."
 
   - name: citizen-walkthrough
     status: live
     origin: plugin
-    recipe: "@citizen-walkthrough [.gp-columns-2] … @end-citizen-walkthrough  (or @section .dc-citizen-walkthrough)"
+    recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section .dc-citizen-walkthrough)"
     emits: div.section.dc-citizen-walkthrough
     css: [styles/components/section.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
@@ -488,7 +481,7 @@ components:
   - name: npc-stat
     status: live
     origin: plugin
-    recipe: "@npc-stat … @end-npc-stat  (or @section .dc-npc-stat)"
+    recipe: "@npc-stat [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section .dc-npc-stat)"
     emits: div.section.dc-npc-stat
     css: [styles/components/section.css]
     tokens:
@@ -497,7 +490,7 @@ components:
       - --dc-npc-stat-label-color
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
-    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain; .dc-allow-split lets a long entry split); a block with no #### stays whole"
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain; .dc-allow-split lets a long entry split), whether the entries are direct children or sit in an @columns run inside it; a block with no #### stays whole"
 
   - name: chapter-start
     status: live
@@ -513,14 +506,7 @@ components:
     recipe: "@page .page-credits .dc-credits"
     emits: div.page.dc-credits
     css: [styles/page-templates.css, styles/dc-native.css]
-    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0."
-
-  - name: colophon-grid
-    status: live
-    origin: author
-    recipe: "raw <div class=\"dc-colophon-grid\"> on the credits page"
-    emits: div.dc-colophon-grid
-    css: styles/page-templates.css
+    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0. The colophon names go in `@columns 2` inside `@section .credits-colophon`."
 
   - name: chevron
     status: live
@@ -569,11 +555,11 @@ components:
     css: styles/components/images.css
     breaks: "break-inside: avoid"
 
-  - name: at-a-glance-cards
+  - name: at-a-glance-card
     status: live
     origin: author
-    recipe: "raw <div class=\"dc-at-a-glance-cards\"> > <div class=\"dc-at-a-glance-card\">"
-    emits: div.dc-at-a-glance-cards > div.dc-at-a-glance-card
+    recipe: "@columns 3 / raw <div class=\"dc-at-a-glance-card\"> × 3 / @end-columns"
+    emits: div.dc-at-a-glance-card
     css: styles/components/data.css
 
   - name: stat-block
@@ -595,14 +581,6 @@ components:
     css: [styles/components/section.css, styles/components/cards.css]
     breaks: "break-inside: auto — opts a section or skill card out of the default avoid. A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
     notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it."
-
-  - name: two-col
-    status: live
-    origin: author
-    recipe: "@skill {.dc-two-col}"
-    emits: div.dc-skill-card.dc-two-col
-    css: styles/components/cards.css
-    breaks: "list items and paragraphs break-inside: avoid within the columns"
 
   - name: snug
     status: live

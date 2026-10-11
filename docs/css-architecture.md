@@ -115,43 +115,50 @@ be pointless — font-family lookup is not a cascade contest.
 |---|---|---|---|
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
-| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | page/section `columns:N` layouts (a component's own internals excepted), `@page` declarations, `div.chapter` scaffolding |
-| `dc.templates` | `page-templates.css` | ALL page and section `columns:N` layouts (exclusive ownership), `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, `columns` on core's `.gp-columns-*` (gap only, via `--gp-column-gap`) |
-| `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, `columns:N` rules |
+| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
+| `dc.templates` | `page-templates.css` | `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, any column layout |
+| `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, column layout |
 | *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
 
-### COLUMNS:N Ownership Rule
+### Column Ownership Rule
 
-**Page and section column layouts** (`.page.*` templates, `.gp-columns-*`
-runs, any rule that columns a page's or section's content) live
-**exclusively** in `page-templates.css` (`@layer dc.templates`).
-`page-rules.css` is single-flow. A **component** may lay out its *own
-internals* in columns in its own `components/*.css` sheet, provided the rule is
-rooted in that component's `.dc-*` class (e.g. the per-card `.dc-two-col` body
-in `cards.css`, the `.dc-card-grid` grid in
-`section.css`). If you find `columns:` in `page-rules.css`, or in a component
-sheet on a `.page` / `.chapter` / `.gp-columns-*` selector or a selector not
-rooted in a `.dc-*` class, it is a bug. `test/integrity.test.js` enforces this.
+**This package owns no column layout.** There is one way to put content in
+columns, and it is Gutterpress core's: `@columns N` … `@column-break` …
+`@end-columns` (N from 1 to 5). Everything between the markers is in that many
+columns. Core ships the classes it emits (`.gp-columns`, `.gp-columns-N`) in
+`GUTTERPRESS_CSS`, and a theme may not define competing generic names or
+re-declare any column property on them (gutterpress `CLAUDE.md` §6). This
+theme used to ship `.two-column` / `.three-column`, then per-component column
+forms (`@card-grid`'s own `columns`, a skill card's `.dc-two-col`, the credits
+`.dc-colophon-grid`, the `---{.column-break}` rule, the `.dc-at-a-glance-cards`
+grid); they are all gone, and a component that wants columns says so in
+markdown: `@columns 2` inside `@skill`, `@card-grid`, `@npc-stat`,
+`@citizen-walkthrough`, or around the colophon names.
 
-**The generic column vocabulary is not the theme's at all.** Gutterpress core
-ships `.gp-columns-2` / `.gp-columns-3` in `GUTTERPRESS_CSS`, and a theme may
-not define competing generic names or re-declare `columns` on core's
-(gutterpress `CLAUDE.md` §6). This theme used to ship `.two-column` /
-`.three-column`, which did exactly that; they were removed 2026-08-21.
-`page-templates.css` now sets only the **gap**, through core's author hook
-(`--gp-column-gap`), and `dc-native.css` owns the per-shape
-`column-fill` decisions.
+So no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`,
+`column-fill` or `column-rule` (`test/integrity.test.js` enforces it). What the
+package says about a column run is two author hooks, set **once**, at `:root`
+in `dc-component-defaults.css`, with no column selector:
 
-The name was carrying two jobs, which is why the fix was not a rename:
-
-| Concern | Owner | Class |
+| Hook | Value | A component that wants none |
 |---|---|---|
-| How many columns, and the gap | Gutterpress core (theme sets `--gp-column-gap`) | `.gp-columns-2` / `.gp-columns-3` |
-| The card around a column run — substrate, top/bottom rules, spanning heading bar, shared preamble paragraph, gear-entry min-heights | `components/section.css` (`@layer dc.components`) | `.dc-column-panel` |
+| `--gp-column-gap` | `var(--gutter)` | — |
+| `--gp-column-rule` | `1pt solid var(--border-hairline)` | `--gp-column-rule: none` (`.dc-card-grid`, the credits colophon) |
 
-Authors write both when they want the card: `@section .gp-columns-2 .dc-column-panel`.
-A column run with no chrome is `@section .gp-columns-2` on its own — which is
-the point of separating them.
+`--gp-column-rule` needs a Gutterpress that reads it; older ones ignore it and
+draw no hairline. `column-fill` is not set anywhere: `balance` is the CSS
+initial value, and core has no sequential-fill opt-in.
+
+What the package still owns around a run:
+
+| Concern | Owner | Selector |
+|---|---|---|
+| How many columns, the gap, the rule, the fill | Gutterpress core | `@columns N` |
+| Components reacting to sitting inside a run (a `.section` or `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `dc-native.css` §5, `components/section.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
+| Grids inside ONE component (not column layout) | `components/data.css` | `.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row` |
+
+A column run is `@columns 2`; a card around one is a plain `@section` with the
+run inside it, so the heading bar sits full width above the columns.
 
 ### Layer Contract Rules
 
@@ -387,22 +394,17 @@ inserts — use it to suppress footers on them.
 ### Axis 2 — Content Layout Selectors
 
 While `@page` controls the physical box, `.page.*` selectors control what happens
-inside it: column count, column-fill strategy, break behavior. Those selectors live
+inside it: break behavior and geometry (columns are `@columns`, core's). Those selectors live
 in the design guide's own sheet. The `.page` class is the structural hook;
 specialized classes extend it:
 
 ```css
 /* shared or guide-owned content layout */
 
-/* Two-column rules pages. The COUNT is Gutterpress core's
-   (`.gp-columns-2` in GUTTERPRESS_CSS) — the theme may not redefine
-   `columns` on it. What the theme sets is the gap (page-templates.css,
-   through core's `--gp-column-gap` hook) and the fill strategy for this
-   shape (dc-native.css §6: a `.page` is one sheet, so its run
-   does not fragment and `balance` is correct). */
-.page.gp-columns-2 {
-  column-fill: balance;
-}
+/* Columns are not a page template's: a rules page sets its text in
+   `@columns 2` … `@end-columns`, which is Gutterpress core's. The theme sets
+   only the gap and the rule, as two tokens at :root
+   (dc-component-defaults.css). */
 
 /* Full-bleed art pages */
 .page.dc-full-page {

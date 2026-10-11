@@ -22,7 +22,7 @@ What's your next move?
 
 @end-fiction-excerpt
 
----{.column-break}
+@column-break
 
 @section
 
@@ -50,13 +50,15 @@ In Dimm City RPG, you're not "pretending to be someone else." You're fighting fo
 
 @end-section
 
-@column-panel .gp-columns-2
+@section
 
 ## The City
 
 Dimm City twitches like a clamped nerve at the edge of existence.
 It leaks ferocity, spits day-glo venom, and remembers every screw-up you tried to bury under cheap lies and even cheaper concrete.
 The streets look solid, but they shift like a glitch in a hallucination—half alive, half listening, all hungry.
+
+@columns 2
 
 This place isn't just a city. It's a stubborn stain on the fabric of the Monoverse, the endless mess of realities piled on top of each other like corrupted files. Dimm City refuses to be overwritten. It clings. It mutates. It survives every rewrite some cosmic architect tries to force on it.
 
@@ -66,7 +68,9 @@ Nothing here is safe. Nothing here is free. If you want something in this rottin
 
 Other worlds dream of heroes and chosen ones. Dimm City dreams of people desperate enough to matter.
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 
 @tabbed
@@ -102,11 +106,13 @@ No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite 
 
 @end-tabbed
 
-@column-panel .gp-columns-2
+@section
 
 ### Lucid & Surreal
 
 Some abilities shift your odds.
+
+@columns 2
 
 @definition
 
@@ -126,7 +132,9 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 @end-definition
 
-@end-column-panel
+@end-columns
+
+@end-section
 
 @section
 

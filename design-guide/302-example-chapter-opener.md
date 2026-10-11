@@ -42,7 +42,7 @@ I locked in da hack, jacked out, an leapt clean onto a passing airbus like I mea
 
 @end-fiction-excerpt
 
----{.column-break}
+@column-break
 
 @section
 
@@ -67,7 +67,9 @@ Visit **dimm.city** for a form-fillable PDF version of the Citizen File.
 
 @end-section
 
-@citizen-walkthrough .gp-columns-2 .dc-column-panel
+@citizen-walkthrough
+
+@columns 2
 
 #### What's Yr Handle?
 
@@ -87,10 +89,14 @@ Do your best to address your fellow Dreamers as they wish to be addressed.
 
 Names and pronouns matter when life itself is constantly trying to strip both away.
 
+@end-columns
+
 @end-citizen-walkthrough
 
 
-@page .dc-citizen-file-page .gp-columns-2
+@page .dc-citizen-file-page
+
+@columns 2
 
 @citizen-walkthrough
 
@@ -150,3 +156,5 @@ Size carries no mechanical advantage. It's a narrative choice that shapes how yo
 |  |**Big:** Over 2.5 to 4 meters tall. Your presence fills rooms and draws eyes.|
 
 @end-citizen-walkthrough
+
+@end-columns

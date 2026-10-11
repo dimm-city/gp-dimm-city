@@ -4,10 +4,10 @@
 
 @section .credits-colophon
 
-<div class="dc-colophon-grid">
+@columns 2
 
 **{{role}}:** {{names}}
 
-</div>
+@end-columns
 
 @end-section

@@ -55,7 +55,7 @@ Core rewrites `@npc-stat` into `@section .dc-npc-stat` (plus any author classes)
 
 Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-plain` and `.dc-snug` stay author classes.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@column-panel`, `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 
 ### An alias with a preset
 

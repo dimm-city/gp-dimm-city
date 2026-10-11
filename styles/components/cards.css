@@ -288,39 +288,19 @@
    DELETED (2026-09-02): zero uses of either in any book's rendered HTML,
    zero emissions from the Dimm City plugin. */
 
-/* ── SKILL-CARD TWO-COLUMN BODY ────────────────────────────────────────────── */
-/* Two-column body variant for short skill cards. Applied via
-   `@skill {.dc-two-col}` in markdown. The .dc-card-inner content flows in
-   2 columns so a 4in single-column skill becomes ~2in tall, doubling
-   horizontal packing density. Column authority lives here; the card's
-   column-span and break rules stay in components/*.css. */
-.dc-skill-card.dc-two-col .dc-card-inner {
-  column-count: 2;
-  column-gap: 12px;
-  column-fill: balance;
-}
+/* `.dc-two-col` (`@skill {.dc-two-col}`: a card's whole body in two columns)
+   and `.dc-cards-two-col` (every card under an ancestor) were here and are
+   DELETED. Columns are core's `@columns 2` … `@end-columns`, and a card that
+   wants them wraps just that part of its body: the skill rule keeps the run
+   inside `.dc-card-inner`, in place (plugin.js, `dcSkillCards`).
 
-/* Inside 2-col body, a table spans both columns so its chrome doesn't break
-   across the gap. */
-.dc-skill-card.dc-two-col .dc-card-inner table {
-  column-span: all;
-}
-
-/* AP/numbered list items must stay whole — splitting "Bullet to Blood"
-   across columns reads as sloppy. break-inside: avoid keeps each <li>
-   together in a single column even when the column boundary lands in
-   the middle of one. Paragraphs immediately following list items also
-   stay glued so their text doesn't strand from its anchor item. */
-.dc-skill-card.dc-two-col .dc-card-inner ul > li,
-.dc-skill-card.dc-two-col .dc-card-inner p {
+   The one thing a card still says about its run: an ability row, a paragraph
+   or a list item stays whole. Split across the gap, an ability reads as
+   sloppy (a table, which `.dc-two-col` used to span across both columns,
+   goes outside the run instead). */
+.dc-card-inner .gp-columns :is(.dc-ability, p, li) {
   break-inside: avoid;
 }
-
-/* `.dc-cards-two-col` (every skill card under an ancestor set two-column,
-   e.g. `@specialty .augmerc .dc-cards-two-col`) was here and is DELETED:
-   a wrapper does not own its cards' column layout, and putting it on the
-   specialty broke skill cards that should not be columned. A card that
-   needs two columns says so itself: `@skill {.dc-two-col}` (above). */
 
 /* A split card (`.dc-allow-split`) never opens with just its tab and a line
    or two at a page foot: its first two blocks (the flavor line and a
@@ -343,14 +323,14 @@
 
 /* Horizontal skill placement — not currently attempted. `.dc-specialty
    .skill-grid { columns: 2 }` and `display: grid` are both worth testing
-   before more work goes into the alternatives: the per-skill `.dc-two-col` body
-   variant (above), which shrinks each card vertically so 2 fit per page, or
+   before more work goes into the alternatives: an `@columns 2` run in the
+   card's body, which shrinks each card vertically so 2 fit per page, or
    cutting skill body text length at the markdown level. */
 
 /* Scoped to the skill card on purpose. This mark is an absolutely positioned
    box, and an absolutely positioned box inside a multicol run stops Chromium
    balancing the run's last fragment: it stretches to the full page height
-   instead of shrinking to its content, so a `@column-panel .gp-columns-2`
+   instead of shrinking to its content, so a column run (`@columns 2`)
    that ends in a `@card` took a page of its own and spilled its bottom edge
    onto one more. The `@card` primitive shares the `.dc-card-body` class and
    never meant to carry this tick (its tokens are the skill card's). */

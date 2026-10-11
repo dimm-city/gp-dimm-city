@@ -245,60 +245,38 @@ figure {
   overflow: clip;
 }
 
-/* ── 5. MULTI-COLUMN SECTIONS must fragment naturally ──────────────────────
+/* ── 5. COLUMN RUNS: components must fragment naturally inside them ────────
+   These rules are components REACTING to sitting inside a column run
+   (`@columns N`, which emits `div.gp-columns` + `.gp-columns-N`). They set no
+   column property: how many columns, the gap, the rule and the fill are
+   core's (`--gp-column-gap` / `--gp-column-rule` are set once, at `:root`, in
+   dc-component-defaults.css).
+
    `.section` reads `break-inside: var(--dc-section-break-inside)`, default
    `avoid` (components/section.css; token in dc-component-defaults.css). This
    rule sets the TOKEN, not the property, so the component keeps the only
-   `break-inside` declaration. Measured DOM shape: `.gp-columns-2` is a WRAPPER div (the multicol
-   container, columns:2) and the `.section` blocks sit INSIDE it. A section
-   taller than one column can then never split, so Chromium drops it whole
-   into one column fragment and the facing column dies — the dead-column
+   `break-inside` declaration. Measured DOM shape: `.gp-columns` is a WRAPPER
+   div (the multicol container) and the `.section` blocks sit INSIDE it. A
+   section taller than one column can then never split, so Chromium drops it
+   whole into one column fragment and the facing column dies — the dead-column
    collapse. Removing this override cost 3 pages of pagination churn when
    measured (302pp vs 299pp), so it is load-bearing, not legacy.
 
-   Keys on the COUNT class, not `.dc-column-panel`: this is about multicol
-   fragmentation, and the wrapper shape is often a `@block` or `@page` that
-   never carries the panel chrome at all. */
+   Keys on the run, not on any card around it: this is about multicol
+   fragmentation, and the wrapper is a `@columns` run. A run is `.gp-columns`
+   (what `@columns` emits) or a count class on its own, so the selector takes
+   either: `[class*="gp-columns-"]` is the count classes, and the rule reads
+   the same for -1 to -5. */
 /* Selector is the descendant form on purpose: a `.section` that is itself the
    multicol container keeps the default. */
-.gp-columns-2 .section,
-.gp-columns-3 .section {
+:is(.gp-columns, [class*="gp-columns-"]) .section {
   --dc-section-break-inside: auto;
 }
 
-/* ── 6. COLUMN-FILL is a per-shape decision, and it lives HERE ────────────
-   Core deliberately ships no `column-fill` on `.gp-columns-*` (the right
-   value depends on whether the run fragments, and only the author knows).
-   page-templates.css used to answer `balance` for the whole book; under
-   native print the wrapper fragments across pages, and Chromium's
-   balance-in-fragmentation left every non-final fragment with a dead right
-   column (measured: proof17 p12/p13), so this rule said `auto`.
-
-   It says `balance` again (2026-10). `auto` with no fixed height fills the
-   first column to the BOTTOM OF THE PAGE, so every short run — a column
-   panel, a pair of gear entries — printed as a full-height box with an
-   empty right column, and a heading above one was stranded alone on its
-   page when the full-height box could not fit under it (design guide
-   p.83, p.111). Measured against the change, under gutterpress 0.11.13:
-   the Field Guide's 221 pages render pixel-identical with `balance`, and
-   the design guide loses 6 pages of holes. A run that genuinely needs
-   sequential fill opts in with core's `.gp-columns-flow`.
-
-   `:not(.gp-columns-flow)` is what makes that opt-in work: core declares
-   `.gp-columns-flow { column-fill: auto }` in its own layer, which every
-   extension layer outranks, so this rule used to win and the class did
-   nothing. `:where()` keeps the specificity at one class. */
-:where(.gp-columns-2, .gp-columns-3):not(.gp-columns-flow) {
-  column-fill: balance;
-}
-/* A PAGE that is itself the multicol container (`@page .gp-columns-2`) and
-   ends in a full-width spanner: the spanner's bottom margin pushed the page
-   box past its one-sheet minimum height, and the overflow printed as a blank
-   page (Field Guide: Quickstart vs. Deep Dive, after the DriveThruRPG
-   margins). A page's last child needs no bottom margin. */
-.page:is(.gp-columns-2, .gp-columns-3) > :last-child {
-  margin-bottom: 0;
-}
+/* `column-fill` is not set anywhere in this package. `balance` is the CSS
+   initial value and what a column run gets; core has no sequential-fill
+   opt-in. (A rule here used to restate `balance` for `.gp-columns-2/-3`; it
+   was a no-op.) */
 
 /* ── 7. WALL ART placement is the markdown's, via core's gp-* classes ──────
    Do not add a position/float/margin declaration to a `.fg-art-*` class that
@@ -320,16 +298,15 @@ figure {
 }
 
 /* Measured (p243, DOM-inspected): the CORE ELEMENTS heading is a full-width
-   spanner inside a .gp-columns-2 section, followed by a dc-alert callout
+   spanner above an `@columns` run, followed by a dc-alert callout
    whose default break-inside: avoid is UNENFORCEABLE (the card is taller than a
    column). Chromium then emits an empty card fragment under the spanner —
    header stranded, content headerless on the next page. A card that may
    fragment starts filling right under its header instead. Scoped to
-   multicol sections only; standalone cards keep their avoid. */
+   column runs only; standalone cards keep their avoid. */
 /* Sets --dc-alert-break-inside (callouts.css reads it); a book restores `avoid`
    for one instance by setting the token in context. */
-.gp-columns-2 .dc-alert,
-.gp-columns-3 .dc-alert {
+:is(.gp-columns, [class*="gp-columns-"]) .dc-alert {
   --dc-alert-break-inside: auto;
 }
 

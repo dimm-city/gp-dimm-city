@@ -128,46 +128,6 @@
   --dc-section-shadow:  none;
 }
 
-/* ── COLUMN PANEL — the section variant for a column run ──────────────────
-   `.dc-column-panel` is the CHROME half of what `.two-column` /
-   `.three-column` used to mean. Those names were the book's own generic
-   spelling of core's `.gp-columns-2` / `.gp-columns-3` (gutterpress
-   CLAUDE.md §6: a theme must not ship competing generic column names), but
-   they were doing two unrelated jobs at once — the column COUNT and this
-   card treatment. Core owns the count now; the count class says how many
-   columns, this class says what the box around them looks like.
-
-   Authors write both: `@section .gp-columns-2 .dc-column-panel`. A column
-   run that wants no card is `@section .gp-columns-2` alone — which is the
-   point of splitting them.
-
-   Top/bottom borders only: the base `.section` card's clip-path corner
-   breaks multicol, so this variant trades it for flat rules.
-
-   The bottom edge (padding, then the 2px rule) is painted as two shadows
-   below a box that ends where its content ends, not laid out as padding and
-   border. A fragmented box that ends flush with the page foot has nowhere to
-   put trailing padding or border, and Chromium sends them to an extra page:
-   a panel whose last fragment filled the page spilled a 10px strip of its
-   bottom edge onto the next sheet. Shadows take no layout space, so there is
-   nothing to push. The picture is unchanged: the cream continues
-   --dc-section-pad-bottom below the content, then the rule, and the margin
-   below the panel grows by the same amount so nothing after it moves. */
-.section.dc-column-panel {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:    var(--space-sm);
-  --dc-section-pad-right:  var(--space-md);
-  --dc-section-pad-bottom: var(--space-sm);
-  --dc-section-pad-left:   var(--space-md);
-  background: var(--dc-section-bg);
-  padding-bottom: 0;
-  box-shadow:
-    0 var(--dc-section-pad-bottom) 0 0 var(--dc-section-bg),
-    0 calc(var(--dc-section-pad-bottom) + 2px) 0 0 var(--border-hairline);
-  margin: 12pt 0 calc(12pt + var(--dc-section-pad-bottom) + 2px);
-}
-
 /* ── Tabbed variant — first-child heading sits ABOVE the section ─────────
    `@section .dc-tabbed` opts the section into a `.dc-card-tab → .dc-card-body`
    silhouette. Flex container is required so the first-child heading's
@@ -305,14 +265,6 @@
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 
-/* Column-panel header bar: column-span keeps it from being trapped in column 1.
-   Its margins follow the variant's pad tokens. The bar is the panel's top, so
-   the variant has no border-top. */
-.section.dc-column-panel > h2:first-child,
-.section.dc-column-panel > h3:first-child {
-  column-span: all;
-}
-
 /* Heading bar followed immediately by a table — give the table head room
    so the bar and `<th>` background don't bleed into a single coloured block.
    The two selectors are spelled out; :is(h2, h3) would be equivalent and
@@ -321,43 +273,6 @@
 .section > h2:first-child + table,
 .section > h3:first-child + table {
   margin-top: var(--space-sm);
-}
-
-/* Column-break orphan protection: keep first paragraph with the spanning bar.
-   MEASURED LIMIT (Chromium, no plugin CSS needed to show it): `break-after:
-   avoid` on a `column-span: all` box is honoured when the next box is also a
-   spanner (the intro paragraph below), but NOT between the spanner and the
-   column row after it. When the first block of that row does not fit, the
-   row moves to the next page and the bar stays behind. `break-before:
-   avoid` on the first block, `avoid-page` and `break-inside: avoid` do not
-   change it (the last one leaves the bar stranded more often). So the guards
-   here only help the spanning-paragraph case; they are kept because they cost
-   nothing and take effect when Chromium honours the avoid. */
-.section.dc-column-panel > h2:first-child + *,
-.section.dc-column-panel > h3:first-child + * {
-  break-before: avoid;
-}
-
-/* Span the intro paragraph across both columns so it reads as a shared
-   preamble rather than being trapped in column 1. */
-.section.dc-column-panel > h2:first-child + p,
-.section.dc-column-panel > h3:first-child + p {
-  column-span: all;
-  break-inside: avoid;
-}
-
-/* In a core GRID run (`@section .gp-grid-2`, `@column-panel .gp-grid-2`) the
-   header bar and a panel's preamble paragraph are grid items like any other
-   child, so each would take a cell. `grid-column: 1 / -1` gives them the whole
-   first row, as `column-span: all` does in a column run. */
-.section:is(.gp-grid-2, .gp-grid-3) > :is(h2, h3):first-child,
-.section.dc-column-panel:is(.gp-grid-2, .gp-grid-3) > :is(h2, h3):first-child + p {
-  grid-column: 1 / -1;
-}
-
-/* Multi-column body copy: kill rivers from narrow-column justification. */
-.section.dc-column-panel p {
-  text-align: left;
 }
 
 /* Section sub-heading H3 — H3s inside a section that are NOT the first child
@@ -657,17 +572,17 @@ h3 + .section {
    id scope in the book's own sheet (unlayered) — do NOT add bespoke rules here unless an
    observed problem requires it.
 
-   OBSERVED PROBLEM (2026-05-25): When the walkthrough's first card uses
-   `.gp-columns-2` for an internal Handle/Designation split, the longer h4
+   OBSERVED PROBLEM (2026-05-25): When the walkthrough's first card sits in
+   an `@columns 2` run for an internal Handle/Designation split, the longer h4
    text ("What's Yr Handle?") wraps to 2 lines while shorter text
    ("Designation") fits on 1 line at the narrow column width. The body
    text below each h4 then starts at different baselines across columns
    — visible asymmetry the user-eye reads as a production error. Fix:
-   reserve uniform heading height inside two-column walkthrough cards so
-   both columns' body content starts at the same y. Keyed on the COUNT
-   class, not `.dc-column-panel`: the asymmetry is caused by the narrow
-   column measure, not by the card chrome. */
-.dc-citizen-walkthrough.gp-columns-2 h4 {
+   reserve uniform heading height inside the walkthrough's column runs so
+   both columns' body content starts at the same y. Keyed on the run
+   (`.gp-columns`, what `@columns` emits), not on the card chrome: the
+   asymmetry is caused by the narrow column measure. */
+.dc-citizen-walkthrough .gp-columns h4 {
   min-height: calc(2 * 1.35em);
 }
 
@@ -704,33 +619,55 @@ h3 + .section {
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Page breaks. A block with `####` entries is a RUN of creatures: it may break
-   between entries (token `auto`; this also stops `.gp-columns-2` on the section
-   from jumping the whole block to the next page) and never inside one. An entry
-   has no wrapper — it is an `h4` and the siblings that follow it up to the next
-   `h4` — so "never inside" is a keep-with-next chain: every child but the last
-   of its entry takes `break-after: avoid`, and each block of an entry is itself
-   unbreakable so a paragraph cannot split between columns. Chromium keeps a
-   chain together when it fits a page and lets it break only when it cannot. The
-   title bar (h3) and its intro chain on to the first entry, so the bar is never
-   alone at a page foot. A block with no `h4` is ONE creature (the bar names it)
-   and stays whole like any section. `.dc-allow-split` is the opt-in for an
-   unusually long entry: it keeps only each entry's name with its first two
-   blocks (the stat lines) and headings with what follows, and lets the rest
-   break (blocks too). */
-.section.dc-npc-stat:has(> h4) {
+   between entries (token `auto`; this also stops a column run in the section
+   from jumping the whole block to the next page) and never inside one. An
+   entry has no wrapper — it is an `h4` and the siblings that follow it up to
+   the next `h4` — so "never inside" is a keep-with-next chain: every child but
+   the last of its entry takes `break-after: avoid`, and each block of an entry
+   is itself unbreakable so a paragraph cannot split between columns. Chromium
+   keeps a chain together when it fits a page and lets it break only when it
+   cannot. The title bar (h3) and its intro chain on to the first entry, so
+   the bar is never alone at a page foot. A block with no `h4` is ONE creature
+   (the bar names it) and stays whole like any section. `.dc-allow-split` is
+   the opt-in for an unusually long entry: it keeps only each entry's name with
+   its first two blocks (the stat lines) and headings with what follows, and
+   lets the rest break (blocks too).
+
+   The entries are either direct children of the section (one column) or the
+   children of the `@columns` run inside it (`.gp-columns`); the rules below take
+   both. */
+.section.dc-npc-stat:is(:has(> h4), :has(> .gp-columns > h4)) {
   --dc-section-break-inside: auto;
 }
 .section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
   break-after: avoid;
 }
-.section.dc-npc-stat:has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
+/* In an `@columns` run only the entries are chained. Text before the first `####`
+   (a lead) is not chained to that entry: a lead of several paragraphs chained to a
+   whole entry is one unbreakable run, and when it cannot fit at a page foot Chromium
+   ends the page with the run's first row EMPTY (the bar and a blank box), the
+   content starting overleaf. A lead above the run is chained as before. */
+.section.dc-npc-stat > .gp-columns:has(> h4) > :is(h4, h4 ~ *):not(:last-child, :has(+ h4:not(:first-of-type))) {
+  break-after: avoid;
+}
+:is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
   break-inside: avoid;
 }
-.section.dc-npc-stat.dc-allow-split:has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
+:is(.section.dc-npc-stat.dc-allow-split, .section.dc-npc-stat.dc-allow-split > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
   break-inside: auto;
 }
-.section.dc-npc-stat.dc-allow-split:has(> h4) > :not(:last-child, h1, h2, h3, h4, h5, h6, h4 + *, h4 + * + *, blockquote + p) {
+:is(.section.dc-npc-stat.dc-allow-split, .section.dc-npc-stat.dc-allow-split > .gp-columns):has(> h4) > :not(:last-child, h1, h2, h3, h4, h5, h6, h4 + *, h4 + * + *, blockquote + p) {
   break-after: auto;
+}
+
+/* The `@columns` run of an entries block is glued to the bar and intro above it,
+   as a direct entry list is (the h3's own `break-after: avoid` plus the chain
+   above). Without this, Chromium can end a page with the bar and an EMPTY first
+   row of the run, and the first entry starts the next page (measured with
+   printToPDF: bar stranded at the foot, `@npc-stat` with `@columns 2` inside;
+   the old `@npc-stat .gp-columns-2` never did it). */
+.section.dc-npc-stat > .gp-columns {
+  break-before: avoid;
 }
 
 .dc-npc-stat h4 {
@@ -802,11 +739,11 @@ h3 + .section {
      [repeat for 6+ specialties]
      @end-section
 
-   The page/section column rules live in page-templates.css; the grid's own
-   columns:2 is a component-internal layout and lives below. Here we also own the chrome-reset (the
-   .dc-card-grid section has no card background/shadow — it's a pure layout
-   wrapper) plus the per-card density tweaks so all 8 specialty cards fit
-   comfortably on one page. */
+   The grid sets no columns of its own: the author puts the cards in
+   `@columns 2` … `@end-columns` inside it, like any other columned run. Here
+   we own the chrome-reset (the .dc-card-grid section has no card
+   background/shadow — it's a pure layout wrapper) plus the per-card density
+   tweaks so all 8 specialty cards fit comfortably on one page. */
 
 /* Card grid: no panel, no padding; the cards carry the visuals. */
 .section.dc-card-grid {
@@ -820,22 +757,13 @@ h3 + .section {
   /* A layout wrapper, not a cohesive block: it may span pages when the cards
      exceed one page. */
   break-inside: auto;
+  /* The cards carry the visuals; no hairline between their columns. */
+  --gp-column-rule: none;
 }
 
-/* `.page.dc-chapter-start.two-column`'s ornamental `column-rule` was DELETED
-   before this migration: it needed a page carrying BOTH classes and no book's
-   markdown has ever written one. The `column-rule` that IS live sits on
-   `.gp-columns-2` in components/*.css — an ornament, not a layout rule. */
-
-/* ── LAYOUT: CARD GRID (.dc-card-grid section) ─────────────────────────────── */
-/* Specialty card grid — two columns, auto-fill. Layout owns columns + column-
-   span here; component styling (chrome reset, card density, break control)
-   lives in components/*.css under the same .dc-card-grid selector. */
-.dc-card-grid {
-  columns: 2;
-  column-gap: var(--gutter);
-  column-fill: balance;
-}
+/* ── DENSITY: CARD GRID (.dc-card-grid section) ────────────────────────────── */
+/* The first specialty of the grid never forces a break: it is the first child
+   of the section, or of the `@columns` run inside it. */
 .dc-card-grid .dc-specialty:first-child { break-before: avoid; }
 
 /* Compact specialty card density: 10 cards on one page in 2 columns */
