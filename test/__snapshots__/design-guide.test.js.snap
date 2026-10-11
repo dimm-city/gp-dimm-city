@@ -3779,7 +3779,7 @@ This chapter will guide you through all the choices you need to make to help you
 <p>She/her, he/him, they/them, or something else entirely.</p>
 <p>Do your best to address your fellow Dreamers as they wish to be addressed.</p>
 <p>Names and pronouns matter when life itself is constantly trying to strip both away.</p>
-</div></div></div><div class="page dc-citizen-file-page chapter-1" data-chapter-label="C.01" data-source-range="96:97"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="98:99"></div><div class="section dc-citizen-walkthrough" data-source-range="100:101"><h4>Species</h4>
+</div></div></div><div class="page dc-citizen-file-page chapter-1" data-chapter-label="C.01" data-source-range="96:97"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="98:99"><div class="section dc-citizen-walkthrough" data-source-range="100:101"><h4>Species</h4>
 <p>In Dimm City, you’re not human—you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.</p>
 <p>Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.</p>
 </div><div class="section dc-citizen-walkthrough" data-source-range="110:111"><h4>Origins</h4>
@@ -3856,7 +3856,7 @@ This chapter will guide you through all the choices you need to make to help you
 </tr>
 </tbody>
 </table>
-</div></div></div>"
+</div></div></div></div>"
 `;
 
 exports[`rendered output 303-example-specialty-overview.md matches its snapshot 1`] = `

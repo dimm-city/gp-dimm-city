@@ -289,17 +289,6 @@ h1.dc-chevron {
   break-inside: avoid;
 }
 
-/* Core glues every section to whatever precedes it (`:where(.section) >
-   :where(:first-child) { break-before: avoid }`), which chains heading →
-   lede → section into one unbreakable run. When that section cannot fit,
-   Chromium has to break inside the chain: it split the lede, or with the
-   lede kept whole, stranded the heading at the page foot. A lede stands on
-   its own, so the section after it may start a new page; the section's own
-   break-inside: avoid still moves it whole. */
-.dc-intro + .section > :first-child {
-  break-before: auto;
-}
-
 /* ── Spec tweak section header ────────────────────────────────────────── */
 .dc-spec-tweak {
   font-size: 22px;

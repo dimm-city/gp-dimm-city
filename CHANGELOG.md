@@ -9,9 +9,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 One way to set content in columns: Gutterpress core's `@columns N` …
 `@column-break` … `@end-columns`. Everything else this package did with
-columns is removed or now takes that marker. **This release needs the next
-Gutterpress** for the column hairline (`--gp-column-rule`) and for a bare
-`@columns` meaning two; write `@columns 2` until then.
+columns is removed or now takes that marker. **This release needs
+Gutterpress 0.11.17-alpha.6 or later**: that core draws the column hairline
+(`--gp-column-rule`), reads a bare `@columns` as two, lets `@section`s sit
+inside an `@columns` run, and no longer splits a keep-together section that
+follows other content. Two rules here that only undid that last core
+behaviour (on a single-creature `@npc-stat` and on a section after a
+`.dc-intro` lede) are removed with it.
 
 ### Changed
 

@@ -660,21 +660,6 @@ h3 + .section {
   break-after: auto;
 }
 
-/* A block with no `####` is ONE creature and stays whole (`break-inside: avoid`
-   from the section chassis), but core glues every section to what precedes it
-   (`:where(.section) > :where(:first-child) { break-before: avoid }`), and that
-   break-before propagates to the section's own start edge. A section that cannot
-   fit at a page foot then has no legal break before it, so Chromium breaks
-   INSIDE it instead (measured with printToPDF: the section split, a line or a
-   few blocks overleaf). It stayed whole only when the section was itself the
-   multicol container (`@npc-stat .gp-columns-2`), because its first child then
-   sat inside the multicol. With the entries in an `@columns` run the first child
-   is the bar again. A heading keeps its own `break-after: avoid`, so the bar is
-   still never left alone at a foot. */
-.section.dc-npc-stat:not(:has(h4)) > :first-child {
-  break-before: auto;
-}
-
 /* The `@columns` run of an entries block is glued to the bar and intro above it,
    as a direct entry list is (the h3's own `break-after: avoid` plus the chain
    above). Without this, Chromium can end a page with the bar and an EMPTY first
