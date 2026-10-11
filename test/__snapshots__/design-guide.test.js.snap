@@ -1235,7 +1235,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p><em>Utility. Mechanized. Reach 50 ft.</em></p>
 <p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
 </div></div>
-<p>A long run packs tighter two-up in a <code>@column-panel .gp-columns-2</code>: entries fill the first column, then the second, and the heading bar spans both. Add <code>.dc-allow-split</code> so a run longer than a page breaks between entries. <a href="#ch-example-gear-tech" data-gp-source-token="[Gear &amp; Tech](#ch-example-gear-tech)" data-gp-source-occurrence="0">Gear &amp; Tech</a> shows it.</p>
+<p>A long run packs tighter two-up: put the entries in <code>@columns 2</code> inside a <code>@section</code>. Entries fill the first column, then the second. Add <code>.dc-allow-split</code> to the section so a run longer than a page breaks between entries. <a href="#ch-example-gear-tech" data-gp-source-token="[Gear &amp; Tech](#ch-example-gear-tech)" data-gp-source-occurrence="0">Gear &amp; Tech</a> shows gear in columns.</p>
 <h2>Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
 <pre><code data-source-range="383:390" class="language-markdown">| Augment | Slot | Cost | Effect |
@@ -2173,10 +2173,10 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>Rendered: <a href="#ch-example-chapter-opener" data-gp-source-token="[Chapter Opener](#ch-example-chapter-opener)" data-gp-source-occurrence="0">Chapter Opener</a>. Tokens for the badge: <code>--dc-chapter-opener-bg</code>, <code>--dc-chapter-opener-accent</code>; for the excerpt: <code>--dc-fiction-bg</code>, <code>--dc-fiction-art-float</code>, <code>--dc-fiction-art-width</code>.</p>
 <p>The footer-free variant is <code>@page .page-chapter-start .dc-chapter-start</code> with a <code># Title</code> — the snippet picker’s <em>Chapter Start Page</em>.</p>
 <h2>Citizen File walkthrough</h2>
-<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Add <code>.dc-column-panel</code> for the card chrome and put two short fields side by side in <code>@columns 2</code>. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
+<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Put two short fields side by side in <code>@columns 2</code> inside it. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
 <pre><code data-source-range="146:165" class="language-markdown">@page .dc-citizen-file-page
 
-@citizen-walkthrough .dc-column-panel
+@citizen-walkthrough
 
 @columns 2
 
@@ -2194,7 +2194,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="170:171"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="172:173"><h4>What’s Yr Handle?</h4>
+<div class="section dc-citizen-walkthrough" data-source-range="170:171"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="172:173"><h4>What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4>Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
@@ -3777,7 +3777,7 @@ This chapter will guide you through all the choices you need to make to help you
 <p><strong>Before You Fill Anything In:</strong></p>
 <p>Don’t start with numbers. Start with a body, a vibe, and a reason you’re still breathing in Dimm City. This file isn’t about optimization, it’s about creating a CREATUREPUNK. If a choice would make Dimm City react to you, it belongs here. If it only makes you stronger, it probably comes later.</p>
 <p>Visit <strong>dimm.city</strong> for a form-fillable PDF version of the Citizen File.</p>
-</div></div><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="69:70"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="71:72"><h4>What’s Yr Handle?</h4>
+</div></div><div class="section dc-citizen-walkthrough" data-source-range="69:70"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="71:72"><h4>What’s Yr Handle?</h4>
 <p>Choose a name.</p>
 <p>It can come from any culture, any language, or straight out of your imagination.</p>
 <p>Pull it from a book, a show, a half-remembered dream, or invent something that sounds right for the city.</p>
@@ -3786,49 +3786,48 @@ This chapter will guide you through all the choices you need to make to help you
 <p>She/her, he/him, they/them, or something else entirely.</p>
 <p>Do your best to address your fellow Dreamers as they wish to be addressed.</p>
 <p>Names and pronouns matter when life itself is constantly trying to strip both away.</p>
-</div></div></div><div class="page dc-citizen-file-page chapter-1" data-chapter-label="C.01" data-source-range="96:97"><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="98:99"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="100:101"><h4>Species</h4>
+</div></div></div><div class="page dc-citizen-file-page chapter-1" data-chapter-label="C.01" data-source-range="96:97"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="98:99"></div><div class="section dc-citizen-walkthrough" data-source-range="100:101"><h4>Species</h4>
 <p>In Dimm City, you’re not human—you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.</p>
 <p>Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="108:109"></div>
-<h4>Origins</h4>
+</div><div class="section dc-citizen-walkthrough" data-source-range="110:111"><h4>Origins</h4>
 <p>Where did you start, and how far is that from where you are now?</p>
 <p>Origins tell the Dream Master how your character fits the city’s grid. A corporate-born Dreamer walks alleys differently than someone who grew up in the Flats. They know different people, owe different debts, and have different reasons to still be breathing.</p>
 <p>Choose one: <strong>EntD rat</strong>, <strong>Corp exile</strong>, <strong>District-born</strong>, <strong>Offworld arrival</strong>, <strong>Street-raised</strong>, or <strong>Something the city made and hasn’t claimed yet</strong>.</p>
-</div></div><div class="section dc-citizen-walkthrough dc-column-panel" data-source-range="122:123"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="124:125"><h4>Scars &amp; Survival</h4>
+</div><div class="section dc-citizen-walkthrough" data-source-range="122:123"><h4>Scars &amp; Survival</h4>
 <p>Choose the stage of life your character is in:</p>
 <table>
-<thead data-source-range="130:131">
-<tr data-source-range="130:131">
+<thead data-source-range="128:129">
+<tr data-source-range="128:129">
 <th></th>
 <th></th>
 </tr>
 </thead>
-<tbody data-source-range="132:139">
-<tr data-source-range="132:133">
+<tbody data-source-range="130:137">
+<tr data-source-range="130:131">
 <td></td>
 <td>childhood</td>
 </tr>
-<tr data-source-range="133:134">
+<tr data-source-range="131:132">
 <td></td>
 <td>adolescence</td>
 </tr>
-<tr data-source-range="134:135">
+<tr data-source-range="132:133">
 <td></td>
 <td>young adulthood</td>
 </tr>
-<tr data-source-range="135:136">
+<tr data-source-range="133:134">
 <td></td>
 <td>adulthood</td>
 </tr>
-<tr data-source-range="136:137">
+<tr data-source-range="134:135">
 <td></td>
 <td>middle age</td>
 </tr>
-<tr data-source-range="137:138">
+<tr data-source-range="135:136">
 <td></td>
 <td>old age</td>
 </tr>
-<tr data-source-range="138:139">
+<tr data-source-range="136:137">
 <td></td>
 <td>extreme old age</td>
 </tr>
@@ -3836,8 +3835,7 @@ This chapter will guide you through all the choices you need to make to help you
 </table>
 <p>Expressing age in years means little in Dimm City. Here, age is experiential, not chronological.</p>
 <p>Survival, scars, augmentation, and memory say far more than a number ever could.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="144:145"></div>
-<h4>Size</h4>
+</div><div class="section dc-citizen-walkthrough" data-source-range="144:145"><h4>Size</h4>
 <p>Size carries no mechanical advantage. It’s a narrative choice that shapes how you move through the city, how others perceive you, and how easily you stay with your crew:</p>
 <table>
 <thead data-source-range="150:151">
@@ -3865,7 +3863,7 @@ This chapter will guide you through all the choices you need to make to help you
 </tr>
 </tbody>
 </table>
-</div></div></div></div>"
+</div></div></div>"
 `;
 
 exports[`rendered output 303-example-specialty-overview.md matches its snapshot 1`] = `

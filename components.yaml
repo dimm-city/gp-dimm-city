@@ -202,7 +202,7 @@ components:
     css: styles/components/section.css
     unstyled: [dc-gear]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@column-panel .gp-columns-2 .dc-allow-split`."
+    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@columns 2` inside a `@section .dc-allow-split`."
 
   - name: lede
     status: live

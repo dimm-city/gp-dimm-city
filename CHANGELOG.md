@@ -61,7 +61,7 @@ Gutterpress** for the column hairline (`--gp-column-rule`) and for a bare
 - The `.gp-grid-2` / `.gp-grid-3` support added in 1.3.0: the float-containment
   default is a plain `:where(.section) { display: flow-root }` again, and the
   grid-row spans for a panel's header bar are gone. A long run of gear entries
-  packs two-up in `@column-panel .gp-columns-2 .dc-allow-split`.
+  packs two-up in `@columns 2` inside a `@section .dc-allow-split`.
 
 ## [1.3.0] - 2026-10-11
 

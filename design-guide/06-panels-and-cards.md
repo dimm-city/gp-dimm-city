@@ -374,7 +374,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 
 
-A long run packs tighter two-up in a `@column-panel .gp-columns-2`: entries fill the first column, then the second, and the heading bar spans both. Add `.dc-allow-split` so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows it.
+A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second. Add `.dc-allow-split` to the section so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
 
 
 ## Tables

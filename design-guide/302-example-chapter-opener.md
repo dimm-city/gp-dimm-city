@@ -67,7 +67,7 @@ Visit **dimm.city** for a form-fillable PDF version of the Citizen File.
 
 @end-section
 
-@citizen-walkthrough .dc-column-panel
+@citizen-walkthrough
 
 @columns 2
 
@@ -96,9 +96,9 @@ Names and pronouns matter when life itself is constantly trying to strip both aw
 
 @page .dc-citizen-file-page
 
-@citizen-walkthrough .dc-column-panel
-
 @columns 2
+
+@citizen-walkthrough
 
 #### Species
 
@@ -106,7 +106,9 @@ In Dimm City, you're not human—you never were. Every Dreamer is an anthropomor
 
 Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.
 
-@column-break
+@end-citizen-walkthrough
+
+@citizen-walkthrough
 
 #### Origins
 
@@ -116,13 +118,9 @@ Origins tell the Dream Master how your character fits the city's grid. A corpora
 
 Choose one: **EntD rat**, **Corp exile**, **District-born**, **Offworld arrival**, **Street-raised**, or **Something the city made and hasn't claimed yet**.
 
-@end-columns
-
 @end-citizen-walkthrough
 
-@citizen-walkthrough .dc-column-panel
-
-@columns 2
+@citizen-walkthrough
 
 #### Scars & Survival
 
@@ -142,7 +140,9 @@ Expressing age in years means little in Dimm City. Here, age is experiential, no
 
 Survival, scars, augmentation, and memory say far more than a number ever could.
 
-@column-break
+@end-citizen-walkthrough
+
+@citizen-walkthrough
 
 #### Size
 
@@ -155,6 +155,6 @@ Size carries no mechanical advantage. It's a narrative choice that shapes how yo
 |  |**Medium:** About 1.6–2.5 meters tall. The city is built for bodies like yours.|
 |  |**Big:** Over 2.5 to 4 meters tall. Your presence fills rooms and draws eyes.|
 
-@end-columns
-
 @end-citizen-walkthrough
+
+@end-columns

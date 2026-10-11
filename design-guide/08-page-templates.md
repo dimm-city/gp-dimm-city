@@ -142,12 +142,12 @@ The footer-free variant is `@page .page-chapter-start .dc-chapter-start` with a 
 
 ## Citizen File walkthrough
 
-`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Add `.dc-column-panel` for the card chrome and put two short fields side by side in `@columns 2`. Pair it with `@page .dc-citizen-file-page` for the running header.
+`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Put two short fields side by side in `@columns 2` inside it. Pair it with `@page .dc-citizen-file-page` for the running header.
 
 ```markdown
 @page .dc-citizen-file-page
 
-@citizen-walkthrough .dc-column-panel
+@citizen-walkthrough
 
 @columns 2
 
@@ -168,7 +168,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@citizen-walkthrough .dc-column-panel
+@citizen-walkthrough
 
 @columns 2
 
