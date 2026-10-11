@@ -7,6 +7,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **The die chip now covers every wording of the instruction and no longer
+  disturbs the line it sits in.** Besides `ROLL THE DIE!`, the chip wraps
+  `ROLL A DIE!`, `ROLLS A DIE!` and `ROLLING THE DIE!` (uppercase, as written;
+  the text is never altered). It is redrawn as a stamped label (cream fill,
+  blood-red lettering, magenta rule and offset shadow) set as a plain inline
+  box, so a line holding a chip keeps the line height of the lines around it
+  and a chip that wraps a line end stays whole. `--dc-roll-the-die-color` and
+  `--dc-roll-the-die-border` work as before. (#18)
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older

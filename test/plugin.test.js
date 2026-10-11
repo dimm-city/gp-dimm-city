@@ -113,6 +113,38 @@ describe("behaviour carried from the book repo", () => {
     expect(md.renderInline(renderedOnce)).toBe(renderedOnce);
   });
 
+  test.each(["ROLL THE DIE!", "ROLL A DIE!", "ROLLS A DIE!", "ROLLING THE DIE!"])("wraps the wording %s exactly as written", (wording) => {
+    const html = createMarkdown().render(`When it says ${wording} read the ladder.`);
+
+    expect(html).toContain(`<span class="dc-roll-the-die">${wording}</span> read the ladder.`);
+    expect(countRolls(html)).toBe(1);
+  });
+
+  test("leaves lowercase, other tenses and mid-word wordings alone", () => {
+    const source = [
+      "roll the die! Roll A Die! roll a die!",
+      "",
+      "ROLLED THE DIE! ROLLED A DIE! ROLLINGS A DIE! ROLL AN DIE! ROLL THE DICE! ROLL A DIE",
+      "",
+      "REROLL A DIE! ROLL A DIE!S PREROLLS A DIE! ROLLING THE DIE!X _ROLL A DIE!",
+    ].join("\n");
+    const html = createMarkdown().render(source);
+
+    expect(countRolls(html)).toBe(0);
+    expect(html).toContain("roll the die! Roll A Die! roll a die!");
+    expect(html).toContain("ROLLED THE DIE! ROLLED A DIE!");
+  });
+
+  test("wraps each wording inside bold and several in one paragraph", () => {
+    const source = "**ROLL A DIE!** to hit, ROLLS A DIE! for damage, ROLLING THE DIE! twice, then ROLL THE DIE! and `ROLL A DIE!` stays code.";
+    const html = createMarkdown().render(source);
+    const span = (text) => `<span class="dc-roll-the-die">${text}</span>`;
+
+    expect(countRolls(html)).toBe(4);
+    expect(html).toContain(`<strong>${span("ROLL A DIE!")}</strong> to hit, ${span("ROLLS A DIE!")} for damage, ${span("ROLLING THE DIE!")} twice, then ${span("ROLL THE DIE!")} and`);
+    expect(html).toContain("<code>ROLL A DIE!</code>");
+  });
+
   test("runs after alert parsing and handles ordinary blockquotes", () => {
     const source = ["> [!NOTE]", "> **ROLL THE DIE!** and `ROLL THE DIE!`.", "", "> *Ordinary* ROLL THE DIE!"].join("\n");
     const html = createMarkdown().render(source);

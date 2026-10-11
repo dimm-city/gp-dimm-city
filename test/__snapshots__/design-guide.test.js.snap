@@ -938,12 +938,12 @@ Signal Jammer (single-use)
 <span class="dc-classtag generalist">Generalist</span></p>
 </div>
 <h2>Roll the die</h2>
-<p>The exact text <code>ROLL THE DIE!</code> in prose becomes the die chip automatically. Inside a code span or raw HTML it is left alone.</p>
-<pre><code data-source-range="292:295" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
+<p>The text <code>ROLL THE DIE!</code> in prose becomes the die chip automatically, and so do <code>ROLL A DIE!</code>, <code>ROLLS A DIE!</code> and <code>ROLLING THE DIE!</code>: uppercase, with the exclamation mark, as written. Inside a code span or raw HTML it is left alone. The chip is set inside the line, so it never makes a line taller.</p>
+<pre><code data-source-range="292:295" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
-<p>When an ability says <span class="dc-roll-the-die">ROLL THE DIE!</span>, roll a d20 and read the outcome ladder.</p>
+<p>When an ability says <span class="dc-roll-the-die">ROLL THE DIE!</span>, roll a d20 and read the outcome ladder. A trap may say <span class="dc-roll-the-die">ROLL A DIE!</span> or <span class="dc-roll-the-die">ROLLING THE DIE!</span> instead.</p>
 </div>
 <p>Tokens: <code>--dc-roll-the-die-color</code>, <code>--dc-roll-the-die-border</code>.</p>
 </div></div>"
@@ -1723,7 +1723,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
-<p>When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.</p>
+<p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
 <div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
@@ -3082,7 +3082,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
-<p>When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.</p>
+<p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
 <div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
@@ -4156,7 +4156,7 @@ The streets look solid, but they shift like a glitch in a hallucination—half a
 <li data-source-range="88:90">You pick a fight with the system? It hits back harder.</li>
 </ul>
 <p>They don’t stop you. They don’t protect you. They just make sure the pain fits the crime.</p>
-</div><div class="section dc-tabbed" data-source-range="94:95"><h3 id="c1-rolling-the-die">ROLL A DIE!</h3>
+</div><div class="section dc-tabbed" data-source-range="94:95"><h3 id="c1-rolling-the-die"><span class="dc-roll-the-die">ROLL A DIE!</span></h3>
 <p>When something matters—really matters—the DM might call for a roll. One toss of a d20 decides if you rocket through a window like a legend… or face-plant into the curb with a mouthful of glass and regrets.</p>
 <p>No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite back.</p>
 </div><div class="section dc-column-panel gp-columns-2" data-source-range="104:105"><h3>Lucid &amp; Surreal</h3>
@@ -4339,7 +4339,7 @@ Master — Medium</p>
 <h5>Traits</h5>
 <p><strong>Amphibious:</strong> Undertow can breathe water or air and swim as fast as they move on land.</p>
 <p><strong>Brineborne:</strong> Undertow regenerates 1 Hit Point per round spent in salt water up to their max of 10.</p>
-<p><strong>Stranglehold:</strong> Undertow can attack one nearby target per round and grapple them on a successful hit, dealing 4 damage, locking their limbs, and preventing movement. Constricted targets must ROLL A DIE! (11+) to break free or suffer Surreal rolls anytime they ROLL A DIE! while grappled. Undertow maintains control for free, dealing 1 damage each round while the target remains trapped. However, while holding a target, Undertow can only make one basic attack against any other target within reach.</p>
+<p><strong>Stranglehold:</strong> Undertow can attack one nearby target per round and grapple them on a successful hit, dealing 4 damage, locking their limbs, and preventing movement. Constricted targets must <span class="dc-roll-the-die">ROLL A DIE!</span> (11+) to break free or suffer Surreal rolls anytime they <span class="dc-roll-the-die">ROLL A DIE!</span> while grappled. Undertow maintains control for free, dealing 1 damage each round while the target remains trapped. However, while holding a target, Undertow can only make one basic attack against any other target within reach.</p>
 <p><strong>Swim:</strong> Undertow has the ability to move through water with the same speed as they would otherwise move on land.</p>
 </div><hr data-source-range="165:166">
 <div class="section" data-source-range="167:168"><h3>Size Modifiers</h3>
