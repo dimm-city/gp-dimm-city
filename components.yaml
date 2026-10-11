@@ -497,6 +497,7 @@ components:
       - --dc-npc-stat-label-color
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain; .dc-allow-split lets a long entry split); a block with no #### stays whole"
 
   - name: chapter-start
     status: live
