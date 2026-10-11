@@ -7,6 +7,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- In a loose bulleted list (blank lines between items) the `»` bullet no longer
+  prints alone on a line above the item's text. A loose item's text is wrapped
+  in a paragraph, so the bullet is now drawn on that first paragraph and sits
+  inline with the first line, in alerts and callouts too. Tight lists and
+  every other list render exactly as before. (#17)
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older

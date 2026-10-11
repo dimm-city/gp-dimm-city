@@ -174,7 +174,12 @@ blockquote {
 /* ── GLOBAL LIST STYLES (kept as-is per plan) ─────────────────────────────── */
 ul { padding-left: 0.25in; }
 ul li { list-style: none; margin-bottom: 0.06in; }
-ul li::before {
+/* markdown-it wraps a loose item's text in <p>, and an inline ::before on the
+   <li> would sit alone on its own line above that block. A loose item draws
+   the bullet on its first paragraph instead, so it stays on the first line. */
+ul li:has(> p:first-child)::before { content: none; }
+ul li::before,
+ul li > p:first-child::before {
   content: "» ";
   /* --orange (#d4500a) on wall = 2.46:1 (fail). --rust (#b23a12) = 3.48:1
      (measured — also fail). --blood (#901a12) = 5.21:1 on wall, passes
