@@ -65,7 +65,17 @@ body {
    sub-section label where the outline needs a section:
      ## Useful Items {.dc-h3}
    Each look rule below sets every property any level's rule sets, so the
-   class fully replaces the tag's own look (a class outranks an element). */
+   class fully replaces the tag's own look (a class outranks an element).
+   overflow-wrap: the display face is wide and set in caps, so one long word
+   (INTERDIMENSIONALISM at 16pt in a ~3.4in column) outruns its box: it ran
+   under the next column or was clipped at the edge, losing letters in print.
+   A word that cannot fit now breaks as a last resort, at every level, in every
+   context; words that fit are untouched. `break-word` (not `anywhere`) keeps
+   min-content widths intact for shrink-to-fit headings such as banners and
+   tabs. A soft hyphen (&shy;) in the source still picks a better break.
+   `hyphens: auto` (inherited from body) hyphenates where the engine has a
+   dictionary, but uppercase display words are not reliably hyphenated, so
+   the guaranteed break does not depend on it. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
@@ -76,12 +86,10 @@ h1, h2, h3, h4, h5, h6,
   margin-top: 0;
   margin-bottom: 0.5em;
   color: var(--ink-dark);
+  overflow-wrap: break-word;
 }
 
-/* H1 — magenta neon authority: chapter openers, page-level titles.
-   overflow-wrap: the lixdu display face at 26pt overflows a narrow column
-   on one-word caps titles (CREATUREPUNK) and on long unbreakable strings
-   such as URLs or class names. */
+/* H1 — magenta neon authority: chapter openers, page-level titles. */
 h1 {
   font-size: var(--fs-h1);
   font-weight: var(--fw-bold);
@@ -90,7 +98,6 @@ h1 {
   color: var(--hud-magenta);
   border-bottom: 2px solid var(--hud-magenta);
   padding-bottom: 0.15em;
-  overflow-wrap: break-word;
 }
 
 /* H2 — cold teal: major section breaks */

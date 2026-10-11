@@ -9,6 +9,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- A heading word wider than its box now breaks instead of running under the
+  next column or being clipped at the edge. This applies to `h1`-`h6` and the
+  `.dc-h3`-`.dc-h6` looks in every context (a two-column run is about 3.4in
+  per column), not only inside cards. Headings whose words fit are unchanged,
+  and an author's soft hyphen (`&shy;`) still picks the break. (#13)
 - In a loose bulleted list (blank lines between items) the `»` bullet no longer
   prints alone on a line above the item's text. A loose item's text is wrapped
   in a paragraph, so the bullet is now drawn on that first paragraph and sits
