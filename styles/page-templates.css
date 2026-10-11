@@ -374,6 +374,7 @@
   --dc-section-pad-right:  0.22in;
   --dc-section-pad-bottom: 0.18in;
   --dc-section-pad-left:   0.22in;
+  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
   --gp-column-rule: none;  /* the names run in two plain columns, as they always have */
   display: flex;
   flex-direction: column;
@@ -596,6 +597,7 @@
   --dc-section-pad-right:  0.22in;
   --dc-section-pad-bottom: 0.18in;
   --dc-section-pad-left:   0.22in;
+  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
   background: var(--paper-cream);
   box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
 }
@@ -615,6 +617,7 @@
            var(--dc-chapter-opener-pad-right)
            var(--dc-chapter-opener-pad-top)
            var(--dc-chapter-opener-pad-side);
+  --dc-section-edge: 0px;  /* explicit padding above; see .section */
 
   /* Per-chapter opener tokens flow into the section's accent and surface. */
   --dc-section-accent: var(--dc-chapter-opener-accent);
