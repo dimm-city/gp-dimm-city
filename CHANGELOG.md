@@ -7,6 +7,18 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Removed
+
+- **`.dc-cards-two-col` is gone.** Written on a wrapper (typically
+  `@specialty .augmerc .dc-cards-two-col`), it set every skill card inside
+  two-column, which broke the layout of cards that should not be columned:
+  short blocks split into one-line fragments, a lone line in the right
+  column, list blocks divided unevenly. A wrapper no longer decides its
+  cards' columns. A card that needs two columns says so itself with
+  `@skill {.dc-two-col}`, and a section of running text uses core's
+  `@columns 2`. Books that wrote the class should delete it from their
+  `@specialty` lines; until they do it does nothing.
+
 ## [1.3.0] - 2026-10-11
 
 ### Changed

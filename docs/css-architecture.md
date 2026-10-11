@@ -128,7 +128,7 @@ runs, any rule that columns a page's or section's content) live
 `page-rules.css` is single-flow. A **component** may lay out its *own
 internals* in columns in its own `components/*.css` sheet, provided the rule is
 rooted in that component's `.dc-*` class (e.g. the per-card `.dc-two-col` body
-and `.dc-cards-two-col` in `cards.css`, the `.dc-card-grid` grid in
+in `cards.css`, the `.dc-card-grid` grid in
 `section.css`). If you find `columns:` in `page-rules.css`, or in a component
 sheet on a `.page` / `.chapter` / `.gp-columns-*` selector or a selector not
 rooted in a `.dc-*` class, it is a bug. `test/integrity.test.js` enforces this.
