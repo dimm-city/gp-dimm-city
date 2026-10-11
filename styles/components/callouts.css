@@ -157,6 +157,11 @@
   letter-spacing: var(--dc-alert-label-spacing);
   margin-bottom: var(--dc-alert-label-margin);
   color: var(--dc-alert-label-color);
+  /* The label is a `span` (display: block), so core's heading rule does not
+     reach it. A callout may fragment in a multicol run (dc-native.css §8), and
+     without this the label can sit alone at a column or page foot with its
+     body in the next one. */
+  break-after: avoid;
 }
 
 /* ── Variant: Note (player-facing, default) ─────────────────────────────── */

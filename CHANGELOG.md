@@ -39,6 +39,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   box, so a line holding a chip keeps the line height of the lines around it
   and a chip never splits across two lines. Headings are left as plain heading
   text. `--dc-roll-the-die-color` and `--dc-roll-the-die-border` work as before. (#18)
+- A callout label (`@callout gear label="SPECS"`, `[!NOTE]`, any variant) no
+  longer sits alone at the foot of a column or page with its body in the next
+  one: `.dc-alert-label` now carries `break-after: avoid`, which matters in the
+  multicol runs where a callout is allowed to split. A `@column-panel` header
+  bar can still be left at a page foot when its first block is not a
+  paragraph; that is a Chromium limit (it ignores `break-after: avoid` on a
+  `column-span: all` box), documented in `section.css`. (#14)
 
 ## [1.2.0] - 2026-10-10
 
