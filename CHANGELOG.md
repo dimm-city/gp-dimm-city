@@ -7,6 +7,27 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-11
+
+### Changed
+
+- **The die chip now covers every wording of the instruction and no longer
+  disturbs the line it sits in.** Besides `ROLL THE DIE!`, the chip wraps
+  `ROLL A DIE!`, `ROLLS A DIE!` and `ROLLING THE DIE!` (uppercase, as written;
+  the text is never altered). It is redrawn as a stamped label (cream fill,
+  blood-red lettering, magenta rule and offset shadow) set as a plain inline
+  box, so a line holding a chip keeps the line height of the lines around it
+  and a chip never splits across two lines. Headings are left as plain heading
+  text. `--dc-roll-the-die-color` and `--dc-roll-the-die-border` work as before. (#18)
+- **A run of cards or gear entries can pack two-up** (#15). Core's `.gp-grid-2` and
+  `.gp-grid-3` did nothing on a `@section` or `@column-panel`: the plugin's
+  float-containment default (`display: flow-root`) sat in a later cascade layer
+  and beat core's `display: grid` at any specificity, so every card took a full
+  row. The default now steps aside for the two grid classes, and the header bar
+  and preamble paragraph of a grid panel span the first row.
+  `@column-panel .gp-grid-2 .dc-allow-split` is the gear and item layout; the
+  design guide's Gear section shows it.
+
 ### Fixed
 
 - A heading word wider than its box now breaks instead of running under the
@@ -29,16 +50,6 @@ cut a version that has no `## [X.Y.Z]` heading below.
   together and stays with the block after it, so a long opener moves the
   whole title to the next page instead of leaving one line of it at the
   foot of the page before. (#12)
-### Changed
-
-- **The die chip now covers every wording of the instruction and no longer
-  disturbs the line it sits in.** Besides `ROLL THE DIE!`, the chip wraps
-  `ROLL A DIE!`, `ROLLS A DIE!` and `ROLLING THE DIE!` (uppercase, as written;
-  the text is never altered). It is redrawn as a stamped label (cream fill,
-  blood-red lettering, magenta rule and offset shadow) set as a plain inline
-  box, so a line holding a chip keeps the line height of the lines around it
-  and a chip never splits across two lines. Headings are left as plain heading
-  text. `--dc-roll-the-die-color` and `--dc-roll-the-die-border` work as before. (#18)
 - A callout label (`@callout gear label="SPECS"`, `[!NOTE]`, any variant) no
   longer sits alone at the foot of a column or page with its body in the next
   one: `.dc-alert-label` now carries `break-after: avoid`, which matters in the
@@ -46,14 +57,6 @@ cut a version that has no `## [X.Y.Z]` heading below.
   bar can still be left at a page foot when its first block is not a
   paragraph; that is a Chromium limit (it ignores `break-after: avoid` on a
   `column-span: all` box), documented in `section.css`. (#14)
-- **A run of cards or gear entries can pack two-up** (#15). Core's `.gp-grid-2` and
-  `.gp-grid-3` did nothing on a `@section` or `@column-panel`: the plugin's
-  float-containment default (`display: flow-root`) sat in a later cascade layer
-  and beat core's `display: grid` at any specificity, so every card took a full
-  row. The default now steps aside for the two grid classes, and the header bar
-  and preamble paragraph of a grid panel span the first row.
-  `@column-panel .gp-grid-2 .dc-allow-split` is the gear and item layout; the
-  design guide's Gear section shows it.
 - **A split column panel that ends in an `@card` or `@outcome` shrinks to its
   content** (#15). Both drew a decoration with an absolutely positioned box,
   which stopped Chromium balancing the panel's last fragment: it ran the full
