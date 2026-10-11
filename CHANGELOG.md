@@ -7,6 +7,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- The chapter opener's `# Title` is never split across two sheets: it keeps
+  together and stays with the block after it, so a long opener moves the
+  whole title to the next page instead of leaving one line of it at the
+  foot of the page before. (#12)
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older
