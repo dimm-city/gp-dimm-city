@@ -23,7 +23,9 @@ Gutterpress** for the column hairline (`--gp-column-rule`) and for a bare
   colophon take `@columns 2` inside them.** `@card-grid` no longer sets its own
   columns: write `@columns 2` around its cards (the grid keeps its chrome reset
   and card density). An `@npc-stat` keeps creatures whole and breaks between
-  entries whether they sit directly in the block or in an `@columns` run in it;
+  entries whether they sit directly in the block or in an `@columns` run in it
+  (a one-creature block follows a section at a page foot without splitting, and
+  the bar is never left alone above an empty first row);
   a walkthrough keeps the two-line heading height in its column runs. The
   credits snippet writes the colophon names in `@columns 2` instead of a
   `dc-colophon-grid` div.

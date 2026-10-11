@@ -710,12 +710,20 @@ h3 + .section {
    lets the rest break (blocks too).
 
    The entries are either direct children of the section (one column) or the
-   children of the `@columns` run inside it (`.gp-columns`): `:is(.dc-npc-stat,
-   .dc-npc-stat > .gp-columns)` below is "the box the entries sit in". */
+   children of the `@columns` run inside it (`.gp-columns`); the rules below take
+   both. */
 .section.dc-npc-stat:is(:has(> h4), :has(> .gp-columns > h4)) {
   --dc-section-break-inside: auto;
 }
-:is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
+.section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
+  break-after: avoid;
+}
+/* In an `@columns` run only the entries are chained. Text before the first `####`
+   (a lead) is not chained to that entry: a lead of several paragraphs chained to a
+   whole entry is one unbreakable run, and when it cannot fit at a page foot Chromium
+   ends the page with the run's first row EMPTY (the bar and a blank box), the
+   content starting overleaf. A lead above the run is chained as before. */
+.section.dc-npc-stat > .gp-columns:has(> h4) > :is(h4, h4 ~ *):not(:last-child, :has(+ h4:not(:first-of-type))) {
   break-after: avoid;
 }
 :is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
@@ -726,6 +734,31 @@ h3 + .section {
 }
 :is(.section.dc-npc-stat.dc-allow-split, .section.dc-npc-stat.dc-allow-split > .gp-columns):has(> h4) > :not(:last-child, h1, h2, h3, h4, h5, h6, h4 + *, h4 + * + *, blockquote + p) {
   break-after: auto;
+}
+
+/* A block with no `####` is ONE creature and stays whole (`break-inside: avoid`
+   from the section chassis), but core glues every section to what precedes it
+   (`:where(.section) > :where(:first-child) { break-before: avoid }`), and that
+   break-before propagates to the section's own start edge. A section that cannot
+   fit at a page foot then has no legal break before it, so Chromium breaks
+   INSIDE it instead (measured with printToPDF: the section split, a line or a
+   few blocks overleaf). It stayed whole only when the section was itself the
+   multicol container (`@npc-stat .gp-columns-2`), because its first child then
+   sat inside the multicol. With the entries in an `@columns` run the first child
+   is the bar again. A heading keeps its own `break-after: avoid`, so the bar is
+   still never left alone at a foot. */
+.section.dc-npc-stat:not(:has(h4)) > :first-child {
+  break-before: auto;
+}
+
+/* The `@columns` run of an entries block is glued to the bar and intro above it,
+   as a direct entry list is (the h3's own `break-after: avoid` plus the chain
+   above). Without this, Chromium can end a page with the bar and an EMPTY first
+   row of the run, and the first entry starts the next page (measured with
+   printToPDF: bar stranded at the foot, `@npc-stat` with `@columns 2` inside;
+   the old `@npc-stat .gp-columns-2` never did it). */
+.section.dc-npc-stat > .gp-columns {
+  break-before: avoid;
 }
 
 .dc-npc-stat h4 {
