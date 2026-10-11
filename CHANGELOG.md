@@ -25,6 +25,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   a large empty area), the title bar stays with the first entry, and each
   entry's name, stat lines and traits are kept together. Add `.dc-allow-split`
   for an unusually long entry. A block with no `####` is unchanged.
+- The chapter opener's `# Title` is never split across two sheets: it keeps
+  together and stays with the block after it, so a long opener moves the
+  whole title to the next page instead of leaving one line of it at the
+  foot of the page before. (#12)
 
 ## [1.2.0] - 2026-10-10
 
