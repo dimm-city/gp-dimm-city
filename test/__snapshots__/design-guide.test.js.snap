@@ -938,12 +938,12 @@ Signal Jammer (single-use)
 <span class="dc-classtag generalist">Generalist</span></p>
 </div>
 <h2>Roll the die</h2>
-<p>The exact text <code>ROLL THE DIE!</code> in prose becomes the die chip automatically. Inside a code span or raw HTML it is left alone.</p>
-<pre><code data-source-range="292:295" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder.
+<p>The text <code>ROLL THE DIE!</code> in prose becomes the die chip automatically, and so do <code>ROLL A DIE!</code>, <code>ROLLS A DIE!</code> and <code>ROLLING THE DIE!</code>: uppercase, with the exclamation mark, as written. Inside a code span, raw HTML or a heading it is left alone. The chip is set inside the line and never splits across two, so it never makes a line taller.</p>
+<pre><code data-source-range="292:295" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
-<p>When an ability says <span class="dc-roll-the-die">ROLL THE DIE!</span>, roll a d20 and read the outcome ladder.</p>
+<p>When an ability says <span class="dc-roll-the-die">ROLL THE DIE!</span>, roll a d20 and read the outcome ladder. A trap may say <span class="dc-roll-the-die">ROLL A DIE!</span> or <span class="dc-roll-the-die">ROLLING THE DIE!</span> instead.</p>
 </div>
 <p>Tokens: <code>--dc-roll-the-die-color</code>, <code>--dc-roll-the-die-border</code>.</p>
 </div></div>"
@@ -1334,10 +1334,11 @@ Fodder — Usually Small to Medium</p>
 <h5>Equipment</h5>
 <p>Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.</p>
 </div></div>
+<p>A block with several <code>####</code> entries breaks between creatures and never inside one, in one column or in <code>@npc-stat .gp-columns-2</code>; the title bar stays with the first entry. A block with no <code>####</code> is one creature and stays whole. Add <code>.dc-allow-split</code> (<code>@npc-stat {.dc-allow-split}</code>) for an unusually long entry: it may then break after its name and stat lines.</p>
 <p>Tokens: <code>--dc-npc-stat-label-color</code>, <code>--dc-npc-stat-primary</code>, <code>--dc-npc-stat-secondary</code>, <code>--dc-npc-stat-rule</code>, <code>--dc-npc-stat-rule-width</code>.</p>
 <h2>Stat grid and at-a-glance cards</h2>
 <p>Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one label and one value per card.</p>
-<pre><code data-source-range="469:490" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
+<pre><code data-source-range="471:492" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
     &lt;div class=&quot;dc-stat-class&quot;&gt;— Contact · Ripperdoc —&lt;/div&gt;
@@ -1380,7 +1381,7 @@ Fodder — Usually Small to Medium</p>
 </div>
 <h2>NPC sidebar</h2>
 <p>A contact capsule floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>.</p>
-<pre><code data-source-range="521:527" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
+<pre><code data-source-range="523:529" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
 &lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; — Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
@@ -1723,7 +1724,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
-<p>When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.</p>
+<p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
 <div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
@@ -3082,7 +3083,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">When we get outta dis, Imma take whoever has the most kills to the EntD!</p>
-<p>When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. Once per round.</p>
+<p>When an ally in range <span class="dc-roll-the-die">ROLLS THE DIE!</span>, bark encouragement that hits just right. Once per round.</p>
 <div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Push the Fail:</em> A Failure becomes a Hard Choice.</p>
@@ -4339,7 +4340,7 @@ Master — Medium</p>
 <h5>Traits</h5>
 <p><strong>Amphibious:</strong> Undertow can breathe water or air and swim as fast as they move on land.</p>
 <p><strong>Brineborne:</strong> Undertow regenerates 1 Hit Point per round spent in salt water up to their max of 10.</p>
-<p><strong>Stranglehold:</strong> Undertow can attack one nearby target per round and grapple them on a successful hit, dealing 4 damage, locking their limbs, and preventing movement. Constricted targets must ROLL A DIE! (11+) to break free or suffer Surreal rolls anytime they ROLL A DIE! while grappled. Undertow maintains control for free, dealing 1 damage each round while the target remains trapped. However, while holding a target, Undertow can only make one basic attack against any other target within reach.</p>
+<p><strong>Stranglehold:</strong> Undertow can attack one nearby target per round and grapple them on a successful hit, dealing 4 damage, locking their limbs, and preventing movement. Constricted targets must <span class="dc-roll-the-die">ROLL A DIE!</span> (11+) to break free or suffer Surreal rolls anytime they <span class="dc-roll-the-die">ROLL A DIE!</span> while grappled. Undertow maintains control for free, dealing 1 damage each round while the target remains trapped. However, while holding a target, Undertow can only make one basic attack against any other target within reach.</p>
 <p><strong>Swim:</strong> Undertow has the ability to move through water with the same speed as they would otherwise move on land.</p>
 </div><hr data-source-range="165:166">
 <div class="section" data-source-range="167:168"><h3>Size Modifiers</h3>

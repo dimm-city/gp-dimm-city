@@ -58,7 +58,8 @@
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
  *   (chapter-opener composite is now markup-driven — see CSS notes below)
- *   `ROLL THE DIE!`      → span.dc-roll-the-die
+ *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
+ *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
  *
  * GFM ALERT SYNTAX:
@@ -214,7 +215,8 @@ function buildStickerChain(items) {
   return html;
 }
 
-const ROLL_THE_DIE_TEXT = 'ROLL THE DIE!';
+// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! — uppercase only.
+const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:A|THE) DIE!/g;
 
 function isWordChar(char) {
   return char !== '' && /[A-Za-z0-9_]/.test(char);
@@ -231,17 +233,16 @@ function splitRollDieText(token, state) {
   const content = token.content || '';
   const replacement = [];
   let cursor = 0;
-  let searchFrom = 0;
+  const pattern = new RegExp(ROLL_THE_DIE_PATTERN.source, 'g');
+  let match;
 
-  while (searchFrom < content.length) {
-    const index = content.indexOf(ROLL_THE_DIE_TEXT, searchFrom);
-    if (index === -1) break;
-
+  while ((match = pattern.exec(content)) !== null) {
+    const index = match.index;
     const before = index > 0 ? content[index - 1] : '';
-    const end = index + ROLL_THE_DIE_TEXT.length;
+    const end = index + match[0].length;
     const after = end < content.length ? content[end] : '';
     if (isWordChar(before) || isWordChar(after)) {
-      searchFrom = index + 1;
+      pattern.lastIndex = index + 1;
       continue;
     }
 
@@ -249,14 +250,13 @@ function splitRollDieText(token, state) {
       replacement.push(copyTextToken(token, content.slice(cursor, index), state));
     }
 
-    const rollToken = copyTextToken(token, ROLL_THE_DIE_TEXT, state);
+    const rollToken = copyTextToken(token, match[0], state);
     rollToken.type = 'dc_roll_the_die';
     rollToken.tag = 'span';
     rollToken.nesting = 0;
     replacement.push(rollToken);
 
     cursor = end;
-    searchFrom = end;
   }
 
   if (replacement.length === 0) return null;
@@ -288,8 +288,10 @@ function updateRawHtmlStack(html, stack) {
 }
 
 function dcRollDieTransform(state) {
-  state.tokens.forEach(token => {
+  state.tokens.forEach((token, i) => {
     if (token.type !== 'inline' || !Array.isArray(token.children)) return;
+    // A heading is already display type: its wording stays plain heading text.
+    if (i > 0 && state.tokens[i - 1].type === 'heading_open') return;
 
     const children = [];
     const rawHtmlStack = [];

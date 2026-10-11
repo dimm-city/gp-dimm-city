@@ -114,6 +114,15 @@
    Chapter start — footers suppressed; the chevron banner IS the visual
    identity. dc-native.css refills the two bottom boxes with the brick
    band so the margin band stays continuous.
+
+   The name applies to EVERY page `.dc-chapter-start` spans, so an opener that
+   runs past its first page prints its continuation pages without folios too;
+   end the opener with `@page` to get them back. MEASURED in Chromium's own
+   print (printToPDF) why this cannot be narrowed to the first page:
+     - `@page chapter-start:first` matches only the document's first page,
+       not the first page of a page group;
+     - naming just the `h1`, or a zero-height first child, forces a page
+       break at the name change (a title alone on a page, or a blank page).
    --------------------------------------------------------------------------- */
 
 @page chapter-start {

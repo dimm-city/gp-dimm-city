@@ -141,7 +141,8 @@
   margin-bottom: 0.04in;
 }
 
-.dc-alert li::before {
+.dc-alert li::before,
+.dc-alert li > p:first-child::before {
   color: var(--dc-alert-border);
 }
 

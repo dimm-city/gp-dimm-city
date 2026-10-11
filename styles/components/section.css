@@ -681,6 +681,36 @@ h3 + .section {
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
    Override per chapter / per faction in the book's own sheet selector chains. */
+/* Page breaks. A block with `####` entries is a RUN of creatures: it may break
+   between entries (token `auto`; this also stops `.gp-columns-2` on the section
+   from jumping the whole block to the next page) and never inside one. An entry
+   has no wrapper — it is an `h4` and the siblings that follow it up to the next
+   `h4` — so "never inside" is a keep-with-next chain: every child but the last
+   of its entry takes `break-after: avoid`, and each block of an entry is itself
+   unbreakable so a paragraph cannot split between columns. Chromium keeps a
+   chain together when it fits a page and lets it break only when it cannot. The
+   title bar (h3) and its intro chain on to the first entry, so the bar is never
+   alone at a page foot. A block with no `h4` is ONE creature (the bar names it)
+   and stays whole like any section. `.dc-allow-split` is the opt-in for an
+   unusually long entry: it keeps only each entry's name with its first two
+   blocks (the stat lines) and headings with what follows, and lets the rest
+   break (blocks too). */
+.section.dc-npc-stat:has(> h4) {
+  --dc-section-break-inside: auto;
+}
+.section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
+  break-after: avoid;
+}
+.section.dc-npc-stat:has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
+  break-inside: avoid;
+}
+.section.dc-npc-stat.dc-allow-split:has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
+  break-inside: auto;
+}
+.section.dc-npc-stat.dc-allow-split:has(> h4) > :not(:last-child, h1, h2, h3, h4, h5, h6, h4 + *, h4 + * + *, blockquote + p) {
+  break-after: auto;
+}
+
 .dc-npc-stat h4 {
   border-top: var(--dc-npc-stat-rule-width) solid var(--dc-npc-stat-rule);
   padding-top: 0.05in;
