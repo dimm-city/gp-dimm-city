@@ -142,7 +142,17 @@
    point of splitting them.
 
    Top/bottom borders only: the base `.section` card's clip-path corner
-   breaks multicol, so this variant trades it for flat rules. */
+   breaks multicol, so this variant trades it for flat rules.
+
+   The bottom edge (padding, then the 2px rule) is painted as two shadows
+   below a box that ends where its content ends, not laid out as padding and
+   border. A fragmented box that ends flush with the page foot has nowhere to
+   put trailing padding or border, and Chromium sends them to an extra page:
+   a panel whose last fragment filled the page spilled a 10px strip of its
+   bottom edge onto the next sheet. Shadows take no layout space, so there is
+   nothing to push. The picture is unchanged: the cream continues
+   --dc-section-pad-bottom below the content, then the rule, and the margin
+   below the panel grows by the same amount so nothing after it moves. */
 .section.dc-column-panel {
   --dc-section-surface: none;
   --dc-section-shadow:  none;
@@ -151,8 +161,11 @@
   --dc-section-pad-bottom: var(--space-sm);
   --dc-section-pad-left:   var(--space-md);
   background: var(--dc-section-bg);
-  border-bottom: 2px solid var(--border-hairline);
-  margin: 12pt 0;
+  padding-bottom: 0;
+  box-shadow:
+    0 var(--dc-section-pad-bottom) 0 0 var(--dc-section-bg),
+    0 calc(var(--dc-section-pad-bottom) + 2px) 0 0 var(--border-hairline);
+  margin: 12pt 0 calc(12pt + var(--dc-section-pad-bottom) + 2px);
 }
 
 /* ── Tabbed variant — first-child heading sits ABOVE the section ─────────
@@ -324,6 +337,15 @@
 .section.dc-column-panel > h3:first-child + p {
   column-span: all;
   break-inside: avoid;
+}
+
+/* In a core GRID run (`@section .gp-grid-2`, `@column-panel .gp-grid-2`) the
+   header bar and a panel's preamble paragraph are grid items like any other
+   child, so each would take a cell. `grid-column: 1 / -1` gives them the whole
+   first row, as `column-span: all` does in a column run. */
+.section:is(.gp-grid-2, .gp-grid-3) > :is(h2, h3):first-child,
+.section.dc-column-panel:is(.gp-grid-2, .gp-grid-3) > :is(h2, h3):first-child + p {
+  grid-column: 1 / -1;
 }
 
 /* Multi-column body copy: kill rivers from narrow-column justification. */

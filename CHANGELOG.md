@@ -7,6 +7,31 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- **A run of cards or gear entries can pack two-up** (#15). Core's `.gp-grid-2` and
+  `.gp-grid-3` did nothing on a `@section` or `@column-panel`: the plugin's
+  float-containment default (`display: flow-root`) sat in a later cascade layer
+  and beat core's `display: grid` at any specificity, so every card took a full
+  row. The default now steps aside for the two grid classes, and the header bar
+  and preamble paragraph of a grid panel span the first row.
+  `@column-panel .gp-grid-2 .dc-allow-split` is the gear and item layout; the
+  design guide's Gear section shows it.
+- **A split column panel that ends in an `@card` or `@outcome` shrinks to its
+  content** (#15). Both drew a decoration with an absolutely positioned box,
+  which stopped Chromium balancing the panel's last fragment: it ran the full
+  page height, so the next panel could not start beneath it. The `@card` body's
+  decorative tick is now the skill card's alone (it was never part of the
+  `@card` primitive's tokens), and the outcome ladder's inner hairline is an
+  inset shadow.
+- **A column panel that ends flush with the page foot no longer spills its
+  bottom edge onto an extra page** (#15). The panel's bottom padding and rule
+  are painted as shadows below a box that ends with its content, so there is
+  no trailing box edge to push to the next sheet. Same picture, same spacing;
+  a neighbour with a larger top margin than the panel's bottom margin can now
+  sit up to 10px closer, because the padding that used to sit inside the panel
+  no longer adds to that gap.
+
 ## [1.2.0] - 2026-10-10
 
 Requires Gutterpress 0.11.16 or newer (the desktop app or CLI): older

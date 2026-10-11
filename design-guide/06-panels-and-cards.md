@@ -374,6 +374,109 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 
 
+A long run packs tighter two-up. Put the entries in a core grid: `.gp-grid-2` on a `@column-panel` places each child in the next cell, across then down, and the heading bar takes the first row. A row is as tall as its taller entry, so keep neighbours about the same length. Every child is a cell, so leave prose outside the run, and add `.dc-allow-split` so a run longer than a page breaks between rows.
+
+```markdown {.dg-split}
+@column-panel .gp-grid-2 .dc-allow-split
+
+### Useful Items
+
+@gear
+
+### Throwaway Blaster
+
+*Ranged. Pistol. CQC Locked, Pack Fed.*
+
+**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
+
+@end-gear
+
+@gear
+
+### Snake Cable
+
+*Utility. Mechanized. Reach 50 ft.*
+
+A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
+
+@end-gear
+
+@gear
+
+### Patchkit
+
+*Medical. Disposable.*
+
+Restores 2 HP when used as an action. Sterile enough.
+
+@end-gear
+
+@gear
+
+### Signal Jammer
+
+*Utility. Electronic. Near range.*
+
+Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
+
+@end-gear
+
+@end-column-panel
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@column-panel .gp-grid-2 .dc-allow-split
+
+### Useful Items
+
+@gear
+
+### Throwaway Blaster
+
+*Ranged. Pistol. CQC Locked, Pack Fed.*
+
+**Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph.
+
+@end-gear
+
+@gear
+
+### Snake Cable
+
+*Utility. Mechanized. Reach 50 ft.*
+
+A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
+
+@end-gear
+
+@gear
+
+### Patchkit
+
+*Medical. Disposable.*
+
+Restores 2 HP when used as an action. Sterile enough.
+
+@end-gear
+
+@gear
+
+### Signal Jammer
+
+*Utility. Electronic. Near range.*
+
+Kills all wireless communications in Near range for 3 rounds. Loud to anyone watching network traffic.
+
+@end-gear
+
+@end-column-panel
+
+</div>
+
+
 ## Tables
 
 Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.

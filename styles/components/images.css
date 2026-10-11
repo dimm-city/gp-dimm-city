@@ -170,7 +170,7 @@
      --dc-section-bg      → panel background surface
      --dc-section-accent  → left strip / top border accent color        */
 
-/* Float-containment DEFAULT — display at ZERO specificity on purpose.
+/* Float-containment DEFAULT.
    flow-root makes the card a block formatting context so it CONTAINS floated
    children (.dc-sidebar, a book's floated art, fiction-excerpt art — all
    float:right). Without it a section whose trailing content is a float
@@ -182,14 +182,16 @@
    Safe w.r.t. margin collapsing: .section's non-zero vertical padding
    already blocks parent/child margin collapse, so flow-root changes no
    spacing for any variant that keeps that padding.
-   `:where()` keeps this a default, not a mandate: theme CSS loads after
-   core at equal specificity, so a class-strength `.section { display }`
-   silently beat core's layout vocabulary — measured: `.gp-grid-2` on a
-   `@section` computed flow-root (silent no-op) while the same class on a
-   `@page` worked. Zero specificity lets .gp-grid-* / .gp-columns-* own
-   `display`, exactly as core declares its own page-root display
-   (markers.js: `:where(.page, .spread) { display: flow-root }`). */
-:where(.section) {
+   It is a default, not a mandate, and `:where()` alone does not make it one:
+   core's `.gp-grid-*` lives in the earlier `gp.vocab` layer, and a rule in
+   any later layer beats it at ANY specificity, zero included. Measured:
+   `:where(.section) { display: flow-root }` still computed flow-root on
+   `@section .gp-grid-2` (a silent no-op, one card per row) while the same
+   class on a `@page` laid out as a grid. So the default steps aside for the
+   one core class that owns `display` (`.gp-columns-*` set `columns`, not
+   `display`, and coexist with flow-root). `:where()` keeps the specificity
+   at zero for the rest. */
+:where(.section:not(.gp-grid-2, .gp-grid-3)) {
   display: flow-root;
 }
 
