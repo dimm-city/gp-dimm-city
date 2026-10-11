@@ -19,6 +19,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
   in a paragraph, so the bullet is now drawn on that first paragraph and sits
   inline with the first line, in alerts and callouts too. Tight lists and
   every other list render exactly as before. (#17)
+- **`@npc-stat` blocks with `####` entries no longer split a creature across
+  pages or columns** (#16). The block may now break between entries (so
+  `@npc-stat .gp-columns-2` no longer jumps whole to the next page and leaves
+  a large empty area), the title bar stays with the first entry, and each
+  entry's name, stat lines and traits are kept together. Add `.dc-allow-split`
+  for an unusually long entry. A block with no `####` is unchanged.
 - The chapter opener's `# Title` is never split across two sheets: it keeps
   together and stays with the block after it, so a long opener moves the
   whole title to the next page instead of leaving one line of it at the
