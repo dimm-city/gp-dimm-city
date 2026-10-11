@@ -482,9 +482,10 @@
    and shadow paint around its text without adding to the line box, so a line
    holding a chip is exactly as tall as one without, and nothing around it
    moves. `line-height: 0` keeps the chip's own font from growing the line,
-   the font is smaller than the body, and `box-decoration-break: clone` gives a
-   chip that wraps a line end both of its edges. The fill is opaque paper, so
-   contrast is fixed whatever it sits on: --blood on --paper-cream is 7.7:1
+   the font is smaller than the body, and `white-space: nowrap` moves a chip that
+   would straddle a line end to the next line whole (it still adds no height).
+   `box-decoration-break: clone` keeps both edges if one ever does fragment.
+   The fill is opaque paper, so contrast is fixed whatever it sits on: --blood on --paper-cream is 7.7:1
    (it failed at 2.64:1 on skill-card paper-aged as --crimson text). */
 .dc-roll-the-die {
   display: inline;
@@ -492,6 +493,7 @@
   font-size: 0.8em;
   font-weight: 700;
   line-height: 0;
+  white-space: nowrap;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--dc-roll-the-die-color);

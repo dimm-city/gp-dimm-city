@@ -288,7 +288,7 @@ Result {.dg-result}
 
 ## Roll the die
 
-The text `ROLL THE DIE!` in prose becomes the die chip automatically, and so do `ROLL A DIE!`, `ROLLS A DIE!` and `ROLLING THE DIE!`: uppercase, with the exclamation mark, as written. Inside a code span or raw HTML it is left alone. The chip is set inside the line, so it never makes a line taller.
+The text `ROLL THE DIE!` in prose becomes the die chip automatically, and so do `ROLL A DIE!`, `ROLLS A DIE!` and `ROLLING THE DIE!`: uppercase, with the exclamation mark, as written. Inside a code span, raw HTML or a heading it is left alone. The chip is set inside the line and never splits across two, so it never makes a line taller.
 
 ```markdown
 When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.

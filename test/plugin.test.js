@@ -145,6 +145,15 @@ describe("behaviour carried from the book repo", () => {
     expect(html).toContain("<code>ROLL A DIE!</code>");
   });
 
+  test("leaves headings as plain text", () => {
+    const html = createMarkdown().render(["## ROLLING THE DIE!", "", "Setext ROLL A DIE!", "---", "", "### Before ROLL A DIE! after", "", "Body ROLL A DIE! text."].join("\n"));
+
+    expect(countRolls(html)).toBe(1);
+    expect(html).toMatch(/<h2>ROLLING THE DIE!<\/h2>/);
+    expect(html).toMatch(/<h3>Before ROLL A DIE! after<\/h3>/);
+    expect(html).toContain(`Body ${ROLL_HTML.replace("ROLL THE DIE!", "ROLL A DIE!")} text.`);
+  });
+
   test("runs after alert parsing and handles ordinary blockquotes", () => {
     const source = ["> [!NOTE]", "> **ROLL THE DIE!** and `ROLL THE DIE!`.", "", "> *Ordinary* ROLL THE DIE!"].join("\n");
     const html = createMarkdown().render(source);

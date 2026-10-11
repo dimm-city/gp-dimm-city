@@ -15,8 +15,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
   the text is never altered). It is redrawn as a stamped label (cream fill,
   blood-red lettering, magenta rule and offset shadow) set as a plain inline
   box, so a line holding a chip keeps the line height of the lines around it
-  and a chip that wraps a line end stays whole. `--dc-roll-the-die-color` and
-  `--dc-roll-the-die-border` work as before. (#18)
+  and a chip never splits across two lines. Headings are left as plain heading
+  text. `--dc-roll-the-die-color` and `--dc-roll-the-die-border` work as before. (#18)
 
 ## [1.2.0] - 2026-10-10
 

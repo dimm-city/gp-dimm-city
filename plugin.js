@@ -288,8 +288,10 @@ function updateRawHtmlStack(html, stack) {
 }
 
 function dcRollDieTransform(state) {
-  state.tokens.forEach(token => {
+  state.tokens.forEach((token, i) => {
     if (token.type !== 'inline' || !Array.isArray(token.children)) return;
+    // A heading is already display type: its wording stays plain heading text.
+    if (i > 0 && state.tokens[i - 1].type === 'heading_open') return;
 
     const children = [];
     const rawHtmlStack = [];
