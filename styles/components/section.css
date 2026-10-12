@@ -476,13 +476,8 @@ h3 + .dc-section-panel {
      .dc-card-heading  — card title (from first h4)
      .dc-card-pull     — pull-quote or flavor intro (first blockquote)
      .dc-card-body     — remaining content container
-   Footer: the last blockquote in .dc-card-body; no wrapper div emitted.
-   The plugin tags it explicitly as .dc-card-footer (dc#44) as it streams
-   past each body blockquote in turn, with no lookahead — it can't know in
-   advance which one is last, so it moves the tag forward onto each new one
-   and lets it land on whichever is open when the card closes. The
-   `blockquote:last-of-type` selector below stays as a fallback for one
-   release; once nothing depends on it, delete it and keep the class alone.
+   Footer: the last blockquote in .dc-card-body; no wrapper div emitted. The
+   plugin tags it .dc-card-footer (dc#44).
 
    Plugin macro:
      @card .dc-flaws … @end-card
@@ -530,12 +525,6 @@ h3 + .dc-section-panel {
   margin-bottom: 0;
 }
 
-/* Footer: last blockquote in card body. `.dc-card-footer` (plugin-tagged,
-   dc#44) is the real contract; `blockquote:last-of-type` is kept alongside
-   it for one release as a fallback for markup the plugin didn't generate,
-   per the same rule. Both always resolve to the same element today — the
-   plugin only ever tags the blockquote that is, in fact, last. */
-.dc-card > .dc-card-body blockquote:last-of-type,
 .dc-card > .dc-card-body .dc-card-footer {
   border-left: none;
   padding-left: 0;
