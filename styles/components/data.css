@@ -610,11 +610,11 @@
      driven (per-project tints via tokens, not raw colors). */
   background: var(--paper-cream);
   padding: 0.18in 0.22in;
-  box-shadow: var(--shadow-poster);
-  border-top: 4pt solid var(--rust);
-  border-bottom: 4pt solid var(--rust);
-  border-left: 1.5pt solid var(--ink-dark);
-  border-right: 1.5pt solid var(--ink-dark);
+  box-shadow: var(--dc-toc-shadow);
+  border: solid var(--rust);
+  border-width: var(--dc-toc-rail-y) var(--dc-toc-rail-x);
+  border-left-color: var(--ink-dark);
+  border-right-color: var(--ink-dark);
 }
 
 .dc-toc ol {
@@ -653,7 +653,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--rust);
+  background: var(--dc-toc-badge);
   color: var(--paper-cream);
   font-family: var(--font-mono);
   font-weight: 700;

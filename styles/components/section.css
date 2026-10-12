@@ -24,6 +24,10 @@
      --dc-section-drop    — flat only: an extra box-shadow (a drop shadow)
      --dc-section-pad-top/-right/-bottom/-left — padding; the panel's heading
                             bar derives its negative margins from them
+     --dc-section-clip / --dc-section-rail — the panel's chamfer and rail width
+                            (the ::before/::after layers read them, so a page
+                            template changes the edge without touching them)
+     --dc-section-gap / --dc-section-grow — space below; flex-grow in a flex page
      --dc-section-edge  — how far the panel's bottom edge hangs below the box
                             instead of sitting in its padding. A panel splits
                             across pages, so by default it is the bottom
@@ -64,8 +68,9 @@
      (one carrying pinned or bleed art) the overhang escapes to the document
      and trips core's engine.width.overflow hard error. Giving the decoration
      room is the fix; clipping it back only hid it. */
-  margin: 0 3px calc(12pt + var(--dc-section-edge)) 0;
+  margin: 0 3px calc(var(--dc-section-gap) + var(--dc-section-edge)) 0;
   position: relative;
+  flex-grow: var(--dc-section-grow);
 }
 
 /* ── panel ───────────────────────────────────────────────────────────────── */
@@ -113,8 +118,8 @@
   inset: 0 0 calc(-1 * var(--dc-section-edge)) 0;
   /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). */
   background: var(--dc-section-bg);
-  box-shadow: inset 5px 0 0 var(--dc-section-accent);
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+  box-shadow: inset var(--dc-section-rail) 0 0 var(--dc-section-accent);
+  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%);
   z-index: -1;
 }
 
@@ -131,7 +136,7 @@
   right: -3px;
   bottom: calc(-3px - var(--dc-section-edge));
   background: var(--ink-dark);
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%);
   z-index: -2;
   pointer-events: none;
 }

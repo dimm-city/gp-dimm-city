@@ -35,6 +35,16 @@
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
 
+  /* Panel edge. A template changes the panel's silhouette through these two
+     tokens, never through its ::before/::after: `clip` is the chamfer cut off
+     the top-right corner, `rail` the accent strip down the left edge. `gap` is
+     the space below a panel or flat section, and `grow` lets a flat section
+     fill a flex-column page (the credits page sets both). */
+  --dc-section-clip:      18px;
+  --dc-section-rail:      5px;
+  --dc-section-gap:       12pt;
+  --dc-section-grow:      0;
+
   /* ─── Component Public Token Defaults ────────────────────────────────────
      Override surface for per-chapter and per-project theming. These are the
      defaults that were previously declared inside each component class rule.
@@ -149,6 +159,14 @@
   /* .dc-intro public API */
   --dc-intro-accent:         var(--orange);
   --dc-intro-bg:             var(--paper-stain);
+  --dc-intro-gap:            calc(0.1in + 3pt);    /* space below; the front-matter pages set 0 to stack it flush on the next box */
+  --dc-intro-pad-bottom:     10px;
+
+  /* .dc-toc (contents card) public API */
+  --dc-toc-rail-y:           4pt;                  /* rust strips top and bottom */
+  --dc-toc-rail-x:           1.5pt;                /* ink rails left and right */
+  --dc-toc-shadow:           var(--shadow-poster);
+  --dc-toc-badge:            var(--rust);          /* number chip */
 
   /* NPC stat block (.dc-npc-stat-*) public API */
   --dc-npc-stat-label-color: var(--hud-blue-dark);
