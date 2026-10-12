@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-12
+
 ### Added
 
 - **The d20 ladder is recognised by its bands.** A two-column pipe table whose
