@@ -14,6 +14,15 @@ so a book writes fewer `.dc-avoid-split`, `.dc-snug`, `{.dc-chevron}` and `gp-*`
 classes, and every override that stays is documented and has a token a book can
 set from its own CSS.
 
+### Changed (pagination)
+
+- **Hyphenation is manual (`hyphens: manual`), not automatic.** `hyphens: auto`
+  hyphenates only where the browser ships a dictionary, and Chromium builds differ:
+  the desktop app (Electron) has none on Linux, Chrome for Testing has them. The
+  same book paginated differently in the desktop app and the CLI (SysOps: 396 vs
+  392 pages). Soft hyphens (`&shy;`) still break. A book that wants automatic
+  hyphenation sets `hyphens: auto` in its own CSS, accepting that trade-off.
+
 ### Changed
 
 - **A creature stays whole by default.** An `@npc-stat` with no `####`, or one (a

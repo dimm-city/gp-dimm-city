@@ -416,3 +416,18 @@ describe("snippets", () => {
     }
   });
 });
+
+// `hyphens: auto` hyphenates only where the browser ships a dictionary, and
+// Chromium builds differ, so the same book paginated differently in the desktop
+// app and the CLI. The package hyphenates manually (soft hyphens only).
+describe("hyphenation does not depend on the browser", () => {
+  test("no package rule sets hyphens: auto", () => {
+    const bad = [];
+    for (const rel of pkg.gutterpress.styles) {
+      postcss.parse(read(rel)).walkDecls("hyphens", (d) => {
+        if (d.value.trim() === "auto") bad.push(`${rel}: ${d.parent.selector}`);
+      });
+    }
+    expect(bad).toEqual([]);
+  });
+});
