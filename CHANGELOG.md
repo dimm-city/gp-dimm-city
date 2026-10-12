@@ -7,6 +7,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-12
+
+Needs **Gutterpress 0.11.17-alpha.7 or later**: that core resolves the variant
+words on `@section`, `@page` and `@chapter` that this release declares.
+
 ### Added
 
 - **Section variants: `@section panel`, `@section flat`, `@section aside`.**
