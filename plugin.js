@@ -15,11 +15,11 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear                → div.dc-card.dc-entry.dc-gear
- *   @augment             → div.dc-card.dc-entry.dc-augment   (cybernetics, mods)
- *   @treasure            → div.dc-card.dc-entry.dc-treasure  (magic items, relics)
- *   @vehicle             → div.dc-card.dc-entry.dc-vehicle
- *   @drug                → div.dc-card.dc-entry.dc-drug      (drugs, elixirs, consumables)
+ *   @gear [augment|treasure|vehicle|drug]
+ *                        → div.dc-card.dc-entry.dc-gear (general gear), or
+ *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
+ *                          treasure (magic items, relics), vehicle, drug (drugs,
+ *                          elixirs, consumables)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @block [panel|slate|shard] label="Title"
@@ -44,7 +44,7 @@
  *                          zero-padded step list (the wrapper renders nothing)
  *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
  *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          visit, gear, example; none is a note. The label is `label="…"`,
+ *                          visit, example; none is a note. The label is `label="…"`,
  *                          or the variant's name. `@dm-note` is `@callout dm`
  *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
@@ -68,7 +68,7 @@
  *
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
- *   / `[!GEAR]` / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
+ *   / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
  *   into `<div class="dc-alert dc-<type>">` (moved from print-md core 2026-05-17).
  *
  * SPECIALTY VARIANTS:
@@ -618,7 +618,6 @@ const DC_ALERT_TYPES = {
   VIBE:      { classes: "dc-alert dc-vibe-callout",         label: "Vibe" },
   ORIGIN:    { classes: "dc-alert dc-origin-callout",       label: "Origin" },
   VISIT:     { classes: "dc-alert dc-visit-callout",        label: "Visit" },
-  GEAR:      { classes: "dc-alert dc-gear-callout",         label: "Gear" },
   FLAVOR:    { classes: "dc-flavor" },
   PULLQUOTE: { classes: "dc-pullquote dc-flush" },
 };
@@ -1206,7 +1205,7 @@ function dcProcedures(state) {
 
 // ── Declared component: @callout (and its alias @dm-note) ──────────────────
 //
-// `@callout note|warning|dm|vibe|origin|visit|gear|example` is a declared wrapper:
+// `@callout note|warning|dm|vibe|origin|visit|example` is a declared wrapper:
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
@@ -1218,7 +1217,6 @@ const CALLOUTS = {
   vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
   origin: { class: 'dc-origin-callout', label: 'Origin' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
-  gear: { class: 'dc-gear-callout', label: 'Gear' },
   example: { class: 'dc-example-callout', label: 'Example' },
 };
 
@@ -1286,10 +1284,20 @@ function validateSkill({ blocks }) {
     }));
 }
 
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug'];
+
+// A bare `@gear` (or an unrecognised word, which core reports) is general gear:
+// core added only the shared card, so the general-gear class goes right after it.
+function dcGear(state) {
+  forEachComponent(state.tokens, 'gear', ([open]) => {
+    if (GEAR_KINDS.includes(open.meta.variant)) return;
+    open.attrSet('class', open.attrGet('class').replace('dc-entry', 'dc-entry dc-gear'));
+  });
+}
+
 /**
- * Entry cards (`@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`): one
- * entry is one name. The name is the entry's first heading (`####`, or `###`
- * as `@gear` has always taken). An entry without one has no title bar, and
+ * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`):
+ * one entry is one name. The name is the entry's first heading (`####`, or `###`). An entry without one has no title bar, and
  * one with a second heading is usually two entries run together: a declared
  * marker that opens again closes the one before it, so each entry starts with
  * its own marker line.
@@ -1342,7 +1350,7 @@ const FIELD_DEFAULT_LABEL = Object.fromEntries(
 const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
 
 // The cards whose paragraphs may be field lines.
-const FIELD_HOSTS = new Set(['gear', 'augment', 'treasure', 'vehicle', 'drug', 'skill']);
+const FIELD_HOSTS = new Set(['gear', 'skill']);
 
 const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
 
@@ -1477,6 +1485,7 @@ export default function dimmCityPlugin(md, options = {}) {
   // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_factions', dcFactions);
+  md.core.ruler.push('dc_gear', dcGear);
   md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
@@ -1562,14 +1571,13 @@ export const markers = {
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
-  // Entry cards: one card style family (`.dc-entry`), each marker a token setter
-  // on it (styles/components/entries.css). `@gear` is general gear; the others
-  // are what the books list in catalogs. Each starts with the entry's name.
-  gear: wrapper('dc-card dc-entry dc-gear', { validate: validateEntry }),
-  augment: wrapper('dc-card dc-entry dc-augment', { validate: validateEntry }),
-  treasure: wrapper('dc-card dc-entry dc-treasure', { validate: validateEntry }),
-  vehicle: wrapper('dc-card dc-entry dc-vehicle', { validate: validateEntry }),
-  drug: wrapper('dc-card dc-entry dc-drug', { validate: validateEntry }),
+  // Entry cards: one card family (`.dc-entry`); `@gear` is general gear and its
+  // bare word picks a kind, a token setter on that family
+  // (styles/components/entries.css). Each starts with the entry's name.
+  gear: wrapper('dc-card dc-entry', {
+    variants: Object.fromEntries(GEAR_KINDS.map((kind) => [kind, `dc-${kind}`])),
+    validate: validateEntry,
+  }),
   // An organization's profile: a card with a kind badge. The kind is the bare
   // word (`@faction cult`) and the badge reads it unless `label="…"` names its own.
   faction: wrapper('dc-card dc-faction', {

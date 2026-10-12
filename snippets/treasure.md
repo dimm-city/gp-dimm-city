@@ -1,4 +1,4 @@
-@treasure
+@gear treasure
 
 #### {{name}}
 
@@ -8,4 +8,4 @@
 
 - **{{power}}:** {{effect}}
 
-@end-treasure
+@end-gear

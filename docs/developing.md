@@ -10,7 +10,7 @@ page update, commit, open a PR.
 | Path | What it is |
 |---|---|
 | `plugin.js` | The markdown-it plugin: every `@macro` and `[!ALERT]` the system understands |
-| `styles/` | The 16 stylesheets, listed in cascade order in `package.json` → `gutterpress.styles` |
+| `styles/` | The 17 stylesheets, listed in cascade order in `package.json` → `gutterpress.styles` |
 | `snippets/` | What the desktop app's snippet picker inserts, one `.md` per macro |
 | `components.yaml` | The component catalog: author syntax → emitted classes → public tokens → owning sheet |
 | `fonts/`, `images/` | Assets the stylesheets reference with `url()` |

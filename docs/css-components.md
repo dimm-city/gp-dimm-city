@@ -96,7 +96,7 @@ one-off exceptions; use custom properties only for the small shared API.
 **How This Applies to Alert Variants**
 
 Keep `.dc-alert` as the only shell. Let variant classes `.dc-note`, `.dc-vibe-callout`,
-`.dc-origin-callout`, `.dc-visit-callout`, `.dc-gear-callout`, `.dc-dm-note` override:
+`.dc-origin-callout`, `.dc-visit-callout`, `.dc-dm-note` override:
 - surface/background (`--dc-alert-bg`)
 - accent/border color (`--dc-alert-border`)
 - label color (`--dc-alert-label-color`)

@@ -42,4 +42,4 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
 | Rules Pages | `@page chapter-start` | `@section panel`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |
-| Gear & Tech | `@page` | `@callout gear`, `@outcome`, `@gear` in `@columns 2` runs |
+| Gear & Tech | `@page` | `@callout note`, `@callout warning`, `@outcome`, `@gear` in `@columns 2` runs |

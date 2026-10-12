@@ -25,8 +25,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Options |
 |---|---|---|
 | `@lede` | `@end-lede` | — |
-| `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `GEAR` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
+| `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `FLAVOR` `PULLQUOTE` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
 | `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="…"` |
 | `@definition` | `@end-definition` | a term, a run of `#### Term` entries (a glossary), or `####` + `---` + body |
@@ -40,8 +40,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@fiction-excerpt` | `@end-fiction-excerpt` | prose; the first image floats |
 | `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels; `@columns 2` inside sets the entries in columns |
 | `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
-| `@gear` | `@end-gear` | `###` name, `*tags*`, body |
-| `@augment` · `@treasure` · `@vehicle` · `@drug` | `@end-augment` … | `####` name, `>` tagline, body, field lines; the next entry's marker closes it |
+| `@gear` | `@end-gear` | a kind word (`augment` `treasure` `vehicle` `drug`; none is general gear); `####` name, `>` tagline, body, field lines; the next `@gear` closes it |
 | `@field` | `@end-field` | a variant word (`specs` `traits` `equipment` `effects` `side-effects` `requires`); `label="…"` |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
 | `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` … `generalist`, as a word or a `.class` |
@@ -67,7 +66,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |
 | `.dc-sidebar` | a callout | Float it right, text wrapping on its left |
 | `.dc-catalog` | `@section` | What `@section catalog` writes (with `.dc-section-panel`) |
-| `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` … `@drug` | The entry card family; the kind class sets its tokens |
+| `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` and its kind words | The entry card family; the kind class sets its tokens |
 | `.dc-field` · `.dc-field-<variant>` · `.dc-field-label` | `@field` | What `@field` and a `**Label:**` paragraph in a card write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
 | `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: aged paper, narrative typography, auto art float |

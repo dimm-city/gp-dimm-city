@@ -13,7 +13,7 @@ Wanna level up? In Dimm City, that means slicing yourself open and slotting in s
 
 Install too much, too fast, or too dirty, and the body pushes back. Or worse—the Dream does.
 
-@callout gear label="Remember"
+@callout note label="Remember"
 
 Every install has a cost. Every edge has a crack. Push too far, and something in you will break.
 
@@ -67,7 +67,7 @@ Example: With 4 EP, your abilities cost +2 AP more to activate. Technosorcerers 
 
 @end-callout
 
-@callout gear label="SysFAIL"
+@callout warning label="SysFAIL"
 
 Consequences of a SysFAIL can range from temporary ability loss to total system shutdown.
 

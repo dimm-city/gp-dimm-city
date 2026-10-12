@@ -1,22 +1,22 @@
 @layer dc.components {
 
 /* ═════════════════════════════════════════════════════════════════════════
-   ENTRY CARDS — @gear, @augment, @treasure, @vehicle, @drug
+   ENTRY CARDS — @gear, and its kinds @gear augment|treasure|vehicle|drug
    ═════════════════════════════════════════════════════════════════════════
    One item in a catalog: a name, an optional tagline, the item's prose, and
-   fields (`**SPECS:**`, `**Effects:**` …, below). The five
-   markers share ONE rule set, `.dc-entry` below; each marker's class is a
-   token setter on it and draws nothing of its own, so a sixth kind costs one
-   marker line and five tokens.
+   fields (`**SPECS:**`, `**Effects:**` …, below). The five kinds
+   share ONE rule set, `.dc-entry` below; each kind's class is a token setter
+   on it and draws nothing of its own, so a sixth kind costs one variant word
+   and five tokens.
 
    Writes as the books write it:
 
-     @augment
+     @gear augment
 
      #### Kestrel Optics          ← the name: first #### (or ###) heading
      > A one-line tagline          ← optional; the blockquote straight after
      Advert or lore prose.
-     **SPECS:** the rules text.    ← a field line (fields.css)
+     **SPECS:** the rules text.    ← a field line (below)
 
    Public tokens (defaults in dc-component-defaults.css :root):
      --dc-entry-accent   — rail, and the rule over the entry in a catalog
@@ -80,7 +80,7 @@
   display: none;
 }
 
-/* ── The five kinds ──────────────────────────────────────────────────────── */
+/* ── The five kinds: bare @gear, and its variant words ─────────────────── */
 .dc-gear {
   --dc-entry-accent: var(--orange);
   --dc-entry-ink: var(--blood);
@@ -110,8 +110,8 @@
   --dc-entry-kind: "Drug";
 }
 
-/* Gear keeps what it always had: the italic tagline and the bold price line,
-   picked out by their shape. */
+/* General gear: the italic tagline and the bold price line, picked out by
+   their shape. */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
   color: var(--ink-smoke);
@@ -124,7 +124,7 @@
   color: var(--hud-blue-dark);
   margin: 0 0 6px;
 }
-/* The SPECS callout the books still use gets its gap from its own token. */
+/* A callout inside an entry sits a small gap below the body. */
 .dc-entry {
   --dc-alert-margin-top: var(--space-sm);
 }
@@ -145,7 +145,7 @@
      ## Title bar
      Intro.
      @columns 2
-     @augment … (each entry opens the next; no @end- between them)
+     @gear augment … (each entry opens the next; no @end- between them)
 */
 .dc-catalog .dc-entry {
   --dc-entry-surface: transparent;
@@ -215,7 +215,7 @@
   margin-bottom: 0;
 }
 
-/* SPECS — the item's rules: the boxed strip the gear callout makes. */
+/* SPECS — the item's rules: the dark boxed strip with a yellow rail. */
 .dc-field-specs {
   --dc-field-accent: var(--brand-yellow);
   --dc-field-surface: var(--ink-dark);

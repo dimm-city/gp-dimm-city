@@ -150,7 +150,7 @@
   --dc-flavor-accent-width:  3px;
   --dc-flavor-color:         var(--ink-smoke);
 
-  /* entry cards (@gear, @augment, @treasure, @vehicle, @drug) public API;
+  /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
   --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
   --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */

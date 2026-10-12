@@ -304,8 +304,8 @@ describe("file contracts", () => {
 
 // ── 4. The component catalog ─────────────────────────────────────────────────
 // components.yaml is the record of what an author can write. It has to name
-// every marker plugin.js declares, every variant word on `section`, `page` and
-// `chapter`, and the two modifiers, and each needs a snippet for the desktop's
+// every marker plugin.js declares, every variant word on `section`, `page`,
+// `chapter` and `gear`, and the two modifiers, and each needs a snippet for the desktop's
 // picker. Retired items stay in it as tombstones that name their replacement.
 describe("component catalog", () => {
   const catalog = Bun.YAML.parse(read("components.yaml")).components;
@@ -313,6 +313,7 @@ describe("component catalog", () => {
   const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
   const entryFor = (spelling) => catalog.find((e) => e.status !== "retired" && asList(e.markers).includes(spelling));
   const WORD_MARKERS = ["section", "page", "chapter"]; // declared as variant words only
+  const ENTRY_KINDS = Object.keys(markers.gear.variants); // `@gear` is itself a marker, and so is each kind word on it
   const REQUIRED_MODIFIERS = ["dc-avoid-split", "dc-snug"];
   const REQUIRED_RETIRED = ["tabbed", "plain", "section-allow-split", "column-panel", "chapter-opener", "sidebar-inset"];
   /** Classes a retired entry mentions that stay styled because a live component uses them. */
@@ -327,6 +328,7 @@ describe("component catalog", () => {
   const declared = [
     ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
+    ...ENTRY_KINDS.map((w) => `@gear ${w}`),
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

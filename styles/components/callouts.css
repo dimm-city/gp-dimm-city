@@ -87,7 +87,7 @@
 
 /* ═══ ALERTS — base+thin-variant pattern ═══
    .dc-alert base + .dc-alert-label label chrome + thin variant classes.
-   GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT/GEAR] or @callout/@dm-note macros. */
+   GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros. */
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
@@ -217,18 +217,6 @@
   --dc-alert-body-size: var(--fs-body);
   margin: 0.12in 0;
 }
-
-/* ── Variant: Gear Callout ──────────────────────────────────────────────── */
-.dc-gear-callout {
-  --dc-alert-bg: var(--ink-dark);
-  --dc-alert-fg: var(--paper-cream);
-  --dc-alert-border: var(--brand-yellow);  /* brand-yellow = hazmat/tech signal */
-  --dc-alert-label-color: var(--brand-yellow);
-  margin: 0.12in auto 0.18in;
-  border-left-width: 4px;
-  width: 90%;
-}
-
 
 /* ── Variant: Example — a worked example, never a rule ───────────────────── */
 .dc-example-callout {

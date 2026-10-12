@@ -92,10 +92,10 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
 | General gear | `@gear` |
-| A cybernetic or mod | `@augment` |
-| A magic item or relic | `@treasure` |
-| A vehicle | `@vehicle` |
-| A drug, elixir or consumable | `@drug` |
+| A cybernetic or mod | `@gear augment` |
+| A magic item or relic | `@gear treasure` |
+| A vehicle | `@gear vehicle` |
+| A drug, elixir or consumable | `@gear drug` |
 | A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |

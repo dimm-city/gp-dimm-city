@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, seven registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, six registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -103,10 +103,6 @@ One shell, seven registers. Write a GFM alert — a blockquote whose first line 
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
 
-> [!GEAR]
-> **Ripper Blades (Mk II)**
->
-> Melee. Damage 1d8+STR. *Serrated:* on a critical hit, the target bleeds for 1d4.
 ```
 
 Result {.dg-result}
@@ -131,10 +127,6 @@ Result {.dg-result}
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
 
-> [!GEAR]
-> **Ripper Blades (Mk II)**
->
-> Melee. Damage 1d8+STR. *Serrated:* on a critical hit, the target bleeds for 1d4.
 
 </div>
 
@@ -148,7 +140,6 @@ Result {.dg-result}
 | `VIBE` | Players | Atmosphere and narrative voice, full width |
 | `ORIGIN` | Players, in second person | Backstory addressed to the character |
 | `VISIT` | Players | A location, present tense, before an encounter |
-| `GEAR` | Players | A named item: weapon, armor, notable equipment |
 
 Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`.
 
@@ -183,7 +174,7 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 | Option | Values | Default |
 |---|---|---|
-| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `gear` `example` | `note` |
+| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `example` | `note` |
 | `label` | any text | the variant's label |
 
 ## Worked example
