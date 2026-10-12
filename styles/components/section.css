@@ -33,8 +33,9 @@
                             padding: a section that ends flush at a page foot
                             has no padding left to spill onto the next page.
                             Mechanism: padding-bottom shrinks by the edge, the
-                            ::before/::after layers extend below the box by it,
-                            and margin-bottom grows by it. `.dc-avoid-split`
+                            ::before/::after layers paint it below the box (as
+                            box-shadow, never as layout), and margin-bottom
+                            grows by it. `.dc-avoid-split`
                             and every box that paints its own surface keep it
                             at 0px.
    A variant or template owns its chrome by setting these on its own rule. */
@@ -106,11 +107,16 @@
 .dc-section-panel::before {
   content: var(--dc-section-surface);
   position: absolute;
-  inset: 0 0 calc(-1 * var(--dc-section-edge)) 0;
-  /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). */
+  inset: 0;
+  /* Rail as an inset shadow, not a hard-stop gradient (see .dc-intro). The two
+     outset shadows are the hanging edge: cream pushed down by the edge and
+     right by the rail, over the rail colour pushed down by the edge. */
   background: var(--dc-section-bg);
-  box-shadow: inset var(--dc-section-rail) 0 0 var(--dc-section-accent);
-  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%);
+  box-shadow:
+    inset var(--dc-section-rail) 0 0 var(--dc-section-accent),
+    var(--dc-section-rail) var(--dc-section-edge) 0 0 var(--dc-section-bg),
+    0 var(--dc-section-edge) 0 0 var(--dc-section-accent);
+  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% calc(100% + var(--dc-section-edge)), 0 calc(100% + var(--dc-section-edge)));
   z-index: -1;
 }
 
@@ -125,23 +131,18 @@
   top: 3px;
   left: 3px;
   right: -3px;
-  bottom: calc(-3px - var(--dc-section-edge));
+  bottom: 0;
   background: var(--ink-dark);
-  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%);
+  box-shadow: 0 calc(3px + var(--dc-section-edge)) 0 0 var(--ink-dark);
+  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% calc(100% + 3px + var(--dc-section-edge)), 0 calc(100% + 3px + var(--dc-section-edge)));
   z-index: -2;
   pointer-events: none;
 }
 
-/* The edge and the shadow hang below the box (the edge, then 3px). They are
-   paint, but when the last panel of a page or chapter ends in the last pixels
-   of a page, that overhang alone makes Chromium open a page for its bottom
-   rule. Clipping the block overflow with a margin as deep as the overhang
-   still paints both and takes them out of fragmentation. Only the last panel:
-   anywhere else the next box absorbs the overhang. */
-.dc-section-panel:last-child {
-  overflow-y: clip;
-  overflow-clip-margin: calc(var(--dc-section-edge) + 3px);
-}
+/* The edge hangs as paint, never as layout: the layers are exactly the box and
+   the edge is box-shadow copies pushed down. A layer with a negative `bottom`
+   is positioned content, and when its panel ends at a page foot Chromium
+   fragments that overhang onto a page holding only the bottom rule. */
 
 /* ── flat — the panel's rail on a plain host ─────────────────────────────────
    No clipped corner, no ::before/::after layers: the box paints its own

@@ -270,15 +270,32 @@ describe("skill card text never leaves one line at a page edge", () => {
   });
 });
 
-// A panel's edge and shadow hang below its box. When the last panel of a page
-// ends in the last pixels of a page, that overhang alone opens a page holding
-// only the bottom rule. Clipping with a margin as deep as the overhang takes it
-// out of fragmentation and still paints it.
+// A panel's edge and shadow hang below its box. A layer that really extends
+// below the box (a negative `bottom`) is fragmented onto a page of its own when
+// its panel ends in the last pixels of a page, a page holding only the bottom
+// rule. The layers are exactly the box and the hang is box-shadow paint.
 describe("a panel's overhang opens no page", () => {
-  test("the last panel clips its block overflow by the edge plus the shadow", () => {
+  const layers = [".dc-section-panel::before", ".dc-section-panel::after"];
+
+  test("the layers are exactly the box: nothing extends below it", () => {
+    for (const layer of layers) {
+      const d = declsOf("styles/components/section.css", layer);
+      expect(d.bottom ?? d.inset, layer).toBe("0");
+    }
+  });
+
+  test("the edge hangs as a box-shadow pushed down by the edge, and the clip-path reaches it", () => {
+    for (const layer of layers) {
+      const d = declsOf("styles/components/section.css", layer);
+      expect(d["box-shadow"], layer).toMatch(/0 (calc\(3px \+ )?var\(--dc-section-edge\)/);
+      expect(d["clip-path"], layer).toMatch(/calc\(100% \+ (3px \+ )?var\(--dc-section-edge\)\)/);
+    }
+  });
+
+  test("nothing clips the panel's block overflow to hide the hang", () => {
     const panel = declsOf("styles/components/section.css", ".dc-section-panel:last-child");
-    expect(panel["overflow-y"]).toBe("clip");
-    expect(panel["overflow-clip-margin"]).toMatch(/var\(--dc-section-edge\).*3px/);
+    expect(panel["overflow-y"]).toBeUndefined();
+    expect(panel["overflow-clip-margin"]).toBeUndefined();
   });
 });
 

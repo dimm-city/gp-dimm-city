@@ -42,12 +42,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
   Chromium keeps the orphans and drops the widows when a paragraph is too short
   to satisfy both, so the body's 2 + 2 let a three-line paragraph split 2 + 1;
   with 3 it moves whole. Cards still split by default.
-- **The last panel of a page or chapter clips its shadow overhang.**
-  `.dc-section-panel:last-child` clips its block overflow
-  (`overflow-y: clip; overflow-clip-margin: calc(var(--dc-section-edge) + 3px)`),
-  the same fix as a specialty's last learning path. A panel that ends in the
-  last pixels of a page, such as a `@section reference .dc-snug` pulled back
-  to fit, no longer opens a page holding only its bottom rule.
+- **A panel's bottom edge is paint, not layout, so it cannot open a page.**
+  Since 1.4.1 the `::before` surface and `::after` shadow layers extended below
+  the box by `--dc-section-edge` (a negative `bottom`). That extension is
+  positioned content, and when a panel ended in the last pixels of a page, such
+  as a `@section reference .dc-snug` pulled back to fit, Chromium fragmented it
+  onto a page of its own holding only the panel's bottom rule: on a book's last
+  chapter, the page DriveThruRPG needs fully blank. The layers are now exactly
+  the box, and the edge and the shadow's 3px hang below it as `box-shadow`
+  copies pushed down by `--dc-section-edge`, with the clip-path reaching down
+  to match, so a panel looks as before and opens no page.
 - Comments in the plugin, stylesheets, catalog, snippets and docs that described
   removed code, files or behaviour are gone or rewritten. No declaration or
   behaviour changed with them.
