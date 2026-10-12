@@ -51,9 +51,11 @@ A component whose CSS lives on `.section.dc-x` is a core section with a class, n
 'npc-stat': { section: true, class: 'dc-npc-stat' },
 ```
 
-Core rewrites `@npc-stat` into `@section .dc-npc-stat` (plus any author classes), so the HTML is exactly what the hand-written `@section` spelling gives and existing books are untouched. `@end-npc-stat` acts as `@end-section`, `@continue` keeps the class, and the section closes at the next `@section`/`@page` like any other. `section: true` cannot be combined with `tag`, `label` or `autoCloseAt`.
+Core rewrites `@npc-stat` into a `@section` carrying the entry's classes (plus any author classes), so the HTML is exactly what `@section npc` gives (see the `section` variants in `plugin.js`). `@end-npc-stat` acts as `@end-section`, `@continue` keeps the class, and the section closes at the next `@section`/`@page` like any other. `section: true` cannot be combined with `tag`, `label` or `autoCloseAt`.
 
-Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-plain` and `.dc-snug` stay author classes.
+Add `variants` only when the CSS styles the component differently per variant word (`@block panel`); a variant only adds a class and a `data-<marker>` attribute. None of the section components has one: per-specialty styling lives on `.dc-specialty.<name>`, from `@specialty`. Modifiers such as `.gp-columns-2`, `.dc-avoid-split` and `.dc-snug` stay author classes.
+
+A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
 Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 

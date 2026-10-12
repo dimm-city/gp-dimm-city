@@ -182,8 +182,8 @@ components:
   - name: card-variants
     status: live
     origin: plugin
-    recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section .dc-flaws | .dc-ideals | .dc-dreams)"
-    emits: div.section.dc-flaws|.dc-ideals|.dc-dreams
+    recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
+    emits: div.section.dc-section-panel.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
     notes: "Citizen-file card accents: a section of @card blocks whose class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
 
@@ -195,7 +195,7 @@ components:
     css: styles/components/section.css
     unstyled: [dc-gear]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@columns 2` inside a `@section .dc-allow-split`."
+    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@columns 2` inside a `@section`."
 
   - name: lede
     status: live
@@ -425,17 +425,17 @@ components:
   - name: card-grid
     status: live
     origin: plugin
-    recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section .dc-card-grid)"
+    recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section cards)"
     emits: div.section.dc-card-grid > div.gp-columns.gp-columns-2
     css: [styles/components/section.css, styles/page-templates.css]
-    breaks: "break-inside: auto on the grid; each specialty card avoid"
+    breaks: "each specialty card avoid; the grid itself may span pages"
     notes: "Sets no columns of its own: the cards go in `@columns 2` inside it."
 
   - name: citizen-walkthrough
     status: live
     origin: plugin
-    recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section .dc-citizen-walkthrough)"
-    emits: div.section.dc-citizen-walkthrough
+    recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section walkthrough)"
+    emits: div.section.dc-section-panel.dc-citizen-walkthrough
     css: [styles/components/section.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
 
@@ -450,23 +450,26 @@ components:
   - name: fiction-excerpt
     status: live
     origin: plugin
-    recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section .dc-fiction-excerpt)"
+    recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section fiction)"
     emits: div.section.dc-fiction-excerpt
     css: [styles/components/section.css]
     tokens:
       - --dc-fiction-bg
+      - --dc-fiction-rule
+      - --dc-fiction-shadow
       - --dc-fiction-line-height
       - --dc-fiction-art-float
       - --dc-fiction-art-width
       - --dc-fiction-art-outline
       - --dc-fiction-art-shadow
     breaks: "orphans/widows 3 on paragraphs"
+    notes: "Aged paper (--paper-aged), no rail and no title bar. On a chapter-start page (`.page-chapter-start` or `.dc-page-chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, set in page-templates.css by tokens."
 
   - name: npc-stat
     status: live
     origin: plugin
-    recipe: "@npc-stat [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section .dc-npc-stat)"
-    emits: div.section.dc-npc-stat
+    recipe: "@npc-stat [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
+    emits: div.section.dc-section-panel.dc-npc-stat
     css: [styles/components/section.css]
     tokens:
       - --dc-npc-stat-primary
@@ -474,7 +477,7 @@ components:
       - --dc-npc-stat-label-color
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
-    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain; .dc-allow-split lets a long entry split), whether the entries are direct children or sit in an @columns run inside it; a block with no #### stays whole"
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no #### splits like any section (.dc-avoid-split keeps it whole)"
 
   - name: chapter-start
     status: live
@@ -490,7 +493,7 @@ components:
     recipe: "@page .page-credits .dc-credits"
     emits: div.page.dc-credits
     css: [styles/page-templates.css, styles/dc-native.css]
-    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0. The colophon names go in `@columns 2` inside `@section .credits-colophon`."
+    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0. The colophon names go in `@columns 2` inside `@section flat`."
 
   - name: chevron
     status: live
@@ -560,11 +563,20 @@ components:
   - name: allow-split
     status: live
     origin: author
-    recipe: "@skill {.dc-allow-split} or @section .dc-allow-split"
-    emits: .dc-allow-split (on the skill card or section it is written on)
-    css: [styles/components/section.css, styles/components/cards.css]
-    breaks: "break-inside: auto — opts a section or skill card out of the default avoid. A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
-    notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it."
+    recipe: "@skill {.dc-allow-split}"
+    emits: .dc-allow-split (on the skill card it is written on)
+    css: [styles/components/cards.css]
+    breaks: "opts a skill card out of the default avoid (data-break-inside=avoid). A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
+    notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it. For sections it is retired: they split by default; see avoid-split."
+
+  - name: avoid-split
+    status: live
+    origin: author
+    recipe: "@section panel .dc-avoid-split"
+    emits: .dc-avoid-split (on the section it is written on)
+    css: styles/components/section.css
+    breaks: "break-inside: avoid — the section moves to the next page rather than splitting. Sections split by default, so nothing else in this package sets break-inside on one"
+    notes: "Replaces .dc-allow-split on sections. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty."
 
   - name: snug
     status: live
@@ -573,14 +585,6 @@ components:
     emits: .dc-snug (on the section or page it is written on)
     css: styles/page-templates.css
     notes: "Paragraph and list-item margin-bottom drops to 0.04in so a section or page that overflows by a line or two fits. Type size and leading are untouched."
-
-  - name: plain
-    status: live
-    origin: author
-    recipe: "@section .dc-plain"
-    emits: div.section.dc-plain
-    css: styles/components/section.css
-    notes: "The section-chrome escape hatch (dc#39). The design guide renders it (11-variants)."
 
   - name: full-page
     status: live
@@ -605,10 +609,35 @@ components:
     origin: core
     recipe: "@section  (bare; core markers.js emits the wrapper)"
     emits: div.section
-    css: styles/components/section.css
+    notes: "A bare @section is core's plain box: this package styles nothing that matches .section without a dc- class beside it (test/conventions.test.js). The looks are the variants below. It splits across pages."
+
+  - name: section-panel
+    status: live
+    origin: plugin
+    recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
+    emits: div.section.dc-section-panel
+    css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
-    breaks: "break-inside: avoid (core MARKER_CSS)"
-    notes: "Panel chrome is token-driven: variants and templates set --dc-section-surface/-shadow/-pad-* on their own rule; .dc-plain turns both layers off."
+    breaks: "splits by default; add .dc-avoid-split to keep it whole"
+    notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+
+  - name: section-flat
+    status: live
+    origin: plugin
+    recipe: "@section flat … @end-section  (or @section .dc-section-flat)"
+    emits: div.section.dc-section-flat
+    css: [styles/components/section.css, styles/page-templates.css, styles/dc-native.css]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-drop, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
+    notes: "The rail on a plain host: no corner, no pseudo layers, no title bar. The intro and credits pages set its accent and drop shadow from their own rules (--dc-section-accent, --dc-section-drop). The credits colophon is a flat section."
+
+  - name: section-aside
+    status: live
+    origin: plugin
+    recipe: "@section aside … @end-section  (or @section .dc-section-aside)"
+    emits: div.section.dc-section-aside
+    css: [styles/components/section.css, styles/components/data.css]
+    tokens: [--dc-section-accent, --dc-sidebar-box-surface, --dc-sidebar-box-border, --dc-sidebar-box-rail]
+    notes: "An inset note. It is the @sidebar-box treatment (hairline frame, accent rail, italic accent heading) with the rail on --dc-section-accent; the rules live in data.css beside .dc-sidebar-box."
 
   # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
   - name: distance-tags
@@ -623,7 +652,21 @@ components:
     origin: plugin
     recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
     emits: div.section.dc-tabbed
-    notes: "Removed 2026-10-12 (plugin.js marker, section.css, --dc-section-tab-* tokens, snippet): no book used it. Write a plain @section; its first heading prints as the bar."
+    notes: "Removed 2026-10-12 (plugin.js marker, section.css, --dc-section-tab-* tokens, snippet): no book used it. Write @section panel; its first heading prints as the bar."
+
+  - name: plain
+    status: retired
+    origin: author
+    recipe: "@section .dc-plain"
+    emits: div.section.dc-plain
+    notes: "Removed with the section variants: a bare @section is already plain, so there is no chrome to opt out of. Write @section."
+
+  - name: section-allow-split
+    status: retired
+    origin: author
+    recipe: "@section .dc-allow-split"
+    emits: div.section.dc-allow-split
+    notes: "Removed with the section variants, and with --dc-section-break-inside and the column-run rule that set it: sections split by default. Add .dc-avoid-split where a section must stay whole. @skill {.dc-allow-split} is unchanged (see allow-split)."
 
   - name: chapter-opener
     status: retired

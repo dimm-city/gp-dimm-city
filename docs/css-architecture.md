@@ -154,10 +154,10 @@ What the package still owns around a run:
 | Concern | Owner | Selector |
 |---|---|---|
 | How many columns, the gap, the rule, the fill | Gutterpress core | `@columns N` |
-| Components reacting to sitting inside a run (a `.section` or `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `dc-native.css` §5, `components/section.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
+| Components reacting to sitting inside a run (a `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `dc-native.css` §5, `components/section.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
 | Grids inside ONE component (not column layout) | `components/data.css` | `.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row` |
 
-A column run is `@columns 2`; a card around one is a plain `@section` with the
+A column run is `@columns 2`; a card around one is a `@section panel` with the
 run inside it, so the heading bar sits full width above the columns.
 
 ### Layer Contract Rules

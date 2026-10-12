@@ -2,7 +2,7 @@
 
 # Credits {.dc-chevron}
 
-@section .credits-colophon
+@section flat
 
 @columns 2
 

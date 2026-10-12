@@ -232,7 +232,7 @@ All component tokens live at `:root` so per-chapter overrides can use the cascad
 | `--dc-section-pad-top` / `-bottom` | `--space-md` | Section padding; the header bar's negative margins follow it |
 | `--dc-section-pad-right` / `-left` | `--space-lg` | Same, horizontal |
 
-Variants and templates set these on their own rule (`.dc-plain`, `.dc-card-grid`, the intro and credits pages, the chapter opener). The tokens inherit, so do not nest a `.section` inside one that turns its chrome off.
+Variants and templates set these on their own rule (`.dc-section-flat`, the intro and credits pages). The tokens inherit, so do not nest a section inside a flat one.
 
 ### Alert / Callout (`.dc-alert`)
 | Token | Default | Role |
