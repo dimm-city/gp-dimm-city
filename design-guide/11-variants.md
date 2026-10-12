@@ -328,9 +328,9 @@ The tier is written on the heading and printed on the tab.
 
 </div>
 
-### Highlight on the heading — `#### Name | AUG4.1 | highlight`
+### Capstone on the heading — `#### Name | AUG4.1 | highlight`
 
-The featured tab and body.
+The capstone look, for the last and strongest ability of a path: the featured tab and body.
 
 <div class="dg-stage">
 
@@ -877,7 +877,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers, and `@callout example` makes an eighth.
 
 <div class="dg-stage dg-tall">
 
@@ -902,11 +902,17 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 > [!GEAR]
 > **Ripper Blades (Mk II)** — Melee. Damage 1d8+STR.
 
+@callout example
+
+A worked example (`@callout example`, which has no blockquote form): a dashed cyan edge and a taped-on label.
+
+@end-callout
+
 </div>
 
 ## Blocks
 
-`@block .dc-panel | .dc-slate | .dc-shard | .dc-codex`.
+`@block .dc-panel | .dc-slate | .dc-shard`.
 
 <div class="dg-stage">
 
@@ -925,12 +931,6 @@ Binding rulings and Dream Master directives.
 @block .dc-shard label="Shard"
 
 Fiction, atmosphere, and setting asides.
-
-@end-block
-
-@block .dc-codex label="Codex"
-
-Glossaries, lookups, and compendium entries.
 
 @end-block
 
@@ -1084,7 +1084,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section variants
 
-`@section panel`, `@section flat`, `@section aside`, a bare `@section`, and a panel with its body in `@columns 2`.
+`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`.
 
 <div class="dg-stage dg-tall">
 
@@ -1104,11 +1104,43 @@ The accent rail on a plain host: no clipped corner, no shadow. A heading prints 
 
 @end-section
 
-@section aside
+@section reference
 
-### Aside section
+### Reference section
 
-An inset note: the sidebar-box frame, with the rail in the section accent.
+A look-up: HUD blue, a pale title band, tight rows.
+
+| Item | Cost |
+| --- | --- |
+| Noodle voucher | 2 DC |
+| Signal flare | 15 DC |
+
+@end-section
+
+@section lore
+
+### Lore section
+
+The world, not the rules: brass on aged paper with a long shard corner.
+
+@end-section
+
+@section dm
+
+### Dream Master section
+
+Behind the screen: an ink bar with a Dream Master chip on a cold body.
+
+@end-section
+
+@section choose
+
+### Choose section
+
+A pick-one choice for the Citizen File:
+
+- A first option.
+- A second option.
 
 @end-section
 
@@ -1150,23 +1182,61 @@ No variant word, no look: the text sits on whatever is behind it.
 
 </div>
 
-## Sidebars
+## Floated callouts
 
-`@sidebar` floats beside the text — see [Layout](#ch-layout).
+`@callout note .dc-sidebar` floats beside the text — see [Layout](#ch-layout).
 
 <div class="dg-stage dg-on-paper">
 
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
-@sidebar
-
-### Distance, Fast
+@callout note .dc-sidebar label="Distance, Fast"
 
 Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Move.
 
-@end-sidebar
+@end-callout
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there.
+
+</div>
+
+## Factions
+
+`@faction megacorp | cabal | cult | enforcer`.
+
+<div class="dg-stage">
+
+@faction megacorp
+
+#### Megacorp
+
+Cool HUD blue: the lights, the water and the lawyers.
+
+@end-faction
+
+@faction cabal
+
+#### Cabal
+
+Violet: a back booth and a very long memory.
+
+@end-faction
+
+@faction cult
+
+#### Cult
+
+Blood red: sing the signal and it sings back.
+
+@end-faction
+
+@faction enforcer
+
+#### Enforcer
+
+Hazard yellow: they keep the peace, for a fee.
+
+@end-faction
 
 </div>
 

@@ -260,8 +260,8 @@ td {
    Gutterpress (markdown-it-deflist) parses the standard PHP-Markdown-Extra /
    Pandoc definition-list syntax and emits plain <dl><dt><dd>. Styled here to
    match the definition register (orange-tint substrate + HUD-blue rail) so a
-   plain-markdown definition list is a drop-in for the @definition macro and the
-   raw-HTML .dc-terms glossary — no class or wrapper required by the author. */
+   plain-markdown definition list is a drop-in for the @definition macro — no
+   class or wrapper required by the author. */
 dl {
   background: var(--surface-orange-tint);
   border-left: 4px solid var(--hud-blue-bright);

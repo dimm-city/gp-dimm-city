@@ -1,14 +1,14 @@
 @chapter #ch-example-dm-npcs .dg-guide ch="5"
 
+@page chapter-start
 
-
-@page
-
-@section panel
-
-## Dream Mastery
+# Dream Mastery
 
 Every Dream needs someone to light the fuse. That's you—the Dream Master.
+
+@section dm
+
+## Behind the Screen
 
 @columns 2
 
@@ -226,3 +226,74 @@ When you need an NPC fast, answer these four questions. That's it. That's an NPC
 
 @end-section
 
+@callout example
+
+The Dream Master: "Three Patchheads come off the loading dock, chains swinging. What do you do?"
+
+You: "I kick the cargo door shut on the first one." That is risky, so you **ROLL THE DIE!** and get an 8: a Hard Choice. The door slams and he is out, but the other two are on you and your coat is caught in the hinge.
+
+@end-callout
+
+## Small Creatures
+
+@npc-stat compact
+
+#### Beacon Bug
+
+> A thumb-sized surveillance drone made of living glass.
+
+1 HP — 1 Damage
+
+Fodder — Tiny
+
+##### Traits
+
+**Climb, Jump, Invisible.** Unless it moves, your eyes slide right past it.
+
+@end-npc-stat
+
+A creature written as a table is a stat strip with no marker:
+
+| Name | HP | Damage | Traits |
+|------|:--:|:------:|--------|
+| Scavenger Wasp | 1 | 1 | Fly, Synergy |
+
+| Type | Size | HP | Damage |
+|---|---|:---:|:---:|
+| Operator | Small/Medium | 4 | 2 |
+
+## Who Runs the District
+
+@faction megacorp
+
+#### Halcyon Reach Holdings
+
+**HQ:** Tech District. **Led by:** Orla Vantine.
+
+They own the lights and the water and would like to own the rest. Their security contractors are polite, armed and very well insured.
+
+@end-faction
+
+@faction cabal
+
+#### The Quiet Table
+
+A back booth, a rotating guest list, and a very long memory. Every favour here has a price and a date.
+
+@end-faction
+
+@faction cult
+
+#### The Church of Static
+
+Sing the signal and the signal sings back. They gather where the grid hums loudest.
+
+@end-faction
+
+@faction enforcer
+
+#### Blue Line Wardens
+
+They keep the peace, for a fee, and the fee is going up.
+
+@end-faction

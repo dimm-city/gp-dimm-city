@@ -124,11 +124,11 @@ be pointless — font-family lookup is not a cascade contest.
 
 Two kinds of word sit on the structural markers, and each has one home.
 
-A **section variant** is a word on `@section` (`@section panel`, `flat`, `aside`, or a component word such as `npc`). The plugin declares it in `plugin.js` (`markers.section.variants`), core resolves it to a class, and the look is that class's rule. A **location** is a word on `@page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) or on `@chapter` (`rules`, `lore`, `citizen-file`, `specialty`); it resolves to `dc-page-<word>` or `dc-chapter-<word>`, and it re-tunes the components inside it. A location never draws a component.
+A **section variant** is a word on `@section` (`@section panel`, `flat`, `reference`, `lore`, `dm`, `choose`, or a component word such as `npc`). The plugin declares it in `plugin.js` (`markers.section.variants`), core resolves it to a class, and the look is that class's rule. A **location** is a word on `@page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) or on `@chapter` (`rules`, `lore`, `citizen-file`, `specialty`); it resolves to `dc-page-<word>` or `dc-chapter-<word>`, and it re-tunes the components inside it. A location never draws a component.
 
 | What | Lives in | Layer |
 |---|---|---|
-| Section variants: chrome and the rules that style them (`.dc-section-panel`, `.dc-section-flat`, `.dc-section-aside`, `.dc-npc-stat`, `.dc-fiction-excerpt`, …) | `components/section.css` | `dc.components` |
+| Section variants: chrome and the rules that style them (`.dc-section-panel`, `.dc-section-flat`, `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose`, `.dc-npc-stat`, `.dc-fiction-excerpt`, …) | `components/section.css` | `dc.components` |
 | Locations: what a page or chapter word changes | `page-templates.css` | `dc.templates` |
 | The named page a page word selects, and its margin boxes | `page-rules.css` | `dc.pages` |
 | Token defaults for every public `--dc-section-*` knob (and every other component token) | `dc-component-defaults.css` | `dc.tokens` |
@@ -627,11 +627,10 @@ multi-paragraph definitions automatically.
 > `dc-design-guide/README.md` for the old → new mapping.
 
 When two prose-box components genuinely share the same shell behavior, give them a
-real base class and emit it in markup. In the dc-design-guide, `@definition` and
-`@sidebar-box` can share a tiny `.dc-prose-panel` shell for common padding/margin/
-break behavior, while `.dc-definition-block` and `.dc-sidebar-box` keep their own
-surface, accent, heading, and text rules. Do not use that base for unrelated inset
-layout components like `.dc-sidebar`.
+real base class and emit it in markup. `@definition` carries a tiny `.dc-prose-panel`
+shell for common padding/margin/break behavior while `.dc-definition-block` keeps its
+own surface, accent, heading, and text rules. Do not use that base for unrelated inset
+layout components like `.dc-sidebar` (a float placement).
 
 **Anti-pattern:**
 
@@ -693,13 +692,13 @@ selectors:
 
 ```css
 /* Without nesting — relationships implied by shared prefix only */
-.dc-sidebar-box { background: var(--paper-cream); padding: 14px 18px; … }
-.dc-sidebar-box > h4:first-child { font-family: var(--font-display); … }
-.dc-sidebar-box hr { border-top: 1px dashed var(--blood); … }
-.dc-sidebar-box p { font-size: var(--fs-body-sm); … }
+.dc-note-box { background: var(--paper-cream); padding: 14px 18px; … }
+.dc-note-box > h4:first-child { font-family: var(--font-display); … }
+.dc-note-box hr { border-top: 1px dashed var(--blood); … }
+.dc-note-box p { font-size: var(--fs-body-sm); … }
 
 /* With nesting — scope is structurally enforced by the parser */
-.dc-sidebar-box {
+.dc-note-box {
   background: var(--paper-cream);
   border: 1.5px solid var(--border-hairline);
   border-left: 4px solid var(--blood);
@@ -730,7 +729,7 @@ selectors:
 ```
 
 The `&` operator refers to the parent selector. `& > h4:first-child` compiles to
-`.dc-sidebar-box > h4:first-child`.
+`.dc-note-box > h4:first-child`.
 
 ### When Not to Nest
 
@@ -763,7 +762,7 @@ print output. The sheets in this project pair it with the legacy
 `page-break-inside: avoid` alias throughout; keep new rules consistent with that:
 
 ```css
-.dc-terms,
+.dc-definition-block,
 .dc-card.dc-gear {
   break-inside: avoid;
   page-break-inside: avoid;

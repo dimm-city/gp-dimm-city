@@ -9,7 +9,6 @@
      panel   .dc-section-panel   cream card, accent rail, clipped corner,
                                  shadow, heading bar          (this file)
      flat    .dc-section-flat    cream host with the rail only
-     aside   .dc-section-aside   an inset note, the @sidebar-box treatment
      npc, walkthrough, flaws, ideals, dreams  = a panel plus the component class
      fiction, cards              = the component class alone
 
@@ -46,7 +45,7 @@
    float collapses to its in-flow content and the float spills onto the bare
    wall below. :where() keeps the specificity at zero so core layout classes
    can own `display`. */
-:where(.dc-section-panel, .dc-section-flat, .dc-section-aside, .dc-fiction-excerpt, .dc-card-grid) {
+:where(.dc-section-panel, .dc-section-flat, .dc-fiction-excerpt, .dc-card-grid) {
   display: flow-root;
 }
 
@@ -154,16 +153,6 @@
   box-shadow: inset 4px 0 0 var(--dc-section-accent), var(--dc-section-drop); /* rail: see .dc-intro */
 }
 
-/* ── aside — an inset note ────────────────────────────────────────────────────
-   The @sidebar-box treatment (hairline frame, accent rail, italic accent
-   heading; its rules are in data.css) on a section, with the rail on the one
-   accent knob. */
-.dc-section-aside {
-  --dc-sidebar-box-accent: var(--dc-section-accent);
-  padding: 10px 14px;
-  margin: 0.12in 0;
-}
-
 /* ── First-child heading inside a panel becomes a filled top bar ────────── */
 .dc-section-panel > h2:first-child,
 .dc-section-panel > h3:first-child {
@@ -224,6 +213,142 @@ h3 + .dc-section-panel {
   margin-top: var(--space-lg);
 }
 
+/* ── Panel tab ───────────────────────────────────────────────────────────────
+   A variant may name itself on its title bar: `--dc-section-tab` is the text
+   of a small chip at the bar's right end (`none`, the default, draws none),
+   `--dc-section-tab-bg` / `-fg` its colours. A variant sets the three; the
+   chip is drawn once, here. */
+.dc-section-panel > :is(h2, h3):first-child::after {
+  content: var(--dc-section-tab);
+  float: right;
+  margin-left: var(--space-md);
+  padding: 2px 8px 1px;
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  background: var(--dc-section-tab-bg);
+  color: var(--dc-section-tab-fg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WHAT KIND OF TEXT IS THIS — section variants that are panels with a
+   different set of tokens. Each carries `dc-section-panel` (the chassis) and
+   its own class, which sets the tokens above (colour, corner, rail) and the
+   few descendants that read as that kind of text. Where it sits (the chapter
+   word) does not change it: a variant that names its own accent keeps it.
+
+     reference  look it up: tables and lists scanned, not read    HUD blue
+     lore       the world, not the rules                          brass on aged paper
+     dm         behind the screen: advice for the Dream Master    ink, with a DM chip
+     choose     pick one and write it on your sheet               the chapter's accent
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── reference — a look-up ────────────────────────────────────────────────── */
+.dc-section-reference {
+  --dc-section-accent: var(--hud-blue-dark);
+  --dc-section-bg: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
+  --dc-section-clip: 8px;
+  --dc-section-rail: 3px;
+  --dc-section-pad-top: var(--space-sm);
+  --dc-section-pad-bottom: var(--space-sm);
+  --dc-section-pad-left: var(--space-md);
+  --dc-section-pad-right: var(--space-md);
+}
+/* The bar is a pale HUD band with dark text, not the solid accent of a rules panel. */
+.dc-section-reference > :is(h2, h3):first-child {
+  background: var(--hud-blue-dim);
+  color: var(--ink-dark);
+  border-bottom: 2px solid var(--dc-section-accent);
+}
+/* Rows are tight and the column heads are the pale band again. */
+.dc-section-reference table {
+  font-size: 8.5pt;
+  margin: 0.06in 0;
+}
+.dc-section-reference th {
+  background: var(--hud-blue-dim);
+  color: var(--ink-dark);
+  padding: 3px 8px;
+}
+.dc-section-reference td {
+  padding: 3px 8px;
+}
+.dc-section-reference tr:nth-child(odd) td {
+  background: var(--paper-cream);
+}
+.dc-section-reference tr:nth-child(even) td {
+  background: var(--dc-section-bg);
+}
+.dc-section-reference :is(ul, ol) {
+  margin-block: 0.04in;
+}
+.dc-section-reference li {
+  margin-bottom: 0.02in;
+}
+
+/* ── lore — the world ─────────────────────────────────────────────────────── */
+.dc-section-lore {
+  --dc-section-accent: var(--amber);
+  --dc-section-bg: var(--paper-aged);
+  --dc-section-clip: 34px;
+  --dc-section-rail: 6px;
+}
+.dc-section-lore p {
+  line-height: 1.5;
+}
+/* Sub-heads inside read as in-world captions, not rule headings. */
+.dc-section-lore > :is(h3, h4, h5):not(:first-child) {
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--amber-dark);
+}
+
+/* ── dm — behind the screen ───────────────────────────────────────────────── */
+.dc-section-dm {
+  --dc-section-accent: var(--ink-dark);
+  --dc-section-bg: var(--concrete-pale);
+  --dc-section-clip: 20px;
+  --dc-section-tab: "Dream Master";
+  --dc-section-tab-bg: var(--hud-blue-bright);
+  --dc-section-tab-fg: var(--ink);
+}
+
+/* ── choose — a pick-one choice for the Citizen File ──────────────────────────
+   A form: a lighter sheet, write-in rules under table rows, a tick box in front
+   of each list item, and a "Your choice" chip on the bar. The accent stays the
+   chapter's. */
+.dc-section-choose {
+  --dc-section-bg: var(--paper-light);
+  --dc-section-tab: "Your choice";
+  --dc-section-tab-bg: var(--paper-cream);
+  --dc-section-tab-fg: var(--dc-section-accent);
+}
+.dc-section-choose td {
+  border-bottom: 1pt dotted var(--ink-dust);
+}
+.dc-section-choose tr:nth-child(odd) td,
+.dc-section-choose tr:nth-child(even) td {
+  background: var(--dc-section-bg);
+}
+.dc-section-choose li::before,
+.dc-section-choose li > p:first-child::before {
+  content: "";
+  display: inline-block;
+  width: 0.62em;
+  height: 0.62em;
+  margin-right: 0.5em;
+  border: 1.5px solid var(--dc-section-accent);
+  background: var(--paper-cream);
+  vertical-align: -0.05em;
+}
+/* A choice inside it keeps one card, never half of one. */
+.dc-section-choose > .dc-card {
+  break-inside: avoid;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    SECTION ENCLOSURES — dc-block family
    ═══════════════════════════════════════════════════════════════════════════
@@ -232,7 +357,7 @@ h3 + .dc-section-panel {
    signal different content registers.
 
    Plugin macro API (plugin.js):
-     @block .dc-panel|.dc-slate|.dc-shard|.dc-codex label="Title" … @end-block
+     @block .dc-panel|.dc-slate|.dc-shard label="Title" … @end-block
 
    CSS class API (direct use without plugin):
      <div class="dc-block dc-panel"><div class="dc-block-title">…</div>…</div>
@@ -342,28 +467,6 @@ h3 + .dc-section-panel {
 }
 .dc-block.dc-shard .dc-block-title {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 14px));
-}
-
-/* ── Variant: Codex — reference/data entry ───────────────────────────────── */
-/* Geometry: symmetric octagon corner cuts. HUD-blue surface.
-   Signal: tables, reference data, rules lookups, compendium entries. */
-.dc-block.dc-codex {
-  --dc-block-bg:        var(--hud-blue-dim);
-  --dc-block-fg:        var(--ink);
-  --dc-block-accent:    var(--hud-blue-dark);
-  --dc-block-title-bg:  var(--hud-blue-dark);
-  --dc-block-title-fg:  var(--paper-cream);
-  clip-path: polygon(
-    8px 0, calc(100% - 8px) 0, 100% 8px,
-    100% calc(100% - 8px), calc(100% - 8px) 100%,
-    8px 100%, 0 calc(100% - 8px), 0 8px
-  );
-}
-.dc-block.dc-codex .dc-block-title {
-  clip-path: polygon(
-    0 0, calc(100% - 8px) 0, 100% 8px,
-    100% 100%, 0 100%
-  );
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -486,6 +589,45 @@ h3 + .dc-section-panel {
   letter-spacing: 0.04em;
   color: var(--hud-blue-dark);
   margin: 0 0 6px;
+}
+
+/* Faction (`@faction megacorp|cabal|cult|enforcer`): an organization's profile.
+   A .dc-card whose rail and kind badge take the kind's colour. The name is the
+   first heading (`####` as authored, or `###`); the badge is a span core puts
+   first, floated to the right so the name and the text run beside it.
+   Token contract: --dc-faction-accent (rail and badge fill),
+   --dc-faction-badge-fg (badge text). */
+.dc-card.dc-faction {
+  border-left-width: 5px;
+  border-left-color: var(--dc-faction-accent);
+  padding: 10pt 14pt;
+}
+.dc-card.dc-faction > :is(h3, h4):first-of-type {
+  font-size: var(--fs-h4);
+  letter-spacing: var(--ls-display);
+  margin: 0 0 4px;
+  break-after: avoid;
+}
+.dc-faction-kind {
+  float: right;
+  margin: 0 0 4px 10px;
+  padding: 2px 9px 1px 8px;
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  background: var(--dc-faction-accent);
+  color: var(--dc-faction-badge-fg);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.dc-faction-megacorp { --dc-faction-accent: var(--hud-blue-dark); }
+.dc-faction-cabal    { --dc-faction-accent: var(--brand-violet); }
+.dc-faction-cult     { --dc-faction-accent: var(--blood); }
+.dc-faction-enforcer {
+  --dc-faction-accent: var(--brand-yellow);
+  --dc-faction-badge-fg: var(--ink);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -648,6 +790,57 @@ h3 + .dc-section-panel {
   margin-bottom: 0.06in;
 }
 
+
+/* `@npc-stat compact` — a small creature, a companion, a drone: the same entry,
+   packed. No panel (no surface, shadow or rail layer), a framed cream box, the
+   name small, and the two stat lines drawn as a strip of chips beside each
+   other. A table of HP and Damage inside it is the stat strip (data.css). The
+   panel tokens below switch the chassis off; the rest is the box. A section
+   marker ends an enclosing @skill, so inside a skill card write the creature's
+   table alone: it is the strip wherever it sits. */
+.dc-npc-compact {
+  --dc-section-surface: none;
+  --dc-section-shadow: none;
+  --dc-section-pad-top: 0.06in;
+  --dc-section-pad-bottom: 0.06in;
+  --dc-section-pad-left: 0.12in;
+  --dc-section-pad-right: 0.1in;
+  --dc-section-gap: 8pt;
+  background: var(--paper-cream);
+  border: 1.5px solid var(--dc-npc-stat-rule);
+  border-left-width: 5px;
+}
+.dc-npc-compact h4 {
+  border-top: 0;
+  padding-top: 0;
+  margin: 0 0 3pt;
+  font-size: var(--fs-h5);
+}
+.dc-npc-compact blockquote {
+  margin: 0 0 4pt;
+  padding: 0 0 0 8pt;
+  border-width: 0 0 0 3px;
+  background: none;
+  font-size: 9pt;
+}
+.dc-npc-compact blockquote + p,
+.dc-npc-compact blockquote + p + p {
+  display: inline-block;
+  margin: 0 6pt 3pt 0;
+  padding: 1pt 7pt;
+  border-bottom: 0;
+  color: var(--paper-cream);
+  font-size: 8pt;
+}
+.dc-npc-compact blockquote + p {
+  background: var(--dc-npc-stat-primary);
+}
+.dc-npc-compact blockquote + p + p {
+  background: var(--dc-npc-stat-secondary);
+}
+.dc-npc-compact h5 {
+  margin-top: 0.04in;
+}
 
 /* ═════════════════════════════════════════════════════════════════════════
    CARD-GRID — compact specialty-card display in a 2-column layout

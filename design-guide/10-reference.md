@@ -16,7 +16,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
 | `@page [word] [.class…]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
-| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `aside` and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
+| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
 | `@page-break` · `@column-break` | — | Forced breaks |
 
@@ -26,13 +26,12 @@ Every marker on one page, the options they take, the classes you can add, and th
 |---|---|---|
 | `@lede` | `@end-lede` | — |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `GEAR` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` (`@callout vibe`); `label="…"` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
 | `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
-| `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard` `.dc-codex`, `label="…"` |
-| `@sidebar` | `@end-sidebar` | — |
-| `@sidebar-box` | `@end-sidebar-box` | `####` heading, `---`, body |
-| `@definition` | `@end-definition` | — |
-| `@glossary` | `@end-glossary` | `**term** — gloss` paragraphs |
+| `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="…"` |
+| `@definition` | `@end-definition` | a term, a run of `#### Term` entries (a glossary), or `####` + `---` + body |
+| `@faction` | `@end-faction` | a kind word: `megacorp` `cabal` `cult` `enforcer`; `label="…"` |
+| `@roll-table` | `@end-roll-table` | `die=d20`, `label="…"`; a pipe table inside |
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
 | `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
@@ -61,12 +60,15 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.gp-break-before` | a heading | New page before it |
 | `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
 | `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
-| `.dc-section-panel` · `.dc-section-flat` · `.dc-section-aside` | `@section` | What `@section panel`, `flat` and `aside` write |
+| `.dc-section-panel` · `.dc-section-flat` | `@section` | What `@section panel` and `flat` write |
+| `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |
+| `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |
+| `.dc-sidebar` | a callout | Float it right, text wrapping on its left |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
 | `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: aged paper, narrative typography, auto art float |
 | `.dc-citizen-walkthrough` | `@section` | What `@citizen-walkthrough` writes (with `.dc-section-panel`) |
 | `.dc-card-grid` | `@section` | Density for a run of specialty cards (set in `@columns 2`); no chrome |
-| `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | Card accent per step (with `.dc-section-panel`) |
+| `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | Card accent per step (with `.dc-section-panel` and `.dc-section-choose`) |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |
@@ -102,8 +104,10 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-roll-the-die-color` `--dc-roll-the-die-border` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` |
-| Sidebar | `--dc-sidebar-surface` `--dc-sidebar-border` |
-| Sidebar box | `--dc-sidebar-box-surface` `--dc-sidebar-box-border` `--dc-sidebar-box-accent` `--dc-sidebar-box-rail` |
+| Section chip (`dm`, `choose`) | `--dc-section-tab` `--dc-section-tab-bg` `--dc-section-tab-fg` |
+| Roll table | `--dc-roll-table-accent` `--dc-roll-table-surface` `--dc-roll-table-head-bg` |
+| Faction | `--dc-faction-accent` `--dc-faction-badge-fg` |
+| Stat strip | `--dc-stat-strip-accent` `--dc-stat-strip-value` |
 | Definition | `--dc-definition-block-surface` `--dc-definition-block-accent` `--dc-definition-block-accent-width` |
 | Outcome ladder | `--dc-outcomes-surface` `--dc-outcomes-border` `--dc-outcomes-inner-border` `--dc-outcomes-label-bg` `--dc-outcomes-label-color` `--dc-outcome-key-color` `--dc-outcome-name-color` `--dc-outcome-name-opacity` |
 | NPC stat block | `--dc-npc-stat-primary` `--dc-npc-stat-secondary` `--dc-npc-stat-label-color` `--dc-npc-stat-rule` `--dc-npc-stat-rule-width` |

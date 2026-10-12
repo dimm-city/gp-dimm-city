@@ -7,17 +7,18 @@
  * DECLARED MARKERS (the `markers` export at the bottom of this file — core
  * Gutterpress parses, nests, closes and source-maps these; this file only
  * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @sidebar             → div.dc-sidebar
- *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
- *   @definition          → div.dc-prose-panel.dc-definition-block
+ *   @definition          → div.dc-prose-panel.dc-definition-block (a term, or a run of `####` terms)
+ *   @faction [megacorp|cabal|cult|enforcer]
+ *                        → div.dc-card.dc-faction[.dc-faction-<kind>] + span.dc-faction-kind
+ *   @roll-table [die=d20] [label="…"]
+ *                        → div.dc-roll-table + div.dc-roll-table-caption, over the author's table
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
  *   @gear                → div.dc-card.dc-gear
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
- *   @glossary            → div.dc-terms
- *   @block [panel|slate|shard|codex] label="Title"
+ *   @block [panel|slate|shard] label="Title"
  *                        → div.dc-block.dc-<variant> + div.dc-block-title
  *                          (`@block .dc-panel` class form works too)
  *
@@ -39,7 +40,7 @@
  *                          zero-padded step list (the wrapper renders nothing)
  *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
  *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          visit, gear; none is a note. The label is `label="…"`,
+ *                          visit, gear, example; none is a note. The label is `label="…"`,
  *                          or the variant's name. `@dm-note` is `@callout dm`
  *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
@@ -154,6 +155,7 @@ function addTokenClass(tok, cls) {
 
 function parseSkillTitle(text) {
   // Parse "Skill Name" or "Skill Name | T0" or "Skill Name | T0 | highlight"
+  // (`highlight` is the capstone look: the card that pays off a path.)
   const parts = text.split('|');
   const name = parts[0].trim();
   const tier = parts.length > 1 ? parts[1].trim() : '';
@@ -935,7 +937,7 @@ function dcSkillCards(state) {
       }
 
       // A @callout, @card, @outcome, @procedure or @roll-table is content of the skill's card;
-      // a break or another component (@sidebar, @specialty-art, …) ends it.
+      // a break or another component (@specialty-art, @gear, …) ends it.
       if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
         let end = i;
         let depth = 0;
@@ -1121,6 +1123,29 @@ function dcLadderTables(state) {
 }
 
 /**
+ * A table with an HP column and a Damage column is a creature's stat line
+ * (`Name | HP | Damage | Traits`, `Type | Size | HP | Damage`): it gets
+ * `.dc-stat-strip`, the stat-strip look, wherever it sits, and each cell that
+ * holds only a number gets `.dc-stat-num` (the big figures). It is recognised by
+ * its shape, not a marker, because a creature's table lives inside a skill's
+ * ability text, and a section marker there (`@npc-stat compact`) would end
+ * the skill.
+ */
+function dcStatStrips(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open') continue;
+    const table = collectTableTokens(tokens, i);
+    const head = readTable(table).head.map((cell) => cell.replace(/[*_`]/g, '').trim().toLowerCase());
+    if (!head.includes('hp') || !head.includes('damage')) continue;
+    addTokenClass(tokens[i], 'dc-stat-strip');
+    table.forEach((tok, k) => {
+      if (tok.type === 'td_open' && /^\d+$/.test((table[k + 1]?.content || '').trim())) addTokenClass(tok, 'dc-stat-num');
+    });
+  }
+}
+
+/**
  * `@roll-table [die=d12] [label="Wild Magic"]`: a random table in neutral
  * colours. The wrapper is `div.dc-roll-table`; the rule adds the caption (the
  * die chip, d20 unless `die=` says otherwise, and the label) above the author's
@@ -1169,7 +1194,7 @@ function dcProcedures(state) {
 
 // ── Declared component: @callout (and its alias @dm-note) ──────────────────
 //
-// `@callout note|warning|dm|vibe|origin|visit|gear` is a declared wrapper:
+// `@callout note|warning|dm|vibe|origin|visit|gear|example` is a declared wrapper:
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
@@ -1182,6 +1207,7 @@ const CALLOUTS = {
   origin: { class: 'dc-origin-callout', label: 'Origin' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
   gear: { class: 'dc-gear-callout', label: 'Gear' },
+  example: { class: 'dc-example-callout', label: 'Example' },
 };
 
 function dcCallouts(state) {
@@ -1194,6 +1220,19 @@ function dcCallouts(state) {
     if (open.meta.labelled) return; // an explicit label="…" wins
     const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
     return [open, label, ...rest];
+  });
+}
+
+/**
+ * `@faction megacorp|cabal|cult|enforcer`: core adds the card, the kind class and
+ * a badge from `label="…"`. With no label the badge names the kind, as a
+ * callout's label names its variant.
+ */
+function dcFactions(state) {
+  forEachComponent(state.tokens, 'faction', ([open, ...rest]) => {
+    const kind = open.meta.variant;
+    if (open.meta.labelled || !Object.hasOwn(FACTION_KINDS, kind)) return;
+    return [open, makeToken('html_block', '<span class="dc-faction-kind">' + esc(FACTION_KINDS[kind]) + '</span>\n'), ...rest];
   });
 }
 
@@ -1297,6 +1336,7 @@ export default function dimmCityPlugin(md, options = {}) {
   // Declared components. Callouts, cards, outcomes and procedures go first so
   // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
+  md.core.ruler.push('dc_factions', dcFactions);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
   md.core.ruler.push('dc_roll_tables', dcRollTables);
@@ -1304,6 +1344,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
   md.core.ruler.push('dc_ladder_tables', dcLadderTables);
+  md.core.ruler.push('dc_stat_strips', dcStatStrips);
 }
 
 /**
@@ -1327,6 +1368,8 @@ export default function dimmCityPlugin(md, options = {}) {
  * never needed an explicit `@end-…`.
  */
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
+
+const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
 
 const SPECIALTIES = [
   'augmerc', 'proxy', 'streetwarden', 'gutterdruid', 'cybersurgeon',
@@ -1365,41 +1408,51 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
-  sidebar: wrapper('dc-sidebar'),
-  'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
   definition: wrapper('dc-prose-panel dc-definition-block'),
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
   gear: wrapper('dc-card dc-gear'),
+  // An organization's profile: a card with a kind badge. The kind is the bare
+  // word (`@faction cult`) and the badge reads it unless `label="…"` names its own.
+  faction: wrapper('dc-card dc-faction', {
+    variants: Object.fromEntries(Object.keys(FACTION_KINDS).map((kind) => [kind, `dc-faction-${kind}`])),
+    label: { tag: 'span', class: 'dc-faction-kind', from: 'attr:label' },
+  }),
   toc: wrapper('dc-toc'),
   lede: wrapper('dc-intro'),
-  glossary: wrapper('dc-terms'),
   block: wrapper('dc-block', {
-    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard', codex: 'dc-codex' },
+    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
   }),
 
   // Section variants: `@section panel` is `<div class="section dc-section-panel">`.
   // A bare `@section` is core's plain box and gets no styling from this package.
-  // `panel`, `flat` and `aside` are general; the rest are the section-styled
-  // components below, each reachable by its own marker (`@npc-stat`) or by word
-  // (`@section npc`), and both write the same classes so one CSS rule serves
-  // both. A component that is a card (npc, walkthrough, flaws, ideals, dreams)
-  // carries `dc-section-panel` beside its own class; fiction and cards are not
-  // panels. The CSS is in styles/components/section.css.
+  // `panel` and `flat` are general. `reference`, `lore`, `dm` and `choose` are
+  // panels that say what kind of text they hold (a look-up, the world, advice
+  // for the Dream Master, a choice): each is `dc-section-panel` plus a class that
+  // sets the panel's tokens, and has no marker of its own. The rest are the
+  // section-styled components below, each reachable by its own marker
+  // (`@npc-stat`) or by word (`@section npc`), and both write the same classes so
+  // one CSS rule serves both. A component that is a card (npc, walkthrough, flaws,
+  // ideals, dreams) carries `dc-section-panel` beside its own class (the three
+  // choice runs are `choose` too); fiction and cards are not panels. The CSS is
+  // in styles/components/section.css.
   section: {
     variants: {
       panel: 'dc-section-panel',
       flat: 'dc-section-flat',
-      aside: 'dc-section-aside',
+      reference: 'dc-section-panel dc-section-reference',
+      lore: 'dc-section-panel dc-section-lore',
+      dm: 'dc-section-panel dc-section-dm',
+      choose: 'dc-section-panel dc-section-choose',
       npc: 'dc-section-panel dc-npc-stat',
       fiction: 'dc-fiction-excerpt',
       walkthrough: 'dc-section-panel dc-citizen-walkthrough',
       cards: 'dc-card-grid',
-      flaws: 'dc-section-panel dc-flaws',
-      ideals: 'dc-section-panel dc-ideals',
-      dreams: 'dc-section-panel dc-dreams',
+      flaws: 'dc-section-panel dc-section-choose dc-flaws',
+      ideals: 'dc-section-panel dc-section-choose dc-ideals',
+      dreams: 'dc-section-panel dc-section-choose dc-dreams',
     },
   },
 
@@ -1437,11 +1490,12 @@ export const markers = {
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
-  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat' },
-  // Citizen-file card runs: the class sets the accent of every `@card` inside.
-  flaws: { section: true, class: 'dc-section-panel dc-flaws' },
-  ideals: { section: true, class: 'dc-section-panel dc-ideals' },
-  dreams: { section: true, class: 'dc-section-panel dc-dreams' },
+  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat', variants: { compact: 'dc-npc-compact' } },
+  // Citizen-file choices: `@section choose` with the class that sets the accent
+  // of every `@card` inside (`@flaws`, `@ideals`, `@dreams` are `choose` plus their own).
+  flaws: { section: true, class: 'dc-section-panel dc-section-choose dc-flaws' },
+  ideals: { section: true, class: 'dc-section-panel dc-section-choose dc-ideals' },
+  dreams: { section: true, class: 'dc-section-panel dc-section-choose dc-dreams' },
 };
 
 /**

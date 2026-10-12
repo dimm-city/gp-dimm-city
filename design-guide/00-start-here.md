@@ -14,9 +14,9 @@ The Dimm City design system for Gutterpress: how to write a Dimm City book in ma
 <li><a href="#ch-writing">Writing a Page</a> — markers, attributes, the markdown the system styles</li>
 <li><a href="#ch-typography">Typography</a> — the three faces, the type scale, heading chrome</li>
 <li><a href="#ch-palette">Color</a> — paper, fire and HUD tokens, and how to retheme</li>
-<li><a href="#ch-layout">Layout</a> — columns, panels, sidebars, floats, break control</li>
+<li><a href="#ch-layout">Layout</a> — columns, panels, floated callouts, floats, break control</li>
 <li><a href="#ch-text">Text &amp; Callouts</a> — ledes, flavor, pull quotes, the alert family, tape, tags</li>
-<li><a href="#ch-panels">Panels, Cards &amp; Data</a> — blocks, sidebar boxes, definitions, procedures, outcomes, cards, gear, tables, stat blocks</li>
+<li><a href="#ch-panels">Panels, Cards &amp; Data</a> — blocks, definitions, procedures, outcomes and roll tables, cards, gear, factions, tables, stat blocks</li>
 <li><a href="#ch-specialty">The Specialty System</a> — specialties, learning paths, skill cards</li>
 <li><a href="#ch-templates">Page Templates</a> — chapter openers, contents, credits, catalog and profile pages</li>
 <li><a href="#ch-publishing">Publishing</a> — preview, build, validate</li>
@@ -79,16 +79,22 @@ Start from what you are writing, not from a class name: find it on the left and 
 | Rules or reference text under a heading | `@section panel` |
 | The same, kept on one page | `@section panel .dc-avoid-split` |
 | Unboxed text that carries the accent rail | `@section flat` |
-| A short note set off from the text | `@section aside` (or `@sidebar-box`) |
-| A term and its definition | `@definition` |
+| A table or list to look up (prices, conditions, a menu of options) | `@section reference` |
+| World or setting text | `@section lore` |
+| Advice for the Dream Master, behind the screen | `@section dm` (a short one: `@callout dm`) |
+| A choice the player writes on the Citizen File | `@section choose` |
+| A term and its definition, or a glossary of terms | `@definition` |
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
-| A box in one of four registers: panel, slate, shard, codex | `@block …` |
-| A box floated beside the text | `@sidebar` |
-| Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
-| A creature or NPC | `@npc-stat` |
+| A worked example | `@callout example` |
+| A box in one of three registers: panel, slate, shard | `@block …` |
+| A callout floated beside the text | `@callout note .dc-sidebar` |
+| Fiction, a chapter-opener story | `@fiction-excerpt` |
+| A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
+| An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
 | Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
-| A roll-result ladder | `@outcome` |
-| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
+| A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
+| A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
+| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
 | The Citizen File field list | `@citizen-walkthrough` |
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
@@ -96,7 +102,7 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A section that overflows by a line or two | add `.dc-snug` |
 | Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
 
-The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. Sections split across pages; add `.dc-avoid-split` to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
+The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels that say what kind of text they hold. Sections split across pages; add `.dc-avoid-split` to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
 
 ## Quick start
 

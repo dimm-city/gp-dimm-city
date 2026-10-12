@@ -229,4 +229,26 @@
   width: 90%;
 }
 
+
+/* ── Variant: Example — a worked example, never a rule ───────────────────── */
+.dc-example-callout {
+  --dc-alert-bg: var(--paper-light);
+  --dc-alert-border: var(--brand-cyan);
+  --dc-alert-label-color: var(--hud-blue-dark);
+  --dc-alert-border-width: 3px;
+  --dc-alert-margin-top: var(--space-lg);
+  border-left-style: dashed;
+}
+.dc-example-callout p {
+  font-style: normal;
+}
+/* The label is a taped-on tag. */
+.dc-example-callout .dc-alert-label {
+  display: inline-block;
+  padding: 1px 7px;
+  background: var(--dc-tape-bg);
+  border: 1px dashed var(--dc-tape-border);
+  color: var(--dc-tape-color);
+}
+
 }

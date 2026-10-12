@@ -278,18 +278,15 @@ describe("declared wrapper markers", () => {
 
   test("each wrapper emits its element and classes", () => {
     const expected = {
-      sidebar: "dc-sidebar",
-      "sidebar-box": "dc-prose-panel dc-sidebar-box",
       definition: "dc-prose-panel dc-definition-block",
       "specialty-intro": "dc-specialty-intro",
       "specialty-art": "dc-specialty-art",
       gear: "dc-card dc-gear",
       toc: "dc-toc",
       lede: "dc-intro",
-      glossary: "dc-terms",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
@@ -304,13 +301,17 @@ describe("declared wrapper markers", () => {
       ['@block .dc-panel label="A & B"', "dc-block dc-panel"],
       ['@block slate label="A & B"', "dc-block dc-slate"],
       ['@block .dc-shard label="A & B"', "dc-block dc-shard"],
-      ['@block codex label="A & B"', "dc-block dc-codex"],
     ]) {
       const { html } = render(wrap(open, "@end-block"));
       expect(html, open).toContain(`<div class="${cls}"`);
       expect(html, open).toContain('<div class="dc-block-title">A &amp; B</div>');
     }
-    expect(render(wrap("@block .dc-codex", "@end-block")).html).not.toContain("dc-block-title");
+    expect(render(wrap("@block .dc-shard", "@end-block")).html).not.toContain("dc-block-title");
+  });
+
+  test("the codex register is retired: a word that is not a variant adds no class", () => {
+    expect(Object.keys(markers.block.variants)).toEqual(["panel", "slate", "shard"]);
+    expect(render(wrap("@block codex", "@end-block")).html).toContain('<div class="dc-block"');
   });
 
   test("section markers are core sections: same HTML as their @section <word> alias", () => {
@@ -320,9 +321,9 @@ describe("declared wrapper markers", () => {
       "citizen-walkthrough": ["walkthrough", "dc-section-panel dc-citizen-walkthrough"],
       "fiction-excerpt": ["fiction", "dc-fiction-excerpt"],
       "npc-stat": ["npc", "dc-section-panel dc-npc-stat"],
-      flaws: ["flaws", "dc-section-panel dc-flaws"],
-      ideals: ["ideals", "dc-section-panel dc-ideals"],
-      dreams: ["dreams", "dc-section-panel dc-dreams"],
+      flaws: ["flaws", "dc-section-panel dc-section-choose dc-flaws"],
+      ideals: ["ideals", "dc-section-panel dc-section-choose dc-ideals"],
+      dreams: ["dreams", "dc-section-panel dc-section-choose dc-dreams"],
     };
     expect(Object.keys(markers).filter((k) => markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, [word, cls]] of Object.entries(expected)) {
@@ -336,8 +337,17 @@ describe("declared wrapper markers", () => {
     }
   });
 
-  test("@section takes the general variant words panel, flat and aside, and a class beside them", () => {
-    for (const [word, cls] of [["panel", "dc-section-panel"], ["flat", "dc-section-flat"], ["aside", "dc-section-aside"]]) {
+  test("@section takes the variant words panel, flat and the four kinds of text, and a class beside them", () => {
+    const words = [
+      ["panel", "dc-section-panel"],
+      ["flat", "dc-section-flat"],
+      ["reference", "dc-section-panel dc-section-reference"],
+      ["lore", "dc-section-panel dc-section-lore"],
+      ["dm", "dc-section-panel dc-section-dm"],
+      ["choose", "dc-section-panel dc-section-choose"],
+    ];
+    expect(Object.keys(markers.section.variants).slice(0, words.length)).toEqual(words.map(([w]) => w));
+    for (const [word, cls] of words) {
       const { html, warnings } = render(wrap(`@section ${word} .dc-avoid-split`, "@end-section"));
       expect(html, word).toContain(`<div class="section ${cls} dc-avoid-split"`);
       expect(warnings, word).toEqual([]);
@@ -1031,6 +1041,77 @@ describe("declared card, outcome and procedure", () => {
 
 // @callout is a declared wrapper (variant = a bare word) and @dm-note is its
 // alias with the `dm` variant preset. The only plugin code is the default label.
+describe("the kinds of text, @faction and @npc-stat compact", () => {
+  const sec = (open, body = "## T") => renderGp([open, "", body, "", "@end-section"].join("\n"));
+
+  test("reference, lore, dm and choose are panels with their own class, and only words on @section", () => {
+    for (const word of ["reference", "lore", "dm", "choose"]) {
+      const { html, warnings } = sec(`@section ${word}`);
+      expect(html, word).toContain(`<div class="section dc-section-panel dc-section-${word}" data-section="${word}">`);
+      expect(warnings, word).toEqual([]);
+      expect(Object.hasOwn(markers, word), `@${word} is not a marker`).toBe(false);
+    }
+  });
+
+  test("@ideals, @flaws and @dreams are choose sections with their own class", () => {
+    for (const name of ["ideals", "flaws", "dreams"]) {
+      const { html } = renderGp([`@${name}`, "", "## T", "", `@end-${name}`].join("\n"));
+      expect(html, name).toContain(`class="section dc-section-panel dc-section-choose dc-${name}"`);
+    }
+  });
+
+  test("@npc-stat takes the compact word, which adds one class; the alias word has no such variant", () => {
+    const { html, warnings } = renderGp(["@npc-stat compact", "", "#### Bug", "", "@end-npc-stat"].join("\n"));
+    expect(html).toContain('<div class="section dc-section-panel dc-npc-stat dc-npc-compact" data-npc-stat="compact">');
+    expect(warnings).toEqual([]);
+  });
+
+  describe("@faction", () => {
+    const faction = (open) => renderGp([open, "", "#### Name", "", "Text.", "", "@end-faction"].join("\n"));
+
+    test("each kind word is a class and the badge names the kind", () => {
+      for (const [kind, label] of [["megacorp", "Megacorp"], ["cabal", "Cabal"], ["cult", "Cult"], ["enforcer", "Enforcer"]]) {
+        const { html, warnings } = faction(`@faction ${kind}`);
+        expect(html, kind).toContain(`<div class="dc-card dc-faction dc-faction-${kind}" data-faction="${kind}"><span class="dc-faction-kind">${label}</span>`);
+        expect(html, kind).toContain("<h4>Name</h4>");
+        expect(warnings, kind).toEqual([]);
+      }
+    });
+
+    test("a label names its own badge, escaped; with neither word nor label there is no badge", () => {
+      expect(faction('@faction cult label="Fan & club"').html).toContain('<span class="dc-faction-kind">Fan &amp; club</span>');
+      expect(faction('@faction cult label="Fan & club"').html).not.toContain(">Cult<");
+      const bare = faction("@faction").html;
+      expect(bare).toContain('<div class="dc-card dc-faction">');
+      expect(bare).not.toContain("dc-faction-kind");
+    });
+  });
+});
+
+describe("a creature's table is a stat strip", () => {
+  const strip = (...lines) => renderGp(lines.join("\n")).html;
+
+  test("a table with HP and Damage columns is tagged, wherever it sits and whatever the other columns are", () => {
+    expect(strip("| Name | HP | Damage | Traits |", "| --- | :-: | :-: | --- |", "| Bug | 1 | 1 | Climb |")).toContain('<table class="dc-stat-strip">');
+    expect(strip("| Type | Size | **hp** | DAMAGE |", "| --- | --- | --- | --- |", "| Op | S | 4 | 2 |")).toContain('<table class="dc-stat-strip">');
+    // a cell holding only a number is tagged for the big figures; text and "2 HP" are not
+    const cells = strip("| Name | HP | Damage |", "| --- | --- | --- |", "| Bug | 1 | 2 HP |");
+    expect(cells).toContain('<td class="dc-stat-num">1</td>');
+    expect(cells).toContain("<td>2 HP</td>");
+    expect(cells).toContain("<td>Bug</td>");
+    const inSkill = strip("@skill", "", "#### Wirefly", "", "| Name | HP | Damage |", "| --- | --- | --- |", "| Fly | 1 | 1 |", "", "After the table.", "", "@end-skill");
+    expect(inSkill).toContain('<table class="dc-stat-strip">');
+    expect(inSkill.match(/class="dc-skill-card/g)).toHaveLength(1);
+    expect(inSkill).toMatch(/<table class="dc-stat-strip">[\s\S]*<p>After the table\.<\/p>/);
+  });
+
+  test("a table with only one of the two columns, or neither, is an ordinary table", () => {
+    for (const head of [["Name", "HP"], ["Name", "Damage"], ["Type", "AP", "Effect"]]) {
+      expect(strip(`| ${head.join(" | ")} |`, `| ${head.map(() => "---").join(" | ")} |`, `| ${head.map(() => "x").join(" | ")} |`)).toContain("<table>");
+    }
+  });
+});
+
 describe("declared callout and dm-note", () => {
   const doc = (...lines) => lines.join("\n");
   const problems = (src) => renderGp(src).warnings.filter((w) => w.type === "component_invalid");
@@ -1043,6 +1124,7 @@ describe("declared callout and dm-note", () => {
     origin: ["dc-origin-callout", "Origin"],
     visit: ["dc-visit-callout", "Visit"],
     gear: ["dc-gear-callout", "Gear"],
+    example: ["dc-example-callout", "Example"],
   };
 
   test("each variant word gives its class and default label", () => {

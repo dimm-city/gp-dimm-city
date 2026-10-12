@@ -6,12 +6,12 @@ Chapter 6 {.dg-kicker}
 
 # Panels, Cards & Data
 
-The enclosures: the section variants, four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
+The enclosures: the section variants and the kinds of text they hold, three block registers, definition and glossary forms, the numbered procedure, the outcome ladder and roll tables, choice cards, gear entries, factions, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
 
 
 ## Section
 
-A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar of all three. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
+A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ```markdown {.dg-split}
 @section panel
@@ -25,14 +25,6 @@ The card: a cream substrate, an accent rail, a clipped corner, a shadow, and the
 @section flat
 
 The rail on a plain host, for text that should read as a continuation of the page.
-
-@end-section
-
-@section aside
-
-### Worth Knowing
-
-A short note set off from the text: a hairline frame, an accent rail, an italic heading.
 
 @end-section
 
@@ -61,14 +53,6 @@ The rail on a plain host, for text that should read as a continuation of the pag
 
 @end-section
 
-@section aside
-
-### Worth Knowing
-
-A short note set off from the text: a hairline frame, an accent rail, an italic heading.
-
-@end-section
-
 </div>
 
 <div class="dg-stage dg-on-paper">
@@ -81,9 +65,108 @@ A bare section: no look at all. The text sits on the page.
 
 </div>
 
-`panel` is the look for rules and reference text with a heading; `.dc-avoid-split` on it keeps a short panel on one page. `aside` is the sidebar-box treatment on a section; reach for `@sidebar-box` itself when the note needs its own divider. Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
+`panel` is the look for rules text with a heading; `.dc-avoid-split` on it keeps a short panel on one page. For a short note set off from the text, use [`@callout`](#ch-text). Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
 
 The components below that are sections have a marker of their own and a word on `@section`: `@npc-stat` (`npc`), `@fiction-excerpt` (`fiction`), `@citizen-walkthrough` (`walkthrough`), `@card-grid` (`cards`), `@flaws`, `@ideals` and `@dreams`.
+
+## Kinds of text {#kinds-of-text}
+
+`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
+
+| You are writing | Write | Looks like |
+|---|---|---|
+| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band, tight rows, a small corner cut |
+| The world, not the rules: places, factions' history, setting | `@section lore` | Brass on aged paper, a big shard corner, italic sub-heads |
+| Advice for the Dream Master, behind the screen | `@section dm` | Ink title bar with a *Dream Master* chip, a cold concrete body |
+| A choice the player writes on the Citizen File | `@section choose` | A lighter form sheet, dotted write-in rules, tick boxes, a *Your choice* chip, in the chapter's accent |
+
+```markdown {.dg-split}
+@section reference
+
+## Street Prices
+
+| Item | Cost |
+| --- | --- |
+| Noodle voucher | 2 DC |
+| Signal flare | 15 DC |
+
+- Prices are for a Tuesday. Ask the fixer on a Friday.
+
+@end-section
+
+@section lore
+
+## The Lower Monoverse
+
+Where the city keeps what it would rather forget: dripping pipework, dead billboards, and neighbours who still wave.
+
+@end-section
+
+@section dm
+
+## Running a Chase
+
+Keep the pressure on. Let the dice say who gets away, and let the city complicate it.
+
+@end-section
+
+@section choose
+
+## Pick a Quirk
+
+- Hums when nervous.
+- Never sits with their back to a door.
+- Collects bus tickets.
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-tall">
+
+@section reference
+
+## Street Prices
+
+| Item | Cost |
+| --- | --- |
+| Noodle voucher | 2 DC |
+| Signal flare | 15 DC |
+
+- Prices are for a Tuesday. Ask the fixer on a Friday.
+
+@end-section
+
+@section lore
+
+## The Lower Monoverse
+
+Where the city keeps what it would rather forget: dripping pipework, dead billboards, and neighbours who still wave.
+
+@end-section
+
+@section dm
+
+## Running a Chase
+
+Keep the pressure on. Let the dice say who gets away, and let the city complicate it.
+
+@end-section
+
+@section choose
+
+## Pick a Quirk
+
+- Hums when nervous.
+- Never sits with their back to a door.
+- Collects bus tickets.
+
+@end-section
+
+</div>
+
+`@flaws`, `@ideals` and `@dreams` are `choose` sections that hold a run of `@card` (below). The kind wins over the chapter: a `reference` panel stays HUD blue in a rust chapter, and only `choose` takes the chapter's accent. Tokens are the section's own (`--dc-section-accent`, `--dc-section-bg`, `--dc-section-clip`, `--dc-section-rail`) plus the chip: `--dc-section-tab` (its text, `none` for no chip), `--dc-section-tab-bg` and `--dc-section-tab-fg`.
 
 ## Fiction excerpt
 
@@ -117,7 +200,7 @@ Tokens: `--dc-fiction-bg`, `--dc-fiction-line-height`, `--dc-fiction-rule` (top 
 
 ## Block
 
-One macro, four registers. The class on the opener picks the silhouette and surface; `label` fills the title band and can be omitted.
+One macro, three registers. The class on the opener picks the silhouette and surface; `label` fills the title band and can be omitted.
 
 ```markdown
 @block .dc-panel label="Action Economy"
@@ -150,7 +233,8 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 | `.dc-panel` | HUD blue, hex corners | Player-facing rules summaries, structured data |
 | `.dc-slate` | Dark surface, magenta band | Binding rulings, Dream Master directives |
 | `.dc-shard` | Aged paper, rust band, zine cut | Fiction, atmosphere, setting asides |
-| `.dc-codex` | Pale cyan, octagon corners | Glossaries, lookups, compendium entries |
+
+The fourth register, `.dc-codex` (look-ups and glossaries), is retired: write a look-up as [`@section reference`](#kinds-of-text), a small box inside a section as `@block panel`, and a glossary as an `@definition` run.
 
 <div class="dg-stage">
 
@@ -168,60 +252,14 @@ Hologram haze cuts the gloom you're stumbling through. Flickering ads claw the a
 
 @end-block
 
-@block .dc-codex label="Outcome Ladder (d20)"
-
-| Roll | Result | What happens |
-|---|---|---|
-| **20** | Triumph | Best case, with extra impact |
-| **11–19** | Success | You do the thing |
-| **6–10** | Hard Choice | You succeed, but it costs you |
-| **2–5** | Failure | You don't get what you wanted |
-| **1** | Catastrophe | It goes bad — and then worse |
-
-@end-block
-
 </div>
 
 Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title-bg`, `--dc-block-title-fg`.
 
 
-## Sidebar box
-
-A standalone reference box with its own heading and an internal dashed divider — rules etiquette, a standalone ruling, anything that needs its own boundary.
-
-```markdown
-@sidebar-box
-
-#### Dice Etiquette
-
----
-
-Roll your dice in the open. If a die lands off the table, it doesn't count: reroll it.
-
-@end-sidebar-box
-```
-
-Result {.dg-result}
-
-<div class="dg-stage">
-
-@sidebar-box
-
-#### Dice Etiquette
-
----
-
-Roll your dice in the open. If a die lands off the table, it doesn't count: reroll it.
-
-@end-sidebar-box
-
-</div>
-
-Tokens: `--dc-sidebar-box-surface`, `--dc-sidebar-box-border`, `--dc-sidebar-box-accent`, `--dc-sidebar-box-rail`.
-
 ## Definition
 
-A short italic callout for one term — in-world vocabulary, an NPC type, an item category. Stack several in an `@columns 2` run for a glossary of callouts.
+A short italic box for a term: in-world vocabulary, an NPC type, an item category. Stack several in an `@columns 2` run for a glossary of boxes, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a small label, with a dashed rule between entries. A `---` inside is the same dashed rule, and a bold lead (`**Term** — gloss`) needs nothing.
 
 ```markdown
 @definition
@@ -267,36 +305,63 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent`, `--dc-definition-block-accent-width`. For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro — see [Writing a Page](#ch-writing).
-
-## Glossary
-
-A run of **term** — gloss paragraphs as one connected register, the form of an appendix glossary.
+### A glossary
 
 ```markdown
-@glossary
+@definition
 
-**Heat** — The running tally of attention you've drawn.
+#### Heat
 
-**Hard Choice** — A roll of 6–10. The fiction advances, but it costs you.
+The running tally of attention you've drawn.
 
-@end-glossary
+#### Hard Choice
+
+A roll of 6–10. The fiction advances, but it costs you.
+
+#### Twitch
+
+An ability you use outside your turn when its trigger happens.
+
+@end-definition
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@glossary
+@definition
 
-**Heat** — The running tally of attention you've drawn.
+#### Heat
 
-**Hard Choice** — A roll of 6–10. The fiction advances, but it costs you.
+The running tally of attention you've drawn.
 
-@end-glossary
+#### Hard Choice
+
+A roll of 6–10. The fiction advances, but it costs you.
+
+#### Twitch
+
+An ability you use outside your turn when its trigger happens.
+
+@end-definition
 
 </div>
 
+A box with its own heading and a divider is the same thing:
+
+```markdown
+@definition
+
+#### Dice Etiquette
+
+---
+
+Roll your dice in the open. If a die lands off the table, it doesn't count: reroll it.
+
+@end-definition
+```
+
+Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent`, `--dc-definition-block-accent-width`. For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro — see [Writing a Page](#ch-writing).
 
 ## Procedure
 
@@ -550,6 +615,72 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 Gear is a card with an orange rail. The name, the italic tagline and the bold price line are picked out by their shape, and a `@callout gear label="SPECS"` at the foot sits a gap below the body. A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
 
 
+## Faction
+
+An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, each with its own colour for the rail and the badge. `label="…"` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
+
+```markdown {.dg-split}
+@faction megacorp
+
+#### Halcyon Reach Holdings
+
+**HQ:** Tech District. **Led by:** Orla Vantine.
+
+They own the lights and the water and would like to own the rest.
+
+@end-faction
+
+@faction cult
+
+#### The Church of Static
+
+Sing the signal and the signal sings back.
+
+@end-faction
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@faction megacorp
+
+#### Halcyon Reach Holdings
+
+**HQ:** Tech District. **Led by:** Orla Vantine.
+
+They own the lights and the water and would like to own the rest.
+
+@end-faction
+
+@faction cabal
+
+#### The Quiet Table
+
+A back booth, a rotating guest list, and a very long memory.
+
+@end-faction
+
+@faction cult
+
+#### The Church of Static
+
+Sing the signal and the signal sings back.
+
+@end-faction
+
+@faction enforcer
+
+#### Blue Line Wardens
+
+They keep the peace, for a fee.
+
+@end-faction
+
+</div>
+
+Tokens: `--dc-faction-accent` (the rail and the badge fill) and `--dc-faction-badge-fg`; a kind class sets them.
+
 ## Tables
 
 Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.
@@ -718,6 +849,76 @@ Fodder — Medium
 </div>
 
 Tokens: `--dc-npc-stat-label-color`, `--dc-npc-stat-primary`, `--dc-npc-stat-secondary`, `--dc-npc-stat-rule`, `--dc-npc-stat-rule-width`.
+
+### Compact: a small creature, a companion, a drone
+
+`@npc-stat compact` is the same entry, packed: no panel, a framed box, a small name, and the two stat lines drawn as chips side by side. Use it for the small ones, in a run or in `@columns 2`.
+
+```markdown
+@npc-stat compact
+
+#### Beacon Bug
+
+> A thumb-sized surveillance drone made of living glass.
+
+1 HP — 1 Damage
+
+Fodder — Tiny
+
+##### Traits
+
+**Climb, Jump, Invisible.** Unless it moves, your eyes slide right past it.
+
+@end-npc-stat
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@npc-stat compact
+
+#### Beacon Bug
+
+> A thumb-sized surveillance drone made of living glass.
+
+1 HP — 1 Damage
+
+Fodder — Tiny
+
+##### Traits
+
+**Climb, Jump, Invisible.** Unless it moves, your eyes slide right past it.
+
+@end-npc-stat
+
+</div>
+
+### The stat strip
+
+A table with an **HP** column and a **Damage** column is a creature's stat line, and it is set as a strip wherever it sits: no marker, no change to the table. A cell that holds only a number (`1`, `20`) is set large and centred. This is what to write for a creature inside a skill's ability text, where a section marker such as `@npc-stat compact` would end the skill.
+
+```markdown
+| Name | HP | Damage | Traits |
+|------|:--:|:------:|--------|
+| Beacon Bug | 1 | 1 | Climb, Jump, Invisible |
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+| Name | HP | Damage | Traits |
+|------|:--:|:------:|--------|
+| Beacon Bug | 1 | 1 | Climb, Jump, Invisible |
+
+| Type | Size | HP | Damage |
+|---|---|:---:|:---:|
+| Operator | Small/Medium | 4 | 2 |
+
+</div>
+
+Tokens: `--dc-stat-strip-accent` (frame and label band), `--dc-stat-strip-value` (the big numbers).
 
 ## Stat grid and at-a-glance cards
 

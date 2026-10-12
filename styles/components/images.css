@@ -18,10 +18,10 @@
   margin: 0 0.2in 0.15in 0;
 }
 
-/* Token defaults for .dc-sidebar (--dc-sidebar-surface/-border) are
-   declared in :root in dc-component-defaults.css. */
+/* `.dc-sidebar`: a box floated to the right, text wrapping on its left. It is
+   a placement, not a look: put it on a callout (`@callout note .dc-sidebar`) or
+   around a `.dc-human-callout`, and that carries the box. */
 .dc-sidebar {
-  padding: 14px 18px;
   float: right;
   clear: right;
   /* prevent stacking into adjacent floats */
@@ -29,10 +29,6 @@
   /* body text wraps cleanly around margin-box */
   width: var(--sidebar-width);
   margin: 0 0 0.15in 0.2in;
-  background: var(--dc-sidebar-surface);
-  border: 1.5px solid var(--dc-sidebar-border);
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-normal);
   position: relative;
   z-index: 2;
   break-inside: avoid;
@@ -41,18 +37,6 @@
 /* Hides empty .dc-sidebar wrappers. */
 .dc-sidebar:empty {
   display: none;
-}
-
-/* Sidebar paragraph spacing. */
-.dc-sidebar p {
-  margin: 0 0 0.1in 0;
-}
-
-/* Sidebar h3 — LIVE in chapter-01.md sidebar blocks. */
-.dc-sidebar h3 {
-  margin: 0.12in 0 0.06in;
-  font-size: 1em;
-  letter-spacing: 0.04em;
 }
 
 .dc-human-callout {
@@ -68,10 +52,6 @@
    had a multi-block bug. They were parked in an unloaded css/deprecated.css,
    which has since been deleted; the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`)
    has the rules. */
-
-.dc-terms {
-  break-inside: avoid;
-}
 
 /* Tables: universal default look lives in dc-core.css under the <table>,
    <th>, <td>, tr:nth-child(...) selectors. Authors write plain markdown

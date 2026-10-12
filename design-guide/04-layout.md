@@ -6,7 +6,7 @@ Chapter 4 {.dg-kicker}
 
 # Layout
 
-How content is arranged inside a page: columns, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
+How content is arranged inside a page: columns, floated callouts, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
 
 
 ## Columns
@@ -89,18 +89,16 @@ Nothing here is safe. Nothing here is free.
 
 ## Sidebar
 
-`@sidebar` floats a reference panel to the right at 38% width; body text wraps on its left. Give it running prose on both sides so it never strands in white space.
+There is no sidebar marker: `.dc-sidebar` on a callout floats it to the right at about a third of the width, and body text wraps on its left. Give it running prose on both sides so it never strands in white space.
 
 ```markdown
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
-@sidebar
-
-### Distance, Fast
+@callout note .dc-sidebar label="Distance, Fast"
 
 Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Move. **Too Far** might as well be the other side of the ether.
 
-@end-sidebar
+@end-callout
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it.
 ```
@@ -111,13 +109,11 @@ Result {.dg-result}
 
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
-@sidebar
-
-### Distance, Fast
+@callout note .dc-sidebar label="Distance, Fast"
 
 Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Move. **Too Far** might as well be the other side of the ether.
 
-@end-sidebar
+@end-callout
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there — let them, and let it cost.
 

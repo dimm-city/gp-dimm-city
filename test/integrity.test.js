@@ -318,7 +318,7 @@ describe("component catalog", () => {
   /** Classes a retired entry mentions that stay styled because a live component uses them. */
   const SHARED_CLASSES = {
     "dc-sub-header": "the skill card's sub-header",
-    "dc-sidebar": "@sidebar, the floated box, stays",
+    "dc-sidebar": "the float placement stays (see sidebar-float); only the @sidebar marker is retired",
   };
   const styled = definedClasses(PKG);
   const classesOf = (entry) => [...new Set(asList(entry.emits).flatMap((e) => [...String(e).matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map((m) => m[1])))];

@@ -13,10 +13,10 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `@section` | marker plugin | `.section` (plain: this package styles nothing on it) |
 | `@section panel` | DC section word | `.section.dc-section-panel` |
 | `@section flat` | DC section word | `.section.dc-section-flat` |
-| `@section aside` | DC section word | `.section.dc-section-aside` |
-| `@npc-stat` · `@section npc` | DC section component | `.section.dc-section-panel.dc-npc-stat` |
+| `@section reference` · `lore` · `dm` · `choose` | DC section word | `.section.dc-section-panel.dc-section-reference` (`-lore`, `-dm`, `-choose`) |
+| `@npc-stat` · `@section npc` | DC section component | `.section.dc-section-panel.dc-npc-stat` (`@npc-stat compact` adds `.dc-npc-compact`) |
 | `@citizen-walkthrough` · `@section walkthrough` | DC section component | `.section.dc-section-panel.dc-citizen-walkthrough` |
-| `@flaws` / `@ideals` / `@dreams` · `@section flaws` … | DC section component | `.section.dc-section-panel.dc-flaws` (`-ideals`, `-dreams`) |
+| `@flaws` / `@ideals` / `@dreams` · `@section flaws` … | DC section component | `.section.dc-section-panel.dc-section-choose.dc-flaws` (`-ideals`, `-dreams`) |
 | `@fiction-excerpt` · `@section fiction` | DC section component | `.section.dc-fiction-excerpt` |
 | `@card-grid` · `@section cards` | DC section component | `.section.dc-card-grid` |
 | `@section … .dc-avoid-split` | modifier | `.dc-avoid-split` (keeps the section whole) |
@@ -29,7 +29,11 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `@block panel` | DC plugin | `.dc-block.dc-panel` |
 | `@block slate` | DC plugin | `.dc-block.dc-slate` |
 | `@block shard` | DC plugin | `.dc-block.dc-shard` |
-| `@block codex` | DC plugin | `.dc-block.dc-codex` |
+| `@faction megacorp` · `cabal` · `cult` · `enforcer` | DC plugin | `.dc-card.dc-faction.dc-faction-<kind>` + `.dc-faction-kind` badge |
+| `@roll-table` | DC plugin | `.dc-roll-table` + `.dc-roll-table-caption` over the author's table |
+| a table of the five bands | DC plugin (by shape) | `.dc-outcomes` ladder |
+| a table with HP and Damage columns | DC plugin (by shape) | `table.dc-stat-strip` |
+| `@callout example` | DC plugin | `.dc-alert.dc-example-callout` |
 | `@specialty .NAME` | DC plugin | `.dc-specialty.NAME` (scope parent for specialty cards) |
 | `@skill … @end-skill` | DC plugin | `.dc-skill-card` |
 | `@learning-path … @end-learning-path` | DC plugin | `.dc-path-shell` + `.dc-learning-path` |
@@ -74,17 +78,16 @@ Use this to choose the right callout type before reaching for a class name.
    └── General rules callout      → dc-alert
 ```
 
-### Block Components (via `@block panel`, `slate`, `shard`, `codex`)
+### Block Components (via `@block panel`, `slate`, `shard`)
 - `.dc-block` — base block container
 - `.dc-block.dc-panel` — data/rules panel (a `@block` register; the general card is `@section panel`)
 - `.dc-block.dc-slate` — authority/authority-voice
 - `.dc-block.dc-shard` — flavor/atmosphere
-- `.dc-block.dc-codex` — reference/glossary
 
 ### Sections
 - `.dc-section-panel` — the card: cream substrate, accent rail, clipped corner, title bar
 - `.dc-section-flat` — the rail on a plain host
-- `.dc-section-aside` — an inset note (the `.dc-sidebar-box` treatment, rail on `--dc-section-accent`)
+- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — panels that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice)
 - `.dc-npc-stat`, `.dc-citizen-walkthrough`, `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — panels that carry their own class
 - `.dc-fiction-excerpt`, `.dc-card-grid` — section components that are not panels
 - `.dc-avoid-split`, `.dc-snug` — modifiers
@@ -97,9 +100,8 @@ A bare `.section` has no rule. Chrome sits on a variant class; the section accen
 
 A location sets tokens on the components inside it and draws nothing of its own.
 
-### Sidebars
-- `.dc-sidebar` — floated box (`@sidebar`)
-- `.dc-sidebar-box` — aside in the text flow (`@sidebar-box`)
+### Floats
+- `.dc-sidebar` — float placement: a callout (`@callout note .dc-sidebar`) or a `.dc-human-callout` floated right
 
 ### Skill Cards
 - `.dc-skill-card` / `.dc-skill-card.dc-highlight`
@@ -144,8 +146,7 @@ These are separate components — not variants of each other.
 - `.dc-flavor` — italic flavor text
 - `.dc-tape` — adhesive tape label
 - `.dc-sticker` / `.dc-sticker-ref` / `.dc-stickers`
-- `.dc-definition-block`
-- `.dc-terms`
+- `.dc-definition-block` — a term, a glossary run, or a boxed note with a divider
 - `.dc-steps`
 
 ### Gear

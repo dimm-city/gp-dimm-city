@@ -183,8 +183,38 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 | Option | Values | Default |
 |---|---|---|
-| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `gear` | `note` |
+| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `gear` `example` | `note` |
 | `label` | any text | the variant's label |
+
+## Worked example
+
+`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a dashed cyan edge, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
+
+```markdown
+@callout example
+
+The Dream Master: "The guard turns toward you. What do you do?"
+
+You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+
+@end-callout
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@callout example
+
+The Dream Master: "The guard turns toward you. What do you do?"
+
+You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+
+@end-callout
+
+</div>
+
+A callout can also float beside the text: add `.dc-sidebar` (see [Layout](#ch-layout)).
 
 ## Dream Master note
 

@@ -7,6 +7,76 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **The d20 ladder is recognised by its bands.** A two-column pipe table whose
+  first column holds exactly the five standard bands (`20`, `11-19`, `6-10`,
+  `2-5`, `1`, in either order) is drawn as the coloured outcome ladder, in a
+  skill card or anywhere else, whatever its headers say (`Roll | Result`,
+  `Result | Effect`, empty). A band is read however it is typed (`11-19`,
+  `11 – 19`, `**20**`) and shown as `11–19`. Any other set of bands (six bands,
+  a split at 10) stays a plain table. Before, only a `Roll | Outcome` header
+  triggered it, and only inside a skill card.
+- **`@roll-table`**, a neutral random-table component for tables with equal
+  bands (`1-4`, `5-8`, …): a caption with a die chip (`die=d20`, any `dN`) and
+  a `label`, a mono range column, equal-weight rows and no tier colours. The
+  table inside stays a plain pipe table and is never read as a ladder.
+- **Four kinds of text, as words on `@section`:** `reference` (a look-up:
+  HUD blue, a pale title band, tight rows), `lore` (the world: brass on aged
+  paper, a long shard corner, italic sub-heads), `dm` (behind the screen: an ink
+  bar with a Dream Master chip on a cold body) and `choose` (a choice the
+  player writes on the Citizen File: a lighter form sheet, dotted write-in
+  rules, tick boxes, a "Your choice" chip, in the chapter's accent). Each is a
+  panel plus one class that sets the panel's tokens, with no marker of its own.
+  New tokens `--dc-section-tab`, `--dc-section-tab-bg` and `--dc-section-tab-fg`
+  draw the chip. `@flaws`, `@ideals` and `@dreams` are now `choose` sections
+  with their own class.
+- **`@callout example`**, the one spelling for a worked example: a dashed cyan
+  edge, a taped-on label, upright text. It replaces `@block shard label="Example"`
+  and `**Example:**` paragraphs.
+- **`@faction megacorp | cabal | cult | enforcer`**, an organization's profile:
+  a card whose rail and kind badge take the kind's colour (`--dc-faction-accent`,
+  `--dc-faction-badge-fg`). `label="…"` names a badge of your own.
+- **`@npc-stat compact`** for a small creature, a companion or a drone: no
+  panel, a framed box, the two stat lines as chips side by side.
+- **The stat strip.** A table with an `HP` column and a `Damage` column is set
+  as a strip of labels and big numbers (a cell holding only a number is set large) wherever it sits, with no marker
+  (`--dc-stat-strip-accent`, `--dc-stat-strip-value`). A creature inside a
+  skill's ability text needs this: a section marker there would end the skill.
+- **A chapter-start page with no fiction excerpt still opens like a chapter.**
+  The `# Title` is a band in the chapter's accent and the paragraph under it is
+  the lede (an `@lede` keeps its own look). A page with a fiction excerpt is
+  unchanged.
+- **`@definition` reads as a glossary** when it holds a run of `#### Term`
+  entries: a small mono-caps term, a dashed rule between entries, and the block
+  may split between them. A `---` inside is the same dashed rule.
+- `| highlight` on a skill heading is documented as the capstone look (the
+  card that pays off a path); it is not a new word.
+
+### Changed
+
+- **Skill cards split across pages by default.** A whole card is a third to half
+  a page, so keeping each one atomic left most specialty pages holding one card
+  and a third of the sheet empty. A card now splits at sensible places: it never
+  opens with only its tab, an ability row is never cut, a lead-in stays with what
+  it introduces, and the last block stays with the one above. `.dc-avoid-split`
+  (written on the `@skill` line, as on a section) keeps one whole.
+  `.dc-allow-split` is retired: it is the default.
+- A table of five bands now shows its roll as `11–19` (an en dash) however the
+  author typed it, and its tier and name come from the band.
+
+### Removed
+
+- `@glossary` and `.dc-terms`: write `@definition` (a run of `#### Term` entries,
+  or `**Term** — gloss` paragraphs).
+- `@sidebar-box` and the `--dc-sidebar-box-*` tokens: write `@definition` (a
+  `####` heading, `---` and body make the same box).
+- `@section aside`: write `@callout`.
+- `@sidebar` and `--dc-sidebar-surface` / `--dc-sidebar-border`: write
+  `@callout note .dc-sidebar`. `.dc-sidebar` remains as a float placement only.
+- `@block codex` (`.dc-codex`): write `@section reference` for a look-up panel, or `@block panel` for a small box inside a section (a section cannot nest).
+- `.dc-allow-split` on `@skill` (see above).
+
 ## [1.5.0] - 2026-10-12
 
 Needs **Gutterpress 0.11.17 or later**: that core resolves the variant
