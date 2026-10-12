@@ -756,7 +756,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </div>
 <p>A <code>@fiction-excerpt</code> places its first image for you — see <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>.</p>
 <h2>Break control</h2>
-<p>Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an <code>@npc-stat</code> with no <code>####</code>) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.</p>
+<p>Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an <code>@npc-stat</code> with at most one <code>####</code>) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.</p>
 <table>
 <thead data-source-range="151:152">
 <tr data-source-range="151:152">
@@ -1879,7 +1879,7 @@ Fodder — Usually Small to Medium</p>
 <h5>Equipment</h5>
 <p>Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.</p>
 </div></div>
-<p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code> is one creature, and it stays on one page by itself; <code>--dc-npc-stat-break-inside: auto</code> lets one split.</p>
+<p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code>, or one, is one creature, and it stays on one page by itself; <code>--dc-npc-stat-break-inside: auto</code> lets one split.</p>
 <p>To set the entries in columns, put them in <code>@columns 2</code> inside the block: the bar and an optional intro stay above, full width.</p>
 <pre><code data-source-range="987:1022" class="language-markdown">@npc-stat
 

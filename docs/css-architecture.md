@@ -770,7 +770,7 @@ them on the box it is written on, with `--dc-section-edge: 0px` so a whole panel
 keeps its padding inside the box; it declares nothing else. A book writes the same
 declarations for one box from its own sheet. No rule gives a section, a skill card
 or a faction `break-inside: avoid` directly (`test/conventions.test.js`).
-A catalog and a creature (an `@npc-stat` with no `####`) have defaults of their
+A catalog and a creature (an `@npc-stat` with at most one `####`) have defaults of their
 own: the first never stays whole and ignores `.dc-avoid-split`, the second stays
 whole.
 

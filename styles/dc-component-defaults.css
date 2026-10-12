@@ -51,8 +51,8 @@
      way from its own sheet (`#sporos { --dc-section-break-inside: avoid; }`).
      A custom property inherits, so one set on a container reaches what is
      inside it. A section splits by default, a catalog never stays whole
-     (`avoid` on a catalog needs its own token), and a block with no `####` in
-     an `@npc-stat` is one creature and stays whole. */
+     (`avoid` on a catalog needs its own token), and an `@npc-stat` with at most
+     one `####` is one creature and stays whole. */
   --dc-section-break-inside:    auto;
   --dc-catalog-break-inside:    auto;
   --dc-npc-stat-break-inside:   avoid;

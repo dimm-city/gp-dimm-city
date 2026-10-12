@@ -16,12 +16,12 @@ set from its own CSS.
 
 ### Changed
 
-- **A creature stays whole by default.** An `@npc-stat` with no `####` is one
-  creature, read at one glance: it keeps its padding inside its box and moves to
-  the next page rather than splitting, as `.dc-avoid-split` did. `.dc-avoid-split`
-  on one is now redundant. A block with `####` entries is unchanged (it breaks
-  between entries, never inside one). `--dc-npc-stat-break-inside: auto` lets
-  one split.
+- **A creature stays whole by default.** An `@npc-stat` with no `####`, or one (a
+  species and its one variant), is one creature, read at one glance: it keeps its
+  padding inside its box and moves to the next page rather than splitting, as
+  `.dc-avoid-split` did. `.dc-avoid-split` on one is now redundant. A block with
+  two or more `####` entries is unchanged (it breaks between entries, never inside
+  one). `--dc-npc-stat-break-inside: auto` lets one split.
 - **A catalog never stays whole.** `.dc-avoid-split` on a `@section catalog` no
   longer applies: a run of entries kept whole left the foot of the page before it
   blank. It splits like an unmarked catalog. A book that must keep one whole sets

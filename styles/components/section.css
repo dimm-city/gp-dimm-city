@@ -17,7 +17,7 @@
 
    Public tokens (defaults declared in dc-component-defaults.css :root):
      --dc-section-break-inside — `avoid` keeps a section whole, `auto` lets it
-                            split. An `@npc-stat` with no `####` and a catalog
+                            split. An `@npc-stat` with at most one `####` and a catalog
                             have their own (`--dc-npc-stat-break-inside`,
                             `--dc-catalog-break-inside`).
      --dc-section-bg      — panel / flat background surface
@@ -685,7 +685,7 @@ h3 + .dc-section-panel {
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
-     --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####` whole
+     --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Page breaks. A section splits across pages by default. A block with `####`
    entries is a RUN of creatures: it may break between entries and never inside
@@ -695,8 +695,8 @@ h3 + .dc-section-panel {
    an entry is itself unbreakable so a paragraph cannot split between columns.
    Chromium keeps a chain together when it fits a page and lets it break only
    when it cannot. The title bar (h3) and its intro chain on to the first entry,
-   so the bar is never alone at a page foot. A block with no `h4` is ONE
-   creature (the bar names it), read at one glance, so it stays whole:
+   so the bar is never alone at a page foot. A block with no `h4`, or one, is
+   ONE creature (the bar names it), read at one glance, so it stays whole:
    `--dc-npc-stat-break-inside: auto` lets one split.
 
    The entries are either direct children of the section (one column) or the
@@ -717,9 +717,10 @@ h3 + .dc-section-panel {
   break-inside: avoid;
 }
 
-/* One creature, one glance: a block with no `####` stays whole, with its
-   padding inside the box as `.dc-avoid-split` leaves it. */
-.dc-section-panel.dc-npc-stat:not(:has(h4)) {
+/* One creature, one glance: a block with no `####`, or with one (a species and
+   its one variant), stays whole, with its padding inside the box as
+   `.dc-avoid-split` leaves it. `h4 ~ h4` is a second entry beside the first. */
+.dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4)) {
   break-inside: var(--dc-npc-stat-break-inside);
   --dc-section-edge: 0px;
 }

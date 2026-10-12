@@ -163,7 +163,7 @@ edit.
 
 A catalog (`@section catalog`) never stays whole, so `.dc-avoid-split` does not
 apply to it; to keep one whole, a book sets `--dc-catalog-break-inside: avoid`
-on it. An `@npc-stat` with no `####` is one creature and stays whole without
+on it. An `@npc-stat` with at most one `####` is one creature and stays whole without
 `.dc-avoid-split` (`--dc-npc-stat-break-inside: auto` lets one split). An image
 with no class in a `@gear` entry floats right at half the card
 (`--dc-entry-art-width`), and one on its own line under the credits colophon is
@@ -240,7 +240,7 @@ the layer names. `CHANGELOG.md` lists what each release changes.
 - A `@section catalog` never stays whole. A catalog marked `.dc-avoid-split` now
   splits across pages like any other; set `--dc-catalog-break-inside: avoid` on it
   to keep one whole.
-- An `@npc-stat` with no `####` (one creature) stays whole. Add
+- An `@npc-stat` with at most one `####` (one creature) stays whole. Add
   `--dc-npc-stat-break-inside: auto` to let one split. A `.dc-avoid-split` on one
   is now redundant.
 

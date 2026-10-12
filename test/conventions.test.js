@@ -239,8 +239,8 @@ describe("keep-whole tokens", () => {
     expect(catalog["--dc-section-edge"]).toBe("var(--dc-section-pad-bottom)");
   });
 
-  test("a creature with no `####` reads --dc-npc-stat-break-inside", () => {
-    const creature = declsOf("styles/components/section.css", ".dc-section-panel.dc-npc-stat:not(:has(h4))");
+  test("a creature (an @npc-stat with at most one `####`) reads --dc-npc-stat-break-inside", () => {
+    const creature = declsOf("styles/components/section.css", ".dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4))");
     expect(creature["break-inside"]).toBe("var(--dc-npc-stat-break-inside)");
   });
 });

@@ -147,7 +147,7 @@ A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch
 
 ## Break control
 
-Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an `@npc-stat` with no `####`) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.
+Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an `@npc-stat` with at most one `####`) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.
 
 | You write | Effect |
 |---|---|

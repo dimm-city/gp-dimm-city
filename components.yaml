@@ -608,7 +608,7 @@ components:
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
       - --dc-npc-stat-break-inside
-    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no #### is one creature and stays whole (--dc-npc-stat-break-inside: auto lets one split)"
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no ####, or one, is one creature and stays whole (--dc-npc-stat-break-inside: auto lets one split)"
 
   - name: npc-stat-compact
     status: live
@@ -801,7 +801,7 @@ components:
     css: [styles/components/section.css, styles/components/cards.css]
     tokens: [--dc-section-break-inside, --dc-section-edge, --dc-npc-stat-break-inside, --dc-skill-card-break-inside, --dc-faction-break-inside]
     breaks: "break-inside: avoid. The class is a setter of the keep-whole tokens on the box it is written on, nothing more; a book writes the same declarations from its own sheet. A catalog does not take it (it never stays whole: --dc-catalog-break-inside: avoid on the catalog does)"
-    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object. A creature (an @npc-stat with no ####) needs none: it stays whole by default."
+    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object. A creature (an @npc-stat with at most one ####) needs none: it stays whole by default."
 
   - name: snug
     status: live
