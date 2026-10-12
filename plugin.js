@@ -350,43 +350,59 @@ function skipToTableClose(tokens, start) {
   return tokens.length - 1;
 }
 
-function getTableHeaders(tableTokens) {
-  const headers = [];
-  let inHead = false;
+// The header cells, the body rows and each row's cells of a table's tokens, as
+// the markdown the author wrote in them.
+function readTable(tableTokens) {
+  const head = [];
+  const rows = [];
+  let part = '';
+  let row = null;
   for (let i = 0; i < tableTokens.length; i++) {
-    if (tableTokens[i].type === 'thead_open') inHead = true;
-    if (tableTokens[i].type === 'thead_close') break;
-    if (inHead && tableTokens[i].type === 'inline') {
-      headers.push(tableTokens[i].content.toLowerCase().trim());
+    const t = tableTokens[i];
+    if (t.type === 'thead_open') part = 'head';
+    else if (t.type === 'tbody_open') part = 'body';
+    else if (t.type === 'tr_open' && part === 'body') row = [];
+    else if (t.type === 'tr_close' && part === 'body') rows.push(row);
+    else if ((t.type === 'th_open' || t.type === 'td_open') && tableTokens[i + 1]?.type === 'inline') {
+      (part === 'head' ? head : row).push(tableTokens[i + 1].content);
     }
   }
-  return headers;
-}
-
-function classifyTable(headers) {
-  if (headers.includes('roll') && headers.includes('outcome')) {
-    return 'outcomes';
-  }
-  return '';
-}
-
-function getRollTier(text) {
-  const clean = text.replace(/[\u2013\u2014]/g, '-').trim();
-  if (clean === '20') return 'crit';
-  if (clean === '1') return 'fail';
-  // Handle ranges like "11 - 19" or "11-19"
-  const rangeMatch = clean.match(/^(\d+)/);
-  if (rangeMatch) {
-    const n = parseInt(rangeMatch[1], 10);
-    if (n >= 11) return 'hit';
-    if (n >= 6) return 'mixed';
-    if (n >= 2) return 'miss';
-  }
-  return 'hit';
+  return { head, rows };
 }
 
 const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
+const LADDER_BANDS_COUNT = OUTCOME_TIERS.length;
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
+
+// The d20 outcome ladder is recognised by its bands, not by what its columns
+// are called: a two-column table whose first column holds exactly the five
+// standard bands (20, 11-19, 6-10, 2-5, 1), in either order, is the ladder. A
+// band is typed any way an author types one ("11-19", "11 – 19", "**20**").
+// Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
+const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
+
+// "11 – 19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
+function parseBand(cell) {
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]/g, '-');
+  const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
+  if (!m) return null;
+  const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
+  return lo <= hi ? [lo, hi] : null;
+}
+
+// The ladder rows of a table, or null when it is not a ladder.
+function ladderRows(table) {
+  const { head, rows } = table;
+  if (head.length !== 2 || rows.length !== LADDER_BANDS_COUNT || rows.some((r) => r.length !== 2)) return null;
+  const bands = rows.map((r) => parseBand(r[0]));
+  if (bands.some((b) => !b)) return null;
+  const keys = bands.map(([lo, hi]) => (lo === hi ? String(lo) : lo + '-' + hi));
+  if (new Set(keys).size !== LADDER_BANDS_COUNT || keys.some((k) => !Object.hasOwn(LADDER_TIER_OF_BAND, k))) return null;
+  return rows.map((r, i) => {
+    const tier = LADDER_TIER_OF_BAND[keys[i]];
+    return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
+  });
+}
 
 // The ladder's label bar and one row per `{ tier, name, roll, text }`; `text`
 // is markdown, so **bold** and ROLL THE DIE! render as they do anywhere else.
@@ -401,9 +417,9 @@ function outcomeRowsHtml(rows, md) {
   return html;
 }
 
-// A `| Roll | Outcome |` table in a skill card: tier and name come from the roll.
-function buildOutcomesBlock(rows, md, needsAvoid = true) {
-  // data-break-inside="avoid" is added when the parent card can be split (has
+// A table of the five standard bands: tier and name come from the band.
+function buildLadderBlock(rows, md, needsAvoid = true) {
+  // data-break-inside="avoid" is added when the parent card can be split (is
   // not avoid-split) — the polyfill needs this to keep the
   // outcomes table together when the card itself isn't protected. When the card
   // already has data-break-inside="avoid" (non-splittable cards), adding a
@@ -411,38 +427,7 @@ function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // by splitting the card at the outcomes boundary, leaving a headless
   // card-body on one page and the outcomes-only continuation on the next.
   const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  const ladder = rows
-    .filter((row) => row.length >= 2)
-    .map((row) => {
-      const roll = row[0].trim();
-      const tier = getRollTier(roll);
-      return { tier, name: OUTCOME_NAMES[tier], roll, text: row[1].trim() };
-    });
-  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(ladder, md) + '</div>\n';
-}
-
-function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
-  const rows = [];
-  let currentRow = [];
-  let inBody = false;
-
-  for (let i = 0; i < tableTokens.length; i++) {
-    const t = tableTokens[i];
-    if (t.type === 'tbody_open') inBody = true;
-    if (t.type === 'tbody_close') inBody = false;
-    if (t.type === 'tr_open' && inBody) currentRow = [];
-    if (t.type === 'tr_close' && inBody) {
-      rows.push(currentRow);
-    }
-    if (t.type === 'td_open' && inBody) {
-      const contentTok = tableTokens[i + 1];
-      if (contentTok && contentTok.type === 'inline') {
-        currentRow.push(contentTok.content);
-      }
-    }
-  }
-
-  return buildOutcomesBlock(rows, md, needsAvoid);
+  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -949,7 +934,7 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // A @callout, @card, @outcome or @procedure is content of the skill's card;
+      // A @callout, @card, @outcome, @procedure or @roll-table is content of the skill's card;
       // a break or another component (@sidebar, @specialty-art, …) ends it.
       if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
         let end = i;
@@ -1020,13 +1005,13 @@ function dcSkillCards(state) {
       if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
 
       if (tok.type === 'table_open') {
+        // A table of the five standard bands is the ladder; any other table
+        // passes through untouched, thead and all (rebuilding them from tbody
+        // rows once left 64 of 86 tables headerless).
         const tableTokens = collectTableTokens(content, i);
-        const tableClass = classifyTable(getTableHeaders(tableTokens));
-        // Tables this plugin does not transform pass through untouched, thead
-        // and all (rebuilding them from tbody rows once left 64 of 86 tables
-        // headerless).
-        if (tableClass) {
-          emit(buildTable(tableTokens, tableClass, md, canSplit));
+        const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
+        if (ladder) {
+          emit(buildLadderBlock(ladder, md, canSplit));
           i = skipToTableClose(content, i);
           continue;
         }
@@ -1045,7 +1030,7 @@ function dcSkillCards(state) {
 // run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
 // inside a skill must already be in its final form when the skill's rule
 // reads it. They stay inside the skill's card (see CARD_CONTENT).
-const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure']);
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-table']);
 
 /**
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
@@ -1116,6 +1101,47 @@ function dcOutcomes(state) {
       });
     return [run[0], makeToken('html_block', outcomeRowsHtml(rows, state.md)), run[run.length - 1]];
   });
+}
+
+/**
+ * A table of the five standard bands (see `ladderRows`) anywhere outside a skill
+ * card (the skill rule rewrites those with their card) is the same ladder, so
+ * the d20 mechanic reads the same wherever the book states it. A table inside
+ * `@roll-table` is not a ladder: its bands are the author's own.
+ */
+function dcLadderTables(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open' || tokens[i].meta?.rollTable) continue;
+    const tableTokens = collectTableTokens(tokens, i);
+    const ladder = ladderRows(readTable(tableTokens));
+    if (!ladder) continue;
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, false)));
+  }
+}
+
+/**
+ * `@roll-table [die=d12] [label="Wild Magic"]`: a random table in neutral
+ * colours. The wrapper is `div.dc-roll-table`; the rule adds the caption (the
+ * die chip, d20 unless `die=` says otherwise, and the label) above the author's
+ * own pipe table, which stays a plain `<table>`. It is not the outcome ladder:
+ * its bands are the author's (`1-4`, `5-8`, ...), all of equal weight.
+ */
+function dcRollTables(state) {
+  forEachComponent(state.tokens, 'roll-table', (run) => {
+    const [open, ...rest] = run;
+    const attrs = open.meta.attrs || {};
+    const die = /^d\d{1,3}$/i.test(attrs.die || '') ? attrs.die.toLowerCase() : 'd20';
+    const label = attrs.label ? '<span class="dc-roll-table-name">' + esc(String(attrs.label)) + '</span>' : '';
+    const caption = makeToken('html_block', '<div class="dc-roll-table-caption"><span class="dc-roll-table-die">' + esc(die) + '</span>' + label + '</div>\n');
+    for (const tok of rest) if (tok.type === 'table_open') tok.meta = { ...tok.meta, rollTable: true };
+    return [open, caption, ...rest];
+  });
+}
+
+function validateRollTable({ blocks }) {
+  if (blocks.some((b) => b.type === 'table')) return [];
+  return ['It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table.'];
 }
 
 /**
@@ -1273,9 +1299,11 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
+  md.core.ruler.push('dc_roll_tables', dcRollTables);
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_ladder_tables', dcLadderTables);
 }
 
 /**
@@ -1325,6 +1353,7 @@ export const markers = {
   card: wrapper('dc-card'),
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
+  'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
 
   // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
   // the same marker with the `dm` variant preset. A default label comes from

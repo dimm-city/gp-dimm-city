@@ -186,6 +186,11 @@
   --dc-outcomes-surface:     var(--paper-cream);
   --dc-outcomes-divider:     var(--hud-blue-dim);
 
+  /* roll table (`@roll-table`) public API */
+  --dc-roll-table-accent:    var(--hud-blue-dark);
+  --dc-roll-table-surface:   var(--paper-cream);
+  --dc-roll-table-head-bg:   var(--hud-blue-dim);
+
   /* .dc-path-shell extra public API (shape geometry) */
   --dc-path-shell-clip:           polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
   --dc-path-shell-padding-bottom: 0;

@@ -362,6 +362,73 @@ Result {.dg-result}
 
 Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg`, `--dc-outcomes-label-color`, `--dc-outcome-key-color`, `--dc-outcome-name-color`.
 
+### A table of the five bands is the ladder
+
+Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not matter (`Roll | Result`, `Result | Effect`, or empty), and a band is read however it is typed: `11-19`, `11 – 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
+
+```markdown
+| Roll | Result |
+| --- | --- |
+| 20 | The jammed door gives. Something comes with it. |
+| 11–19 | The door opens. |
+| 6–10 | It opens, loudly. |
+| 2–5 | It holds. |
+| 1 | The handle comes off in your hand. |
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+| Roll | Result |
+| --- | --- |
+| 20 | The jammed door gives. Something comes with it. |
+| 11–19 | The door opens. |
+| 6–10 | It opens, loudly. |
+| 2–5 | It holds. |
+| 1 | The handle comes off in your hand. |
+
+</div>
+
+## Roll table
+
+A random table that is not the ladder: one die, equal-weight rows, no tier colours. Wrap a pipe table in `@roll-table`; `label` names it and `die` picks the die on the chip (`d20` when you write none). Put the range in the first column (`1-4`, `5-8`, ...) and the result in the second.
+
+```markdown
+@roll-table label="Pocket Lint" die=d20
+
+| Roll | Result |
+| --- | --- |
+| 1-4 | A bent key that opens nothing nearby. |
+| 5-8 | Half a noodle voucher, still valid. |
+| 9-12 | A dead earbud with a name scratched in. |
+| 13-16 | A folded map of a different district. |
+| 17-20 | A battered signal flare. |
+
+@end-roll-table
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@roll-table label="Pocket Lint" die=d20
+
+| Roll | Result |
+| --- | --- |
+| 1-4 | A bent key that opens nothing nearby. |
+| 5-8 | Half a noodle voucher, still valid. |
+| 9-12 | A dead earbud with a name scratched in. |
+| 13-16 | A folded map of a different district. |
+| 17-20 | A battered signal flare. |
+
+@end-roll-table
+
+</div>
+
+Tokens: `--dc-roll-table-accent` (frame, caption and range rule), `--dc-roll-table-surface`, `--dc-roll-table-head-bg`.
+
+
 
 ## Card
 

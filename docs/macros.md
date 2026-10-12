@@ -68,6 +68,6 @@ always check that the emitted class name has a matching CSS rule before shipping
 - `@chapter C.01` followed by `@page intro` (the labelled chapter-opener): open a chapter with `@page chapter-start` and a `# Title`.
 - `@chapter-opener`: the same; a chapter opens with `@page chapter-start`.
 - `@tape` (removed in 1.2.0: write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344).
-- `@roll-table` / `@options-table`: use `@outcome` or a pipe table.
+- `@options-table`: use a pipe table. (`@roll-table` came back in 1.6.0 as a different, neutral random-table component.)
 - `@class-entry` / `@end-class-entry` (retired 2026-05-24): write `@section panel` with plain child elements.
 - The raw page spellings `@page .page-chapter-start .dc-chapter-start`, `.page-toc`, `.page-credits .dc-credits`, `.page-intro` and `.dc-citizen-file-page`: still render their classes but get no template rules. Write the page word.

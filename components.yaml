@@ -199,6 +199,18 @@ components:
     css: styles/components/section.css
     notes: "Four clip-path/surface treatments on .dc-block. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
 
+  - name: roll-table
+    status: live
+    origin: plugin
+    markers: ["@roll-table"]
+    snippet: roll-table
+    recipe: "@roll-table [die=d20] [label=\"…\"] / | Roll | Result | table with the author's own equal bands (1-4, 5-8, …) … @end-roll-table"
+    emits: div.dc-roll-table > div.dc-roll-table-caption > span.dc-roll-table-die + span.dc-roll-table-name, then the author's table
+    css: styles/components/data.css
+    tokens: [--dc-roll-table-accent, --dc-roll-table-surface, --dc-roll-table-head-bg]
+    breaks: "the caption stays with the table (break-after: avoid); the table does not split (table break-inside: avoid)"
+    notes: "A random table that is not the outcome ladder: neutral colours, one die, equal-weight rows. The die is d20 unless `die=` names another; `label` is optional. Its table is never read as a ladder, whatever its bands. Inside a skill it stays in the skill's card. (The @roll-table of 1.1 and earlier was retired in 1.2.0; this one is new.)"
+
   - name: card
     status: live
     origin: plugin
@@ -281,7 +293,7 @@ components:
     origin: plugin
     markers: ["@outcome"]
     snippet: outcome
-    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or a | Roll | Outcome | table inside a skill card"
+    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column is exactly the five bands 20, 11-19, 6-10, 2-5, 1 (any headers, either order), in a skill card or outside one"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
@@ -297,9 +309,9 @@ components:
       - --dc-outcome-key-color
       - --dc-outcome-name-color
       - --dc-outcome-name-opacity
-    usage: ["| Roll | Outcome"]
+    usage: ["| 20 |"]
     breaks: "break-inside: avoid; the skill-table form adds data-break-inside=avoid only when the parent card allows splitting"
-    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported."
+    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
 
   - name: specialty
     status: live

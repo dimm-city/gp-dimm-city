@@ -37,6 +37,13 @@ function renderGp(src) {
   return { html, warnings: env.layoutWarnings ?? [] };
 }
 
+/** A two-column pipe table of the five standard bands, with the given header and result texts. */
+const bandTable = (head = ["Roll", "Outcome"], bands = ["20", "11-19", "6-10", "2-5", "1"], texts = ["A", "B", "C", "D", "E"]) => [
+  `| ${head[0]} | ${head[1]} |`,
+  "| --- | --- |",
+  ...bands.map((b, i) => `| ${b} | ${texts[i] ?? "text"} |`),
+];
+
 function countRolls(html) {
   return html.split('class="dc-roll-the-die"').length - 1;
 }
@@ -193,9 +200,7 @@ describe("behaviour carried from the book repo", () => {
       "",
       "#### Risk It",
       "",
-      "| Roll | Outcome |",
-      "| --- | --- |",
-      "| 20 | **ROLL THE DIE!** but not `ROLL THE DIE!` |",
+      ...bandTable(["Roll", "Outcome"], undefined, ["**ROLL THE DIE!** but not `ROLL THE DIE!`"]),
       "",
       "@end-skill",
     ].join("\n");
@@ -284,7 +289,7 @@ describe("declared wrapper markers", () => {
       glossary: "dc-terms",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
@@ -544,7 +549,7 @@ describe("declared specialty, learning path and skill", () => {
         "@skill", "", card("Gamble"), "",
         "2. **2-X AP** *Push:* More.", "",
         "##### Outcomes", "",
-        "| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |", "| 1 | Boom |", "",
+        ...bandTable(["Roll", "Outcome"], undefined, ["Crit", "", "", "", "Boom"]), "",
         "##### A real sub-header", "",
         "- one", "- two",
       );
@@ -825,8 +830,7 @@ describe("declared card, outcome and procedure", () => {
     });
 
     test("an outcome table in a skill card and an @outcome in it sit side by side in the card", () => {
-      const table = ["| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |"];
-      const { html } = renderGp(skill(...table, "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
+      const { html } = renderGp(skill(...bandTable(), "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
       expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes" data-break-inside="avoid">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
@@ -868,6 +872,99 @@ describe("declared card, outcome and procedure", () => {
         expect(found).toHaveLength(1);
         expect(found[0].message).toBe("@outcome: This outcome has no rows. Add one `roll | name | text` line per result.");
       });
+    });
+  });
+
+  describe("the outcome ladder, recognised by its band values", () => {
+    const ladder = (...lines) => renderGp(lines.join("\n")).html;
+    const isLadder = (html) => html.includes('<div class="dc-outcomes"');
+    const tiers = (html) => [...html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1]);
+    const rolls = (html) => [...html.matchAll(/dc-outcome-roll">([^<]*)</g)].map((m) => m[1]);
+
+    test("the five standard bands are the ladder whatever the headers say, in a skill card and outside one", () => {
+      for (const head of [["Roll", "Outcome"], ["Roll", "Result"], ["Result", "Effect"], ["Roll Result", "Effect"], ["", ""], ["d20", "What happens"]]) {
+        const out = ladder(...bandTable(head));
+        expect(isLadder(out), head.join("|")).toBe(true);
+        expect(tiers(out)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+        expect(out).not.toContain("<table>");
+        const inSkill = ladder("@skill", "", "#### Risk It", "", ...bandTable(head), "", "@end-skill");
+        expect(isLadder(inSkill), `skill ${head.join("|")}`).toBe(true);
+      }
+    });
+
+    test("a band is read however it is typed, and shown the same way", () => {
+      const out = ladder(...bandTable(["Roll", "Result"], ["**20**", "11 \u2013 19", "6\u201410", "2 - 5", "1"]));
+      expect(rolls(out)).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
+      expect(tiers(out)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+    });
+
+    test("the bands in ascending order are the ladder; each row keeps its own tier and text", () => {
+      const out = ladder(...bandTable(["Result", "Effect"], ["1", "2-5", "6-10", "11-19", "20"], ["worst", "bad", "mixed", "good", "best"]));
+      expect(tiers(out)).toEqual(["fail", "miss", "mixed", "hit", "crit"]);
+      expect(out).toMatch(/dc-outcome-text">worst<[\s\S]*dc-outcome-text">best</);
+    });
+
+    test("any other set of bands is a plain table, even under a Roll | Outcome header", () => {
+      const others = [
+        ["20", "16-19", "11-15", "6-10", "2-5", "1"], // six bands
+        ["20", "11-19", "2-10", "1"], // a split at 10
+        ["1-5", "6-10", "11-19", "20"], // four
+        ["20", "11-19", "6-10", "2-5", "2-5"], // a repeated band
+        ["20", "11-19", "6-10", "2-5", "0"], // a wrong band
+        ["20", "11-19", "6-10", "2-5", "one"], // not numbers
+      ];
+      for (const bands of others) {
+        const out = ladder(...bandTable(["Roll", "Outcome"], bands));
+        expect(isLadder(out), bands.join(",")).toBe(false);
+        expect(out).toContain("<table>");
+      }
+    });
+
+    test("a table that is not two columns is not a ladder", () => {
+      const three = ["| Roll | Outcome | Notes |", "| --- | --- | --- |", ...["20", "11-19", "6-10", "2-5", "1"].map((b) => `| ${b} | text | more |`)];
+      expect(isLadder(ladder(...three))).toBe(false);
+    });
+
+    test("a table inside @roll-table is never a ladder, even with the standard bands", () => {
+      const out = ladder("@roll-table", "", ...bandTable(["Roll", "Result"]), "", "@end-roll-table");
+      expect(isLadder(out)).toBe(false);
+      expect(out).toContain("<table>");
+    });
+
+    test("the result text keeps its inline markdown", () => {
+      const out = ladder(...bandTable(["Roll", "Result"], undefined, ["**Triumph.** You win", "B", "C", "D", "E"]));
+      expect(out).toContain('<span class="dc-outcome-text"><strong>Triumph.</strong> You win</span>');
+    });
+  });
+
+  describe("@roll-table", () => {
+    const table = ["| Roll | Result |", "| --- | --- |", "| 1-4 | One |", "| 5-8 | Two |"];
+
+    test("wraps the author's own table under a caption with the die chip and the label", () => {
+      const { html, warnings } = renderGp(doc('@roll-table label="Wild Magic" die=d12', "", ...table, "", "@end-roll-table"));
+      expect(html).toContain('<div class="dc-roll-table" data-label="Wild Magic" data-die="d12">');
+      expect(html).toContain('<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d12</span><span class="dc-roll-table-name">Wild Magic</span></div>');
+      expect(html).toMatch(/<table>[\s\S]*<td>1-4<\/td>[\s\S]*<td>Two<\/td>[\s\S]*<\/table>/);
+      expect(html).not.toContain("dc-outcome");
+      expect(warnings).toEqual([]);
+    });
+
+    test("the die is d20 unless one is named, the label is optional and escaped", () => {
+      const bare = renderGp(doc("@roll-table", "", ...table, "", "@end-roll-table")).html;
+      expect(bare).toContain('<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d20</span></div>');
+      expect(renderGp(doc('@roll-table label="A & B"', "", ...table, "", "@end-roll-table")).html).toContain('<span class="dc-roll-table-name">A &amp; B</span>');
+      expect(renderGp(doc("@roll-table die=banana", "", ...table, "", "@end-roll-table")).html).toContain('dc-roll-table-die">d20<');
+    });
+
+    test("it stays in a skill's card", () => {
+      const { html } = renderGp(skill("@roll-table", "", ...table, "", "@end-roll-table", "", "After the table."));
+      expect(count(html, /class="dc-skill-card/g)).toBe(1);
+      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
+    });
+
+    test("an @roll-table with no table in it says so", () => {
+      const { warnings } = renderGp(doc("@roll-table", "", "just text", "", "@end-roll-table"));
+      expect(warnings.map((w) => w.message)).toEqual(["@roll-table: It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table."]);
     });
   });
 

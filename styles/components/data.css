@@ -359,6 +359,72 @@
   --row-color: var(--fungi-rot);
 }
 
+/* ── Roll table (`@roll-table`) ───────────────────────────────────────────
+   A random table that is not the outcome ladder: one die, equal-weight rows,
+   no tier colours. A caption bar carries the die chip and the label; the
+   author's own pipe table sits under it (its first column is the range, in the
+   mono face, set off by a rule).
+   Token contract:
+     --dc-roll-table-accent    → frame, caption bar and range rule (default --hud-blue-dark)
+     --dc-roll-table-surface   → table body fill (default --paper-cream)
+     --dc-roll-table-head-bg   → column-heading row (default --hud-blue-dim) */
+.dc-roll-table {
+  margin: 8px 0;
+  border: 2px solid var(--dc-roll-table-accent);
+  background: var(--dc-roll-table-surface);
+}
+
+.dc-roll-table-caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 4px;
+  background: var(--dc-roll-table-accent);
+  color: var(--paper-cream);
+  break-after: avoid;
+}
+
+/* The die chip: a cream tab with a cut corner, in the mono face. */
+.dc-roll-table-die {
+  font-family: var(--font-mono);
+  font-size: 10pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--dc-roll-table-accent);
+  background: var(--paper-cream);
+  padding: 3px 9px 3px 7px;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+}
+
+.dc-roll-table-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h5);
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+}
+
+.dc-roll-table table {
+  margin: 0;
+}
+
+.dc-roll-table th {
+  background: var(--dc-roll-table-head-bg);
+  color: var(--ink-dark);
+}
+
+/* Range column: mono, centred, ruled off from the results. */
+.dc-roll-table td:first-child {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  width: 4.5em;
+  color: var(--dc-roll-table-accent);
+  border-right: 2px solid var(--dc-roll-table-accent);
+}
+
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
   background: var(--dc-pullquote-bg);
