@@ -7,12 +7,80 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **Section variants: `@section panel`, `@section flat`, `@section aside`.**
+  A bare `@section` is now core's plain box and this package styles nothing on
+  it; the look comes from a word after `@section`. `panel` is the card the bare
+  section used to be (cream substrate, accent rail, clipped corner, shadow,
+  title bar). `flat` is the rail on a plain host with no card, the look the
+  intro section and the credits colophon share (its extra shadow is the new
+  token `--dc-section-drop`). `aside` is an inset note, built
+  on the `@sidebar-box` treatment with its rail on `--dc-section-accent`.
+  Needs Gutterpress with page, chapter and section variants. A test now fails
+  if any rule in `styles/` matches `.section` without a `dc-` class.
+- **The section components are words on `@section`.** `@npc-stat` is
+  `@section npc`, `@fiction-excerpt` is `@section fiction`,
+  `@citizen-walkthrough` is `@section walkthrough`, `@card-grid` is
+  `@section cards`, and `@flaws`, `@ideals` and `@dreams` are
+  `@section flaws`, `@section ideals` and `@section dreams`. Each pair writes
+  the same classes. The card-like ones (`npc`, `walkthrough`, `flaws`,
+  `ideals`, `dreams`) now also carry `dc-section-panel`. `@gear` and
+  `@outcome` are not sections, so they have no word.
+- **`.dc-avoid-split`.** Keeps a section whole: it moves to the next page rather
+  than splitting. Sections now split by default.
+- **`@fiction-excerpt` has its own look.** Aged paper (`--paper-aged`), no
+  rail, no title bar, narrative leading, and the first image floats. On a
+  chapter-start page (`.page-chapter-start` or `.dc-page-chapter-start`) it takes
+  the heavier opener edge, 2px ink rules and an offset shadow, so a book no longer
+  needs its own rule for it. New tokens: `--dc-fiction-rule`,
+  `--dc-fiction-shadow`.
+- **`@gear` is styled.** A card with an orange rail; the name, the italic
+  tagline and the bold price line are picked out by shape, and a trailing
+  `@callout gear label="SPECS"` sits a gap below the body. It was a bare card
+  before.
+- A callout directly before a panel now has a gap between them.
+- Snippets `section-panel`, `section-flat` and `section-aside` for the snippet
+  picker, and catalog entries for the three variants and `.dc-avoid-split`.
+
+### Changed
+
+- **A bare `@section` no longer looks like a card.** Write `@section panel`
+  where you want the card. A bare `@section` still groups its content and now
+  has no surface, rail, shadow or title bar. The first heading in it is an
+  ordinary heading.
+- **`@section .dc-npc-stat`, `.dc-citizen-walkthrough`, `.dc-flaws`,
+  `.dc-ideals` and `.dc-dreams` no longer get the card.** The card now comes
+  from `.dc-section-panel`, which the marker and the word write beside the class.
+  Use `@npc-stat` (or `@section npc`) and the like; the raw class spelling is a
+  plain section.
+- **The intro section and the credits colophon are `@section flat`.** The rules
+  that matched `.page-intro > .section` and `.section.credits-colophon` now match
+  `.dc-section-flat` on those pages, and set only `--dc-section-accent` and
+  `--dc-section-drop`. Write `@section flat` in place of a bare `@section` under
+  an intro lede and of `@section .credits-colophon`.
+- **Sections split across pages by default.** Nothing in this package sets
+  `break-inside` on a section any more, including inside `@columns` and for
+  an `@npc-stat` with no `####` entries. Add `.dc-avoid-split` to keep one whole.
+- `@card-grid` no longer sets its own surface, padding or `break-inside`; it is a
+  bare wrapper with a top margin.
+
 ### Removed
+
+- **`.dc-allow-split` on sections.** Sections split by default, so there is
+  nothing to allow. Delete it from `@section` and `@npc-stat` lines; add
+  `.dc-avoid-split` where a section should stay on one page. `@skill
+  {.dc-allow-split}` is a separate switch on skill cards and is unchanged.
+- **`.dc-plain` and the `--dc-section-break-inside` token.** A bare `@section`
+  is already plain. Write `@section` where you wrote `@section .dc-plain`. The
+  `@columns` rule in `dc-native.css` that set the token, and the `@npc-stat`
+  rules that only existed to flip it, are gone.
+- **`.credits-colophon`.** See Changed: write `@section flat`.
 
 - **`@tabbed` and `.dc-tabbed`.** The hung-tab section (the heading cut out
   as a tab above the panel) had no use in either book, and its two tokens
   `--dc-section-tab-overlap` and `--dc-section-tab-indent` go with it. Write a
-  plain `@section`: its first heading prints as the bar across the top.
+  `@section panel`: its first heading prints as the bar across the top.
 - **The labelled chapter-opener styling.** A `@chapter C.01` followed by
   `@page intro` no longer gets the stacked `C.01` badge, the chevron title or
   the clipped panel: the rules that keyed on
