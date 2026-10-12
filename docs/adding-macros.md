@@ -57,7 +57,7 @@ Add `variants` only when the CSS styles the component differently per variant wo
 
 A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `aside` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`, `@field`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `aside`, `catalog` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 
 ### A section variant, a page word, a chapter word
 
@@ -137,7 +137,7 @@ Rules of thumb:
 `@definition`, `@end-definition`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@lede`, `@end-lede`,
+`@gear`, `@end-gear`, `@augment`, `@end-augment`, `@treasure`, `@end-treasure`, `@vehicle`, `@end-vehicle`, `@drug`, `@end-drug`, `@field`, `@end-field`, `@lede`, `@end-lede`,
 `@glossary`, `@end-glossary`,
 `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
 `@flaws`, `@ideals`, `@dreams` (each with its `@end-` form)

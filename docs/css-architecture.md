@@ -38,7 +38,7 @@ version and vendors a copy under the book's `plugins/npm/`. Gutterpress
 ≥0.11.0 wraps every extension's CSS in its own cascade layer, `@layer
 ext.<name>` (this package is `ext.gp-dimm-city`), in `extensions:` list
 order — so the cascade a consuming book gets is core (layered) → each
-extension in its own layer, this package's sixteen sheets among them in
+extension in its own layer, this package's seventeen sheets among them in
 `gutterpress.styles` order → the book's own `styles:` last, which stay
 UNLAYERED (gutterpress#265, gutterpress#227). Anything a single book needs —
 a design guide's demo scaffolding, a field guide's chapter-specific art —
@@ -76,6 +76,7 @@ silently flip which sheet wins a shared selector.
 "styles/components/specialty.css",            // @layer dc.components
 "styles/components/data.css",                 // @layer dc.components
 "styles/components/images.css",               // @layer dc.components
+"styles/components/entries.css",              // @layer dc.components
 "styles/components/section.css",              // @layer dc.components
 "styles/page-templates.css",                  // @layer dc.templates
 "styles/page-rules.css",                      // @layer dc.pages
@@ -115,7 +116,7 @@ be pointless — font-family lookup is not a cascade contest.
 |---|---|---|---|
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
-| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides, and the section variants (`.dc-section-panel`, `-flat`, `-aside` and the section components, all in `section.css`) | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
+| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,entries,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides, and the section variants (`.dc-section-panel`, `-flat`, `-aside` and the section components, all in `section.css`) | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
 | `dc.templates` | `page-templates.css` | `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), the location rules for the page and chapter words (tokens only), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, any column layout |
 | `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, column layout |
 | *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
@@ -128,6 +129,7 @@ A **section variant** is a word on `@section` (`@section panel`, `flat`, `aside`
 
 | What | Lives in | Layer |
 |---|---|---|
+| Entry cards (`.dc-entry` and its five kinds), fields (`.dc-field`) and the catalog section (`.dc-catalog`): one file, one concern | `components/entries.css` | `dc.components` |
 | Section variants: chrome and the rules that style them (`.dc-section-panel`, `.dc-section-flat`, `.dc-section-aside`, `.dc-npc-stat`, `.dc-fiction-excerpt`, …) | `components/section.css` | `dc.components` |
 | Locations: what a page or chapter word changes | `page-templates.css` | `dc.templates` |
 | The named page a page word selects, and its margin boxes | `page-rules.css` | `dc.pages` |

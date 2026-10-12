@@ -7,6 +7,40 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **Entry cards: `@augment`, `@treasure`, `@vehicle`, `@drug`.** Cybernetics and
+  mods, magic items and relics, vehicles, and drugs and consumables each get
+  their own marker, snippet and catalog entry. They share one card style family
+  (`.dc-entry`) and each kind is a token setter on it (rail colour, name colour,
+  surface, and a small kind word over the name), so the CSS stays small. Existing
+  entry markdown (`#### Name`, a blockquote tagline, a `**SPECS:**` paragraph,
+  prose) works unchanged inside them. An entry with no name, or with two names
+  run together, is reported as a problem.
+- **`@field`, and bold labels that mean it.** A labelled field with variants
+  `specs`, `traits`, `equipment`, `effects`, `side-effects` and `requires`; the
+  default label is the variant's name and `label="…"` replaces it. Inside an
+  entry card, an `@npc-stat` and a `@skill`, a paragraph that opens with a label
+  the books already write (`**SPECS:**`, `**Traits:**`, `**Equipment:**`,
+  `**Effects:**`, `**Side Effects:**`, `**Requires:**`, `**Wirephreak Gear:**`,
+  `**Cybersurgeon Instrument(s):**`, `**TECHNOENHANCEMENT:**`) becomes the same
+  field, so books need no content change. The labels are one table in
+  `plugin.js`.
+- **`@section catalog`.** A panel for a run of entries that rules them instead of
+  boxing them: each entry takes a rule in its own accent colour over it, so the
+  hand-typed `---` between entries is not needed (one left in draws nothing).
+  Write `@columns 2` under the intro as before.
+- New tokens `--dc-entry-accent`, `--dc-entry-ink`, `--dc-entry-surface`,
+  `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` and
+  `--dc-field-accent`, `--dc-field-surface`, `--dc-field-fg`,
+  `--dc-field-label-fg`.
+
+### Changed
+
+- `@gear` is now an entry card (`dc-card dc-entry dc-gear`) and takes a `####`
+  name as well as `###`; its rules moved from `section.css` to the new
+  `styles/components/entries.css`. `@callout gear label="SPECS"` still works.
+
 ## [1.5.0] - 2026-10-12
 
 Needs **Gutterpress 0.11.17 or later**: that core resolves the variant
