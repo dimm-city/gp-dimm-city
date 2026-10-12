@@ -1071,14 +1071,14 @@ Signal Jammer (single-use)
 <span class="dc-classtag generalist">Generalist</span></p>
 </div>
 <h2>Roll the die</h2>
-<p>The text <code>ROLL THE DIE!</code> in prose becomes the die chip automatically, and so do <code>ROLL A DIE!</code>, <code>ROLLS A DIE!</code> and <code>ROLLING THE DIE!</code>: uppercase, with the exclamation mark, as written. Inside a code span, raw HTML or a heading it is left alone. The chip is set inside the line and never splits across two, so it never makes a line taller.</p>
+<p>The text <code>ROLL THE DIE!</code> in prose is picked out automatically, and so are <code>ROLL A DIE!</code>, <code>ROLLS A DIE!</code> and <code>ROLLING THE DIE!</code>: uppercase, with the exclamation mark, as written. It keeps the font and size of the text around it and is set bold, in a contrasting colour, and underlined. Inside a code span, raw HTML or a heading it is left alone.</p>
 <pre><code data-source-range="322:325" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
 <p>When an ability says <span class="dc-roll-the-die">ROLL THE DIE!</span>, roll a d20 and read the outcome ladder. A trap may say <span class="dc-roll-the-die">ROLL A DIE!</span> or <span class="dc-roll-the-die">ROLLING THE DIE!</span> instead.</p>
 </div>
-<p>Tokens: <code>--dc-roll-the-die-color</code>, <code>--dc-roll-the-die-border</code>.</p>
+<p>Token: <code>--dc-roll-the-die-color</code>.</p>
 </div></div>"
 `;
 
@@ -1425,7 +1425,7 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <div class="dc-outcomes">
-  <div class="dc-outcomes-label">Outcomes</div>
+  <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Result</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">The jammed door gives. Something comes with it.</span>
@@ -2553,7 +2553,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Torch:</em> Vent a cone of ignited bio-fuel at everything in Reach. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
 <div class="dc-outcomes" data-break-inside="avoid">
-  <div class="dc-outcomes-label">Outcomes</div>
+  <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Quadruple damage.</span>
@@ -3506,7 +3506,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="109:110">
 <td>Roll the die</td>
-<td><code>--dc-roll-the-die-color</code> <code>--dc-roll-the-die-border</code></td>
+<td><code>--dc-roll-the-die-color</code></td>
 </tr>
 <tr data-source-range="110:111">
 <td>Block</td>
@@ -3890,7 +3890,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <p class="dc-ability-text"><em>Torch:</em> Vent a cone of ignited bio-fuel at everything in Reach. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
 <div class="dc-outcomes" data-break-inside="avoid">
-  <div class="dc-outcomes-label">Outcomes</div>
+  <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Quadruple damage.</span>
@@ -4764,7 +4764,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <p class="dc-ability-text"><strong>ROLL THE DIE TWICE!</strong> <em>All Gas, No Brakes:</em> Make two basic attacks against one target. If either roll is a 1, both attacks catastrophically fail as your movement snags on gear, armor, or the environment at the worst possible moment. DM’s call on how bad it gets.</p>
 </div>
 <div class="dc-outcomes" data-break-inside="avoid">
-  <div class="dc-outcomes-label">Outcomes</div>
+  <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">You deal quadruple damage (or double a special weapon’s damage).</span>

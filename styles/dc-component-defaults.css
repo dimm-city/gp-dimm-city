@@ -225,7 +225,6 @@
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* roll / die callout public API */
-  --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
 
   /* .dc-skill-card extra public API (shape geometry) */

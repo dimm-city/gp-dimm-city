@@ -396,7 +396,8 @@ function parseBand(cell) {
   return lo <= hi ? [lo, hi] : null;
 }
 
-// The ladder rows of a table, or null when it is not a ladder.
+// The ladder of a table — its header cells and its rows — or null when it is
+// not a ladder.
 function ladderRows(table) {
   const { head, rows } = table;
   if (head.length !== 2 || rows.length !== LADDER_BANDS_COUNT || rows.some((r) => r.length !== 2)) return null;
@@ -404,16 +405,23 @@ function ladderRows(table) {
   if (bands.some((b) => !b)) return null;
   const keys = bands.map(([lo, hi]) => (lo === hi ? String(lo) : lo + '-' + hi));
   if (new Set(keys).size !== LADDER_BANDS_COUNT || keys.some((k) => !Object.hasOwn(LADDER_TIER_OF_BAND, k))) return null;
-  return rows.map((r, i) => {
-    const tier = LADDER_TIER_OF_BAND[keys[i]];
-    return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
-  });
+  return {
+    head,
+    rows: rows.map((r, i) => {
+      const tier = LADDER_TIER_OF_BAND[keys[i]];
+      return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
+    }),
+  };
 }
 
 // The ladder's label bar and one row per `{ tier, name, roll, text }`; `text`
 // is markdown, so **bold** and ROLL THE DIE! render as they do anywhere else.
-function outcomeRowsHtml(rows, md) {
-  let html = '  <div class="dc-outcomes-label">Outcomes</div>\n';
+// A ladder made from a table keeps the table's header: its two cells sit in the
+// label bar over the two columns. With no header text the bar says "Outcomes".
+function outcomeRowsHtml(rows, md, head = []) {
+  let html = head.some((cell) => cell.trim())
+    ? '  <div class="dc-outcomes-label dc-outcomes-head">' + head.map((cell) => '<span>' + md.renderInline(cell.trim()) + '</span>').join('') + '</div>\n'
+    : '  <div class="dc-outcomes-label">Outcomes</div>\n';
   rows.forEach(({ tier, name, roll, text }) => {
     html += '  <div class="dc-outcome-row ' + tier + '">\n';
     html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll) + '</span></span>\n';
@@ -424,7 +432,7 @@ function outcomeRowsHtml(rows, md) {
 }
 
 // A table of the five standard bands: tier and name come from the band.
-function buildLadderBlock(rows, md, needsAvoid = true) {
+function buildLadderBlock({ head, rows }, md, needsAvoid = true) {
   // data-break-inside="avoid" is added when the parent card can be split (is
   // not avoid-split) — the polyfill needs this to keep the
   // outcomes table together when the card itself isn't protected. When the card
@@ -433,7 +441,7 @@ function buildLadderBlock(rows, md, needsAvoid = true) {
   // by splitting the card at the outcomes boundary, leaving a headless
   // card-body on one page and the outcomes-only continuation on the next.
   const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md) + '</div>\n';
+  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"

@@ -511,7 +511,7 @@ components:
     recipe: "ROLL THE DIE!  (automatic in markdown prose, uppercase only: ROLL|ROLLS|ROLLING + A|THE + DIE! — e.g. ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!; code spans, raw HTML and headings are left alone)"
     emits: span.dc-roll-the-die
     css: styles/components/cards.css
-    tokens: [--dc-roll-the-die-color, --dc-roll-the-die-border]
+    tokens: [--dc-roll-the-die-color]
     usage: ["ROLL THE DIE!", "ROLL A DIE!", "ROLLS A DIE!", "ROLLING THE DIE!"]
     breaks: none
     notes: "A plain inline box (stamped label look): its padding and border paint around the text without making the line taller, so a line with a chip is the same height as one without. It never wraps: a chip that would straddle a line end moves to the next line whole."

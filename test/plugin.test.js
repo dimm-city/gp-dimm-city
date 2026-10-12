@@ -574,8 +574,8 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
       expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
       expect(html).toContain('<div class="dc-outcomes" data-break-inside="avoid">');
-      expect(html).toContain('<div class="dc-outcomes-label">Outcomes</div>');
-      expect(count(html, />Outcomes</g)).toBe(1); // the "##### Outcomes" sub-header is swallowed: the table carries its own label
+      expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
+      expect(count(html, />Outcomes</g)).toBe(0); // the "##### Outcomes" sub-header is swallowed: the table carries its own header
       expect(html).not.toContain("<h5");
       expect(html).toContain('<div class="dc-sub-header">A real sub-header</div>');
     });
@@ -905,6 +905,15 @@ describe("declared card, outcome and procedure", () => {
         const inSkill = ladder("@skill", "", "#### Risk It", "", ...bandTable(head), "", "@end-skill");
         expect(isLadder(inSkill), `skill ${head.join("|")}`).toBe(true);
       }
+    });
+
+    test("the ladder keeps the table's header in its label bar; with no header text the bar says Outcomes", () => {
+      const out = ladder(...bandTable(["d20", "Repair **Time**"]));
+      expect(out).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>d20</span><span>Repair <strong>Time</strong></span></div>');
+      const inSkill = ladder("@skill", "", "#### Risk It", "", ...bandTable(["Roll", "Effect"]), "", "@end-skill");
+      expect(inSkill).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Effect</span></div>');
+      const blank = ladder(...bandTable(["", ""]));
+      expect(blank).toContain('<div class="dc-outcomes-label">Outcomes</div>');
     });
 
     test("a band is read however it is typed, and shown the same way", () => {

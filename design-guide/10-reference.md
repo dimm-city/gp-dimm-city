@@ -107,7 +107,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` |
 | Class tag | `--dc-classtag-color` |
-| Roll the die | `--dc-roll-the-die-color` `--dc-roll-the-die-border` |
+| Roll the die | `--dc-roll-the-die-color` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` |
 | Section chip (`dm`, `choose`) | `--dc-section-tab` `--dc-section-tab-bg` `--dc-section-tab-fg` |
 | Roll table | `--dc-roll-table-accent` `--dc-roll-table-surface` `--dc-roll-table-head-bg` |

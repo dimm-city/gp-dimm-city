@@ -7,6 +7,28 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-10-12
+
+### Changed
+
+- **Faction cards split across pages.** A `@faction` profile runs to half a page
+  or more; kept whole, a chapter of factions left half-empty pages. It now
+  splits between paragraphs like an entry; the name stays with its first lines,
+  and `.dc-avoid-split` on the marker keeps one whole.
+- **The outcome ladder keeps its table's header.** The two header cells
+  (`Roll | Result`, `d20 | Repair Time`, …) now sit in the ladder's label bar
+  over the two columns, instead of being dropped for a fixed "Outcomes" label.
+  A table with an empty header, and `@outcome`, still say "Outcomes". The bar
+  is the same height, so no page moves.
+- **ROLL THE DIE! is set in the text, not as a chip.** The phrase (and ROLL A
+  DIE!, ROLLS A DIE!, ROLLING THE DIE!) keeps the font and size of the text
+  around it and is bold, in a contrasting colour (`--dc-roll-the-die-color`,
+  default `--blood`), and underlined.
+
+### Removed
+
+- `--dc-roll-the-die-border`: the phrase has no border any more.
+
 ## [1.6.0] - 2026-10-12
 
 ### Added

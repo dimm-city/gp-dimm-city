@@ -440,35 +440,18 @@
   font-weight: 600;
 }
 
-/* ROLL THE DIE! emphasis chip — tokens: --dc-roll-the-die-color (text, default
-   --blood), --dc-roll-the-die-border (default --hud-magenta).
-   A stamped label for an instruction to act. It is a plain non-replaced
-   `display: inline` box on purpose: an inline box's vertical padding, border
-   and shadow paint around its text without adding to the line box, so a line
-   holding a chip is exactly as tall as one without, and nothing around it
-   moves. `line-height: 0` keeps the chip's own font from growing the line,
-   the font is smaller than the body, and `white-space: nowrap` moves a chip that
-   would straddle a line end to the next line whole (it still adds no height).
-   `box-decoration-break: clone` keeps both edges if one ever does fragment.
-   The fill is opaque paper, so contrast is fixed whatever it sits on: --blood on --paper-cream is 7.7:1
-   (it failed at 2.64:1 on skill-card paper-aged as --crimson text). */
+/* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
+   --dc-roll-the-die-color (default --blood).
+   An instruction to act, set in the text around it: the same font and size as
+   the line it sits in, made bold, in a contrasting colour, and underlined in
+   that colour. It is plain inline text, so the line keeps its height. --blood
+   on --paper-cream is 7.7:1. */
 .dc-roll-the-die {
-  display: inline;
-  font-family: var(--font-display);
-  font-size: 0.8em;
   font-weight: 700;
-  line-height: 0;
-  white-space: nowrap;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--dc-roll-the-die-color);
-  background-color: var(--paper-cream);
-  padding: 0.14em 0.35em;
-  margin-inline: 0.05em;
-  border: 1.5pt solid var(--dc-roll-the-die-border);
-  border-bottom-width: 3pt;
-  box-shadow: 1pt 1pt 0 var(--dc-roll-the-die-border);
-  box-decoration-break: clone;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5pt;
+  text-underline-offset: 0.15em;
 }
 
 /* ── AP base + author-facing variants ─────────────────────────────────── */

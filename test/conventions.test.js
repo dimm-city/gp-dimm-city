@@ -224,6 +224,17 @@ describe("skill cards split by default", () => {
   });
 });
 
+// A faction profile runs to half a page or more; kept whole it left half-empty
+// pages through a chapter of factions. It splits like an entry.
+describe("faction cards split by default", () => {
+  test("a faction card overrides .dc-card's avoid, and .dc-avoid-split keeps one whole", () => {
+    const css = read("styles/components/section.css");
+    expect(css).toMatch(/\.dc-card\.dc-faction \{[^}]*break-inside: auto;/);
+    expect(css).toMatch(/\.dc-card\.dc-faction\.dc-avoid-split \{\s*break-inside: avoid;/);
+    expect(css).toMatch(/\.dc-card\.dc-faction > :is\(h3, h4\):first-of-type \{[^}]*break-after: avoid;/);
+  });
+});
+
 // A location (a page template such as `@page chapter-start`, a chapter such as
 // `@chapter rules`) only ADJUSTS a component: it may set `--dc-*` tokens on the
 // component, and it may style its OWN element and plain elements (the page's
