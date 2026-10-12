@@ -86,7 +86,13 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A box floated beside the text | `@sidebar` |
 | Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` |
-| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
+| General gear | `@gear` |
+| A cybernetic or mod | `@augment` |
+| A magic item or relic | `@treasure` |
+| A vehicle | `@vehicle` |
+| A drug, elixir or consumable | `@drug` |
+| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
+| A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | `@outcome` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
 | The Citizen File field list | `@citizen-walkthrough` |

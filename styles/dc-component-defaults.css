@@ -154,7 +154,20 @@
   --dc-flavor-accent-width:  3px;
   --dc-flavor-color:         var(--ink-smoke);
 
-  /* gear entry public API */
+  /* entry cards (@gear, @augment, @treasure, @vehicle, @drug) public API;
+     each kind sets these on its own class (components/entries.css) */
+  --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
+  --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
+  --dc-entry-surface:        var(--paper-light);
+  --dc-entry-rail:           3px;                   /* a catalog sets 0 */
+  --dc-entry-rule:           0px;                   /* a catalog sets it */
+  --dc-entry-kind:           none;                  /* a quoted word over the name */
+
+  /* .dc-field public API (@field, and the **Label:** shortcut); each variant sets these on its own class */
+  --dc-field-accent:         var(--ink-dark);       /* rail and label chip */
+  --dc-field-surface:        var(--paper-aged);
+  --dc-field-fg:             var(--ink);
+  --dc-field-label-fg:       var(--paper-cream);    /* text on the chip */
 
   /* .dc-intro public API */
   --dc-intro-accent:         var(--orange);

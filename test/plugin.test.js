@@ -278,7 +278,12 @@ describe("declared wrapper markers", () => {
       definition: "dc-prose-panel dc-definition-block",
       "specialty-intro": "dc-specialty-intro",
       "specialty-art": "dc-specialty-art",
-      gear: "dc-card dc-gear",
+      gear: "dc-card dc-entry dc-gear",
+      augment: "dc-card dc-entry dc-augment",
+      treasure: "dc-card dc-entry dc-treasure",
+      vehicle: "dc-card dc-entry dc-vehicle",
+      drug: "dc-card dc-entry dc-drug",
+      field: "dc-field",
       toc: "dc-toc",
       lede: "dc-intro",
       glossary: "dc-terms",
@@ -287,7 +292,7 @@ describe("declared wrapper markers", () => {
     const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
-      const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
+      const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`, "#### Name")); // an entry card needs its name
       expect(html, name).toContain(`<div class="${cls}">`);
       expect(warnings, name).toEqual([]);
     }
@@ -1042,5 +1047,137 @@ describe("declared callout and dm-note", () => {
   test("image-only paragraphs are marked, inside a callout too", () => {
     expect(renderGp(callout("@callout", "![alt](a.png)")).html).toContain('<p class="dc-img-wrapper"><img');
     expect(renderGp("text ![alt](a.png) text").html).not.toContain("dc-img-wrapper");
+  });
+});
+
+// Entry cards, the @field component and the bold-label shortcut onto it, and
+// the catalog section that holds a run of entries.
+describe("entry cards", () => {
+  const ENTRIES = ["gear", "augment", "treasure", "vehicle", "drug"];
+
+  test("each entry is a card of the shared .dc-entry family, and a run needs no @end- between entries", () => {
+    for (const name of ENTRIES) {
+      const { html, warnings } = renderGp(`@${name}\n\n#### One\n\n---\n\n@${name}\n\n#### Two\n\n@end-${name}`);
+      expect(warnings, name).toEqual([]);
+      expect(html.match(new RegExp(`<div class="dc-card dc-entry dc-${name}"`, "g")), name).toHaveLength(2);
+    }
+  });
+
+  test("an entry with no name, or with two, is reported", () => {
+    for (const name of ENTRIES) {
+      const none = renderGp(`@${name}\n\nJust prose.\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      expect(none.join("\n"), name).toContain("has no name");
+      const two = renderGp(`@${name}\n\n#### One\n\ntext\n\n#### Two\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      expect(two.join("\n"), name).toContain('"Two" is a second name');
+      expect(renderGp(`@${name}\n\n### Three-hash name\n\n##### Sub heading\n\n@end-${name}`).warnings, name).toEqual([]);
+    }
+  });
+});
+
+describe("@field and the bold labels that mean it", () => {
+  /** Every label the shortcut recognises, as the books write it, and the variant it means. */
+  const LABELS = {
+    "SPECS": "specs",
+    "Traits": "traits",
+    "Equipment": "equipment",
+    "Effects": "effects",
+    "Side Effects": "side-effects",
+    "Requires": "requires",
+    "Wirephreak Gear": "requires",
+    "Cybersurgeon Instrument": "requires",
+    "Cybersurgeon Instruments": "requires",
+    "Cybersurgeon Instrument(s)": "requires",
+    "TECHNOENHANCEMENT": "requires",
+  };
+  const fieldOf = (html) => html.match(/<div class="dc-field[^"]*"[^>]*>[\s\S]*?<\/div>/)?.[0];
+
+  test("the marker takes a variant word and writes the variant's default label", () => {
+    const defaults = { specs: "SPECS", traits: "Traits", equipment: "Equipment", effects: "Effects", "side-effects": "Side Effects", requires: "Requires" };
+    for (const [variant, label] of Object.entries(defaults)) {
+      const { html, warnings } = renderGp(`@field ${variant}\n\nBody.\n\n@end-field`);
+      expect(warnings, variant).toEqual([]);
+      expect(html, variant).toContain(`<div class="dc-field dc-field-${variant}" data-field="${variant}"><span class="dc-field-label">${label}</span>`);
+    }
+  });
+
+  test("label=\"…\" replaces the default label; a bare @field has none", () => {
+    expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).toContain('<span class="dc-field-label">Rules</span>');
+    expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).not.toContain(">SPECS<");
+    expect(renderGp("@field\n\nBody.\n\n@end-field").html).not.toContain("dc-field-label");
+  });
+
+  test("every recognised label becomes the same markup the marker writes", () => {
+    for (const [label, variant] of Object.entries(LABELS)) {
+      for (const written of [label, label.toLowerCase()]) {
+        const { html, warnings } = renderGp(`@augment\n\n#### Name\n\n**${written}:** The body, with *emphasis*.\n\n@end-augment`);
+        expect(warnings, label).toEqual([]);
+        const explicit = renderGp(`@field ${variant} label="${written}"\n\nThe body, with *emphasis*.\n\n@end-field`).html;
+        expect(fieldOf(html), written).toBe(fieldOf(explicit));
+        expect(fieldOf(html), written).toContain(`dc-field-${variant}`);
+        expect(html, written).not.toContain("<strong>");
+      }
+    }
+  });
+
+  test("a label alone on its line is a bare chip; the next paragraph stays a paragraph", () => {
+    const { html } = renderGp("@skill\n\n#### S\n\n**TECHNOENHANCEMENT:**\n\nInstall it.\n\n@end-skill");
+    expect(html).toMatch(/<span class="dc-field-label">TECHNOENHANCEMENT<\/span>\n?<\/div>\s*<p>Install it\.<\/p>/);
+  });
+
+  test("recognised only inside an entry card, @npc-stat (or @section npc) and @skill", () => {
+    const line = "**Traits:** Quick, Quiet";
+    const inside = [
+      ...["gear", "augment", "treasure", "vehicle", "drug"].map((n) => `@${n}\n\n#### N\n\n${line}\n\n@end-${n}`),
+      `@skill\n\n#### N\n\n${line}\n\n@end-skill`,
+      `@npc-stat\n\n#### N\n\n${line}\n\n@end-npc-stat`,
+      `@section npc\n\n#### N\n\n${line}\n\n@end-section`,
+      `@npc-stat\n\n@columns 2\n\n#### N\n\n${line}\n\n@end-columns\n\n@end-npc-stat`,
+      `@skill\n\n#### N\n\n@columns 2\n\n${line}\n\n@end-columns\n\n@end-skill`,
+    ];
+    for (const src of inside) expect(renderGp(src).html, src).toContain('<div class="dc-field dc-field-traits"');
+    const outside = [
+      line,
+      `@section panel\n\n${line}\n\n@end-section`,
+      `@card\n\n#### N\n\n${line}\n\n@end-card`,
+      `@augment\n\n#### N\n\n@callout gear\n\n${line}\n\n@end-callout\n\n@end-augment`,
+      `@augment\n\n#### N\n\n- ${line}\n\n@end-augment`,
+      `@augment\n\n#### N\n\n> ${line}\n\n@end-augment`,
+      `@augment\n\n#### N\n\n@end-augment\n\n${line}`,
+      `@augment\n\n#### N\n\nA sentence, then **Traits:** inline.\n\n@end-augment`,
+      `@augment\n\n#### N\n\n**Description:** not a recognised label\n\n@end-augment`,
+      `@augment\n\n#### N\n\n**Traits** no colon\n\n@end-augment`,
+    ];
+    for (const src of outside) expect(renderGp(src).html, src).not.toContain("dc-field");
+  });
+
+  test("a @field inside a skill stays in the skill's card", () => {
+    const { html } = renderGp("@skill\n\n#### S\n\n@field effects\n\nBody.\n\n@end-field\n\nAfter.\n\n@end-skill");
+    expect(html.match(/dc-skill-card/g)).toHaveLength(1);
+    expect(html).toMatch(/dc-field-effects[\s\S]*<p>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
+  });
+});
+
+describe("@section catalog", () => {
+  const css = readFileSync(new URL("../styles/components/entries.css", import.meta.url), "utf8");
+
+  test("is a panel with the catalog class", () => {
+    const { html, warnings } = renderGp("@section catalog\n\n## Title\n\n@columns 2\n\n@augment\n\n#### One\n\n@end-augment\n\n@end-section");
+    expect(warnings).toEqual([]);
+    expect(html).toContain('<div class="section dc-section-panel dc-catalog"');
+  });
+
+  test("a run of entries is siblings in the column run, and a leftover `---` is inside the entry before it", () => {
+    const { html } = renderGp("@section catalog\n\n@columns 2\n\n@augment\n\n#### One\n\n---\n\n@augment\n\n#### Two\n\n---\n\n@treasure\n\n#### Three\n\n@end-columns");
+    expect(html.match(/<div class="dc-card dc-entry /g)).toHaveLength(3);
+    expect(html).toMatch(/<hr[^>]*>\s*<\/div><div class="dc-card dc-entry dc-augment"/);
+  });
+
+  test("the divider is the entry's own top rule; a `---` draws nothing in a catalog or at the end of an entry", () => {
+    const rule = (sel) => css.match(new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*\\{([^}]*)\\}"))?.[1] ?? "";
+    expect(rule(".dc-catalog .dc-entry")).toMatch(/--dc-entry-rule:\s*[1-9]/);
+    expect(rule(".dc-catalog .dc-entry")).toMatch(/--dc-entry-rail:\s*0/);
+    expect(rule(".dc-catalog hr")).toMatch(/display:\s*none/);
+    expect(rule(".dc-entry > hr:last-child")).toMatch(/display:\s*none/);
+    expect(rule(".dc-card.dc-entry")).toMatch(/border-top:\s*var\(--dc-entry-rule\)/);
   });
 });

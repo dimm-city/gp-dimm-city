@@ -222,16 +222,94 @@ components:
     css: styles/components/section.css
     notes: "Citizen-file card accents: a section of @card blocks whose class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
 
+  # ── Entry cards: one rule set (.dc-entry), each marker a token setter ───
   - name: gear
     status: live
     origin: plugin
     markers: ["@gear"]
     snippet: gear
-    recipe: "@gear … @end-gear"
-    emits: div.dc-card.dc-gear
-    css: styles/components/section.css
+    recipe: "@gear ### Name … @end-gear"
+    emits: div.dc-card.dc-entry.dc-gear
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A .dc-card with an orange rail. The `###` name, the italic tagline paragraph and the bold price paragraph are picked out by shape, and a trailing `@callout gear label=\"SPECS\"` gets its gap from --dc-alert-margin-top. Not a section, so there is no `@section` word for it. A long run packs two-up in `@columns 2` inside a `@section`."
+    notes: "General gear. A .dc-card of the entry family with an orange rail; the name (### or ####), the italic tagline paragraph and the bold price paragraph are picked out by shape. A `**SPECS:**` paragraph is a field line; the older `@callout gear label=\"SPECS\"` still works. Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by its rail colour and the small kind word over its name."
+
+  - name: augment
+    status: live
+    origin: plugin
+    markers: ["@augment"]
+    snippet: augment
+    recipe: "@augment #### Name … @end-augment  (an @augment after an @augment closes the first)"
+    emits: div.dc-card.dc-entry.dc-augment
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A cybernetic or mod: cyan rail, cream surface. Same entry rules as @gear. Reports an entry with no name or with a second one."
+
+  - name: treasure
+    status: live
+    origin: plugin
+    markers: ["@treasure"]
+    snippet: treasure
+    recipe: "@treasure #### Name … @end-treasure"
+    emits: div.dc-card.dc-entry.dc-treasure
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A magic item or relic: amber rail on the gold-tinted paper. Same entry rules as @gear."
+
+  - name: vehicle
+    status: live
+    origin: plugin
+    markers: ["@vehicle"]
+    snippet: vehicle
+    recipe: "@vehicle #### Name … @end-vehicle"
+    emits: div.dc-card.dc-entry.dc-vehicle
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A vehicle: yellow rail on cold concrete. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
+
+  - name: drug
+    status: live
+    origin: plugin
+    markers: ["@drug"]
+    snippet: drug
+    recipe: "@drug #### Name … @end-drug"
+    emits: div.dc-card.dc-entry.dc-drug
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A drug, elixir or other consumable: magenta rail. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
+
+  - name: field
+    status: live
+    origin: plugin
+    markers: ["@field"]
+    snippet: [field, field-specs, field-traits, field-equipment, field-effects, field-side-effects, field-requires]
+    recipe: "@field [specs|traits|equipment|effects|side-effects|requires] label=\"…\" … @end-field  (or, inside a card, a paragraph that opens with **Label:**)"
+    emits:
+      - div.dc-field.dc-field-specs > span.dc-field-label
+      - div.dc-field.dc-field-traits
+      - div.dc-field.dc-field-equipment
+      - div.dc-field.dc-field-effects
+      - div.dc-field.dc-field-side-effects
+      - div.dc-field.dc-field-requires
+    css: styles/components/entries.css
+    tokens: [--dc-field-accent, --dc-field-surface, --dc-field-fg, --dc-field-label-fg]
+    breaks: "break-inside: avoid; a label with no text keeps with the paragraph after it"
+    usage:
+      - "**SPECS:**"
+      - "**Traits:**"
+      - "**Equipment:**"
+      - "**Effects:**"
+      - "**Side Effects:**"
+      - "**Requires:**"
+      - "**Wirephreak Gear:**"
+      - "**Cybersurgeon Instrument(s):**"
+      - "**TECHNOENHANCEMENT:**"
+    notes: "A labelled field: a rail, a surface and a label chip, then the text beside it. The variant is a bare word and its default label is the variant's name; `label=\"…\"` replaces it, as with @callout. Inside an entry card (@gear, @augment, @treasure, @vehicle, @drug), @npc-stat (or @section npc) and @skill, a paragraph that opens with one of these bold labels (colon inside the bold, any case) is rewritten to exactly the markup the marker writes, keeping the author's own words as the label, so books need no change. The labels are the FIELD_LABELS table in plugin.js: SPECS, Traits, Equipment, Effects, Side Effects, Requires, and the profession labels Wirephreak Gear, Cybersurgeon Instrument / Instruments / Instrument(s) and TECHNOENHANCEMENT (all means requires). Elsewhere the paragraph stays a paragraph. A new label is one line in that table; a new field type is a variant name there plus one token-setting rule in entries.css."
 
   - name: lede
     status: live
@@ -770,6 +848,18 @@ components:
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-rail, --dc-section-gap, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     breaks: "splits by default; add .dc-avoid-split to keep it whole"
     notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+
+  - name: section-catalog
+    status: live
+    origin: plugin
+    markers: ["@section catalog"]
+    snippet: section-catalog
+    recipe: "@section catalog ## Title … @columns 2 @augment … @end-columns @end-section"
+    emits: div.section.dc-section-panel.dc-catalog
+    css: styles/components/entries.css
+    tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule]
+    breaks: "a panel; its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
+    notes: "A panel for a run of entries (@augment, @treasure, @vehicle, @drug, @gear). Its entries are ruled instead of boxed (and may split across columns, as the plain text they replace did): no card, no rail, a rule in the entry's own accent over each, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
 
   - name: section-flat
     status: live

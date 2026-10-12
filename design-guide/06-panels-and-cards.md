@@ -6,7 +6,7 @@ Chapter 6 {.dg-kicker}
 
 # Panels, Cards & Data
 
-The enclosures: the section variants, four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
+The enclosures: the section variants, four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, item entries (gear, augments, treasure, vehicles, drugs), fields, catalogs, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
 
 
 ## Section
@@ -423,9 +423,117 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 </div>
 
-## Gear
+## Gear, augments, treasure, vehicles and drugs
 
-An item entry: a display-face name, an italic tagline of tags, then the mechanics. Separate entries with `---`.
+An item entry is a card with a name and the item's prose. There is one marker per kind, so a book's catalog can tell them apart at a glance: `@gear` for general gear, `@augment` for cybernetics and mods, `@treasure` for magic items and relics, `@vehicle`, and `@drug` for drugs, elixirs and other consumables. All five are the same card: a left rail in the kind's colour, a small kind word over the name, then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+
+```markdown {.dg-split}
+@augment
+
+#### Kestrel Optics
+
+> Sees what you would rather not.
+
+Two lenses in the orbit, a thermal layer, and a tiny voice that names what it sees. The chrome is rated for rain, not for sentiment.
+
+**SPECS:** See in the dark to Far range. +1 to spot rolls. Needs a Neurolink to run the overlay.
+
+@end-augment
+
+@treasure
+
+#### Lantern of Second Thoughts
+
+> A brass lantern with a very honest flame.
+
+Whoever carries it hears the doubts of anyone standing in its light.
+
+- **Rewind:** Once per cycle, take back one thing you just said.
+- **Fast Forward:** Skip a conversation that was going nowhere.
+
+@end-treasure
+
+@vehicle
+
+#### Skyskiff Courier
+
+> Two seats, one fuel cell, no questions.
+
+A ducted-fan runabout built for rooftops and bad ideas.
+
+**SPECS:** IL: 3. Durability: 10. Mod Slots: 2.
+
+@end-vehicle
+
+@drug
+
+#### Slowglass
+
+A pale syrup sold in thimbles. The world gets quiet and a little too clear.
+
+**Effects:** Reroll one failed roll this scene.
+
+**Side Effects:** The next cycle begins with a Tough Choice you did not ask for.
+
+@end-drug
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@augment
+
+#### Kestrel Optics
+
+> Sees what you would rather not.
+
+Two lenses in the orbit, a thermal layer, and a tiny voice that names what it sees. The chrome is rated for rain, not for sentiment.
+
+**SPECS:** See in the dark to Far range. +1 to spot rolls. Needs a Neurolink to run the overlay.
+
+@end-augment
+
+@treasure
+
+#### Lantern of Second Thoughts
+
+> A brass lantern with a very honest flame.
+
+Whoever carries it hears the doubts of anyone standing in its light.
+
+- **Rewind:** Once per cycle, take back one thing you just said.
+- **Fast Forward:** Skip a conversation that was going nowhere.
+
+@end-treasure
+
+@vehicle
+
+#### Skyskiff Courier
+
+> Two seats, one fuel cell, no questions.
+
+A ducted-fan runabout built for rooftops and bad ideas.
+
+**SPECS:** IL: 3. Durability: 10. Mod Slots: 2.
+
+@end-vehicle
+
+@drug
+
+#### Slowglass
+
+A pale syrup sold in thimbles. The world gets quiet and a little too clear.
+
+**Effects:** Reroll one failed roll this scene.
+
+**Side Effects:** The next cycle begins with a Tough Choice you did not ask for.
+
+@end-drug
+
+</div>
+
+A marker after another marker of the same kind closes the first, so a run needs an `@end-…` only after the last entry. An entry with no name, or with two, is reported as a problem. `@gear` is the older card and keeps its own shape: `###` name, an italic tagline paragraph and a bold price line, picked out by their shape; a `@callout gear label="SPECS"` at the foot still works.
 
 ```markdown {.dg-split}
 @gear
@@ -435,18 +543,6 @@ An item entry: a display-face name, an italic tagline of tags, then the mechanic
 *Ranged. Pistol. CQC Locked, Pack Fed.*
 
 **Range** Reach to Near only. **Damage** 2 on a Hit, 4 on a Triumph. Disposable after the run; serial-clean and untraceable.
-
-@end-gear
-
----
-
-@gear
-
-### Snake Cable
-
-*Utility. Mechanized. Reach 50 ft.*
-
-A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
 
 @end-gear
 ```
@@ -465,23 +561,140 @@ Result {.dg-result}
 
 @end-gear
 
----
+</div>
 
-@gear
+Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the word over the name, a quoted string or `none`).
 
-### Snake Cable
+### Fields
 
-*Utility. Mechanized. Reach 50 ft.*
+A field is a labelled line of an entry: its rules, its traits, what a drug does and costs, what a power needs. Write `@field` with a variant word, and the variant's name is the label; `label="…"` replaces it, as with `@callout`.
 
-A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.
+| Variant | Default label | Look |
+|---|---|---|
+| `specs` | SPECS | the boxed rules strip: dark, with a yellow rail |
+| `traits` | Traits | a plain line under a chip |
+| `equipment` | Equipment | the same, in grey |
+| `effects` | Effects | tinted blue; sits over side effects |
+| `side-effects` | Side Effects | tinted red |
+| `requires` | Requires | a grey requirement bar |
 
-@end-gear
+```markdown {.dg-split}
+@field specs
+
+Rolls of 19-20 are a Triumph while the lenses are tuned.
+
+@end-field
+
+@field requires label="Instrument"
+
+A disposable injector kit.
+
+@end-field
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@field specs
+
+Rolls of 19-20 are a Triumph while the lenses are tuned.
+
+@end-field
+
+@field requires label="Instrument"
+
+A disposable injector kit.
+
+@end-field
 
 </div>
 
+You rarely need to type it. Inside an entry card, an `@npc-stat` and a `@skill`, a paragraph that opens with one of the labels the books already use is the same field: `**SPECS:**`, `**Traits:**`, `**Equipment:**`, `**Effects:**`, `**Side Effects:**`, `**Requires:**`, `**Wirephreak Gear:**`, `**Cybersurgeon Instrument:**` (also `Instruments` and `Instrument(s)`) and `**TECHNOENHANCEMENT:**`, in any case, with the colon inside the bold. The label stays in your own words. Anywhere else the paragraph is a paragraph. A label on its own line is a bare chip over the paragraph that follows. The list of labels is one table in `plugin.js`.
 
-Gear is a card with an orange rail. The name, the italic tagline and the bold price line are picked out by their shape, and a `@callout gear label="SPECS"` at the foot sits a gap below the body. A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
+### Catalog
 
+A run of entries goes in a `@section catalog`: a panel with a title bar and an intro, whose entries are ruled instead of boxed. Each entry takes a rule in its own accent colour over it, so there is no `---` between entries (one left in draws nothing). Put the entries in `@columns 2` under the intro, as for any column run.
+
+```markdown {.dg-split}
+@section catalog
+
+## Optics and Ears
+
+A short intro for the run.
+
+@columns 2
+
+@augment
+
+#### Kestrel Optics
+
+Two lenses, a thermal layer and a quiet voice.
+
+**SPECS:** See in the dark to Far range.
+
+@augment
+
+#### Pinhole Ears
+
+Hears a coin drop two rooms away.
+
+**SPECS:** +1 to listen rolls.
+
+@augment
+
+#### Sable Voicebox
+
+A voice that is never quite yours.
+
+**SPECS:** Change your voice at will.
+
+@end-columns
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section catalog
+
+## Optics and Ears
+
+A short intro for the run.
+
+@columns 2
+
+@augment
+
+#### Kestrel Optics
+
+Two lenses, a thermal layer and a quiet voice.
+
+**SPECS:** See in the dark to Far range.
+
+@augment
+
+#### Pinhole Ears
+
+Hears a coin drop two rooms away.
+
+**SPECS:** +1 to listen rolls.
+
+@augment
+
+#### Sable Voicebox
+
+A voice that is never quite yours.
+
+**SPECS:** Change your voice at will.
+
+@end-columns
+
+@end-section
+
+</div>
 
 ## Tables
 

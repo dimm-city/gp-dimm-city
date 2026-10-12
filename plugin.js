@@ -13,7 +13,11 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear                → div.dc-card.dc-gear
+ *   @gear                → div.dc-card.dc-entry.dc-gear
+ *   @augment             → div.dc-card.dc-entry.dc-augment   (cybernetics, mods)
+ *   @treasure            → div.dc-card.dc-entry.dc-treasure  (magic items, relics)
+ *   @vehicle             → div.dc-card.dc-entry.dc-vehicle
+ *   @drug                → div.dc-card.dc-entry.dc-drug      (drugs, elixirs, consumables)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @glossary            → div.dc-terms
@@ -1043,7 +1047,7 @@ function dcSkillCards(state) {
 // run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
 // inside a skill must already be in its final form when the skill's rule
 // reads it. They stay inside the skill's card (see CARD_CONTENT).
-const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure']);
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'field']);
 
 /**
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
@@ -1207,6 +1211,134 @@ function validateSkill({ blocks }) {
     }));
 }
 
+/**
+ * Entry cards (`@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`): one
+ * entry is one name. The name is the entry's first heading (`####`, or `###`
+ * as `@gear` has always taken). An entry without one has no title bar, and
+ * one with a second heading is usually two entries run together: a declared
+ * marker that opens again closes the one before it, so each entry starts with
+ * its own marker line.
+ */
+function validateEntry({ name, blocks }) {
+  const headings = blocks.filter((b) => b.type === 'heading' && b.level <= 4);
+  if (!headings.length) {
+    return [`This @${name} has no name. Start it with a \`#### Name\` heading.`];
+  }
+  return headings.slice(1).map((b) => ({
+    line: b.line,
+    message: `"${b.text}" is a second name inside this @${name}. Put each entry under its own @${name} line.`,
+  }));
+}
+
+// ── Declared component: @field (and the bold labels that mean it) ──────────
+//
+// `@field specs` … `@end-field` is a labelled field: `div.dc-field.dc-field-specs`
+// holding `span.dc-field-label` and the author's paragraphs. The label is the
+// variant's default (below) or `label="…"`, the way `@callout` does it.
+//
+// The bold-label shortcut is the same component written shorter: a paragraph
+// that opens with a known label (`**SPECS:** …`), inside an entry card, an NPC
+// stat block or a skill card, is rewritten to exactly the markup the marker
+// gives (`dcFieldLines`), so one set of rules styles both. Everywhere else it
+// stays a paragraph, and a callout inside a card is not a card.
+//
+// FIELD_LABELS is the one table. Each line is a label as the books write it
+// (matched case-insensitively, colon inside the bold) and the variant it
+// means. A new label is a line here; a new field type is a new variant name
+// here plus a token-setter rule in styles/components/entries.css. The first
+// label listed for a variant is that variant's default label.
+const FIELD_LABELS = {
+  'SPECS': 'specs',
+  'Traits': 'traits',
+  'Equipment': 'equipment',
+  'Effects': 'effects',
+  'Side Effects': 'side-effects',
+  'Requires': 'requires',
+  'Wirephreak Gear': 'requires',
+  'Cybersurgeon Instrument': 'requires',
+  'Cybersurgeon Instruments': 'requires',
+  'Cybersurgeon Instrument(s)': 'requires',
+  'TECHNOENHANCEMENT': 'requires',
+};
+const FIELD_VARIANTS = [...new Set(Object.values(FIELD_LABELS))];
+const FIELD_DEFAULT_LABEL = Object.fromEntries(
+  FIELD_VARIANTS.map((v) => [v, Object.keys(FIELD_LABELS).find((l) => FIELD_LABELS[l] === v)]),
+);
+const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
+
+// The cards whose paragraphs may be field lines.
+const FIELD_HOSTS = new Set(['gear', 'augment', 'treasure', 'vehicle', 'drug', 'skill']);
+
+const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
+
+// An explicit `@field specs` with no `label="…"` gets the variant's default label.
+function dcFields(state) {
+  forEachComponent(state.tokens, 'field', ([open, ...rest]) => {
+    const label = FIELD_DEFAULT_LABEL[open.meta.variant];
+    if (open.meta.labelled || !label) return; // an explicit label wins; a bare @field has none
+    return [open, makeToken('html_block', fieldLabelHtml(label)), ...rest];
+  });
+}
+
+function isFieldHost(open) {
+  if (FIELD_HOSTS.has(open.meta?.kind)) return true;
+  // `@npc-stat` and `@section npc` are one section; its class is the record (`@section npc` carries no kind)
+  return (open.attrGet('class') || '').split(/\s+/).includes('dc-npc-stat');
+}
+
+/** `**Label:** …` → { label, variant }, or null when the paragraph does not open with a known label. */
+function fieldLabelOf(inline) {
+  // core leaves an empty text node ahead of a leading `**…**`
+  const lead = inline?.children?.[0]?.type === 'text' && !inline.children[0].content ? 1 : 0;
+  const [open, text, close] = inline?.children?.slice(lead) ?? [];
+  if (open?.type !== 'strong_open' || text?.type !== 'text' || close?.type !== 'strong_close') return null;
+  const written = text.content.trim();
+  if (!written.endsWith(':')) return null;
+  const label = written.slice(0, -1).trim();
+  const variant = FIELD_BY_LABEL.get(label.toLowerCase());
+  return variant ? { label, variant, lead } : null;
+}
+
+function dcFieldLines(state) {
+  const tokens = state.tokens;
+  const out = [];
+  const hosts = []; // one entry per open layout container: is its content a field host?
+  let quoted = 0; // inside a blockquote or a list item, a paragraph is not a field line
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+    if (/^layout_.+_open$/.test(tok.type)) {
+      // `@columns` only arranges its content: the container around it still decides
+      hosts.push(tok.meta?.kind === 'columns' ? hosts.at(-1) ?? false : isFieldHost(tok));
+    } else if (/^layout_.+_close$/.test(tok.type)) {
+      hosts.pop();
+    } else if (tok.type === 'blockquote_open' || tok.type === 'list_item_open') {
+      quoted++;
+    } else if (tok.type === 'blockquote_close' || tok.type === 'list_item_close') {
+      quoted--;
+    } else if (tok.type === 'paragraph_open' && !quoted && hosts.at(-1)) {
+      const inline = tokens[i + 1];
+      const field = fieldLabelOf(inline);
+      if (field) {
+        // Same markup as `@field <variant> label="…"`: the label is the author's own words.
+        out.push(makeToken('html_block',
+          '<div class="dc-field dc-field-' + field.variant + '" data-field="' + field.variant + '"' +
+          ' data-label="' + esc(field.label) + '">' + fieldLabelHtml(field.label)));
+        inline.children.splice(0, field.lead + 3);
+        const first = inline.children[0];
+        if (first?.type === 'text') first.content = first.content.replace(/^\s+/, '');
+        inline.content = inline.content.replace(/^\*\*[^*]+\*\*\s*/, '');
+        const bare = inline.children.every((c) => c.type === 'text' && !c.content); // the label was all there was
+        const rest = bare ? [] : tokens.slice(i, i + 3);
+        out.push(...rest, makeToken('html_block', '</div>\n'));
+        i += 2; // the paragraph's inline and close
+        continue;
+      }
+    }
+    out.push(tok);
+  }
+  state.tokens = out;
+}
+
 function validateOutcome({ blocks }) {
   const problems = [];
   let rows = 0;
@@ -1269,11 +1401,13 @@ export default function dimmCityPlugin(md, options = {}) {
   // Declared components. Callouts, cards, outcomes and procedures go first so
   // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
+  md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_field_lines', dcFieldLines);
 }
 
 /**
@@ -1334,13 +1468,28 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
+  // A labelled field (`@field specs`), and the target of the bold-label shortcut
+  // (`**SPECS:** …` inside a card, see FIELD_LABELS). The default label per
+  // variant comes from `dcFields`, an explicit `label="…"` from core.
+  field: wrapper('dc-field', {
+    variants: Object.fromEntries(FIELD_VARIANTS.map((v) => [v, 'dc-field-' + v])),
+    label: { tag: 'span', class: 'dc-field-label', from: 'attr:label' },
+  }),
+
   sidebar: wrapper('dc-sidebar'),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
   definition: wrapper('dc-prose-panel dc-definition-block'),
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
-  gear: wrapper('dc-card dc-gear'),
+  // Entry cards: one card style family (`.dc-entry`), each marker a token setter
+  // on it (styles/components/entries.css). `@gear` is general gear; the others
+  // are what the books list in catalogs. Each starts with the entry's name.
+  gear: wrapper('dc-card dc-entry dc-gear', { validate: validateEntry }),
+  augment: wrapper('dc-card dc-entry dc-augment', { validate: validateEntry }),
+  treasure: wrapper('dc-card dc-entry dc-treasure', { validate: validateEntry }),
+  vehicle: wrapper('dc-card dc-entry dc-vehicle', { validate: validateEntry }),
+  drug: wrapper('dc-card dc-entry dc-drug', { validate: validateEntry }),
   toc: wrapper('dc-toc'),
   lede: wrapper('dc-intro'),
   glossary: wrapper('dc-terms'),
@@ -1362,6 +1511,7 @@ export const markers = {
       panel: 'dc-section-panel',
       flat: 'dc-section-flat',
       aside: 'dc-section-aside',
+      catalog: 'dc-section-panel dc-catalog',
       npc: 'dc-section-panel dc-npc-stat',
       fiction: 'dc-fiction-excerpt',
       walkthrough: 'dc-section-panel dc-citizen-walkthrough',

@@ -1,0 +1,255 @@
+@layer dc.components {
+
+/* ═════════════════════════════════════════════════════════════════════════
+   ENTRY CARDS — @gear, @augment, @treasure, @vehicle, @drug
+   ═════════════════════════════════════════════════════════════════════════
+   One item in a catalog: a name, an optional tagline, the item's prose, and
+   fields (`**SPECS:**`, `**Effects:**` …, below). The five
+   markers share ONE rule set, `.dc-entry` below; each marker's class is a
+   token setter on it and draws nothing of its own, so a sixth kind costs one
+   marker line and five tokens.
+
+   Writes as the books write it:
+
+     @augment
+
+     #### Kestrel Optics          ← the name: first #### (or ###) heading
+     > A one-line tagline          ← optional; the blockquote straight after
+     Advert or lore prose.
+     **SPECS:** the rules text.    ← a field line (fields.css)
+
+   Public tokens (defaults in dc-component-defaults.css :root):
+     --dc-entry-accent   — rail, and the rule over the entry in a catalog
+     --dc-entry-ink      — name and label colour; a dark of the accent hue
+     --dc-entry-surface  — card background
+     --dc-entry-rail     — width of the left rail (a catalog sets 0)
+     --dc-entry-rule     — width of the top rule (a catalog sets it)
+     --dc-entry-kind     — a quoted word printed small above the name, or `none`
+
+   The labelled fields inside an entry (`@field`, `**SPECS:**`) are the last
+   section of this file; they work outside an entry as well.
+
+   Entries are cards: they never split across pages (.dc-card). */
+
+.dc-card.dc-entry {
+  background: var(--dc-entry-surface);
+  border-left: var(--dc-entry-rail) solid var(--dc-entry-accent);
+  border-top: var(--dc-entry-rule) solid var(--dc-entry-accent);
+  padding: 10pt 14pt;
+}
+
+/* The kind word: generated, so the author never types it. */
+.dc-entry::before {
+  content: var(--dc-entry-kind);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-h6);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--dc-entry-ink);
+}
+
+/* The name. */
+.dc-entry > :is(h3, h4):first-child {
+  font-size: var(--fs-h4);
+  letter-spacing: var(--ls-display);
+  color: var(--dc-entry-ink);
+  margin: 0 0 4px;
+  break-after: avoid;
+}
+
+/* The tagline: a blockquote straight after the name is a line, not a box. */
+.dc-entry > :is(h3, h4):first-child + blockquote {
+  font-size: var(--fs-body-sm);
+  color: var(--ink-smoke);
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0 0 6px;
+  text-wrap: wrap;
+}
+
+.dc-entry > p {
+  margin: 0 0 var(--space-xs);
+}
+
+/* A `---` kept at the end of an entry would draw a rule inside the card. */
+.dc-entry > hr:last-child {
+  display: none;
+}
+
+/* ── The five kinds ──────────────────────────────────────────────────────── */
+.dc-gear {
+  --dc-entry-accent: var(--orange);
+  --dc-entry-ink: var(--blood);
+  --dc-entry-kind: "Gear";
+}
+.dc-augment {
+  --dc-entry-accent: var(--brand-cyan);
+  --dc-entry-ink: var(--hud-blue-dark);
+  --dc-entry-surface: var(--paper-cream);
+  --dc-entry-kind: "Augment";
+}
+.dc-treasure {
+  --dc-entry-accent: var(--amber);
+  --dc-entry-ink: var(--amber-dark);
+  --dc-entry-surface: var(--surface-orange-tint);
+  --dc-entry-kind: "Treasure";
+}
+.dc-vehicle {
+  --dc-entry-accent: var(--brand-yellow);
+  --dc-entry-ink: var(--ink-dark);
+  --dc-entry-surface: var(--concrete-pale);
+  --dc-entry-kind: "Vehicle";
+}
+.dc-drug {
+  --dc-entry-accent: var(--brand-magenta);
+  --dc-entry-ink: var(--brand-magenta-deep);
+  --dc-entry-kind: "Drug";
+}
+
+/* Gear keeps what it always had: the italic tagline and the bold price line,
+   picked out by their shape. */
+.dc-gear > p:has(> em:only-child) {
+  font-size: var(--fs-body-sm);
+  color: var(--ink-smoke);
+  margin: 0 0 6px;
+}
+.dc-gear > p:has(> strong:only-child) {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+  color: var(--hud-blue-dark);
+  margin: 0 0 6px;
+}
+/* The SPECS callout the books still use gets its gap from its own token. */
+.dc-entry {
+  --dc-alert-margin-top: var(--space-sm);
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   CATALOG — `@section catalog`, a panel for a run of entries
+   ═════════════════════════════════════════════════════════════════════════
+   A panel (title bar, intro, rail) whose entries are ruled, not boxed: each
+   entry drops its card and rail and takes a rule over it in its own accent,
+   so entries are told apart without a `---` between them, and a column that
+   starts on an entry starts on a rule. The kind word over the name is dropped, and an entry may
+   split across a column or page (it has no frame to cut). A `---` that is still there draws
+   nothing (a second rule would double up).
+
+   Columns are core's: write `@columns 2` under the intro, as before.
+
+     @section catalog
+     ## Title bar
+     Intro.
+     @columns 2
+     @augment … (each entry opens the next; no @end- between them)
+*/
+.dc-catalog .dc-entry {
+  --dc-entry-surface: transparent;
+  --dc-entry-rail: 0px;
+  --dc-entry-rule: 1.5pt;
+  --dc-entry-kind: none; /* the panel's title bar already says what the run is */
+  padding: 8pt 0 6pt;
+  margin: 0;
+  /* Ruled, not boxed, so there is no frame to cut: an entry may run to most of a
+     column (a long advert and a long SPECS box), and keeping it whole would leave
+     the foot of every page blank. The name still keeps with what follows it. */
+  break-inside: auto;
+}
+.dc-catalog hr {
+  display: none;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   FIELD — `@field <variant>`, and `**Label:** …` inside a card
+   ═════════════════════════════════════════════════════════════════════════
+   One shape: a rail, a surface, a label chip, then the text beside it.
+
+     div.dc-field.dc-field-<variant>
+       span.dc-field-label        the chip (the variant's name, or label="…")
+       p …                        the text; the first paragraph sits beside the chip
+
+   plugin.js writes the same markup for the marker and for a paragraph that
+   opens with a bold label the books use (FIELD_LABELS there: SPECS, Traits,
+   Equipment, Effects, Side Effects, Requires, Wirephreak Gear, Cybersurgeon
+   Instrument(s), TECHNOENHANCEMENT), so these rules serve both.
+
+   Each variant is a token setter. A new field type is a variant name in
+   plugin.js plus one rule here.
+
+   Public tokens (defaults in dc-component-defaults.css :root):
+     --dc-field-accent / -surface / -fg / -label-fg */
+.dc-field {
+  margin: 6pt 0;
+  padding: 4pt 8pt;
+  background: var(--dc-field-surface);
+  color: var(--dc-field-fg);
+  border-left: 3pt solid var(--dc-field-accent);
+  break-inside: avoid;
+}
+.dc-field > .dc-field-label {
+  display: inline-block;
+  margin-right: 6pt;
+  padding: 1pt 5pt;
+  background: var(--dc-field-accent);
+  color: var(--dc-field-label-fg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-h6);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.dc-field > p {
+  color: inherit; /* a paragraph's own colour would hide the text on a dark surface */
+}
+.dc-field > .dc-field-label + p {
+  display: inline;
+  margin: 0;
+}
+/* A label with nothing beside it heads the paragraph that follows. */
+.dc-field:not(:has(> p)) {
+  break-after: avoid;
+  margin-bottom: 0;
+}
+
+/* SPECS — the item's rules: the boxed strip the gear callout makes. */
+.dc-field-specs {
+  --dc-field-accent: var(--brand-yellow);
+  --dc-field-surface: var(--ink-dark);
+  --dc-field-fg: var(--paper-cream);
+  --dc-field-label-fg: var(--ink);
+}
+/* Traits, Equipment — a plain line under a chip. */
+.dc-field-traits {
+  --dc-field-accent: var(--hud-blue-dark);
+  --dc-field-surface: transparent;
+}
+.dc-field-equipment {
+  --dc-field-accent: var(--ink-smoke);
+  --dc-field-surface: transparent;
+}
+/* Effects over Side Effects: the good, then the cost. */
+.dc-field-effects {
+  --dc-field-accent: var(--hud-blue-dark);
+  --dc-field-surface: color-mix(in srgb, var(--hud-blue-dim) 30%, var(--paper-cream));
+}
+.dc-field-side-effects {
+  --dc-field-accent: var(--blood);
+  --dc-field-surface: color-mix(in srgb, var(--crimson) 12%, var(--paper-cream));
+}
+.dc-field-effects:has(+ .dc-field-side-effects) {
+  margin-bottom: 0;
+}
+.dc-field-effects + .dc-field-side-effects {
+  margin-top: 2pt;
+}
+/* Requires, and the labels that say the same: a requirement bar. */
+.dc-field-requires {
+  --dc-field-accent: var(--ink-dark);
+  --dc-field-surface: var(--paper-aged);
+}
+
+}
