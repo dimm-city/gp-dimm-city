@@ -1,6 +1,6 @@
 @chapter #ch-example-specialty-overview .dg-guide ch="2"
 
-@page .page-chapter-start .dc-chapter-start
+@page chapter-start
 
 # What Do You Dream of Doing?
 

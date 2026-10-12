@@ -60,10 +60,10 @@ byte for byte on every build.
   (brick-wall background, folios, chapter chips) that must stay last.
 - **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
   build time.
-- **Page templates** every Dimm City book writes: `.page-toc`,
-  `.page-credits .dc-credits`, `.page-chapter-start .dc-chapter-start`,
-  `.dc-full-page`, plus the folio/chapter-chip chrome driven by
-  `@chapter #id ch="N"`.
+- **Page and chapter words** every Dimm City book writes: `@page contents`,
+  `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
+  `@chapter rules`, `lore`, `citizen-file`, `specialty` for a chapter's section
+  colour, plus the folio/chapter-chip chrome driven by `@chapter #id ch="N"`.
 - **Snippets** for the app's snippet picker (`snippets/`): one per macro and
   one per front-matter page, with placeholders for the parts you fill in.
 - **`components.yaml`**: the catalog of every component — what you write,

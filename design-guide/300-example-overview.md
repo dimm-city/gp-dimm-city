@@ -36,10 +36,10 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 
 | Chapter | Page templates | Components |
 |---|---|---|
-| Front Matter | `.page-toc`, `.page-credits .dc-credits`, `.page-intro` | `@toc`, `@lede`, `@section flat`, `[!PULLQUOTE]`, floated art |
-| Chapter Opener | `.page-chapter-start .dc-chapter-start`, `.dc-citizen-file-page` | `.dc-fiction-excerpt`, `@callout origin`, `.dc-citizen-walkthrough` |
-| Specialty Overview | `.page-chapter-start .dc-chapter-start`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
+| Front Matter | `@page contents`, `credits`, `intro` | `@toc`, `@lede`, `@section flat`, `[!PULLQUOTE]`, floated art |
+| Chapter Opener | `@page chapter-start`, `citizen-file`; `@chapter citizen-file` | `.dc-fiction-excerpt`, `@callout origin`, `.dc-citizen-walkthrough` |
+| Specialty Overview | `@page chapter-start`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
-| Rules Pages | `.page-chapter-start .dc-chapter-start` | `@section panel`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
+| Rules Pages | `@page chapter-start` | `@section panel`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |
 | Gear & Tech | `@page` | `@callout gear`, `@outcome`, `@gear` in `@columns 2` runs |

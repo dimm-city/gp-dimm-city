@@ -1,6 +1,6 @@
 @chapter #ch-example-front-matter .dg-guide ch="1"
 
-@page .page-toc
+@page contents
 
 # Contents {.dc-chevron}
 
@@ -28,7 +28,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 @end-toc
 
-@page .page-credits .dc-credits
+@page credits
 
 # Credits {.dc-chevron}
 
@@ -72,7 +72,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 ![Founders House](img/founder-house.png){.fg-art-founders-house .gp-pin .gp-bottom .gp-full}
 
-@page .page-intro .dg-intro
+@page intro .dg-intro
 
 # Introduction {.dc-chevron}
 

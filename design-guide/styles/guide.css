@@ -501,12 +501,12 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 /* ── §2 Intro page specimen (301-example-front-matter.md) ──────────────────── */
-.page.page-intro.dg-intro > h1 {
+.page.dc-page-intro.dg-intro > h1 {
   border: 0;
   margin-top: 24pt;
 }
 
-.page.page-intro.dg-intro p {
+.page.dc-page-intro.dg-intro p {
   line-height: 1.6;
 }
 
@@ -624,10 +624,6 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 }
 
 /* ── §4 Demo-chapter identity map (302–307) ────────────────────────────────── */
-#ch-example-chapter-opener {
-   --dc-section-accent: var(--brand-magenta-deep);
-}
-
 /* Chapter 2 — specialty overview (Choose Your Specialty card grid): brand-magenta gateway */
 #ch-example-specialty-overview {
    --dc-section-accent: var(--brand-magenta-deep);
@@ -766,6 +762,6 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    shape-outside: margin-box;
 }
 
-:where(.page-intro) {
+:where(.dc-page-intro) {
    --dc-section-accent: var(--hud-magenta);
 }

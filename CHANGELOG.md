@@ -14,6 +14,19 @@ words on `@section`, `@page` and `@chapter` that this release declares.
 
 ### Added
 
+- **Page and chapter words.** `@page chapter-start`, `intro`, `credits`,
+  `contents` and `citizen-file` write `dc-page-<word>`; `@chapter rules`, `lore`,
+  `citizen-file` and `specialty` write `dc-chapter-<word>` and set the section
+  colour of the chapter (rust, brass on aged paper, magenta-deep, blue-dark).
+  A location only sets tokens; it never draws a component's chrome. Snippets
+  and catalog entries for each word.
+- **Panel edge tokens.** `--dc-section-clip` (the chamfer, 18px) and
+  `--dc-section-rail` (the rail, 5px) are read by the panel's `::before` and
+  `::after`; `--dc-section-gap` and `--dc-section-grow` set the space below a
+  panel or flat section and let a flat section fill a flex-column page.
+  `--dc-intro-gap`, `--dc-intro-pad-bottom` and `--dc-toc-rail-y`,
+  `--dc-toc-rail-x`, `--dc-toc-shadow`, `--dc-toc-badge` do the same for the
+  lede and the contents card.
 - **Section variants: `@section panel`, `@section flat`, `@section aside`.**
   A bare `@section` is now core's plain box and this package styles nothing on
   it; the look comes from a word after `@section`. `panel` is the card the bare
@@ -36,7 +49,7 @@ words on `@section`, `@page` and `@chapter` that this release declares.
   than splitting. Sections now split by default.
 - **`@fiction-excerpt` has its own look.** Aged paper (`--paper-aged`), no
   rail, no title bar, narrative leading, and the first image floats. On a
-  chapter-start page (`.page-chapter-start` or `.dc-page-chapter-start`) it takes
+  chapter-start page (`@page chapter-start`) it takes
   the heavier opener edge, 2px ink rules and an offset shadow, so a book no longer
   needs its own rule for it. New tokens: `--dc-fiction-rule`,
   `--dc-fiction-shadow`.
@@ -50,6 +63,17 @@ words on `@section`, `@page` and `@chapter` that this release declares.
 
 ### Changed
 
+- **Page templates are token-only.** The rules for the contents, credits, intro
+  and chapter-start pages set `--dc-*` tokens on the components they adjust (the
+  lede, the contents card, the flat section) and style only the page's own
+  element and plain elements; the components read the tokens. The credits
+  colophon's flex column is gone (its type size moves to the flat section's
+  children, its growth and bottom gap to tokens) and the intro chevron's
+  redundant margin and shadow resets are dropped. A test fails if a rule keyed
+  on a page or chapter class declares anything but custom properties on a
+  component.
+- **Core's `@page full-bleed` and `.dc-full-page` are one page.** Both get the
+  plate geometry and the package's `full` named page.
 - **A bare `@section` no longer looks like a card.** Write `@section panel`
   where you want the card. A bare `@section` still groups its content and now
   has no surface, rail, shadow or title bar. The first heading in it is an
@@ -72,6 +96,14 @@ words on `@section`, `@page` and `@chapter` that this release declares.
 
 ### Removed
 
+- **The raw page spellings are no longer styled.** `@page .page-chapter-start
+  .dc-chapter-start`, `@page .page-toc`, `@page .page-credits .dc-credits`,
+  `@page .page-intro` and `@page .dc-citizen-file-page` still render their
+  classes but get no template rules and no named page (so the footer, margins
+  and masthead are gone). Write the word instead: `@page chapter-start`,
+  `contents`, `credits`, `intro`, `citizen-file`. Book rules keyed on the old
+  classes (`.page.page-chapter-start.dc-chapter-start.chapter-03 …`) key on
+  `.page.dc-page-chapter-start.chapter-03 …`.
 - **`.dc-allow-split` on sections.** Sections split by default, so there is
   nothing to allow. Delete it from `@section` and `@npc-stat` lines; add
   `.dc-avoid-split` where a section should stay on one page. `@skill
@@ -93,7 +125,7 @@ words on `@section`, `@page` and `@chapter` that this release declares.
   `.chapter-opener` badge are gone, with the `--dc-chapter-opener-*` tokens,
   `--fs-chapter` and `--augmerc-deep`. Gutterpress core still writes
   `data-chapter-label` and `.chapter-opener`; this package no longer styles
-  them. Open a chapter with `@page .page-chapter-start .dc-chapter-start` and a
+  them. Open a chapter with `@page chapter-start` and a
   `# Title`, as both books do. The design guide's chapter-opener, specialty
   overview and rules chapters now use that form.
 - **`@sidebar .inset` and `@page .page-sidebar`.** The full-height rail pinned

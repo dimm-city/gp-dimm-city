@@ -13,8 +13,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Marker | Closes | Notes |
 |---|---|---|
-| `@chapter #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer |
-| `@page [.class…]` | next `@page` | Page classes: [Page Templates](#ch-templates) |
+| `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
+| `@page [word] [.class…]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `aside` and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
@@ -60,6 +60,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.dc-allow-split` | `@skill` | Allow a tall skill card to split |
 | `.gp-break-before` | a heading | New page before it |
+| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
+| `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
 | `.dc-section-panel` · `.dc-section-flat` · `.dc-section-aside` | `@section` | What `@section panel`, `flat` and `aside` write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
 | `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: aged paper, narrative typography, auto art float |

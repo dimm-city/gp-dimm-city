@@ -1,6 +1,6 @@
 @chapter #ch-example-rules .dg-guide ch="4"
 
-@page .page-chapter-start .dc-chapter-start
+@page chapter-start
 
 # Are You Lucid Yet?
 

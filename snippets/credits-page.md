@@ -1,4 +1,4 @@
-@page .page-credits .dc-credits
+@page credits
 
 # Credits {.dc-chevron}
 

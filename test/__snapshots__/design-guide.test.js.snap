@@ -2007,7 +2007,7 @@ Once per round, outside your turn, you exploit a target in reach:
 exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 "<div class="chapter templates dg-guide" id="ch-templates" data-ch="8" data-source-range="0:1"><div class="page dg-doc chapter-8" data-source-range="2:3"><p class="dg-kicker">Chapter 8</p>
 <h1>Page Templates</h1>
-<p class="dg-lede">Classes on <code>@page</code> choose a page’s geometry — margins, footers, running headers — and <code>@section</code> variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2.</p>
+<p class="dg-lede">A word on <code>@page</code> chooses a page’s geometry — margins, footers, running headers — and <code>@section</code> variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2.</p>
 <h2>Page geometry</h2>
 <p>US Letter, perfect-bound, with bleed: the gutterpress <code>dtrpg</code> preset, declared in <code>manifest.yaml</code>. The geometry follows DriveThruRPG’s published print specification (<a href="https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books" data-gp-source-token="[Quick Specifications for Print Books](https://help.drivethrupartners.com/hc/en-us/articles/12780800178583-Quick-Specifications-for-Print-Books)" data-gp-source-occurrence="0">Quick Specifications for Print Books</a>): a 0.125 in bleed on the three outside edges and none on the binding edge; all text at least 0.5 in inside the trim; art that does not bleed at least 0.25 in from the outside edges and 0.5 in from the binding edge.</p>
 <p>The <code>@page</code> rules in the package’s <code>styles/page-rules.css</code> set the margins on the sheet, which includes the bleed, so each bleed-side margin is the trim distance plus 0.125 in.</p>
@@ -2066,7 +2066,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tbody>
 </table>
 <p>A page carrying the “Citizen File” running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.</p>
-<h2>Page classes</h2>
+<h2>Page words</h2>
 <table>
 <thead data-source-range="31:32">
 <tr data-source-range="31:32">
@@ -2075,34 +2075,34 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <th>Use for</th>
 </tr>
 </thead>
-<tbody data-source-range="33:41">
+<tbody data-source-range="33:42">
 <tr data-source-range="33:34">
 <td><code>@page</code></td>
 <td><code>p.N</code> and <code>c.N</code> in opposing corners</td>
 <td>Every body page</td>
 </tr>
 <tr data-source-range="34:35">
-<td><code>@page .page-toc</code></td>
+<td><code>@page contents</code></td>
 <td>none</td>
 <td>The contents page</td>
 </tr>
 <tr data-source-range="35:36">
-<td><code>@page .page-credits .dc-credits</code></td>
+<td><code>@page credits</code></td>
 <td>none</td>
 <td>The credits page</td>
 </tr>
 <tr data-source-range="36:37">
-<td><code>@page .page-intro</code></td>
+<td><code>@page intro</code></td>
 <td>none</td>
 <td>The introduction (a <code>@lede</code>, then a <code>@section flat</code>)</td>
 </tr>
 <tr data-source-range="37:38">
-<td><code>@page .page-chapter-start .dc-chapter-start</code></td>
+<td><code>@page chapter-start</code></td>
 <td>none</td>
 <td>A chapter opener</td>
 </tr>
 <tr data-source-range="38:39">
-<td><code>@page .dc-citizen-file-page</code></td>
+<td><code>@page citizen-file</code></td>
 <td><code>p.N</code>, <code>c.N</code></td>
 <td>Running header “Citizen File”</td>
 </tr>
@@ -2112,16 +2112,67 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <td>The specialty catalog page</td>
 </tr>
 <tr data-source-range="40:41">
-<td><code>@page .dc-full-page</code></td>
+<td><code>@page full-bleed</code></td>
 <td>none</td>
-<td>Zero margins; full-bleed art</td>
+<td>Zero margins; full-bleed art (core’s word; the raw <code>.dc-full-page</code> is styled the same)</td>
+</tr>
+<tr data-source-range="41:42">
+<td><code>@page blank</code></td>
+<td>none</td>
+<td>A deliberately blank page (core’s word)</td>
 </tr>
 </tbody>
 </table>
 <p>The <code>c.N</code> footer is the chapter number from <code>@chapter … ch=&quot;N&quot;</code>. A chapter split across files repeats its <code>@chapter</code> line in each.</p>
+<h2>Where the content sits</h2>
+<p>A location is the page template or the chapter a section sits in. It draws nothing: it sets tokens, and the components read them. That is how one <code>@section panel</code> looks right in an opener, in a rules chapter and in a lore chapter without a rule per book.</p>
+<p>A <strong>chapter word</strong> sets the colour register of every panel in the chapter:</p>
+<table>
+<thead data-source-range="52:53">
+<tr data-source-range="52:53">
+<th>You write</th>
+<th>Section accent</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody data-source-range="54:58">
+<tr data-source-range="54:55">
+<td><code>@chapter citizen-file</code></td>
+<td>magenta-deep</td>
+<td>Who you dream to be</td>
+</tr>
+<tr data-source-range="55:56">
+<td><code>@chapter specialty</code></td>
+<td>blue-dark</td>
+<td>The specialty gateway</td>
+</tr>
+<tr data-source-range="56:57">
+<td><code>@chapter rules</code></td>
+<td>rust</td>
+<td>Rules chapters</td>
+</tr>
+<tr data-source-range="57:58">
+<td><code>@chapter lore</code></td>
+<td>amber, panels on <code>--paper-light</code></td>
+<td>Setting and history</td>
+</tr>
+</tbody>
+</table>
+<pre><code data-source-range="59:66" class="language-markdown">@chapter rules #ch-rules ch=&quot;3&quot;
+
+@page chapter-start
+
+# Are You Lucid Yet?
+</code></pre>
+<p>Any other word after <code>@chapter</code> is the chapter’s label, as before. A book adjusts a location with the same selectors and tokens, in its own sheet, and never with a component’s background, shadow or pseudo-elements:</p>
+<pre><code data-source-range="69:73" class="language-css">.chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
+.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: 3px; }
+</code></pre>
+<p>A panel’s edge has two tokens of its own, <code>--dc-section-clip</code> (the cut corner, 18px) and <code>--dc-section-rail</code> (the rail, 5px), so a template changes the silhouette without touching the panel’s layers.</p>
+<p>The old raw spellings (<code>@page .page-chapter-start .dc-chapter-start</code>, <code>.page-toc</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.dc-citizen-file-page</code>) are no longer styled. Write the word.</p>
 <h2>Contents page</h2>
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
-<pre><code data-source-range="49:68" class="language-markdown">@page .page-toc
+<pre><code data-source-range="82:101" class="language-markdown">@page contents
 
 # Contents {.dc-chevron}
 
@@ -2142,7 +2193,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Credits page</h2>
 <p>A chevron title, a lede for thanks and dedications, and the colophon, a <code>@section flat</code> with its names in <code>@columns 2</code>: bold lead-ins become role labels.</p>
-<pre><code class="dg-split language-markdown" data-source-range="75:100">@page .page-credits .dc-credits
+<pre><code class="dg-split language-markdown" data-source-range="108:133">@page credits
 
 # Credits {.dc-chevron}
 
@@ -2168,10 +2219,10 @@ Twelve chapters of dreams, dirt, and what bites back.
 </code></pre>
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Chapter opener</h2>
-<p>A chapter opens on <code>@page .page-chapter-start .dc-chapter-start</code> with its <code># Title</code> and no footer. A fiction excerpt can open the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow.</p>
-<pre><code class="dg-split language-markdown" data-source-range="108:135">@chapter #ch-citizen ch=&quot;1&quot;
+<p>A chapter opens on <code>@page chapter-start</code> with its <code># Title</code> and no footer. A fiction excerpt can open the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow.</p>
+<pre><code class="dg-split language-markdown" data-source-range="141:168">@chapter #ch-citizen ch=&quot;1&quot;
 
-@page .page-chapter-start .dc-chapter-start
+@page chapter-start
 
 # Who Do You Dream to Be?
 
@@ -2198,8 +2249,8 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>Rendered: <a href="#ch-example-chapter-opener" data-gp-source-token="[Chapter Opener](#ch-example-chapter-opener)" data-gp-source-occurrence="0">Chapter Opener</a>. Tokens for the excerpt: <code>--dc-fiction-bg</code>, <code>--dc-fiction-rule</code>, <code>--dc-fiction-shadow</code>, <code>--dc-fiction-art-float</code>, <code>--dc-fiction-art-width</code>. On a chapter-start page it takes the heavier opener edge (two ink rules and an offset shadow) by itself; nothing to add.</p>
 <p>The snippet picker’s <em>Chapter Start Page</em> inserts this opener.</p>
 <h2>Citizen File walkthrough</h2>
-<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Put two short fields side by side in <code>@columns 2</code> inside it. Pair it with <code>@page .dc-citizen-file-page</code> for the running header.</p>
-<pre><code data-source-range="144:163" class="language-markdown">@page .dc-citizen-file-page
+<p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Put two short fields side by side in <code>@columns 2</code> inside it. Pair it with <code>@page citizen-file</code> for the running header.</p>
+<pre><code data-source-range="177:196" class="language-markdown">@page citizen-file
 
 @citizen-walkthrough
 
@@ -2219,14 +2270,14 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="168:169"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="170:171"><h4>What’s Yr Handle?</h4>
+<div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="201:202"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="203:204"><h4>What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4>Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
 </div></div></div>
 <h2>Specialty catalog page</h2>
 <p><code>@page .card-grid</code> plus a <code>@card-grid</code> of specialty cards, each in its own <code>@specialty</code>. Keep the cards uniform — identical chrome is what makes the choices comparable.</p>
-<pre><code class="dg-split language-markdown" data-source-range="191:226">@page .card-grid
+<pre><code class="dg-split language-markdown" data-source-range="224:259">@page .card-grid
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -2263,7 +2314,7 @@ Heavily armed and wired for war.
 <p>Rendered with all ten cards: <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>.</p>
 <h2>Specialty profile</h2>
 <p>Intro, art plate, then learning paths with their skill cards, all inside one <code>@specialty</code>. The art plate takes its own page.</p>
-<pre><code class="dg-split language-markdown" data-source-range="233:271">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="266:304">@specialty .augmerc
 
 @specialty-intro
 
@@ -2303,7 +2354,7 @@ Heavily armed and wired for war.
 <p>Rendered: <a href="#ch-example-specialty-profile" data-gp-source-token="[Specialty Profile](#ch-example-specialty-profile)" data-gp-source-occurrence="0">Specialty Profile</a>.</p>
 <h2>Choice page</h2>
 <p>Flaws, ideals, and dreams: a <code>@flaws</code> (or <code>@ideals</code>, <code>@dreams</code>) of <code>@card</code> blocks. The section class colors every card’s accent. Cards stack in one column; use a tape divider between runs rather than columns.</p>
-<pre><code data-source-range="278:297" class="language-markdown">@ideals
+<pre><code data-source-range="311:330" class="language-markdown">@ideals
 
 ## 4. Ideal
 
@@ -2472,14 +2523,14 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </thead>
 <tbody data-source-range="15:21">
 <tr data-source-range="15:16">
-<td><code>@chapter #id ch=&quot;N&quot;</code></td>
+<td><code>@chapter [word] #id ch=&quot;N&quot;</code></td>
 <td>next <code>@chapter</code> / EOF</td>
-<td><code>ch</code> prints the footer</td>
+<td><code>ch</code> prints the footer. Words: <code>rules</code> <code>lore</code> <code>citizen-file</code> <code>specialty</code> set the chapter’s section colour; any other word is the label</td>
 </tr>
 <tr data-source-range="16:17">
-<td><code>@page [.class…]</code></td>
+<td><code>@page [word] [.class…]</code></td>
 <td>next <code>@page</code></td>
-<td>Page classes: <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a></td>
+<td>Words: <code>chapter-start</code> <code>intro</code> <code>credits</code> <code>contents</code> <code>citizen-file</code>, plus core’s <code>blank</code> and <code>full-bleed</code>: <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a></td>
 </tr>
 <tr data-source-range="17:18">
 <td><code>@spread</code></td>
@@ -2654,7 +2705,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="58:73">
+<tbody data-source-range="58:75">
 <tr data-source-range="58:59">
 <td><code>.dc-avoid-split</code></td>
 <td><code>@section</code></td>
@@ -2676,56 +2727,66 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>New page before it</td>
 </tr>
 <tr data-source-range="62:63">
+<td><code>.dc-page-chapter-start</code> · <code>.dc-page-intro</code> · <code>.dc-page-credits</code> · <code>.dc-page-contents</code> · <code>.dc-page-citizen-file</code></td>
+<td><code>@page</code></td>
+<td>What the page words write. The old raw pairs (<code>.page-chapter-start .dc-chapter-start</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.page-toc</code>, <code>.dc-citizen-file-page</code>) are no longer styled</td>
+</tr>
+<tr data-source-range="63:64">
+<td><code>.dc-chapter-rules</code> · <code>.dc-chapter-lore</code> · <code>.dc-chapter-citizen-file</code> · <code>.dc-chapter-specialty</code></td>
+<td><code>@chapter</code></td>
+<td>What the chapter words write</td>
+</tr>
+<tr data-source-range="64:65">
 <td><code>.dc-section-panel</code> · <code>.dc-section-flat</code> · <code>.dc-section-aside</code></td>
 <td><code>@section</code></td>
 <td>What <code>@section panel</code>, <code>flat</code> and <code>aside</code> write</td>
 </tr>
-<tr data-source-range="63:64">
+<tr data-source-range="65:66">
 <td><code>.dc-npc-stat</code></td>
 <td><code>@section</code></td>
 <td>What <code>@npc-stat</code> and <code>@section npc</code> write (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="64:65">
+<tr data-source-range="66:67">
 <td><code>.dc-fiction-excerpt</code></td>
 <td><code>@section</code></td>
 <td>What <code>@fiction-excerpt</code> and <code>@section fiction</code> write: aged paper, narrative typography, auto art float</td>
 </tr>
-<tr data-source-range="65:66">
+<tr data-source-range="67:68">
 <td><code>.dc-citizen-walkthrough</code></td>
 <td><code>@section</code></td>
 <td>What <code>@citizen-walkthrough</code> writes (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="66:67">
+<tr data-source-range="68:69">
 <td><code>.dc-card-grid</code></td>
 <td><code>@section</code></td>
 <td>Density for a run of specialty cards (set in <code>@columns 2</code>); no chrome</td>
 </tr>
-<tr data-source-range="67:68">
+<tr data-source-range="69:70">
 <td><code>.dc-flaws</code> · <code>.dc-ideals</code> · <code>.dc-dreams</code></td>
 <td><code>@section</code> of <code>@card</code></td>
 <td>Card accent per step (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="68:69">
+<tr data-source-range="70:71">
 <td><code>.dc-chevron</code></td>
 <td><code>#</code> heading</td>
 <td>Chevron banner</td>
 </tr>
-<tr data-source-range="69:70">
+<tr data-source-range="71:72">
 <td><code>.dc-spray</code></td>
 <td><code>##</code> heading</td>
 <td>Spray banner</td>
 </tr>
-<tr data-source-range="70:71">
+<tr data-source-range="72:73">
 <td><code>.dc-spec-tweak</code> · <code>.dc-no-top</code></td>
 <td><code>###</code> heading</td>
 <td>Spec-tweak rule; no top margin</td>
 </tr>
-<tr data-source-range="71:72">
+<tr data-source-range="73:74">
 <td><code>.dc-img-float-left</code> · <code>.dc-img-float-right</code></td>
 <td>an image</td>
 <td>Float at 44% width</td>
 </tr>
-<tr data-source-range="72:73">
+<tr data-source-range="74:75">
 <td><code>.dc-flush</code></td>
 <td>tape, stat block, stickers</td>
 <td>Edge to edge</td>
@@ -2734,38 +2795,38 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2>Inline HTML</h2>
 <table>
-<thead data-source-range="76:77">
-<tr data-source-range="76:77">
+<thead data-source-range="78:79">
+<tr data-source-range="78:79">
 <th>You write</th>
 <th>Renders</th>
 </tr>
 </thead>
-<tbody data-source-range="78:85">
-<tr data-source-range="78:79">
+<tbody data-source-range="80:87">
+<tr data-source-range="80:81">
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt;</code></td>
 <td>keyword pill</td>
 </tr>
-<tr data-source-range="79:80">
+<tr data-source-range="81:82">
 <td><code>&lt;span class=&quot;dc-classtag augmerc&quot;&gt;Augmerc&lt;/span&gt;</code></td>
 <td>specialty identity pill</td>
 </tr>
-<tr data-source-range="80:81">
+<tr data-source-range="82:83">
 <td><code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> · <code>.free</code> · <code>.var</code></td>
 <td>AP chip in prose</td>
 </tr>
-<tr data-source-range="81:82">
+<tr data-source-range="83:84">
 <td><code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code></td>
 <td>tape, edge to edge</td>
 </tr>
-<tr data-source-range="82:83">
+<tr data-source-range="84:85">
 <td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;…&lt;/div&gt;</code></td>
 <td>four-cell stat grid (<a href="#ch-panels" data-gp-source-token="[Panels, Cards &amp; Data](#ch-panels)" data-gp-source-occurrence="0">Panels, Cards &amp; Data</a>)</td>
 </tr>
-<tr data-source-range="83:84">
+<tr data-source-range="85:86">
 <td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;…&lt;/div&gt;</code> in <code>@columns 3</code></td>
 <td>label/value cards</td>
 </tr>
-<tr data-source-range="84:85">
+<tr data-source-range="86:87">
 <td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;…</code></td>
 <td>floated NPC capsule</td>
 </tr>
@@ -2774,98 +2835,98 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <h2>Tokens by component</h2>
 <p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(…)</code> clip-paths.</p>
 <table>
-<thead data-source-range="91:92">
-<tr data-source-range="91:92">
+<thead data-source-range="93:94">
+<tr data-source-range="93:94">
 <th>Component</th>
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="93:115">
-<tr data-source-range="93:94">
+<tbody data-source-range="95:117">
+<tr data-source-range="95:96">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code></td>
 </tr>
-<tr data-source-range="94:95">
+<tr data-source-range="96:97">
 <td>Lede</td>
 <td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code></td>
 </tr>
-<tr data-source-range="95:96">
+<tr data-source-range="97:98">
 <td>Flavor</td>
 <td><code>--dc-flavor-accent</code> <code>--dc-flavor-accent-width</code> <code>--dc-flavor-color</code></td>
 </tr>
-<tr data-source-range="96:97">
+<tr data-source-range="98:99">
 <td>Pull quote</td>
 <td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-accent-soft</code> <code>--dc-pullquote-bg</code></td>
 </tr>
-<tr data-source-range="97:98">
+<tr data-source-range="99:100">
 <td>Alerts, callout, DM note</td>
 <td><code>--dc-alert-bg</code> <code>--dc-alert-border</code> <code>--dc-alert-fg</code> <code>--dc-alert-label-color</code> <code>--dc-alert-border-width</code> <code>--dc-alert-label-size</code> <code>--dc-alert-body-size</code></td>
 </tr>
-<tr data-source-range="98:99">
+<tr data-source-range="100:101">
 <td>Tape</td>
 <td><code>--dc-tape-bg</code> <code>--dc-tape-border</code> <code>--dc-tape-color</code></td>
 </tr>
-<tr data-source-range="99:100">
+<tr data-source-range="101:102">
 <td>Chevron · Spray</td>
 <td><code>--dc-chevron-bg</code> <code>--dc-chevron-color</code> <code>--dc-chevron-font-size</code> · <code>--dc-spray-bg</code> <code>--dc-spray-color</code></td>
 </tr>
-<tr data-source-range="100:101">
+<tr data-source-range="102:103">
 <td>Class tag</td>
 <td><code>--dc-classtag-color</code></td>
 </tr>
-<tr data-source-range="101:102">
+<tr data-source-range="103:104">
 <td>Roll the die</td>
 <td><code>--dc-roll-the-die-color</code> <code>--dc-roll-the-die-border</code></td>
 </tr>
-<tr data-source-range="102:103">
+<tr data-source-range="104:105">
 <td>Block</td>
 <td><code>--dc-block-bg</code> <code>--dc-block-fg</code> <code>--dc-block-accent</code> <code>--dc-block-title-bg</code> <code>--dc-block-title-fg</code></td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="105:106">
 <td>Sidebar</td>
 <td><code>--dc-sidebar-surface</code> <code>--dc-sidebar-border</code></td>
 </tr>
-<tr data-source-range="104:105">
+<tr data-source-range="106:107">
 <td>Sidebar box</td>
 <td><code>--dc-sidebar-box-surface</code> <code>--dc-sidebar-box-border</code> <code>--dc-sidebar-box-accent</code> <code>--dc-sidebar-box-rail</code></td>
 </tr>
-<tr data-source-range="105:106">
+<tr data-source-range="107:108">
 <td>Definition</td>
 <td><code>--dc-definition-block-surface</code> <code>--dc-definition-block-accent</code> <code>--dc-definition-block-accent-width</code></td>
 </tr>
-<tr data-source-range="106:107">
+<tr data-source-range="108:109">
 <td>Outcome ladder</td>
 <td><code>--dc-outcomes-surface</code> <code>--dc-outcomes-border</code> <code>--dc-outcomes-inner-border</code> <code>--dc-outcomes-label-bg</code> <code>--dc-outcomes-label-color</code> <code>--dc-outcome-key-color</code> <code>--dc-outcome-name-color</code> <code>--dc-outcome-name-opacity</code></td>
 </tr>
-<tr data-source-range="107:108">
+<tr data-source-range="109:110">
 <td>NPC stat block</td>
 <td><code>--dc-npc-stat-primary</code> <code>--dc-npc-stat-secondary</code> <code>--dc-npc-stat-label-color</code> <code>--dc-npc-stat-rule</code> <code>--dc-npc-stat-rule-width</code></td>
 </tr>
-<tr data-source-range="108:109">
+<tr data-source-range="110:111">
 <td>Fiction excerpt</td>
 <td><code>--dc-fiction-bg</code> <code>--dc-fiction-line-height</code> <code>--dc-fiction-art-float</code> <code>--dc-fiction-art-width</code> <code>--dc-fiction-art-outline</code> <code>--dc-fiction-art-shadow</code></td>
 </tr>
-<tr data-source-range="109:110">
+<tr data-source-range="111:112">
 <td>Specialty wrapper</td>
 <td><code>--spec-accent</code> <code>--spec-mid</code> <code>--spec-dark</code> <code>--dc-skill-tab-shape</code> <code>--dc-skill-body-shape</code> <code>--dc-path-title-shape</code> <code>--dc-path-shell-clip</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-intro-title-shape</code> <code>--dc-specialty-intro-clip</code></td>
 </tr>
-<tr data-source-range="110:111">
+<tr data-source-range="112:113">
 <td>Specialty intro</td>
 <td><code>--dc-specialty-intro-bg</code> <code>--dc-specialty-intro-title-bg</code> <code>--dc-specialty-intro-title-color</code></td>
 </tr>
-<tr data-source-range="111:112">
+<tr data-source-range="113:114">
 <td>Specialty card</td>
 <td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-border</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-height</code> <code>--dc-specialty-card-shadow</code> <code>--dc-specialty-card-title-color</code></td>
 </tr>
-<tr data-source-range="112:113">
+<tr data-source-range="114:115">
 <td>Learning path</td>
 <td><code>--dc-path-title-bg</code> <code>--dc-path-title-color</code> <code>--dc-path-accent</code> <code>--dc-path-shell-padding-top</code> <code>--dc-path-shell-padding-bottom</code> <code>--dc-arrow-color</code></td>
 </tr>
-<tr data-source-range="113:114">
+<tr data-source-range="115:116">
 <td>Skill card</td>
 <td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-body-mark</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code></td>
 </tr>
-<tr data-source-range="114:115">
+<tr data-source-range="116:117">
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
 </tr>
@@ -3651,17 +3712,17 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 <tbody data-source-range="38:45">
 <tr data-source-range="38:39">
 <td>Front Matter</td>
-<td><code>.page-toc</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code></td>
+<td><code>@page contents</code>, <code>credits</code>, <code>intro</code></td>
 <td><code>@toc</code>, <code>@lede</code>, <code>@section flat</code>, <code>[!PULLQUOTE]</code>, floated art</td>
 </tr>
 <tr data-source-range="39:40">
 <td>Chapter Opener</td>
-<td><code>.page-chapter-start .dc-chapter-start</code>, <code>.dc-citizen-file-page</code></td>
+<td><code>@page chapter-start</code>, <code>citizen-file</code>; <code>@chapter citizen-file</code></td>
 <td><code>.dc-fiction-excerpt</code>, <code>@callout origin</code>, <code>.dc-citizen-walkthrough</code></td>
 </tr>
 <tr data-source-range="40:41">
 <td>Specialty Overview</td>
-<td><code>.page-chapter-start .dc-chapter-start</code>, <code>.card-grid</code></td>
+<td><code>@page chapter-start</code>, <code>.card-grid</code></td>
 <td><code>.dc-card-grid</code>, <code>@specialty</code> × 10, <code>@specialty-card</code>, <code>@procedure</code>, <code>.dc-spray</code></td>
 </tr>
 <tr data-source-range="41:42">
@@ -3671,7 +3732,7 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="42:43">
 <td>Rules Pages</td>
-<td><code>.page-chapter-start .dc-chapter-start</code></td>
+<td><code>@page chapter-start</code></td>
 <td><code>@section panel</code>, <code>@columns 2</code>, <code>@definition</code>, <code>@callout note</code>, <code>@outcome</code>, a conditions table</td>
 </tr>
 <tr data-source-range="43:44">
@@ -3690,7 +3751,7 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 `;
 
 exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = `
-"<div class="chapter dg-guide" id="ch-example-front-matter" data-ch="1" data-source-range="0:1"><div class="page page-toc chapter-1" data-source-range="2:3"><h1 class="dc-chevron">Contents</h1>
+"<div class="chapter dg-guide" id="ch-example-front-matter" data-ch="1" data-source-range="0:1"><div class="page dc-page-contents chapter-1" data-page="contents" data-source-range="2:3"><h1 class="dc-chevron">Contents</h1>
 <div class="dc-intro" data-source-range="6:7"><p>Twelve chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn’t care where you start.</p>
 </div><div class="dc-toc" data-source-range="12:13"><ol>
 <li data-source-range="14:15">Who Do You Dream to Be? — Citizen file, vibe, origins, ideals, flaws.</li>
@@ -3707,7 +3768,7 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 <li data-source-range="25:26">Dream Mastery &amp; Cosmology — NPCs, traits, time, districts.</li>
 <li data-source-range="26:28">Cybernetics, Weapons, and Gear — Useful items, tech, blasters, blades.</li>
 </ol>
-</div></div><div class="page page-credits dc-credits chapter-1" data-source-range="30:31"><h1 class="dc-chevron">Credits</h1>
+</div></div><div class="page dc-page-credits chapter-1" data-page="credits" data-source-range="30:31"><h1 class="dc-chevron">Credits</h1>
 <div class="dc-intro" data-source-range="34:35"><p><strong>Special Thanks:</strong> Don and Cindy Ward, Ted Bonnah, Joseph Woodworth, Ben McDonough, Michael Giordono, Adam Tripp, Nathan Hays, Nathanael Elkins, Chelanna Leigh, Thomas Amundrud, Virgina Horine, Gena Pini, Madeleine Pini, Ken Pini, Mary Jo Pini, Davide Cavadini</p>
 <p><strong>Dedicated to the memory of Donovan Henry Callender.</strong> Don was a player in our 2E AD&amp;D group throughout our youth and was a dear friend for even longer. He was taken too soon from us and we wish he were here to dream in Dimm City with us today.</p>
 </div><div class="section dc-section-flat" data-section="flat" data-source-range="42:43"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="44:45"><p><strong>Designers:</strong> TWard and ITLackey</p>
@@ -3722,7 +3783,7 @@ exports[`rendered output 301-example-front-matter.md matches its snapshot 1`] = 
 <p><strong>Trademarks:</strong> Dimm City, the Creaturepunk trademarked by Dimm City LLC. All rights reserved.</p>
 <p><strong>Published by:</strong> Dimm City LLC · 2026.</p>
 </div></div><p class="dc-img-wrapper"><img src="img/founder-house.png" alt="Founders House" class="fg-art-founders-house gp-pin gp-bottom gp-full" data-gp-source-token="![Founders House](img/founder-house.png)" data-gp-source-occurrence="0"></p>
-</div><div class="page page-intro dg-intro chapter-1" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
+</div><div class="page dc-page-intro dg-intro chapter-1" data-page="intro" data-source-range="74:75"><h1 class="dc-chevron">Introduction</h1>
 <div class="dc-intro" data-source-range="78:79"><p>The city didn’t go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.</p>
 </div><div class="section dc-section-flat" data-section="flat" data-source-range="84:85"><div class="dc-pullquote dc-flush">
 <p data-source-range="86:88">&quot;How bright's it ay?!&quot;</p>
@@ -3745,7 +3806,7 @@ Good. That makes you dangerous.</p>
 `;
 
 exports[`rendered output 302-example-chapter-opener.md matches its snapshot 1`] = `
-"<div class="chapter dg-guide" id="ch-example-chapter-opener" data-ch="1" data-source-range="0:1"><div class="page page-chapter-start dc-chapter-start chapter-1" data-source-range="2:3"><h1>Who Do You Dream to Be?</h1>
+"<div class="chapter dc-chapter-citizen-file dg-guide" id="ch-example-chapter-opener" data-ch="1" data-source-range="0:1"><div class="page dc-page-chapter-start chapter-1" data-page="chapter-start" data-source-range="2:3"><h1>Who Do You Dream to Be?</h1>
 <div class="section dc-fiction-excerpt" data-source-range="6:7"><p>&quot;It’s hard being me, but I guess it’s the same for anyting sentient in the monoverse, ay?! Tag’s Thump, an I’m a rabbit outta dee EntD here in Dimm City. Lemme post ya a tale about life here in da middle 'o dee ether.</p>
 <p>I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out. Da cauldron wuz right on mai heels now, wings chopping da air, close enough I could smell da oil an blood on 'em.</p>
 <p>I turned hard an hit a dead end. Balcony. High rise. Peak chaos screaming thirty meters in da cut below.</p>
@@ -3784,7 +3845,7 @@ This chapter will guide you through all the choices you need to make to help you
 <p>She/her, he/him, they/them, or something else entirely.</p>
 <p>Do your best to address your fellow Dreamers as they wish to be addressed.</p>
 <p>Names and pronouns matter when life itself is constantly trying to strip both away.</p>
-</div></div></div><div class="page dc-citizen-file-page chapter-1" data-source-range="96:97"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="98:99"><div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="100:101"><h4>Species</h4>
+</div></div></div><div class="page dc-page-citizen-file chapter-1" data-page="citizen-file" data-source-range="96:97"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="98:99"><div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="100:101"><h4>Species</h4>
 <p>In Dimm City, you’re not human—you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.</p>
 <p>Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.</p>
 </div><div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="110:111"><h4>Origins</h4>
@@ -3865,7 +3926,7 @@ This chapter will guide you through all the choices you need to make to help you
 `;
 
 exports[`rendered output 303-example-specialty-overview.md matches its snapshot 1`] = `
-"<div class="chapter dg-guide" id="ch-example-specialty-overview" data-ch="2" data-source-range="0:1"><div class="page page-chapter-start dc-chapter-start chapter-2" data-source-range="2:3"><h1>What Do You Dream of Doing?</h1>
+"<div class="chapter dg-guide" id="ch-example-specialty-overview" data-ch="2" data-source-range="0:1"><div class="page dc-page-chapter-start chapter-2" data-page="chapter-start" data-source-range="2:3"><h1>What Do You Dream of Doing?</h1>
 <div class="section dc-section-panel" data-section="panel" data-source-range="6:7"><p>The alley narrowed to a throat of shadow as they reached the bunker’s blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.</p>
 <p>“Three layers,” he murmured, dark eyes flicking as invisible data scrolled past his vision. “Motion, thermal, facial-recognition. Someone was paranoid.”</p>
 <p>Zephyr grinned, sharp and feline, and rolled her shoulders. LEDs along her spine flared as she stretched, ready to pounce, color bleeding into sigils that crawled and rearranged themselves.
@@ -4178,7 +4239,7 @@ Never fight clean. Fight to finish.</p>
 `;
 
 exports[`rendered output 305-example-rules.md matches its snapshot 1`] = `
-"<div class="chapter dg-guide" id="ch-example-rules" data-ch="4" data-source-range="0:1"><div class="page page-chapter-start dc-chapter-start chapter-4" data-source-range="2:3"><h1>Are You Lucid Yet?</h1>
+"<div class="chapter dg-guide" id="ch-example-rules" data-ch="4" data-source-range="0:1"><div class="page dc-page-chapter-start chapter-4" data-page="chapter-start" data-source-range="2:3"><h1>Are You Lucid Yet?</h1>
 <div class="section dc-fiction-excerpt" data-source-range="6:7"><p class="dc-img-wrapper"><img src="https://placehold.co/600x800/png?text=Street+Sign" alt="01-street-sign" class="fg-art-street-sign" data-gp-source-token="![01-street-sign](https://placehold.co/600x800/png?text=Street+Sign)" data-gp-source-occurrence="0"></p>
 <p>Hologram haze cuts the gloom you’re stumbling through. Flickering ads claw the air above blades of neon that contrast the scents of burnt oil and hot garbage. On the littered pavement around you, other pedestrians in the murk shuffle past, lit by glitchy devices and glowing bodymods.</p>
 <p>A shadow peels off the wall—an ape a meter taller than you, leather flashing with LED stitches. The beast blocks your path with its corroded grin glinting under the signage.</p>

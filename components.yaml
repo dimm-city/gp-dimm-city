@@ -438,13 +438,14 @@ components:
     css: [styles/components/section.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
 
-  - name: citizen-file-page
+  - name: page-citizen-file
     status: live
-    origin: author
-    recipe: "@page .dc-citizen-file-page"
-    emits: div.page.dc-citizen-file-page
+    origin: plugin
+    recipe: "@page citizen-file"
+    emits: div.page.dc-page-citizen-file
     css: styles/page-rules.css
     breaks: "page: citizen-file"
+    notes: "The Citizen File running head in the outer top corner. A location: it carries no component chrome."
 
   - name: fiction-excerpt
     status: live
@@ -462,7 +463,7 @@ components:
       - --dc-fiction-art-outline
       - --dc-fiction-art-shadow
     breaks: "orphans/widows 3 on paragraphs"
-    notes: "Aged paper (--paper-aged), no rail and no title bar. On a chapter-start page (`.page-chapter-start` or `.dc-page-chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, set in page-templates.css by tokens."
+    notes: "Aged paper (--paper-aged), no rail and no title bar. On a chapter-start page (`@page chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, set in page-templates.css by tokens."
 
   - name: npc-stat
     status: live
@@ -478,21 +479,82 @@ components:
       - --dc-npc-stat-rule-width
     breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no #### splits like any section (.dc-avoid-split keeps it whole)"
 
-  - name: chapter-start
+  - name: page-chapter-start
     status: live
-    origin: author
-    recipe: "@page .page-chapter-start .dc-chapter-start"
-    emits: div.page.dc-chapter-start
+    origin: plugin
+    recipe: "@page chapter-start"
+    emits: div.page.dc-page-chapter-start
     css: [styles/page-rules.css, styles/page-templates.css]
-    breaks: "page: chapter-start"
+    tokens: [--dc-fiction-rule, --dc-fiction-shadow]
+    breaks: "page: chapter-start (no footer on any page the opener spans)"
+    notes: "A chapter opener: the h1 gets headroom and is kept with the block after it, and a fiction excerpt takes the heavier opener edge by tokens."
 
-  - name: credits
+  - name: page-credits
     status: live
-    origin: author
-    recipe: "@page .page-credits .dc-credits"
-    emits: div.page.dc-credits
-    css: [styles/page-templates.css, styles/dc-native.css]
-    notes: "Styled in page-templates.css and dc-native.css — carried in from the books in 1.0.0. The colophon names go in `@columns 2` inside `@section flat`."
+    origin: plugin
+    recipe: "@page credits"
+    emits: div.page.dc-page-credits
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-intro-gap, --dc-intro-pad-bottom, --dc-section-gap, --dc-section-grow, --dc-section-drop]
+    breaks: "page: front-matter (no footer)"
+    notes: "The credits page: masthead, lede and colophon stacked flush. The colophon names go in `@columns 2` inside `@section flat`; the page sets the flat section's accent, drop, gap and grow by tokens."
+
+  - name: page-contents
+    status: live
+    origin: plugin
+    recipe: "@page contents"
+    emits: div.page.dc-page-contents
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-toc-rail-y, --dc-toc-rail-x, --dc-toc-shadow, --dc-toc-badge, --dc-intro-gap, --dc-intro-pad-bottom]
+    breaks: "page: front-matter (no footer)"
+    notes: "The contents page: masthead, lede and the @toc card stacked flush. The page sets the card's rails, shadow and number-chip colour by tokens."
+
+  - name: page-intro
+    status: live
+    origin: plugin
+    recipe: "@page intro"
+    emits: div.page.dc-page-intro
+    css: [styles/page-templates.css, styles/page-rules.css]
+    tokens: [--dc-intro-gap, --dc-intro-pad-bottom, --dc-chevron-bg, --dc-section-accent, --dc-section-drop]
+    breaks: "page: front-matter-intro (no footer, ordinary margins)"
+    notes: "The introduction: chevron, lede, then a `@section flat`. The page sets the lede's and the flat section's tokens."
+
+  # ── Chapter words: a register for the sections in the chapter ──────────
+  - name: chapter-rules
+    status: live
+    origin: plugin
+    recipe: "@chapter rules #id ch=\"N\""
+    emits: div.chapter.dc-chapter-rules
+    css: styles/page-templates.css
+    tokens: [--dc-section-accent]
+    notes: "Rust section accent for every panel in the chapter. A word that is not declared stays the chapter's label."
+
+  - name: chapter-lore
+    status: live
+    origin: plugin
+    recipe: "@chapter lore #id ch=\"N\""
+    emits: div.chapter.dc-chapter-lore
+    css: styles/page-templates.css
+    tokens: [--dc-section-accent, --dc-section-bg]
+    notes: "Aged register: amber (brass) title bars on --paper-light panels."
+
+  - name: chapter-citizen-file
+    status: live
+    origin: plugin
+    recipe: "@chapter citizen-file #id ch=\"N\""
+    emits: div.chapter.dc-chapter-citizen-file
+    css: styles/page-templates.css
+    tokens: [--dc-section-accent]
+    notes: "Magenta-deep section accent for the Citizen File chapter."
+
+  - name: chapter-specialty
+    status: live
+    origin: plugin
+    recipe: "@chapter specialty #id ch=\"N\""
+    emits: div.chapter.dc-chapter-specialty
+    css: styles/page-templates.css
+    tokens: [--dc-section-accent]
+    notes: "Blue-dark section accent for the specialty gateway chapter."
 
   - name: chevron
     status: live
@@ -588,11 +650,11 @@ components:
   - name: full-page
     status: live
     origin: author
-    recipe: "@page .dc-full-page"
+    recipe: "@page .dc-full-page  (core's @page full-bleed gets the same geometry and named page)"
     emits: div.page.dc-full-page
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
     breaks: "break-before: page; page: full"
-    notes: "Used by SysOps (chapter-00); the design guide documents it in a fenced example (08-page-templates)."
+    notes: "Used by SysOps (chapter-00); the design guide documents it in a fenced example (08-page-templates). Core's `@page full-bleed` (`.gp-page-full-bleed`) is wired to the same plate geometry and the same `full` named page, so there is one full-bleed page with two spellings."
 
   - name: img-float
     status: live
@@ -616,7 +678,7 @@ components:
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits: div.section.dc-section-panel
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-rail, --dc-section-gap, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     breaks: "splits by default; add .dc-avoid-split to keep it whole"
     notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
 
@@ -626,7 +688,7 @@ components:
     recipe: "@section flat … @end-section  (or @section .dc-section-flat)"
     emits: div.section.dc-section-flat
     css: [styles/components/section.css, styles/page-templates.css, styles/dc-native.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-drop, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-drop, --dc-section-gap, --dc-section-grow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     notes: "The rail on a plain host: no corner, no pseudo layers, no title bar. The intro and credits pages set its accent and drop shadow from their own rules (--dc-section-accent, --dc-section-drop). The credits colophon is a flat section."
 
   - name: section-aside
@@ -672,7 +734,7 @@ components:
     origin: core
     recipe: "@chapter C.01 / @page intro / @section / # Title  (the labelled chapter-opener composite)"
     emits: div.page[data-page=intro][data-chapter-label] > div.chapter-opener + div.section > h1
-    notes: "Styling removed 2026-10-12 (page-templates.css, section.css, --dc-chapter-opener-* tokens): both books open chapters with @page .page-chapter-start .dc-chapter-start. Core still emits data-chapter-label and .chapter-opener for a labelled @chapter; nothing here styles them."
+    notes: "Styling removed 2026-10-12 (page-templates.css, section.css, --dc-chapter-opener-* tokens): both books open chapters with @page chapter-start. Core still emits data-chapter-label and .chapter-opener for a labelled @chapter; nothing here styles them."
 
   - name: printer-page
     status: retired

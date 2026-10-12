@@ -1,6 +1,6 @@
-@chapter #ch-example-chapter-opener .dg-guide ch="1"
+@chapter citizen-file #ch-example-chapter-opener .dg-guide ch="1"
 
-@page .page-chapter-start .dc-chapter-start
+@page chapter-start
 
 # Who Do You Dream to Be?
 
@@ -94,7 +94,7 @@ Names and pronouns matter when life itself is constantly trying to strip both aw
 @end-citizen-walkthrough
 
 
-@page .dc-citizen-file-page
+@page citizen-file
 
 @columns 2
 
