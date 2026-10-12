@@ -209,7 +209,7 @@ describe("behaviour carried from the book repo", () => {
     const outcomeHtml = renderGp(outcomeTable).html;
     const macroHtml = renderGp(outcomeMacro).html;
 
-    expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
+    expect(outcomeHtml).toMatch(/<div class="dc-outcomes">/);
     expect(outcomeHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
     expect(outcomeHtml).not.toMatch(/<table>/);
     expect(countRolls(macroHtml)).toBe(1);
@@ -539,12 +539,11 @@ describe("declared specialty, learning path and skill", () => {
     test("a card splits across pages by default and is named after its title", () => {
       const { html } = renderGp(doc("@skill", "", card("Hold the Line")));
       expect(html).toContain('<div class="dc-skill-card" name="hold-the-line">');
-      expect(html).not.toContain("data-break-inside");
     });
 
     test(".dc-avoid-split keeps every card of the skill whole", () => {
       const { html } = renderGp(doc("@skill .dc-avoid-split", "", card("First | T1"), "", card("Second | T2")));
-      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)" data-break-inside="avoid">/g)).toBe(2);
+      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)">/g)).toBe(2);
     });
 
     test("tiers in a path run PATHREF.N across its skills unless the heading names one", () => {
@@ -569,7 +568,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
       expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
-      expect(html).toContain('<div class="dc-outcomes" data-break-inside="avoid">');
+      expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
       expect(count(html, />Outcomes</g)).toBe(0); // the "##### Outcomes" sub-header is swallowed: the table carries its own header
       expect(html).not.toContain("<h5");
@@ -659,7 +658,7 @@ describe("declared specialty, learning path and skill", () => {
     });
 
     test("a card kept whole with .dc-avoid-split keeps its avoid on the continuation too", () => {
-      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill" data-break-inside="avoid"/);
+      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill"/);
     });
 
     test("the continuation is claimed only inside a skill's card; elsewhere @continue is core's section continuation", () => {
@@ -844,7 +843,7 @@ describe("declared card, outcome and procedure", () => {
       const { html } = renderGp(skill(...bandTable(), "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
-      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes" data-break-inside="avoid">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
     });
 
     test("one left open at the end of the document warns, with core's own message", () => {

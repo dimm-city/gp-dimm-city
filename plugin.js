@@ -420,16 +420,8 @@ function outcomeRowsHtml(rows, md, head = []) {
 }
 
 // A table of the five standard bands: tier and name come from the band.
-function buildLadderBlock({ head, rows }, md, needsAvoid = true) {
-  // data-break-inside="avoid" is added when the parent card can be split (is
-  // not avoid-split) — the polyfill needs this to keep the
-  // outcomes table together when the card itself isn't protected. When the card
-  // already has data-break-inside="avoid" (non-splittable cards), adding a
-  // nested avoid creates a conflicting inner break that the polyfill resolves
-  // by splitting the card at the outcomes boundary, leaving a headless
-  // card-body on one page and the outcomes-only continuation on the next.
-  const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
+function buildLadderBlock({ head, rows }, md) {
+  return '<div class="dc-outcomes">\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -860,12 +852,6 @@ function dcSkillCards(state) {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
-    // A card splits across pages by default (a whole card is 30-50% of a page,
-    // so keeping it whole left a page of one card each); `.dc-avoid-split`
-    // keeps one whole and carries data-break-inside="avoid". An outcomes table or
-    // sub-list inside a splittable card needs its own avoid, because the card
-    // has none.
-    const canSplit = !(open.attrGet('class') || '').split(/\s+/).includes('dc-avoid-split');
     const content = run.slice(1, -1);
     const out = [];
     const emit = (html) => out.push(makeToken('html_block', html));
@@ -878,7 +864,6 @@ function dcSkillCards(state) {
     const cardOpen = (cont) => {
       const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
       attrs.push(['name', slugify(title.name)]);
-      if (!canSplit) attrs.push(['data-break-inside', 'avoid']);
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
     const endCard = () => {
@@ -1000,16 +985,13 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // Keep short sub-lists whole (e.g. an "Arm:" bullet stranded from "Leg:").
-      if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
-
       if (tok.type === 'table_open') {
         // A table of the five standard bands is the ladder; any other table
         // passes through untouched, thead and all.
         const tableTokens = collectTableTokens(content, i);
         const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
         if (ladder) {
-          emit(buildLadderBlock(ladder, md, canSplit));
+          emit(buildLadderBlock(ladder, md));
           i = skipToTableClose(content, i);
           continue;
         }
@@ -1114,7 +1096,7 @@ function dcLadderTables(state) {
     const tableTokens = collectTableTokens(tokens, i);
     const ladder = ladderRows(readTable(tableTokens));
     if (!ladder) continue;
-    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, false)));
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md)));
   }
 }
 

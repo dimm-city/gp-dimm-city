@@ -38,6 +38,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Removed
 
+- The `data-break-inside="avoid"` attribute on skill cards, outcome ladders and
+  card sub-lists. Nothing read it since the pagination polyfill was removed;
+  break control is the CSS `break-inside` rules.
 - `@augment`, `@treasure`, `@vehicle`, `@drug` (and their `@end-` forms):
   write `@gear <kind>`. They are tombstoned in `components.yaml`.
 - `@callout gear` and `> [!GEAR]`, with `.dc-gear-callout`: write `@field specs`.
