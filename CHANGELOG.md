@@ -32,6 +32,22 @@ cut a version that has no `## [X.Y.Z]` heading below.
   the next chapter. `.dc-specialty > .dc-learning-path:last-child` now clips
   its block overflow (`overflow-y: clip; overflow-clip-margin: 8px`), so a book
   no longer needs its own rule for it.
+- **A field may split between lines, as the callout it replaced did.** `.dc-field`
+  no longer has `break-inside: avoid` and sets `orphans: 2; widows: 2`, so the
+  label chip stays with the first two lines of its text and no single line is
+  left alone at either end. A short field still stays whole. The 30 SPECS boxes
+  that were pushed whole to the next page no longer cost a book pages.
+- **Skill card text never leaves one line alone at a page edge.** Paragraphs,
+  list items and ability text inside `.dc-skill-card` set `orphans: 3; widows: 2`.
+  Chromium keeps the orphans and drops the widows when a paragraph is too short
+  to satisfy both, so the body's 2 + 2 let a three-line paragraph split 2 + 1;
+  with 3 it moves whole. Cards still split by default.
+- **The last panel of a page or chapter clips its shadow overhang.**
+  `.dc-section-panel:last-child` clips its block overflow
+  (`overflow-y: clip; overflow-clip-margin: calc(var(--dc-section-edge) + 3px)`),
+  the same fix as a specialty's last learning path. A panel that ends in the
+  last pixels of a page, such as a `@section reference .dc-snug` pulled back
+  to fit, no longer opens a page holding only its bottom rule.
 - Comments in the plugin, stylesheets, catalog, snippets and docs that described
   removed code, files or behaviour are gone or rewritten. No declaration or
   behaviour changed with them.

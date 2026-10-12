@@ -296,6 +296,15 @@
   break-after: avoid;
 }
 
+/* Text in a card never leaves one line alone at a page edge. Orphans are 3,
+   not the body's 2: Chromium keeps the orphans and drops the widows when a
+   paragraph is too short to satisfy both, so at 2 a three-line paragraph still
+   split 2 + 1. At 3 it moves whole. */
+.dc-skill-card :is(.dc-ability-text, p, li) {
+  orphans: 3;
+  widows: 2;
+}
+
 /* An ability row (AP chip and its text) is never cut between the two. */
 .dc-skill-card .dc-ability {
   break-inside: avoid;

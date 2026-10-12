@@ -188,7 +188,10 @@
   background: var(--dc-field-surface);
   color: var(--dc-field-fg);
   border-left: 3pt solid var(--dc-field-accent);
-  break-inside: avoid;
+  /* A field splits between lines, as the callout it replaced did. The chip
+     sits on the first line, so two lines at the foot keep it with its text. */
+  orphans: 2;
+  widows: 2;
 }
 .dc-field > .dc-field-label {
   display: inline-block;

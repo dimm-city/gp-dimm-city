@@ -132,6 +132,17 @@
   pointer-events: none;
 }
 
+/* The edge and the shadow hang below the box (the edge, then 3px). They are
+   paint, but when the last panel of a page or chapter ends in the last pixels
+   of a page, that overhang alone makes Chromium open a page for its bottom
+   rule. Clipping the block overflow with a margin as deep as the overhang
+   still paints both and takes them out of fragmentation. Only the last panel:
+   anywhere else the next box absorbs the overhang. */
+.dc-section-panel:last-child {
+  overflow-y: clip;
+  overflow-clip-margin: calc(var(--dc-section-edge) + 3px);
+}
+
 /* ── flat — the panel's rail on a plain host ─────────────────────────────────
    No clipped corner, no ::before/::after layers: the box paints its own
    surface, so its padding stays inside it (edge 0). `--dc-section-drop` is the

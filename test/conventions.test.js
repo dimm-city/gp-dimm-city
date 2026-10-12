@@ -235,6 +235,53 @@ describe("faction cards split by default", () => {
   });
 });
 
+/** The declarations of the rule whose selector is exactly `selector`, as {prop: value}. */
+function declsOf(rel, selector) {
+  const found = {};
+  postcss.parse(read(rel)).walkRules((rule) => {
+    if (rule.selectors.map((s) => s.trim().replace(/\s+/g, " ")).includes(selector)) {
+      for (const n of rule.nodes) if (n.type === "decl") found[n.prop] = n.value;
+    }
+  });
+  return found;
+}
+
+// The SPECS box used to be a callout, which split between lines. A field that
+// avoids a split is pushed whole to the next page, and thirty of them in a
+// chapter cost a book four pages. The chip is inline on the first line, so two
+// lines at either edge keep it with its text.
+describe("a field splits between lines", () => {
+  test("`.dc-field` does not avoid a split, and never leaves one line at an edge", () => {
+    const field = declsOf("styles/components/entries.css", ".dc-field");
+    expect(field["break-inside"], "a field splits like the callout it replaced").toBeUndefined();
+    expect(field.orphans).toBe("2");
+    expect(field.widows).toBe("2");
+  });
+});
+
+// Chromium keeps the orphans and drops the widows when a paragraph is too short
+// to satisfy both, so the body's 2 + 2 let a three-line paragraph split 2 + 1.
+// Orphans of 3 move it whole.
+describe("skill card text never leaves one line at a page edge", () => {
+  test("the text in a card asks for 3 orphans and 2 widows", () => {
+    const text = declsOf("styles/components/cards.css", ".dc-skill-card :is(.dc-ability-text, p, li)");
+    expect(text.orphans).toBe("3");
+    expect(text.widows).toBe("2");
+  });
+});
+
+// A panel's edge and shadow hang below its box. When the last panel of a page
+// ends in the last pixels of a page, that overhang alone opens a page holding
+// only the bottom rule. Clipping with a margin as deep as the overhang takes it
+// out of fragmentation and still paints it.
+describe("a panel's overhang opens no page", () => {
+  test("the last panel clips its block overflow by the edge plus the shadow", () => {
+    const panel = declsOf("styles/components/section.css", ".dc-section-panel:last-child");
+    expect(panel["overflow-y"]).toBe("clip");
+    expect(panel["overflow-clip-margin"]).toMatch(/var\(--dc-section-edge\).*3px/);
+  });
+});
+
 // A location (a page template such as `@page chapter-start`, a chapter such as
 // `@chapter rules`) only ADJUSTS a component: it may set `--dc-*` tokens on the
 // component, and it may style its OWN element and plain elements (the page's
