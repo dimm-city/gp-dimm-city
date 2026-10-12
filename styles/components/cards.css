@@ -261,6 +261,17 @@
   z-index: -4;
 }
 
+/* The shadow above hangs 6px below the card (3pt of offset plus the 2px
+   outline). It is paint, not layout, but when the last card of a specialty
+   ends inside the page's last 6px that overhang alone makes Chromium open an
+   empty page before the next chapter. Clipping the path's block overflow,
+   with 8px of margin so the shadow itself still paints, removes it from the
+   fragmentation overflow. */
+.dc-specialty > .dc-learning-path:last-child {
+  overflow-y: clip;
+  overflow-clip-margin: 8px;
+}
+
 /* 2px ink outline: the surface shape on a box 2px larger on every side,
    filled with ink, between the surface and the shadow. */
 .dc-skill-card > .dc-card-body::after {
