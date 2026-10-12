@@ -48,16 +48,28 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | Rules or reference text under a heading | `@section panel` |
 | The same, kept on one page | `@section panel .dc-avoid-split` |
 | Unboxed text that carries the accent rail | `@section flat` |
-| A short note set off from the text | `@section aside` (or `@sidebar-box`) |
-| A term and its definition | `@definition` |
+| A table or list to look up (prices, conditions, a menu of options) | `@section reference` |
+| World or setting text | `@section lore` |
+| Advice for the Dream Master, behind the screen | `@section dm` (a short one: `@callout dm`) |
+| A choice the player writes on the Citizen File | `@section choose` |
+| A term and its definition, or a glossary of terms | `@definition` |
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
-| A box in one of four registers: panel, slate, shard, codex | `@block …` |
-| A box floated beside the text | `@sidebar` |
-| Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
-| A creature or NPC | `@npc-stat` |
-| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
-| A roll-result ladder | `@outcome` |
-| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
+| A worked example | `@callout example` |
+| A box in one of three registers: panel, slate, shard | `@block …` |
+| A callout floated beside the text | `@callout note .dc-sidebar` |
+| Fiction, a chapter-opener story | `@fiction-excerpt` |
+| A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
+| An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
+| General gear | `@gear` |
+| A cybernetic or mod | `@augment` |
+| A magic item or relic | `@treasure` |
+| A vehicle | `@vehicle` |
+| A drug, elixir or consumable | `@drug` |
+| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
+| A titled run of entries, two columns | `@section catalog` with `@columns 2` |
+| A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
+| A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
+| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
 | The Citizen File field list | `@citizen-walkthrough` |
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
@@ -67,14 +79,15 @@ package renders and prints; `docs/macros.md` is the full inventory and
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
-renders the same. Sections split across pages by default. A page or chapter
+renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels
+that say what kind of text they hold. Sections split across pages by default. A page or chapter
 word draws no box of its own: it re-tunes the sections inside it.
 
 Also in the box:
 
 - **More macros**, from `plugin.js`: `@specialty-intro` / `@specialty-art` /
   `@specialty-card`, `@continue` (a skill card that spans a page break),
-  `@card`, `@procedure`, `@lede`, `@toc`, `@glossary`, GFM alerts
+  `@card`, `@procedure`, `@lede`, `@toc`, GFM alerts
   (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`, `[!VISIT]`,
   `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic `ROLL THE DIE!`
   chip. `docs/components-and-palette-reference.md` maps each to the classes it

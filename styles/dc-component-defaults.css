@@ -117,10 +117,6 @@
   --dc-ap-fg:                var(--paper-cream);
   --dc-ap-border:            var(--ink-dark);
 
-  /* .dc-sidebar (floated box) public API */
-  --dc-sidebar-surface:      var(--paper-light);
-  --dc-sidebar-border:       var(--hud-blue);
-
   /* .dc-fiction-excerpt public API */
   --dc-fiction-bg:           var(--paper-aged);
   --dc-fiction-rule:         0px;                  /* top/bottom edge weight; the chapter-start page sets 2px */
@@ -154,7 +150,20 @@
   --dc-flavor-accent-width:  3px;
   --dc-flavor-color:         var(--ink-smoke);
 
-  /* gear entry public API */
+  /* entry cards (@gear, @augment, @treasure, @vehicle, @drug) public API;
+     each kind sets these on its own class (components/entries.css) */
+  --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
+  --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
+  --dc-entry-surface:        var(--paper-light);
+  --dc-entry-rail:           3px;                   /* a catalog sets 0 */
+  --dc-entry-rule:           0px;                   /* a catalog sets it */
+  --dc-entry-kind:           none;                  /* a quoted word over the name */
+
+  /* .dc-field public API (@field, and the **Label:** shortcut); each variant sets these on its own class */
+  --dc-field-accent:         var(--ink-dark);       /* rail and label chip */
+  --dc-field-surface:        var(--paper-aged);
+  --dc-field-fg:             var(--ink);
+  --dc-field-label-fg:       var(--paper-cream);    /* text on the chip */
 
   /* .dc-intro public API */
   --dc-intro-accent:         var(--orange);
@@ -186,6 +195,24 @@
   --dc-outcomes-surface:     var(--paper-cream);
   --dc-outcomes-divider:     var(--hud-blue-dim);
 
+  /* roll table (`@roll-table`) public API */
+  --dc-roll-table-accent:    var(--hud-blue-dark);
+  --dc-roll-table-surface:   var(--paper-cream);
+  --dc-roll-table-head-bg:   var(--hud-blue-dim);
+
+  /* section tab chip (`@section dm`, `choose`): the text, "none" draws no chip */
+  --dc-section-tab:          none;
+  --dc-section-tab-bg:       var(--ink-dark);
+  --dc-section-tab-fg:       var(--paper-cream);
+
+  /* faction (`@faction`) public API */
+  --dc-faction-accent:       var(--hud-blue-dark);
+  --dc-faction-badge-fg:     var(--paper-cream);
+
+  /* stat strip (a creature's HP and Damage table) public API */
+  --dc-stat-strip-accent:    var(--hud-blue-dark);
+  --dc-stat-strip-value:     var(--orange-deep);
+
   /* .dc-path-shell extra public API (shape geometry) */
   --dc-path-shell-clip:           polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
   --dc-path-shell-padding-bottom: 0;
@@ -200,12 +227,6 @@
   /* roll / die callout public API */
   --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
-
-  /* .dc-sidebar-box public API */
-  --dc-sidebar-box-accent:   var(--hud-blue-dark);
-  --dc-sidebar-box-border:   var(--border-hairline);
-  --dc-sidebar-box-rail:     4px;
-  --dc-sidebar-box-surface:  var(--paper-cream);
 
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);

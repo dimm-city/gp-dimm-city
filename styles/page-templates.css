@@ -423,6 +423,28 @@
   break-after: avoid;
 }
 
+/* A chapter-start page with no fiction excerpt still opens like a chapter: the
+   title is a band in the chapter's accent (`--dc-section-accent`, which a
+   chapter word sets), and the paragraph straight under it is the lede (an
+   `@lede` there keeps its own look). A page that has a fiction excerpt keeps
+   the plain opener above; the excerpt supplies its shape. Only the page's own
+   h1 and paragraph are styled, never a component. */
+.page.dc-page-chapter-start:not(:has(.dc-fiction-excerpt)) > h1 {
+  background: var(--dc-section-accent);
+  color: var(--paper-cream);
+  padding: 0.2in 0.3in 0.16in 0.22in;
+  margin-bottom: var(--space-lg);
+  clip-path: var(--clip-banner);
+}
+.page.dc-page-chapter-start:not(:has(.dc-fiction-excerpt)) > h1 + p {
+  font-size: var(--fs-h4);
+  line-height: var(--lh-normal);
+  padding-left: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border-left: 5px solid var(--dc-section-accent);
+  break-after: avoid;
+}
+
 /* ── SPECIALTY BREAK CONTROL (carried from the field guide, 1.0.0) ─────────
    A learning path is NOT forced onto a new page (the books are laid out
    around that); the path-shell rule below keeps its banner with its first
@@ -431,10 +453,6 @@
 .dc-specialty .dc-learning-path {
   break-inside: auto;
   break-after: auto;
-}
-
-.dc-specialty .dc-skill-card.dc-allow-split {
-  break-inside: auto;
 }
 
 /* The learning-path BANNER (the shell: title, intro, sticker row) is never

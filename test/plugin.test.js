@@ -37,6 +37,13 @@ function renderGp(src) {
   return { html, warnings: env.layoutWarnings ?? [] };
 }
 
+/** A two-column pipe table of the five standard bands, with the given header and result texts. */
+const bandTable = (head = ["Roll", "Outcome"], bands = ["20", "11-19", "6-10", "2-5", "1"], texts = ["A", "B", "C", "D", "E"]) => [
+  `| ${head[0]} | ${head[1]} |`,
+  "| --- | --- |",
+  ...bands.map((b, i) => `| ${b} | ${texts[i] ?? "text"} |`),
+];
+
 function countRolls(html) {
   return html.split('class="dc-roll-the-die"').length - 1;
 }
@@ -189,13 +196,11 @@ describe("behaviour carried from the book repo", () => {
 
   test("retains custom outcome rendering with safe inline rolls", () => {
     const outcomeTable = [
-      "@skill {.dc-allow-split}",
+      "@skill",
       "",
       "#### Risk It",
       "",
-      "| Roll | Outcome |",
-      "| --- | --- |",
-      "| 20 | **ROLL THE DIE!** but not `ROLL THE DIE!` |",
+      ...bandTable(["Roll", "Outcome"], undefined, ["**ROLL THE DIE!** but not `ROLL THE DIE!`"]),
       "",
       "@end-skill",
     ].join("\n");
@@ -213,7 +218,7 @@ describe("behaviour carried from the book repo", () => {
 
   test("claims skill continuations before the Gutterpress layout transform", () => {
     const skill = [
-      "@skill {.dc-allow-split}",
+      "@skill",
       "",
       "#### Long Skill | T2",
       "",
@@ -233,7 +238,7 @@ describe("behaviour carried from the book repo", () => {
     const sectionHtml = md.render(section, sectionEnv);
 
     expect((skillHtml.match(/class="dc-skill-card/g) ?? []).length).toBe(2);
-    expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont dc-allow-split"/);
+    expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont"/);
     expect(skillHtml).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
     expect(JSON.stringify(skillEnv.layoutWarnings ?? [])).not.toMatch(/continue_without_section/);
 
@@ -273,21 +278,23 @@ describe("declared wrapper markers", () => {
 
   test("each wrapper emits its element and classes", () => {
     const expected = {
-      sidebar: "dc-sidebar",
-      "sidebar-box": "dc-prose-panel dc-sidebar-box",
       definition: "dc-prose-panel dc-definition-block",
       "specialty-intro": "dc-specialty-intro",
       "specialty-art": "dc-specialty-art",
-      gear: "dc-card dc-gear",
+      gear: "dc-card dc-entry dc-gear",
+      augment: "dc-card dc-entry dc-augment",
+      treasure: "dc-card dc-entry dc-treasure",
+      vehicle: "dc-card dc-entry dc-vehicle",
+      drug: "dc-card dc-entry dc-drug",
+      field: "dc-field",
       toc: "dc-toc",
       lede: "dc-intro",
-      glossary: "dc-terms",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
-      const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
+      const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`, "#### Name")); // an entry card needs its name
       expect(html, name).toContain(`<div class="${cls}">`);
       expect(warnings, name).toEqual([]);
     }
@@ -299,13 +306,17 @@ describe("declared wrapper markers", () => {
       ['@block .dc-panel label="A & B"', "dc-block dc-panel"],
       ['@block slate label="A & B"', "dc-block dc-slate"],
       ['@block .dc-shard label="A & B"', "dc-block dc-shard"],
-      ['@block codex label="A & B"', "dc-block dc-codex"],
     ]) {
       const { html } = render(wrap(open, "@end-block"));
       expect(html, open).toContain(`<div class="${cls}"`);
       expect(html, open).toContain('<div class="dc-block-title">A &amp; B</div>');
     }
-    expect(render(wrap("@block .dc-codex", "@end-block")).html).not.toContain("dc-block-title");
+    expect(render(wrap("@block .dc-shard", "@end-block")).html).not.toContain("dc-block-title");
+  });
+
+  test("the codex register is retired: a word that is not a variant adds no class", () => {
+    expect(Object.keys(markers.block.variants)).toEqual(["panel", "slate", "shard"]);
+    expect(render(wrap("@block codex", "@end-block")).html).toContain('<div class="dc-block"');
   });
 
   test("section markers are core sections: same HTML as their @section <word> alias", () => {
@@ -315,9 +326,9 @@ describe("declared wrapper markers", () => {
       "citizen-walkthrough": ["walkthrough", "dc-section-panel dc-citizen-walkthrough"],
       "fiction-excerpt": ["fiction", "dc-fiction-excerpt"],
       "npc-stat": ["npc", "dc-section-panel dc-npc-stat"],
-      flaws: ["flaws", "dc-section-panel dc-flaws"],
-      ideals: ["ideals", "dc-section-panel dc-ideals"],
-      dreams: ["dreams", "dc-section-panel dc-dreams"],
+      flaws: ["flaws", "dc-section-panel dc-section-choose dc-flaws"],
+      ideals: ["ideals", "dc-section-panel dc-section-choose dc-ideals"],
+      dreams: ["dreams", "dc-section-panel dc-section-choose dc-dreams"],
     };
     expect(Object.keys(markers).filter((k) => markers[k].section).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, [word, cls]] of Object.entries(expected)) {
@@ -331,8 +342,17 @@ describe("declared wrapper markers", () => {
     }
   });
 
-  test("@section takes the general variant words panel, flat and aside, and a class beside them", () => {
-    for (const [word, cls] of [["panel", "dc-section-panel"], ["flat", "dc-section-flat"], ["aside", "dc-section-aside"]]) {
+  test("@section takes the variant words panel, flat and the four kinds of text, and a class beside them", () => {
+    const words = [
+      ["panel", "dc-section-panel"],
+      ["flat", "dc-section-flat"],
+      ["reference", "dc-section-panel dc-section-reference"],
+      ["lore", "dc-section-panel dc-section-lore"],
+      ["dm", "dc-section-panel dc-section-dm"],
+      ["choose", "dc-section-panel dc-section-choose"],
+    ];
+    expect(Object.keys(markers.section.variants).slice(0, words.length)).toEqual(words.map(([w]) => w));
+    for (const [word, cls] of words) {
       const { html, warnings } = render(wrap(`@section ${word} .dc-avoid-split`, "@end-section"));
       expect(html, word).toContain(`<div class="section ${cls} dc-avoid-split"`);
       expect(warnings, word).toEqual([]);
@@ -510,21 +530,25 @@ describe("declared specialty, learning path and skill", () => {
 
   describe("@skill", () => {
     test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
-      const src = doc("@skill {.dc-allow-split .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const src = doc("@skill {.dc-highlight .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
       const { html } = renderGp(src);
-      expect(count(html, /class="dc-skill-card dc-allow-split my-class"/g)).toBe(2);
+      expect(count(html, /class="dc-skill-card dc-highlight my-class"/g)).toBe(2);
       expect(html).toContain('id="sk" data-variant="2" name="first"');
       expect(html).toContain('name="second"');
-      // `.dc-allow-split` opts out of the default avoid
-      expect(html).not.toContain("data-break-inside");
       expect(html).toContain('<div class="dc-card-tab dc-highlight">');
       expect(html).toContain('<h4 class="dc-tab-title">Second</h4>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
     });
 
-    test("a card is kept whole by default and named after its title", () => {
+    test("a card splits across pages by default and is named after its title", () => {
       const { html } = renderGp(doc("@skill", "", card("Hold the Line")));
-      expect(html).toContain('<div class="dc-skill-card" name="hold-the-line" data-break-inside="avoid">');
+      expect(html).toContain('<div class="dc-skill-card" name="hold-the-line">');
+      expect(html).not.toContain("data-break-inside");
+    });
+
+    test(".dc-avoid-split keeps every card of the skill whole", () => {
+      const { html } = renderGp(doc("@skill .dc-avoid-split", "", card("First | T1"), "", card("Second | T2")));
+      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)" data-break-inside="avoid">/g)).toBe(2);
     });
 
     test("tiers in a path run PATHREF.N across its skills unless the heading names one", () => {
@@ -540,7 +564,7 @@ describe("declared specialty, learning path and skill", () => {
         "@skill", "", card("Gamble"), "",
         "2. **2-X AP** *Push:* More.", "",
         "##### Outcomes", "",
-        "| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |", "| 1 | Boom |", "",
+        ...bandTable(["Roll", "Outcome"], undefined, ["Crit", "", "", "", "Boom"]), "",
         "##### A real sub-header", "",
         "- one", "- two",
       );
@@ -549,7 +573,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
       expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
-      expect(html).toContain('<div class="dc-outcomes">');
+      expect(html).toContain('<div class="dc-outcomes" data-break-inside="avoid">');
       expect(html).toContain('<div class="dc-outcomes-label">Outcomes</div>');
       expect(count(html, />Outcomes</g)).toBe(1); // the "##### Outcomes" sub-header is swallowed: the table carries its own label
       expect(html).not.toContain("<h5");
@@ -627,10 +651,10 @@ describe("declared specialty, learning path and skill", () => {
       doc(open, "", "#### Long Skill | T2", "", "1. **0 AP** *First:* Opening text.", "", "@continue", "", "2. **1 AP** *Second:* Continued text.", "", ...after);
 
     test("opens a continuation card that keeps the skill's classes, in a specialty and path", () => {
-      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", skill("@skill {.dc-allow-split}", "@end-skill"), "@end-learning-path", "@end-specialty");
+      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", skill("@skill", "@end-skill"), "@end-learning-path", "@end-specialty");
       const { html, warnings } = renderGp(src);
       expect(count(html, /class="dc-skill-card/g)).toBe(2);
-      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont dc-allow-split" name="long-skill">');
+      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont" name="long-skill">');
       expect(html).toContain('<div class="dc-card-tab dc-card-tab-cont">');
       expect(html).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
@@ -638,8 +662,8 @@ describe("declared specialty, learning path and skill", () => {
       expect(warnings).toEqual([]);
     });
 
-    test("a card that is not splittable keeps its avoid on the continuation too", () => {
-      expect(renderGp(skill("@skill", "@end-skill")).html).toMatch(/dc-skill-card-cont" name="long-skill" data-break-inside="avoid"/);
+    test("a card kept whole with .dc-avoid-split keeps its avoid on the continuation too", () => {
+      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill" data-break-inside="avoid"/);
     });
 
     test("the continuation is claimed only inside a skill's card; elsewhere @continue is core's section continuation", () => {
@@ -821,11 +845,10 @@ describe("declared card, outcome and procedure", () => {
     });
 
     test("an outcome table in a skill card and an @outcome in it sit side by side in the card", () => {
-      const table = ["| Roll | Outcome |", "| --- | --- |", "| 20 | Crit |"];
-      const { html } = renderGp(skill(...table, "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
+      const { html } = renderGp(skill(...bandTable(), "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
-      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes" data-break-inside="avoid">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
     });
 
     test("one left open at the end of the document warns, with core's own message", () => {
@@ -864,6 +887,99 @@ describe("declared card, outcome and procedure", () => {
         expect(found).toHaveLength(1);
         expect(found[0].message).toBe("@outcome: This outcome has no rows. Add one `roll | name | text` line per result.");
       });
+    });
+  });
+
+  describe("the outcome ladder, recognised by its band values", () => {
+    const ladder = (...lines) => renderGp(lines.join("\n")).html;
+    const isLadder = (html) => html.includes('<div class="dc-outcomes"');
+    const tiers = (html) => [...html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1]);
+    const rolls = (html) => [...html.matchAll(/dc-outcome-roll">([^<]*)</g)].map((m) => m[1]);
+
+    test("the five standard bands are the ladder whatever the headers say, in a skill card and outside one", () => {
+      for (const head of [["Roll", "Outcome"], ["Roll", "Result"], ["Result", "Effect"], ["Roll Result", "Effect"], ["", ""], ["d20", "What happens"]]) {
+        const out = ladder(...bandTable(head));
+        expect(isLadder(out), head.join("|")).toBe(true);
+        expect(tiers(out)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+        expect(out).not.toContain("<table>");
+        const inSkill = ladder("@skill", "", "#### Risk It", "", ...bandTable(head), "", "@end-skill");
+        expect(isLadder(inSkill), `skill ${head.join("|")}`).toBe(true);
+      }
+    });
+
+    test("a band is read however it is typed, and shown the same way", () => {
+      const out = ladder(...bandTable(["Roll", "Result"], ["**20**", "11 \u2013 19", "6\u201410", "2 - 5", "1"]));
+      expect(rolls(out)).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
+      expect(tiers(out)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+    });
+
+    test("the bands in ascending order are the ladder; each row keeps its own tier and text", () => {
+      const out = ladder(...bandTable(["Result", "Effect"], ["1", "2-5", "6-10", "11-19", "20"], ["worst", "bad", "mixed", "good", "best"]));
+      expect(tiers(out)).toEqual(["fail", "miss", "mixed", "hit", "crit"]);
+      expect(out).toMatch(/dc-outcome-text">worst<[\s\S]*dc-outcome-text">best</);
+    });
+
+    test("any other set of bands is a plain table, even under a Roll | Outcome header", () => {
+      const others = [
+        ["20", "16-19", "11-15", "6-10", "2-5", "1"], // six bands
+        ["20", "11-19", "2-10", "1"], // a split at 10
+        ["1-5", "6-10", "11-19", "20"], // four
+        ["20", "11-19", "6-10", "2-5", "2-5"], // a repeated band
+        ["20", "11-19", "6-10", "2-5", "0"], // a wrong band
+        ["20", "11-19", "6-10", "2-5", "one"], // not numbers
+      ];
+      for (const bands of others) {
+        const out = ladder(...bandTable(["Roll", "Outcome"], bands));
+        expect(isLadder(out), bands.join(",")).toBe(false);
+        expect(out).toContain("<table>");
+      }
+    });
+
+    test("a table that is not two columns is not a ladder", () => {
+      const three = ["| Roll | Outcome | Notes |", "| --- | --- | --- |", ...["20", "11-19", "6-10", "2-5", "1"].map((b) => `| ${b} | text | more |`)];
+      expect(isLadder(ladder(...three))).toBe(false);
+    });
+
+    test("a table inside @roll-table is never a ladder, even with the standard bands", () => {
+      const out = ladder("@roll-table", "", ...bandTable(["Roll", "Result"]), "", "@end-roll-table");
+      expect(isLadder(out)).toBe(false);
+      expect(out).toContain("<table>");
+    });
+
+    test("the result text keeps its inline markdown", () => {
+      const out = ladder(...bandTable(["Roll", "Result"], undefined, ["**Triumph.** You win", "B", "C", "D", "E"]));
+      expect(out).toContain('<span class="dc-outcome-text"><strong>Triumph.</strong> You win</span>');
+    });
+  });
+
+  describe("@roll-table", () => {
+    const table = ["| Roll | Result |", "| --- | --- |", "| 1-4 | One |", "| 5-8 | Two |"];
+
+    test("wraps the author's own table under a caption with the die chip and the label", () => {
+      const { html, warnings } = renderGp(doc('@roll-table label="Wild Magic" die=d12', "", ...table, "", "@end-roll-table"));
+      expect(html).toContain('<div class="dc-roll-table" data-label="Wild Magic" data-die="d12">');
+      expect(html).toContain('<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d12</span><span class="dc-roll-table-name">Wild Magic</span></div>');
+      expect(html).toMatch(/<table>[\s\S]*<td>1-4<\/td>[\s\S]*<td>Two<\/td>[\s\S]*<\/table>/);
+      expect(html).not.toContain("dc-outcome");
+      expect(warnings).toEqual([]);
+    });
+
+    test("the die is d20 unless one is named, the label is optional and escaped", () => {
+      const bare = renderGp(doc("@roll-table", "", ...table, "", "@end-roll-table")).html;
+      expect(bare).toContain('<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d20</span></div>');
+      expect(renderGp(doc('@roll-table label="A & B"', "", ...table, "", "@end-roll-table")).html).toContain('<span class="dc-roll-table-name">A &amp; B</span>');
+      expect(renderGp(doc("@roll-table die=banana", "", ...table, "", "@end-roll-table")).html).toContain('dc-roll-table-die">d20<');
+    });
+
+    test("it stays in a skill's card", () => {
+      const { html } = renderGp(skill("@roll-table", "", ...table, "", "@end-roll-table", "", "After the table."));
+      expect(count(html, /class="dc-skill-card/g)).toBe(1);
+      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
+    });
+
+    test("an @roll-table with no table in it says so", () => {
+      const { warnings } = renderGp(doc("@roll-table", "", "just text", "", "@end-roll-table"));
+      expect(warnings.map((w) => w.message)).toEqual(["@roll-table: It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table."]);
     });
   });
 
@@ -930,6 +1046,77 @@ describe("declared card, outcome and procedure", () => {
 
 // @callout is a declared wrapper (variant = a bare word) and @dm-note is its
 // alias with the `dm` variant preset. The only plugin code is the default label.
+describe("the kinds of text, @faction and @npc-stat compact", () => {
+  const sec = (open, body = "## T") => renderGp([open, "", body, "", "@end-section"].join("\n"));
+
+  test("reference, lore, dm and choose are panels with their own class, and only words on @section", () => {
+    for (const word of ["reference", "lore", "dm", "choose"]) {
+      const { html, warnings } = sec(`@section ${word}`);
+      expect(html, word).toContain(`<div class="section dc-section-panel dc-section-${word}" data-section="${word}">`);
+      expect(warnings, word).toEqual([]);
+      expect(Object.hasOwn(markers, word), `@${word} is not a marker`).toBe(false);
+    }
+  });
+
+  test("@ideals, @flaws and @dreams are choose sections with their own class", () => {
+    for (const name of ["ideals", "flaws", "dreams"]) {
+      const { html } = renderGp([`@${name}`, "", "## T", "", `@end-${name}`].join("\n"));
+      expect(html, name).toContain(`class="section dc-section-panel dc-section-choose dc-${name}"`);
+    }
+  });
+
+  test("@npc-stat takes the compact word, which adds one class; the alias word has no such variant", () => {
+    const { html, warnings } = renderGp(["@npc-stat compact", "", "#### Bug", "", "@end-npc-stat"].join("\n"));
+    expect(html).toContain('<div class="section dc-section-panel dc-npc-stat dc-npc-compact" data-npc-stat="compact">');
+    expect(warnings).toEqual([]);
+  });
+
+  describe("@faction", () => {
+    const faction = (open) => renderGp([open, "", "#### Name", "", "Text.", "", "@end-faction"].join("\n"));
+
+    test("each kind word is a class and the badge names the kind", () => {
+      for (const [kind, label] of [["megacorp", "Megacorp"], ["cabal", "Cabal"], ["cult", "Cult"], ["enforcer", "Enforcer"]]) {
+        const { html, warnings } = faction(`@faction ${kind}`);
+        expect(html, kind).toContain(`<div class="dc-card dc-faction dc-faction-${kind}" data-faction="${kind}"><span class="dc-faction-kind">${label}</span>`);
+        expect(html, kind).toContain("<h4>Name</h4>");
+        expect(warnings, kind).toEqual([]);
+      }
+    });
+
+    test("a label names its own badge, escaped; with neither word nor label there is no badge", () => {
+      expect(faction('@faction cult label="Fan & club"').html).toContain('<span class="dc-faction-kind">Fan &amp; club</span>');
+      expect(faction('@faction cult label="Fan & club"').html).not.toContain(">Cult<");
+      const bare = faction("@faction").html;
+      expect(bare).toContain('<div class="dc-card dc-faction">');
+      expect(bare).not.toContain("dc-faction-kind");
+    });
+  });
+});
+
+describe("a creature's table is a stat strip", () => {
+  const strip = (...lines) => renderGp(lines.join("\n")).html;
+
+  test("a table with HP and Damage columns is tagged, wherever it sits and whatever the other columns are", () => {
+    expect(strip("| Name | HP | Damage | Traits |", "| --- | :-: | :-: | --- |", "| Bug | 1 | 1 | Climb |")).toContain('<table class="dc-stat-strip">');
+    expect(strip("| Type | Size | **hp** | DAMAGE |", "| --- | --- | --- | --- |", "| Op | S | 4 | 2 |")).toContain('<table class="dc-stat-strip">');
+    // a cell holding only a number is tagged for the big figures; text and "2 HP" are not
+    const cells = strip("| Name | HP | Damage |", "| --- | --- | --- |", "| Bug | 1 | 2 HP |");
+    expect(cells).toContain('<td class="dc-stat-num">1</td>');
+    expect(cells).toContain("<td>2 HP</td>");
+    expect(cells).toContain("<td>Bug</td>");
+    const inSkill = strip("@skill", "", "#### Wirefly", "", "| Name | HP | Damage |", "| --- | --- | --- |", "| Fly | 1 | 1 |", "", "After the table.", "", "@end-skill");
+    expect(inSkill).toContain('<table class="dc-stat-strip">');
+    expect(inSkill.match(/class="dc-skill-card/g)).toHaveLength(1);
+    expect(inSkill).toMatch(/<table class="dc-stat-strip">[\s\S]*<p>After the table\.<\/p>/);
+  });
+
+  test("a table with only one of the two columns, or neither, is an ordinary table", () => {
+    for (const head of [["Name", "HP"], ["Name", "Damage"], ["Type", "AP", "Effect"]]) {
+      expect(strip(`| ${head.join(" | ")} |`, `| ${head.map(() => "---").join(" | ")} |`, `| ${head.map(() => "x").join(" | ")} |`)).toContain("<table>");
+    }
+  });
+});
+
 describe("declared callout and dm-note", () => {
   const doc = (...lines) => lines.join("\n");
   const problems = (src) => renderGp(src).warnings.filter((w) => w.type === "component_invalid");
@@ -942,6 +1129,7 @@ describe("declared callout and dm-note", () => {
     origin: ["dc-origin-callout", "Origin"],
     visit: ["dc-visit-callout", "Visit"],
     gear: ["dc-gear-callout", "Gear"],
+    example: ["dc-example-callout", "Example"],
   };
 
   test("each variant word gives its class and default label", () => {
@@ -1042,5 +1230,137 @@ describe("declared callout and dm-note", () => {
   test("image-only paragraphs are marked, inside a callout too", () => {
     expect(renderGp(callout("@callout", "![alt](a.png)")).html).toContain('<p class="dc-img-wrapper"><img');
     expect(renderGp("text ![alt](a.png) text").html).not.toContain("dc-img-wrapper");
+  });
+});
+
+// Entry cards, the @field component and the bold-label shortcut onto it, and
+// the catalog section that holds a run of entries.
+describe("entry cards", () => {
+  const ENTRIES = ["gear", "augment", "treasure", "vehicle", "drug"];
+
+  test("each entry is a card of the shared .dc-entry family, and a run needs no @end- between entries", () => {
+    for (const name of ENTRIES) {
+      const { html, warnings } = renderGp(`@${name}\n\n#### One\n\n---\n\n@${name}\n\n#### Two\n\n@end-${name}`);
+      expect(warnings, name).toEqual([]);
+      expect(html.match(new RegExp(`<div class="dc-card dc-entry dc-${name}"`, "g")), name).toHaveLength(2);
+    }
+  });
+
+  test("an entry with no name, or with two, is reported", () => {
+    for (const name of ENTRIES) {
+      const none = renderGp(`@${name}\n\nJust prose.\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      expect(none.join("\n"), name).toContain("has no name");
+      const two = renderGp(`@${name}\n\n#### One\n\ntext\n\n#### Two\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      expect(two.join("\n"), name).toContain('"Two" is a second name');
+      expect(renderGp(`@${name}\n\n### Three-hash name\n\n##### Sub heading\n\n@end-${name}`).warnings, name).toEqual([]);
+    }
+  });
+});
+
+describe("@field and the bold labels that mean it", () => {
+  /** Every label the shortcut recognises, as the books write it, and the variant it means. */
+  const LABELS = {
+    "SPECS": "specs",
+    "Traits": "traits",
+    "Equipment": "equipment",
+    "Effects": "effects",
+    "Side Effects": "side-effects",
+    "Requires": "requires",
+    "Wirephreak Gear": "requires",
+    "Cybersurgeon Instrument": "requires",
+    "Cybersurgeon Instruments": "requires",
+    "Cybersurgeon Instrument(s)": "requires",
+    "TECHNOENHANCEMENT": "requires",
+  };
+  const fieldOf = (html) => html.match(/<div class="dc-field[^"]*"[^>]*>[\s\S]*?<\/div>/)?.[0];
+
+  test("the marker takes a variant word and writes the variant's default label", () => {
+    const defaults = { specs: "SPECS", traits: "Traits", equipment: "Equipment", effects: "Effects", "side-effects": "Side Effects", requires: "Requires" };
+    for (const [variant, label] of Object.entries(defaults)) {
+      const { html, warnings } = renderGp(`@field ${variant}\n\nBody.\n\n@end-field`);
+      expect(warnings, variant).toEqual([]);
+      expect(html, variant).toContain(`<div class="dc-field dc-field-${variant}" data-field="${variant}"><span class="dc-field-label">${label}</span>`);
+    }
+  });
+
+  test("label=\"…\" replaces the default label; a bare @field has none", () => {
+    expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).toContain('<span class="dc-field-label">Rules</span>');
+    expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).not.toContain(">SPECS<");
+    expect(renderGp("@field\n\nBody.\n\n@end-field").html).not.toContain("dc-field-label");
+  });
+
+  test("every recognised label becomes the same markup the marker writes", () => {
+    for (const [label, variant] of Object.entries(LABELS)) {
+      for (const written of [label, label.toLowerCase()]) {
+        const { html, warnings } = renderGp(`@augment\n\n#### Name\n\n**${written}:** The body, with *emphasis*.\n\n@end-augment`);
+        expect(warnings, label).toEqual([]);
+        const explicit = renderGp(`@field ${variant} label="${written}"\n\nThe body, with *emphasis*.\n\n@end-field`).html;
+        expect(fieldOf(html), written).toBe(fieldOf(explicit));
+        expect(fieldOf(html), written).toContain(`dc-field-${variant}`);
+        expect(html, written).not.toContain("<strong>");
+      }
+    }
+  });
+
+  test("a label alone on its line is a bare chip; the next paragraph stays a paragraph", () => {
+    const { html } = renderGp("@skill\n\n#### S\n\n**TECHNOENHANCEMENT:**\n\nInstall it.\n\n@end-skill");
+    expect(html).toMatch(/<span class="dc-field-label">TECHNOENHANCEMENT<\/span>\n?<\/div>\s*<p>Install it\.<\/p>/);
+  });
+
+  test("recognised only inside an entry card, @npc-stat (or @section npc) and @skill", () => {
+    const line = "**Traits:** Quick, Quiet";
+    const inside = [
+      ...["gear", "augment", "treasure", "vehicle", "drug"].map((n) => `@${n}\n\n#### N\n\n${line}\n\n@end-${n}`),
+      `@skill\n\n#### N\n\n${line}\n\n@end-skill`,
+      `@npc-stat\n\n#### N\n\n${line}\n\n@end-npc-stat`,
+      `@section npc\n\n#### N\n\n${line}\n\n@end-section`,
+      `@npc-stat\n\n@columns 2\n\n#### N\n\n${line}\n\n@end-columns\n\n@end-npc-stat`,
+      `@skill\n\n#### N\n\n@columns 2\n\n${line}\n\n@end-columns\n\n@end-skill`,
+    ];
+    for (const src of inside) expect(renderGp(src).html, src).toContain('<div class="dc-field dc-field-traits"');
+    const outside = [
+      line,
+      `@section panel\n\n${line}\n\n@end-section`,
+      `@card\n\n#### N\n\n${line}\n\n@end-card`,
+      `@augment\n\n#### N\n\n@callout gear\n\n${line}\n\n@end-callout\n\n@end-augment`,
+      `@augment\n\n#### N\n\n- ${line}\n\n@end-augment`,
+      `@augment\n\n#### N\n\n> ${line}\n\n@end-augment`,
+      `@augment\n\n#### N\n\n@end-augment\n\n${line}`,
+      `@augment\n\n#### N\n\nA sentence, then **Traits:** inline.\n\n@end-augment`,
+      `@augment\n\n#### N\n\n**Description:** not a recognised label\n\n@end-augment`,
+      `@augment\n\n#### N\n\n**Traits** no colon\n\n@end-augment`,
+    ];
+    for (const src of outside) expect(renderGp(src).html, src).not.toContain("dc-field");
+  });
+
+  test("a @field inside a skill stays in the skill's card", () => {
+    const { html } = renderGp("@skill\n\n#### S\n\n@field effects\n\nBody.\n\n@end-field\n\nAfter.\n\n@end-skill");
+    expect(html.match(/dc-skill-card/g)).toHaveLength(1);
+    expect(html).toMatch(/dc-field-effects[\s\S]*<p>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
+  });
+});
+
+describe("@section catalog", () => {
+  const css = readFileSync(new URL("../styles/components/entries.css", import.meta.url), "utf8");
+
+  test("is a panel with the catalog class", () => {
+    const { html, warnings } = renderGp("@section catalog\n\n## Title\n\n@columns 2\n\n@augment\n\n#### One\n\n@end-augment\n\n@end-section");
+    expect(warnings).toEqual([]);
+    expect(html).toContain('<div class="section dc-section-panel dc-catalog"');
+  });
+
+  test("a run of entries is siblings in the column run, and a leftover `---` is inside the entry before it", () => {
+    const { html } = renderGp("@section catalog\n\n@columns 2\n\n@augment\n\n#### One\n\n---\n\n@augment\n\n#### Two\n\n---\n\n@treasure\n\n#### Three\n\n@end-columns");
+    expect(html.match(/<div class="dc-card dc-entry /g)).toHaveLength(3);
+    expect(html).toMatch(/<hr[^>]*>\s*<\/div><div class="dc-card dc-entry dc-augment"/);
+  });
+
+  test("the divider is the entry's own top rule; a `---` draws nothing in a catalog or at the end of an entry", () => {
+    const rule = (sel) => css.match(new RegExp(sel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*\\{([^}]*)\\}"))?.[1] ?? "";
+    expect(rule(".dc-catalog .dc-entry")).toMatch(/--dc-entry-rule:\s*[1-9]/);
+    expect(rule(".dc-catalog .dc-entry")).toMatch(/--dc-entry-rail:\s*0/);
+    expect(rule(".dc-catalog hr")).toMatch(/display:\s*none/);
+    expect(rule(".dc-entry > hr:last-child")).toMatch(/display:\s*none/);
+    expect(rule(".dc-card.dc-entry")).toMatch(/border-top:\s*var\(--dc-entry-rule\)/);
   });
 });

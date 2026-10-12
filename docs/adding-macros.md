@@ -20,7 +20,7 @@ A wrapper that only needs an element and classes needs no code of its own. It is
 
 ```js
 export const markers = {
-  sidebar: wrapper('dc-sidebar'),
+  definition: wrapper('dc-prose-panel dc-definition-block'),
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
@@ -57,14 +57,14 @@ Add `variants` only when the CSS styles the component differently per variant wo
 
 A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `aside` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@definition`, `@faction`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`, `@field`, `@toc`, `@lede`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `catalog`, `reference`, `lore`, `dm`, `choose` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@roll-table`, `@procedure`, `@callout` (its default label), `@faction` (its badge). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 
 ### A section variant, a page word, a chapter word
 
 `section`, `page` and `chapter` are core's markers, so the plugin declares only the words, with no class or wrapper of its own:
 
 ```js
-section: { variants: { panel: 'dc-section-panel', flat: 'dc-section-flat', aside: 'dc-section-aside' } },
+section: { variants: { panel: 'dc-section-panel', flat: 'dc-section-flat', reference: 'dc-section-panel dc-section-reference' } },
 page: { variants: { 'chapter-start': 'dc-page-chapter-start', … } },
 chapter: { variants: { rules: 'dc-chapter-rules', … } },
 ```
@@ -133,20 +133,19 @@ Rules of thumb:
 `@learning-path`, `@end-learning-path`, `@skill`, `@end-skill`, `@continue`,
 `@outcome`, `@end-outcome`,
 `@block`, `@end-block`, `@card`, `@end-card`,
-`@sidebar`, `@end-sidebar`, `@sidebar-box`, `@end-sidebar-box`,
-`@definition`, `@end-definition`, `@procedure`, `@end-procedure`,
+`@definition`, `@end-definition`, `@faction`, `@end-faction`,
+`@roll-table`, `@end-roll-table`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@lede`, `@end-lede`,
-`@glossary`, `@end-glossary`,
+`@gear`, `@end-gear`, `@augment`, `@end-augment`, `@treasure`, `@end-treasure`, `@vehicle`, `@end-vehicle`, `@drug`, `@end-drug`, `@field`, `@end-field`, `@lede`, `@end-lede`,
 `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
 `@flaws`, `@ideals`, `@dreams` (each with its `@end-` form)
 
-Words: `@section panel | flat | aside | npc | fiction | walkthrough | cards | flaws | ideals | dreams`,
+Words: `@section panel | flat | reference | lore | dm | choose | npc | fiction | walkthrough | cards | flaws | ideals | dreams`,
 `@page chapter-start | intro | credits | contents | citizen-file`,
 `@chapter rules | lore | citizen-file | specialty`. Modifiers: `.dc-avoid-split`, `.dc-snug`.
 
-> **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@roll-table` / `@options-table` (use `@outcome` or a pipe table).
+> **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@options-table` (use a pipe table). `@roll-table` returned in 1.6.0 as a new component.
 >
 > **Deprecated (2026-05-24):** `@class-entry` / `@end-class-entry` and the
 > `.section.dc-class-entry` CSS were retired after zero production usage. The
@@ -160,8 +159,9 @@ Words: `@section panel | flat | aside | npc | fiction | walkthrough | cards | fl
 > styled by this package) was removed from the stylesheets; books open a chapter
 > with `@page chapter-start`.
 >
-> **Retired in 1.5.0 and earlier:** `@tabbed`, `@column-panel`, `@sidebar inset`,
-> `@section .dc-plain` and `.dc-allow-split` on a section. `docs/macros.md` names
+> **Retired in 1.6.0 and earlier:** `@tabbed`, `@column-panel`, `@sidebar inset`,
+> `@section .dc-plain`, `.dc-allow-split` (sections and skill cards), `@sidebar`,
+> `@sidebar-box`, `@glossary`, `@section aside` and `@block codex`. `docs/macros.md` names
 > the replacement for each; `components.yaml` keeps a `status: retired` entry,
 > and the catalog test fails if the entry goes missing or the marker comes back.
 

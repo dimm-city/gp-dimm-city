@@ -89,8 +89,8 @@ components:
     status: live
     origin: plugin
     markers: ["@callout"]
-    snippet: callout
-    recipe: "@callout [note|warning|dm|vibe|origin|visit|gear] label=\"…\" … @end-callout"
+    snippet: [callout, callout-example]
+    recipe: "@callout [note|warning|dm|vibe|origin|visit|gear|example] label=\"…\" … @end-callout"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning
@@ -99,6 +99,7 @@ components:
       - div.dc-alert.dc-origin-callout
       - div.dc-alert.dc-visit-callout
       - div.dc-alert.dc-gear-callout
+      - div.dc-alert.dc-example-callout
     css: styles/components/callouts.css
     breaks: "as alert"
     notes: "Same DOM and tokens as alert; the macro form allows multiple paragraphs and a custom label. The variant is a bare word (`@callout vibe`); `variant=` is no longer accepted and is reported as a problem. With no label=\"…\" the variant's name is the label."
@@ -132,41 +133,17 @@ components:
     tokens: [--dc-pullquote-accent, --dc-pullquote-accent-soft, --dc-pullquote-bg]
     breaks: "break-inside: avoid"
 
-  - name: sidebar
-    status: live
-    origin: plugin
-    markers: ["@sidebar"]
-    snippet: sidebar
-    recipe: "@sidebar … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
-    emits: div.dc-sidebar
-    css: styles/components/images.css
-    tokens: [--dc-sidebar-surface, --dc-sidebar-border]
-    breaks: "break-inside: avoid"
-    notes: "Design guide only. The full-height `.inset` rail and its `@page .page-sidebar` template were removed 2026-10-12: no book used them."
-
-  - name: sidebar-box
-    status: live
-    origin: plugin
-    markers: ["@sidebar-box"]
-    snippet: sidebar-box
-    recipe: "@sidebar-box … @end-sidebar-box"
-    emits: div.dc-prose-panel.dc-sidebar-box
-    css: styles/components/data.css
-    tokens: [--dc-sidebar-box-surface, --dc-sidebar-box-border, --dc-sidebar-box-accent, --dc-sidebar-box-rail]
-    breaks: "break-inside: avoid (via .dc-prose-panel)"
-    notes: "Design guide only."
-
   - name: definition
     status: live
     origin: plugin
     markers: ["@definition"]
     snippet: definition
-    recipe: "@definition … @end-definition"
+    recipe: "@definition … @end-definition  (a term, a run of `#### Term` entries as a glossary, or `#### heading` / `---` / body)"
     emits: div.dc-prose-panel.dc-definition-block
     css: styles/components/data.css
     tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width]
-    breaks: "break-inside: avoid (via .dc-prose-panel)"
-    notes: "The design guide (06-panels-and-cards) points a plain term list at a markdown definition list instead; both books still use the macro."
+    breaks: "break-inside: avoid (via .dc-prose-panel); a block holding several #### entries may split between them"
+    notes: "The one box for a term, a glossary and a boxed note with its own heading. A run of `#### Term` entries reads as a glossary (mono-caps term, dashed rule between entries); `---` inside is the same dashed rule. It absorbed @glossary and @sidebar-box. For a plain term list a markdown definition list needs no macro."
 
   - name: procedure
     status: live
@@ -184,7 +161,7 @@ components:
     origin: plugin
     markers: ["@block"]
     snippet: block
-    recipe: "@block panel|slate|shard|codex label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
+    recipe: "@block panel|slate|shard label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
     css: styles/components/section.css
     tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg]
@@ -194,10 +171,22 @@ components:
   - name: block-variants
     status: live
     origin: author
-    recipe: "@block panel | slate | shard | codex"
-    emits: div.dc-block.dc-panel|.dc-slate|.dc-shard|.dc-codex
+    recipe: "@block panel | slate | shard"
+    emits: div.dc-block.dc-panel|.dc-slate|.dc-shard
     css: styles/components/section.css
-    notes: "Four clip-path/surface treatments on .dc-block. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
+    notes: "Three clip-path/surface treatments (the fourth, codex, is retired: see block-codex) on .dc-block. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
+
+  - name: roll-table
+    status: live
+    origin: plugin
+    markers: ["@roll-table"]
+    snippet: roll-table
+    recipe: "@roll-table [die=d20] [label=\"…\"] / | Roll | Result | table with the author's own equal bands (1-4, 5-8, …) … @end-roll-table"
+    emits: div.dc-roll-table > div.dc-roll-table-caption > span.dc-roll-table-die + span.dc-roll-table-name, then the author's table
+    css: styles/components/data.css
+    tokens: [--dc-roll-table-accent, --dc-roll-table-surface, --dc-roll-table-head-bg]
+    breaks: "the caption stays with the table (break-after: avoid); the table does not split (table break-inside: avoid)"
+    notes: "A random table that is not the outcome ladder: neutral colours, one die, equal-weight rows. The die is d20 unless `die=` names another; `label` is optional. Its table is never read as a ladder, whatever its bands. Inside a skill it stays in the skill's card. (The @roll-table of 1.1 and earlier was retired in 1.2.0; this one is new.)"
 
   - name: card
     status: live
@@ -218,20 +207,98 @@ components:
     markers: ["@flaws", "@ideals", "@dreams", "@section flaws", "@section ideals", "@section dreams"]
     snippet: [flaws, ideals, dreams]
     recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
-    emits: div.section.dc-section-panel.dc-flaws|.dc-ideals|.dc-dreams
+    emits: div.section.dc-section-panel.dc-section-choose.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
-    notes: "Citizen-file card accents: a section of @card blocks whose class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
+    notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks whose own class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
 
+  # ── Entry cards: one rule set (.dc-entry), each marker a token setter ───
   - name: gear
     status: live
     origin: plugin
     markers: ["@gear"]
     snippet: gear
-    recipe: "@gear … @end-gear"
-    emits: div.dc-card.dc-gear
-    css: styles/components/section.css
+    recipe: "@gear ### Name … @end-gear"
+    emits: div.dc-card.dc-entry.dc-gear
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A .dc-card with an orange rail. The `###` name, the italic tagline paragraph and the bold price paragraph are picked out by shape, and a trailing `@callout gear label=\"SPECS\"` gets its gap from --dc-alert-margin-top. Not a section, so there is no `@section` word for it. A long run packs two-up in `@columns 2` inside a `@section`."
+    notes: "General gear. A .dc-card of the entry family with an orange rail; the name (### or ####), the italic tagline paragraph and the bold price paragraph are picked out by shape. A `**SPECS:**` paragraph is a field line; the older `@callout gear label=\"SPECS\"` still works. Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by its rail colour and the small kind word over its name."
+
+  - name: augment
+    status: live
+    origin: plugin
+    markers: ["@augment"]
+    snippet: augment
+    recipe: "@augment #### Name … @end-augment  (an @augment after an @augment closes the first)"
+    emits: div.dc-card.dc-entry.dc-augment
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A cybernetic or mod: cyan rail, cream surface. Same entry rules as @gear. Reports an entry with no name or with a second one."
+
+  - name: treasure
+    status: live
+    origin: plugin
+    markers: ["@treasure"]
+    snippet: treasure
+    recipe: "@treasure #### Name … @end-treasure"
+    emits: div.dc-card.dc-entry.dc-treasure
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A magic item or relic: amber rail on the gold-tinted paper. Same entry rules as @gear."
+
+  - name: vehicle
+    status: live
+    origin: plugin
+    markers: ["@vehicle"]
+    snippet: vehicle
+    recipe: "@vehicle #### Name … @end-vehicle"
+    emits: div.dc-card.dc-entry.dc-vehicle
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A vehicle: yellow rail on cold concrete. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
+
+  - name: drug
+    status: live
+    origin: plugin
+    markers: ["@drug"]
+    snippet: drug
+    recipe: "@drug #### Name … @end-drug"
+    emits: div.dc-card.dc-entry.dc-drug
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "A drug, elixir or other consumable: magenta rail. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
+
+  - name: field
+    status: live
+    origin: plugin
+    markers: ["@field"]
+    snippet: [field, field-specs, field-traits, field-equipment, field-effects, field-side-effects, field-requires]
+    recipe: "@field [specs|traits|equipment|effects|side-effects|requires] label=\"…\" … @end-field  (or, inside a card, a paragraph that opens with **Label:**)"
+    emits:
+      - div.dc-field.dc-field-specs > span.dc-field-label
+      - div.dc-field.dc-field-traits
+      - div.dc-field.dc-field-equipment
+      - div.dc-field.dc-field-effects
+      - div.dc-field.dc-field-side-effects
+      - div.dc-field.dc-field-requires
+    css: styles/components/entries.css
+    tokens: [--dc-field-accent, --dc-field-surface, --dc-field-fg, --dc-field-label-fg]
+    breaks: "break-inside: avoid; a label with no text keeps with the paragraph after it"
+    usage:
+      - "**SPECS:**"
+      - "**Traits:**"
+      - "**Equipment:**"
+      - "**Effects:**"
+      - "**Side Effects:**"
+      - "**Requires:**"
+      - "**Wirephreak Gear:**"
+      - "**Cybersurgeon Instrument(s):**"
+      - "**TECHNOENHANCEMENT:**"
+    notes: "A labelled field: a rail, a surface and a label chip, then the text beside it. The variant is a bare word and its default label is the variant's name; `label=\"…\"` replaces it, as with @callout. Inside an entry card (@gear, @augment, @treasure, @vehicle, @drug), @npc-stat (or @section npc) and @skill, a paragraph that opens with one of these bold labels (colon inside the bold, any case) is rewritten to exactly the markup the marker writes, keeping the author's own words as the label, so books need no change. The labels are the FIELD_LABELS table in plugin.js: SPECS, Traits, Equipment, Effects, Side Effects, Requires, and the profession labels Wirephreak Gear, Cybersurgeon Instrument / Instruments / Instrument(s) and TECHNOENHANCEMENT (all means requires). Elsewhere the paragraph stays a paragraph. A new label is one line in that table; a new field type is a variant name there plus one token-setting rule in entries.css."
 
   - name: lede
     status: live
@@ -265,23 +332,12 @@ components:
     css: [styles/components/data.css, styles/page-templates.css]
     breaks: "list items break-inside: avoid"
 
-  - name: glossary
-    status: live
-    origin: plugin
-    markers: ["@glossary"]
-    snippet: glossary
-    recipe: "@glossary … @end-glossary  (items are plain `**term** — gloss` paragraphs)"
-    emits: div.dc-terms
-    css: styles/components/images.css
-    breaks: "break-inside: avoid"
-    notes: "Used by the design guide (06-panels-and-cards). Items take no class of their own; the old item classes are retired (glossary-item, glossary-item-authored)."
-
   - name: outcome
     status: live
     origin: plugin
     markers: ["@outcome"]
     snippet: outcome
-    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or a | Roll | Outcome | table inside a skill card"
+    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column is exactly the five bands 20, 11-19, 6-10, 2-5, 1 (any headers, either order), in a skill card or outside one"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
@@ -297,9 +353,9 @@ components:
       - --dc-outcome-key-color
       - --dc-outcome-name-color
       - --dc-outcome-name-opacity
-    usage: ["| Roll | Outcome"]
+    usage: ["| 20 |"]
     breaks: "break-inside: avoid; the skill-table form adds data-break-inside=avoid only when the parent card allows splitting"
-    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported."
+    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
 
   - name: specialty
     status: live
@@ -402,9 +458,9 @@ components:
     origin: plugin
     markers: ["@skill"]
     snippet: skill
-    recipe: "@skill [id=…] [{.dc-allow-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
+    recipe: "@skill [id=…] [{.dc-avoid-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
     emits:
-      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
+      - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
       - div.dc-ability > span.dc-ap + p.dc-ability-text
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
@@ -416,7 +472,7 @@ components:
       - --dc-card-body-mark
       - --dc-card-gap
       - --dc-card-tab-shadow
-    breaks: "data-break-inside=avoid by default; {.dc-allow-split} opts into splitting (see allow-split); tab break-after: avoid; last two abilities glued"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole (and writes data-break-inside=avoid)"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-highlight
@@ -427,7 +483,7 @@ components:
     css: styles/components/cards.css
     usage: ["| highlight"]
     breaks: "as skill"
-    notes: "Also reachable as @skill {.dc-highlight}, which puts the class on the card root instead of the tab."
+    notes: "This is the capstone look: write `| highlight` on the card that pays off a path (the last, strongest ability) and it gets the crimson tab halo and body wash. There is no capstone marker or word. Also reachable as @skill {.dc-highlight}, which puts the class on the card root instead of the tab."
 
   - name: skill-card-continuation
     status: live
@@ -435,7 +491,7 @@ components:
     recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
     emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
     css: styles/components/cards.css
-    breaks: "as skill; honours the parent card's .dc-allow-split"
+    breaks: "as skill; honours the parent card's .dc-avoid-split"
     notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
 
   - name: ap-chip
@@ -535,7 +591,7 @@ components:
     origin: plugin
     markers: ["@npc-stat", "@section npc"]
     snippet: npc-stat
-    recipe: "@npc-stat [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
+    recipe: "@npc-stat [compact] [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
     emits: div.section.dc-section-panel.dc-npc-stat
     css: [styles/components/section.css]
     tokens:
@@ -545,6 +601,16 @@ components:
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
     breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no #### splits like any section (.dc-avoid-split keeps it whole)"
+
+  - name: npc-stat-compact
+    status: live
+    origin: plugin
+    snippet: npc-stat-compact
+    recipe: "@npc-stat compact / #### Name / > flavor / stat line / stat line / ##### Traits … @end-npc-stat"
+    emits: div.section.dc-section-panel.dc-npc-stat.dc-npc-compact
+    css: [styles/components/section.css]
+    tokens: [--dc-npc-stat-primary, --dc-npc-stat-secondary, --dc-npc-stat-rule]
+    notes: "A variant of @npc-stat for a small creature, a companion or a drone: no panel layers (the panel's surface and shadow tokens are switched off), a framed cream box, a small name, and the two stat lines drawn as chips side by side. It is a section, so it ends an enclosing @skill: inside a skill card write the creature's table alone (see stat-strip)."
 
   - name: page-chapter-start
     status: live
@@ -704,25 +770,16 @@ components:
     css: styles/components/data.css
     breaks: "break-inside: avoid"
 
-  - name: allow-split
-    status: live
-    origin: author
-    recipe: "@skill {.dc-allow-split}"
-    emits: .dc-allow-split (on the skill card it is written on)
-    css: [styles/components/cards.css]
-    breaks: "opts a skill card out of the default avoid (data-break-inside=avoid). A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
-    notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it. For sections it is retired: they split by default; see avoid-split."
-
   - name: avoid-split
     status: live
     origin: author
     modifier: dc-avoid-split
     snippet: avoid-split
-    recipe: "@section panel .dc-avoid-split"
-    emits: .dc-avoid-split (on the section it is written on)
-    css: styles/components/section.css
-    breaks: "break-inside: avoid — the section moves to the next page rather than splitting. Sections split by default, so nothing else in this package sets break-inside on one"
-    notes: "Replaces .dc-allow-split on sections. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty."
+    recipe: "@section panel .dc-avoid-split  |  @skill .dc-avoid-split"
+    emits: .dc-avoid-split (on the section or skill card it is written on)
+    css: [styles/components/section.css, styles/components/cards.css]
+    breaks: "break-inside: avoid — the section or card moves to the next page rather than splitting. Sections and skill cards split by default, so nothing else in this package sets break-inside on one (a skill card also carries data-break-inside=avoid)"
+    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object."
 
   - name: snug
     status: live
@@ -771,6 +828,18 @@ components:
     breaks: "splits by default; add .dc-avoid-split to keep it whole"
     notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
 
+  - name: section-catalog
+    status: live
+    origin: plugin
+    markers: ["@section catalog"]
+    snippet: section-catalog
+    recipe: "@section catalog ## Title … @columns 2 @augment … @end-columns @end-section"
+    emits: div.section.dc-section-panel.dc-catalog
+    css: styles/components/entries.css
+    tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule]
+    breaks: "a panel; its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
+    notes: "A panel for a run of entries (@augment, @treasure, @vehicle, @drug, @gear). Its entries are ruled instead of boxed (and may split across columns, as the plain text they replace did): no card, no rail, a rule in the entry's own accent over each, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
+
   - name: section-flat
     status: live
     origin: plugin
@@ -782,18 +851,82 @@ components:
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-drop, --dc-section-gap, --dc-section-grow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     notes: "The rail on a plain host: no corner, no pseudo layers, no title bar. The intro and credits pages set its accent and drop shadow from their own rules (--dc-section-accent, --dc-section-drop). The credits colophon is a flat section."
 
-  - name: section-aside
+  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  - name: section-reference
     status: live
     origin: plugin
-    markers: ["@section aside"]
-    snippet: section-aside
-    recipe: "@section aside … @end-section  (or @section .dc-section-aside)"
-    emits: div.section.dc-section-aside
-    css: [styles/components/section.css, styles/components/data.css]
-    tokens: [--dc-section-accent, --dc-sidebar-box-surface, --dc-sidebar-box-border, --dc-sidebar-box-rail]
-    notes: "An inset note. It is the @sidebar-box treatment (hairline frame, accent rail, italic accent heading) with the rail on --dc-section-accent; the rules live in data.css beside .dc-sidebar-box."
+    markers: ["@section reference"]
+    snippet: section-reference
+    recipe: "@section reference … @end-section  (a table or list to look up: prices, conditions, a menu of options)"
+    emits: div.section.dc-section-panel.dc-section-reference
+    css: [styles/components/section.css]
+    tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail, --dc-section-pad-top, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-pad-right]
+    notes: "A panel that says 'look it up': HUD blue, a pale title band with dark text, small corner cut, tight table rows and list items. It keeps its own accent in any chapter. It absorbed @block codex."
 
-  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  - name: section-lore
+    status: live
+    origin: plugin
+    markers: ["@section lore"]
+    snippet: section-lore
+    recipe: "@section lore … @end-section  (setting and world text)"
+    emits: div.section.dc-section-panel.dc-section-lore
+    css: [styles/components/section.css]
+    tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail]
+    notes: "A panel for the world, not the rules: brass bars on aged paper, a long shard corner, italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
+
+  - name: section-dm
+    status: live
+    origin: plugin
+    markers: ["@section dm"]
+    snippet: section-dm
+    recipe: "@section dm … @end-section  (advice for the Dream Master, behind the screen)"
+    emits: div.section.dc-section-panel.dc-section-dm
+    css: [styles/components/section.css]
+    tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
+    notes: "A panel for behind-the-screen text: an ink title bar with a Dream Master chip, a cold concrete body. A short aside is @callout dm. It keeps its own accent in any chapter."
+
+  - name: section-choose
+    status: live
+    origin: plugin
+    markers: ["@section choose"]
+    snippet: section-choose
+    recipe: "@section choose … @end-section  (a pick-one choice the player writes on the Citizen File)"
+    emits: div.section.dc-section-panel.dc-section-choose
+    css: [styles/components/section.css]
+    tokens: [--dc-section-bg, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
+    notes: "A form: a lighter sheet, dotted write-in rules under table rows, a tick box before each list item and a 'Your choice' chip on the title bar. It takes the chapter's accent. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
+
+  - name: faction
+    status: live
+    origin: plugin
+    markers: ["@faction"]
+    snippet: faction
+    recipe: "@faction [megacorp|cabal|cult|enforcer] [label=\"…\"] / #### Name / fields and prose … @end-faction"
+    emits: [div.dc-card.dc-faction.dc-faction-megacorp|.dc-faction-cabal|.dc-faction-cult|.dc-faction-enforcer, span.dc-faction-kind]
+    css: [styles/components/section.css]
+    tokens: [--dc-faction-accent, --dc-faction-badge-fg]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "An organization's profile: a card whose rail and kind badge take the kind's colour (megacorp blue, cabal violet, cult blood, enforcer yellow). The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."
+
+  - name: stat-strip
+    status: live
+    origin: plugin
+    recipe: "(no marker) a pipe table with an HP column and a Damage column"
+    emits: table.dc-stat-strip
+    css: [styles/components/data.css]
+    tokens: [--dc-stat-strip-accent, --dc-stat-strip-value]
+    breaks: "table break-inside: avoid"
+    notes: "A creature's stat line, set as a strip wherever it sits, with no marker (a section marker such as @npc-stat compact inside a skill would end the skill). Recognised by its header cells, HP and Damage, case-insensitively; a cell that holds only a number gets .dc-stat-num (set large and centred)."
+
+  - name: sidebar-float
+    status: live
+    origin: author
+    recipe: "@callout note .dc-sidebar label=\"…\"  (also raw <div class=\"dc-sidebar\"> around a human-callout)"
+    emits: .dc-sidebar (on the callout or div it is written on)
+    css: [styles/components/images.css]
+    breaks: "break-inside: avoid"
+    notes: "A placement, not a look: float right at --sidebar-width with text wrapping on its left; the callout or the human-callout inside carries the box. It replaces the @sidebar marker, which drew its own box."
+
   - name: distance-tags
     status: retired
     origin: plugin
@@ -817,6 +950,14 @@ components:
     recipe: "@section .dc-plain"
     emits: div.section.dc-plain
     notes: "Removed with the section variants: a bare @section is already plain, so there is no chrome to opt out of. Write @section."
+
+  - name: allow-split
+    status: retired
+    origin: author
+    modifier: dc-allow-split
+    replaced_by: "nothing: skill cards split by default; write .dc-avoid-split to keep one whole"
+    recipe: "@skill {.dc-allow-split}"
+    notes: "Removed 1.6.0. It opted a skill card out of data-break-inside=avoid; every card now splits unless it carries .dc-avoid-split. The class is no longer read or styled."
 
   - name: section-allow-split
     status: retired
@@ -902,6 +1043,45 @@ components:
     recipe: ".dc-margin-sm modifier (e.g. on .dc-tape)"
     emits: .dc-margin-sm
     notes: "Removed 2026-10-08 (chrome.css): never used."
+
+  - name: sidebar
+    status: retired
+    origin: plugin
+    markers: ["@sidebar"]
+    replaced_by: "@callout note .dc-sidebar  (the float is now a class on a callout)"
+    recipe: "@sidebar … @end-sidebar"
+    notes: "Retired 1.6.0: 0 uses in the Field Guide and SysOps. The marker drew its own box; the float survives as the `.dc-sidebar` placement (see sidebar-float)."
+
+  - name: sidebar-box
+    status: retired
+    origin: plugin
+    markers: ["@sidebar-box"]
+    replaced_by: "@definition  (a `####` heading, `---` and body read as the same box)"
+    recipe: "@sidebar-box … @end-sidebar-box"
+    notes: "Retired 1.6.0 with --dc-sidebar-box-surface, -border, -accent and -rail: one use in the Field Guide. A definition block takes the same heading, divider and body."
+
+  - name: glossary
+    status: retired
+    origin: plugin
+    markers: ["@glossary"]
+    replaced_by: "@definition  (a run of `#### Term` entries, or `**Term** — gloss` paragraphs, reads as a glossary)"
+    recipe: "@glossary … @end-glossary"
+    notes: "Retired 1.6.0 with .dc-terms: one use in SysOps."
+
+  - name: section-aside
+    status: retired
+    origin: plugin
+    markers: ["@section aside"]
+    replaced_by: "@callout  (a short note set off from the text)"
+    recipe: "@section aside … @end-section"
+    notes: "Retired 1.6.0: 0 uses in the Field Guide and SysOps. It was the @sidebar-box look on a section; a callout is the boxed note."
+
+  - name: block-codex
+    status: retired
+    origin: plugin
+    replaced_by: "@section reference for a look-up panel; @block panel for a small box inside a section (a section cannot nest)"
+    recipe: "@block codex  /  @block .dc-codex"
+    notes: "Retired 1.6.0: the pale-cyan octagon register of @block (a look-up box). One use in SysOps, inside a section, where `@block panel` is the drop-in; a look-up of its own is `@section reference`."
 
   - name: path-subtitle
     status: retired

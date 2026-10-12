@@ -7,17 +7,22 @@
  * DECLARED MARKERS (the `markers` export at the bottom of this file — core
  * Gutterpress parses, nests, closes and source-maps these; this file only
  * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @sidebar             → div.dc-sidebar
- *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
- *   @definition          → div.dc-prose-panel.dc-definition-block
+ *   @definition          → div.dc-prose-panel.dc-definition-block (a term, or a run of `####` terms)
+ *   @faction [megacorp|cabal|cult|enforcer]
+ *                        → div.dc-card.dc-faction[.dc-faction-<kind>] + span.dc-faction-kind
+ *   @roll-table [die=d20] [label="…"]
+ *                        → div.dc-roll-table + div.dc-roll-table-caption, over the author's table
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear                → div.dc-card.dc-gear
+ *   @gear                → div.dc-card.dc-entry.dc-gear
+ *   @augment             → div.dc-card.dc-entry.dc-augment   (cybernetics, mods)
+ *   @treasure            → div.dc-card.dc-entry.dc-treasure  (magic items, relics)
+ *   @vehicle             → div.dc-card.dc-entry.dc-vehicle
+ *   @drug                → div.dc-card.dc-entry.dc-drug      (drugs, elixirs, consumables)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
- *   @glossary            → div.dc-terms
- *   @block [panel|slate|shard|codex] label="Title"
+ *   @block [panel|slate|shard] label="Title"
  *                        → div.dc-block.dc-<variant> + div.dc-block-title
  *                          (`@block .dc-panel` class form works too)
  *
@@ -39,7 +44,7 @@
  *                          zero-padded step list (the wrapper renders nothing)
  *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
  *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          visit, gear; none is a note. The label is `label="…"`,
+ *                          visit, gear, example; none is a note. The label is `label="…"`,
  *                          or the variant's name. `@dm-note` is `@callout dm`
  *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
@@ -77,8 +82,8 @@
  *   @learning-path data-foo="bar"
  *     → <div class="dc-learning-path dc-path-block" data-foo="bar" data-path-ref="PRX1">
  *
- *   @skill {.dc-allow-split}
- *     → every card of the skill: <div class="dc-skill-card dc-allow-split" ...>
+ *   @skill {.dc-avoid-split}
+ *     → every card of the skill: <div class="dc-skill-card dc-avoid-split" ...>
  *
  * LEARNING PATH FORMAT:
  *   @learning-path
@@ -154,6 +159,7 @@ function addTokenClass(tok, cls) {
 
 function parseSkillTitle(text) {
   // Parse "Skill Name" or "Skill Name | T0" or "Skill Name | T0 | highlight"
+  // (`highlight` is the capstone look: the card that pays off a path.)
   const parts = text.split('|');
   const name = parts[0].trim();
   const tier = parts.length > 1 ? parts[1].trim() : '';
@@ -350,43 +356,59 @@ function skipToTableClose(tokens, start) {
   return tokens.length - 1;
 }
 
-function getTableHeaders(tableTokens) {
-  const headers = [];
-  let inHead = false;
+// The header cells, the body rows and each row's cells of a table's tokens, as
+// the markdown the author wrote in them.
+function readTable(tableTokens) {
+  const head = [];
+  const rows = [];
+  let part = '';
+  let row = null;
   for (let i = 0; i < tableTokens.length; i++) {
-    if (tableTokens[i].type === 'thead_open') inHead = true;
-    if (tableTokens[i].type === 'thead_close') break;
-    if (inHead && tableTokens[i].type === 'inline') {
-      headers.push(tableTokens[i].content.toLowerCase().trim());
+    const t = tableTokens[i];
+    if (t.type === 'thead_open') part = 'head';
+    else if (t.type === 'tbody_open') part = 'body';
+    else if (t.type === 'tr_open' && part === 'body') row = [];
+    else if (t.type === 'tr_close' && part === 'body') rows.push(row);
+    else if ((t.type === 'th_open' || t.type === 'td_open') && tableTokens[i + 1]?.type === 'inline') {
+      (part === 'head' ? head : row).push(tableTokens[i + 1].content);
     }
   }
-  return headers;
-}
-
-function classifyTable(headers) {
-  if (headers.includes('roll') && headers.includes('outcome')) {
-    return 'outcomes';
-  }
-  return '';
-}
-
-function getRollTier(text) {
-  const clean = text.replace(/[\u2013\u2014]/g, '-').trim();
-  if (clean === '20') return 'crit';
-  if (clean === '1') return 'fail';
-  // Handle ranges like "11 - 19" or "11-19"
-  const rangeMatch = clean.match(/^(\d+)/);
-  if (rangeMatch) {
-    const n = parseInt(rangeMatch[1], 10);
-    if (n >= 11) return 'hit';
-    if (n >= 6) return 'mixed';
-    if (n >= 2) return 'miss';
-  }
-  return 'hit';
+  return { head, rows };
 }
 
 const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
+const LADDER_BANDS_COUNT = OUTCOME_TIERS.length;
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
+
+// The d20 outcome ladder is recognised by its bands, not by what its columns
+// are called: a two-column table whose first column holds exactly the five
+// standard bands (20, 11-19, 6-10, 2-5, 1), in either order, is the ladder. A
+// band is typed any way an author types one ("11-19", "11 – 19", "**20**").
+// Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
+const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
+
+// "11 – 19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
+function parseBand(cell) {
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]/g, '-');
+  const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
+  if (!m) return null;
+  const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
+  return lo <= hi ? [lo, hi] : null;
+}
+
+// The ladder rows of a table, or null when it is not a ladder.
+function ladderRows(table) {
+  const { head, rows } = table;
+  if (head.length !== 2 || rows.length !== LADDER_BANDS_COUNT || rows.some((r) => r.length !== 2)) return null;
+  const bands = rows.map((r) => parseBand(r[0]));
+  if (bands.some((b) => !b)) return null;
+  const keys = bands.map(([lo, hi]) => (lo === hi ? String(lo) : lo + '-' + hi));
+  if (new Set(keys).size !== LADDER_BANDS_COUNT || keys.some((k) => !Object.hasOwn(LADDER_TIER_OF_BAND, k))) return null;
+  return rows.map((r, i) => {
+    const tier = LADDER_TIER_OF_BAND[keys[i]];
+    return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
+  });
+}
 
 // The ladder's label bar and one row per `{ tier, name, roll, text }`; `text`
 // is markdown, so **bold** and ROLL THE DIE! render as they do anywhere else.
@@ -401,48 +423,17 @@ function outcomeRowsHtml(rows, md) {
   return html;
 }
 
-// A `| Roll | Outcome |` table in a skill card: tier and name come from the roll.
-function buildOutcomesBlock(rows, md, needsAvoid = true) {
-  // data-break-inside="avoid" is added when the parent card can be split (has
-  // allow-split) — the polyfill needs this to keep the
+// A table of the five standard bands: tier and name come from the band.
+function buildLadderBlock(rows, md, needsAvoid = true) {
+  // data-break-inside="avoid" is added when the parent card can be split (is
+  // not avoid-split) — the polyfill needs this to keep the
   // outcomes table together when the card itself isn't protected. When the card
   // already has data-break-inside="avoid" (non-splittable cards), adding a
   // nested avoid creates a conflicting inner break that the polyfill resolves
   // by splitting the card at the outcomes boundary, leaving a headless
   // card-body on one page and the outcomes-only continuation on the next.
   const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  const ladder = rows
-    .filter((row) => row.length >= 2)
-    .map((row) => {
-      const roll = row[0].trim();
-      const tier = getRollTier(roll);
-      return { tier, name: OUTCOME_NAMES[tier], roll, text: row[1].trim() };
-    });
-  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(ladder, md) + '</div>\n';
-}
-
-function buildTable(tableTokens, tableClass, md, needsAvoid = true) {
-  const rows = [];
-  let currentRow = [];
-  let inBody = false;
-
-  for (let i = 0; i < tableTokens.length; i++) {
-    const t = tableTokens[i];
-    if (t.type === 'tbody_open') inBody = true;
-    if (t.type === 'tbody_close') inBody = false;
-    if (t.type === 'tr_open' && inBody) currentRow = [];
-    if (t.type === 'tr_close' && inBody) {
-      rows.push(currentRow);
-    }
-    if (t.type === 'td_open' && inBody) {
-      const contentTok = tableTokens[i + 1];
-      if (contentTok && contentTok.type === 'inline') {
-        currentRow.push(contentTok.content);
-      }
-    }
-  }
-
-  return buildOutcomesBlock(rows, md, needsAvoid);
+  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -858,7 +849,7 @@ function dcLearningPaths(state) {
 
 /**
  * `@skill`: every `####` heading inside it starts a card. The declared
- * wrapper only carries the author's classes and attributes (`{.dc-allow-split}`,
+ * wrapper only carries the author's classes and attributes (`{.dc-avoid-split}`,
  * `id=…`) — it renders nothing itself; each card is rendered from them.
  *
  *   h4 title     → card tab (name, tier); a skill in a learning path gets the
@@ -876,10 +867,12 @@ function dcSkillCards(state) {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
-    // `.dc-allow-split` lets a card taller than a page split; every other card
-    // carries data-break-inside="avoid". An outcomes table or sub-list inside a
-    // splittable card needs its own avoid, because the card has none.
-    const canSplit = (open.attrGet('class') || '').split(/\s+/).includes('dc-allow-split');
+    // A card splits across pages by default (a whole card is 30-50% of a page,
+    // so keeping it whole left a page of one card each); `.dc-avoid-split`
+    // keeps one whole and carries data-break-inside="avoid". An outcomes table or
+    // sub-list inside a splittable card needs its own avoid, because the card
+    // has none.
+    const canSplit = !(open.attrGet('class') || '').split(/\s+/).includes('dc-avoid-split');
     const content = run.slice(1, -1);
     const out = [];
     const emit = (html) => out.push(makeToken('html_block', html));
@@ -947,8 +940,8 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // A @callout, @card, @outcome or @procedure is content of the skill's card;
-      // a break or another component (@sidebar, @specialty-art, …) ends it.
+      // A @callout, @card, @outcome, @procedure or @roll-table is content of the skill's card;
+      // a break or another component (@specialty-art, @gear, …) ends it.
       if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
         let end = i;
         let depth = 0;
@@ -1018,13 +1011,13 @@ function dcSkillCards(state) {
       if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
 
       if (tok.type === 'table_open') {
+        // A table of the five standard bands is the ladder; any other table
+        // passes through untouched, thead and all (rebuilding them from tbody
+        // rows once left 64 of 86 tables headerless).
         const tableTokens = collectTableTokens(content, i);
-        const tableClass = classifyTable(getTableHeaders(tableTokens));
-        // Tables this plugin does not transform pass through untouched, thead
-        // and all (rebuilding them from tbody rows once left 64 of 86 tables
-        // headerless).
-        if (tableClass) {
-          emit(buildTable(tableTokens, tableClass, md, canSplit));
+        const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
+        if (ladder) {
+          emit(buildLadderBlock(ladder, md, canSplit));
           i = skipToTableClose(content, i);
           continue;
         }
@@ -1043,7 +1036,7 @@ function dcSkillCards(state) {
 // run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
 // inside a skill must already be in its final form when the skill's rule
 // reads it. They stay inside the skill's card (see CARD_CONTENT).
-const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure']);
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-table', 'field']);
 
 /**
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
@@ -1117,6 +1110,70 @@ function dcOutcomes(state) {
 }
 
 /**
+ * A table of the five standard bands (see `ladderRows`) anywhere outside a skill
+ * card (the skill rule rewrites those with their card) is the same ladder, so
+ * the d20 mechanic reads the same wherever the book states it. A table inside
+ * `@roll-table` is not a ladder: its bands are the author's own.
+ */
+function dcLadderTables(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open' || tokens[i].meta?.rollTable) continue;
+    const tableTokens = collectTableTokens(tokens, i);
+    const ladder = ladderRows(readTable(tableTokens));
+    if (!ladder) continue;
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, false)));
+  }
+}
+
+/**
+ * A table with an HP column and a Damage column is a creature's stat line
+ * (`Name | HP | Damage | Traits`, `Type | Size | HP | Damage`): it gets
+ * `.dc-stat-strip`, the stat-strip look, wherever it sits, and each cell that
+ * holds only a number gets `.dc-stat-num` (the big figures). It is recognised by
+ * its shape, not a marker, because a creature's table lives inside a skill's
+ * ability text, and a section marker there (`@npc-stat compact`) would end
+ * the skill.
+ */
+function dcStatStrips(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open') continue;
+    const table = collectTableTokens(tokens, i);
+    const head = readTable(table).head.map((cell) => cell.replace(/[*_`]/g, '').trim().toLowerCase());
+    if (!head.includes('hp') || !head.includes('damage')) continue;
+    addTokenClass(tokens[i], 'dc-stat-strip');
+    table.forEach((tok, k) => {
+      if (tok.type === 'td_open' && /^\d+$/.test((table[k + 1]?.content || '').trim())) addTokenClass(tok, 'dc-stat-num');
+    });
+  }
+}
+
+/**
+ * `@roll-table [die=d12] [label="Wild Magic"]`: a random table in neutral
+ * colours. The wrapper is `div.dc-roll-table`; the rule adds the caption (the
+ * die chip, d20 unless `die=` says otherwise, and the label) above the author's
+ * own pipe table, which stays a plain `<table>`. It is not the outcome ladder:
+ * its bands are the author's (`1-4`, `5-8`, ...), all of equal weight.
+ */
+function dcRollTables(state) {
+  forEachComponent(state.tokens, 'roll-table', (run) => {
+    const [open, ...rest] = run;
+    const attrs = open.meta.attrs || {};
+    const die = /^d\d{1,3}$/i.test(attrs.die || '') ? attrs.die.toLowerCase() : 'd20';
+    const label = attrs.label ? '<span class="dc-roll-table-name">' + esc(String(attrs.label)) + '</span>' : '';
+    const caption = makeToken('html_block', '<div class="dc-roll-table-caption"><span class="dc-roll-table-die">' + esc(die) + '</span>' + label + '</div>\n');
+    for (const tok of rest) if (tok.type === 'table_open') tok.meta = { ...tok.meta, rollTable: true };
+    return [open, caption, ...rest];
+  });
+}
+
+function validateRollTable({ blocks }) {
+  if (blocks.some((b) => b.type === 'table')) return [];
+  return ['It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table.'];
+}
+
+/**
  * `@procedure`: every numbered list inside becomes the zero-padded step list
  * (`ol.dc-steps`). The declared wrapper renders nothing itself: the list is
  * the element, as it has always been.
@@ -1141,7 +1198,7 @@ function dcProcedures(state) {
 
 // ── Declared component: @callout (and its alias @dm-note) ──────────────────
 //
-// `@callout note|warning|dm|vibe|origin|visit|gear` is a declared wrapper:
+// `@callout note|warning|dm|vibe|origin|visit|gear|example` is a declared wrapper:
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
@@ -1154,6 +1211,7 @@ const CALLOUTS = {
   origin: { class: 'dc-origin-callout', label: 'Origin' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
   gear: { class: 'dc-gear-callout', label: 'Gear' },
+  example: { class: 'dc-example-callout', label: 'Example' },
 };
 
 function dcCallouts(state) {
@@ -1166,6 +1224,19 @@ function dcCallouts(state) {
     if (open.meta.labelled) return; // an explicit label="…" wins
     const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
     return [open, label, ...rest];
+  });
+}
+
+/**
+ * `@faction megacorp|cabal|cult|enforcer`: core adds the card, the kind class and
+ * a badge from `label="…"`. With no label the badge names the kind, as a
+ * callout's label names its variant.
+ */
+function dcFactions(state) {
+  forEachComponent(state.tokens, 'faction', ([open, ...rest]) => {
+    const kind = open.meta.variant;
+    if (open.meta.labelled || !Object.hasOwn(FACTION_KINDS, kind)) return;
+    return [open, makeToken('html_block', '<span class="dc-faction-kind">' + esc(FACTION_KINDS[kind]) + '</span>\n'), ...rest];
   });
 }
 
@@ -1205,6 +1276,134 @@ function validateSkill({ blocks }) {
         `This @${b.name} starts inside the skill above it, so it is nested in that skill's card. ` +
         `Close the skill with \`@end-skill\` before it.`,
     }));
+}
+
+/**
+ * Entry cards (`@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`): one
+ * entry is one name. The name is the entry's first heading (`####`, or `###`
+ * as `@gear` has always taken). An entry without one has no title bar, and
+ * one with a second heading is usually two entries run together: a declared
+ * marker that opens again closes the one before it, so each entry starts with
+ * its own marker line.
+ */
+function validateEntry({ name, blocks }) {
+  const headings = blocks.filter((b) => b.type === 'heading' && b.level <= 4);
+  if (!headings.length) {
+    return [`This @${name} has no name. Start it with a \`#### Name\` heading.`];
+  }
+  return headings.slice(1).map((b) => ({
+    line: b.line,
+    message: `"${b.text}" is a second name inside this @${name}. Put each entry under its own @${name} line.`,
+  }));
+}
+
+// ── Declared component: @field (and the bold labels that mean it) ──────────
+//
+// `@field specs` … `@end-field` is a labelled field: `div.dc-field.dc-field-specs`
+// holding `span.dc-field-label` and the author's paragraphs. The label is the
+// variant's default (below) or `label="…"`, the way `@callout` does it.
+//
+// The bold-label shortcut is the same component written shorter: a paragraph
+// that opens with a known label (`**SPECS:** …`), inside an entry card, an NPC
+// stat block or a skill card, is rewritten to exactly the markup the marker
+// gives (`dcFieldLines`), so one set of rules styles both. Everywhere else it
+// stays a paragraph, and a callout inside a card is not a card.
+//
+// FIELD_LABELS is the one table. Each line is a label as the books write it
+// (matched case-insensitively, colon inside the bold) and the variant it
+// means. A new label is a line here; a new field type is a new variant name
+// here plus a token-setter rule in styles/components/entries.css. The first
+// label listed for a variant is that variant's default label.
+const FIELD_LABELS = {
+  'SPECS': 'specs',
+  'Traits': 'traits',
+  'Equipment': 'equipment',
+  'Effects': 'effects',
+  'Side Effects': 'side-effects',
+  'Requires': 'requires',
+  'Wirephreak Gear': 'requires',
+  'Cybersurgeon Instrument': 'requires',
+  'Cybersurgeon Instruments': 'requires',
+  'Cybersurgeon Instrument(s)': 'requires',
+  'TECHNOENHANCEMENT': 'requires',
+};
+const FIELD_VARIANTS = [...new Set(Object.values(FIELD_LABELS))];
+const FIELD_DEFAULT_LABEL = Object.fromEntries(
+  FIELD_VARIANTS.map((v) => [v, Object.keys(FIELD_LABELS).find((l) => FIELD_LABELS[l] === v)]),
+);
+const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
+
+// The cards whose paragraphs may be field lines.
+const FIELD_HOSTS = new Set(['gear', 'augment', 'treasure', 'vehicle', 'drug', 'skill']);
+
+const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
+
+// An explicit `@field specs` with no `label="…"` gets the variant's default label.
+function dcFields(state) {
+  forEachComponent(state.tokens, 'field', ([open, ...rest]) => {
+    const label = FIELD_DEFAULT_LABEL[open.meta.variant];
+    if (open.meta.labelled || !label) return; // an explicit label wins; a bare @field has none
+    return [open, makeToken('html_block', fieldLabelHtml(label)), ...rest];
+  });
+}
+
+function isFieldHost(open) {
+  if (FIELD_HOSTS.has(open.meta?.kind)) return true;
+  // `@npc-stat` and `@section npc` are one section; its class is the record (`@section npc` carries no kind)
+  return (open.attrGet('class') || '').split(/\s+/).includes('dc-npc-stat');
+}
+
+/** `**Label:** …` → { label, variant }, or null when the paragraph does not open with a known label. */
+function fieldLabelOf(inline) {
+  // core leaves an empty text node ahead of a leading `**…**`
+  const lead = inline?.children?.[0]?.type === 'text' && !inline.children[0].content ? 1 : 0;
+  const [open, text, close] = inline?.children?.slice(lead) ?? [];
+  if (open?.type !== 'strong_open' || text?.type !== 'text' || close?.type !== 'strong_close') return null;
+  const written = text.content.trim();
+  if (!written.endsWith(':')) return null;
+  const label = written.slice(0, -1).trim();
+  const variant = FIELD_BY_LABEL.get(label.toLowerCase());
+  return variant ? { label, variant, lead } : null;
+}
+
+function dcFieldLines(state) {
+  const tokens = state.tokens;
+  const out = [];
+  const hosts = []; // one entry per open layout container: is its content a field host?
+  let quoted = 0; // inside a blockquote or a list item, a paragraph is not a field line
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+    if (/^layout_.+_open$/.test(tok.type)) {
+      // `@columns` only arranges its content: the container around it still decides
+      hosts.push(tok.meta?.kind === 'columns' ? hosts.at(-1) ?? false : isFieldHost(tok));
+    } else if (/^layout_.+_close$/.test(tok.type)) {
+      hosts.pop();
+    } else if (tok.type === 'blockquote_open' || tok.type === 'list_item_open') {
+      quoted++;
+    } else if (tok.type === 'blockquote_close' || tok.type === 'list_item_close') {
+      quoted--;
+    } else if (tok.type === 'paragraph_open' && !quoted && hosts.at(-1)) {
+      const inline = tokens[i + 1];
+      const field = fieldLabelOf(inline);
+      if (field) {
+        // Same markup as `@field <variant> label="…"`: the label is the author's own words.
+        out.push(makeToken('html_block',
+          '<div class="dc-field dc-field-' + field.variant + '" data-field="' + field.variant + '"' +
+          ' data-label="' + esc(field.label) + '">' + fieldLabelHtml(field.label)));
+        inline.children.splice(0, field.lead + 3);
+        const first = inline.children[0];
+        if (first?.type === 'text') first.content = first.content.replace(/^\s+/, '');
+        inline.content = inline.content.replace(/^\*\*[^*]+\*\*\s*/, '');
+        const bare = inline.children.every((c) => c.type === 'text' && !c.content); // the label was all there was
+        const rest = bare ? [] : tokens.slice(i, i + 3);
+        out.push(...rest, makeToken('html_block', '</div>\n'));
+        i += 2; // the paragraph's inline and close
+        continue;
+      }
+    }
+    out.push(tok);
+  }
+  state.tokens = out;
 }
 
 function validateOutcome({ blocks }) {
@@ -1269,11 +1468,17 @@ export default function dimmCityPlugin(md, options = {}) {
   // Declared components. Callouts, cards, outcomes and procedures go first so
   // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
+  md.core.ruler.push('dc_factions', dcFactions);
+  md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
+  md.core.ruler.push('dc_roll_tables', dcRollTables);
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_ladder_tables', dcLadderTables);
+  md.core.ruler.push('dc_stat_strips', dcStatStrips);
+  md.core.ruler.push('dc_field_lines', dcFieldLines);
 }
 
 /**
@@ -1297,6 +1502,8 @@ export default function dimmCityPlugin(md, options = {}) {
  * never needed an explicit `@end-…`.
  */
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
+
+const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
 
 const SPECIALTIES = [
   'augmerc', 'proxy', 'streetwarden', 'gutterdruid', 'cybersurgeon',
@@ -1323,6 +1530,7 @@ export const markers = {
   card: wrapper('dc-card'),
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
+  'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
 
   // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
   // the same marker with the `dm` variant preset. A default label comes from
@@ -1334,41 +1542,67 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
-  sidebar: wrapper('dc-sidebar'),
-  'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
+  // A labelled field (`@field specs`), and the target of the bold-label shortcut
+  // (`**SPECS:** …` inside a card, see FIELD_LABELS). The default label per
+  // variant comes from `dcFields`, an explicit `label="…"` from core.
+  field: wrapper('dc-field', {
+    variants: Object.fromEntries(FIELD_VARIANTS.map((v) => [v, 'dc-field-' + v])),
+    label: { tag: 'span', class: 'dc-field-label', from: 'attr:label' },
+  }),
+
   definition: wrapper('dc-prose-panel dc-definition-block'),
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
-  gear: wrapper('dc-card dc-gear'),
+  // Entry cards: one card style family (`.dc-entry`), each marker a token setter
+  // on it (styles/components/entries.css). `@gear` is general gear; the others
+  // are what the books list in catalogs. Each starts with the entry's name.
+  gear: wrapper('dc-card dc-entry dc-gear', { validate: validateEntry }),
+  augment: wrapper('dc-card dc-entry dc-augment', { validate: validateEntry }),
+  treasure: wrapper('dc-card dc-entry dc-treasure', { validate: validateEntry }),
+  vehicle: wrapper('dc-card dc-entry dc-vehicle', { validate: validateEntry }),
+  drug: wrapper('dc-card dc-entry dc-drug', { validate: validateEntry }),
+  // An organization's profile: a card with a kind badge. The kind is the bare
+  // word (`@faction cult`) and the badge reads it unless `label="…"` names its own.
+  faction: wrapper('dc-card dc-faction', {
+    variants: Object.fromEntries(Object.keys(FACTION_KINDS).map((kind) => [kind, `dc-faction-${kind}`])),
+    label: { tag: 'span', class: 'dc-faction-kind', from: 'attr:label' },
+  }),
   toc: wrapper('dc-toc'),
   lede: wrapper('dc-intro'),
-  glossary: wrapper('dc-terms'),
   block: wrapper('dc-block', {
-    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard', codex: 'dc-codex' },
+    variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
   }),
 
   // Section variants: `@section panel` is `<div class="section dc-section-panel">`.
   // A bare `@section` is core's plain box and gets no styling from this package.
-  // `panel`, `flat` and `aside` are general; the rest are the section-styled
-  // components below, each reachable by its own marker (`@npc-stat`) or by word
-  // (`@section npc`), and both write the same classes so one CSS rule serves
-  // both. A component that is a card (npc, walkthrough, flaws, ideals, dreams)
-  // carries `dc-section-panel` beside its own class; fiction and cards are not
-  // panels. The CSS is in styles/components/section.css.
+  // `panel` and `flat` are general. `reference`, `lore`, `dm` and `choose` are
+  // panels that say what kind of text they hold (a look-up, the world, advice
+  // for the Dream Master, a choice): each is `dc-section-panel` plus a class that
+  // sets the panel's tokens, and has no marker of its own. The rest are the
+  // section-styled components below, each reachable by its own marker
+  // (`@npc-stat`) or by word (`@section npc`), and both write the same classes so
+  // one CSS rule serves both. A component that is a card (npc, walkthrough, flaws,
+  // ideals, dreams) carries `dc-section-panel` beside its own class (the three
+  // choice runs are `choose` too); fiction and cards are not panels. The CSS is
+  // in styles/components/section.css.
   section: {
     variants: {
       panel: 'dc-section-panel',
       flat: 'dc-section-flat',
-      aside: 'dc-section-aside',
+      reference: 'dc-section-panel dc-section-reference',
+      lore: 'dc-section-panel dc-section-lore',
+      dm: 'dc-section-panel dc-section-dm',
+      choose: 'dc-section-panel dc-section-choose',
+      catalog: 'dc-section-panel dc-catalog',
       npc: 'dc-section-panel dc-npc-stat',
       fiction: 'dc-fiction-excerpt',
       walkthrough: 'dc-section-panel dc-citizen-walkthrough',
       cards: 'dc-card-grid',
-      flaws: 'dc-section-panel dc-flaws',
-      ideals: 'dc-section-panel dc-ideals',
-      dreams: 'dc-section-panel dc-dreams',
+      flaws: 'dc-section-panel dc-section-choose dc-flaws',
+      ideals: 'dc-section-panel dc-section-choose dc-ideals',
+      dreams: 'dc-section-panel dc-section-choose dc-dreams',
     },
   },
 
@@ -1406,11 +1640,12 @@ export const markers = {
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
-  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat' },
-  // Citizen-file card runs: the class sets the accent of every `@card` inside.
-  flaws: { section: true, class: 'dc-section-panel dc-flaws' },
-  ideals: { section: true, class: 'dc-section-panel dc-ideals' },
-  dreams: { section: true, class: 'dc-section-panel dc-dreams' },
+  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat', variants: { compact: 'dc-npc-compact' } },
+  // Citizen-file choices: `@section choose` with the class that sets the accent
+  // of every `@card` inside (`@flaws`, `@ideals`, `@dreams` are `choose` plus their own).
+  flaws: { section: true, class: 'dc-section-panel dc-section-choose dc-flaws' },
+  ideals: { section: true, class: 'dc-section-panel dc-section-choose dc-ideals' },
+  dreams: { section: true, class: 'dc-section-panel dc-section-choose dc-dreams' },
 };
 
 /**

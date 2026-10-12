@@ -6,7 +6,7 @@ Chapter 4 {.dg-kicker}
 
 # Layout
 
-How content is arranged inside a page: columns, sidebars, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
+How content is arranged inside a page: columns, floated callouts, floated art, and the handful of classes that control where things break. Everything here is a marker, a class on `@section`, `@page`, or an image. {.dg-lede}
 
 
 ## Columns
@@ -89,18 +89,16 @@ Nothing here is safe. Nothing here is free.
 
 ## Sidebar
 
-`@sidebar` floats a reference panel to the right at 38% width; body text wraps on its left. Give it running prose on both sides so it never strands in white space.
+There is no sidebar marker: `.dc-sidebar` on a callout floats it to the right at about a third of the width, and body text wraps on its left. Give it running prose on both sides so it never strands in white space.
 
 ```markdown
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
-@sidebar
-
-### Distance, Fast
+@callout note .dc-sidebar label="Distance, Fast"
 
 Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Move. **Too Far** might as well be the other side of the ether.
 
-@end-sidebar
+@end-callout
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it.
 ```
@@ -111,13 +109,11 @@ Result {.dg-result}
 
 When the Dreamers push past Too Far, the table starts asking how movement works.
 
-@sidebar
-
-### Distance, Fast
+@callout note .dc-sidebar label="Distance, Fast"
 
 Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Move. **Too Far** might as well be the other side of the ether.
 
-@end-sidebar
+@end-callout
 
 Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there — let them, and let it cost.
 
@@ -151,17 +147,17 @@ A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch
 
 ## Break control
 
-Cards and callouts keep themselves whole by default: they move to the next page rather than split. A section does the opposite: it splits where the page ends. Two classes change that, and a third forces a break.
+Callouts keep themselves whole by default: they move to the next page rather than split. Sections and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut). Two classes change that, and a third forces a break.
 
 | You write | Effect |
 |---|---|
 | `@section panel .dc-avoid-split` | Keep this section whole: it moves to the next page rather than splitting |
 | `@section .gp-no-break` | Core's own never-split class, for a section of any kind |
-| `@skill {.dc-allow-split}` | Allow this one tall skill card to split instead of leaving a page mostly empty |
+| `@skill {.dc-avoid-split}` | Keep every card of this skill whole: it moves to the next page rather than splitting |
 | `## Heading {.gp-break-before}` | Start a new page before this element |
 | `@page-break` | Start a new page here |
 
-Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. Reach for `.dc-allow-split` only when a skill card is genuinely taller than the printable area. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
+Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
 
 ## Tighter spacing
 

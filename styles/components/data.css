@@ -359,6 +359,72 @@
   --row-color: var(--fungi-rot);
 }
 
+/* ── Roll table (`@roll-table`) ───────────────────────────────────────────
+   A random table that is not the outcome ladder: one die, equal-weight rows,
+   no tier colours. A caption bar carries the die chip and the label; the
+   author's own pipe table sits under it (its first column is the range, in the
+   mono face, set off by a rule).
+   Token contract:
+     --dc-roll-table-accent    → frame, caption bar and range rule (default --hud-blue-dark)
+     --dc-roll-table-surface   → table body fill (default --paper-cream)
+     --dc-roll-table-head-bg   → column-heading row (default --hud-blue-dim) */
+.dc-roll-table {
+  margin: 8px 0;
+  border: 2px solid var(--dc-roll-table-accent);
+  background: var(--dc-roll-table-surface);
+}
+
+.dc-roll-table-caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 4px;
+  background: var(--dc-roll-table-accent);
+  color: var(--paper-cream);
+  break-after: avoid;
+}
+
+/* The die chip: a cream tab with a cut corner, in the mono face. */
+.dc-roll-table-die {
+  font-family: var(--font-mono);
+  font-size: 10pt;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--dc-roll-table-accent);
+  background: var(--paper-cream);
+  padding: 3px 9px 3px 7px;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+}
+
+.dc-roll-table-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h5);
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+}
+
+.dc-roll-table table {
+  margin: 0;
+}
+
+.dc-roll-table th {
+  background: var(--dc-roll-table-head-bg);
+  color: var(--ink-dark);
+}
+
+/* Range column: mono, centred, ruled off from the results. */
+.dc-roll-table td:first-child {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  width: 4.5em;
+  color: var(--dc-roll-table-accent);
+  border-right: 2px solid var(--dc-roll-table-accent);
+}
+
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
   background: var(--dc-pullquote-bg);
@@ -439,54 +505,31 @@
   margin-top: 6pt;
 }
 
-/* ───────── SIDEBAR BOX ─────────
-   Also the look of `@section aside` (.dc-section-aside, components/section.css),
-   which points --dc-sidebar-box-accent at --dc-section-accent.
-   Token contract:
-     --dc-sidebar-box-surface  → background (default --paper-cream)
-     --dc-sidebar-box-border   → frame border color (default --border-hairline)
-     --dc-sidebar-box-accent   → left rail + heading + divider (default --hud-blue-dark)
-     --dc-sidebar-box-rail     → left rail width (default 4px)
-   Override via the book's own sheet selector chain, e.g.:
-     .dc-danger .dc-sidebar-box { --dc-sidebar-box-accent: var(--blood); }
-*/
-.dc-sidebar-box,
-.dc-section-aside {
-  background: var(--dc-sidebar-box-surface);
-  border: 1.5px solid var(--dc-sidebar-box-border);
-  border-left: var(--dc-sidebar-box-rail) solid var(--dc-sidebar-box-accent);
+/* A run of `#### Term` entries in one `@definition` reads as a glossary: each
+   term is a small mono-caps label in the accent colour, the entries are set
+   apart by a dashed rule, and the block may split between entries (a single
+   term stays whole). A `---` inside is the same dashed rule, for a box with a
+   heading and a divider. A bold lead (`**Term** — gloss`) needs nothing. */
+.dc-definition-block > h4 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h5);
+  font-style: normal;
+  letter-spacing: 0.1em;
+  color: var(--hud-blue-dark);
+  margin: 0 0 2pt;
 }
-
-/* Box heading — bold accent label above the internal divider */
-.dc-sidebar-box>h3:first-child,
-.dc-sidebar-box>h4:first-child,
-.dc-section-aside>h3:first-child,
-.dc-section-aside>h4:first-child {
-  font-size: var(--fs-h4);
-  letter-spacing: var(--ls-display);
-  color: var(--dc-sidebar-box-accent);
-  margin: 0 0 10px;
-  font-style: italic;
+.dc-definition-block > h4:not(:first-child) {
+  margin-top: 8pt;
+  padding-top: 7pt;
+  border-top: 1px dashed var(--dc-definition-block-accent);
 }
-
-/* Internal dashed divider — separates the heading area from body content */
-.dc-sidebar-box hr,
-.dc-section-aside hr {
+.dc-definition-block:has(> h4 ~ h4) {
+  break-inside: auto;
+}
+.dc-definition-block hr {
   border: none;
-  border-top: 1px dashed var(--dc-sidebar-box-accent);
+  border-top: 1px dashed var(--dc-definition-block-accent);
   margin: 7.5pt 0;
-}
-
-.dc-sidebar-box p,
-.dc-section-aside p {
-  margin: 0;
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-normal);
-}
-
-.dc-sidebar-box p+p,
-.dc-section-aside p+p {
-  margin-top: 6pt;
 }
 
 /* ───────── GEAR ENTRY ─────────
@@ -595,6 +638,43 @@
 .dc-stat-line strong {
   color: var(--crimson);
   font-weight: 700;
+}
+
+/* ───────── STAT STRIP (a creature's HP and Damage table) ─────────
+   Any table with HP and Damage columns (`Name | HP | Damage | Traits`,
+   `Type | Size | HP | Damage`), wherever it sits: the plugin tags it, so
+   existing markdown needs no marker. The header row is a band of small labels,
+   a cell that holds only a number (`.dc-stat-num`, tagged by the plugin) is set
+   large and centred, the rest stays text.
+   Token contract:
+     --dc-stat-strip-accent  → frame and label band (default --hud-blue-dark)
+     --dc-stat-strip-value   → the big numbers (default --orange-deep) */
+table.dc-stat-strip {
+  border: 2px solid var(--dc-stat-strip-accent);
+  margin: 0.08in 0;
+}
+.dc-stat-strip th {
+  background: var(--dc-stat-strip-accent);
+  color: var(--paper-cream);
+  font-size: 7pt;
+  padding: 2px 8px;
+}
+.dc-stat-strip td {
+  background: var(--paper-cream);
+  padding: 3px 8px;
+  font-size: 8.5pt;
+  vertical-align: middle;
+}
+.dc-stat-strip td:first-child {
+  font-weight: 700;
+}
+.dc-stat-strip td.dc-stat-num {
+  text-align: center;
+  font-family: var(--font-tab);
+  font-weight: 700;
+  font-size: 13pt;
+  line-height: 1.1;
+  color: var(--dc-stat-strip-value);
 }
 
 /* ───────── TOC ───────── */
