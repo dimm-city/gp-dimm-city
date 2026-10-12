@@ -1270,7 +1270,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 <p><em>Utility. Mechanized. Reach 50 ft.</em></p>
 <p>A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinches around an object.</p>
 </div></div>
-<p>A long run packs tighter two-up: put the entries in <code>@columns 2</code> inside a <code>@section</code>. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. <a href="#ch-example-gear-tech" data-gp-source-token="[Gear &amp; Tech](#ch-example-gear-tech)" data-gp-source-occurrence="0">Gear &amp; Tech</a> shows gear in columns.</p>
+<p>Gear is a card with an orange rail. The name, the italic tagline and the bold price line are picked out by their shape, and a <code>@callout gear label=&quot;SPECS&quot;</code> at the foot sits a gap below the body. A long run packs tighter two-up: put the entries in <code>@columns 2</code> inside a <code>@section</code>. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. <a href="#ch-example-gear-tech" data-gp-source-token="[Gear &amp; Tech](#ch-example-gear-tech)" data-gp-source-occurrence="0">Gear &amp; Tech</a> shows gear in columns.</p>
 <h2>Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
 <pre><code data-source-range="489:496" class="language-markdown">| Augment | Slot | Cost | Effect |

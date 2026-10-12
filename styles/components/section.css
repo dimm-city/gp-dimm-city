@@ -454,6 +454,35 @@ h3 + .dc-section-panel {
   border-left-color: var(--augmerc-accent);
 }
 
+/* Gear card (`@gear`): `### name`, `*tagline*`, `**price · weight**`, body, and
+   usually a `@callout gear label="SPECS"` at the foot. A .dc-card with an
+   orange rail; the three lines are picked out by shape, so the author writes
+   plain markdown. The SPECS callout gets its gap from the callout's own token. */
+.dc-card.dc-gear {
+  --dc-alert-margin-top: var(--space-sm);
+  border-left-color: var(--orange);
+  padding: 10pt 14pt;
+}
+.dc-card.dc-gear > h3:first-child {
+  font-size: var(--fs-h4);
+  letter-spacing: var(--ls-display);
+  color: var(--blood);
+  margin: 0 0 4px;
+  break-after: avoid;
+}
+.dc-card.dc-gear > p:has(> em:only-child) {
+  font-size: var(--fs-body-sm);
+  color: var(--ink-smoke);
+  margin: 0 0 6px;
+}
+.dc-card.dc-gear > p:has(> strong:only-child) {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+  color: var(--hud-blue-dark);
+  margin: 0 0 6px;
+}
+
 /* ═════════════════════════════════════════════════════════════════════════
    CITIZEN-WALKTHROUGH — guide for filling out the Citizen File
    ═════════════════════════════════════════════════════════════════════════

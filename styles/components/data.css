@@ -489,38 +489,11 @@
   margin-top: 6pt;
 }
 
-/* ───────── GEAR ENTRY — REMOVED 2026-08-21 ─────────
-   Two families of gear styling lived here and NEITHER could ever match:
-
-     .dc-gear-entry*            — a manual-markup authoring path. No book
-                                  writes the class; it appears only in the
-                                  design guide's own documentation.
-     .section.dc-gear-list > .dc-card
-                                — added 2026-06-21 to mirror the above for
-                                  the @gear macro, against a wrapper the
-                                  plugin does not emit. plugin.js
-                                  emits a bare `<div class="dc-card dc-gear">`
-                                  with no .section.dc-gear-list around it.
-
-   Net effect: `@gear` has always rendered as a plain .dc-card — no orange
-   left rule, no blood-red h3, no italic tagline — across all 48 uses. The
-   distinctive gear treatment is not "broken by a regression"; it never
-   printed.
-
-   To REVIVE it, style what the plugin actually emits (a design decision,
-   since it changes 48 cards):
-
-     .dc-card.dc-gear { margin: 0.1in 0; padding: 10pt 14pt;
-       background: var(--paper-light); border-left: 3pt solid var(--orange);
-       break-inside: avoid; }
-     .dc-card.dc-gear h3 { font-size: var(--fs-h4);
-       letter-spacing: var(--ls-display); color: var(--blood);
-       margin: 0 0 4px; break-after: avoid; }
-     .dc-card.dc-gear > p:first-of-type em:only-child,
-     .dc-card.dc-gear > p.dc-flavor:first-of-type { font-style: italic;
-       font-size: var(--fs-body-sm); color: var(--ink-smoke);
-       margin: 0 0 8px; display: block; }
-   ──────────────────────────────────────────────────────── */
+/* ───────── GEAR ENTRY ─────────
+   `@gear` (`.dc-card.dc-gear`) is styled in components/section.css, beside the
+   card primitive it extends. The `.dc-gear-entry*` classes and the
+   `.section.dc-gear-list` wrapper that once lived here matched nothing the
+   plugin emits and were removed (2026-08-21). */
 
 /* ───────── STAT BLOCK (compact creature/NPC reference) ───────── */
 .dc-stat {

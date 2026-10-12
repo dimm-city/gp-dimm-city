@@ -193,9 +193,8 @@ components:
     recipe: "@gear … @end-gear"
     emits: div.dc-card.dc-gear
     css: styles/components/section.css
-    unstyled: [dc-gear]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "Renders as a plain .dc-card: nothing has ever styled .dc-gear (the only rules are inside the GEAR ENTRY tombstone comment in data.css). Reviving the treatment is a design decision — see that comment. Design guide only. A long run packs two-up in `@columns 2` inside a `@section`."
+    notes: "A .dc-card with an orange rail. The `###` name, the italic tagline paragraph and the bold price paragraph are picked out by shape, and a trailing `@callout gear label=\"SPECS\"` gets its gap from --dc-alert-margin-top. Not a section, so there is no `@section` word for it. A long run packs two-up in `@columns 2` inside a `@section`."
 
   - name: lede
     status: live

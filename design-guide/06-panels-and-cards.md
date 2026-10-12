@@ -480,7 +480,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 
 
-A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
+Gear is a card with an orange rail. The name, the italic tagline and the bold price line are picked out by their shape, and a `@callout gear label="SPECS"` at the foot sits a gap below the body. A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
 
 
 ## Tables
