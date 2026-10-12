@@ -70,7 +70,9 @@ words on `@section`, `@page` and `@chapter` that this release declares.
   `@column-panel`, `@sidebar inset`, `.dc-plain`, `.dc-allow-split` on a
   section, the labelled opener); a new test fails when a declared word has no
   entry or snippet. `docs/` describes the section variants, the page and
-  chapter words and the two rules that govern them.
+  chapter words and the two rules that govern them. A spelling pass over the
+  design guide, docs, catalog, snippets and comments fixed one mistake (a
+  stylesheet comment).
 - **Page templates are token-only.** The rules for the contents, credits, intro
   and chapter-start pages set `--dc-*` tokens on the components they adjust (the
   lede, the contents card, the flat section) and style only the page's own

@@ -315,7 +315,7 @@
   align-self: center;
   /* Container rule tethers the result text to its row color — without it the
      right-column text floats on plain paper-cream with no visual tie back to
-     the row band, reading as untether'd prose next to a designed table.
+     the row band, reading as untethered prose next to a designed table.
      Reads `--row-color` which is set per-variant on .dc-outcome-row.X. */
   border-left: 2px solid var(--row-color, var(--ink-dust));
 }
