@@ -16,7 +16,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
 | `@page [word] [.class…]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
-| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
+| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
 | `@page-break` · `@column-break` | — | Forced breaks |
 
@@ -41,6 +41,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels; `@columns 2` inside sets the entries in columns |
 | `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | `###` name, `*tags*`, body |
+| `@augment` · `@treasure` · `@vehicle` · `@drug` | `@end-augment` … | `####` name, `>` tagline, body, field lines; the next entry's marker closes it |
+| `@field` | `@end-field` | a variant word (`specs` `traits` `equipment` `effects` `side-effects` `requires`); `label="…"` |
 | `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
 | `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` … `generalist`, as a word or a `.class` |
 | `@specialty-intro` | `@end-specialty-intro` | `##` name, `###` spec tweak |
@@ -64,6 +66,9 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |
 | `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |
 | `.dc-sidebar` | a callout | Float it right, text wrapping on its left |
+| `.dc-catalog` | `@section` | What `@section catalog` writes (with `.dc-section-panel`) |
+| `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` … `@drug` | The entry card family; the kind class sets its tokens |
+| `.dc-field` · `.dc-field-<variant>` · `.dc-field-label` | `@field` | What `@field` and a `**Label:**` paragraph in a card write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
 | `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: aged paper, narrative typography, auto art float |
 | `.dc-citizen-walkthrough` | `@section` | What `@citizen-walkthrough` writes (with `.dc-section-panel`) |

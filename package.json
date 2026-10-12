@@ -49,6 +49,7 @@
       "styles/components/specialty.css",
       "styles/components/data.css",
       "styles/components/images.css",
+      "styles/components/entries.css",
       "styles/components/section.css",
       "styles/page-templates.css",
       "styles/page-rules.css",

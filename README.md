@@ -60,7 +60,13 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
-| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
+| General gear | `@gear` |
+| A cybernetic or mod | `@augment` |
+| A magic item or relic | `@treasure` |
+| A vehicle | `@vehicle` |
+| A drug, elixir or consumable | `@drug` |
+| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
+| A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |

@@ -9,7 +9,7 @@ All classes emitted by `plugin.js` must use the `dc-` prefix
 always check that the emitted class name has a matching CSS rule before shipping.
 
 
-**Declared markers.** `@definition`, `@faction` (`megacorp`, `cabal`, `cult`, `enforcer`), `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede` and `@block` (`panel`, `slate`, `shard`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them.
+**Declared markers.** `@definition`, `@faction` (`megacorp`, `cabal`, `cult`, `enforcer`), `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`, `@field`, `@toc`, `@lede` and `@block` (`panel`, `slate`, `shard`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them.
 
 **Section variants.** `section` is declared in `plugin.js` with variant words, not as a wrapper: `@section panel` and `@section flat` are the two general looks (`dc-section-panel`, `dc-section-flat`), `reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold (each is `dc-section-panel` plus `dc-section-<word>`, and a word only, with no marker of its own), and `npc`, `fiction`, `walkthrough`, `cards`, `flaws`, `ideals` and `dreams` are the section components below by word. A bare `@section` is core's plain box and this package styles nothing on it. `.dc-avoid-split` keeps a section whole and `.dc-snug` tightens its paragraph and list gaps; both are author classes on the marker line (`@section panel .dc-avoid-split`). The CSS is in `styles/components/section.css`.
 
@@ -39,6 +39,8 @@ always check that the emitted class name has a matching CSS rule before shipping
 - A `@card` left open at the end of the document closes silently. A `@procedure` or `@outcome` left open gets core's `declared_marker_eof_close` warning, because whatever follows it is read as its steps or its rows. A closer with nothing open warns (`declared_marker_close_without_open`).
 - The plugin reports, in plain words with the fix: an `@outcome` line that is not `roll | name | text`, a table, list or heading inside an `@outcome` (they are left out), an `@outcome` with no rows, and a `@procedure` with no numbered list (a bullet list does not count).
 
+**Entry cards, fields and the catalog.** `@gear`, `@augment`, `@treasure`, `@vehicle` and `@drug` are declared wrappers of one card family (`dc-card dc-entry dc-<kind>`); each kind only sets tokens (`styles/components/entries.css`). Each reports an entry with no `####`/`###` name, or with a second one (`validateEntry`). `@field` is a declared wrapper too (`div.dc-field.dc-field-<variant>`, variants `specs`, `traits`, `equipment`, `effects`, `side-effects`, `requires`, default label per variant, `label="…"` to override, `dcFields`). Its shortcut is the `FIELD_LABELS` table in `plugin.js`: inside an entry card, `@npc-stat` / `@section npc` or `@skill`, a paragraph that opens with a listed bold label (`**SPECS:**`, `**Traits:**`, `**Wirephreak Gear:**`, `**TECHNOENHANCEMENT:**` …) is rewritten to the same markup (`dcFieldLines`). A new label is one line in the table; a new field type is a variant there plus a token-setter rule. `@section catalog` is a panel (`dc-section-panel dc-catalog`) that rules its entries instead of boxing them.
+
 **Callouts.** `@callout` is a declared wrapper, `div.dc-alert` with the variant's class, and `@dm-note` is its alias with the `dm` variant preset (`@dm-note` is `@callout dm`; `@end-dm-note` closes it). The variant is a bare word: `note`, `warning`, `dm`, `vibe`, `origin`, `visit`, `gear` or `example` (the one spelling for a worked example), as in `@callout vibe` or `@callout .float-right origin label="Image Is Everything"`. A core rule (`dcCallouts`) adds the variant's name as the label (`Dream Master Note` for `dm`) unless `label="…"` is given. No variant is a note.
 
 - `variant=` is no longer accepted: `@callout variant=note` is read as a plain attribute, so the callout would be a note. The plugin reports each one in plain words, on its line: `@callout: no longer takes variant=note; write "@callout note" instead.`
@@ -55,7 +57,7 @@ always check that the emitted class name has a matching CSS rule before shipping
 `@roll-table`, `@end-roll-table`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@lede`, `@end-lede`,
+`@gear`, `@end-gear`, `@augment`, `@end-augment`, `@treasure`, `@end-treasure`, `@vehicle`, `@end-vehicle`, `@drug`, `@end-drug`, `@field`, `@end-field`, `@lede`, `@end-lede`,
 `@card-grid`, `@end-card-grid`,
 `@citizen-walkthrough`, `@end-citizen-walkthrough`, `@fiction-excerpt`, `@end-fiction-excerpt`,
 `@npc-stat`, `@end-npc-stat`, `@flaws`, `@end-flaws`, `@ideals`, `@end-ideals`, `@dreams`, `@end-dreams`

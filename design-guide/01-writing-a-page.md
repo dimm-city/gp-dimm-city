@@ -50,7 +50,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-`@section panel` is the card: cream substrate, accent rail, clipped corner, shadow, and the first `##` or `###` as a title bar. A bare `@section` is core's plain box: it groups what is inside it and adds no look, so the text sits on the page. Between them are `@section flat` (the rail, no card) and `@section aside` (an inset note); [Panels & Cards](#ch-panels) shows all three. For columns, wrap the content in `@columns 2`.
+`@section panel` is the card: cream substrate, accent rail, clipped corner, shadow, and the first `##` or `###` as a title bar. A bare `@section` is core's plain box: it groups what is inside it and adds no look, so the text sits on the page. Between them are `@section flat` (the rail, no card), and four kinds of text (`reference`, `lore`, `dm`, `choose`); [Panels & Cards](#ch-panels) shows them. For columns, wrap the content in `@columns 2`.
 
 Sections split across pages by default. Add `.dc-avoid-split` to keep one whole.
 
