@@ -10,16 +10,30 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | Author writes | Macro / trigger | Emitted class(es) |
 |---|---|---|
 | `@lede … @end-lede` | DC plugin | `.dc-intro` |
-| `@section .dc-X` | marker plugin | `.section.dc-X` |
+| `@section` | marker plugin | `.section` (plain: this package styles nothing on it) |
+| `@section panel` | DC section word | `.section.dc-section-panel` |
+| `@section flat` | DC section word | `.section.dc-section-flat` |
+| `@section aside` | DC section word | `.section.dc-section-aside` |
+| `@npc-stat` · `@section npc` | DC section component | `.section.dc-section-panel.dc-npc-stat` |
+| `@citizen-walkthrough` · `@section walkthrough` | DC section component | `.section.dc-section-panel.dc-citizen-walkthrough` |
+| `@flaws` / `@ideals` / `@dreams` · `@section flaws` … | DC section component | `.section.dc-section-panel.dc-flaws` (`-ideals`, `-dreams`) |
+| `@fiction-excerpt` · `@section fiction` | DC section component | `.section.dc-fiction-excerpt` |
+| `@card-grid` · `@section cards` | DC section component | `.section.dc-card-grid` |
+| `@section … .dc-avoid-split` | modifier | `.dc-avoid-split` (keeps the section whole) |
+| `@section … .dc-snug` · `@page .dc-snug` | modifier | `.dc-snug` (tighter paragraph and list gaps) |
+| `@page chapter-start` | DC page word | `.page.dc-page-chapter-start` |
+| `@page intro` · `credits` · `contents` · `citizen-file` | DC page word | `.page.dc-page-intro` · `-credits` · `-contents` · `-citizen-file` |
+| `@page full-bleed` · `@page blank` | core page word | `.page.gp-page-full-bleed` · `.page.gp-page-blank` |
+| `@chapter rules` · `lore` · `citizen-file` · `specialty` | DC chapter word | `.chapter.dc-chapter-rules` · `-lore` · `-citizen-file` · `-specialty` |
 | `@page .NAME` | marker plugin | `.page.NAME` |
-| `@block variant=panel` | DC plugin | `.dc-block.dc-panel` |
-| `@block variant=slate` | DC plugin | `.dc-block.dc-slate` |
-| `@block variant=shard` | DC plugin | `.dc-block.dc-shard` |
-| `@block variant=codex` | DC plugin | `.dc-block.dc-codex` |
+| `@block panel` | DC plugin | `.dc-block.dc-panel` |
+| `@block slate` | DC plugin | `.dc-block.dc-slate` |
+| `@block shard` | DC plugin | `.dc-block.dc-shard` |
+| `@block codex` | DC plugin | `.dc-block.dc-codex` |
 | `@specialty .NAME` | DC plugin | `.dc-specialty.NAME` (scope parent for specialty cards) |
 | `@skill … @end-skill` | DC plugin | `.dc-skill-card` |
 | `@learning-path … @end-learning-path` | DC plugin | `.dc-path-shell` + `.dc-learning-path` |
-| `@chapter NAME` | marker plugin | `<div class="chapter" data-chapter-label="NAME">` |
+| `@chapter NAME` | marker plugin | `<div class="chapter" data-chapter-label="NAME">` (when NAME is not a declared chapter word) |
 | `> [!VIBE]` | GFM alert + DC plugin | `.dc-vibe-callout` |
 | `> [!DM]` | GFM alert + DC plugin | `.dc-dm-note` |
 | `> [!ORIGIN]` | GFM alert + DC plugin | `.dc-origin-callout` |
@@ -60,16 +74,32 @@ Use this to choose the right callout type before reaching for a class name.
    └── General rules callout      → dc-alert
 ```
 
-### Block Components (via `@panel`, `@slate`, `@shard`, `@codex`)
+### Block Components (via `@block panel`, `slate`, `shard`, `codex`)
 - `.dc-block` — base block container
-- `.dc-block.dc-panel` — data/rules panel
+- `.dc-block.dc-panel` — data/rules panel (a `@block` register; the general card is `@section panel`)
 - `.dc-block.dc-slate` — authority/authority-voice
 - `.dc-block.dc-shard` — flavor/atmosphere
 - `.dc-block.dc-codex` — reference/glossary
 
+### Sections
+- `.dc-section-panel` — the card: cream substrate, accent rail, clipped corner, title bar
+- `.dc-section-flat` — the rail on a plain host
+- `.dc-section-aside` — an inset note (the `.dc-sidebar-box` treatment, rail on `--dc-section-accent`)
+- `.dc-npc-stat`, `.dc-citizen-walkthrough`, `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — panels that carry their own class
+- `.dc-fiction-excerpt`, `.dc-card-grid` — section components that are not panels
+- `.dc-avoid-split`, `.dc-snug` — modifiers
+
+A bare `.section` has no rule. Chrome sits on a variant class; the section accent and background are `--dc-section-accent` and `--dc-section-bg`, and the panel's edge is `--dc-section-clip` and `--dc-section-rail`.
+
+### Locations (page and chapter words)
+- `.dc-page-chapter-start`, `.dc-page-intro`, `.dc-page-credits`, `.dc-page-contents`, `.dc-page-citizen-file`
+- `.dc-chapter-rules`, `.dc-chapter-lore`, `.dc-chapter-citizen-file`, `.dc-chapter-specialty`
+
+A location sets tokens on the components inside it and draws nothing of its own.
+
 ### Sidebars
-- `.dc-sidebar`
-- `.dc-sidebar-box`
+- `.dc-sidebar` — floated box (`@sidebar`)
+- `.dc-sidebar-box` — aside in the text flow (`@sidebar-box`)
 
 ### Skill Cards
 - `.dc-skill-card` / `.dc-skill-card.dc-highlight`

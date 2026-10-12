@@ -11,7 +11,7 @@ The enclosures: the section variants, four block registers, the sidebar box, def
 
 ## Section
 
-A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar of all three.
+A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar of all three. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ```markdown {.dg-split}
 @section panel

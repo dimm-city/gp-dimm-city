@@ -31,8 +31,8 @@ export const markers = {
 `wrapper(cls, extra)` is a two-line helper in `plugin.js` that adds `autoCloseAt: ['eof']`, so a wrapper left open at the end of a file closes silently, as these always have. To add one:
 
 1. Add its line to `markers` (kebab-case name; `end-` names are reserved for the auto-derived closer).
-2. Add `snippets/<name>.md`, whose first line is the marker. The editor inserts it when the author types `@`.
-3. Add the CSS, the `components.yaml` entry and the design-guide specimen as usual.
+2. Add `snippets/<name>.md`, whose first line is the marker and which holds at least one `{{placeholder}}`. The editor inserts it when the author types `@`.
+3. Add the CSS, the `components.yaml` entry and the design-guide specimen as usual. The entry lists the marker under `markers:` and the snippet under `snippet:`; `test/integrity.test.js` (*component catalog*) fails if a declared marker or variant word has no entry or no snippet, if a snippet belongs to no entry, or if a live entry lists a spelling `plugin.js` does not declare.
 
 Things to know:
 
@@ -57,7 +57,25 @@ Add `variants` only when the CSS styles the component differently per variant wo
 
 A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
-Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `aside` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@procedure`, `@callout` (its default label). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+
+### A section variant, a page word, a chapter word
+
+`section`, `page` and `chapter` are core's markers, so the plugin declares only the words, with no class or wrapper of its own:
+
+```js
+section: { variants: { panel: 'dc-section-panel', flat: 'dc-section-flat', aside: 'dc-section-aside' } },
+page: { variants: { 'chapter-start': 'dc-page-chapter-start', … } },
+chapter: { variants: { rules: 'dc-chapter-rules', … } },
+```
+
+`@section panel` is `<div class="section dc-section-panel">`, and the raw class (`@section .dc-section-panel`) stays valid. Names follow the pattern: `dc-section-<word>`, `dc-page-<word>`, `dc-chapter-<word>`. Where the rule goes decides whether it is right:
+
+- **A section variant is a token setter.** Its class sets the `--dc-section-*` tokens and the chrome that reads them (about eight declarations); a new silhouette is a new component, not a new variant. It goes in `styles/components/section.css`, and its token defaults in `dc-component-defaults.css`. No rule in `styles/` may match `.section` without a `dc-` class beside it (*a bare @section is unstyled*).
+- **A page or chapter word is a location.** Its rules go in `styles/page-templates.css` and set `--dc-*` tokens on the components inside it, never `background`, `box-shadow`, `padding`, `clip-path` or a pseudo-element on a component (*a location adjusts components by tokens only*). A page word that selects a named page also needs its `@page` block in `page-rules.css`.
+- **A section component that is also a word** (`@npc-stat` is `@section npc`) carries the SAME classes in both declarations, so one rule serves both spellings.
+- **A modifier is a class, not a word:** `.dc-avoid-split` and `.dc-snug` are written on the marker line (`@section panel .dc-avoid-split`). Give it a catalog entry with `modifier:` and a snippet.
+- Add the catalog entry (`markers: ["@section panel"]`), a snippet (`section-panel.md`) and a specimen in the design guide; `test/integrity.test.js` checks the first two.
 
 ### An alias with a preset
 
@@ -120,7 +138,13 @@ Rules of thumb:
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
 `@gear`, `@end-gear`, `@lede`, `@end-lede`,
-`@glossary`, `@end-glossary`
+`@glossary`, `@end-glossary`,
+`@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
+`@flaws`, `@ideals`, `@dreams` (each with its `@end-` form)
+
+Words: `@section panel | flat | aside | npc | fiction | walkthrough | cards | flaws | ideals | dreams`,
+`@page chapter-start | intro | credits | contents | citizen-file`,
+`@chapter rules | lore | citizen-file | specialty`. Modifiers: `.dc-avoid-split`, `.dc-snug`.
 
 > **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@roll-table` / `@options-table` (use `@outcome` or a pipe table).
 >
@@ -128,13 +152,18 @@ Rules of thumb:
 > `.section.dc-class-entry` CSS were retired after zero production usage. The
 > CSS was parked in `css/deprecated.css`, which has since been deleted —
 > the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules. Do not use
-> them in new content — author the same layout with `@section .dc-class-entry`
-> plus structural child elements (see the design guide's page-templates chapter).
+> them in new content — author the same layout with `@section panel`
+> plus structural child elements (see the design guide's panels chapter).
 >
 > **Retired — `@chapter-opener`:** never re-add it. The labelled chapter-opener
 > composite (core's `.chapter-opener` badge on a labelled chapter's first page,
 > styled by this package) was removed from the stylesheets; books open a chapter
-> with `@page .page-chapter-start .dc-chapter-start`.
+> with `@page chapter-start`.
+>
+> **Retired in 1.5.0 and earlier:** `@tabbed`, `@column-panel`, `@sidebar inset`,
+> `@section .dc-plain` and `.dc-allow-split` on a section. `docs/macros.md` names
+> the replacement for each; `components.yaml` keeps a `status: retired` entry,
+> and the catalog test fails if the entry goes missing or the marker comes back.
 
 ## Blank-line habit for markers
 
@@ -161,7 +190,7 @@ component.)
 Good shape:
 
 ```html
-<section class="dc-intel-card variant-2">
+<section class="dc-intel-card dc-intel-two">
   <div class="dc-intel-card-head">Black Site</div>
   <div class="dc-intel-card-body">
     <p>Body copy.</p>
@@ -172,7 +201,7 @@ Good shape:
 Even simpler shape:
 
 ```html
-<section class="dc-intel-card variant-2">
+<section class="dc-intel-card dc-intel-two">
   <h3>Black Site</h3>
   <p>The vault is below street level.</p>
   <ul>
@@ -197,7 +226,7 @@ Rules:
 Declare it in the `markers` table (see "Declared markers" above): one line for a plain wrapper, plus a core rule if it rebuilds its content. A hypothetical `@intel-card` with two variants and an `#id`:
 
 ```js
-'intel-card': wrapper('dc-intel-card', { tag: 'section', variants: { two: 'variant-2', three: 'variant-3' } }),
+'intel-card': wrapper('dc-intel-card', { tag: 'section', variants: { two: 'dc-intel-two', three: 'dc-intel-three' } }),
 ```
 
 Core parses `@intel-card two #black-site`, adds the classes and the `id`, and closes it at `@end-intel-card`, the next `@intel-card`, or the next `@page`/`@section`/`@chapter`. No parser, no closer and no state to write.
@@ -300,12 +329,12 @@ That pattern is usually the right default for a new wrapper macro:
 Variants should override only the small public API or a truly exceptional property.
 
 ```css
-.dc-intel-card.variant-2 {
+.dc-intel-card.dc-intel-two {
   --dc-intel-bg: var(--paper-aged);
   --dc-intel-accent: var(--crimson);
 }
 
-.dc-intel-card.variant-3 {
+.dc-intel-card.dc-intel-three {
   --dc-intel-bg: var(--ink-dark);
   --dc-intel-fg: var(--paper-cream);
   --dc-intel-accent: var(--amber);

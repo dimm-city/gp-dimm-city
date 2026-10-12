@@ -11,6 +11,10 @@ always check that the emitted class name has a matching CSS rule before shipping
 
 **Declared markers.** `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block` (`panel`, `slate`, `shard`, `codex`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them.
 
+**Section variants.** `section` is declared in `plugin.js` with variant words, not as a wrapper: `@section panel`, `@section flat` and `@section aside` are the three general looks (`dc-section-panel`, `dc-section-flat`, `dc-section-aside`), and `npc`, `fiction`, `walkthrough`, `cards`, `flaws`, `ideals` and `dreams` are the section components below by word. A bare `@section` is core's plain box and this package styles nothing on it. `.dc-avoid-split` keeps a section whole and `.dc-snug` tightens its paragraph and list gaps; both are author classes on the marker line (`@section panel .dc-avoid-split`). The CSS is in `styles/components/section.css`.
+
+**Location words.** `page` and `chapter` are declared the same way. `@page chapter-start`, `intro`, `credits`, `contents` and `citizen-file` write `dc-page-<word>`; `@chapter rules`, `lore`, `citizen-file` and `specialty` write `dc-chapter-<word>`. Core adds `@page blank` and `@page full-bleed`. A word on `@chapter` that is not declared stays the chapter's label. A location only sets tokens on the components inside it (`styles/page-templates.css`); it draws nothing of its own.
+
 **Declared section markers.** `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals` and `@dreams` are the section-styled components, declared with `section: true`. Each is a real core `@section` carrying its class (a card-like one also carries `dc-section-panel`), and each is also a word on `@section`: `@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`, `@citizen-walkthrough` is `@section walkthrough`, `@card-grid` is `@section cards`, and `@flaws`/`@ideals`/`@dreams` keep their names. The two spellings write the same classes (the word form adds `data-section="<word>"`). `@end-npc-stat` acts as `@end-section`; the section closes at the next `@section`/`@page` like any section, and `@continue` keeps its class. A bare `@section` is core's plain box; `@section panel`, `@section flat` and `@section aside` are the general looks. Sections split across pages by default. Modifiers (`.gp-columns-2`, `.dc-snug`, `.dc-avoid-split`) stay author classes: `@card-grid .dc-snug`. See [adding-macros.md](./adding-macros.md#declared-markers-the-default-for-a-plain-wrapper) for how to add one.
 
 **Declared, then transformed.** `@specialty`, `@learning-path` and `@skill` are declared in the same table, so core opens, nests and closes them, and the plugin's core rules rewrite what sits inside each (`dcLearningPaths`, `dcSkillCards`). They nest as specialty > learning path > skill:
@@ -54,4 +58,16 @@ always check that the emitted class name has a matching CSS rule before shipping
 `@citizen-walkthrough`, `@end-citizen-walkthrough`, `@fiction-excerpt`, `@end-fiction-excerpt`,
 `@npc-stat`, `@end-npc-stat`, `@flaws`, `@end-flaws`, `@ideals`, `@end-ideals`, `@dreams`, `@end-dreams`
 
-**Retired — not implemented, do not use:** `@tape` (removed in 1.2.0: write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344), `@roll-table` / `@options-table` (use `@outcome` or a pipe table), `@chapter-opener` (a chapter opens with `@page .page-chapter-start .dc-chapter-start` — see the design guide's page-templates chapter) and `@class-entry` / `@end-class-entry` (retired 2026-05-24; its CSS was parked in `css/deprecated.css`). Neither marker is recognised by the plugin, so both pass through as literal text.
+**Retired — not implemented, do not use.** None of these is recognised by the plugin; the marker lines pass through as literal text (or, for a class, render the class with no rule behind it). `components.yaml` has a `status: retired` entry for each, with `replaced_by`.
+
+- `@tabbed` and `@section .dc-tabbed`: write `@section panel` (its first heading prints as the bar).
+- `@column-panel`: write `@section panel` with the body in `@columns 2`.
+- `@sidebar inset` and `@page .page-sidebar`: write `@sidebar-box` for a short aside in the text flow.
+- `@section .dc-plain`: write `@section` (a bare section is already plain).
+- `.dc-allow-split` on a section: sections split by default; write `.dc-avoid-split` where one must stay whole. `@skill {.dc-allow-split}` is unchanged.
+- `@chapter C.01` followed by `@page intro` (the labelled chapter-opener): open a chapter with `@page chapter-start` and a `# Title`.
+- `@chapter-opener`: the same; a chapter opens with `@page chapter-start`.
+- `@tape` (removed in 1.2.0: write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344).
+- `@roll-table` / `@options-table`: use `@outcome` or a pipe table.
+- `@class-entry` / `@end-class-entry` (retired 2026-05-24): write `@section panel` with plain child elements.
+- The raw page spellings `@page .page-chapter-start .dc-chapter-start`, `.page-toc`, `.page-credits .dc-credits`, `.page-intro` and `.dc-citizen-file-page`: still render their classes but get no template rules. Write the page word.

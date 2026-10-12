@@ -54,7 +54,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 Sections split across pages by default. Add `.dc-avoid-split` to keep one whole.
 
-The named components have a marker of their own, and each is also a word on `@section`: `@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`, `@citizen-walkthrough` is `@section walkthrough`, `@card-grid` is `@section cards`, and `@flaws`, `@ideals` and `@dreams` are `@section flaws`, `@section ideals` and `@section dreams`. Either spelling renders the same.
+The named components have a marker of their own, and each is also a word on `@section`: `@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`, `@citizen-walkthrough` is `@section walkthrough`, `@card-grid` is `@section cards`, and `@flaws`, `@ideals` and `@dreams` are `@section flaws`, `@section ideals` and `@section dreams`. Either spelling renders the same. Not sure which to use? [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ## Attributes
 

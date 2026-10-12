@@ -70,6 +70,34 @@ Three rules carry through the whole system, and they are worth knowing before an
 2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section panel #rules .dc-snug`.
 3. **Classes on a parent change everything inside it.** `@specialty .augmerc` gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.
 
+## Pick a section
+
+Start from what you are writing, not from a class name: find it on the left and write what is on the right. The same table is in the package's README.
+
+| I am writing… | Use |
+|---|---|
+| Rules or reference text under a heading | `@section panel` |
+| The same, kept on one page | `@section panel .dc-avoid-split` |
+| Unboxed text that carries the accent rail | `@section flat` |
+| A short note set off from the text | `@section aside` (or `@sidebar-box`) |
+| A term and its definition | `@definition` |
+| A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| A box in one of four registers: panel, slate, shard, codex | `@block …` |
+| A box floated beside the text | `@sidebar` |
+| Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
+| A creature or NPC | `@npc-stat` |
+| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
+| A roll-result ladder | `@outcome` |
+| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
+| The Citizen File field list | `@citizen-walkthrough` |
+| The specialty catalog | `@card-grid` |
+| A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
+| Grouping, with no styling | `@section` |
+| A section that overflows by a line or two | add `.dc-snug` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+
+The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. Sections split across pages; add `.dc-avoid-split` to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
+
 ## Quick start
 
 Install the package into a book, write, and preview:

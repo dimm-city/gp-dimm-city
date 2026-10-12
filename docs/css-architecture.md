@@ -115,10 +115,38 @@ be pointless — font-family lookup is not a cascade contest.
 |---|---|---|---|
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
-| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
-| `dc.templates` | `page-templates.css` | `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, any column layout |
+| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides, and the section variants (`.dc-section-panel`, `-flat`, `-aside` and the section components, all in `section.css`) | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
+| `dc.templates` | `page-templates.css` | `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), the location rules for the page and chapter words (tokens only), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, any column layout |
 | `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, column layout |
 | *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
+
+### Sections and locations
+
+Two kinds of word sit on the structural markers, and each has one home.
+
+A **section variant** is a word on `@section` (`@section panel`, `flat`, `aside`, or a component word such as `npc`). The plugin declares it in `plugin.js` (`markers.section.variants`), core resolves it to a class, and the look is that class's rule. A **location** is a word on `@page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) or on `@chapter` (`rules`, `lore`, `citizen-file`, `specialty`); it resolves to `dc-page-<word>` or `dc-chapter-<word>`, and it re-tunes the components inside it. A location never draws a component.
+
+| What | Lives in | Layer |
+|---|---|---|
+| Section variants: chrome and the rules that style them (`.dc-section-panel`, `.dc-section-flat`, `.dc-section-aside`, `.dc-npc-stat`, `.dc-fiction-excerpt`, …) | `components/section.css` | `dc.components` |
+| Locations: what a page or chapter word changes | `page-templates.css` | `dc.templates` |
+| The named page a page word selects, and its margin boxes | `page-rules.css` | `dc.pages` |
+| Token defaults for every public `--dc-section-*` knob (and every other component token) | `dc-component-defaults.css` | `dc.tokens` |
+
+Two rules keep the split honest, and a test enforces each:
+
+- **No plugin rule on a bare `.section`.** A bare `@section` is core's plain box and splits across pages. Chrome lives on a variant class, so no selector in `styles/**` may match `.section` without a `dc-` class on the same element. Enforced by `test/conventions.test.js`: *a bare @section is unstyled > no selector in styles/\*\* matches `.section` without a dc- class on the same element*.
+- **Location rules set tokens only.** A rule keyed on a page or chapter class may style its own element (the page's margins, its `h1`) and plain elements (`p`, `li`, `strong`), but on a component it declares custom properties and nothing else: never `background`, `box-shadow`, `padding`, `clip-path` or a pseudo-element. The component's own rule reads the token. Enforced by `test/conventions.test.js`: *a location adjusts components by tokens only > a rule keyed on a page or chapter class declares only custom properties on a component*.
+
+```css
+/* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
+.page.dc-page-chapter-start .dc-fiction-excerpt {
+  --dc-fiction-rule: 2px;
+  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
+}
+```
+
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 
@@ -383,20 +411,21 @@ a CSS class to that named page in the same file:
 }
 
 /* Named-page assignment — lives adjacent to its @page declaration */
-.dc-chapter-start { page: chapter-start; }
+.dc-page-chapter-start { page: chapter-start; }
 ```
 
-Named pages in this codebase: `chapter-start`, `chapter-end`, `front-matter`, `full`,
-`citizen-file`, `clean`. `chapter-end` is declared only — no markdown source in this
-repo carries `.chapter-end`. `@page :blank` styles blank pages the fragmenter
-inserts — use it to suppress footers on them.
+Named pages in this codebase: `chapter-start`, `front-matter`, `front-matter-intro`,
+`full` and `citizen-file`. A page word selects its named page (`@page contents` and
+`credits` are `front-matter`, `intro` is `front-matter-intro`). `@page :blank` styles
+blank pages the fragmenter inserts — use it to suppress footers on them.
 
 ### Axis 2 — Content Layout Selectors
 
 While `@page` controls the physical box, `.page.*` selectors control what happens
 inside it: break behavior and geometry (columns are `@columns`, core's). Those selectors live
-in the design guide's own sheet. The `.page` class is the structural hook;
-specialized classes extend it:
+in `page-templates.css`; a guide-only specimen's live in the design guide's own sheet. The
+`.page` class is the structural hook; the page word (`@page chapter-start` writes
+`dc-page-chapter-start`) is the second class that names the page type:
 
 ```css
 /* shared or guide-owned content layout */
@@ -415,7 +444,7 @@ specialized classes extend it:
 }
 ```
 
-The double-class pattern (`.page.dc-chapter-start`, `.page.page-toc`) is intentional:
+The double-class pattern (`.page.dc-page-chapter-start`, `.page.dc-page-contents`) is intentional:
 `.page` provides the base reset; the second class carries the page-type identity.
 Specificity (0,2,0) beats single-class overrides from upstream CSS without
 `!important`.
@@ -547,16 +576,16 @@ A rule scoped to `section#ch-name` is guaranteed not to bleed into adjacent chap
 
 ```css
 /* the design guide's own sheet */
-.page.page-credits.dc-credits > h1,
-.page.page-intro.dg-intro > h1,
-.page.page-chapter-start.dc-chapter-start > h1 {
+.page.dc-page-credits > h1,
+.page.dc-page-intro > h1,
+.page.dc-page-chapter-start > h1 {
   color: var(--paper-cream);
   background: var(--rust);
   clip-path: var(--clip-banner);
 }
 ```
 
-The triple-class specificity ensures this wins without `!important`.
+Two classes on the page element are enough to win without `!important`.
 
 ### Strategy 4 — Wrapper Containers and the `@macro` Pattern
 
@@ -633,6 +662,10 @@ handles:
 
 Use the ID form for chapter-specific exceptions. Use the class form for page-type
 conventions that should apply consistently across the book.
+
+A word the plugin declares (`@chapter rules`) is not a label: it writes the class
+`dc-chapter-rules`, and `page-templates.css` keys the chapter's section colour on it. Use
+the word, not a class of your own, for a register the package already names.
 
 ### Strategy 6 — When You DO Need a Class
 
@@ -750,7 +783,7 @@ column contexts. Pair both for full compatibility:
 
 ```css
 /* Correct — page break only, not column break */
-.dc-chapter-start {
+.dc-page-chapter-start {
   break-before: page;
   page-break-before: always;
 }

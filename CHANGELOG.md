@@ -63,6 +63,14 @@ words on `@section`, `@page` and `@chapter` that this release declares.
 
 ### Changed
 
+- Documentation: a "Pick a section" table (in the README and at the start of the
+  design guide) maps what you are writing to the marker; `components.yaml` now
+  lists every marker, section, page and chapter word and modifier with its
+  snippet, and names the replacement for each retired item (`@tabbed`,
+  `@column-panel`, `@sidebar inset`, `.dc-plain`, `.dc-allow-split` on a
+  section, the labelled opener); a new test fails when a declared word has no
+  entry or snippet. `docs/` describes the section variants, the page and
+  chapter words and the two rules that govern them.
 - **Page templates are token-only.** The rules for the contents, credits, intro
   and chapter-start pages set `--dc-*` tokens on the components they adjust (the
   lede, the contents card, the flat section) and style only the page's own

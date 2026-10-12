@@ -369,13 +369,13 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 - `.page` / `.chapter` selectors are reserved for **counters, page-templates, TOC IDs, and per-instance positioning**.
 - Component visuals live exclusively in `components/*.css` under the `.dc-*` namespace (kebab-case).
 - The package owns no column layout: columns are core's `@columns N`. The package sets only `--gp-column-gap` and `--gp-column-rule`, once, at `:root` (column-ownership rule).
-- `@page` directive class args are limited to **page-template names** (`.dc-chapter-start`, `.card-grid`, etc.).
+- `@page` and `@chapter` take the **declared words** (`@page chapter-start`, `@chapter rules`); a book never invents a page class of its own.
 
 ### Naming
 
 - `.dc-component-name` lowercase-kebab.
 - Tokens: `--<scope>-<role>` (e.g., `--dc-card-tab-bg`, `--brand-magenta`, `--augmerc-accent`).
-- Macros: `@section .dc-X` for reusable visual components. `@page .TEMPLATE-NAME` for page-fitting concerns.
+- Macros: `@section <word>` for reusable visual components (`@section panel`; the `.dc-X` class spelling is equivalent). `@page <word>` and `@chapter <word>` for where content sits.
 
 ### Counter strategy
 
@@ -385,8 +385,8 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 
 - Component styles in `components/*.css` expose `--dc-X-*` token surfaces defaulted in `dc-component-defaults.css`.
 - Per-book overrides in the book's own sheet (unlayered — it beats this package at any specificity) set those tokens via **natural selector chains** (chapter id → page template → section component).
-- Override files NEVER carry bare `.dc-*` rules — only context-scoped selectors (`#ch-X .dc-Y`, `.page.Z .dc-Y`, `.section.dc-X`).
-- Section variants ride on `@section .dc-X` only. No utility variant classes (`.dc-accent-X`, `.variant-Y` are forbidden).
+- Override files NEVER carry bare `.dc-*` rules — only context-scoped selectors (`#ch-X .dc-Y`, `.page.dc-page-Z .dc-Y`, `.dc-chapter-Z .dc-Y`, `.section.dc-X`).
+- Section variants ride on the section's own variant word (`@section panel`, `@section flat`, `@section aside`, or a component word such as `@section npc`) or its `.dc-X` class. No utility variant classes (`.dc-accent-X`, `.variant-Y` are forbidden); declared section, page and chapter variants (`@section panel`, `@page chapter-start`, `@chapter rules`) are not utility classes, because each is one word the plugin declares, resolves to one `dc-` class, and sets tokens rather than drawing a one-off look.
 - Authors NEVER write per-element class attributes for styling (`{.dc-warning}` on a paragraph is forbidden).
 
 ### File ownership
@@ -397,7 +397,8 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 | `dc-fonts.css` | `@font-face` |
 | `dc-core.css` | `html`/`body` baseline, element resets, heading defaults, `* { print-color-adjust }` |
 | `components/*.css` | Every `.dc-*` component (base + thin variants + token contracts) |
-| `page-templates.css` | `.page.*` layouts, paged wrapper scaffolding (no column layout: that is core's `@columns`) |
+| `components/section.css` | The section variants (`.dc-section-panel`, `-flat`, `-aside`) and the section components |
+| `page-templates.css` | `.page.*` layouts, paged wrapper scaffolding, and the location rules for the page and chapter words (tokens only; no column layout: that is core's `@columns`) |
 | `page-rules.css` | `@page` declarations, named pages, folio + chapter footers |
 | the design guide's own sheet (unlayered) | `div.chapter` scaffolding, design-guide specimen chrome |
 | a book's own sheet (unlayered) | Context-scoped layout rules only: chapter / page-template / section context selectors setting `--dc-*` tokens |

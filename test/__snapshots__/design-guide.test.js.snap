@@ -49,9 +49,98 @@ This is what you type.
 <li data-source-range="69:70"><strong>Markers take attributes</strong> — <code>#id</code>, <code>.class</code>, and <code>key=&quot;value&quot;</code> — in any order after the name: <code>@section panel #rules .dc-snug</code>.</li>
 <li data-source-range="70:72"><strong>Classes on a parent change everything inside it.</strong> <code>@specialty .augmerc</code> gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.</li>
 </ol>
+<h2>Pick a section</h2>
+<p>Start from what you are writing, not from a class name: find it on the left and write what is on the right. The same table is in the package’s README.</p>
+<table>
+<thead data-source-range="76:77">
+<tr data-source-range="76:77">
+<th>I am writing…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody data-source-range="78:97">
+<tr data-source-range="78:79">
+<td>Rules or reference text under a heading</td>
+<td><code>@section panel</code></td>
+</tr>
+<tr data-source-range="79:80">
+<td>The same, kept on one page</td>
+<td><code>@section panel .dc-avoid-split</code></td>
+</tr>
+<tr data-source-range="80:81">
+<td>Unboxed text that carries the accent rail</td>
+<td><code>@section flat</code></td>
+</tr>
+<tr data-source-range="81:82">
+<td>A short note set off from the text</td>
+<td><code>@section aside</code> (or <code>@sidebar-box</code>)</td>
+</tr>
+<tr data-source-range="82:83">
+<td>A term and its definition</td>
+<td><code>@definition</code></td>
+</tr>
+<tr data-source-range="83:84">
+<td>A boxed note, warning, DM note, vibe, origin or visit</td>
+<td><code>@callout …</code> (<code>@dm-note</code>)</td>
+</tr>
+<tr data-source-range="84:85">
+<td>A box in one of four registers: panel, slate, shard, codex</td>
+<td><code>@block …</code></td>
+</tr>
+<tr data-source-range="85:86">
+<td>A box floated beside the text</td>
+<td><code>@sidebar</code></td>
+</tr>
+<tr data-source-range="86:87">
+<td>Fiction, lore, a chapter-opener story</td>
+<td><code>@fiction-excerpt</code></td>
+</tr>
+<tr data-source-range="87:88">
+<td>A creature or NPC</td>
+<td><code>@npc-stat</code></td>
+</tr>
+<tr data-source-range="88:89">
+<td>Gear, a vehicle, a drug, an augment</td>
+<td><code>@gear</code> (and <code>@callout gear label=&quot;SPECS&quot;</code> for the specs)</td>
+</tr>
+<tr data-source-range="89:90">
+<td>A roll-result ladder</td>
+<td><code>@outcome</code></td>
+</tr>
+<tr data-source-range="90:91">
+<td>Flaw, ideal or dream choices</td>
+<td><code>@flaws</code>, <code>@ideals</code>, <code>@dreams</code> (each a run of <code>@card</code>)</td>
+</tr>
+<tr data-source-range="91:92">
+<td>The Citizen File field list</td>
+<td><code>@citizen-walkthrough</code></td>
+</tr>
+<tr data-source-range="92:93">
+<td>The specialty catalog</td>
+<td><code>@card-grid</code></td>
+</tr>
+<tr data-source-range="93:94">
+<td>A specialty, its learning paths and skill cards</td>
+<td><code>@specialty</code>, <code>@learning-path</code>, <code>@skill</code></td>
+</tr>
+<tr data-source-range="94:95">
+<td>Grouping, with no styling</td>
+<td><code>@section</code></td>
+</tr>
+<tr data-source-range="95:96">
+<td>A section that overflows by a line or two</td>
+<td>add <code>.dc-snug</code></td>
+</tr>
+<tr data-source-range="96:97">
+<td>Where it sits</td>
+<td><code>@page chapter-start</code>, <code>intro</code>, <code>credits</code>, <code>contents</code>, <code>citizen-file</code> (and core’s <code>blank</code>, <code>full-bleed</code>); <code>@chapter rules</code>, <code>lore</code>, <code>citizen-file</code>, <code>specialty</code></td>
+</tr>
+</tbody>
+</table>
+<p>The named components are also words on <code>@section</code> (<code>@npc-stat</code> is <code>@section npc</code>, <code>@fiction-excerpt</code> is <code>@section fiction</code>); either spelling renders the same. Sections split across pages; add <code>.dc-avoid-split</code> to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. <a href="#ch-writing" data-gp-source-token="[Writing a Page](#ch-writing)" data-gp-source-occurrence="0">Writing a Page</a> covers the grammar, <a href="#ch-panels" data-gp-source-token="[Panels &amp; Cards](#ch-panels)" data-gp-source-occurrence="0">Panels &amp; Cards</a> the sections, and <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a> the page and chapter words.</p>
 <h2>Quick start</h2>
 <p>Install the package into a book, write, and preview:</p>
-<pre><code data-source-range="76:81" class="language-sh">gutterpress new &quot;My Book&quot; --preset dtrpg
+<pre><code data-source-range="104:109" class="language-sh">gutterpress new &quot;My Book&quot; --preset dtrpg
 gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 </code></pre>
@@ -130,7 +219,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 </div></div>
 <p><code>@section panel</code> is the card: cream substrate, accent rail, clipped corner, shadow, and the first <code>##</code> or <code>###</code> as a title bar. A bare <code>@section</code> is core’s plain box: it groups what is inside it and adds no look, so the text sits on the page. Between them are <code>@section flat</code> (the rail, no card) and <code>@section aside</code> (an inset note); <a href="#ch-panels" data-gp-source-token="[Panels &amp; Cards](#ch-panels)" data-gp-source-occurrence="0">Panels &amp; Cards</a> shows all three. For columns, wrap the content in <code>@columns 2</code>.</p>
 <p>Sections split across pages by default. Add <code>.dc-avoid-split</code> to keep one whole.</p>
-<p>The named components have a marker of their own, and each is also a word on <code>@section</code>: <code>@npc-stat</code> is <code>@section npc</code>, <code>@fiction-excerpt</code> is <code>@section fiction</code>, <code>@citizen-walkthrough</code> is <code>@section walkthrough</code>, <code>@card-grid</code> is <code>@section cards</code>, and <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code> are <code>@section flaws</code>, <code>@section ideals</code> and <code>@section dreams</code>. Either spelling renders the same.</p>
+<p>The named components have a marker of their own, and each is also a word on <code>@section</code>: <code>@npc-stat</code> is <code>@section npc</code>, <code>@fiction-excerpt</code> is <code>@section fiction</code>, <code>@citizen-walkthrough</code> is <code>@section walkthrough</code>, <code>@card-grid</code> is <code>@section cards</code>, and <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code> are <code>@section flaws</code>, <code>@section ideals</code> and <code>@section dreams</code>. Either spelling renders the same. Not sure which to use? <a href="#ch-start" data-gp-source-token="[Pick a section](#ch-start)" data-gp-source-occurrence="0">Pick a section</a> maps what you are writing to the marker.</p>
 <h2>Attributes</h2>
 <p>Every marker takes the same attribute grammar after its name, in any order: <code>#id</code> sets an id, <code>.class</code> adds a class, <code>key=value</code> or <code>key=&quot;quoted value&quot;</code> sets a named option.</p>
 <pre><code data-source-range="62:67" class="language-markdown">@section panel #core-loop .dc-avoid-split
@@ -935,7 +1024,7 @@ exports[`rendered output 06-panels-and-cards.md matches its snapshot 1`] = `
 <h1>Panels, Cards &amp; Data</h1>
 <p class="dg-lede">The enclosures: the section variants, four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from.</p>
 <h2>Section</h2>
-<p>A <code>@section</code> groups what is inside it. Bare, it is core’s plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; <code>.dc-avoid-split</code> keeps one whole. One accent knob, <code>--dc-section-accent</code>, colours the rail and the title bar of all three.</p>
+<p>A <code>@section</code> groups what is inside it. Bare, it is core’s plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; <code>.dc-avoid-split</code> keeps one whole. One accent knob, <code>--dc-section-accent</code>, colours the rail and the title bar of all three. For the named components (<code>@npc-stat</code>, <code>@gear</code>, <code>@outcome</code> and the rest), <a href="#ch-start" data-gp-source-token="[Pick a section](#ch-start)" data-gp-source-occurrence="0">Pick a section</a> maps what you are writing to the marker.</p>
 <pre><code class="dg-split language-markdown" data-source-range="15:44">@section panel
 
 ## Rules Panel
