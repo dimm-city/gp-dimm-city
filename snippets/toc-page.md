@@ -1,6 +1,6 @@
 @page contents
 
-# Contents {.dc-chevron}
+# Contents
 
 @lede
 

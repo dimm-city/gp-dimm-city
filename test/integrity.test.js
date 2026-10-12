@@ -313,7 +313,9 @@ describe("component catalog", () => {
   const entryFor = (spelling) => catalog.find((e) => e.status !== "retired" && asList(e.markers).includes(spelling));
   const WORD_MARKERS = ["section", "page", "chapter"]; // declared as variant words only
   const ENTRY_KINDS = Object.keys(markers.gear.variants); // `@gear` is itself a marker, and so is each kind word on it
-  const REQUIRED_MODIFIERS = ["dc-avoid-split", "dc-snug"];
+  // The classes an author writes to change a box: each is offered as a completion, so each needs an entry.
+  const REQUIRED_MODIFIERS = ["dc-avoid-split", "dc-snug", "dc-chevron", "dc-h3", "dc-h4", "dc-h5", "dc-h6", "dc-flush", "dc-sidebar"];
+  const modifiersOf = (entry) => asList(entry.modifier);
   const REQUIRED_RETIRED = ["tabbed", "plain", "section-allow-split", "column-panel", "chapter-opener", "sidebar-inset"];
   /** Classes a retired entry mentions that stay styled because a live component uses them. */
   const SHARED_CLASSES = {
@@ -358,13 +360,28 @@ describe("component catalog", () => {
     expect(snippetFiles.filter((n) => !named.has(n)), "a snippet no components.yaml entry names").toEqual([]);
   });
 
-  test("each modifier has a live entry, a snippet, and a rule that styles its class", () => {
+  test("each modifier has a live entry and a rule that styles its class; the two that keep a box whole or snug have a snippet", () => {
     for (const cls of REQUIRED_MODIFIERS) {
-      const entry = catalog.find((e) => e.status === "live" && e.modifier === cls);
+      const entry = catalog.find((e) => e.status === "live" && modifiersOf(e).includes(cls));
       expect(entry, `no live entry with modifier: ${cls}`).toBeTruthy();
       expect(styled.has(cls), `no stylesheet styles .${cls}`).toBe(true);
+    }
+    for (const cls of ["dc-avoid-split", "dc-snug"]) {
+      const entry = catalog.find((e) => e.status === "live" && modifiersOf(e).includes(cls));
       expect(asList(entry.snippet).length, `${cls} has no snippet`).toBeGreaterThan(0);
     }
+  });
+
+  test("every modifier class an entry names is styled, and every modifier entry and author-facing entry has a one-line description", () => {
+    const bad = [];
+    for (const e of catalog.filter((x) => x.status === "live" || x.status === "unused")) {
+      for (const cls of modifiersOf(e)) if (!styled.has(cls)) bad.push(`${e.name}: modifier ${cls} is styled by no sheet`);
+      if (e.origin !== "author" && !modifiersOf(e).length) continue;
+      const d = e.description;
+      if (typeof d !== "string" || !d.trim()) bad.push(`${e.name}: no description`);
+      else if (/\n/.test(d.trim()) || d.length > 160) bad.push(`${e.name}: description is not one short line`);
+    }
+    expect(bad).toEqual([]);
   });
 
   test("every live entry maps to something declared, and to a class a stylesheet styles", () => {

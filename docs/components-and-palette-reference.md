@@ -19,8 +19,8 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `@flaws` / `@ideals` / `@dreams` · `@section flaws` … | DC section component | `.section.dc-section-panel.dc-section-choose.dc-flaws` (`-ideals`, `-dreams`) |
 | `@fiction-excerpt` · `@section fiction` | DC section component | `.section.dc-fiction-excerpt` |
 | `@card-grid` · `@section cards` | DC section component | `.section.dc-card-grid` |
-| `@section … .dc-avoid-split` | modifier | `.dc-avoid-split` (keeps the section whole) |
-| `@section … .dc-snug` · `@page .dc-snug` | modifier | `.dc-snug` (tighter paragraph and list gaps) |
+| `@section … .dc-avoid-split` | modifier | `.dc-avoid-split` (sets the keep-whole tokens `--dc-section-break-inside`, `--dc-skill-card-break-inside`, `--dc-faction-break-inside`, `--dc-npc-stat-break-inside`) |
+| `@section … .dc-snug` · `@page .dc-snug` | modifier | `.dc-snug` (sets `--dc-flow-gap`, tighter paragraph and list gaps) |
 | `@page chapter-start` | DC page word | `.page.dc-page-chapter-start` |
 | `@page intro` · `credits` · `contents` · `citizen-file` | DC page word | `.page.dc-page-intro` · `-credits` · `-contents` · `-citizen-file` |
 | `@page full-bleed` · `@page blank` | core page word | `.page.gp-page-full-bleed` · `.page.gp-page-blank` |

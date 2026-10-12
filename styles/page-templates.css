@@ -115,12 +115,12 @@
    visual contract for the two-page TOC + Credits frontmatter, written as:
 
      @page contents
-     # Contents {.dc-chevron}
+     # Contents
      @lede ... @end-lede
      @toc ... @end-toc
 
      @page credits
-     # Credits {.dc-chevron}
+     # Credits
      @lede ... @end-lede
      @section flat
      @columns 2

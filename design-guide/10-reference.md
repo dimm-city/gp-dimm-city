@@ -56,7 +56,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.dc-avoid-split` | `@section`, `@skill` | Keep the section or the skill's cards whole; each moves to the next page rather than splitting (both split by default) |
+| `.dc-avoid-split` | `@section`, `@skill`, `@faction`, `@npc-stat` | Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature; a catalog ignores it). It sets the keep-whole tokens below |
+| `.dc-snug` | `@section`, `@page` | Tighten the space under paragraphs and list items; it sets `--dc-flow-gap` to 0.04in |
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
 | `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
@@ -99,6 +100,9 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Component | Tokens |
 |---|---|
 | Section chassis | `--dc-section-bg` `--dc-section-accent` |
+| Keep whole (`avoid` or `auto`) | `--dc-section-break-inside` (with `--dc-section-edge: 0px`) `--dc-catalog-break-inside` `--dc-npc-stat-break-inside` `--dc-skill-card-break-inside` `--dc-faction-break-inside` |
+| Space under paragraphs and list items | `--dc-flow-gap` (unset by default) |
+| Art by context | `--dc-entry-art-width` `--dc-credits-art-height` |
 | Lede | `--dc-intro-bg` `--dc-intro-accent` |
 | Flavor | `--dc-flavor-accent` `--dc-flavor-accent-width` `--dc-flavor-color` |
 | Pull quote | `--dc-pullquote-accent` `--dc-pullquote-accent-soft` `--dc-pullquote-bg` |
