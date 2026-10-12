@@ -954,6 +954,22 @@ describe("declared card, outcome and procedure", () => {
       const out = ladder(...bandTable(["Roll", "Result"], undefined, ["**Triumph.** You win", "B", "C", "D", "E"]));
       expect(out).toContain('<span class="dc-outcome-text"><strong>Triumph.</strong> You win</span>');
     });
+
+    test("what is written after the table, `{#id .class}`, lands on the ladder: outside a skill card and in one", () => {
+      const outside = ladder(...bandTable(), "", "{#roll-x .keep .tight}");
+      expect(outside).toContain('<div class="dc-outcomes keep tight" id="roll-x">');
+      const inSkill = ladder("@skill", "", "#### Risk It", "", ...bandTable(), "", "{#roll-y .keep}", "", "@end-skill");
+      expect(inSkill).toContain('<div class="dc-outcomes keep" id="roll-y">');
+      expect(outside + inSkill).not.toContain("<table");
+    });
+
+    test("with nothing written on the table the ladder is the bare dc-outcomes div, as before", () => {
+      expect(ladder(...bandTable())).toContain('<div class="dc-outcomes">');
+    });
+
+    test("any other attribute written on the table moves too", () => {
+      expect(ladder(...bandTable(), "", '{#roll-z data-name="repair"}')).toContain('<div class="dc-outcomes" id="roll-z" data-name="repair">');
+    });
   });
 
   describe("@roll-table", () => {
@@ -995,6 +1011,17 @@ describe("declared card, outcome and procedure", () => {
           '<li><span class="dc-step-no">02</span><span>Second step.</span></li></ol>',
       );
       expect(warnings).toEqual([]);
+    });
+
+    test("what is written on the @procedure line lands on the list, since the wrapper renders nothing", () => {
+      const { html } = renderGp(doc("@procedure #install .tight name=install", "", "1. One", "2. Two", "", "@end-procedure"));
+      expect(html).toContain('<ol class="dc-steps tight" id="install" data-name="install">');
+    });
+
+    test("a procedure with two lists puts its attributes on the first only, so the id stays unique", () => {
+      const { html } = renderGp(doc("@procedure #steps", "", "1. One", "", "Between.", "", "1. Again", "", "@end-procedure"));
+      expect(html.match(/<ol [^>]*id="steps"/g)).toHaveLength(1);
+      expect(html.match(/<ol class="dc-steps">/g)).toHaveLength(1);
     });
 
     test("an @end-procedure straight under the last step closes it, so later lists are left alone", () => {
@@ -1377,6 +1404,30 @@ describe("@field and the bold labels that mean it", () => {
     const { html } = renderGp("@skill\n\n#### S\n\n@field effects\n\nBody.\n\n@end-field\n\nAfter.\n\n@end-skill");
     expect(html.match(/dc-skill-card/g)).toHaveLength(1);
     expect(html).toMatch(/dc-field-effects[\s\S]*<p>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
+  });
+});
+
+// The title of a front-matter page is a chevron banner by where it sits.
+describe("front-matter titles", () => {
+  const h1s = (src) => [...renderGp(src).html.matchAll(/<h1[^>]*>/g)].map((m) => m[0]);
+
+  test("the h1 straight under @page intro, credits or contents is a .dc-chevron", () => {
+    for (const word of ["intro", "credits", "contents"]) expect(h1s(`@page ${word}\n\n# Title`), word).toEqual(['<h1 class="dc-chevron">']);
+  });
+
+  test("a title that already says .dc-chevron has it once, and keeps its other classes", () => {
+    expect(h1s("@page credits\n\n# Credits {.dc-chevron}")).toEqual(['<h1 class="dc-chevron">']);
+    expect(h1s("@page intro\n\n# Intro {.mine}")).toEqual(['<h1 class="mine dc-chevron">']);
+  });
+
+  test("no other page, and no heading inside a section on the page, gets it", () => {
+    expect(h1s("@page chapter-start\n\n# Opener")).toEqual(["<h1>"]);
+    expect(h1s("@page\n\n# Plain")).toEqual(["<h1>"]);
+    expect(h1s("@page credits\n\n# Credits\n\n@section flat\n\n# Inside\n\n@end-section\n\n# After")).toEqual(['<h1 class="dc-chevron">', "<h1>", '<h1 class="dc-chevron">']);
+  });
+
+  test("a page after the front matter is not carried along", () => {
+    expect(h1s("@page intro\n\n# One\n\n@page\n\n# Two")).toEqual(['<h1 class="dc-chevron">', "<h1>"]);
   });
 });
 

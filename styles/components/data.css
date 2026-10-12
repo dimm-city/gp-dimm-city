@@ -775,11 +775,6 @@ table.dc-stat-strip {
   break-before: avoid;
 }
 
-.dc-skill-card:only-child {
-  width: 100%;
-  max-width: 7.25in;
-}
-
 /* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
 p.dc-img-wrapper {
   padding: 0;

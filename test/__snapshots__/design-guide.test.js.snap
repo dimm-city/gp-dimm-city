@@ -58,137 +58,125 @@ This is what you type.
 <th>Use</th>
 </tr>
 </thead>
-<tbody data-source-range="78:109">
+<tbody data-source-range="78:106">
 <tr data-source-range="78:79">
 <td>Rules or reference text under a heading</td>
 <td><code>@section panel</code></td>
 </tr>
 <tr data-source-range="79:80">
-<td>The same, kept on one page</td>
-<td><code>@section panel .dc-avoid-split</code></td>
-</tr>
-<tr data-source-range="80:81">
 <td>Unboxed text that carries the accent rail</td>
 <td><code>@section flat</code></td>
 </tr>
-<tr data-source-range="81:82">
+<tr data-source-range="80:81">
 <td>A table or list to look up (prices, conditions, a menu of options)</td>
 <td><code>@section reference</code></td>
 </tr>
-<tr data-source-range="82:83">
+<tr data-source-range="81:82">
 <td>World or setting text</td>
 <td><code>@section lore</code></td>
 </tr>
-<tr data-source-range="83:84">
+<tr data-source-range="82:83">
 <td>Advice for the Dream Master, behind the screen</td>
 <td><code>@section dm</code> (a short one: <code>@callout dm</code>)</td>
 </tr>
-<tr data-source-range="84:85">
+<tr data-source-range="83:84">
 <td>A choice the player writes on the Citizen File</td>
 <td><code>@section choose</code></td>
 </tr>
-<tr data-source-range="85:86">
+<tr data-source-range="84:85">
 <td>A term and its definition, or a glossary of terms</td>
 <td><code>@definition</code></td>
 </tr>
-<tr data-source-range="86:87">
+<tr data-source-range="85:86">
 <td>A boxed note, warning, DM note, vibe, origin or visit</td>
 <td><code>@callout …</code> (<code>@dm-note</code>)</td>
 </tr>
-<tr data-source-range="87:88">
+<tr data-source-range="86:87">
 <td>A worked example</td>
 <td><code>@callout example</code></td>
 </tr>
-<tr data-source-range="88:89">
+<tr data-source-range="87:88">
 <td>A box in one of three registers: panel, slate, shard</td>
 <td><code>@block …</code></td>
 </tr>
-<tr data-source-range="89:90">
-<td>A callout floated beside the text</td>
-<td><code>@callout note .dc-sidebar</code></td>
-</tr>
-<tr data-source-range="90:91">
+<tr data-source-range="88:89">
 <td>Fiction, a chapter-opener story</td>
 <td><code>@fiction-excerpt</code></td>
 </tr>
-<tr data-source-range="91:92">
+<tr data-source-range="89:90">
 <td>A creature or NPC</td>
 <td><code>@npc-stat</code> (small ones: <code>@npc-stat compact</code>)</td>
 </tr>
-<tr data-source-range="92:93">
+<tr data-source-range="90:91">
 <td>An organization: megacorp, cabal, cult, enforcers</td>
 <td><code>@faction megacorp</code>, <code>cabal</code>, <code>cult</code>, <code>enforcer</code></td>
 </tr>
-<tr data-source-range="93:94">
+<tr data-source-range="91:92">
 <td>General gear</td>
 <td><code>@gear</code></td>
 </tr>
-<tr data-source-range="94:95">
+<tr data-source-range="92:93">
 <td>A cybernetic or mod</td>
 <td><code>@gear augment</code></td>
 </tr>
-<tr data-source-range="95:96">
+<tr data-source-range="93:94">
 <td>A magic item or relic</td>
 <td><code>@gear treasure</code></td>
 </tr>
-<tr data-source-range="96:97">
+<tr data-source-range="94:95">
 <td>A vehicle</td>
 <td><code>@gear vehicle</code></td>
 </tr>
-<tr data-source-range="97:98">
+<tr data-source-range="95:96">
 <td>A drug, elixir or consumable</td>
 <td><code>@gear drug</code></td>
 </tr>
-<tr data-source-range="98:99">
+<tr data-source-range="96:97">
 <td>A labelled line in an entry: SPECS, Traits, Effects…</td>
 <td><code>**SPECS:**</code> (or <code>@field specs</code>)</td>
 </tr>
-<tr data-source-range="99:100">
+<tr data-source-range="97:98">
 <td>A titled run of entries, two columns</td>
 <td><code>@section catalog</code> with <code>@columns 2</code></td>
 </tr>
-<tr data-source-range="100:101">
+<tr data-source-range="98:99">
 <td>A roll-result ladder</td>
 <td>a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or <code>@outcome</code></td>
 </tr>
-<tr data-source-range="101:102">
+<tr data-source-range="99:100">
 <td>A random table with equal bands (1-4, 5-8, …)</td>
 <td><code>@roll-table</code></td>
 </tr>
-<tr data-source-range="102:103">
+<tr data-source-range="100:101">
 <td>Flaw, ideal or dream choices</td>
 <td><code>@flaws</code>, <code>@ideals</code>, <code>@dreams</code> (each a <code>choose</code> section holding a run of <code>@card</code>)</td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="101:102">
 <td>The Citizen File field list</td>
 <td><code>@citizen-walkthrough</code></td>
 </tr>
-<tr data-source-range="104:105">
+<tr data-source-range="102:103">
 <td>The specialty catalog</td>
 <td><code>@card-grid</code></td>
 </tr>
-<tr data-source-range="105:106">
+<tr data-source-range="103:104">
 <td>A specialty, its learning paths and skill cards</td>
 <td><code>@specialty</code>, <code>@learning-path</code>, <code>@skill</code></td>
 </tr>
-<tr data-source-range="106:107">
+<tr data-source-range="104:105">
 <td>Grouping, with no styling</td>
 <td><code>@section</code></td>
 </tr>
-<tr data-source-range="107:108">
-<td>A section that overflows by a line or two</td>
-<td>add <code>.dc-snug</code></td>
-</tr>
-<tr data-source-range="108:109">
+<tr data-source-range="105:106">
 <td>Where it sits</td>
 <td><code>@page chapter-start</code>, <code>intro</code>, <code>credits</code>, <code>contents</code>, <code>citizen-file</code> (and core’s <code>blank</code>, <code>full-bleed</code>); <code>@chapter rules</code>, <code>lore</code>, <code>citizen-file</code>, <code>specialty</code></td>
 </tr>
 </tbody>
 </table>
-<p>The named components are also words on <code>@section</code> (<code>@npc-stat</code> is <code>@section npc</code>, <code>@fiction-excerpt</code> is <code>@section fiction</code>); either spelling renders the same. <code>reference</code>, <code>lore</code>, <code>dm</code> and <code>choose</code> are words only: panels that say what kind of text they hold. Sections split across pages; add <code>.dc-avoid-split</code> to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. <a href="#ch-writing" data-gp-source-token="[Writing a Page](#ch-writing)" data-gp-source-occurrence="0">Writing a Page</a> covers the grammar, <a href="#ch-panels" data-gp-source-token="[Panels &amp; Cards](#ch-panels)" data-gp-source-occurrence="0">Panels &amp; Cards</a> the sections, and <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a> the page and chapter words.</p>
+<p>The named components are also words on <code>@section</code> (<code>@npc-stat</code> is <code>@section npc</code>, <code>@fiction-excerpt</code> is <code>@section fiction</code>); either spelling renders the same. <code>reference</code>, <code>lore</code>, <code>dm</code> and <code>choose</code> are words only: panels that say what kind of text they hold. Write the content and the marker that says what it is: the defaults set how it looks and where it breaks (sections split across pages, a creature and a callout stay whole, a catalog never does). A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. To change how one block sits (keep it on one page, tighten it, float a callout), see the author overrides in <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>. <a href="#ch-writing" data-gp-source-token="[Writing a Page](#ch-writing)" data-gp-source-occurrence="0">Writing a Page</a> covers the grammar, <a href="#ch-panels" data-gp-source-token="[Panels &amp; Cards](#ch-panels)" data-gp-source-occurrence="0">Panels &amp; Cards</a> the sections, and <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a> the page and chapter words.</p>
 <h2>Quick start</h2>
 <p>Install the package into a book, write, and preview:</p>
-<pre><code data-source-range="116:121" class="language-sh">gutterpress new &quot;My Book&quot; --preset dtrpg
+<pre><code data-source-range="113:118" class="language-sh">gutterpress new &quot;My Book&quot; --preset dtrpg
 gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 </code></pre>
@@ -768,7 +756,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </div>
 <p>A <code>@fiction-excerpt</code> places its first image for you — see <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>.</p>
 <h2>Break control</h2>
-<p>Callouts keep themselves whole by default: they move to the next page rather than split. Sections and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut). Two classes change that, and a third forces a break.</p>
+<p>Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an <code>@npc-stat</code> with at most one <code>####</code>) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and so does a catalog. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.</p>
 <table>
 <thead data-source-range="151:152">
 <tr data-source-range="151:152">
@@ -800,9 +788,12 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </tbody>
 </table>
 <p>Reach for <code>.dc-avoid-split</code> on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — <code>@continue</code> for a long skill card.</p>
+<p>The class is a setter of one token per component, which a book can set from its own sheet instead: <code>--dc-section-break-inside</code>, <code>--dc-skill-card-break-inside</code>, <code>--dc-faction-break-inside</code> and <code>--dc-npc-stat-break-inside</code> (<code>avoid</code> keeps the box whole, <code>auto</code> lets it split). A section kept whole also keeps its padding inside its box, so a book writes <code>--dc-section-edge: 0px</code> beside the first. A catalog splits by default and reads <code>--dc-catalog-break-inside</code>: <code>.dc-avoid-split</code>, or that token set to <code>avoid</code>, keeps one whole.</p>
+<pre><code data-source-range="163:166" class="language-css">#core-loop { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }
+</code></pre>
 <h2>Tighter spacing</h2>
 <p><code>.dc-snug</code> halves the space between paragraphs and list items inside a section or page. Reach for it when a section overflows by a line or two and the last line would otherwise strand on a page of its own. Type size and leading are untouched.</p>
-<pre><code data-source-range="165:174" class="language-markdown">@section panel .dc-snug
+<pre><code data-source-range="171:180" class="language-markdown">@section panel .dc-snug
 ### Ideal
 
 Paragraph and list-item gaps shrink to 0.04in here.
@@ -810,6 +801,7 @@ Paragraph and list-item gaps shrink to 0.04in here.
 
 @page .dc-snug
 </code></pre>
+<p>The class sets <code>--dc-flow-gap</code>, the space under every paragraph and list item in the box: a book sets it on any box from its own sheet (<code>#core-loop { --dc-flow-gap: 0.04in; }</code>). Unset, each component keeps its own spacing.</p>
 <h2>Edge to edge</h2>
 <p><code>.dc-flush</code> removes a component’s side margins so it runs the full column. It is read by tape, stat blocks, sticker chains, and <code>@outcome flush</code>.</p>
 </div></div>"
@@ -1887,7 +1879,7 @@ Fodder — Usually Small to Medium</p>
 <h5>Equipment</h5>
 <p>Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.</p>
 </div></div>
-<p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code> is one creature; add <code>.dc-avoid-split</code> (<code>@npc-stat .dc-avoid-split</code>) to keep it on one page.</p>
+<p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code>, or one, is one creature, and it stays on one page by itself; <code>--dc-npc-stat-break-inside: auto</code> lets one split.</p>
 <p>To set the entries in columns, put them in <code>@columns 2</code> inside the block: the bar and an optional intro stay above, full width.</p>
 <pre><code data-source-range="987:1022" class="language-markdown">@npc-stat
 
@@ -2761,7 +2753,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
 <pre><code data-source-range="82:101" class="language-markdown">@page contents
 
-# Contents {.dc-chevron}
+# Contents
 
 @lede
 
@@ -2779,10 +2771,10 @@ Twelve chapters of dreams, dirt, and what bites back.
 </code></pre>
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2>Credits page</h2>
-<p>A chevron title, a lede for thanks and dedications, and the colophon, a <code>@section flat</code> with its names in <code>@columns 2</code>: bold lead-ins become role labels.</p>
+<p>A chevron title, a lede for thanks and dedications, and the colophon, a <code>@section flat</code> with its names in <code>@columns 2</code>: bold lead-ins become role labels. The title of the contents, credits and intro pages is a chevron banner because of the page word; write <code>{.dc-chevron}</code> only on a heading anywhere else.</p>
 <pre><code class="dg-split language-markdown" data-source-range="108:133">@page credits
 
-# Credits {.dc-chevron}
+# Credits
 
 @lede
 
@@ -3292,113 +3284,118 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="58:80">
+<tbody data-source-range="58:81">
 <tr data-source-range="58:59">
 <td><code>.dc-avoid-split</code></td>
-<td><code>@section</code>, <code>@skill</code></td>
-<td>Keep the section or the skill’s cards whole; each moves to the next page rather than splitting (both split by default)</td>
+<td><code>@section</code>, <code>@skill</code>, <code>@faction</code>, <code>@npc-stat</code></td>
+<td>Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature). It sets the keep-whole tokens below</td>
 </tr>
 <tr data-source-range="59:60">
+<td><code>.dc-snug</code></td>
+<td><code>@section</code>, <code>@page</code></td>
+<td>Tighten the space under paragraphs and list items; it sets <code>--dc-flow-gap</code> to 0.04in</td>
+</tr>
+<tr data-source-range="60:61">
 <td><code>.gp-no-break</code></td>
 <td><code>@section</code></td>
 <td>Core’s never-split class</td>
 </tr>
-<tr data-source-range="60:61">
+<tr data-source-range="61:62">
 <td><code>.gp-break-before</code></td>
 <td>a heading</td>
 <td>New page before it</td>
 </tr>
-<tr data-source-range="61:62">
+<tr data-source-range="62:63">
 <td><code>.dc-page-chapter-start</code> · <code>.dc-page-intro</code> · <code>.dc-page-credits</code> · <code>.dc-page-contents</code> · <code>.dc-page-citizen-file</code></td>
 <td><code>@page</code></td>
 <td>What the page words write. The old raw pairs (<code>.page-chapter-start .dc-chapter-start</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.page-toc</code>, <code>.dc-citizen-file-page</code>) are no longer styled</td>
 </tr>
-<tr data-source-range="62:63">
+<tr data-source-range="63:64">
 <td><code>.dc-chapter-rules</code> · <code>.dc-chapter-lore</code> · <code>.dc-chapter-citizen-file</code> · <code>.dc-chapter-specialty</code></td>
 <td><code>@chapter</code></td>
 <td>What the chapter words write</td>
 </tr>
-<tr data-source-range="63:64">
+<tr data-source-range="64:65">
 <td><code>.dc-section-panel</code> · <code>.dc-section-flat</code></td>
 <td><code>@section</code></td>
 <td>What <code>@section panel</code> and <code>flat</code> write</td>
 </tr>
-<tr data-source-range="64:65">
+<tr data-source-range="65:66">
 <td><code>.dc-section-reference</code> · <code>.dc-section-lore</code> · <code>.dc-section-dm</code> · <code>.dc-section-choose</code></td>
 <td><code>@section</code></td>
 <td>What <code>@section reference</code>, <code>lore</code>, <code>dm</code> and <code>choose</code> write (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="65:66">
+<tr data-source-range="66:67">
 <td><code>.dc-npc-compact</code></td>
 <td><code>@section</code></td>
 <td>What <code>@npc-stat compact</code> writes</td>
 </tr>
-<tr data-source-range="66:67">
+<tr data-source-range="67:68">
 <td><code>.dc-sidebar</code></td>
 <td>a callout</td>
 <td>Float it right, text wrapping on its left</td>
 </tr>
-<tr data-source-range="67:68">
+<tr data-source-range="68:69">
 <td><code>.dc-catalog</code></td>
 <td><code>@section</code></td>
 <td>What <code>@section catalog</code> writes (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="68:69">
+<tr data-source-range="69:70">
 <td><code>.dc-entry</code> · <code>.dc-gear</code> <code>.dc-augment</code> <code>.dc-treasure</code> <code>.dc-vehicle</code> <code>.dc-drug</code></td>
 <td><code>@gear</code> and its kind words</td>
 <td>The entry card family; the kind class sets its tokens</td>
 </tr>
-<tr data-source-range="69:70">
+<tr data-source-range="70:71">
 <td><code>.dc-field</code> · <code>.dc-field-&lt;variant&gt;</code> · <code>.dc-field-label</code></td>
 <td><code>@field</code></td>
 <td>What <code>@field</code> and a <code>**Label:**</code> paragraph in a card write</td>
 </tr>
-<tr data-source-range="70:71">
+<tr data-source-range="71:72">
 <td><code>.dc-npc-stat</code></td>
 <td><code>@section</code></td>
 <td>What <code>@npc-stat</code> and <code>@section npc</code> write (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="71:72">
+<tr data-source-range="72:73">
 <td><code>.dc-fiction-excerpt</code></td>
 <td><code>@section</code></td>
 <td>What <code>@fiction-excerpt</code> and <code>@section fiction</code> write: aged paper, narrative typography, auto art float</td>
 </tr>
-<tr data-source-range="72:73">
+<tr data-source-range="73:74">
 <td><code>.dc-citizen-walkthrough</code></td>
 <td><code>@section</code></td>
 <td>What <code>@citizen-walkthrough</code> writes (with <code>.dc-section-panel</code>)</td>
 </tr>
-<tr data-source-range="73:74">
+<tr data-source-range="74:75">
 <td><code>.dc-card-grid</code></td>
 <td><code>@section</code></td>
 <td>Density for a run of specialty cards (set in <code>@columns 2</code>); no chrome</td>
 </tr>
-<tr data-source-range="74:75">
+<tr data-source-range="75:76">
 <td><code>.dc-flaws</code> · <code>.dc-ideals</code> · <code>.dc-dreams</code></td>
 <td><code>@section</code> of <code>@card</code></td>
 <td>Card accent per step (with <code>.dc-section-panel</code> and <code>.dc-section-choose</code>)</td>
 </tr>
-<tr data-source-range="75:76">
+<tr data-source-range="76:77">
 <td><code>.dc-chevron</code></td>
 <td><code>#</code> heading</td>
 <td>Chevron banner</td>
 </tr>
-<tr data-source-range="76:77">
+<tr data-source-range="77:78">
 <td><code>.dc-spray</code></td>
 <td><code>##</code> heading</td>
 <td>Spray banner</td>
 </tr>
-<tr data-source-range="77:78">
+<tr data-source-range="78:79">
 <td><code>.dc-spec-tweak</code> · <code>.dc-no-top</code></td>
 <td><code>###</code> heading</td>
 <td>Spec-tweak rule; no top margin</td>
 </tr>
-<tr data-source-range="78:79">
+<tr data-source-range="79:80">
 <td><code>.dc-img-float-left</code> · <code>.dc-img-float-right</code></td>
 <td>an image</td>
 <td>Float at 44% width</td>
 </tr>
-<tr data-source-range="79:80">
+<tr data-source-range="80:81">
 <td><code>.dc-flush</code></td>
 <td>tape, stat block, stickers</td>
 <td>Edge to edge</td>
@@ -3407,38 +3404,38 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2>Inline HTML</h2>
 <table>
-<thead data-source-range="83:84">
-<tr data-source-range="83:84">
+<thead data-source-range="84:85">
+<tr data-source-range="84:85">
 <th>You write</th>
 <th>Renders</th>
 </tr>
 </thead>
-<tbody data-source-range="85:92">
-<tr data-source-range="85:86">
+<tbody data-source-range="86:93">
+<tr data-source-range="86:87">
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt;</code></td>
 <td>keyword pill</td>
 </tr>
-<tr data-source-range="86:87">
+<tr data-source-range="87:88">
 <td><code>&lt;span class=&quot;dc-classtag augmerc&quot;&gt;Augmerc&lt;/span&gt;</code></td>
 <td>specialty identity pill</td>
 </tr>
-<tr data-source-range="87:88">
+<tr data-source-range="88:89">
 <td><code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> · <code>.free</code> · <code>.var</code></td>
 <td>AP chip in prose</td>
 </tr>
-<tr data-source-range="88:89">
+<tr data-source-range="89:90">
 <td><code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code></td>
 <td>tape, edge to edge</td>
 </tr>
-<tr data-source-range="89:90">
+<tr data-source-range="90:91">
 <td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;…&lt;/div&gt;</code></td>
 <td>four-cell stat grid (<a href="#ch-panels" data-gp-source-token="[Panels, Cards &amp; Data](#ch-panels)" data-gp-source-occurrence="0">Panels, Cards &amp; Data</a>)</td>
 </tr>
-<tr data-source-range="90:91">
+<tr data-source-range="91:92">
 <td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;…&lt;/div&gt;</code> in <code>@columns 3</code></td>
 <td>label/value cards</td>
 </tr>
-<tr data-source-range="91:92">
+<tr data-source-range="92:93">
 <td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;…</code></td>
 <td>floated NPC capsule</td>
 </tr>
@@ -3447,106 +3444,118 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <h2>Tokens by component</h2>
 <p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(…)</code> clip-paths.</p>
 <table>
-<thead data-source-range="98:99">
-<tr data-source-range="98:99">
+<thead data-source-range="99:100">
+<tr data-source-range="99:100">
 <th>Component</th>
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="100:124">
-<tr data-source-range="100:101">
+<tbody data-source-range="101:128">
+<tr data-source-range="101:102">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code></td>
 </tr>
-<tr data-source-range="101:102">
+<tr data-source-range="102:103">
+<td>Keep whole (<code>avoid</code> or <code>auto</code>)</td>
+<td><code>--dc-section-break-inside</code> (with <code>--dc-section-edge: 0px</code>) <code>--dc-catalog-break-inside</code> <code>--dc-npc-stat-break-inside</code> <code>--dc-skill-card-break-inside</code> <code>--dc-faction-break-inside</code></td>
+</tr>
+<tr data-source-range="103:104">
+<td>Space under paragraphs and list items</td>
+<td><code>--dc-flow-gap</code> (unset by default)</td>
+</tr>
+<tr data-source-range="104:105">
+<td>Art by context</td>
+<td><code>--dc-entry-art-width</code> <code>--dc-credits-art-height</code></td>
+</tr>
+<tr data-source-range="105:106">
 <td>Lede</td>
 <td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code></td>
 </tr>
-<tr data-source-range="102:103">
+<tr data-source-range="106:107">
 <td>Flavor</td>
 <td><code>--dc-flavor-accent</code> <code>--dc-flavor-accent-width</code> <code>--dc-flavor-color</code></td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="107:108">
 <td>Pull quote</td>
 <td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-accent-soft</code> <code>--dc-pullquote-bg</code></td>
 </tr>
-<tr data-source-range="104:105">
+<tr data-source-range="108:109">
 <td>Alerts, callout, DM note</td>
 <td><code>--dc-alert-bg</code> <code>--dc-alert-border</code> <code>--dc-alert-fg</code> <code>--dc-alert-label-color</code> <code>--dc-alert-border-width</code> <code>--dc-alert-label-size</code> <code>--dc-alert-body-size</code></td>
 </tr>
-<tr data-source-range="105:106">
+<tr data-source-range="109:110">
 <td>Tape</td>
 <td><code>--dc-tape-bg</code> <code>--dc-tape-border</code> <code>--dc-tape-color</code></td>
 </tr>
-<tr data-source-range="106:107">
+<tr data-source-range="110:111">
 <td>Chevron · Spray</td>
 <td><code>--dc-chevron-bg</code> <code>--dc-chevron-color</code> <code>--dc-chevron-font-size</code> · <code>--dc-spray-bg</code> <code>--dc-spray-color</code></td>
 </tr>
-<tr data-source-range="107:108">
+<tr data-source-range="111:112">
 <td>Class tag</td>
 <td><code>--dc-classtag-color</code></td>
 </tr>
-<tr data-source-range="108:109">
+<tr data-source-range="112:113">
 <td>Roll the die</td>
 <td><code>--dc-roll-the-die-color</code></td>
 </tr>
-<tr data-source-range="109:110">
+<tr data-source-range="113:114">
 <td>Block</td>
 <td><code>--dc-block-bg</code> <code>--dc-block-fg</code> <code>--dc-block-accent</code> <code>--dc-block-title-bg</code> <code>--dc-block-title-fg</code></td>
 </tr>
-<tr data-source-range="110:111">
+<tr data-source-range="114:115">
 <td>Section chip (<code>dm</code>, <code>choose</code>)</td>
 <td><code>--dc-section-tab</code> <code>--dc-section-tab-bg</code> <code>--dc-section-tab-fg</code></td>
 </tr>
-<tr data-source-range="111:112">
+<tr data-source-range="115:116">
 <td>Roll table</td>
 <td><code>--dc-roll-table-accent</code> <code>--dc-roll-table-surface</code> <code>--dc-roll-table-head-bg</code></td>
 </tr>
-<tr data-source-range="112:113">
+<tr data-source-range="116:117">
 <td>Faction</td>
 <td><code>--dc-faction-accent</code> <code>--dc-faction-badge-fg</code></td>
 </tr>
-<tr data-source-range="113:114">
+<tr data-source-range="117:118">
 <td>Stat strip</td>
 <td><code>--dc-stat-strip-accent</code> <code>--dc-stat-strip-value</code></td>
 </tr>
-<tr data-source-range="114:115">
+<tr data-source-range="118:119">
 <td>Definition</td>
 <td><code>--dc-definition-block-surface</code> <code>--dc-definition-block-accent</code> <code>--dc-definition-block-accent-width</code></td>
 </tr>
-<tr data-source-range="115:116">
+<tr data-source-range="119:120">
 <td>Outcome ladder</td>
 <td><code>--dc-outcomes-surface</code> <code>--dc-outcomes-border</code> <code>--dc-outcomes-inner-border</code> <code>--dc-outcomes-label-bg</code> <code>--dc-outcomes-label-color</code> <code>--dc-outcome-key-color</code> <code>--dc-outcome-name-color</code> <code>--dc-outcome-name-opacity</code></td>
 </tr>
-<tr data-source-range="116:117">
+<tr data-source-range="120:121">
 <td>NPC stat block</td>
 <td><code>--dc-npc-stat-primary</code> <code>--dc-npc-stat-secondary</code> <code>--dc-npc-stat-label-color</code> <code>--dc-npc-stat-rule</code> <code>--dc-npc-stat-rule-width</code></td>
 </tr>
-<tr data-source-range="117:118">
+<tr data-source-range="121:122">
 <td>Fiction excerpt</td>
 <td><code>--dc-fiction-bg</code> <code>--dc-fiction-line-height</code> <code>--dc-fiction-art-float</code> <code>--dc-fiction-art-width</code> <code>--dc-fiction-art-outline</code> <code>--dc-fiction-art-shadow</code></td>
 </tr>
-<tr data-source-range="118:119">
+<tr data-source-range="122:123">
 <td>Specialty wrapper</td>
 <td><code>--spec-accent</code> <code>--spec-mid</code> <code>--spec-dark</code> <code>--dc-skill-tab-shape</code> <code>--dc-skill-body-shape</code> <code>--dc-path-title-shape</code> <code>--dc-path-shell-clip</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-intro-title-shape</code> <code>--dc-specialty-intro-clip</code></td>
 </tr>
-<tr data-source-range="119:120">
+<tr data-source-range="123:124">
 <td>Specialty intro</td>
 <td><code>--dc-specialty-intro-bg</code> <code>--dc-specialty-intro-title-bg</code> <code>--dc-specialty-intro-title-color</code></td>
 </tr>
-<tr data-source-range="120:121">
+<tr data-source-range="124:125">
 <td>Specialty card</td>
 <td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-border</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-height</code> <code>--dc-specialty-card-shadow</code> <code>--dc-specialty-card-title-color</code></td>
 </tr>
-<tr data-source-range="121:122">
+<tr data-source-range="125:126">
 <td>Learning path</td>
 <td><code>--dc-path-title-bg</code> <code>--dc-path-title-color</code> <code>--dc-path-accent</code> <code>--dc-path-shell-padding-top</code> <code>--dc-path-shell-padding-bottom</code> <code>--dc-arrow-color</code></td>
 </tr>
-<tr data-source-range="122:123">
+<tr data-source-range="126:127">
 <td>Skill card</td>
 <td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-body-mark</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code></td>
 </tr>
-<tr data-source-range="123:124">
+<tr data-source-range="127:128">
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
 </tr>

@@ -77,7 +77,6 @@ Start from what you are writing, not from a class name: find it on the left and 
 | I am writing… | Use |
 |---|---|
 | Rules or reference text under a heading | `@section panel` |
-| The same, kept on one page | `@section panel .dc-avoid-split` |
 | Unboxed text that carries the accent rail | `@section flat` |
 | A table or list to look up (prices, conditions, a menu of options) | `@section reference` |
 | World or setting text | `@section lore` |
@@ -87,7 +86,6 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
 | A worked example | `@callout example` |
 | A box in one of three registers: panel, slate, shard | `@block …` |
-| A callout floated beside the text | `@callout note .dc-sidebar` |
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
@@ -105,10 +103,9 @@ Start from what you are writing, not from a class name: find it on the left and 
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| A section that overflows by a line or two | add `.dc-snug` |
 | Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
 
-The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels that say what kind of text they hold. Sections split across pages; add `.dc-avoid-split` to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
+The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels that say what kind of text they hold. Write the content and the marker that says what it is: the defaults set how it looks and where it breaks (sections split across pages, a creature and a callout stay whole, a catalog never does). A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. To change how one block sits (keep it on one page, tighten it, float a callout), see the author overrides in [Layout](#ch-layout). [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
 
 ## Quick start
 

@@ -25,6 +25,7 @@
      --dc-entry-rail     — width of the left rail (a catalog sets 0)
      --dc-entry-rule     — width of the top rule (a catalog sets it)
      --dc-entry-kind     — a quoted word printed small above the name, or `none`
+     --dc-entry-art-width — width of the item's picture, floated right (50%)
 
    The labelled fields inside an entry (`@field`, `**SPECS:**`) are the last
    section of this file; they work outside an entry as well.
@@ -73,6 +74,17 @@
 
 .dc-entry > p {
   margin: 0 0 var(--space-xs);
+}
+
+/* The item's picture: an image written in an entry with no class floats to the
+   right, `--dc-entry-art-width` of the card (half), and the text wraps on its
+   left. An image the author places with a class (core's `.gp-left`, `.gp-large`,
+   …) is left where they put it: this rule only reads an image with none. */
+.dc-entry img:not([class]) {
+  float: right;
+  width: var(--dc-entry-art-width);
+  max-width: 100%;
+  margin: 0 0 1em 1em;
 }
 
 /* A `---` kept at the end of an entry would draw a rule inside the card. */
@@ -161,6 +173,14 @@
 }
 .dc-catalog hr {
   display: none;
+}
+
+/* A catalog is a run of entries that may run past a page, and kept whole it
+   leaves the foot of the page before it blank, so by default it splits.
+   `.dc-avoid-split`, or `--dc-catalog-break-inside: avoid` from a book's sheet,
+   keeps one whole. */
+.dc-section-panel.dc-catalog {
+  --dc-section-break-inside: var(--dc-catalog-break-inside);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════

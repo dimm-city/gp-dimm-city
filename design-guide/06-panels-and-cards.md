@@ -981,7 +981,7 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
 </div>
 
-A block with several `####` entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no `####` is one creature; add `.dc-avoid-split` (`@npc-stat .dc-avoid-split`) to keep it on one page.
+A block with several `####` entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no `####`, or one, is one creature, and it stays on one page by itself; `--dc-npc-stat-break-inside: auto` lets one split.
 
 To set the entries in columns, put them in `@columns 2` inside the block: the bar and an optional intro stay above, full width.
 

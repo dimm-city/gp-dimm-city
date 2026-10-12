@@ -8,6 +8,7 @@
      --dc-card-tab-bg          → tab background (default --ink-dark)
      --dc-card-tab-title-color → tab title text color (default --paper-cream)
      --dc-card-body-mark       → decorative ::before mark color (default --crimson)
+     --dc-skill-card-break-inside → `avoid` keeps a card whole (default auto: it splits)
    Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
    Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)
    and replace token values with the new specialty's --<name>-* aliases. */
@@ -35,6 +36,7 @@
   overflow-x: clip;
   /* A card splits across pages by default (its chains are below); the
      `.dc-avoid-split` modifier keeps one whole. */
+  break-inside: var(--dc-skill-card-break-inside);
   /* --dc-card-gap is the VISIBLE gap; the +6px clears chrome bleed on top of
      it. Margin is layout space, but the shadow and outline pseudos paint
      outside the border-box without affecting it: this card's hard poster
@@ -284,15 +286,15 @@
 /* A card splits across pages by default: one is 30-50% of a page, so keeping
    it whole left most specialty pages holding a single card and a third of the
    sheet empty. `.dc-avoid-split` (a modifier on the `@skill` line, as on a
-   section) keeps one whole. Where it may split, it splits at sensible places. */
-.dc-skill-card.dc-avoid-split {
-  break-inside: avoid;
-}
+   section) keeps one whole, through `--dc-skill-card-break-inside`. Where it
+   may split, it splits at sensible places: the chains below. They stay on a
+   card that is kept whole, where they change nothing until it is taller than
+   a page. */
 
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
-.dc-skill-card:not(.dc-avoid-split) .dc-card-inner > :nth-child(-n+2) {
+.dc-skill-card .dc-card-inner > :nth-child(-n+2) {
   break-after: avoid;
 }
 
@@ -316,14 +318,14 @@
    `strong:only-child` also takes a paragraph whose only markup is one bold
    run. A last child is left out: its break-after would pass up to the card
    and glue the next path banner to it. */
-.dc-skill-card:not(.dc-avoid-split) .dc-card-inner > :is(.dc-ability, p:has(> strong:only-child)):not(:last-child),
-.dc-skill-card:not(.dc-avoid-split) .dc-card-inner > p:has(+ :is(ul, ol, table)) {
+.dc-skill-card .dc-card-inner > :is(.dc-ability, p:has(> strong:only-child)):not(:last-child),
+.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table)) {
   break-after: avoid;
 }
 
 /* The closing line of a card (a one-line sign-off, a trailing note) stays
    with the block above it, so a continuation never opens with it alone. */
-.dc-skill-card:not(.dc-avoid-split) .dc-card-inner > :last-child:not(:first-child) {
+.dc-skill-card .dc-card-inner > :last-child:not(:first-child) {
   break-before: avoid;
 }
 

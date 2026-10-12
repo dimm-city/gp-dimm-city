@@ -1,6 +1,6 @@
 @page intro
 
-# {{title}} {.dc-chevron}
+# {{title}}
 
 @lede
 

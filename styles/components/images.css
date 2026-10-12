@@ -34,11 +34,6 @@
   break-inside: avoid;
 }
 
-/* Hides empty .dc-sidebar wrappers. */
-.dc-sidebar:empty {
-  display: none;
-}
-
 .dc-human-callout {
   background: var(--paper-cream);
   border: 2px solid var(--ink);

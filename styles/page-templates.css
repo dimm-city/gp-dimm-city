@@ -115,12 +115,12 @@
    visual contract for the two-page TOC + Credits frontmatter, written as:
 
      @page contents
-     # Contents {.dc-chevron}
+     # Contents
      @lede ... @end-lede
      @toc ... @end-toc
 
      @page credits
-     # Credits {.dc-chevron}
+     # Credits
      @lede ... @end-lede
      @section flat
      @columns 2
@@ -331,6 +331,19 @@
   line-height: 1.6;
 }
 
+/* The publisher's plate: a picture on its own line under the colophon, with no
+   class, is a band across the foot of the sheet. It is the page's full width
+   (the masthead's side pull, above), `--dc-credits-art-height` tall, and
+   cropped to fit. An image the author places with a class is left alone. */
+.page.dc-page-credits > p > img:not([class]) {
+  display: block;
+  width: calc(100% + 1.25in);
+  max-width: none;
+  height: var(--dc-credits-art-height);
+  margin: 0 -0.625in;
+  object-fit: cover;
+}
+
 /* Chapter-start page: the h1 drops core's rule and gets headroom below the
    page top. The title is never fragmented across sheets and stays with the
    first block after it (a title wraps to several lines in the display face,
@@ -392,14 +405,21 @@
   margin-top: 0;
 }
 
-/* ── SNUG — `@section .dc-snug` / `@page .dc-snug` ──────────────────────────
-   Halves the space between paragraphs and list items so a section or page
-   that overflows by a line or two fits. Type size and leading are
-   untouched. Lives in dc.templates so it outranks the dc.components and
-   dc.base paragraph/list margins; only the contents-page rows and the
-   credits colophon, which fix their own spacing here, outrank it. */
-:is(.section, .page).dc-snug :is(p, li) {
-  margin-bottom: 0.04in;
+/* ── FLOW GAP — `--dc-flow-gap`, and `.dc-snug`, which sets it ───────────────
+   The space under a paragraph or list item. Unset, each keeps the spacing its
+   own component gives it; set (on a box, or on anything above it, from a
+   sheet or by `.dc-snug`), it is the space under every one of them in that
+   box. `.dc-snug` halves it, so a section or page
+   that overflows by a line or two fits; type size and leading are untouched.
+   Lives in dc.templates so it outranks the dc.components and dc.base
+   paragraph/list margins, and `revert-layer` hands the margin back to them
+   while the token is unset. The contents-page rows and the credits colophon,
+   which fix their own spacing here, outrank it. */
+:is(p, li) {
+  margin-bottom: var(--dc-flow-gap, revert-layer);
+}
+.dc-snug {
+  --dc-flow-gap: 0.04in;
 }
 
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────

@@ -83,7 +83,7 @@ The old raw spellings (`@page .page-chapter-start .dc-chapter-start`, `.page-toc
 ```markdown
 @page contents
 
-# Contents {.dc-chevron}
+# Contents
 
 @lede
 
@@ -104,12 +104,12 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Credits page
 
-A chevron title, a lede for thanks and dedications, and the colophon, a `@section flat` with its names in `@columns 2`: bold lead-ins become role labels.
+A chevron title, a lede for thanks and dedications, and the colophon, a `@section flat` with its names in `@columns 2`: bold lead-ins become role labels. The title of the contents, credits and intro pages is a chevron banner because of the page word; write `{.dc-chevron}` only on a heading anywhere else.
 
 ```markdown {.dg-split}
 @page credits
 
-# Credits {.dc-chevron}
+# Credits
 
 @lede
 

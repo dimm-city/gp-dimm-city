@@ -1,6 +1,6 @@
 @page credits
 
-# Credits {.dc-chevron}
+# Credits
 
 @section flat
 

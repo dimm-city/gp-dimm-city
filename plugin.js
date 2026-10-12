@@ -65,6 +65,10 @@
  *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
  *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
+ *   the h1 under `@page intro | credits | contents` gets .dc-chevron
+ *   a table of the five standard bands is the outcome ladder (it keeps the
+ *                          table's `{#id .class}`); `@procedure` keeps the
+ *                          attributes written on its line, on its list
  *
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
@@ -419,9 +423,16 @@ function outcomeRowsHtml(rows, md, head = []) {
   return html;
 }
 
-// A table of the five standard bands: tier and name come from the band.
-function buildLadderBlock({ head, rows }, md) {
-  return '<div class="dc-outcomes">\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
+// A table of the five standard bands: tier and name come from the band. The
+// ladder replaces the table, so what the author wrote on the table (`{#id
+// .class}`) and what the renderer threaded on it move to the ladder.
+function buildLadderBlock({ head, rows }, md, table) {
+  const attrs = [['class', 'dc-outcomes']];
+  for (const [name, value] of table.attrs || []) {
+    if (name === 'class') attrs[0][1] += ' ' + value;
+    else attrs.push([name, value]);
+  }
+  return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -575,8 +586,15 @@ function collectOrderedListItems(tokens, startIndex, md) {
   return { items: items, endIndex: i };
 }
 
-function buildProcedureList(items) {
-  let html = '<ol class="dc-steps">\n';
+// `attrs` are what the author wrote on the `@procedure` line: the wrapper
+// renders nothing, so the list takes them.
+function buildProcedureList(items, attrs, md) {
+  const list = [['class', 'dc-steps']];
+  for (const [name, value] of attrs) {
+    if (name === 'class') list[0][1] += ' ' + value;
+    else list.push([name, value]);
+  }
+  let html = '<ol' + md.renderer.renderAttrs({ attrs: list }) + '>\n';
   items.forEach((itemHtml, idx) => {
     const stepNo = String(idx + 1).padStart(2, '0');
     html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + itemHtml.trimEnd() + '</span></li>\n';
@@ -705,6 +723,31 @@ function dcImageParagraphs(state) {
     const [open, inline, close] = [tokens[i], tokens[i + 1], tokens[i + 2]];
     if (open.type !== 'paragraph_open' || inline.type !== 'inline' || close.type !== 'paragraph_close') continue;
     if (inline.children?.length === 1 && inline.children[0].type === 'image') open.attrSet('class', 'dc-img-wrapper');
+  }
+}
+
+// The title of a front-matter page is a chevron banner because of where it
+// sits: the `h1` straight under `@page intro | credits | contents` is a
+// `.dc-chevron`, so the author writes no `{.dc-chevron}`. The class stays
+// available on any other heading.
+const FRONT_MATTER_PAGES = ['dc-page-intro', 'dc-page-credits', 'dc-page-contents'];
+
+function dcFrontMatterTitles(state) {
+  let front = false;
+  let depth = 0; // layout containers open inside the page: a heading in one is not the page's title
+  for (const tok of state.tokens) {
+    if (tok.type === 'layout_page_open') {
+      front = (tok.attrGet('class') || '').split(/\s+/).some((c) => FRONT_MATTER_PAGES.includes(c));
+      depth = 0;
+    } else if (tok.type === 'layout_page_close') {
+      front = false;
+    } else if (/^layout_.+_open$/.test(tok.type)) {
+      depth++;
+    } else if (/^layout_.+_close$/.test(tok.type)) {
+      depth--;
+    } else if (front && !depth && tok.type === 'heading_open' && tok.tag === 'h1') {
+      addTokenClass(tok, 'dc-chevron');
+    }
   }
 }
 
@@ -991,7 +1034,7 @@ function dcSkillCards(state) {
         const tableTokens = collectTableTokens(content, i);
         const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
         if (ladder) {
-          emit(buildLadderBlock(ladder, md));
+          emit(buildLadderBlock(ladder, md, tok));
           i = skipToTableClose(content, i);
           continue;
         }
@@ -1096,7 +1139,7 @@ function dcLadderTables(state) {
     const tableTokens = collectTableTokens(tokens, i);
     const ladder = ladderRows(readTable(tableTokens));
     if (!ladder) continue;
-    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md)));
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, tokens[i])));
   }
 }
 
@@ -1157,13 +1200,17 @@ function dcProcedures(state) {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const out = [];
+    let attrs = open.attrs || []; // the first list takes them: an id stays unique
     for (let i = 1; i < run.length - 1; i++) {
       if (run[i].type !== 'ordered_list_open') {
         out.push(run[i]);
         continue;
       }
       const { items, endIndex } = collectOrderedListItems(run, i, state.md);
-      if (items.length > 0) out.push(makeToken('html_block', buildProcedureList(items)));
+      if (items.length > 0) {
+        out.push(makeToken('html_block', buildProcedureList(items, attrs, state.md)));
+        attrs = [];
+      }
       i = endIndex;
     }
     return [open, ...out, close];
@@ -1445,6 +1492,7 @@ export default function dimmCityPlugin(md, options = {}) {
   // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
   // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
   md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
+  md.core.ruler.push('dc_front_matter_titles', dcFrontMatterTitles);
 
   // Declared components. Callouts, cards, outcomes and procedures go first so
   // one inside a skill is already rewritten when the skill's rule looks at it.

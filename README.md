@@ -46,7 +46,6 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | I am writing… | Use |
 |---|---|
 | Rules or reference text under a heading | `@section panel` |
-| The same, kept on one page | `@section panel .dc-avoid-split` |
 | Unboxed text that carries the accent rail | `@section flat` |
 | A table or list to look up (prices, conditions, a menu of options) | `@section reference` |
 | World or setting text | `@section lore` |
@@ -56,7 +55,6 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
 | A worked example | `@callout example` |
 | A box in one of three registers: panel, slate, shard | `@block …` |
-| A callout floated beside the text | `@callout note .dc-sidebar` |
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
@@ -74,14 +72,16 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| A section that overflows by a line or two | add `.dc-snug` |
 | Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
 renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels
-that say what kind of text they hold. Sections split across pages by default. A page or chapter
-word draws no box of its own: it re-tunes the sections inside it.
+that say what kind of text they hold. Write the content and the marker that says
+what it is: the defaults set how it looks and where it breaks (sections split
+across pages, a catalog too, and a creature and a callout stay whole). A page
+or chapter word draws no box of its own: it re-tunes the sections inside it. To
+change how one block sits, see [Author overrides](#author-overrides).
 
 Also in the box:
 
@@ -125,6 +125,66 @@ Then insert the *Toc Page*, *Credits Page* and *Chapter Start Page* snippets
 to lay down the front matter, and reach for *Skill*, *Learning Path* and
 *Specialty* as you write. `page-rules.css` sets a Letter page with bleed; keep
 the manifest's `page:` in step with it.
+
+## Author overrides
+
+A book's markdown holds the content and the markers that say what it is
+(`@section panel`, `@npc-stat`, `@gear augment`); the defaults above make it
+look right and break sensibly. None of what follows is needed for that. These
+are the supported ways to change one block when the defaults do not suit it:
+written in the markdown, or from the book's own CSS, with the same effect. They
+are documented and kept; the defaults only make them needed less often.
+
+**Core Gutterpress classes (`gp-*`).** Image placement and size (`.gp-left`,
+`.gp-right`, `.gp-center`, `.gp-full`, `.gp-bleed`, `.gp-small`, `.gp-medium`,
+`.gp-large`), pinning art to the page (`.gp-pin` with `.gp-top`, `.gp-bottom`,
+`.gp-flush`, `.gp-behind`), wrapping text around a shape (`.gp-shape`) and the
+fragmentation helpers (`.gp-no-break`, `.gp-break-before`) belong to Gutterpress,
+not to this package. They are written as `![alt](image.png){.gp-right
+.gp-medium}` and are documented in the Gutterpress user guide
+([Visual elements](https://github.com/dimm-city/gutterpress/blob/main/examples/gutterpress-user-guide/03-visual-elements.md)).
+This package's defaults for art (below) read only an image with no class, so a
+`gp-*` class always wins.
+
+**Modifiers from this package.** Written after a marker (`@section panel
+.dc-snug`) or in braces after an element (`## Title {.dc-h3}`). Each has a
+matching setting for a book's CSS, so a book can do the same without a markdown
+edit.
+
+| Write | What it does | The same from a book's CSS |
+|---|---|---|
+| `.dc-avoid-split` on `@section`, `@skill`, `@faction` or `@npc-stat` | Keep that box on one page: it moves to the next page rather than splitting | `--dc-section-break-inside: avoid` with `--dc-section-edge: 0px` (a section), `--dc-skill-card-break-inside`, `--dc-faction-break-inside`, `--dc-npc-stat-break-inside` |
+| `.dc-snug` on `@section` or `@page` | Tighten the space under paragraphs and list items, for one that overflows by a line or two | `--dc-flow-gap: 0.04in` |
+| `.dc-h3` … `.dc-h6` on a heading or paragraph | Give it the look of that level without changing its place in the outline | none: a class only |
+| `.dc-chevron` on a heading | Set it as a chevron banner (the title under `@page intro`, `credits` and `contents` already is one) | `--dc-chevron-bg`, `--dc-chevron-color`, `--dc-chevron-font-size` |
+| `.dc-flush` | Run a tape, stat block, sticker chain, pull quote or `@outcome` edge to edge | none: a class only |
+| `.dc-sidebar` on a callout | Float it right at about a third of the width, text wrapping on its left (`@callout note .dc-sidebar`) | none: a class only |
+| `.dc-spray`, `.dc-spec-tweak`, `.dc-no-top`, `.dc-img-float-left`, `.dc-img-float-right` | Heading banners and an image float | none: classes only |
+
+A catalog (`@section catalog`) splits across pages by default, since one kept
+whole leaves the foot of the page before it blank; an explicit `.dc-avoid-split`
+on it still keeps it whole, as does `--dc-catalog-break-inside: avoid` from a
+book's CSS. An `@npc-stat` with at most one `####` is one creature and stays whole without
+`.dc-avoid-split` (`--dc-npc-stat-break-inside: auto` lets one split). An image
+with no class in a `@gear` entry floats right at half the card
+(`--dc-entry-art-width`), and one on its own line under the credits colophon is
+a band across the foot of the sheet (`--dc-credits-art-height`).
+
+**Core markers and attributes.** `@page-break` starts a new page at that line;
+`@columns 2` … `@end-columns` (one to five columns, and `@column-break` to move
+to the next) is the one way to set text in columns. Both are Gutterpress's, not
+this package's. `{#id}` (or `#id` on a marker line) names a block for a link and
+for a book's CSS: `#core-loop { --dc-section-break-inside: avoid; }`. Written after
+a table the package turns into an outcome ladder, or on an `@procedure` line, the
+id and classes land on the ladder or the list.
+
+**Coming: `[data-name]`.** Gutterpress will stamp a stable `data-name` on every
+marker block, image and heading (from `name="…"`, then `label="…"`, then the
+slug of its first heading, or the image's file name), so a book's CSS can tune
+one block without touching the markdown:
+`[data-name="core-loop"] { --dc-section-break-inside: avoid; }`. Until your
+Gutterpress does, `name="…"` on a marker line writes it and `#id` works
+everywhere.
 
 ## Your own CSS: the layer convention
 
@@ -173,6 +233,14 @@ with a render-parity run (text runs, image placement, and a pixel comparison
 of every page). Public API for semver purposes: the macro vocabulary, the
 classes and tokens marked `live` in `components.yaml`, the page templates, and
 the layer names. `CHANGELOG.md` lists what each release changes.
+
+### Moving from 1.6.2 or earlier
+
+1.6.3 changes a default, so rebuild and compare:
+
+- An `@npc-stat` with at most one `####` (one creature) stays whole. Add
+  `--dc-npc-stat-break-inside: auto` to let one split. A `.dc-avoid-split` on one
+  is now redundant.
 
 ### Moving from 1.6.1 or earlier
 

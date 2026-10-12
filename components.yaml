@@ -16,8 +16,12 @@
 #   each exactly as written: "@npc-stat", "@section npc", "@page intro",
 #   "@chapter rules"; a retired entry lists the spellings that no longer
 #   work) · snippet (the file or files in snippets/ that insert it, by name
-#   without .md) · modifier (a class that changes a component without being
-#   one: dc-avoid-split, dc-snug) · replaced_by (retired entries: what to
+#   without .md) · modifier (the class, or list of classes, an author writes
+#   in `{…}` or after a marker to change a box without being a component:
+#   dc-avoid-split, dc-snug, dc-chevron, dc-h3…dc-h6; the app offers each as
+#   a completion) · description (one line, what an author gets from the
+#   class or word; every author-facing entry and every modifier has one) ·
+#   replaced_by (retired entries: what to
 #   write now) · recipe · emits (DOM strings, one or a list) · css
 #   (package-relative paths; required for live/unused, and at least one must
 #   style one of the entry's classes) · tokens (must be declared under
@@ -169,6 +173,7 @@ components:
   - name: block-variants
     status: live
     origin: author
+    description: "The three looks of a @block: panel (HUD), slate (dark) and shard (zine)."
     recipe: "@block panel | slate | shard"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard
     css: styles/components/section.css
@@ -218,9 +223,9 @@ components:
     recipe: "@gear [augment|treasure|vehicle|drug] #### Name … @end-gear  (a @gear after a @gear closes the first)"
     emits: div.dc-card.dc-entry.dc-gear
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-art-width]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "The item entry, and the one marker for every kind of item: bare `@gear` is general gear, and a bare word picks a kind (`augment`, `treasure`, `vehicle`, `drug`, the four entries below). A .dc-card of the entry family with an orange rail; the name (### or ####), the italic tagline paragraph and the bold price paragraph are picked out by shape. A `**SPECS:**` paragraph is a `@field specs`. Reports an entry with no name or with a second one, and a word that is not a kind (read as general gear). Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by its rail colour and the small kind word over its name."
+    notes: "The item entry, and the one marker for every kind of item: bare `@gear` is general gear, and a bare word picks a kind (`augment`, `treasure`, `vehicle`, `drug`, the four entries below). A .dc-card of the entry family with an orange rail; the name (### or ####), the italic tagline paragraph and the bold price paragraph are picked out by shape. An image with no class in an entry is the item's picture: floated right at --dc-entry-art-width (half the card); a class the author writes (`{.gp-left .gp-large}`) places it instead. A `**SPECS:**` paragraph is a `@field specs`. Reports an entry with no name or with a second one, and a word that is not a kind (read as general gear). Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by its rail colour and the small kind word over its name."
 
   - name: augment
     status: live
@@ -313,6 +318,7 @@ components:
   - name: tape
     status: live
     origin: author
+    description: "A torn-tape divider with a label (raw HTML div)."
     recipe: "<div class=\"dc-tape\">…</div>  (add dc-flush to run edge to edge)"
     emits: div.dc-tape
     css: styles/components/chrome.css
@@ -352,7 +358,7 @@ components:
       - --dc-outcome-name-color
       - --dc-outcome-name-opacity
     usage: ["| 20 |"]
-    breaks: "break-inside: avoid; the skill-table form adds data-break-inside=avoid only when the parent card allows splitting"
+    breaks: "break-inside: avoid"
     notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
 
   - name: specialty
@@ -470,7 +476,8 @@ components:
       - --dc-card-body-mark
       - --dc-card-gap
       - --dc-card-tab-shadow
-    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole (and writes data-break-inside=avoid)"
+      - --dc-skill-card-break-inside
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-highlight
@@ -526,6 +533,8 @@ components:
   - name: flush
     status: live
     origin: plugin
+    modifier: dc-flush
+    description: "Run a tape, stat block, sticker chain, pull quote or outcome ladder edge to edge, with no side margin."
     recipe: "@outcome flush, > [!PULLQUOTE], or .dc-flush on raw .dc-tape / .dc-stat / .dc-stickers"
     emits: .dc-flush (edge-to-edge modifier)
     css: [styles/components/chrome.css, styles/components/data.css]
@@ -598,7 +607,8 @@ components:
       - --dc-npc-stat-label-color
       - --dc-npc-stat-rule
       - --dc-npc-stat-rule-width
-    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no #### splits like any section (.dc-avoid-split keeps it whole)"
+      - --dc-npc-stat-break-inside
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no ####, or one, is one creature and stays whole (--dc-npc-stat-break-inside: auto lets one split)"
 
   - name: npc-stat-compact
     status: live
@@ -630,9 +640,9 @@ components:
     recipe: "@page credits"
     emits: div.page.dc-page-credits
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
-    tokens: [--dc-intro-gap, --dc-intro-pad-bottom, --dc-section-gap, --dc-section-grow, --dc-section-drop]
+    tokens: [--dc-intro-gap, --dc-intro-pad-bottom, --dc-section-gap, --dc-section-grow, --dc-section-drop, --dc-credits-art-height]
     breaks: "page: front-matter (no footer)"
-    notes: "The credits page: masthead, lede and colophon stacked flush. The colophon names go in `@columns 2` inside `@section flat`; the page sets the flat section's accent, drop, gap and grow by tokens."
+    notes: "The credits page: masthead, lede and colophon stacked flush. The title is a chevron banner by context, with no `{.dc-chevron}`. The colophon names go in `@columns 2` inside `@section flat`; the page sets the flat section's accent, drop, gap and grow by tokens. An image with no class on its own line under the colophon is the plate: a band across the foot of the sheet, --dc-credits-art-height tall, cropped to fit; a class the author writes places it instead."
 
   - name: page-contents
     status: live
@@ -644,7 +654,7 @@ components:
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
     tokens: [--dc-toc-rail-y, --dc-toc-rail-x, --dc-toc-shadow, --dc-toc-badge, --dc-intro-gap, --dc-intro-pad-bottom]
     breaks: "page: front-matter (no footer)"
-    notes: "The contents page: masthead, lede and the @toc card stacked flush. The page sets the card's rails, shadow and number-chip colour by tokens."
+    notes: "The contents page: masthead, lede and the @toc card stacked flush. The title is a chevron banner by context, with no `{.dc-chevron}`. The page sets the card's rails, shadow and number-chip colour by tokens."
 
   - name: page-intro
     status: live
@@ -656,7 +666,7 @@ components:
     css: [styles/page-templates.css, styles/page-rules.css]
     tokens: [--dc-intro-gap, --dc-intro-pad-bottom, --dc-chevron-bg, --dc-section-accent, --dc-section-drop]
     breaks: "page: front-matter-intro (no footer, ordinary margins)"
-    notes: "The introduction: chevron, lede, then a `@section flat`. The page sets the lede's and the flat section's tokens."
+    notes: "The introduction: chevron, lede, then a `@section flat`. The title is a chevron banner by context, with no `{.dc-chevron}`. The page sets the lede's and the flat section's tokens."
 
   # ── Chapter words: a register for the sections in the chapter ──────────
   - name: chapter-rules
@@ -706,14 +716,19 @@ components:
   - name: chevron
     status: live
     origin: author
+    modifier: dc-chevron
+    description: "Set a heading as a chevron banner (an h1 under @page intro, credits or contents already is one)."
     recipe: "# Title {.dc-chevron}  (the chapter-opener h1 gets the same treatment structurally)"
     emits: h1.dc-chevron
     css: [styles/components/chrome.css, styles/dc-native.css, styles/page-templates.css]
     tokens: [--dc-chevron-bg, --dc-chevron-color, --dc-chevron-font-size]
+    notes: "The plugin writes the class on the h1 straight under @page intro, credits or contents, so a front-matter title needs none. It is the override for a heading anywhere else, and for a page that is not one of the three (a bare @page holding the introduction)."
 
   - name: spray
     status: live
     origin: author
+    modifier: dc-spray
+    description: "Set a heading as a spray-paint banner."
     recipe: "## Title {.dc-spray}  (also emitted by @learning-path for its title)"
     emits: ["h2.dc-spray (authored)", "h3.dc-spray (a @learning-path title)"]
     css: [styles/components/chrome.css, styles/components/data.css]
@@ -723,6 +738,8 @@ components:
   - name: spec-tweak
     status: live
     origin: author
+    modifier: [dc-spec-tweak, dc-no-top]
+    description: "Set a heading as a Spec Tweak title; .dc-no-top drops its top margin."
     recipe: "### Title {.dc-spec-tweak [.dc-no-top]}"
     emits: h3.dc-spec-tweak[.dc-no-top]
     css: styles/components/chrome.css
@@ -730,6 +747,7 @@ components:
   - name: classtag
     status: live
     origin: author
+    description: "A pill naming a specialty, with that specialty's colour dot (raw HTML span)."
     recipe: "raw <span class=\"dc-classtag <specialty>\">"
     emits: span.dc-classtag.<specialty>
     css: styles/components/chrome.css
@@ -738,6 +756,7 @@ components:
   - name: tag
     status: live
     origin: author
+    description: "A small keyword or cost label (raw HTML span)."
     recipe: "raw <span class=\"dc-tag\">"
     emits: span.dc-tag
     css: styles/components/chrome.css
@@ -745,6 +764,7 @@ components:
   - name: human-callout
     status: live
     origin: author
+    description: "A boxed NPC capsule, usually floated inside a .dc-sidebar (raw HTML div)."
     recipe: "raw <div class=\"dc-sidebar\"><div class=\"dc-human-callout\">…  (NPC sidebar)"
     emits: div.dc-human-callout
     css: styles/components/images.css
@@ -753,6 +773,7 @@ components:
   - name: at-a-glance-card
     status: live
     origin: author
+    description: "A label-and-value card, three to a row inside @columns 3 (raw HTML div)."
     recipe: "@columns 3 / raw <div class=\"dc-at-a-glance-card\"> × 3 / @end-columns"
     emits: div.dc-at-a-glance-card
     css: styles/components/data.css
@@ -760,6 +781,7 @@ components:
   - name: stat-block
     status: live
     origin: author
+    description: "A four-cell stat grid with a name and a class line (raw HTML div; a creature's HP and Damage table is a stat strip instead)."
     recipe: "raw <div class=\"dc-stat [dc-flush]\"> with .dc-stat-head, .dc-stat-grid cells and .dc-stat-line"
     emits:
       - div.dc-stat > div.dc-stat-head > span.dc-stat-name + span.dc-stat-class
@@ -772,26 +794,41 @@ components:
     status: live
     origin: author
     modifier: dc-avoid-split
+    description: "Keep this section, skill card, faction or creature on one page: it moves to the next page rather than splitting."
     snippet: avoid-split
-    recipe: "@section panel .dc-avoid-split  |  @skill .dc-avoid-split"
+    recipe: "@section panel .dc-avoid-split  |  @skill .dc-avoid-split  |  from a book's sheet: #id { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }"
     emits: .dc-avoid-split (on the section or skill card it is written on)
     css: [styles/components/section.css, styles/components/cards.css]
-    breaks: "break-inside: avoid — the section or card moves to the next page rather than splitting. Sections and skill cards split by default, so nothing else in this package sets break-inside on one (a skill card also carries data-break-inside=avoid)"
-    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object."
+    tokens: [--dc-section-break-inside, --dc-section-edge, --dc-npc-stat-break-inside, --dc-skill-card-break-inside, --dc-faction-break-inside]
+    breaks: "break-inside: avoid. The class is a setter of the keep-whole tokens on the box it is written on, nothing more; a book writes the same declarations from its own sheet. A catalog splits by default, but the class keeps one whole (it sets --dc-catalog-break-inside: avoid)"
+    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object. A creature (an @npc-stat with at most one ####) needs none: it stays whole by default."
 
   - name: snug
     status: live
     origin: author
     modifier: dc-snug
+    description: "Tighten the space under paragraphs and list items in this section or page, for one that overflows by a line or two."
     snippet: snug
-    recipe: "@section .dc-snug  /  @page .dc-snug"
+    recipe: "@section .dc-snug  /  @page .dc-snug  |  from a book's sheet: #id { --dc-flow-gap: 0.04in; }"
     emits: .dc-snug (on the section or page it is written on)
     css: styles/page-templates.css
-    notes: "Paragraph and list-item margin-bottom drops to 0.04in so a section or page that overflows by a line or two fits. Type size and leading are untouched."
+    tokens: [--dc-flow-gap]
+    notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
+
+  - name: heading-look
+    status: live
+    origin: author
+    modifier: [dc-h3, dc-h4, dc-h5, dc-h6]
+    description: "Give a heading, or a paragraph, the look of a lower level without changing its place in the outline."
+    recipe: "## Useful Items {.dc-h3}  |  {.dc-h4}  |  {.dc-h5}  |  {.dc-h6}"
+    emits: .dc-h3 | .dc-h4 | .dc-h5 | .dc-h6 (on the heading or paragraph it is written on)
+    css: [styles/dc-core.css, styles/components/section.css]
+    notes: "A heading's level is its place in the outline and its look follows the level; the class sets the look of that level and the outline stays unbroken (`#` then `##`, never `#` then `###`). An `##` with .dc-h3 that opens a panel takes the subordinate title bar. On a paragraph it sets a line in heading type without adding it to the outline."
 
   - name: full-page
     status: live
     origin: author
+    description: "A page that is one full-bleed plate, edge to edge (the same page as core's @page full-bleed)."
     recipe: "@page .dc-full-page  (core's @page full-bleed gets the same geometry and named page)"
     emits: div.page.dc-full-page
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
@@ -801,6 +838,8 @@ components:
   - name: img-float
     status: live
     origin: author
+    modifier: [dc-img-float-left, dc-img-float-right]
+    description: "Float an image to one side at 44% of the column, text wrapping beside it (core's .gp-left and .gp-right do the same)."
     recipe: "![alt](src){.dc-img-float-left|.dc-img-float-right}"
     emits: img.dc-img-float-left|.dc-img-float-right
     css: styles/components/images.css
@@ -822,8 +861,8 @@ components:
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits: div.section.dc-section-panel
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-rail, --dc-section-gap, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
-    breaks: "splits by default; add .dc-avoid-split to keep it whole"
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
+    breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
     notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
 
   - name: section-catalog
@@ -834,8 +873,8 @@ components:
     recipe: "@section catalog ## Title … @columns 2 @gear augment … @end-columns @end-section"
     emits: div.section.dc-section-panel.dc-catalog
     css: styles/components/entries.css
-    tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule]
-    breaks: "a panel; its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
+    tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-catalog-break-inside]
+    breaks: "a panel that splits by default (--dc-catalog-break-inside: auto); .dc-avoid-split, or --dc-catalog-break-inside: avoid, keeps one whole; its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
     notes: "A panel for a run of entries (@gear, of any kind). Its entries are ruled instead of boxed (and may split across columns, as the plain text they replace did): no card, no rail, a rule in the entry's own accent over each, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
 
   - name: section-flat
@@ -902,8 +941,8 @@ components:
     recipe: "@faction [megacorp|cabal|cult|enforcer] [label=\"…\"] / #### Name / fields and prose … @end-faction"
     emits: [div.dc-card.dc-faction.dc-faction-megacorp|.dc-faction-cabal|.dc-faction-cult|.dc-faction-enforcer, span.dc-faction-kind]
     css: [styles/components/section.css]
-    tokens: [--dc-faction-accent, --dc-faction-badge-fg]
-    breaks: "break-inside: avoid (via .dc-card)"
+    tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside]
+    breaks: "splits between paragraphs by default (--dc-faction-break-inside: auto); .dc-avoid-split keeps one whole"
     notes: "An organization's profile: a card whose rail and kind badge take the kind's colour (megacorp blue, cabal violet, cult blood, enforcer yellow). The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."
 
   - name: stat-strip
@@ -919,6 +958,8 @@ components:
   - name: sidebar-float
     status: live
     origin: author
+    modifier: dc-sidebar
+    description: "Float a callout to the right at about a third of the width, body text wrapping on its left."
     recipe: "@callout note .dc-sidebar label=\"…\"  (also raw <div class=\"dc-sidebar\"> around a human-callout)"
     emits: .dc-sidebar (on the callout or div it is written on)
     css: [styles/components/images.css]

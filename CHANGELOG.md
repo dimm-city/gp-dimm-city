@@ -7,6 +7,103 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.6.3] - 2026-10-12
+
+Content and markers by default, overrides when wanted: the defaults now do more,
+so a book writes fewer `.dc-avoid-split`, `.dc-snug`, `{.dc-chevron}` and `gp-*`
+classes, and every override that stays is documented and has a token a book can
+set from its own CSS.
+
+### Changed (pagination)
+
+- **Hyphenation is manual (`hyphens: manual`), not automatic.** `hyphens: auto`
+  hyphenates only where the browser ships a dictionary, and Chromium builds differ:
+  the desktop app (Electron) has none on Linux, Chrome for Testing has them. The
+  same book paginated differently in the desktop app and the CLI (SysOps: 396 vs
+  392 pages). Soft hyphens (`&shy;`) still break. A book that wants automatic
+  hyphenation sets `hyphens: auto` in its own CSS, accepting that trade-off.
+
+### Changed
+
+- **A creature stays whole by default.** An `@npc-stat` with no `####`, or one (a
+  species and its one variant), is one creature, read at one glance: it keeps its
+  padding inside its box and moves to the next page rather than splitting, as
+  `.dc-avoid-split` did. `.dc-avoid-split` on one is now redundant. A block with
+  two or more `####` entries is unchanged (it breaks between entries, never inside
+  one). `--dc-npc-stat-break-inside: auto` lets one split.
+- **A catalog splits by default, and an explicit override still wins.** A
+  `@section catalog` reads its own token, `--dc-catalog-break-inside` (default
+  `auto`), because a run of entries kept whole leaves the foot of the page before
+  it blank. An author's `.dc-avoid-split` on it still keeps it whole, as it always
+  did, and so does `--dc-catalog-break-inside: avoid` from a book's CSS. A
+  container's `--dc-section-break-inside` does not reach a catalog.
+- **Keeping a box whole is a token per component.** `--dc-section-break-inside`,
+  `--dc-catalog-break-inside`, `--dc-npc-stat-break-inside`,
+  `--dc-skill-card-break-inside` and `--dc-faction-break-inside` are declared at
+  `:root` (`avoid` or `auto`), and each component reads its own. `.dc-avoid-split`
+  is now a setter of them (and of `--dc-section-edge: 0px`, which keeps a whole
+  section's padding inside its box), so a book writes the same declarations for
+  one box from its own sheet (`#core-loop { --dc-section-break-inside: avoid;
+  --dc-section-edge: 0px; }`). A sheet that sets only the first still keeps the
+  section whole; the second keeps the pagination identical to the class. Sections,
+  skill cards and factions render as before. The skill card's `:not(.dc-avoid-split)`
+  guards on its keep-with-next chains are gone: a card kept whole is unaffected by
+  chains until it is taller than a page.
+- **The space under paragraphs and list items is `--dc-flow-gap`.** `.dc-snug` is
+  now a setter of it (0.04in), and a book sets it on any box. Unset, each
+  component keeps its own spacing, so nothing changes until it is set. A
+  `revert-layer` fallback in the template layer hands the margin back to the
+  component while the token is unset.
+- **Entry art has a default.** An image with no class inside a `@gear` entry
+  floats right at half the card (`--dc-entry-art-width`, 50%), as
+  `{.gp-right .gp-medium}` does. An image with no class on its own line under the
+  credits colophon is a band across the foot of the sheet, the page's full width
+  and `--dc-credits-art-height` (2.75in) tall, cropped to fit. Both read only an
+  image with no class, so a `gp-*` class an author writes still wins (the plugin's
+  layer outranks core's).
+- **A front-matter title is a chevron by context.** The plugin writes `.dc-chevron`
+  on the `h1` straight under `@page intro`, `credits` and `contents`, so those
+  titles need no `{.dc-chevron}`; the class still works on any other heading and
+  is not doubled where it is written. The snippets for the three pages no longer
+  write it.
+
+### Fixed
+
+- **A ladder table keeps what the author wrote on it.** `{#id .class}` after a
+  table of the five bands, outside a skill card and in one, was dropped with the
+  table; it now lands on the `.dc-outcomes` element, with any other attribute.
+- **`@procedure` keeps the attributes on its line.** The wrapper renders nothing,
+  so `@procedure #steps .tight` lost its id and class; they now land on the list
+  (the first, when there are several, so an id stays unique).
+
+### Removed
+
+- **Two selectors that matched nothing in the design guide or either book:**
+  `.dc-skill-card:only-child` and `.dc-sidebar:empty`, and the
+  `.dc-card.dc-faction.dc-avoid-split` rule the faction token replaces. The 94
+  selectors that match nothing in the two books were checked against the design
+  guide too: 79 are documented there (`.dc-stat*`, `.dc-tape`, `.dc-spec-tweak`,
+  `.dc-npc-compact`, `.dc-img-float-*`, `.dc-sidebar`, the `@npc-stat` stat-line
+  rules and others), and the rest are element baselines, a rule a test asserts, or
+  the loose-list half of a live selector, so they stay (see
+  `docs/cleanup-backlog.md`).
+
+### Added
+
+- **README: "Author overrides".** One section for the supported overrides: core's
+  `gp-*` classes (a pointer to the Gutterpress guide), each plugin modifier with
+  what it does and the token that does the same from a book's CSS,
+  `@page-break`, `@columns`, `{#id}`, and the coming `[data-name]` hook. The
+  "what are you writing" tables no longer list `.dc-avoid-split`, `.dc-snug` or
+  `.dc-sidebar` as if ordinary content needed them, in the README and the design
+  guide.
+- **The catalog names every class an author can write.** `components.yaml`:
+  `modifier:` takes a class or a list, `description:` is one line for every
+  modifier and author-facing class, and `.dc-h3` … `.dc-h6`, `.dc-chevron`,
+  `.dc-flush`, `.dc-spray`, `.dc-spec-tweak` / `.dc-no-top`, `.dc-sidebar` and the
+  image floats are entries with their modifier, for the app's completions. The
+  integrity test checks both.
+
 ## [1.6.2] - 2026-10-12
 
 ### Changed

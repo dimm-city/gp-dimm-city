@@ -45,6 +45,21 @@
   --dc-section-gap:       12pt;
   --dc-section-grow:      0;
 
+  /* Keep whole, per component: `avoid` moves the box to the next page rather
+     than splitting it, `auto` lets it split. `.dc-avoid-split` sets all of
+     these to `avoid` on the box it is written on, and a book sets one the same
+     way from its own sheet (`#core-loop { --dc-section-break-inside: avoid; }`).
+     A custom property inherits, so one set on a container reaches what is
+     inside it. A section splits by default, and so does a catalog (it reads its
+     own token, so a container's `--dc-section-break-inside` does not keep a
+     catalog whole), and an `@npc-stat` with at most
+     one `####` is one creature and stays whole. */
+  --dc-section-break-inside:    auto;
+  --dc-catalog-break-inside:    auto;
+  --dc-npc-stat-break-inside:   avoid;
+  --dc-skill-card-break-inside: auto;
+  --dc-faction-break-inside:    auto;
+
   /* ─── Component Public Token Defaults ────────────────────────────────────
      The override surface for per-chapter and per-project theming. They live
      on :root so the book's own sheet can override them at chapter-id scope
@@ -151,6 +166,10 @@
   --dc-entry-rail:           3px;                   /* a catalog sets 0 */
   --dc-entry-rule:           0px;                   /* a catalog sets it */
   --dc-entry-kind:           none;                  /* a quoted word over the name */
+  --dc-entry-art-width:      50%;                   /* the item's picture, floated right; a classed image is the author's */
+
+  /* credits page: the plate under the colophon (an image with no class) */
+  --dc-credits-art-height:   2.75in;
 
   /* .dc-field public API (@field, and the **Label:** shortcut); each variant sets these on its own class */
   --dc-field-accent:         var(--ink-dark);       /* rail and label chip */
