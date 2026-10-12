@@ -29,7 +29,7 @@ The Dimm City design system for Gutterpress: how to write a Dimm City book in ma
 <ol>
 <li><a href="#ch-examples">About the examples</a></li>
 <li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, introduction</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — fiction excerpt, citizen file walkthrough</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — chapter-start page, fiction excerpt, citizen file walkthrough</li>
 <li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the specialty card grid</li>
 <li><a href="#ch-example-specialty-profile">Specialty Profile</a> — intro, art, a learning path with skill cards</li>
 <li><a href="#ch-example-rules">Rules &amp; Mechanics</a> — sections, definitions, conditions, the outcome ladder</li>

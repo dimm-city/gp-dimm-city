@@ -1,10 +1,10 @@
-@chapter C.01 #ch-example-chapter-opener .dg-guide ch="1"
+@chapter #ch-example-chapter-opener .dg-guide ch="1"
 
-@page intro
-
-@fiction-excerpt
+@page .page-chapter-start .dc-chapter-start
 
 # Who Do You Dream to Be?
+
+@fiction-excerpt
 
 "It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?! Tag's Thump, an I'm a rabbit outta dee EntD here in Dimm City. Lemme post ya a tale about life here in da middle 'o dee ether.
 
@@ -41,8 +41,6 @@ Da bats froze mid-flight, shrieking an tumbling outta da sky.
 I locked in da hack, jacked out, an leapt clean onto a passing airbus like I meant to do it all along.
 
 @end-fiction-excerpt
-
-@column-break
 
 @section
 

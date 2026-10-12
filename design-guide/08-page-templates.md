@@ -36,7 +36,6 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page .page-credits .dc-credits` | none | The credits page |
 | `@page .page-intro` | none | The introduction |
 | `@page .page-chapter-start .dc-chapter-start` | none | A chapter opener |
-| `@page intro` | `p.N`, `c.N` | A chapter's first page under a labelled `@chapter` — the chapter badge is injected here |
 | `@page .page-sidebar` | `p.N`, `c.N` | A page with an inset sidebar rail |
 | `@page .dc-citizen-file-page` | `p.N`, `c.N` | Running header "Citizen File" |
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
@@ -106,16 +105,16 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow. `@column-break` splits fiction from the rules column that follows.
+A chapter opens on `@page .page-chapter-start .dc-chapter-start` with its `# Title` and no footer. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
 
 ```markdown {.dg-split}
-@chapter C.01 #ch-citizen ch="1"
+@chapter #ch-citizen ch="1"
 
-@page intro
-
-@fiction-excerpt
+@page .page-chapter-start .dc-chapter-start
 
 # Who Do You Dream to Be?
+
+@fiction-excerpt
 
 "It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!"
 
@@ -124,8 +123,6 @@ A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its f
 I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out.
 
 @end-fiction-excerpt
-
-@column-break
 
 @section
 
@@ -136,9 +133,9 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the badge: `--dc-chapter-opener-bg`, `--dc-chapter-opener-accent`; for the excerpt: `--dc-fiction-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
 
-The footer-free variant is `@page .page-chapter-start .dc-chapter-start` with a `# Title` — the snippet picker's *Chapter Start Page*.
+The snippet picker's *Chapter Start Page* inserts this opener.
 
 ## Citizen File walkthrough
 

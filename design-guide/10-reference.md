@@ -13,7 +13,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Marker | Closes | Notes |
 |---|---|---|
-| `@chapter #id ch="N" [C.NN]` | next `@chapter` / EOF | `ch` prints the footer; a label such as `C.01` adds the chapter badge to the first `@page intro` |
+| `@chapter #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer |
 | `@page [.class…]` | next `@page` | Page classes: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [.class…]` | `@end-section` | A region; bare = styled panel, `.dc-plain` = no chrome |
@@ -107,7 +107,6 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Outcome ladder | `--dc-outcomes-surface` `--dc-outcomes-border` `--dc-outcomes-inner-border` `--dc-outcomes-label-bg` `--dc-outcomes-label-color` `--dc-outcome-key-color` `--dc-outcome-name-color` `--dc-outcome-name-opacity` |
 | NPC stat block | `--dc-npc-stat-primary` `--dc-npc-stat-secondary` `--dc-npc-stat-label-color` `--dc-npc-stat-rule` `--dc-npc-stat-rule-width` |
 | Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
-| Chapter badge | `--dc-chapter-opener-bg` `--dc-chapter-opener-accent` `--dc-chapter-opener-shadow` `--dc-chapter-opener-clip-tail` `--dc-chapter-opener-pad-top` `--dc-chapter-opener-pad-side` |
 | Specialty wrapper | `--spec-accent` `--spec-mid` `--spec-dark` `--dc-skill-tab-shape` `--dc-skill-body-shape` `--dc-path-title-shape` `--dc-path-shell-clip` `--dc-specialty-card-shell-shape` `--dc-specialty-intro-title-shape` `--dc-specialty-intro-clip` |
 | Specialty intro | `--dc-specialty-intro-bg` `--dc-specialty-intro-title-bg` `--dc-specialty-intro-title-color` |
 | Specialty card | `--dc-specialty-card-bg` `--dc-specialty-card-border` `--dc-specialty-card-accent` `--dc-specialty-card-fg` `--dc-specialty-card-media-height` `--dc-specialty-card-media-width` `--dc-specialty-card-title-align` `--dc-specialty-card-band-height` `--dc-specialty-card-shadow` `--dc-specialty-card-title-color` |

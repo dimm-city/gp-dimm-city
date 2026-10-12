@@ -129,12 +129,10 @@ Rules of thumb:
 > them in new content — author the same layout with `@section .dc-class-entry`
 > plus structural child elements (see the design guide's page-templates chapter).
 >
-> **Retired — `@chapter-opener`:** never re-add it. The chapter-opener composite
-> is markup-driven: `markers.js` injects
-> `<div class="chapter-opener" data-chapter-label="C.NN">` as the first child of
-> a labeled chapter's first page, and `styles/components/*.css` style it plus the
-> `.chapter[data-chapter-label] > .page[data-page="intro"] > .section` chain.
-> The plugin registers no `@chapter-opener` marker.
+> **Retired — `@chapter-opener`:** never re-add it. The labelled chapter-opener
+> composite (core's `.chapter-opener` badge on a labelled chapter's first page,
+> styled by this package) was removed from the stylesheets; books open a chapter
+> with `@page .page-chapter-start .dc-chapter-start`.
 
 ## Blank-line habit for markers
 

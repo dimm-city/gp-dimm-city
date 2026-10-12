@@ -13,6 +13,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
   as a tab above the panel) had no use in either book, and its two tokens
   `--dc-section-tab-overlap` and `--dc-section-tab-indent` go with it. Write a
   plain `@section`: its first heading prints as the bar across the top.
+- **The labelled chapter-opener styling.** A `@chapter C.01` followed by
+  `@page intro` no longer gets the stacked `C.01` badge, the chevron title or
+  the clipped panel: the rules that keyed on
+  `.chapter[data-chapter-label] > .page[data-page="intro"]` and the
+  `.chapter-opener` badge are gone, with the `--dc-chapter-opener-*` tokens,
+  `--fs-chapter` and `--augmerc-deep`. Gutterpress core still writes
+  `data-chapter-label` and `.chapter-opener`; this package no longer styles
+  them. Open a chapter with `@page .page-chapter-start .dc-chapter-start` and a
+  `# Title`, as both books do. The design guide's chapter-opener, specialty
+  overview and rules chapters now use that form.
 
 ## [1.4.1] - 2026-10-11
 

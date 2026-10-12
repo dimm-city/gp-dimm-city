@@ -57,7 +57,6 @@
  *                          to its origin card (dcContinueClassifier claims it
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
- *   (chapter-opener composite is now markup-driven — see CSS notes below)
  *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
  *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
@@ -1260,26 +1259,6 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
 
   md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
-
-  // NOTE: Chapter-opener composite behaviour is intentionally NOT handled
-  // by the plugin. The author markdown
-  //
-  //     @chapter C.01
-  //     @page intro
-  //     @section
-  //     # Who Do You Dream to Be?
-  //
-  // produces the standard marker DOM:
-  //
-  //     .chapter[data-chapter-label="C.01"]
-  //       .page[data-page="intro"][data-chapter-label="C.01"]
-  //         .section
-  //           h1
-  //           ...
-  //
-  // All chapter-opener visual treatment (the C.NN badge, the section
-  // variant chrome, the chevron-styled h1) is provided by CSS attribute
-  // selectors in components/*.css matching this structure.
 
   // Mark image-only paragraphs so layout rules can target them without
   // relying on p:has(img). The base CSS rule

@@ -1,10 +1,10 @@
-@chapter C.02 #ch-example-specialty-overview .dg-guide ch="2"
+@chapter #ch-example-specialty-overview .dg-guide ch="2"
 
-@page intro
-
-@section
+@page .page-chapter-start .dc-chapter-start
 
 # What Do You Dream of Doing?
+
+@section
 
 The alley narrowed to a throat of shadow as they reached the bunker's blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.
 

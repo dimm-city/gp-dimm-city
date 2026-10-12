@@ -23,7 +23,7 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 <div class="dg-toc">
 <ol>
 <li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, and introduction pages</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — a labelled chapter with a fiction excerpt, then the Citizen File walkthrough</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — a chapter-start page with a fiction excerpt, then the Citizen File walkthrough</li>
 <li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the opener fiction and the ten-card specialty catalog</li>
 <li><a href="#ch-example-specialty-profile">Specialty Profile</a> — the Augmerc: intro, art plate, a learning path with skill cards, DM notes</li>
 <li><a href="#ch-example-rules">Rules Pages</a> — sections, column runs, definitions, conditions, the outcome ladder</li>
@@ -37,9 +37,9 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 | Chapter | Page templates | Components |
 |---|---|---|
 | Front Matter | `.page-toc`, `.page-credits .dc-credits`, `.page-intro` | `@toc`, `@lede`, `.credits-colophon`, `[!PULLQUOTE]`, floated art |
-| Chapter Opener | labelled `@chapter` + `@page intro`, `.dc-citizen-file-page` | `.dc-fiction-excerpt`, `@column-break`, `@callout origin`, `.dc-citizen-walkthrough` |
-| Specialty Overview | `@page intro`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
+| Chapter Opener | `.page-chapter-start .dc-chapter-start`, `.dc-citizen-file-page` | `.dc-fiction-excerpt`, `@callout origin`, `.dc-citizen-walkthrough` |
+| Specialty Overview | `.page-chapter-start .dc-chapter-start`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
-| Rules Pages | `@page intro` | `@section`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
+| Rules Pages | `.page-chapter-start .dc-chapter-start` | `@section`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |
 | Gear & Tech | `@page` | `@callout gear`, `@outcome`, `@gear` in `@columns 2` runs |

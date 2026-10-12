@@ -617,22 +617,6 @@ components:
     breaks: "break-inside: avoid (core MARKER_CSS)"
     notes: "Panel chrome is token-driven: variants and templates set --dc-section-surface/-shadow/-pad-* on their own rule; .dc-plain turns both layers off."
 
-  - name: chapter-opener
-    status: live
-    origin: core
-    recipe: "@chapter C.01 / @page intro / @section / # Title  (markup-driven; core injects .chapter-opener)"
-    emits: div.page[data-page=intro][data-chapter-label] > div.section > h1
-    css: [styles/components/chrome.css, styles/dc-palette.css]
-    tokens:
-      - --dc-chapter-opener-bg
-      - --dc-chapter-opener-accent
-      - --dc-chapter-opener-shadow
-      - --dc-chapter-opener-clip-tail
-      - --dc-chapter-opener-pad-top
-      - --dc-chapter-opener-pad-side
-      - --dc-chapter-opener-pad-right
-    notes: "There is no @chapter-opener macro."
-
   # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
   - name: distance-tags
     status: retired
@@ -647,6 +631,13 @@ components:
     recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
     emits: div.section.dc-tabbed
     notes: "Removed 2026-10-12 (plugin.js marker, section.css, --dc-section-tab-* tokens, snippet): no book used it. Write a plain @section; its first heading prints as the bar."
+
+  - name: chapter-opener
+    status: retired
+    origin: core
+    recipe: "@chapter C.01 / @page intro / @section / # Title  (the labelled chapter-opener composite)"
+    emits: div.page[data-page=intro][data-chapter-label] > div.chapter-opener + div.section > h1
+    notes: "Styling removed 2026-10-12 (page-templates.css, section.css, --dc-chapter-opener-* tokens): both books open chapters with @page .page-chapter-start .dc-chapter-start. Core still emits data-chapter-label and .chapter-opener for a labelled @chapter; nothing here styles them."
 
   - name: printer-page
     status: retired

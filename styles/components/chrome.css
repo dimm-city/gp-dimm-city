@@ -26,9 +26,7 @@
    miscommunicates the semantic (CONTENTS shouldn't read as a warning).
    Rubric: D9 (brand identity per chapter — chroma anchor must match
    the banner's semantic role). */
-/* Chevron banner on elements marked `.dc-chevron`. The chapter opener's first
-   h1 gets the same treatment without the class; that rule lives with the
-   opener template in page-templates.css. */
+/* Chevron banner on elements marked `.dc-chevron`. */
 .dc-chevron {
   font-family: var(--font-display);
   font-size: var(--dc-chevron-font-size);
@@ -389,10 +387,6 @@ hr {
   height: 4px;
   background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
 }
-
-/* Chapter-opener badge + H1 banner — see "PAGE TEMPLATE: CHAPTER OPENER"
-   in page-templates.css. The legacy .dc-chapter-opener-no rules previously here were removed
-   when the legacy @chapter-opener macro was retired. */
 
 /* ── Specialty art full-page plate ─────────────────────────────────────────── */
 .dc-specialty-art {

@@ -1,10 +1,10 @@
-@chapter C.1 #ch-example-rules .dg-guide ch="4"
+@chapter #ch-example-rules .dg-guide ch="4"
 
-@page intro
-
-@fiction-excerpt
+@page .page-chapter-start .dc-chapter-start
 
 # Are You Lucid Yet?
+
+@fiction-excerpt
 
 ![01-street-sign](https://placehold.co/600x800/png?text=Street+Sign){.fg-art-street-sign}
 
@@ -21,8 +21,6 @@ Behind him, a chorus of giggles breaks from the shadows moving closer.
 What's your next move?
 
 @end-fiction-excerpt
-
-@column-break
 
 @section
 

@@ -532,9 +532,6 @@
    identity and is intentional.
 
    Composite contract:
-     - Chevron is constrained to body column width. The chapter-opener
-       composite's negative margins are designed for chapters where the
-       chevron lives inside a wrapper, not for this standalone intro page.
      - Section's ::before / ::after pseudos suppressed (their 18px TOP-
        right cut opposed the chevron's BOTTOM-right cut, producing the
        stepped right-edge mismatch).
@@ -555,20 +552,15 @@
   --dc-intro-accent: var(--intro-accent);
 }
 
-/* Chevron geometry on the standalone intro page. This page is NOT a
-   chapter-opener composite (no .chapter[data-chapter-label] ancestor,
-   data-page is "front-matter" not "intro"), so it takes the standard
-   .dc-chevron treatment explicitly rather than inheriting the composite's.
+/* Chevron geometry on the standalone intro page: the standard .dc-chevron
+   treatment, kept at lede width.
 
    The chevron stays at lede width; the clip-path's bottom-right diagonal
    cut (`--clip-banner`, tapering to `calc(100% - --clip-tail)`) lives
    fully inside the column. Do NOT re-add a negative `margin-right` to land
    the diagonal flush on the lede's right edge: print cannot paint past the
    page content box, and the widened box makes Chromium shrink the WHOLE
-   book to fit (the engine's pre-print width check hard-errors on it).
-
-   --dc-chevron-bg is pinned explicitly so a chapter-opener accent token
-   cannot reach this page. */
+   book to fit (the engine's pre-print width check hard-errors on it). */
 .page.page-intro h1.dc-chevron {
   margin-left: 0;
   margin-right: 0;
@@ -600,84 +592,6 @@
   --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
   background: var(--paper-cream);
   box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
-}
-
-/* ── PAGE TEMPLATE: CHAPTER OPENER (labelled chapter's intro page) ──────────
-   The opener's .section keeps the panel chrome but restyles it: padding comes
-   from --dc-chapter-opener-pad-*, and both pseudo layers get a
-   straight right edge at the clip-tail so the chevron's diagonal meets the
-   substrate with no step. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section {
-  /* Right padding exceeds the clip-tail so body text clears the clipped edge.
-     Set as `padding`, not as pad tokens: every .section on an opener page
-     matches this selector, and only the opener's own h1 cancels these
-     values. A header bar in a later section (a plain panel or column panel)
-     keeps cancelling its own variant's pad tokens, as it always has. */
-  padding: var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-right)
-           var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-side);
-  --dc-section-edge: 0px;  /* explicit padding above; see .section */
-
-  /* Per-chapter opener tokens flow into the section's accent and surface. */
-  --dc-section-accent: var(--dc-chapter-opener-accent);
-  --dc-section-bg:     var(--dc-chapter-opener-bg);
-
-  /* A .dc-chevron inside tapers to the same x as this section's right edge. */
-  --clip-tail: var(--dc-chapter-opener-clip-tail);
-}
-
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::before {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* Shadow offset like --dc-chapter-opener-shadow, same clip as the substrate. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::after {
-  top: 4px;
-  left: 3px;
-  right: -3px;
-  bottom: -4px;
-  background: var(--shadow-ink);
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* The section's first h1 is a chevron banner without a `{.dc-chevron}`
-   attribute. Negative margins cancel the section padding so it reaches the
-   section's outer edges; its --clip-banner tail then tapers in by --clip-tail. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
-  /* The .dc-chevron look (components/chrome.css), applied without the class
-     so authors need not write `{.dc-chevron}` on every chapter h1. */
-  font-family: var(--font-display);
-  letter-spacing: 0.06em;
-  color: var(--dc-chevron-color);
-  text-transform: uppercase;
-  background: var(--dc-chevron-bg);
-  padding: 10px 28px 10px 14px;
-  display: block;
-  box-sizing: border-box;
-  clip-path: var(--clip-banner);
-  word-break: break-word;
-
-  /* Smaller than other h1.dc-chevron so the section body stays the focal
-     anchor below the banner. User-approved 2026-05-25. */
-  font-size: 1.1rem;
-  line-height: 1.2;
-
-  margin-top:   calc(var(--dc-chapter-opener-pad-top)   * -1);
-  margin-left:  calc(var(--dc-chapter-opener-pad-side)  * -1);
-  margin-right: calc(var(--dc-chapter-opener-pad-right) * -1);
-  margin-bottom: 0;
-  --dc-chevron-bg: var(--dc-chapter-opener-accent);
 }
 
 /* ── PAGE TEMPLATE: IMAGE — DELETED ─────────────────────────────────────────
