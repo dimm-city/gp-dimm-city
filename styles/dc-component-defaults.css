@@ -165,6 +165,10 @@
   --dc-entry-rail:           3px;                   /* a catalog sets 0 */
   --dc-entry-rule:           0px;                   /* a catalog sets it */
   --dc-entry-kind:           none;                  /* a quoted word over the name */
+  --dc-entry-art-width:      50%;                   /* the item's picture, floated right; a classed image is the author's */
+
+  /* credits page: the plate under the colophon (an image with no class) */
+  --dc-credits-art-height:   2.75in;
 
   /* .dc-field public API (@field, and the **Label:** shortcut); each variant sets these on its own class */
   --dc-field-accent:         var(--ink-dark);       /* rail and label chip */

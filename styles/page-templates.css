@@ -331,6 +331,19 @@
   line-height: 1.6;
 }
 
+/* The publisher's plate: a picture on its own line under the colophon, with no
+   class, is a band across the foot of the sheet. It is the page's full width
+   (the masthead's side pull, above), `--dc-credits-art-height` tall, and
+   cropped to fit. An image the author places with a class is left alone. */
+.page.dc-page-credits > p > img:not([class]) {
+  display: block;
+  width: calc(100% + 1.25in);
+  max-width: none;
+  height: var(--dc-credits-art-height);
+  margin: 0 -0.625in;
+  object-fit: cover;
+}
+
 /* Chapter-start page: the h1 drops core's rule and gets headroom below the
    page top. The title is never fragmented across sheets and stays with the
    first block after it (a title wraps to several lines in the display face,

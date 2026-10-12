@@ -270,6 +270,25 @@ describe("faction cards split by default", () => {
   });
 });
 
+// Art gets a default by where it sits: an entry's picture floats right, the
+// credits plate is a band at the foot of the sheet. Both read only an image with
+// no class, so a `.gp-*` class an author writes (the desktop writes them from
+// its Image Properties) is never overridden by the plugin, which outranks core's.
+describe("art defaults leave a classed image alone", () => {
+  test("an entry's picture reads --dc-entry-art-width", () => {
+    const art = declsOf("styles/components/entries.css", ".dc-entry img:not([class])");
+    expect(art.float).toBe("right");
+    expect(art.width).toBe("var(--dc-entry-art-width)");
+    expect(declsOf("styles/dc-component-defaults.css", ":root")["--dc-entry-art-width"]).toBe("50%");
+  });
+
+  test("the credits plate reads --dc-credits-art-height", () => {
+    const plate = declsOf("styles/page-templates.css", ".page.dc-page-credits > p > img:not([class])");
+    expect(plate.height).toBe("var(--dc-credits-art-height)");
+    expect(declsOf("styles/dc-component-defaults.css", ":root")["--dc-credits-art-height"]).toBe("2.75in");
+  });
+});
+
 // The space under a paragraph or list item is `--dc-flow-gap`, which nothing
 // sets by default (each component keeps its own), `.dc-snug` sets, and a book
 // may set on any box. `revert-layer` hands the margin back while it is unset.
