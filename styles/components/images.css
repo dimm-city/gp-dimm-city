@@ -90,35 +90,4 @@
    core's column classes would outrank core's own (this package's layer wins),
    and the token is the hook core reads. */
 
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SECTION CONTAINER — DC prose content card
-   ═══════════════════════════════════════════════════════════════════════════
-   .section is created by Gutterpress's @section markers (markers.js).
-
-   Base rule styles ALL sections as accent-strip cards sitting on the page
-   surface. Layout variants override with their own treatment. No :not()
-   chains — variant classes always win the cascade.
-
-   Token API:
-     --dc-section-bg      → panel background surface
-     --dc-section-accent  → left strip / top border accent color        */
-
-/* Float-containment DEFAULT.
-   flow-root makes the card a block formatting context so it CONTAINS floated
-   children (.dc-sidebar, a book's floated art, fiction-excerpt art — all
-   float:right). Without it a section whose trailing content is a float
-   collapses to the height of its in-flow content only, and the float spills
-   onto the bare wall below. Worst case seen: a section holding only a
-   .dc-sidebar collapsed to 23px while the sidebar ran 855px past it, so the
-   NEXT section painted over the sidebar's text (ch-03 "Dice Etiquette" vs
-   "Lucid and Surreal Rolls").
-   Safe w.r.t. margin collapsing: .section's non-zero vertical padding
-   already blocks parent/child margin collapse, so flow-root changes no
-   spacing for any variant that keeps that padding.
-   It is a default, not a mandate; `:where()` keeps the specificity at zero. */
-:where(.section) {
-  display: flow-root;
-}
-
 }

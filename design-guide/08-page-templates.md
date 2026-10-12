@@ -6,7 +6,7 @@ Chapter 8 {.dg-kicker}
 
 # Page Templates
 
-Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
+Classes on `@page` choose a page's geometry — margins, footers, running headers — and `@section` variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
 
 
 ## Page geometry
@@ -34,7 +34,7 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page` | `p.N` and `c.N` in opposing corners | Every body page |
 | `@page .page-toc` | none | The contents page |
 | `@page .page-credits .dc-credits` | none | The credits page |
-| `@page .page-intro` | none | The introduction |
+| `@page .page-intro` | none | The introduction (a `@lede`, then a `@section flat`) |
 | `@page .page-chapter-start .dc-chapter-start` | none | A chapter opener |
 | `@page .dc-citizen-file-page` | `p.N`, `c.N` | Running header "Citizen File" |
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
@@ -71,7 +71,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Credits page
 
-A chevron title, a lede for thanks and dedications, and the colophon, set in `@columns 2`: bold lead-ins become role labels.
+A chevron title, a lede for thanks and dedications, and the colophon, a `@section flat` with its names in `@columns 2`: bold lead-ins become role labels.
 
 ```markdown {.dg-split}
 @page .page-credits .dc-credits
@@ -84,7 +84,7 @@ A chevron title, a lede for thanks and dedications, and the colophon, set in `@c
 
 @end-lede
 
-@section .credits-colophon
+@section flat
 
 @columns 2
 
@@ -125,7 +125,7 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 @page
 
-@section
+@section panel
 
 ## Citizen File
 
@@ -134,7 +134,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-rule`, `--dc-fiction-shadow`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page it takes the heavier opener edge (two ink rules and an offset shadow) by itself; nothing to add.
 
 The snippet picker's *Chapter Start Page* inserts this opener.
 

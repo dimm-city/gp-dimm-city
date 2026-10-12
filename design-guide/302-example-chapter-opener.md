@@ -44,7 +44,7 @@ I locked in da hack, jacked out, an leapt clean onto a passing airbus like I mea
 
 @page
 
-@section
+@section panel
 
 ## Citizen File {#c2-character-profile}
 

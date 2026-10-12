@@ -75,7 +75,7 @@ Do {.dg-result}
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 Dimm City twitches like a clamped nerve at the edge of existence. Nothing here is safe, and nothing here is free.
 

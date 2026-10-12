@@ -660,7 +660,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 
 /* Prevent a level-3 heading orphan at the bottom of a page — scoped
    break-before on the heading itself. */
-#ch-example-dm-npcs .section>h3:first-child {
+#ch-example-dm-npcs .dc-section-panel>h3:first-child {
    break-before: avoid;
 }
 

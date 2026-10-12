@@ -1066,7 +1066,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 # Augmerc {.dc-chevron}
 
@@ -1082,29 +1082,45 @@ Augmerc learning paths assume combat-grade augmentations.
 
 </div>
 
-## Section chassis
+## Section variants
 
-A bare `@section`, `@section .dc-plain`, and a `@section` with its body in `@columns 2`.
+`@section panel`, `@section flat`, `@section aside`, a bare `@section`, and a panel with its body in `@columns 2`.
 
 <div class="dg-stage dg-tall">
 
-@section
+@section panel
 
-### Bare section
+### Panel section
 
-The panel chrome: substrate, accent rule, and the first heading as a bar.
-
-@end-section
-
-@section .dc-plain
-
-### Plain section
-
-No substrate, rail or shadow: the text sits on whatever is behind it. A first heading still prints as a bar.
+The panel chrome: substrate, accent rule, clipped corner, and the first heading as a bar.
 
 @end-section
 
-@section
+@section flat
+
+### Flat section
+
+The accent rail on a plain host: no clipped corner, no shadow. A heading prints as a heading, not a bar.
+
+@end-section
+
+@section aside
+
+### Aside section
+
+An inset note: the sidebar-box frame, with the rail in the section accent.
+
+@end-section
+
+@section panel .dc-avoid-split
+
+### Panel kept whole
+
+`.dc-avoid-split` moves the whole section to the next page rather than splitting it.
+
+@end-section
+
+@section panel
 
 ### Section with columns
 
@@ -1117,6 +1133,18 @@ Dimm City twitches like a clamped nerve at the edge of existence.
 Nothing here is safe. Nothing here is free.
 
 @end-columns
+
+@end-section
+
+</div>
+
+<div class="dg-stage dg-on-paper">
+
+@section
+
+### Bare section
+
+No variant word, no look: the text sits on whatever is behind it.
 
 @end-section
 

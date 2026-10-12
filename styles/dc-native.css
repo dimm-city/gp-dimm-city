@@ -223,7 +223,7 @@
   min-height: var(--gp-content-h);
   padding-bottom: 0;
 }
-.page.page-credits .section.credits-colophon {
+.page.page-credits .dc-section-flat {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
@@ -243,33 +243,14 @@ figure {
   overflow: clip;
 }
 
-/* ── 5. COLUMN RUNS: components must fragment naturally inside them ────────
-   These rules are components REACTING to sitting inside a column run
-   (`@columns N`, which emits `div.gp-columns` + `.gp-columns-N`). They set no
-   column property: how many columns, the gap, the rule and the fill are
-   core's (`--gp-column-gap` / `--gp-column-rule` are set once, at `:root`, in
-   dc-component-defaults.css).
-
-   `.section` reads `break-inside: var(--dc-section-break-inside)`, default
-   `avoid` (components/section.css; token in dc-component-defaults.css). This
-   rule sets the TOKEN, not the property, so the component keeps the only
-   `break-inside` declaration. Measured DOM shape: `.gp-columns` is a WRAPPER
-   div (the multicol container) and the `.section` blocks sit INSIDE it. A
-   section taller than one column can then never split, so Chromium drops it
-   whole into one column fragment and the facing column dies — the dead-column
-   collapse. Removing this override cost 3 pages of pagination churn when
-   measured (302pp vs 299pp), so it is load-bearing, not legacy.
-
-   Keys on the run, not on any card around it: this is about multicol
-   fragmentation, and the wrapper is a `@columns` run. A run is `.gp-columns`
-   (what `@columns` emits) or a count class on its own, so the selector takes
-   either: `[class*="gp-columns-"]` is the count classes, and the rule reads
-   the same for -1 to -5. */
-/* Selector is the descendant form on purpose: a `.section` that is itself the
-   multicol container keeps the default. */
-:is(.gp-columns, [class*="gp-columns-"]) .section {
-  --dc-section-break-inside: auto;
-}
+/* ── 5. COLUMN RUNS ────────────────────────────────────────────────────────
+   `@columns N` emits `div.gp-columns` + `.gp-columns-N`; how many columns, the
+   gap, the rule and the fill are core's (`--gp-column-gap` / `--gp-column-rule`
+   are set once, at `:root`, in dc-component-defaults.css). Sections split by
+   default, so a section taller than one column fragments naturally. A section
+   given `.dc-avoid-split` inside a run that is taller than a column can never
+   split: Chromium drops it whole into one column and the facing column dies
+   (the dead-column collapse). Do not combine the two. */
 
 /* `column-fill` is not set anywhere in this package. `balance` is the CSS
    initial value and what a column run gets; core has no sequential-fill

@@ -1285,7 +1285,7 @@ export default function dimmCityPlugin(md, options = {}) {
  * reads this table: declared markers exist only under Gutterpress.
  *
  * A `section: true` entry declares a section-styled component: core treats it
- * as a real `@section` carrying the entry's class (see below).
+ * as a real `@section` carrying the entry's classes (see below).
  *
  * To add a plain wrapper, add one line here (element + classes), a snippet in
  * `snippets/<name>.md`, and the usual catalog/guide entries — see
@@ -1349,22 +1349,42 @@ export const markers = {
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
   }),
 
+  // Section variants: `@section panel` is `<div class="section dc-section-panel">`.
+  // A bare `@section` is core's plain box and gets no styling from this package.
+  // `panel`, `flat` and `aside` are general; the rest are the section-styled
+  // components below, each reachable by its own marker (`@npc-stat`) or by word
+  // (`@section npc`), and both write the same classes so one CSS rule serves
+  // both. A component that is a card (npc, walkthrough, flaws, ideals, dreams)
+  // carries `dc-section-panel` beside its own class; fiction and cards are not
+  // panels. The CSS is in styles/components/section.css.
+  section: {
+    variants: {
+      panel: 'dc-section-panel',
+      flat: 'dc-section-flat',
+      aside: 'dc-section-aside',
+      npc: 'dc-section-panel dc-npc-stat',
+      fiction: 'dc-fiction-excerpt',
+      walkthrough: 'dc-section-panel dc-citizen-walkthrough',
+      cards: 'dc-card-grid',
+      flaws: 'dc-section-panel dc-flaws',
+      ideals: 'dc-section-panel dc-ideals',
+      dreams: 'dc-section-panel dc-dreams',
+    },
+  },
+
   // Section-styled components. `section: true` makes each one a real core
-  // @section: `@npc-stat` is exactly `@section .dc-npc-stat` (same element, same
-  // classes), so the books' existing `@section .dc-…` spellings keep working
-  // unchanged. Each class has its CSS on `.section.dc-…` in
-  // styles/components/section.css. No variants: none of these is styled per
-  // specialty (that lives on `.dc-specialty.<name>`, from `@specialty`), and
-  // modifiers such as `.dc-plain`, `.dc-snug`, `.dc-allow-split` and
-  // `.gp-columns-2` stay author classes.
+  // @section: `@npc-stat` is exactly `@section npc` (same element, same
+  // classes). No variants of their own: none is styled per specialty (that
+  // lives on `.dc-specialty.<name>`, from `@specialty`), and modifiers such as
+  // `.dc-snug`, `.dc-avoid-split` and `.gp-columns-2` stay author classes.
   'card-grid': { section: true, class: 'dc-card-grid' },
-  'citizen-walkthrough': { section: true, class: 'dc-citizen-walkthrough' },
+  'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
-  'npc-stat': { section: true, class: 'dc-npc-stat' },
+  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat' },
   // Citizen-file card runs: the class sets the accent of every `@card` inside.
-  flaws: { section: true, class: 'dc-flaws' },
-  ideals: { section: true, class: 'dc-ideals' },
-  dreams: { section: true, class: 'dc-dreams' },
+  flaws: { section: true, class: 'dc-section-panel dc-flaws' },
+  ideals: { section: true, class: 'dc-section-panel dc-ideals' },
+  dreams: { section: true, class: 'dc-section-panel dc-dreams' },
 };
 
 /**

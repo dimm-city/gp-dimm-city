@@ -16,7 +16,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@chapter #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer |
 | `@page [.class…]` | next `@page` | Page classes: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
-| `@section [.class…]` | `@end-section` | A region; bare = styled panel, `.dc-plain` = no chrome |
+| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `aside` and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
 | `@page-break` · `@column-break` | — | Forced breaks |
 
@@ -56,16 +56,16 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.dc-plain` | `@section` | No panel chrome |
-| `.gp-no-break` | `@section` | Never split across pages |
-| `.dc-allow-split` | `@section`, `@skill` | Allow a tall element to split |
+| `.dc-avoid-split` | `@section` | Keep the section whole; it moves to the next page rather than splitting (sections split by default) |
+| `.gp-no-break` | `@section` | Core's never-split class |
+| `.dc-allow-split` | `@skill` | Allow a tall skill card to split |
 | `.gp-break-before` | a heading | New page before it |
-| `.dc-npc-stat` | `@section` | Narrative NPC stat block |
-| `.dc-fiction-excerpt` | `@section` | Narrative typography, auto art float |
-| `.dc-citizen-walkthrough` | `@section` | Citizen File field chassis |
-| `.dc-card-grid` | `@section` | Chrome and density for a run of specialty cards (set in `@columns 2`) |
-| `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | Card accent per step |
-| `.credits-colophon` | `@section` on the credits page | Colophon chrome |
+| `.dc-section-panel` · `.dc-section-flat` · `.dc-section-aside` | `@section` | What `@section panel`, `flat` and `aside` write |
+| `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
+| `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: aged paper, narrative typography, auto art float |
+| `.dc-citizen-walkthrough` | `@section` | What `@citizen-walkthrough` writes (with `.dc-section-panel`) |
+| `.dc-card-grid` | `@section` | Density for a run of specialty cards (set in `@columns 2`); no chrome |
+| `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | Card accent per step (with `.dc-section-panel`) |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |

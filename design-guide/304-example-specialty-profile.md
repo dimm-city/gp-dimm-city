@@ -138,7 +138,7 @@ Some jobs are work. Some jobs are justice.
 
 @page-break
 
-@section
+@section panel
 
 ## Combining Specialties
 
@@ -148,7 +148,7 @@ Combining specialties is not multi-classing. You don't split your focus at chara
 
 @end-section
 
-@section
+@section panel
 
 ### Rules for Cross-Specialty Learning
 
@@ -168,7 +168,7 @@ The specialty system is intentionally resistant to optimization. Cross-specialty
 
 @end-dm-note
 
-@section
+@section panel
 
 ### Example: Augmerc + Wirephreak
 
@@ -182,7 +182,7 @@ This is the DC cross-specialty model. You stay rooted. You grow edges.
 
 ## What Makes a Good Cross-Specialty Moment {.dc-spray}
 
-@section
+@section panel
 
 The DM should look for three conditions before granting cross-specialty access:
 

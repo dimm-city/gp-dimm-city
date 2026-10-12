@@ -1,77 +1,84 @@
 @layer dc.components {
 
-/* ── Base card: every @section gets a cream surface + left accent strip ──
+/* ── Section variants ────────────────────────────────────────────────────
+   A bare `@section` is core's plain box: this package styles NO rule that
+   matches `.section` without a `dc-` class beside it (test/conventions.test.js
+   enforces it). The look lives on the variant classes core writes for
+   `@section <word>` (plugin.js, `section.variants`):
+
+     panel   .dc-section-panel   cream card, accent rail, clipped corner,
+                                 shadow, heading bar          (this file)
+     flat    .dc-section-flat    cream host with the rail only
+     aside   .dc-section-aside   an inset note, the @sidebar-box treatment
+     npc, walkthrough, flaws, ideals, dreams  = a panel plus the component class
+     fiction, cards              = the component class alone
+
+   Sections split across pages by default. `.dc-avoid-split` keeps one whole.
+
    Public tokens (defaults declared in dc-component-defaults.css :root):
-     --dc-section-bg      — panel background surface
-     --dc-section-accent  — left strip / top bar accent color
-     --dc-section-surface / --dc-section-shadow — `content` of the ::before /
-                            ::after layers: "" paints, `none` removes the layer
-     --dc-section-pad-top/-right/-bottom/-left — padding; the header bar's
-                            negative margins are derived from them
-     --dc-section-edge  — how far the card's bottom edge hangs below the box
-                            instead of sitting in its padding. 0px (the card's
-                            padding is layout space) except where the section
-                            may split across pages: there it is the bottom
-                            padding, so a section that ends flush at a page foot
+     --dc-section-bg      — panel / flat background surface
+     --dc-section-accent  — rail and title-bar colour; the one accent knob
+     --dc-section-surface / --dc-section-shadow — `content` of the panel's
+                            ::before / ::after layers: "" paints, `none`
+                            removes the layer
+     --dc-section-drop    — flat only: an extra box-shadow (a drop shadow)
+     --dc-section-pad-top/-right/-bottom/-left — padding; the panel's heading
+                            bar derives its negative margins from them
+     --dc-section-edge  — how far the panel's bottom edge hangs below the box
+                            instead of sitting in its padding. A panel splits
+                            across pages, so by default it is the bottom
+                            padding: a section that ends flush at a page foot
                             has no padding left to spill onto the next page.
                             Mechanism: padding-bottom shrinks by the edge, the
                             ::before/::after layers extend below the box by it,
-                            and margin-bottom grows by it. A box that paints
-                            its own surface (background / box-shadow) keeps it
+                            and margin-bottom grows by it. `.dc-avoid-split`
+                            and every box that paints its own surface keep it
                             at 0px.
    A variant or template owns its chrome by setting these on its own rule. */
-.section {
-  /* `filter` on this element stops negative-margin heading bars escaping the
-     parent's padding area (it creates a stacking context that suppresses
-     negative-margin overflow rendering). Shadow moved to ::after below.
-     `isolation: isolate` is load-bearing: ::before/::after paint at negative
-     z-index, and without a stacking context here they would escape to the
-     nearest one above and paint behind the page. It creates that context
-     without blocking child margin overflow the way `filter` does. */
-  background: transparent;
+
+/* Float containment. flow-root makes the box a block formatting context so
+   it CONTAINS floated children (.dc-sidebar, a book's floated art,
+   fiction-excerpt art). Without it a section whose trailing content is a
+   float collapses to its in-flow content and the float spills onto the bare
+   wall below. :where() keeps the specificity at zero so core layout classes
+   can own `display`. */
+:where(.dc-section-panel, .dc-section-flat, .dc-section-aside, .dc-fiction-excerpt, .dc-card-grid) {
+  display: flow-root;
+}
+
+/* Chassis shared by the two boxes that carry the rail. */
+:is(.dc-section-panel, .dc-section-flat) {
+  /* `isolation: isolate` is load-bearing: the panel's ::before/::after paint
+     at negative z-index, and without a stacking context here they would
+     escape to the nearest one above and paint behind the page. It makes that
+     context without blocking child margin overflow the way `filter` would
+     (a filter stops negative-margin heading bars escaping the padding). */
   isolation: isolate;
-  /* display: flow-root moved to the :where(.section) rule above — the
-     float-containment default must sit at zero specificity so core layout
-     classes can own `display`. */
-  --dc-section-edge: 0px;
   padding: var(--dc-section-pad-top) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
-     Iter-8 (2026-05-25).
 
      margin-right: 3px is ROOM FOR THE ::after SHADOW, which sits at
-     `right: -3px` and so overhangs this box. While `.page` clipped
-     everything that overhang was invisible; on a page that must not clip
-     (one carrying pinned or bleed art — see page-templates.css) it escapes
-     to the document and trips core's engine.width.overflow hard error at
-     711px against a 708px content box. Giving the decoration room is the
-     fix; clipping it back was only ever hiding it. Same shape as
-     .dc-path-shell's padding-right. */
+     `right: -3px` and so overhangs this box. On a page that must not clip
+     (one carrying pinned or bleed art) the overhang escapes to the document
+     and trips core's engine.width.overflow hard error. Giving the decoration
+     room is the fix; clipping it back only hid it. */
   margin: 0 3px calc(12pt + var(--dc-section-edge)) 0;
   position: relative;
-  /* Sections are atomic units — they MUST NOT span pages. If a section
-     does not fit on the remaining page space, it moves to the next page
-     entirely. The resulting dead zone at the end of the previous page is
-     intentional design behavior, not a layout failure. Authors keep
-     sections short enough to fit; if a section is too tall, split it
-     into multiple @section blocks at logical boundaries. The value is the
-     --dc-section-break-inside token: contexts that let a section split (the
-     .dc-allow-split opt-in below, multicol runs in dc-native.css) set the
-     token rather than re-declaring this property. */
-  break-inside: var(--dc-section-break-inside);
-  /* Wall-shadow is the ::after fake-shadow below (vector, same clip-path
-     as ::before). Do NOT add filter:drop-shadow here — that would double
-     the shadow (raster filter + vector pseudo) per print R9 finding. */
 }
 
-/* Optional escape hatch for genuinely long rules sections where atomic-card
-   pagination creates unusable dead zones. Use sparingly and only on sections
-   that have already been split at logical authoring boundaries. */
-/* It sets the token, not the property, so one declaration above decides. */
-.section.dc-allow-split {
-  --dc-section-break-inside: auto;
+/* ── panel ───────────────────────────────────────────────────────────────── */
+.dc-section-panel {
+  background: transparent;
   --dc-section-edge: var(--dc-section-pad-bottom);
+}
+
+/* Keep one section whole: it moves to the next page entirely if it does not
+   fit. The dead zone at the foot of the previous page is the price. */
+.section.dc-avoid-split {
+  break-inside: avoid;
+  --dc-section-edge: 0px;
 }
 
 /* clip-path + left accent band on ::before.
@@ -94,17 +101,13 @@
    every pinned image after `@end-section`, as page furniture.
 
    Deleting the lift removes the trap at the source: a `.gp-pin` inside an
-   `@section` now resolves against `.section` itself, which is a real box on
-   the sheet. `.section` keeps `position: relative` because these two pseudos
+   `@section` now resolves against the section itself, which is a real box on
+   the sheet. The section keeps `position: relative` because these two pseudos
    need it, so a pin inside a section still pins to the SECTION, not the
    page — that is core's stated `.gp-pin` contract (nearest positioned
    ancestor) working correctly, not a bug. Page-level furniture still belongs
-   outside the section.
-
-   `isolation: isolate` on `.section` is what makes -1 safe: without a
-   stacking context here the negative layers would escape to the nearest one
-   above and paint behind the page. */
-.section::before {
+   outside the section. */
+.dc-section-panel::before {
   content: var(--dc-section-surface);
   position: absolute;
   inset: 0 0 calc(-1 * var(--dc-section-edge)) 0;
@@ -120,7 +123,7 @@
    section (and clip its negative-margin heading bar).
    z-index -2, one step under the surface: at equal z-index the shadow would
    paint over the card. */
-.section::after {
+.dc-section-panel::after {
   content: var(--dc-section-shadow);
   position: absolute;
   top: 3px;
@@ -133,18 +136,32 @@
   pointer-events: none;
 }
 
-/* ── .dc-plain — a section that is a layout wrapper, not a card ──────────
-   One-line token setter: both chrome layers off. Other variants and the
-   front-matter templates set the same tokens on their own rules. */
-.section.dc-plain {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
+/* ── flat — the panel's rail on a plain host ─────────────────────────────────
+   No clipped corner, no ::before/::after layers: the box paints its own
+   surface, so its padding stays inside it (edge 0). `--dc-section-drop` is the
+   hook for a drop shadow (the intro and credits pages set it). */
+.dc-section-flat {
+  --dc-section-pad-top:    0.18in;
+  --dc-section-pad-right:  0.22in;
+  --dc-section-pad-bottom: 0.18in;
+  --dc-section-pad-left:   0.22in;
+  background: var(--dc-section-bg);
+  box-shadow: inset 4px 0 0 var(--dc-section-accent), var(--dc-section-drop); /* rail: see .dc-intro */
 }
 
-/* ── First-child heading inside a section becomes a filled top bar ───────
-   Base rule covers all sections. */
-.section > h2:first-child,
-.section > h3:first-child {
+/* ── aside — an inset note ────────────────────────────────────────────────────
+   The @sidebar-box treatment (hairline frame, accent rail, italic accent
+   heading; its rules are in data.css) on a section, with the rail on the one
+   accent knob. */
+.dc-section-aside {
+  --dc-sidebar-box-accent: var(--dc-section-accent);
+  padding: 10px 14px;
+  margin: 0.12in 0;
+}
+
+/* ── First-child heading inside a panel becomes a filled top bar ────────── */
+.dc-section-panel > h2:first-child,
+.dc-section-panel > h3:first-child {
   background: var(--dc-section-accent);
   color: var(--paper-cream);
   /* Negative margins cancel the section's padding: the bar sits flush with its edges. */
@@ -159,7 +176,7 @@
 /* H2 — PRIMARY: taller padding + 18px chamfer + orange rule. An `##` with
    the h3 look (`{.dc-h3}`, see dc-core.css) takes the subordinate bar below
    instead; `:where()` keeps this rule's specificity where it was. */
-.section > h2:where(:not(.dc-h3)):first-child {
+.dc-section-panel > h2:where(:not(.dc-h3)):first-child {
   font-size: var(--fs-h3);
   padding-top: 0.55rem;
   padding-bottom: 0.40rem;
@@ -168,37 +185,38 @@
 }
 
 /* H3 — SUBORDINATE: hierarchy reads through font size alone. */
-.section > h3:first-child,
-.section > h2.dc-h3:first-child {
+.dc-section-panel > h3:first-child,
+.dc-section-panel > h2.dc-h3:first-child {
   font-size: var(--fs-h4);
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 
 /* Heading bar followed immediately by a table — give the table head room
-   so the bar and `<th>` background don't bleed into a single coloured block.
-   The two selectors are spelled out; :is(h2, h3) would be equivalent and
-   carries identical specificity, so collapsing them is safe whenever this
-   rule is next touched. */
-.section > h2:first-child + table,
-.section > h3:first-child + table {
+   so the bar and `<th>` background don't bleed into a single coloured block. */
+.dc-section-panel > h2:first-child + table,
+.dc-section-panel > h3:first-child + table {
   margin-top: var(--space-sm);
 }
 
-/* Section sub-heading H3 — H3s inside a section that are NOT the first child
-   (i.e. NOT the section's header bar) get a left-accent border matching the
-   section accent. This visually distinguishes subsection headings from the
-   section title bar. Universal across all chapters. */
-.section > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child) {
+/* Sub-heading H3 — H3s inside a panel that are NOT the first child (i.e. NOT
+   the header bar) get a left-accent border matching the section accent. This
+   visually distinguishes subsection headings from the title bar. */
+.dc-section-panel > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child) {
   border-left: 3px solid var(--dc-section-accent);
   padding-left: var(--space-sm);
 }
 
-/* ── A7: free-standing heading directly before a section card — add extra
-   top clearance so the page-level heading and the card's header bar don't
+/* ── A7: free-standing heading, or a callout, directly before a panel — extra
+   top clearance so the heading (or the note) and the card's header bar don't
    compete at the same visual weight on the vertical scan. */
-h2 + .section,
-h3 + .section {
+h2 + .dc-section-panel,
+h3 + .dc-section-panel {
   margin-top: 20pt;
+}
+/* A callout has a top margin only and the panel a bottom margin only, so they
+   would touch. */
+.dc-alert + .dc-section-panel {
+  margin-top: var(--space-lg);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -445,7 +463,7 @@ h3 + .section {
 
    Applied via:
      @page .dc-citizen-file-page                                ← topic page (running header)
-     @section .dc-citizen-walkthrough                   ← standard section chassis
+     @citizen-walkthrough (or @section walkthrough)    ← a panel
 
    STRIP-FIRST POLICY: this component carries minimal bespoke CSS.
    Styling comes primarily from the standard .section chassis (clipped-
@@ -504,28 +522,20 @@ h3 + .section {
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
    Override per chapter / per faction in the book's own sheet selector chains. */
-/* Page breaks. A block with `####` entries is a RUN of creatures: it may break
-   between entries (token `auto`; this also stops a column run in the section
-   from jumping the whole block to the next page) and never inside one. An
-   entry has no wrapper — it is an `h4` and the siblings that follow it up to
-   the next `h4` — so "never inside" is a keep-with-next chain: every child but
-   the last of its entry takes `break-after: avoid`, and each block of an entry
-   is itself unbreakable so a paragraph cannot split between columns. Chromium
-   keeps a chain together when it fits a page and lets it break only when it
-   cannot. The title bar (h3) and its intro chain on to the first entry, so
-   the bar is never alone at a page foot. A block with no `h4` is ONE creature
-   (the bar names it) and stays whole like any section. `.dc-allow-split` is
-   the opt-in for an unusually long entry: it keeps only each entry's name with
-   its first two blocks (the stat lines) and headings with what follows, and
-   lets the rest break (blocks too).
+/* Page breaks. A section splits across pages by default. A block with `####`
+   entries is a RUN of creatures: it may break between entries and never inside
+   one. An entry has no wrapper — it is an `h4` and the siblings that follow it
+   up to the next `h4` — so "never inside" is a keep-with-next chain: every
+   child but the last of its entry takes `break-after: avoid`, and each block of
+   an entry is itself unbreakable so a paragraph cannot split between columns.
+   Chromium keeps a chain together when it fits a page and lets it break only
+   when it cannot. The title bar (h3) and its intro chain on to the first entry,
+   so the bar is never alone at a page foot. A block with no `h4` is ONE
+   creature (the bar names it); add `.dc-avoid-split` to keep it whole.
 
    The entries are either direct children of the section (one column) or the
    children of the `@columns` run inside it (`.gp-columns`); the rules below take
    both. */
-.section.dc-npc-stat:is(:has(> h4), :has(> .gp-columns > h4)) {
-  --dc-section-break-inside: auto;
-  --dc-section-edge: var(--dc-section-pad-bottom);
-}
 .section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
   break-after: avoid;
 }
@@ -539,12 +549,6 @@ h3 + .section {
 }
 :is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
   break-inside: avoid;
-}
-:is(.section.dc-npc-stat.dc-allow-split, .section.dc-npc-stat.dc-allow-split > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
-  break-inside: auto;
-}
-:is(.section.dc-npc-stat.dc-allow-split, .section.dc-npc-stat.dc-allow-split > .gp-columns):has(> h4) > :not(:last-child, h1, h2, h3, h4, h5, h6, h4 + *, h4 + * + *, blockquote + p) {
-  break-after: auto;
 }
 
 /* The `@columns` run of an entries block is glued to the bar and intro above it,
@@ -632,18 +636,10 @@ h3 + .section {
    background/shadow — it's a pure layout wrapper) plus the per-card density
    tweaks so all 8 specialty cards fit comfortably on one page. */
 
-/* Card grid: no panel, no padding; the cards carry the visuals. */
+/* Card grid: a layout wrapper, no panel and no padding; the cards carry the
+   visuals, and it may span pages when they exceed one. */
 .section.dc-card-grid {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:     0px;
-  --dc-section-pad-right:   0px;
-  --dc-section-pad-bottom:  0px;
-  --dc-section-pad-left:    0px;
   margin: var(--space-md) 0 0;
-  /* A layout wrapper, not a cohesive block: it may span pages when the cards
-     exceed one page. */
-  break-inside: auto;
   /* The cards carry the visuals; no hairline between their columns. */
   --gp-column-rule: none;
 }
@@ -678,33 +674,32 @@ h3 + .section {
    FICTION EXCERPT — narrative prose with optional inline art
    ═════════════════════════════════════════════════════════════════════════
    Wraps a fiction section (chapter opener prose, vignette, in-character
-   narrative). Provides baseline narrative typography, break control, and
-   automatic image positioning (first image floats left, subsequent floats
-   right) — authors don't need per-image positioning classes.
+   narrative). Aged paper instead of a panel: no rail, no title bar, narrative
+   leading, and the first image floats left (subsequent ones right) — authors
+   don't need per-image positioning classes.
 
-     @section .dc-fiction-excerpt
+     @fiction-excerpt            (or @section fiction)
      "It's hard being me, but I guess..."
      ![Lil Thump](url)
      The cauldron wuz right on mai heels now...
-     @end-section
+     @end-fiction-excerpt
 
-   Variants come from chapter/page context — e.g. a specific chapter could
-   set --dc-fiction-bg to a tinted paper, or a page-template could constrain
-   art width differently. */
-
-/* Token defaults for .section.dc-fiction-excerpt (--dc-fiction-bg,
-   --dc-fiction-art-width/-shadow/-outline, --dc-fiction-line-height) are
-   declared in :root in dc-component-defaults.css — same values as before this moved
-   (the 3in art width: user feedback said the previous 1.85in "Lil Thump
-   placeholder image is too small... should take up more of the left side
-   of the page"). Per-page/per-chapter variants override via the book's own sheet (unlayered)
-   context selectors, e.g. `.page....chapter-01 .section.dc-fiction-excerpt`. */
-.section.dc-fiction-excerpt {
+   Tokens (defaults in dc-component-defaults.css :root): --dc-fiction-bg,
+   --dc-fiction-line-height, --dc-fiction-rule (top/bottom edge weight),
+   --dc-fiction-shadow, --dc-fiction-art-*. A chapter or page sets them from
+   context, e.g. `#chapter-02 .dc-fiction-excerpt { --dc-fiction-bg: … }`; the
+   chapter-start page's heavier edge is set in page-templates.css. */
+.dc-fiction-excerpt {
   background: var(--dc-fiction-bg);
+  border-block: var(--dc-fiction-rule) solid var(--ink-dark);
+  box-shadow: var(--dc-fiction-shadow);
   line-height: var(--dc-fiction-line-height);
+  padding: var(--space-md) var(--space-lg);
+  /* Room on the right for the opener's offset shadow (see .dc-section-panel). */
+  margin: 0 6px 12pt 0;
 }
 
-.section.dc-fiction-excerpt p {
+.dc-fiction-excerpt p {
   orphans: 3;
   widows: 3;
 }
@@ -713,7 +708,7 @@ h3 + .section {
    by default, set to right on a specific page/chapter via the book's own sheet if
    needed). Text wraps to the opposite side. Author places the image at the
    start of the paragraph flow — no per-image class required. */
-.section.dc-fiction-excerpt img {
+.dc-fiction-excerpt img {
   float: var(--dc-fiction-art-float);
   width: var(--dc-fiction-art-width);
   height: auto;

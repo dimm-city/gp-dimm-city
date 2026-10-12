@@ -285,7 +285,7 @@ describe("declared wrapper markers", () => {
       block: "dc-block",
     };
     const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
-    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section).sort()).toEqual(Object.keys(expected).sort());
+    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && k !== "section").sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
       expect(html, name).toContain(`<div class="${cls}">`);
@@ -308,29 +308,42 @@ describe("declared wrapper markers", () => {
     expect(render(wrap("@block .dc-codex", "@end-block")).html).not.toContain("dc-block-title");
   });
 
-  test("section markers are core sections: same HTML as the @section spelling", () => {
+  test("section markers are core sections: same HTML as their @section <word> alias", () => {
+    // marker -> [the word that aliases it, the classes both write]
     const expected = {
-      "card-grid": "dc-card-grid",
-      "citizen-walkthrough": "dc-citizen-walkthrough",
-      "fiction-excerpt": "dc-fiction-excerpt",
-      "npc-stat": "dc-npc-stat",
-      flaws: "dc-flaws",
-      ideals: "dc-ideals",
-      dreams: "dc-dreams",
+      "card-grid": ["cards", "dc-card-grid"],
+      "citizen-walkthrough": ["walkthrough", "dc-section-panel dc-citizen-walkthrough"],
+      "fiction-excerpt": ["fiction", "dc-fiction-excerpt"],
+      "npc-stat": ["npc", "dc-section-panel dc-npc-stat"],
+      flaws: ["flaws", "dc-section-panel dc-flaws"],
+      ideals: ["ideals", "dc-section-panel dc-ideals"],
+      dreams: ["dreams", "dc-section-panel dc-dreams"],
     };
     expect(Object.keys(markers).filter((k) => markers[k].section).sort()).toEqual(Object.keys(expected).sort());
-    for (const [name, cls] of Object.entries(expected)) {
+    for (const [name, [word, cls]] of Object.entries(expected)) {
       const declared = render(wrap(`@${name} .gp-columns-2`, `@end-${name}`, "## T"));
-      const written = render(wrap(`@section .${cls} .gp-columns-2`, "@end-section", "## T"));
+      const aliased = render(wrap(`@section ${word} .gp-columns-2`, "@end-section", "## T"));
       expect(declared.html, name).toContain(`<div class="section ${cls} gp-columns-2"`);
-      expect(declared.html, name).toBe(written.html);
+      // The alias also writes data-section="<word>"; everything else is the same element.
+      expect(aliased.html.replace(` data-section="${word}"`, ""), name).toBe(declared.html);
       expect(declared.warnings, name).toEqual([]);
+      expect(aliased.warnings, name).toEqual([]);
     }
+  });
+
+  test("@section takes the general variant words panel, flat and aside, and a class beside them", () => {
+    for (const [word, cls] of [["panel", "dc-section-panel"], ["flat", "dc-section-flat"], ["aside", "dc-section-aside"]]) {
+      const { html, warnings } = render(wrap(`@section ${word} .dc-avoid-split`, "@end-section"));
+      expect(html, word).toContain(`<div class="section ${cls} dc-avoid-split"`);
+      expect(warnings, word).toEqual([]);
+    }
+    // A bare @section stays core's plain box.
+    expect(render(wrap("@section", "@end-section")).html).toContain('<div class="section">');
   });
 
   test("a section marker closes at the next @section like any section, and @continue keeps its class", () => {
     const { html, warnings } = render(["@npc-stat", "", "x", "", "@section", "", "y", "", "@end-section"].join("\n"));
-    expect(html).toMatch(/<div class="section dc-npc-stat"><p>x<\/p>\s*<\/div><div class="section"/);
+    expect(html).toMatch(/<div class="section dc-section-panel dc-npc-stat"><p>x<\/p>\s*<\/div><div class="section"/);
     expect(warnings).toEqual([]);
   });
 

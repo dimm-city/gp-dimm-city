@@ -22,14 +22,14 @@ What's your next move?
 
 @end-fiction-excerpt
 
-@section
+@section panel
 
 In Dimm City, stakes is high and the death rate is higher. The scenario, like the one above, is presented to you by the Dream Master. Your role as the dreamer is to act how your character would act. The more fun you make for yourself and your friends through playing your characters well, the better the experience will be for everyone.
 
 @end-section
 
 
-@section
+@section panel
 ## How to Play
 
 Each player takes on the role of a Dreamer — a character living and scraping through Dimm City. One player takes on the role of Dream Master and runs the world, its inhabitants, and its consequences.
@@ -41,14 +41,14 @@ Learn the core loop first. Everything else builds on it.
 @end-section
 
 
-@section
+@section panel
 ## Dreams {#c1-dreams}
 
 In Dimm City RPG, you're not "pretending to be someone else." You're fighting for a pulse in a city that chews nobodies into mulch. You and your crew aren't telling a story—you're tagging the city with it. One of you hijacks the world as Dream Master (DM). The rest strap in as the degenerates desperate enough to survive it.
 
 @end-section
 
-@section
+@section panel
 
 ## The City
 
@@ -71,7 +71,7 @@ Other worlds dream of heroes and chosen ones. Dimm City dreams of people despera
 @end-section
 
 
-@section
+@section panel
 ## Dreamers
 
 You're a Dreamer, not because you're special, but because you're reckless enough to try. You open your mouth, your character speaks. You make a move, your character bleeds for it. You want something? Take it.
@@ -81,7 +81,7 @@ The city doesn't care if you're heroic. It only remembers the ones who leave sca
 @end-section
 
 
-@section
+@section panel
 ## The Dream Master
 
 Across the table sits the Dream Master: not your boss, not your babysitter, not your damn referee. They're the city's gut reaction. They show the danger, keep the consequences sharp, and laugh when your plans dissolve like cheap plastic.
@@ -94,7 +94,7 @@ They don't stop you. They don't protect you. They just make sure the pain fits t
 
 @end-section
 
-@section
+@section panel
 
 ### ROLL A DIE! {#c1-rolling-the-die}
 
@@ -104,7 +104,7 @@ No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite 
 
 @end-section
 
-@section
+@section panel
 
 ### Lucid & Surreal
 
@@ -134,7 +134,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 @end-section
 
-@section
+@section panel
 
 ### Augment Points
 
@@ -147,7 +147,7 @@ If an ability lists an AP cost, you spend it and the effect happens. No charge-u
 
 @end-section
 
-@section
+@section panel
 
 ### Status Conditions
 
@@ -174,7 +174,7 @@ On a success, the condition ends. Conditions usually end when the encounter ends
 
 @end-section
 
-@section
+@section panel
 
 ### Rolling the Die — Full Outcome Ladder
 

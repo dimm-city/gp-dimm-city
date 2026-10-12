@@ -182,7 +182,7 @@
      @page .page-credits .dc-credits
      # Credits {.dc-chevron}
      @lede ... @end-lede
-     @section .credits-colophon
+     @section flat
      @columns 2
      **Role:** Names
      ...
@@ -202,7 +202,7 @@
      }
 
    ── Colophon role-label convention (dc#44) ───────────────────────────────
-   Markdown-convention, not a macro: inside .credits-colophon, whichever
+   Markdown-convention, not a macro: inside the credits page's flat section, whichever
    `**bold**` token comes FIRST in a paragraph is selected positionally
    (`p strong:first-child`) and rendered as the row's mono-caps role-label
    chrome with the accent underline. Write every colophon line as
@@ -315,35 +315,28 @@
    the poster shadow's 3pt drop would land past the sheet and print as a
    hairline across the top of the next one. The strip lines up with the
    lede's shadow above. */
-.page.page-credits .section.credits-colophon {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:    0.18in;
-  --dc-section-pad-right:  0.22in;
-  --dc-section-pad-bottom: 0.18in;
-  --dc-section-pad-left:   0.22in;
-  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
+.page.page-credits .dc-section-flat {
+  --dc-section-accent: var(--frontmatter-accent);
+  --dc-section-drop: 2pt 0 0 var(--shadow-ink);
   --gp-column-rule: none;  /* the names run in two plain columns, as they always have */
   display: flex;
   flex-direction: column;
   font-size: 9.5pt;
   line-height: 1.35;
-  background: var(--paper-cream);
-  box-shadow: inset 4px 0 0 var(--frontmatter-accent), 2pt 0 0 var(--shadow-ink); /* rail: see .dc-intro */
 }
 
-.page.page-credits .section.credits-colophon > .gp-columns {
+.page.page-credits .dc-section-flat > .gp-columns {
   flex-grow: 1;
 }
 
-.page.page-credits .section.credits-colophon p {
+.page.page-credits .dc-section-flat p {
   margin: 0 0 0.08in 0;
   break-inside: avoid;
 }
 
 /* Role labels — the first <strong> of each colophon paragraph (e.g.
    "**Designers:**") becomes a chrome label with an accent underline. */
-.page.page-credits .section.credits-colophon p strong:first-child {
+.page.page-credits .dc-section-flat p strong:first-child {
   font-family: var(--font-mono);
   font-size: 9pt;
   font-weight: 700;
@@ -476,9 +469,9 @@
    identity and is intentional.
 
    Composite contract:
-     - Section's ::before / ::after pseudos suppressed (their 18px TOP-
-       right cut opposed the chevron's BOTTOM-right cut, producing the
-       stepped right-edge mismatch).
+     - The section is a flat section: no ::before / ::after pseudos (their
+       18px TOP-right cut opposed the chevron's BOTTOM-right cut, producing
+       the stepped right-edge mismatch).
      - Section gets a clean paper-cream substrate with the same 4px
        magenta left rail as the lede; rail runs continuously through
        both.
@@ -523,19 +516,22 @@
   margin-bottom: 0;
 }
 
-/* Section content — a flat paper-cream host with the magenta 4px rail
-   continuing from the lede and the poster shadow, instead of the chamfered
-   panel (so both chrome layers are off). */
-.page.page-intro > .section {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:    0.18in;
-  --dc-section-pad-right:  0.22in;
-  --dc-section-pad-bottom: 0.18in;
-  --dc-section-pad-left:   0.22in;
-  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
-  background: var(--paper-cream);
-  box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
+/* Section content — a flat section (`@section flat`): the magenta 4px rail
+   continuing from the lede, plus the poster shadow. */
+.page.page-intro > .dc-section-flat {
+  --dc-section-accent: var(--intro-accent);
+  --dc-section-drop: var(--shadow-poster);
+}
+
+/* ── CHAPTER-START PAGE: fiction excerpt edge ───────────────────────────────
+   A fiction excerpt on a chapter-start page takes the heavier opener edge
+   (2px ink top and bottom, offset shadow), so the opening pages read as a
+   deliberate wall object rather than a tidy box. Tokens only; the excerpt's
+   own look is in components/section.css. `.dc-page-chapter-start` is the page
+   word's class. */
+.page:is(.page-chapter-start, .dc-page-chapter-start) .dc-fiction-excerpt {
+  --dc-fiction-rule: 2px;
+  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
 }
 
 /* ── PAGE TEMPLATE: IMAGE — DELETED ─────────────────────────────────────────
