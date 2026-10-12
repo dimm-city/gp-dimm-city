@@ -566,12 +566,21 @@ h3 + .dc-section-panel {
    A .dc-card whose rail and kind badge take the kind's colour. The name is the
    first heading (`####` as authored, or `###`); the badge is a span core puts
    first, floated to the right so the name and the text run beside it.
+   Splits across pages by default (see below).
    Token contract: --dc-faction-accent (rail and badge fill),
    --dc-faction-badge-fg (badge text). */
 .dc-card.dc-faction {
   border-left-width: 5px;
   border-left-color: var(--dc-faction-accent);
   padding: 10pt 14pt;
+  /* A profile runs to half a page or more; kept whole (.dc-card's default) it
+     left half-empty pages through a chapter of factions. It splits between
+     paragraphs like an entry; the name keeps with its first lines (below), and
+     `.dc-avoid-split` on the marker keeps one whole. */
+  break-inside: auto;
+}
+.dc-card.dc-faction.dc-avoid-split {
+  break-inside: avoid;
 }
 .dc-card.dc-faction > :is(h3, h4):first-of-type {
   font-size: var(--fs-h4);

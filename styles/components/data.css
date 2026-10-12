@@ -244,6 +244,23 @@
   z-index: 1;
 }
 
+/* A ladder made from a table keeps the table's header: its two cells, in the
+   label bar, over the two columns of the rows below (same column widths and
+   text insets as .dc-outcome-key and .dc-outcome-text). */
+.dc-outcomes-head {
+  display: flex;
+  padding-inline: 0;
+}
+.dc-outcomes-head > span:first-child {
+  flex: 0 0 130px;
+  box-sizing: border-box;
+  padding-inline: 10px;
+  text-align: center;
+}
+.dc-outcomes-head > span + span {
+  padding-inline: 12px;
+}
+
 .dc-outcome-row {
   display: grid;
   grid-template-columns: 130px 1fr;

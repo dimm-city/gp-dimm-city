@@ -429,7 +429,7 @@ Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg
 
 ### A table of the five bands is the ladder
 
-Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not matter (`Roll | Result`, `Result | Effect`, or empty), and a band is read however it is typed: `11-19`, `11 – 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
+Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (`Roll | Result`, `Result | Effect`, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads "Outcomes". A band is read however it is typed: `11-19`, `11 – 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
 
 ```markdown
 | Roll | Result |
