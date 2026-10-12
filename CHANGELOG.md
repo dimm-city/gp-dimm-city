@@ -32,7 +32,7 @@ set from its own CSS.
   `:root` (`avoid` or `auto`), and each component reads its own. `.dc-avoid-split`
   is now a setter of them (and of `--dc-section-edge: 0px`, which keeps a whole
   section's padding inside its box), so a book writes the same declarations for
-  one box from its own sheet (`#sporos { --dc-section-break-inside: avoid;
+  one box from its own sheet (`#core-loop { --dc-section-break-inside: avoid;
   --dc-section-edge: 0px; }`). A sheet that sets only the first still keeps the
   section whole; the second keeps the pagination identical to the class. Sections,
   skill cards and factions render as before. The skill card's `:not(.dc-avoid-split)`

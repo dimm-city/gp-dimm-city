@@ -48,7 +48,7 @@
   /* Keep whole, per component: `avoid` moves the box to the next page rather
      than splitting it, `auto` lets it split. `.dc-avoid-split` sets all of
      these to `avoid` on the box it is written on, and a book sets one the same
-     way from its own sheet (`#sporos { --dc-section-break-inside: avoid; }`).
+     way from its own sheet (`#core-loop { --dc-section-break-inside: avoid; }`).
      A custom property inherits, so one set on a container reaches what is
      inside it. A section splits by default, a catalog never stays whole
      (`avoid` on a catalog needs its own token), and an `@npc-stat` with at most

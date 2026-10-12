@@ -173,7 +173,7 @@ a band across the foot of the sheet (`--dc-credits-art-height`).
 `@columns 2` … `@end-columns` (one to five columns, and `@column-break` to move
 to the next) is the one way to set text in columns. Both are Gutterpress's, not
 this package's. `{#id}` (or `#id` on a marker line) names a block for a link and
-for a book's CSS: `#sporos { --dc-section-break-inside: avoid; }`. Written after
+for a book's CSS: `#core-loop { --dc-section-break-inside: avoid; }`. Written after
 a table the package turns into an outcome ladder, or on an `@procedure` line, the
 id and classes land on the ladder or the list.
 
@@ -181,7 +181,7 @@ id and classes land on the ladder or the list.
 marker block, image and heading (from `name="…"`, then `label="…"`, then the
 slug of its first heading, or the image's file name), so a book's CSS can tune
 one block without touching the markdown:
-`[data-name="sporos"] { --dc-section-break-inside: avoid; }`. Until your
+`[data-name="core-loop"] { --dc-section-break-inside: avoid; }`. Until your
 Gutterpress does, `name="…"` on a marker line writes it and `#id` works
 everywhere.
 

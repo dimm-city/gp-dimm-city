@@ -789,7 +789,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </table>
 <p>Reach for <code>.dc-avoid-split</code> on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — <code>@continue</code> for a long skill card.</p>
 <p>The class is a setter of one token per component, which a book can set from its own sheet instead: <code>--dc-section-break-inside</code>, <code>--dc-skill-card-break-inside</code>, <code>--dc-faction-break-inside</code> and <code>--dc-npc-stat-break-inside</code> (<code>avoid</code> keeps the box whole, <code>auto</code> lets it split). A section kept whole also keeps its padding inside its box, so a book writes <code>--dc-section-edge: 0px</code> beside the first. A catalog ignores <code>.dc-avoid-split</code>: <code>--dc-catalog-break-inside: avoid</code> keeps one whole.</p>
-<pre><code data-source-range="163:166" class="language-css">#sporos { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }
+<pre><code data-source-range="163:166" class="language-css">#core-loop { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }
 </code></pre>
 <h2>Tighter spacing</h2>
 <p><code>.dc-snug</code> halves the space between paragraphs and list items inside a section or page. Reach for it when a section overflows by a line or two and the last line would otherwise strand on a page of its own. Type size and leading are untouched.</p>
@@ -801,7 +801,7 @@ Paragraph and list-item gaps shrink to 0.04in here.
 
 @page .dc-snug
 </code></pre>
-<p>The class sets <code>--dc-flow-gap</code>, the space under every paragraph and list item in the box: a book sets it on any box from its own sheet (<code>#getting-dangerous { --dc-flow-gap: 0.04in; }</code>). Unset, each component keeps its own spacing.</p>
+<p>The class sets <code>--dc-flow-gap</code>, the space under every paragraph and list item in the box: a book sets it on any box from its own sheet (<code>#core-loop { --dc-flow-gap: 0.04in; }</code>). Unset, each component keeps its own spacing.</p>
 <h2>Edge to edge</h2>
 <p><code>.dc-flush</code> removes a component’s side margins so it runs the full column. It is read by tape, stat blocks, sticker chains, and <code>@outcome flush</code>.</p>
 </div></div>"
