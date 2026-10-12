@@ -30,6 +30,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-sidebar-accent` are gone. `@sidebar` itself (the floated box) stays,
   and `@sidebar` no longer takes an `inset` variant word. For a short aside in
   the text flow, use `@sidebar-box`.
+- **The forced 1.6 line height on the chapter-start page's paragraphs.** The
+  rule `.page-chapter-start.dc-chapter-start p` reached every paragraph on the
+  wrapper, including ordinary sections on the sheets after the title. Those
+  paragraphs now take the book's normal leading. Set `line-height` in your
+  own sheet if a chapter opener needs looser text.
 
 ## [1.4.1] - 2026-10-11
 
