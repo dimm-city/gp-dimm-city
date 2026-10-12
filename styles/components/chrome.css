@@ -19,14 +19,11 @@
    Per-chapter override e.g.:
      #ch-example-gear-tech .dc-chevron { --dc-chevron-bg: var(--hud-blue-dark); }
 
-   WHY brand-magenta-deep default (and not rust): per the creaturepunk-
-   design-guide brand spec, magenta is the "banner / chapter punch /
-   spray treatment" role color. Rust/orange is reserved for "warnings,
-   AP tags, arrows, mechanical emphasis" — putting it on chapter banners
-   miscommunicates the semantic (CONTENTS shouldn't read as a warning).
-   Rubric: D9 (brand identity per chapter — chroma anchor must match
-   the banner's semantic role). */
-/* Chevron banner on elements marked `.dc-chevron`. */
+   WHY brand-magenta-deep default (and not rust): magenta is the "banner /
+   chapter punch / spray treatment" role color. Rust/orange is reserved for
+   "warnings, AP tags, arrows, mechanical emphasis" — putting it on chapter
+   banners miscommunicates the semantic (CONTENTS shouldn't read as a
+   warning). */
 .dc-chevron {
   font-family: var(--font-display);
   font-size: var(--dc-chevron-font-size);
@@ -44,25 +41,16 @@
 }
 
 
-/* HEADING-SECTION ADJACENCY (D11, ≤ 0px gap)
-   See the single-direction margin convention applied to .section, .dc-intro,
-   .dc-toc etc. below in their base definitions: each component
-   has `margin-top: 0` and spaces itself via bottom margin only. Consecutive
-   siblings collapse naturally (top:0 + bottom:Npt = Npt gap). The first
-   sibling after a chevron has no top gap → flush attachment "for free",
-   no adjacency rule required.
+/* HEADING-SECTION ADJACENCY: .section, .dc-intro, .dc-toc etc. use a
+   single-direction margin convention — each has `margin-top: 0` and spaces
+   itself via bottom margin only. Consecutive siblings collapse naturally
+   (top:0 + bottom:Npt = Npt gap), and the first sibling after a chevron has
+   no top gap, so no adjacency rule is needed. Single-direction margins also
+   side-step the cascade tiebreak: a later `.B { margin: ... }` shorthand
+   cannot silently beat an `A + B` gap rule if there is no gap rule. */
 
-   Why not adjacent-sibling selectors? Single-direction margins side-step
-   the cascade tiebreak entirely — a later `.B { margin: ... }` shorthand
-   cannot silently beat an `A + B` gap rule if there is no gap rule.
-   Iter-8 (2026-05-25). */
-
-/* Adjacent callouts/alerts (e.g. Cybersuck followed by SysFAIL after
-   the Ego Points table) read as a CONNECTED PAIR rather than two
-   independent floating boxes. Per user feedback: "design elements just
-   scattered on pages after Ego Points." (@callout only ever emits
-   .dc-alert; the three .dc-callout adjacency permutations never fired and
-   were removed 2026-06-21.) */
+/* Adjacent callouts/alerts read as a CONNECTED PAIR rather than two
+   independent floating boxes. */
 .dc-alert + .dc-alert {
   margin-top: 6pt;
 }
@@ -70,18 +58,13 @@
 /* H1.dc-chevron — chapter-title banner sized to fit long chapter names on
    one or two lines. The base .dc-chevron font-size is too large for typical
    H1 chapter titles ("What Do You Dream of Doing?", etc.). Front-matter pages
-   (TOC / Credits / Introduction) override this back up to a commanding display
-   size — see the page-scoped rule below. D4 type scale (banner-to-body ratio
-   must be ≥ 2× at print scale for chapter-punch role). */
+   (TOC / Credits / Introduction) set it back up to a commanding display size
+   in their own page-scoped rules. The banner-to-body ratio must stay ≥ 2× at
+   print scale for the chapter-punch role. */
 h1.dc-chevron {
   font-size: 1.4rem;
   line-height: 1.2;
 }
-
-/* Front-matter chevron font-size overrides moved to the book's own sheet (unlayered) per A1
-   layer-ownership (page-context rules belong in the guide-specific override
-   file, not the portable component library). Three-judge gate iteration 3. */
-
 
 /* ── Spray banner (h2 path header) ───────────────────────────────────────
    Token contract:
@@ -102,20 +85,15 @@ h1.dc-chevron {
   position: relative;
   /* clip-path does double duty here: besides the chipped corner it makes this
      banner a stacking context, which is what keeps the ::before skew tab
-     (z-index: -1) behind THIS element instead of escaping to an ancestor. The
-     banner used to get that context from a `.dc-path-shell > * { z-index: 1 }`
-     lift, now deleted; MEASURED pixel-identical (0 differing pixels at 2x over
-     the whole .dc-path-shell) with the lift, with an explicit
-     `isolation: isolate`, and with neither. */
+     (z-index: -1) behind THIS element instead of escaping to an ancestor. */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
   margin: 0;
   /* Leave room for the ::before skew tab, which overhangs the right edge
      (right: -8px, 14px wide, skewed): 18px measured. A long title that
-     filled its column pushed the tab past the margin — "What Makes a Good
-     Cross-Specialty Moment", scrollWidth 726px in a 708px column — which a
-     clipping .page hid, and which on a page that may not clip (one holding
-     plate or bleed art) is print shrink-to-fit for the whole book. Such a
-     title now wraps one tab-width earlier; shorter banners are untouched. */
+     filled its column would push the tab past the margin, which a clipping
+     .page hides but a page that may not clip (one holding plate or bleed
+     art) turns into print shrink-to-fit for the whole book. Such a title
+     wraps one tab-width earlier; shorter banners are untouched. */
   max-width: calc(100% - 18px);
   word-break: break-word;
   overflow: visible;
@@ -208,9 +186,8 @@ h1.dc-chevron {
 
 /* The gap between the sticker and the banner title. It is a real space
    (plugin.js), so the heading's text reads "PRX1 Refuse Finality" in the
-   outline and bookmarks rather than "PRX1Refuse Finality". The gap was the
-   sticker's 10px margin-right; it is now this box's fixed width, so the
-   banner prints as before whatever the font's space width. `pre` keeps the
+   outline and bookmarks rather than "PRX1Refuse Finality". The printed gap is
+   this box's fixed width, whatever the font's space width. `pre` keeps the
    lone space from collapsing away, which would drop it from the text. */
 .dc-path-sep {
   display: inline-block;
@@ -261,7 +238,7 @@ h1.dc-chevron {
 
 /* ── Intro / Lede line ──────────────────────────────────────────────────
    Single-direction margin: top: 0, bottom: standard gap. This gives the
-   lede flush attachment to a chevron heading above (D11 = 0) and natural
+   lede flush attachment to a chevron heading above and natural
    spacing to whatever comes below. When a lede follows body text (rare),
    the paragraph's bottom margin provides the gap above the lede.
 
@@ -284,20 +261,17 @@ h1.dc-chevron {
   margin: 0 0 var(--dc-intro-gap) 0;
   box-shadow: inset 4px 0 0 var(--dc-intro-accent), var(--shadow-poster);
   /* A lede is one to three short paragraphs: never split it. Split, its
-     panel painted on to the page foot with the last paragraph overleaf
-     (design guide p.82, "How Abilities Work"). */
+     panel paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
 }
 
 /* ── Spec tweak section header ────────────────────────────────────────── */
 .dc-spec-tweak {
   font-size: 22px;
-  /* User feedback (2026-05-24): "Spec Tweak text color is kind of off."
-     Was --blood (red) which reads as "warning/wound" — too strong a
-     semantic for a structural section label. Switched to --ink-dark
-     (neutral dark) for text + bottom-rule, with --brand-magenta as the
-     left-rail accent so the chapter's brand color anchors the element
-     without taking the text color hostage. */
+  /* Neutral --ink-dark for text + bottom-rule (--blood would read as
+     "warning/wound", too strong for a structural section label), with
+     --brand-magenta as the left-rail accent so the brand color anchors the
+     element without taking the text color hostage. */
   color: var(--ink-dark);
   border-bottom: 2px solid var(--ink-dark);
   border-left: 4px solid var(--brand-magenta);
@@ -333,8 +307,7 @@ hr {
 /* Token contract:
      --dc-classtag-color → dot fill color (default --orange)
    Set by each .dc-classtag.X variant to its specialty's accent.
-   The dot is now a ::before pseudo on .dc-classtag itself — no inner
-   .dc-classtag-dot element is required. Authors / plugin emit only the
+   The dot is a ::before pseudo on .dc-classtag itself; authors emit only the
    outer .dc-classtag span. */
 .dc-classtag::before {
   content: '';
@@ -357,12 +330,6 @@ hr {
 .dc-classtag.dualist        { --dc-classtag-color: var(--dualist-accent); }
 .dc-classtag.generalist     { --dc-classtag-color: var(--generalist-accent); }
 
-
-/* .dc-stamp / .dc-classified were removed 2026-05-24 (zero live usage; the
-   only authoring path was raw HTML, which the cascade principle forbids).
-   They were parked in an unloaded css/deprecated.css, which has since been
-   deleted — the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules if
-   the design is ever revived. Revive as `@section .dc-stamp`, not raw HTML. */
 
 /* ── Tape (torn-tape divider) ─────────────────────────────────────────── */
 .dc-tape {

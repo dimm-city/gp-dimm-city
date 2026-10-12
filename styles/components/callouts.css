@@ -1,9 +1,10 @@
 /* =============================================================================
-   DC-COMPONENTS.CSS — Reusable DC Component Library
+   COMPONENTS/*.CSS — the DC component library
    =============================================================================
-   This file IS the DC component library. Any DC-branded Gutterpress book
-   imports this file and gets all components at their correct defaults with
-   no override files required. Do not break that portability contract.
+   The sheets in components/ ARE the DC component library; this one, the first
+   of them, carries the contract for all. A book that installs the package
+   gets every component at its correct defaults with no override files
+   required. Do not break that portability contract.
 
    ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
    OWNS:
@@ -18,7 +19,7 @@
    - Component-scoped public custom properties (--dc-alert-bg, etc.)
 
    MUST NOT CONTAIN:
-   - page/section columns:N layouts (→ page-templates.css)
+   - any column layout (columns are core's `@columns N`)
    - @page declarations or named-page assignments (→ page-rules.css)
    - div.chapter scaffolding (→ the consuming book's own sheet)
    - :root token definitions (→ dc-component-defaults.css)
@@ -66,14 +67,12 @@
      unconditionally win over any ancestor-scope override for as long as
      the element rule exists, regardless of the override's specificity,
      because the winning declaration for an element is chosen among rules
-     that match that element BEFORE inheritance is ever considered. Three
-     components (.dc-ap, .dc-sidebar, .section.dc-fiction-excerpt) violated
-     this until dc#34 and silently ate every `#ch-x { --dc-ap-bg: … }`-shaped
-     override; the fix moved their defaults to :root and changed no render.
+     that match that element BEFORE inheritance is ever considered. It would
+     silently eat every `#ch-x { --dc-ap-bg: … }`-shaped override.
    - Components consume their tokens as a bare `var(--x)` — no inline
      `var(--x, fallback)`. A token declared at :root needs no fallback, and
      an inline fallback that duplicates the :root value is dead weight that
-     invites the two to drift (found and corrected during dc#34).
+     invites the two to drift.
    - Variants and contexts set tokens on ANCESTORS (the book's own sheet (unlayered)
      chapter/page scopes) or on VARIANT CLASSES on the same element
      (`.dc-ap.free`, `.dc-specialty.<name> .dc-X`) —
@@ -102,12 +101,11 @@
   margin-top: var(--dc-alert-margin-top);
   break-inside: var(--dc-alert-break-inside);
   /* Alerts are full-width callouts that interrupt the reading flow; they
-     should NEVER overlap a preceding right-floated image (observed 2026-05-25
-     with the portrait in the citizen-file intro). Block elements don't wrap
-     floats by default — clear: right ensures any alert after a floated image
-     sits decisively below it. Unconditional at the component-base layer: a
-     :has() variant would only narrow it, and the clear costs nothing on an
-     alert that follows no float. */
+     should NEVER overlap a preceding right-floated image. Block elements
+     don't wrap floats by default — clear: right ensures any alert after a
+     floated image sits decisively below it. Unconditional: a :has() variant
+     would only narrow it, and the clear costs nothing on an alert that
+     follows no float. */
   clear: right;
 }
 
@@ -158,7 +156,7 @@
   margin-bottom: var(--dc-alert-label-margin);
   color: var(--dc-alert-label-color);
   /* The label is a `span` (display: block), so core's heading rule does not
-     reach it. A callout may fragment in a multicol run (dc-native.css §8), and
+     reach it. A callout may fragment in a multicol run (dc-native.css §7), and
      without this the label can sit alone at a column or page foot with its
      body in the next one. */
   break-after: avoid;
@@ -211,8 +209,8 @@
 /* ── Variant: Visit Callout ─────────────────────────────────────────────── */
 .dc-visit-callout {
   --dc-alert-border: var(--hud-blue);
-  /* Was --hud-blue-dark on --hud-blue-dim (default alert bg) = 3.95:1
-     (fails AA). --ink-dark gives 7.05:1 on the same cyan bg. */
+  /* --hud-blue-dark on --hud-blue-dim (default alert bg) is 3.95:1 (fails
+     AA); --ink-dark gives 7.05:1 on the same cyan bg. */
   --dc-alert-label-color: var(--ink-dark);
   --dc-alert-body-size: var(--fs-body);
   margin: 0.12in 0;

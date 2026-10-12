@@ -139,7 +139,7 @@
    split across a column or page (it has no frame to cut). A `---` that is still there draws
    nothing (a second rule would double up).
 
-   Columns are core's: write `@columns 2` under the intro, as before.
+   Columns are core's: write `@columns 2` under the intro.
 
      @section catalog
      ## Title bar

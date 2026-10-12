@@ -25,18 +25,14 @@
      --dc-specialty-intro-clip == --dc-specialty-intro-title-shape at both
        top corners (the title spans the whole panel). */
 
-/* ── Augmerc — cyber-augmentation, brand magenta + cyan accent, hex cuts ── */
-/* ── Specialty identity + shape shared wiring (dc#38) ─────────────────────
+/* ── Specialty identity + shape shared wiring ──────────────────────────────
    Every .dc-specialty.<name> block below declares only its own identity
    (--spec-accent/-mid/-dark, aliasing that specialty's own --<name>-accent/
    -mid/-dark tokens) and its shape polygons. The four ONE-TIME wiring rules
    here read --spec-* and apply it to every specialty's skill-card, path-
-   shell, specialty-intro and specialty-card — this is the pattern every
-   specialty followed identically (verified against all 10 blocks before
-   collapsing); a specialty needs its own extra override below ONLY where
-   its rendered value genuinely differs from this pattern (see the deltas
-   after augmerc/cybersurgeon/proxy/wirephreak/streetwarden/gutterdruid/
-   etherlock/generalist's blocks — technosorcerer and dualist need none).
+   shell, specialty-intro and specialty-card; a specialty needs its own extra
+   override below ONLY where its rendered value genuinely differs from this
+   pattern (technosorcerer and dualist need none).
    Adding a new specialty: declare shape + --spec-accent/-mid/-dark in its
    own .dc-specialty.<name> block; it gets correct skill-card/path-shell/
    specialty-intro/specialty-card theming for free from these four rules. */
@@ -72,19 +68,15 @@
   --spec-dark: var(--augmerc-dark);
   --dc-skill-tab-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
-  /* Path title + shell clip-paths must AGREE at the top-right corner.
-     User feedback: "There's also a weird clipping issue in the top right
-     corner of biting distance similar to the OGMERK specialty intro."
-     Title is cut at 24px-from-right with 18px slope down. Shell is now
-     cut at the SAME 24px point so the title's TR cut sits flush against
-     the shell's TR cut instead of being exposed against a flat corner. */
+  /* Path title + shell clip-paths must AGREE at the top-right corner. The
+     title is cut at 24px-from-right with an 18px slope down; the shell is
+     cut at the SAME 24px point so the title's TR cut sits flush against the
+     shell's instead of being exposed against a flat corner. */
   --dc-path-title-shape: polygon(14px 0, calc(100% - 24px) 0, 100% 18px, 100% 100%, 0 100%, 0 14px);
   --dc-path-shell-clip: polygon(14px 0, calc(100% - 24px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 14px);
   --dc-specialty-card-shell-shape: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-  /* Same fix on specialty-intro: intro-title is cut at 20px-from-right
-     with 16px slope. intro-clip now matches so the title's TR cut sits
-     flush against the container instead of being exposed against a
-     flat TR corner. */
+  /* The same on specialty-intro: the intro title is cut at 20px-from-right
+     with a 16px slope, and intro-clip matches it. */
   --dc-specialty-intro-title-shape: polygon(14px 0, calc(100% - 20px) 0, 100% 16px, 100% 100%, 0 100%, 0 14px);
   --dc-specialty-intro-clip: polygon(14px 0, calc(100% - 20px) 0, 100% 16px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 14px);
 }
@@ -105,8 +97,8 @@
   --spec-accent: var(--cybersurgeon-accent);
   --spec-mid: var(--cybersurgeon-mid);
   --spec-dark: var(--cybersurgeon-dark);
-  /* Tab diagonal capped at 18px — the 30px original exceeded the ~27px tab height,
-     making the polygon degenerate (right edge nearly invisible). */
+  /* Tab diagonal capped at 18px: a 30px cut exceeds the ~27px tab height and
+     makes the polygon degenerate (right edge nearly invisible). */
   --dc-skill-tab-shape: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
   --dc-path-title-shape: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
@@ -142,7 +134,7 @@
   --dc-specialty-card-bg: var(--paper-aged);
 }
 
-/* ── Wirephreak — hacker, magenta, asymmetric cross-cuts ───────────────── */
+/* ── Wirephreak — hacker, cyan, asymmetric cross-cuts ──────────────────── */
 .dc-specialty.wirephreak {
   --spec-accent: var(--wirephreak-accent);
   --spec-mid: var(--wirephreak-mid);
@@ -188,9 +180,8 @@
   --dc-path-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% 100%, 0 100%);
   /* The title's notch is centred 6px left of the shell's (see the header
      note), so the visible gate is the shell's LEFT notch edge meeting the
-     title's RIGHT notch edge at (50% - 4.46px, 11.16px): the union the
-     drop-shadow used to outline. The shell traces that union so its outline
-     inks both edges of the gate. */
+     title's RIGHT notch edge at (50% - 4.46px, 11.16px). The shell traces
+     that union so its outline inks both edges of the gate. */
   --dc-path-shell-clip: polygon(0 0, calc(50% - 22px) 0, calc(50% - 4.46px) 11.16px, calc(50% + 16px) 0, 100% 0, 100% calc(100% - 22px), calc(100% - 26px) 100%, 26px 100%, 0 calc(100% - 22px));
   /* Specialty-card shell: rectangular top (tech-cluster register at grid
      scale) with hex-cut bottom corners preserving the ritual-tech crossover
@@ -205,15 +196,13 @@
 
 /* TECHNOSORCERER title fix — "TECHNOSORCERER" is 14 chars and wraps mid-word
    at card-grid scale ("TECHNOSORCERE / R" orphan). Tightened letter-spacing
-   keeps it on one line at the lixdu display size used in the card title.
-   (No specialty-card token delta: technosorcerer takes every default from
-   the shared wiring block above unchanged.) */
+   keeps it on one line at the lixdu display size used in the card title. */
 .dc-specialty.technosorcerer .dc-specialty-card h3 {
   letter-spacing: -0.04em;
   font-size: 1.05em;
 }
 
-/* ── Gutterdruid — street nature, amber-brown, center bottom pinch ──────── */
+/* ── Gutterdruid — street nature, fungi green, center bottom pinch ──────── */
 .dc-specialty.gutterdruid {
   --spec-accent: var(--gutterdruid-accent);
   --spec-mid: var(--gutterdruid-mid);
@@ -258,17 +247,14 @@
   --dc-skill-body-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
   --dc-path-title-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
   --dc-path-shell-clip: polygon(12px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 12px);
-  /* Dualist card shape: flat top + symmetric bottom point — crystal-facet
-     hint preserved on the bottom edge (the "refractive" bottom-pointed
-     drop), but a flat top so the colored header band renders as a clean
-     rectangle. Previous full-lozenge clipped the header band into a
-     triangle. */
+  /* Dualist card shape: flat top + symmetric bottom point — a crystal-facet
+     hint on the bottom edge (the "refractive" bottom-pointed drop), with a
+     flat top so the colored header band renders as a clean rectangle (a full
+     lozenge would clip it into a triangle). */
   --dc-specialty-card-shell-shape: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 20px) 100%, 50% calc(100% - 4px), 20px 100%, 0 calc(100% - 22px));
   --dc-specialty-intro-title-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
   --dc-specialty-intro-clip: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 14px);
 }
-/* (No specialty-card token delta: dualist takes every default from the
-   shared wiring block above unchanged.) */
 
 /* ── Generalist — jack-of-all-trades, soft chamfered rectangle (neutral) ─── */
 .dc-specialty.generalist {

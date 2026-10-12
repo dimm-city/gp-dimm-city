@@ -47,23 +47,10 @@
   break-inside: avoid;
 }
 
-/* .section.dc-class-entry + .dc-content-col + .dc-tag-row were removed
-   2026-05-24 — the @class-entry macro had no live consumers and its parser
-   had a multi-block bug. They were parked in an unloaded css/deprecated.css,
-   which has since been deleted; the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`)
-   has the rules. */
-
-/* Tables: universal default look lives in dc-core.css under the <table>,
-   <th>, <td>, tr:nth-child(...) selectors. Authors write plain markdown
-   tables; no class required. No per-element class attribute syntax in MD
-   files (constitution). If a future table needs to look DIFFERENT, wrap
-   it in @section .dc-some-variant so the section class is the styling
+/* Tables: the universal default look lives in dc-core.css. Authors write
+   plain markdown tables; no class required. A table that needs to look
+   DIFFERENT goes in a `@section` variant, so the section class is the styling
    handle, not the table itself. */
-
-/* .dc-art-bottom is an art-placement print utility owned by
-   page-templates.css (see its ARCHITECTURAL CONTRACT header). The stale
-   absolute-positioned copy that used to live here unioned with that rule
-   and produced an incoherent box model — no rule belongs here. */
 
 /* The hairline between columns is `--gp-column-rule`, set once at `:root` in
    dc-component-defaults.css. There is no column selector here: a rule on

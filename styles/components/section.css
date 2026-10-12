@@ -87,29 +87,21 @@
 
 /* clip-path + left accent band on ::before.
 
-   The substrate sits BEHIND the content (z-index: -1), it does not sit at 0
-   with every child lifted over it. Both orderings paint the same picture —
-   CSS 2.1 Appendix E paints negative-z child stacking contexts (step 2)
-   before in-flow content (steps 3-5) and z-index:0 positioned descendants
-   (step 6) after it — but only one of them is free.
+   The substrate sits BEHIND the content (z-index: -1); it does not sit at 0
+   with every child lifted over it by a `.section > * { position: relative;
+   z-index: 1 }` rule. Both orderings paint the same picture (CSS 2.1
+   Appendix E), but the lift would make EVERY direct child of every section a
+   containing block for absolute positioning. Core's `.gp-pin` is `position:
+   absolute; inset: 0`, and a lone markdown image is wrapped in
+   `p.dc-img-wrapper` whose only child is that pin — so the wrapper would have
+   no in-flow content and no height, and `.gp-bottom` would resolve to the
+   bottom of a zero-height box, painting a pinned plate far below the sheet.
 
-   The lift cost a rule, `.section > * { position: relative; z-index: 1 }`,
-   and that rule made EVERY direct child of every section a containing block
-   for absolute positioning. Core's `.gp-pin` is `position: absolute;
-   inset: 0`, and a lone markdown image is wrapped in `p.dc-img-wrapper`
-   whose only child is that pin — so the wrapper had no in-flow content, no
-   height, and `.gp-bottom` resolved to the bottom of a zero-height box.
-   MEASURED (dc-native.css §6, CSS.getMatchedStylesForNode): the
-   credits founders plate authored inside its `@section` painted 179pt below
-   the sheet and fragmented onto the next one. The workaround was to author
-   every pinned image after `@end-section`, as page furniture.
-
-   Deleting the lift removes the trap at the source: a `.gp-pin` inside an
-   `@section` now resolves against the section itself, which is a real box on
-   the sheet. The section keeps `position: relative` because these two pseudos
-   need it, so a pin inside a section still pins to the SECTION, not the
-   page — that is core's stated `.gp-pin` contract (nearest positioned
-   ancestor) working correctly, not a bug. Page-level furniture still belongs
+   Without the lift, a `.gp-pin` inside an `@section` resolves against the
+   section itself, which is a real box on the sheet. The section keeps
+   `position: relative` because these two pseudos need it, so a pin inside a
+   section pins to the SECTION, not the page — core's stated `.gp-pin`
+   contract (nearest positioned ancestor). Page-level furniture still belongs
    outside the section. */
 .dc-section-panel::before {
   content: var(--dc-section-surface);
@@ -200,7 +192,7 @@
   padding-left: var(--space-sm);
 }
 
-/* ── A7: free-standing heading, or a callout, directly before a panel — extra
+/* ── Free-standing heading, or a callout, directly before a panel — extra
    top clearance so the heading (or the note) and the card's header bar don't
    compete at the same visual weight on the vertical scan. */
 h2 + .dc-section-panel,
@@ -602,35 +594,31 @@ h3 + .dc-section-panel {
 /* ═════════════════════════════════════════════════════════════════════════
    CITIZEN-WALKTHROUGH — guide for filling out the Citizen File
    ═════════════════════════════════════════════════════════════════════════
-   The chapter that walks a reader through each Citizen File field. NOT
-   the filled-form artifact (that is a future .dc-citizen-file component
-   on a separate page).
+   The chapter that walks a reader through each Citizen File field (not the
+   filled-form artifact).
 
    Applied via:
-     @page .dc-citizen-file-page                                ← topic page (running header)
-     @citizen-walkthrough (or @section walkthrough)    ← a panel
+     @page citizen-file                                  ← topic page (running header)
+     @citizen-walkthrough (or @section walkthrough)      ← a panel
 
-   STRIP-FIRST POLICY: this component carries minimal bespoke CSS.
-   Styling comes primarily from the standard .section chassis (clipped-
-   corner ::before with --dc-section-accent stripe + --dc-section-bg
-   substrate + ::after fake shadow) plus the dc-core.css element baselines.
-   Rules below address observed problems that the chassis does not cover.
+   This component carries minimal bespoke CSS. Styling comes primarily from
+   the standard section chassis (clipped-corner ::before with the
+   --dc-section-accent stripe + --dc-section-bg substrate + ::after fake
+   shadow) plus the dc-core.css element baselines; the rule below addresses a
+   problem the chassis does not cover.
 
    To tune the walkthrough's accent or substrate, override the existing
    --dc-section-accent / --dc-section-bg custom properties at the chapter
-   id scope in the book's own sheet (unlayered) — do NOT add bespoke rules here unless an
-   observed problem requires it.
+   id scope in the book's own sheet (unlayered).
 
-   OBSERVED PROBLEM (2026-05-25): When the walkthrough's first card sits in
-   an `@columns 2` run for an internal Handle/Designation split, the longer h4
-   text ("What's Yr Handle?") wraps to 2 lines while shorter text
-   ("Designation") fits on 1 line at the narrow column width. The body
-   text below each h4 then starts at different baselines across columns
-   — visible asymmetry the user-eye reads as a production error. Fix:
-   reserve uniform heading height inside the walkthrough's column runs so
-   both columns' body content starts at the same y. Keyed on the run
-   (`.gp-columns`, what `@columns` emits), not on the card chrome: the
-   asymmetry is caused by the narrow column measure. */
+   When the walkthrough's first card sits in an `@columns 2` run for an
+   internal Handle/Designation split, the longer h4 text ("What's Yr Handle?")
+   wraps to 2 lines while shorter text ("Designation") fits on 1 line at the
+   narrow column width, so the body text below each h4 starts at different
+   baselines across columns. Reserve uniform heading height inside the
+   walkthrough's column runs so both columns' body content starts at the same
+   y. Keyed on the run (`.gp-columns`, what `@columns` emits), not on the card
+   chrome: the asymmetry is caused by the narrow column measure. */
 .dc-citizen-walkthrough .gp-columns h4 {
   min-height: calc(2 * 1.35em);
 }
@@ -638,33 +626,30 @@ h3 + .dc-section-panel {
 /* ═════════════════════════════════════════════════════════════════════════
    NPC STAT BLOCK — DM/NPC entries (Patchhead, Grease Monkey, Undertow, ...)
    ═════════════════════════════════════════════════════════════════════════
-   Apply via @section .dc-npc-stat in markdown. Inside the wrapper:
+   Apply via @npc-stat (or @section npc) in markdown. Inside the wrapper:
      #### Name              → labeled NPC entry (rust top-rule)
      > "flavor quote"
      2 HP — 1 Damage        → primary stat line (mono, hud-blue)
      Fodder — Medium        → secondary stat line (mono, ink-smoke)
      ##### Traits           → subsection label (mono caps, hud-blue)
      ##### Equipment        → ditto
-   Reusable: any DC project can use .dc-npc-stat for stat-block authoring.
 
-   AUTHOR-FACING CONTRACT (dc#44): this is a markdown-CONVENTION component,
-   not a macro — @section is core Gutterpress's generic wrapper, and nothing
-   in plugin.js knows about NPC stat blocks specifically. The
+   AUTHOR-FACING CONTRACT: the stat lines are a markdown CONVENTION, not
+   markup the plugin writes (plugin.js only declares the section). The
    "primary" and "secondary" stat lines below are selected POSITIONALLY —
    `blockquote + p` and `blockquote + p + p` — by counting the plain
-   paragraphs that immediately follow the flavor quote. There is no macro
-   here to teach the difference between "the first paragraph after the
-   quote" and "any other paragraph," so the convention above IS the API:
-   write exactly one stat-line paragraph, then exactly one more, directly
-   after the `>` quote, with nothing else between them. An extra paragraph,
-   a blank aside, or reordering those two lines silently reassigns which
-   line prints as primary vs. secondary — the build gives no warning. */
+   paragraphs that immediately follow the flavor quote, so the convention
+   above IS the API: write exactly one stat-line paragraph, then exactly one
+   more, directly after the `>` quote, with nothing else between them. An
+   extra paragraph, a blank aside, or reordering those two lines silently
+   reassigns which line prints as primary vs. secondary — the build gives no
+   warning. */
 
 /* Token contract for .dc-npc-stat:
      --dc-npc-stat-rule         → name top-rule color (default --rust)
-     --dc-npc-stat-rule-width   → name top-rule weight (default 2pt, was 1.5pt — hairline risk on press)
+     --dc-npc-stat-rule-width   → name top-rule weight (default 2pt)
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
-     --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue)
+     --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Page breaks. A section splits across pages by default. A block with `####`
@@ -699,9 +684,7 @@ h3 + .dc-section-panel {
 /* The `@columns` run of an entries block is glued to the bar and intro above it,
    as a direct entry list is (the h3's own `break-after: avoid` plus the chain
    above). Without this, Chromium can end a page with the bar and an EMPTY first
-   row of the run, and the first entry starts the next page (measured with
-   printToPDF: bar stranded at the foot, `@npc-stat` with `@columns 2` inside;
-   the old `@npc-stat .gp-columns-2` never did it). */
+   row of the run, and the first entry starts the next page. */
 .section.dc-npc-stat > .gp-columns {
   break-before: avoid;
 }
@@ -714,9 +697,7 @@ h3 + .dc-section-panel {
 
 .dc-npc-stat h5 {
   /* TRAITS / EQUIPMENT / CYBERNETICS section-anchor labels — must read
-     as CATEGORICALLY DIFFERENT from body text, not just heavier (contest
-     judge R10: "they feel labelled rather than anchored... mono-caps +
-     accent underline + left-border accent pip would close the PHB gap").
+     as CATEGORICALLY DIFFERENT from body text, not just heavier.
      Triple-cue treatment: bold mono-caps tracked + 1pt accent underline
      + 3pt accent left-border pip. The pip is the anchor — scannable at
      reading distance, unmistakable as a section start. */
@@ -737,8 +718,8 @@ h3 + .dc-section-panel {
 .dc-npc-stat blockquote + p {
   font-family: var(--font-mono);
   font-size: 8pt;
-  /* --hud-blue (#1f6f94) on wall = 3.24:1 (fails AA). --hud-blue-dark
-     (#14516e) gives ~5.5:1 on wall and 7.45:1 on paper-cream. */
+  /* The default --hud-blue-dark (#14516e) gives ~5.5:1 on wall and 7.45:1 on
+     paper-cream; --hud-blue (#1f6f94) is 3.24:1 on wall and fails AA. */
   color: var(--dc-npc-stat-primary);
   letter-spacing: 0.04em;
   margin-bottom: 0.02in;
@@ -747,8 +728,7 @@ h3 + .dc-section-panel {
 /* Secondary stat line — "Fodder — Medium" type+size. Carries the
    stat-summary divider: a dotted ink hairline AFTER this line and
    BEFORE the TRAITS h5 creates the visible skeleton
-   (header → flavor quote → meta-stats → SEPARATOR → ability sections)
-   per contest judge R9 finding. */
+   (header → flavor quote → meta-stats → SEPARATOR → ability sections). */
 .dc-npc-stat blockquote + p + p {
   font-family: var(--font-mono);
   font-size: 7.5pt;
@@ -814,23 +794,23 @@ h3 + .dc-section-panel {
 /* ═════════════════════════════════════════════════════════════════════════
    CARD-GRID — compact specialty-card display in a 2-column layout
    ═════════════════════════════════════════════════════════════════════════
-   Apply via section class — same architectural split as .dc-citizen-walkthrough:
-   the @page directive identifies the page template, the @section provides
-   the layout + component-tweak context.
+   Apply via `@card-grid` (or `@section cards`) — same architectural split as
+   .dc-citizen-walkthrough: the @page directive identifies the page template,
+   the @section provides the layout + component-tweak context.
 
-     @page .card-grid
-     @section .dc-card-grid
-     @specialty .augmerc
+     @page chapter-start
+     @card-grid
+     @specialty augmerc
      @specialty-card ... @end-specialty-card
      @end-specialty
-     [repeat for 6+ specialties]
-     @end-section
+     [repeat for each specialty]
+     @end-card-grid
 
    The grid sets no columns of its own: the author puts the cards in
    `@columns 2` … `@end-columns` inside it, like any other columned run. Here
    we own the chrome-reset (the .dc-card-grid section has no card
    background/shadow — it's a pure layout wrapper) plus the per-card density
-   tweaks so all 8 specialty cards fit comfortably on one page. */
+   tweaks so the specialty cards fit comfortably on one page. */
 
 /* Card grid: a layout wrapper, no panel and no padding; the cards carry the
    visuals, and it may span pages when they exceed one. */
@@ -856,14 +836,6 @@ h3 + .dc-section-panel {
 .dc-card-grid .dc-specialty-card p { line-height: 1.2; font-size: 8pt; }
 .dc-card-grid .dc-specialty-card h3 { font-size: 0.95em; margin: 0; padding-top: 0; line-height: 1.3; }
 .dc-card-grid .dc-specialty-card blockquote { font-size: 0.85em; margin: 0; line-height: 1.3; }
-
-
-
-
-/* Per-book variant assignment lives in the book's own sheet (unlayered) using natural
-   selector chains (chapter id → page template class → section component
-   class) that set component CSS custom properties. No utility-variant
-   classes here — that would force authors to re-type variant intent. */
 
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -914,13 +886,5 @@ h3 + .dc-section-panel {
   outline: var(--dc-fiction-art-outline);
   box-shadow: var(--dc-fiction-art-shadow);
 }
-
-
-/* `.section.dc-rules-definition` (this chrome/tokens/doc block + the
-   columns block in page-templates.css) is DELETED (2026-09-02): 0 uses,
-   0 emissions — verified against both books' rendered HTML before
-   deleting. A future component demonstrating this "two opposed
-   definitions" shape should get one real usage in the guide's gallery so
-   it stays alive and checkable, rather than being reintroduced dark. */
 
 }

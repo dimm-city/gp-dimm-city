@@ -44,9 +44,7 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
   line-height: var(--lh-normal);
-  /* Body text tracking — subtle tightening reads as "industrial print"
-     vs the slack default. Not enough to harm readability; enough to
-     give the body register its own creaturepunk voice. */
+  /* Subtle tightening reads as "industrial print" against the slack default. */
   letter-spacing: 0.005em;
   text-wrap: pretty;
   position: relative;
@@ -127,18 +125,15 @@ h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink-dust); let
 
 
 /* ── INLINE ELEMENTS ──────────────────────────────────────────────────────── */
-/* Baseline p color = --ink. Prose outside any styled container (a plain <p>
-   not inside @section / @callout / etc.) was inheriting nothing and reading
-   as cyan in some leaked contexts — measured 1.33:1 on the wall. Explicit
-   color: --ink at the base element makes loose paragraphs always legible.
-   Components with paper substrates may still override --ink-smoke or warmer
-   tones via their own selectors. */
+/* Baseline p color = --ink. A plain <p> outside any styled container would
+   inherit a colour that can fall to 1.33:1 on the wall; an explicit --ink
+   keeps loose paragraphs legible. Components may still override it. */
 p   { margin-top: 0; margin-bottom: 0.08in; color: var(--ink); }
 em  { color: var(--ink-smoke); font-style: italic; }
 /* Links: --crimson #e1261c on paper-cream = 4.03:1 (fails AA normal text).
-   --blood #901a12 on paper-cream = 7.73:1 (passes AA + AAA). Per expert
-   debate consensus: crimson is reserved for FILLS / decorative rails; text
-   color on light backgrounds uses --blood. */
+   --blood #901a12 on paper-cream = 7.73:1 (passes AA + AAA). Crimson is
+   reserved for FILLS / decorative rails; text colour on light backgrounds
+   uses --blood. */
 a   { color: var(--blood); text-decoration: none; border-bottom: 1px dotted var(--blood); }
 
 code, kbd, samp {
@@ -152,11 +147,10 @@ code, kbd, samp {
 }
 
 /* Code blocks: wrap instead of spilling. An unwrapped long line inside a
-   card (measured: one 937px-wide code line in the Gutterdruid skill card)
-   escapes every ancestor box, and that overflow is the single largest
-   trigger of Chromium's whole-document shrink-to-fit (~27% on this book).
-   pre-wrap keeps every character readable; overflow-x: clip is the backstop
-   so any residual unbreakable run can never widen the document again. */
+   card escapes every ancestor box, and that overflow is the largest trigger
+   of Chromium's whole-document shrink-to-fit. pre-wrap keeps every character
+   readable; overflow-x: clip is the backstop so any residual unbreakable run
+   can never widen the document. */
 pre {
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -178,7 +172,7 @@ blockquote {
   text-wrap: balance;
 }
 
-/* ── GLOBAL LIST STYLES (kept as-is per plan) ─────────────────────────────── */
+/* ── GLOBAL LIST STYLES ───────────────────────────────────────────────────── */
 ul { padding-left: 0.25in; }
 ul li { list-style: none; margin-bottom: 0.06in; }
 /* markdown-it wraps a loose item's text in <p>, and an inline ::before on the
@@ -210,24 +204,17 @@ table {
   break-inside: avoid;
 }
 
-/* Row tinting: alternating paper-cream and paper-light reads cleaner
-   than paper-cream + paper-stain. The previous pair (cream + stain)
-   produced too much chroma shift between rows and read as "muddy" per
-   user feedback. paper-light is closer to cream so the zebra is subtle
-   without being invisible. */
+/* Row tinting: paper-light is close enough to paper-cream that the zebra is
+   subtle without being invisible; paper-stain shifted chroma too far and
+   read as muddy. */
 tr:nth-child(even) td { background: var(--paper-light); }
 tr:nth-child(odd)  td { background: var(--paper-cream); }
 
 th {
-  /* Was --hud-blue-dark — clashed with adjacent section accents in some
-     chapters (the Size Modifier heading uses rust/orange tones and the teal
-     table header fought it). ink-dark reads as a structural "this is a
-     header bar" rule that takes on no chroma identity of its own.
-     Deliberately NOT `var(--dc-table-header-bg, var(--ink-dark))`: that
-     hook was never declared at :root and no chapter ever set it, so it was
-     an override surface invisible to the override surface. A chapter that
-     genuinely needs its own header colour should declare the token in
-     dc-component-defaults.css alongside the other component public tokens first. */
+  /* ink-dark reads as a structural header bar and takes on no chroma
+     identity of its own, so it never fights a chapter's section accent. A
+     chapter that needs its own header colour should declare a token in
+     dc-component-defaults.css first, not read an undeclared one. */
   background: var(--ink-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
@@ -241,7 +228,7 @@ th {
 /* Authors often use a table purely as a boxed option list, which markdown
    still requires a header row for — the cells come through genuinely empty.
    Left alone those render as a solid ink bar with no text sitting above the
-   list (chapter-01 size/age/origin/dream lists). Collapse empty header cells
+   list. Collapse empty header cells
    so the bar disappears; cells with real text are unaffected. */
 th:empty {
   background: none;
@@ -284,10 +271,8 @@ dd {
    Keeping a heading WITH the content that follows is core's job — MARKER_CSS
    ships `:where(h1,h2,h3,h4,h5,h6) { break-after: avoid }`, and CSS
    Fragmentation resolves a break opportunity as "avoid" if EITHER adjacent
-   box says so, which is why the long `h2 + p, h2 + ul, …` list of
-   `break-before: avoid` twins that used to live here was doing nothing the
-   heading's own break-after did not already do. What core does not cover is
-   a heading that wraps to two lines splitting across the page boundary. */
+   box says so. What core does not cover is a heading that wraps to two
+   lines splitting across the page boundary. */
 h2,
 h3,
 h4 {
