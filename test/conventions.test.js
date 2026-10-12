@@ -198,6 +198,32 @@ describe("a bare @section is unstyled", () => {
 });
 
 
+// A skill card is a third to half a page: kept atomic, it left most specialty
+// pages holding one card and a third of the sheet empty. Cards split by
+// default; `.dc-avoid-split` is the only thing that keeps one whole.
+describe("skill cards split by default", () => {
+  test("no rule gives a skill card break-inside: avoid unless it names .dc-avoid-split", () => {
+    const bad = [];
+    for (const rel of pkg.gutterpress.styles) {
+      postcss.parse(read(rel)).walkRules((rule) => {
+        const avoids = rule.nodes.some((n) => n.type === "decl" && n.prop === "break-inside" && /^avoid/.test(n.value));
+        if (!avoids) return;
+        for (const selector of rule.selectors) {
+          const subject = compoundsOf(selector).at(-1) ?? "";
+          if (/\.dc-skill-card(?![\w-])/.test(subject) && !/dc-avoid-split/.test(selector)) bad.push(`${rel}: ${selector.trim()}`);
+        }
+      });
+    }
+    expect(bad, "a skill card splits by default: key the avoid on .dc-avoid-split").toEqual([]);
+  });
+
+  test("an ability row is never cut, and a split card never opens with only its tab", () => {
+    const css = read("styles/components/cards.css");
+    expect(css).toMatch(/\.dc-skill-card \.dc-ability \{\s*break-inside: avoid;/);
+    expect(css).toMatch(/\.dc-skill-card:not\(\.dc-avoid-split\) \.dc-card-inner > :nth-child\(-n\+2\) \{\s*break-after: avoid;/);
+  });
+});
+
 // A location (a page template such as `@page chapter-start`, a chapter such as
 // `@chapter rules`) only ADJUSTS a component: it may set `--dc-*` tokens on the
 // component, and it may style its OWN element and plain elements (the page's
