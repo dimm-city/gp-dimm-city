@@ -1,10 +1,10 @@
-@chapter C.02 #ch-example-specialty-overview .dg-guide ch="2"
+@chapter #ch-example-specialty-overview .dg-guide ch="2"
 
-@page intro
-
-@section
+@page chapter-start
 
 # What Do You Dream of Doing?
+
+@section panel
 
 The alley narrowed to a throat of shadow as they reached the bunker's blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.
 
@@ -207,7 +207,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 @end-card-grid
 
-@section
+@section panel
 
 ### Choosing by Playstyle
 
@@ -229,7 +229,7 @@ In Dimm City, abilities aren't just what you can do. They're learned techniques,
 
 @end-lede
 
-@section
+@section panel
 
 ### The Core Loop of a Dream
 
@@ -247,7 +247,7 @@ Everything in this chapter exists to support that loop. Abilities bend it. Dice 
 
 @end-section
 
-@section
+@section panel
 
 ### What Comes Next
 

@@ -62,7 +62,7 @@ would import (it imports nothing, keep it that way), and it does not watch
 
 ## Changing a component's look
 
-1. Find the sheet in `components.yaml` (`sheet:` under the component).
+1. Find the sheet in `components.yaml` (`css:` under the component).
 2. Edit the rule. Prefer resetting the component's public tokens
    (`--dc-*` in `styles/dc-component-defaults.css`) over new selectors.
 3. Watch the gallery specimen update.
@@ -85,8 +85,8 @@ The short path is [adding-macros.md](./adding-macros.md). The checklist:
 
 1. `plugin.js` — declare the marker in `markers`. If it rebuilds its content, add a core rule that rewrites the tokens between its open and close (copy `@skill`: `dcSkillCards`). See [adding-macros.md](./adding-macros.md#declare-then-transform-a-macro-that-rebuilds-its-content).
 2. `styles/components/<sheet>.css` — its rules, inside that sheet's layer.
-3. `components.yaml` — the catalog entry.
-4. `snippets/<name>.md` — with at least one `{{placeholder}}`.
+3. `components.yaml` — the catalog entry, listing the marker under `markers:` and the snippet under `snippet:`.
+4. `snippets/<name>.md` — with at least one `{{placeholder}}`. `test/integrity.test.js` fails if a declared marker, or a word on `@section`, `@page` or `@chapter`, has no entry or no snippet. A new variant word follows [adding-macros.md](./adding-macros.md#a-section-variant-a-page-word-a-chapter-word).
 5. The matching component chapter under `design-guide/` — a "you write /
    result" pair (a ```` ```markdown ```` fence with the source, then a
    `Result {.dg-result}` line, then the same markdown live inside

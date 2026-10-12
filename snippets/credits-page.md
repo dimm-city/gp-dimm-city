@@ -1,8 +1,8 @@
-@page .page-credits .dc-credits
+@page credits
 
 # Credits {.dc-chevron}
 
-@section .credits-colophon
+@section flat
 
 @columns 2
 

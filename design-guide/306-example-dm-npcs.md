@@ -4,7 +4,7 @@
 
 @page
 
-@section
+@section panel
 
 ## Dream Mastery
 
@@ -169,7 +169,7 @@ Master — Medium
 
 ---
 
-@section
+@section panel
 
 ### Size Modifiers
 
@@ -189,7 +189,7 @@ Size is a narrative choice as much as a mechanical one. A Colossal creature chan
 
 ---
 
-@section
+@section panel
 
 ### Building Your Own NPCs
 
@@ -211,7 +211,7 @@ Equipment and Cybernetics add texture and loot. They don't need to be tracked un
 
 ---
 
-@section
+@section panel
 
 ### Quick NPC Builder
 

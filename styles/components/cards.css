@@ -106,8 +106,7 @@
    (the transparent 2px border preserves the metrics) but no longer clips:
    an element with clip-path clips its own pseudos, which is the whole reason
    the outline has to be a sibling layer and the clip has to move down one
-   level. Scoped to .dc-skill-card — `.dc-card-tab` is also the tab of the
-   `@section .dc-tabbed` silhouette, which never had the filter or the outline. */
+   level. */
 .dc-skill-card > .dc-card-tab {
   background: transparent;
   border-color: transparent;

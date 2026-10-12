@@ -6,7 +6,7 @@ Chapter 8 {.dg-kicker}
 
 # Page Templates
 
-Classes on `@page` choose a page's geometry — margins, footers, running headers — and a few `@section` chassis build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
+A word on `@page` chooses a page's geometry — margins, footers, running headers — and `@section` variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
 
 
 ## Page geometry
@@ -27,30 +27,61 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 
 A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
-## Page classes
+## Page words
 
 | You write | Footers | Use for |
 |---|---|---|
 | `@page` | `p.N` and `c.N` in opposing corners | Every body page |
-| `@page .page-toc` | none | The contents page |
-| `@page .page-credits .dc-credits` | none | The credits page |
-| `@page .page-intro` | none | The introduction |
-| `@page .page-chapter-start .dc-chapter-start` | none | A chapter opener |
-| `@page intro` | `p.N`, `c.N` | A chapter's first page under a labelled `@chapter` — the chapter badge is injected here |
-| `@page .page-sidebar` | `p.N`, `c.N` | A page with an inset sidebar rail |
-| `@page .dc-citizen-file-page` | `p.N`, `c.N` | Running header "Citizen File" |
+| `@page contents` | none | The contents page |
+| `@page credits` | none | The credits page |
+| `@page intro` | none | The introduction (a `@lede`, then a `@section flat`) |
+| `@page chapter-start` | none | A chapter opener |
+| `@page citizen-file` | `p.N`, `c.N` | Running header "Citizen File" |
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
-| `@page .dc-full-page` | none | Zero margins; full-bleed art |
+| `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
+| `@page blank` | none | A deliberately blank page (core's word) |
 
 The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter split across files repeats its `@chapter` line in each.
 
+
+## Where the content sits
+
+A location is the page template or the chapter a section sits in. It draws nothing: it sets tokens, and the components read them. That is how one `@section panel` looks right in an opener, in a rules chapter and in a lore chapter without a rule per book.
+
+A **chapter word** sets the colour register of every panel in the chapter:
+
+| You write | Section accent | Use for |
+|---|---|---|
+| `@chapter citizen-file` | magenta-deep | Who you dream to be |
+| `@chapter specialty` | blue-dark | The specialty gateway |
+| `@chapter rules` | rust | Rules chapters |
+| `@chapter lore` | amber, panels on `--paper-light` | Setting and history |
+
+```markdown
+@chapter rules #ch-rules ch="3"
+
+@page chapter-start
+
+# Are You Lucid Yet?
+```
+
+Any other word after `@chapter` is the chapter's label, as before. A book adjusts a location with the same selectors and tokens, in its own sheet, and never with a component's background, shadow or pseudo-elements:
+
+```css
+.chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
+.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: 3px; }
+```
+
+A panel's edge has two tokens of its own, `--dc-section-clip` (the cut corner, 18px) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
+
+The old raw spellings (`@page .page-chapter-start .dc-chapter-start`, `.page-toc`, `.page-credits .dc-credits`, `.page-intro`, `.dc-citizen-file-page`) are no longer styled. Write the word.
 
 ## Contents page
 
 `@toc` turns an ordered list into the contents rows; a `[link](#id)` on an item resolves to its page number at build time.
 
 ```markdown
-@page .page-toc
+@page contents
 
 # Contents {.dc-chevron}
 
@@ -73,10 +104,10 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Credits page
 
-A chevron title, a lede for thanks and dedications, and the colophon, set in `@columns 2`: bold lead-ins become role labels.
+A chevron title, a lede for thanks and dedications, and the colophon, a `@section flat` with its names in `@columns 2`: bold lead-ins become role labels.
 
 ```markdown {.dg-split}
-@page .page-credits .dc-credits
+@page credits
 
 # Credits {.dc-chevron}
 
@@ -86,7 +117,7 @@ A chevron title, a lede for thanks and dedications, and the colophon, set in `@c
 
 @end-lede
 
-@section .credits-colophon
+@section flat
 
 @columns 2
 
@@ -106,16 +137,16 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A labelled `@chapter` plus `@page intro` gets the stacked chapter badge on its first page automatically. A fiction excerpt opens the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow. `@column-break` splits fiction from the rules column that follows.
+A chapter opens on `@page chapter-start` with its `# Title` and no footer. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
 
 ```markdown {.dg-split}
-@chapter C.01 #ch-citizen ch="1"
+@chapter #ch-citizen ch="1"
 
-@page intro
-
-@fiction-excerpt
+@page chapter-start
 
 # Who Do You Dream to Be?
+
+@fiction-excerpt
 
 "It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!"
 
@@ -125,9 +156,9 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 @end-fiction-excerpt
 
-@column-break
+@page
 
-@section
+@section panel
 
 ## Citizen File
 
@@ -136,16 +167,16 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the badge: `--dc-chapter-opener-bg`, `--dc-chapter-opener-accent`; for the excerpt: `--dc-fiction-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-rule`, `--dc-fiction-shadow`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page it takes the heavier opener edge (two ink rules and an offset shadow) by itself; nothing to add.
 
-The footer-free variant is `@page .page-chapter-start .dc-chapter-start` with a `# Title` — the snippet picker's *Chapter Start Page*.
+The snippet picker's *Chapter Start Page* inserts this opener.
 
 ## Citizen File walkthrough
 
-`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Put two short fields side by side in `@columns 2` inside it. Pair it with `@page .dc-citizen-file-page` for the running header.
+`@citizen-walkthrough` is the chassis for a character-creation step: a `####` field name and the prose that walks through it. Put two short fields side by side in `@columns 2` inside it. Pair it with `@page citizen-file` for the running header.
 
 ```markdown
-@page .dc-citizen-file-page
+@page citizen-file
 
 @citizen-walkthrough
 

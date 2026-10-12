@@ -103,7 +103,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 # Augmerc {.dc-chevron}
 

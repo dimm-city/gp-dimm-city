@@ -25,29 +25,59 @@ in the manifest:
 
 ```yaml
 extensions:
-  - gp-dimm-city@1.0.0
+  - gp-dimm-city@1.5.0
 ```
 
-**Commit `plugins/npm/`.** Builds never fetch from the registry; the vendored
-copy is what builds your book, on every machine and in CI. If your repo
-ignores `node_modules`, add `!**/plugins/npm/**` as the last line of
-`.gitignore` — the vendored tree has a `node_modules` folder inside it — and
-`**/plugins/npm/** -text` to `.gitattributes`, because the copy is verified
-byte for byte on every build.
+**Commit the manifest, not `plugins/npm/`.** The downloaded copy is not part of
+the book's history: Gutterpress adds `plugins/npm/` to the book's `.gitignore`.
+The pin in the manifest is what you commit. On a fresh clone, the first build,
+export or `gutterpress validate` downloads exactly the pinned version through
+the same verified path (this needs the network once); after that the book works
+offline.
 
-`gutterpress ext list my-book` shows `gp-dimm-city@1.0.0 [npm; markdown, styles, components, snippets]`.
+`gutterpress ext list my-book` shows `gp-dimm-city@1.5.0 [npm; markdown, styles, components, snippets]`.
 
 ## What you get
 
-- **Macros**, from `plugin.js`: `@specialty` / `@specialty-intro` /
-  `@specialty-art` / `@specialty-card`, `@learning-path`, `@skill` (with
-  `@continue` for a card that spans a page break), `@outcome`, `@callout`,
-  `@dm-note`, `@sidebar`, `@sidebar-box`, `@block`, `@card`, `@gear`,
-  `@definition`, `@procedure`, `@lede`, `@toc`, `@glossary`, GFM
-  alerts (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`,
-  `[!VISIT]`, `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic
-  `ROLL THE DIE!` chip. `docs/macros.md` is the inventory;
-  `docs/components-and-palette-reference.md` maps each to the classes it
+Pick by what you are writing. Every row is a marker (or a word on one) that the
+package renders and prints; `docs/macros.md` is the full inventory and
+`components.yaml` the catalog.
+
+| I am writing… | Use |
+|---|---|
+| Rules or reference text under a heading | `@section panel` |
+| The same, kept on one page | `@section panel .dc-avoid-split` |
+| Unboxed text that carries the accent rail | `@section flat` |
+| A short note set off from the text | `@section aside` (or `@sidebar-box`) |
+| A term and its definition | `@definition` |
+| A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| A box in one of four registers: panel, slate, shard, codex | `@block …` |
+| A box floated beside the text | `@sidebar` |
+| Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
+| A creature or NPC | `@npc-stat` |
+| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
+| A roll-result ladder | `@outcome` |
+| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
+| The Citizen File field list | `@citizen-walkthrough` |
+| The specialty catalog | `@card-grid` |
+| A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
+| Grouping, with no styling | `@section` |
+| A section that overflows by a line or two | add `.dc-snug` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+
+The named components are also words on `@section` (`@npc-stat` is
+`@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
+renders the same. Sections split across pages by default. A page or chapter
+word draws no box of its own: it re-tunes the sections inside it.
+
+Also in the box:
+
+- **More macros**, from `plugin.js`: `@specialty-intro` / `@specialty-art` /
+  `@specialty-card`, `@continue` (a skill card that spans a page break),
+  `@card`, `@procedure`, `@lede`, `@toc`, `@glossary`, GFM alerts
+  (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`, `[!VISIT]`,
+  `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic `ROLL THE DIE!`
+  chip. `docs/components-and-palette-reference.md` maps each to the classes it
   emits.
 - **Sixteen stylesheets** under `styles/`, listed in `package.json` in
   cascade order: fonts and the layer statement, the palette and identity
@@ -56,12 +86,13 @@ byte for byte on every build.
   (brick-wall background, folios, chapter chips) that must stay last.
 - **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
   build time.
-- **Page templates** every Dimm City book writes: `.page-toc`,
-  `.page-credits .dc-credits`, `.page-chapter-start .dc-chapter-start`,
-  `.dc-full-page`, plus the folio/chapter-chip chrome driven by
-  `@chapter #id ch="N"`.
-- **Snippets** for the app's snippet picker (`snippets/`): one per macro and
-  one per front-matter page, with placeholders for the parts you fill in.
+- **Page and chapter words** every Dimm City book writes: `@page contents`,
+  `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
+  `@chapter rules`, `lore`, `citizen-file`, `specialty` for a chapter's section
+  colour, plus the folio/chapter-chip chrome driven by `@chapter #id ch="N"`.
+- **Snippets** for the app's snippet picker (`snippets/`): one per macro, per
+  section, page and chapter word, and per modifier (`.dc-avoid-split`,
+  `.dc-snug`), with placeholders for the parts you fill in.
 - **`components.yaml`**: the catalog of every component — what you write,
   what lands in the HTML, which tokens are public, which sheet owns it.
 
@@ -118,9 +149,11 @@ Books pin an exact version, so nothing changes under you. To move a book to a
 new release:
 
 ```sh
-gutterpress ext add gp-dimm-city@1.1.0 my-book
-git rm -r my-book/plugins/npm/gp-dimm-city/1.0.0   # ext add leaves the old copy in place
+gutterpress ext add gp-dimm-city@1.5.0 my-book
 ```
+
+Installing a version removes the book's copies of other versions of this
+package, so there is nothing to clean up by hand. Commit the manifest change.
 
 Rebuild and compare before you commit — the Dimm City books gate every bump
 with a render-parity run (text runs, image placement, and a pixel comparison

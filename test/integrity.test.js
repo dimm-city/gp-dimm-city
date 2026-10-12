@@ -301,3 +301,98 @@ describe("file contracts", () => {
     expect([...new Set(bad)]).toEqual([]);
   });
 });
+
+// ── 4. The component catalog ─────────────────────────────────────────────────
+// components.yaml is the record of what an author can write. It has to name
+// every marker plugin.js declares, every variant word on `section`, `page` and
+// `chapter`, and the two modifiers, and each needs a snippet for the desktop's
+// picker. Retired items stay in it as tombstones that name their replacement.
+describe("component catalog", () => {
+  const catalog = Bun.YAML.parse(read("components.yaml")).components;
+  const snippetFiles = readdirSync(path.join(ROOT, "snippets")).filter((f) => f.endsWith(".md")).map((f) => f.replace(/\.md$/, ""));
+  const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
+  const entryFor = (spelling) => catalog.find((e) => e.status !== "retired" && asList(e.markers).includes(spelling));
+  const WORD_MARKERS = ["section", "page", "chapter"]; // declared as variant words only
+  const REQUIRED_MODIFIERS = ["dc-avoid-split", "dc-snug"];
+  const REQUIRED_RETIRED = ["tabbed", "plain", "section-allow-split", "column-panel", "chapter-opener", "sidebar-inset"];
+  /** Classes a retired entry mentions that stay styled because a live component uses them. */
+  const SHARED_CLASSES = {
+    "dc-allow-split": "still the skill card's switch (see allow-split)",
+    "dc-sub-header": "the skill card's sub-header",
+    "dc-sidebar": "@sidebar, the floated box, stays",
+  };
+  const styled = definedClasses(PKG);
+  const classesOf = (entry) => [...new Set(asList(entry.emits).flatMap((e) => [...String(e).matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map((m) => m[1])))];
+
+  /** Every spelling plugin.js declares: "@name" for a marker, "@section word" for a variant word. */
+  const declared = [
+    ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
+    ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
+  ];
+
+  test("plugin.js declares markers and variant words to check", () => {
+    expect(declared.length).toBeGreaterThan(40);
+    for (const k of WORD_MARKERS) expect(Object.keys(markers[k].variants).length, `${k} variants`).toBeGreaterThan(0);
+  });
+
+  test("every declared marker and variant word has a live catalog entry", () => {
+    const missing = declared.filter((s) => !entryFor(s));
+    expect(missing, "add an entry to components.yaml whose `markers:` lists each of these spellings").toEqual([]);
+  });
+
+  test("every declared marker and variant word has a snippet that exists", () => {
+    const bad = [];
+    for (const s of declared) {
+      const entry = entryFor(s);
+      if (!entry) continue; // reported by the test above
+      const names = asList(entry.snippet);
+      if (!names.length) bad.push(`${s}: entry "${entry.name}" names no snippet`);
+      for (const n of names) if (!snippetFiles.includes(n)) bad.push(`${s}: snippets/${n}.md does not exist`);
+    }
+    expect(bad, "add snippets/<name>.md (first line the marker, at least one {{placeholder}}) and name it in the entry's `snippet:`").toEqual([]);
+  });
+
+  test("every snippet a catalog entry names exists, and every snippet file belongs to an entry", () => {
+    const named = new Set(catalog.flatMap((e) => asList(e.snippet)));
+    expect([...named].filter((n) => !snippetFiles.includes(n)), "named but missing").toEqual([]);
+    expect(snippetFiles.filter((n) => !named.has(n)), "a snippet no components.yaml entry names").toEqual([]);
+  });
+
+  test("each modifier has a live entry, a snippet, and a rule that styles its class", () => {
+    for (const cls of REQUIRED_MODIFIERS) {
+      const entry = catalog.find((e) => e.status === "live" && e.modifier === cls);
+      expect(entry, `no live entry with modifier: ${cls}`).toBeTruthy();
+      expect(styled.has(cls), `no stylesheet styles .${cls}`).toBe(true);
+      expect(asList(entry.snippet).length, `${cls} has no snippet`).toBeGreaterThan(0);
+    }
+  });
+
+  test("every live entry maps to something declared, and to a class a stylesheet styles", () => {
+    const bad = [];
+    for (const e of catalog.filter((x) => x.status === "live" || x.status === "unused")) {
+      for (const s of asList(e.markers)) if (!declared.includes(s)) bad.push(`${e.name}: markers lists ${s}, which plugin.js does not declare`);
+      if (e.origin === "core") continue; // core's own box; this package styles nothing on it
+      const cls = classesOf(e);
+      if (!cls.some((c) => styled.has(c))) bad.push(`${e.name}: none of its classes (${cls.join(", ") || "none listed"}) is styled by any sheet`);
+      if (!asList(e.css).length) bad.push(`${e.name}: names no css file`);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  test("retired entries: spellings are gone from plugin.js, classes from the sheets, and the replacement is named", () => {
+    const bad = [];
+    for (const e of catalog.filter((x) => x.status === "retired")) {
+      for (const s of asList(e.markers)) if (declared.includes(s)) bad.push(`${e.name}: ${s} is retired but plugin.js still declares it`);
+      const alive = classesOf(e).filter((c) => c.startsWith("dc-") && styled.has(c) && !(c in SHARED_CLASSES));
+      if (alive.length) bad.push(`${e.name}: retired but ${alive.map((c) => "." + c).join(", ")} is still styled`);
+    }
+    for (const name of REQUIRED_RETIRED) {
+      const e = catalog.find((x) => x.name === name);
+      if (!e) bad.push(`${name}: missing from components.yaml`);
+      else if (e.status !== "retired") bad.push(`${name}: should be status: retired`);
+      else if (!e.replaced_by) bad.push(`${name}: retired without \`replaced_by\``);
+    }
+    for (const e of catalog.filter((x) => asList(x.markers).length && x.status === "retired" && !x.replaced_by)) bad.push(`${e.name}: retired marker without \`replaced_by\``);
+    expect(bad).toEqual([]);
+  });
+});

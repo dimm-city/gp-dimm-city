@@ -45,10 +45,10 @@ Right column.
 
 ## A card with columns
 
-A column run inside a plain `@section` sits in the standard card: the leading `##` or `###` is the heading bar at full width, and `@columns 2` below it splits the body.
+A column run inside a `@section panel` sits in the standard card: the leading `##` or `###` is the heading bar at full width, and `@columns 2` below it splits the body.
 
 ```markdown
-@section
+@section panel
 
 ## The City
 
@@ -69,7 +69,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 ## The City
 
@@ -84,34 +84,6 @@ Nothing here is safe. Nothing here is free.
 @end-columns
 
 @end-section
-
-</div>
-
-## Tabbed section
-
-`.dc-tabbed` hangs the section's heading as a tab off the panel edge — a strong break between consecutive topics on one page.
-
-```markdown
-@tabbed
-
-## Dreamers
-
-You're a Dreamer, not because you're special, but because you're reckless enough to try.
-
-@end-tabbed
-```
-
-Result {.dg-result}
-
-<div class="dg-stage">
-
-@tabbed
-
-## Dreamers
-
-You're a Dreamer, not because you're special, but because you're reckless enough to try.
-
-@end-tabbed
 
 </div>
 
@@ -151,48 +123,6 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 
 </div>
 
-### Inset sidebar
-
-`@sidebar .inset` is a full-height rail pinned to the page's edge. It needs the `@page .page-sidebar` template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.
-
-```markdown
-@page .page-sidebar
-
-@section
-
-Body text for this page stops at the rail's edge.
-
-@end-section
-
-@sidebar .inset
-
-### Free, Not Costless
-
-One out-of-turn ability per round is free to trigger — but it still spends its listed AP.
-
-@end-sidebar
-```
-
-The inset rail needs a page of its own, so the rendered page is the next page. {.dg-next}
-
-@page .page-sidebar
-
-@section
-
-Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.
-
-That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.
-
-@end-section
-
-@sidebar .inset
-
-### Free, Not Costless
-
-One out-of-turn ability per round is *free to trigger* — but it still spends its listed AP. Each additional out-of-turn use that round costs **+1 AP** on top.
-
-@end-sidebar
-
 @page .dg-doc
 
 ## Floated images
@@ -221,23 +151,24 @@ A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch
 
 ## Break control
 
-Components keep themselves whole by default: a card, a callout, a section will move to the next page rather than split. Two classes adjust that, and a third forces a break.
+Cards and callouts keep themselves whole by default: they move to the next page rather than split. A section does the opposite: it splits where the page ends. Two classes change that, and a third forces a break.
 
 | You write | Effect |
 |---|---|
-| `@section .gp-no-break` | Never split this section across pages |
-| `@skill {.dc-allow-split}` or `@section .dc-allow-split` | Allow this one tall element to split instead of leaving a page mostly empty |
+| `@section panel .dc-avoid-split` | Keep this section whole: it moves to the next page rather than splitting |
+| `@section .gp-no-break` | Core's own never-split class, for a section of any kind |
+| `@skill {.dc-allow-split}` | Allow this one tall skill card to split instead of leaving a page mostly empty |
 | `## Heading {.gp-break-before}` | Start a new page before this element |
 | `@page-break` | Start a new page here |
 
-Reach for `.dc-allow-split` only when an element is genuinely taller than the printable area or keeping it whole leaves most of a page blank. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
+Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. Reach for `.dc-allow-split` only when a skill card is genuinely taller than the printable area. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
 
 ## Tighter spacing
 
 `.dc-snug` halves the space between paragraphs and list items inside a section or page. Reach for it when a section overflows by a line or two and the last line would otherwise strand on a page of its own. Type size and leading are untouched.
 
 ```markdown
-@section .dc-snug
+@section panel .dc-snug
 ### Ideal
 
 Paragraph and list-item gaps shrink to 0.04in here.

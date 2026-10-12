@@ -1,10 +1,10 @@
-@chapter C.01 #ch-example-chapter-opener .dg-guide ch="1"
+@chapter citizen-file #ch-example-chapter-opener .dg-guide ch="1"
 
-@page intro
-
-@fiction-excerpt
+@page chapter-start
 
 # Who Do You Dream to Be?
+
+@fiction-excerpt
 
 "It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?! Tag's Thump, an I'm a rabbit outta dee EntD here in Dimm City. Lemme post ya a tale about life here in da middle 'o dee ether.
 
@@ -42,9 +42,9 @@ I locked in da hack, jacked out, an leapt clean onto a passing airbus like I mea
 
 @end-fiction-excerpt
 
-@column-break
+@page
 
-@section
+@section panel
 
 ## Citizen File {#c2-character-profile}
 
@@ -94,7 +94,7 @@ Names and pronouns matter when life itself is constantly trying to strip both aw
 @end-citizen-walkthrough
 
 
-@page .dc-citizen-file-page
+@page citizen-file
 
 @columns 2
 

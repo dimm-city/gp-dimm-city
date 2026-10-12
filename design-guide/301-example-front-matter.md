@@ -1,6 +1,6 @@
 @chapter #ch-example-front-matter .dg-guide ch="1"
 
-@page .page-toc
+@page contents
 
 # Contents {.dc-chevron}
 
@@ -28,7 +28,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 @end-toc
 
-@page .page-credits .dc-credits
+@page credits
 
 # Credits {.dc-chevron}
 
@@ -40,7 +40,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 @end-lede
 
-@section .credits-colophon
+@section flat
 
 @columns 2
 
@@ -72,7 +72,7 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 
 ![Founders House](img/founder-house.png){.fg-art-founders-house .gp-pin .gp-bottom .gp-full}
 
-@page .page-intro .dg-intro
+@page intro .dg-intro
 
 # Introduction {.dc-chevron}
 
@@ -82,7 +82,7 @@ The city didn't go quiet—it got loud. That feline snarl tore through the alley
 
 @end-lede
 
-@section
+@section flat
 
 > [!PULLQUOTE]
 > "How bright's it ay?!"
@@ -98,7 +98,7 @@ DimmCitz scattered, vanished into bolted dens and reinforced rooftops. Some just
 @end-section
 
 @page 
-@section
+@section panel
 
 ## Metropolis in the Mist
 
@@ -108,7 +108,7 @@ You and your party make the dream come alive. Without you, it doesn't exist. The
 
 These dreams you share will last in your consciousness for life. The joys you found and the laughs you shared coupled with tragedy, sadness or even guilt can impact you in unexpected ways. Be "ready 'n' wary" as adventure in Dimm City is hard, fast, and not for the faint of heart.
 
-@section
+@section panel
 
 ## CREATUREPUNK
 

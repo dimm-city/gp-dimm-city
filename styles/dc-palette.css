@@ -76,7 +76,7 @@
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
   --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source */
-  --tint-hud-teal:     #2a6a8a;  /* inset-sidebar callout mix source */
+  --tint-hud-teal:     #2a6a8a;
   --tint-signal-red:   #d41200;  /* tape border mix source */
   --tint-brick-red:    #b42828;  /* skill-card header wash mix source */
 
@@ -103,7 +103,6 @@
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
   --fs-h6:      9pt;     /* metadata only; 1.22× below h5 */
-  --fs-chapter: 26pt;    /* chapter openers — matches h1 */
 
   --fw-bold:     700;
 
@@ -149,52 +148,15 @@
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 
-  /* Inset-sidebar right column. `.dc-sidebar.inset` is a full-height rail
-     pinned to the page's right edge, so the page must RESERVE this column or
-     the rail paints on top of the body text (it did, until 2026-08-22).
-     --dc-sidebar-inset-column is the rail's OUTER width (it is border-box);
-     the gutter is the gap between body text and the rail. page-templates.css
-     turns the pair into the hosting page's padding-right. */
-  --dc-sidebar-inset-column: 3.4in;
-  --dc-sidebar-inset-gutter: 0.2in;
-
   /* ── Page Geometry ────────────────────────────────────────────────────── */
   --page-width:     8.625in;
   --page-height:    11.25in;
   --binding-margin: 0.75in;
 
   /* ── Shapes ───────────────────────────────────────────────────────────── */
-  /* Chevron banner / section right-edge inset. Used by --clip-banner, by
-     the chapter-opener intro section's clip-path + padding-right, and by
-     the chapter-opener h1's negative margin-right. */
+  /* Chevron banner right-edge inset, used by --clip-banner. */
   --clip-tail: 22px;
   --clip-banner: polygon(0 0, 100% 0, calc(100% - var(--clip-tail)) 100%, 0 100%);
-
-  /* ── Chapter-opener composite (components/*.css consumes these) ──────
-     Token contract — override at the chapter id scope to customise a
-     specific chapter's opener without affecting any other chapter:
-       #ch-chapter-2 .chapter {
-         --dc-chapter-opener-accent: var(--augmerc-deep);
-         --dc-chapter-opener-clip-tail: 32px;
-       } */
-  --dc-chapter-opener-accent:    var(--brand-magenta-deep);
-  --dc-chapter-opener-clip-tail: 22px;
-  --dc-chapter-opener-bg:        var(--paper-cream);
-  --dc-chapter-opener-pad-top:   var(--space-md);
-  --dc-chapter-opener-pad-side:  var(--space-lg);
-  /* Right-side padding is independent from --clip-tail. The clip-tail is
-     the *visual* right inset (where the chevron's tail and the section
-     substrate end). The pad-right is the *content* right inset (where
-     body text ends). Pad-right > clip-tail gives body text breathing
-     room inside the visible substrate instead of running flush to the
-     clipped edge. */
-  --dc-chapter-opener-pad-right: calc(var(--dc-chapter-opener-clip-tail) + var(--space-md));
-  /* Cohesive drop shadow for the chapter-opener composite. Hard offset
-     (no blur) matches the "poster pinned to a wall" aesthetic used by
-     the existing --shadow-poster token. Applied via filter:drop-shadow
-     on the chapter-opener page so it follows the union silhouette
-     (badge + tapered chevron + section substrate) as a single shape. */
-  --dc-chapter-opener-shadow: 3px 4px 0 var(--shadow-ink);
 
   /* ── Fluorescent Fungi Pillar (creaturepunk: bioluminescent organic) ─────
      The 4th creaturepunk register: spore-light, lichen-glow, UV-reactive

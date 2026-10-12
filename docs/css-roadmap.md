@@ -25,22 +25,21 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 - **Offset tokens (14).** Add `--dc-outline`, `--dc-chrome-bleed` and `--dc-z-*`, then derive the hard-coded offsets from them. The "-2px to cancel the 2px outline" offsets are an example.
 - **Wall utility (16).** Add a `.dc-wall` utility and use it in the design guide's stages.
 - **One file per component (17).** Each component lives in one file, and each file is named for what it holds. The rules for the chevron and masthead, TOC, colophon, AP chip, sidebar and path shell are currently spread across several sheets.
-- **Gradients in PDF/X (19).** The outcome keys and tabbed headings print as 360×180 ppi images in PDF/X, and the tape dashes use a hard-stop gradient. Replace them where a flat or vector form looks the same.
-- **Chapter-opener padding.** A second section on a chapter-opener page inherits the opener's padding, but its header bar cancels its own. This is how it always worked; it was kept for pixel identity in 1.1.2.
+- **Gradients in PDF/X (19).** The outcome keys print as 360×180 ppi images in PDF/X, and the tape dashes use a hard-stop gradient. Replace them where a flat or vector form looks the same.
 
 ## Later: larger (a sprint each, with visible risk)
 
 - **Scope the element baseline (20).** Bare `p`, `table`, `hr`, `blockquote` and the headings stop carrying decoration, so components stop undoing it. This is the root cause of most of the remaining overrides.
 - **Specialty shapes (21).** Replace about 70 hand-written polygons with a parameterised shape system.
 - **`dc-` prefix (22).**
-  - Covers the template classes (`.page-intro`, `.page-toc`, `.page-credits`, `.credits-colophon`) and the bare modifiers (`.warning`, `.inset`, `.free`, `.variable`).
+  - The template classes are done: 1.5.0 declares them as page words (`@page intro` writes `dc-page-intro`, and so on) and no longer styles the old `.page-intro`, `.page-toc`, `.page-credits` spellings. What is left is the bare modifiers (`.warning`, `.free`, `.variable`).
   - Ship aliases for one release.
   - This touches all three books, and the owner wants it as its own change.
 
 ## Book-side work
 
 - **Field Guide: specialty-card pages.** These pages are scheduled for a redesign.
-- **Field Guide: sidebars.** Choose sidebar areas. `@sidebar-box` suits short asides that stay in the text flow. An inset sidebar suits a long aside that runs alongside the text on its own page. The inset rail rules wait on this decision (see `cleanup-backlog.md`).
+- **Field Guide: sidebars.** Choose sidebar areas. `@sidebar-box` suits short asides that stay in the text flow. The inset rail was removed 2026-10-12.
 - **Field Guide: art.**
   - Eight pages have art below 300 DPI.
   - Cutout art with an alpha channel still flattens a few pages in PDF/X-1a.

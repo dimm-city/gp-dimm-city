@@ -1,3 +1,5 @@
+> Superseded by 1.5.0: `@section` now takes declared variant words (`panel`, `flat`, `aside` and a word per section component), `@page` and `@chapter` take location words, and `@column-panel` is gone. This plan is kept as dated history.
+
 # Plan: per-specialty variants for section components
 
 Status: planned, not started. For a later session.

@@ -7,7 +7,7 @@
  * DECLARED MARKERS (the `markers` export at the bottom of this file — core
  * Gutterpress parses, nests, closes and source-maps these; this file only
  * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @sidebar [inset]     → div.dc-sidebar (`.inset` shorthand works too)
+ *   @sidebar             → div.dc-sidebar
  *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
  *   @definition          → div.dc-prose-panel.dc-definition-block
  *   @specialty-intro     → div.dc-specialty-intro
@@ -57,7 +57,6 @@
  *                          to its origin card (dcContinueClassifier claims it
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
- *   (chapter-opener composite is now markup-driven — see CSS notes below)
  *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
  *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
@@ -1261,26 +1260,6 @@ export default function dimmCityPlugin(md, options = {}) {
 
   md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
 
-  // NOTE: Chapter-opener composite behaviour is intentionally NOT handled
-  // by the plugin. The author markdown
-  //
-  //     @chapter C.01
-  //     @page intro
-  //     @section
-  //     # Who Do You Dream to Be?
-  //
-  // produces the standard marker DOM:
-  //
-  //     .chapter[data-chapter-label="C.01"]
-  //       .page[data-page="intro"][data-chapter-label="C.01"]
-  //         .section
-  //           h1
-  //           ...
-  //
-  // All chapter-opener visual treatment (the C.NN badge, the section
-  // variant chrome, the chevron-styled h1) is provided by CSS attribute
-  // selectors in components/*.css matching this structure.
-
   // Mark image-only paragraphs so layout rules can target them without
   // relying on p:has(img). The base CSS rule
   // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
@@ -1306,14 +1285,14 @@ export default function dimmCityPlugin(md, options = {}) {
  * reads this table: declared markers exist only under Gutterpress.
  *
  * A `section: true` entry declares a section-styled component: core treats it
- * as a real `@section` carrying the entry's class (see below).
+ * as a real `@section` carrying the entry's classes (see below).
  *
  * To add a plain wrapper, add one line here (element + classes), a snippet in
  * `snippets/<name>.md`, and the usual catalog/guide entries — see
  * docs/adding-macros.md.
  *
- * Variants are a bare word on the marker line (`@sidebar inset`) and only add
- * a class, so `.inset`-style class shorthand keeps working beside them.
+ * Variants are a bare word on the marker line (`@block panel`) and only add
+ * a class, so class shorthand (`@block .dc-panel`) keeps working beside them.
  * `autoCloseAt: ['eof']` keeps these silent at end-of-document: they have
  * never needed an explicit `@end-…`.
  */
@@ -1355,7 +1334,7 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
-  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  sidebar: wrapper('dc-sidebar'),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
   definition: wrapper('dc-prose-panel dc-definition-block'),
   'specialty-intro': wrapper('dc-specialty-intro'),
@@ -1370,23 +1349,68 @@ export const markers = {
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
   }),
 
+  // Section variants: `@section panel` is `<div class="section dc-section-panel">`.
+  // A bare `@section` is core's plain box and gets no styling from this package.
+  // `panel`, `flat` and `aside` are general; the rest are the section-styled
+  // components below, each reachable by its own marker (`@npc-stat`) or by word
+  // (`@section npc`), and both write the same classes so one CSS rule serves
+  // both. A component that is a card (npc, walkthrough, flaws, ideals, dreams)
+  // carries `dc-section-panel` beside its own class; fiction and cards are not
+  // panels. The CSS is in styles/components/section.css.
+  section: {
+    variants: {
+      panel: 'dc-section-panel',
+      flat: 'dc-section-flat',
+      aside: 'dc-section-aside',
+      npc: 'dc-section-panel dc-npc-stat',
+      fiction: 'dc-fiction-excerpt',
+      walkthrough: 'dc-section-panel dc-citizen-walkthrough',
+      cards: 'dc-card-grid',
+      flaws: 'dc-section-panel dc-flaws',
+      ideals: 'dc-section-panel dc-ideals',
+      dreams: 'dc-section-panel dc-dreams',
+    },
+  },
+
+  // Locations: where the content sits. A location only adjusts components, by
+  // setting tokens (styles/page-templates.css); it never supplies chrome of its
+  // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`;
+  // `@chapter rules` is `<div class="chapter dc-chapter-rules">` (any other word
+  // after `@chapter` stays its label). Core also ships `@page blank` and
+  // `@page full-bleed`. The old raw spellings (`@page .page-chapter-start .dc-chapter-start`,
+  // `.page-toc`, `.page-credits .dc-credits`, `.page-intro`,
+  // `.dc-citizen-file-page`) are no longer styled.
+  page: {
+    variants: {
+      'chapter-start': 'dc-page-chapter-start',
+      intro: 'dc-page-intro',
+      credits: 'dc-page-credits',
+      contents: 'dc-page-contents',
+      'citizen-file': 'dc-page-citizen-file',
+    },
+  },
+  chapter: {
+    variants: {
+      rules: 'dc-chapter-rules',
+      lore: 'dc-chapter-lore',
+      'citizen-file': 'dc-chapter-citizen-file',
+      specialty: 'dc-chapter-specialty',
+    },
+  },
+
   // Section-styled components. `section: true` makes each one a real core
-  // @section: `@npc-stat` is exactly `@section .dc-npc-stat` (same element, same
-  // classes), so the books' existing `@section .dc-…` spellings keep working
-  // unchanged. Each class has its CSS on `.section.dc-…` in
-  // styles/components/section.css. No variants: none of these is styled per
-  // specialty (that lives on `.dc-specialty.<name>`, from `@specialty`), and
-  // modifiers such as `.dc-plain`, `.dc-snug`, `.dc-allow-split` and
-  // `.gp-columns-2` stay author classes.
-  tabbed: { section: true, class: 'dc-tabbed' },
+  // @section: `@npc-stat` is exactly `@section npc` (same element, same
+  // classes). No variants of their own: none is styled per specialty (that
+  // lives on `.dc-specialty.<name>`, from `@specialty`), and modifiers such as
+  // `.dc-snug`, `.dc-avoid-split` and `.gp-columns-2` stay author classes.
   'card-grid': { section: true, class: 'dc-card-grid' },
-  'citizen-walkthrough': { section: true, class: 'dc-citizen-walkthrough' },
+  'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
-  'npc-stat': { section: true, class: 'dc-npc-stat' },
+  'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat' },
   // Citizen-file card runs: the class sets the accent of every `@card` inside.
-  flaws: { section: true, class: 'dc-flaws' },
-  ideals: { section: true, class: 'dc-ideals' },
-  dreams: { section: true, class: 'dc-dreams' },
+  flaws: { section: true, class: 'dc-section-panel dc-flaws' },
+  ideals: { section: true, class: 'dc-section-panel dc-ideals' },
+  dreams: { section: true, class: 'dc-section-panel dc-dreams' },
 };
 
 /**

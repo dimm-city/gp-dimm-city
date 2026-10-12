@@ -6,7 +6,9 @@
    OWNS:
    - All @page declarations (default, :left / :right, named pages)
    - @page margin box CONTENT (the folio and chapter chips)
-   - Named-page wiring (`.page.page-toc { page: front-matter }`, etc.)
+   - Named-page wiring (`.page.dc-page-contents { page:
+     front-matter }`, etc.). The page words (`@page contents`, `credits`,
+     `intro`, `chapter-start`, `citizen-file`) are wired here.
 
    MUST NOT CONTAIN:
    - Content layout rules (.page.* { columns: N }) — EXCLUSIVELY in
@@ -90,8 +92,7 @@
   @bottom-right { content: none; }
 }
 
-.page.page-toc,
-.page.page-credits {
+.page:is(.dc-page-contents, .dc-page-credits) {
   page: front-matter;
 }
 
@@ -106,7 +107,7 @@
   @bottom-right { content: none; }
 }
 
-.page.page-intro {
+.page.dc-page-intro {
   page: front-matter-intro;
 }
 
@@ -115,7 +116,7 @@
    identity. dc-native.css refills the two bottom boxes with the brick
    band so the margin band stays continuous.
 
-   The name applies to EVERY page `.dc-chapter-start` spans, so an opener that
+   The name applies to EVERY page `.dc-page-chapter-start` spans, so an opener that
    runs past its first page prints its continuation pages without folios too;
    end the opener with `@page` to get them back. MEASURED in Chromium's own
    print (printToPDF) why this cannot be narrowed to the first page:
@@ -130,14 +131,19 @@
   @bottom-right { content: none; }
 }
 
-.dc-chapter-start {
+.dc-page-chapter-start {
   page: chapter-start;
 }
 
 /* ---------------------------------------------------------------------------
-   Full — zero margins, no footers. `.dc-full-page`'s full-bleed geometry lives
-   in page-templates.css; its named-page assignment is here (alongside the
+   Full — zero margins, no footers. The plate geometry of `.dc-full-page` and
+   of core's `@page full-bleed` (`.gp-page-full-bleed`) lives in
+   page-templates.css; their named-page assignment is here (alongside the
    `@specialty-art` plate's) since wiring belongs with its @page block.
+   Core's word is wired to THIS block rather than to core's own
+   `gp-page-full-bleed` page: that block sits in an earlier layer than the
+   `@page :left` / `:right` margins above, so on a verso page it would lose to
+   them (see "ONE BLOCK PER NAMED PAGE"). One full-bleed page, two spellings.
    --------------------------------------------------------------------------- */
 
 @page full {
@@ -148,7 +154,7 @@
 }
 
 .dc-specialty-art { page: full; }
-.dc-full-page { page: full; }
+:is(.dc-full-page, .gp-page-full-bleed) { page: full; }
 
 /* ---------------------------------------------------------------------------
    Citizen File — amber running header in the OUTER top corner, so this is the
@@ -187,7 +193,7 @@
   }
 }
 
-.page.dc-citizen-file-page {
+.page.dc-page-citizen-file {
   page: citizen-file;
 }
 

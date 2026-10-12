@@ -29,10 +29,10 @@ The Dimm City design system for Gutterpress: how to write a Dimm City book in ma
 <ol>
 <li><a href="#ch-examples">About the examples</a></li>
 <li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, introduction</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — fiction excerpt, citizen file walkthrough</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — chapter-start page, fiction excerpt, citizen file walkthrough</li>
 <li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the specialty card grid</li>
 <li><a href="#ch-example-specialty-profile">Specialty Profile</a> — intro, art, a learning path with skill cards</li>
-<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> — tabbed sections, definitions, conditions, the outcome ladder</li>
+<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> — sections, definitions, conditions, the outcome ladder</li>
 <li><a href="#ch-example-dm-npcs">Dream Master Pages</a> — DM notes, NPC stat blocks</li>
 <li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> — gear entries, callouts, an ego-point ladder</li>
 </ol>
@@ -67,8 +67,36 @@ This is what you type.
 Three rules carry through the whole system, and they are worth knowing before anything else:
 
 1. **A marker is a line that starts with `@`.** `@lede` opens a block, `@end-lede` closes it. Leave a blank line on each side of every marker.
-2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section #rules .dc-plain`.
+2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section panel #rules .dc-snug`.
 3. **Classes on a parent change everything inside it.** `@specialty .augmerc` gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.
+
+## Pick a section
+
+Start from what you are writing, not from a class name: find it on the left and write what is on the right. The same table is in the package's README.
+
+| I am writing… | Use |
+|---|---|
+| Rules or reference text under a heading | `@section panel` |
+| The same, kept on one page | `@section panel .dc-avoid-split` |
+| Unboxed text that carries the accent rail | `@section flat` |
+| A short note set off from the text | `@section aside` (or `@sidebar-box`) |
+| A term and its definition | `@definition` |
+| A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| A box in one of four registers: panel, slate, shard, codex | `@block …` |
+| A box floated beside the text | `@sidebar` |
+| Fiction, lore, a chapter-opener story | `@fiction-excerpt` |
+| A creature or NPC | `@npc-stat` |
+| Gear, a vehicle, a drug, an augment | `@gear` (and `@callout gear label="SPECS"` for the specs) |
+| A roll-result ladder | `@outcome` |
+| Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a run of `@card`) |
+| The Citizen File field list | `@citizen-walkthrough` |
+| The specialty catalog | `@card-grid` |
+| A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
+| Grouping, with no styling | `@section` |
+| A section that overflows by a line or two | add `.dc-snug` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+
+The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. Sections split across pages; add `.dc-avoid-split` to keep one whole. A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
 
 ## Quick start
 

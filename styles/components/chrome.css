@@ -26,9 +26,7 @@
    miscommunicates the semantic (CONTENTS shouldn't read as a warning).
    Rubric: D9 (brand identity per chapter — chroma anchor must match
    the banner's semantic role). */
-/* Chevron banner on elements marked `.dc-chevron`. The chapter opener's first
-   h1 gets the same treatment without the class; that rule lives with the
-   opener template in page-templates.css. */
+/* Chevron banner on elements marked `.dc-chevron`. */
 .dc-chevron {
   font-family: var(--font-display);
   font-size: var(--dc-chevron-font-size);
@@ -269,7 +267,9 @@ h1.dc-chevron {
 
    Token contract:
      --dc-intro-accent → 4px left-strip color (default --orange)
-     --dc-intro-bg     → substrate color right of the strip (default --paper-stain) */
+     --dc-intro-bg     → substrate color right of the strip (default --paper-stain)
+     --dc-intro-gap / --dc-intro-pad-bottom → space below, inside and out (the
+                         front-matter pages set both to 0 to stack the lede flush) */
 .dc-intro {
   font-family: var(--font-body);
   font-size: var(--fs-body);
@@ -280,8 +280,8 @@ h1.dc-chevron {
      the rail's edge soft. */
   background: var(--dc-intro-bg);
   line-height: 1.5;
-  padding: 0 14px 10px 18px;
-  margin: 0 0 calc(0.1in + 3pt) 0;
+  padding: 0 14px var(--dc-intro-pad-bottom) 18px;
+  margin: 0 0 var(--dc-intro-gap) 0;
   box-shadow: inset 4px 0 0 var(--dc-intro-accent), var(--shadow-poster);
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel painted on to the page foot with the last paragraph overleaf
@@ -389,10 +389,6 @@ hr {
   height: 4px;
   background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
 }
-
-/* Chapter-opener badge + H1 banner — see "PAGE TEMPLATE: CHAPTER OPENER"
-   in page-templates.css. The legacy .dc-chapter-opener-no rules previously here were removed
-   when the legacy @chapter-opener macro was retired. */
 
 /* ── Specialty art full-page plate ─────────────────────────────────────────── */
 .dc-specialty-art {

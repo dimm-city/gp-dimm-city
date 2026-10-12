@@ -1,4 +1,4 @@
-@page .page-toc
+@page contents
 
 # Contents {.dc-chevron}
 

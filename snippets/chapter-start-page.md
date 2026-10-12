@@ -1,6 +1,6 @@
 @chapter #{{id}} ch="{{number}}"
 
-@page .page-chapter-start .dc-chapter-start
+@page chapter-start
 
 # {{title}}
 

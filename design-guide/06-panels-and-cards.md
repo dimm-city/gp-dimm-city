@@ -6,8 +6,114 @@ Chapter 6 {.dg-kicker}
 
 # Panels, Cards & Data
 
-The enclosures: four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
+The enclosures: the section variants, four block registers, the sidebar box, definition and glossary forms, the numbered procedure, the outcome ladder, choice cards, gear entries, tables, and the stat blocks a Dream Master runs from. {.dg-lede}
 
+
+## Section
+
+A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Three are general and work anywhere. Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar of all three. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
+
+```markdown {.dg-split}
+@section panel
+
+## Rules Panel
+
+The card: a cream substrate, an accent rail, a clipped corner, a shadow, and the first `##` or `###` as a title bar.
+
+@end-section
+
+@section flat
+
+The rail on a plain host, for text that should read as a continuation of the page.
+
+@end-section
+
+@section aside
+
+### Worth Knowing
+
+A short note set off from the text: a hairline frame, an accent rail, an italic heading.
+
+@end-section
+
+@section
+
+A bare section: no look at all. The text sits on the page.
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-tall">
+
+@section panel
+
+## Rules Panel
+
+The card: a cream substrate, an accent rail, a clipped corner, a shadow, and the first `##` or `###` as a title bar.
+
+@end-section
+
+@section flat
+
+The rail on a plain host, for text that should read as a continuation of the page.
+
+@end-section
+
+@section aside
+
+### Worth Knowing
+
+A short note set off from the text: a hairline frame, an accent rail, an italic heading.
+
+@end-section
+
+</div>
+
+<div class="dg-stage dg-on-paper">
+
+@section
+
+A bare section: no look at all. The text sits on the page.
+
+@end-section
+
+</div>
+
+`panel` is the look for rules and reference text with a heading; `.dc-avoid-split` on it keeps a short panel on one page. `aside` is the sidebar-box treatment on a section; reach for `@sidebar-box` itself when the note needs its own divider. Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
+
+The components below that are sections have a marker of their own and a word on `@section`: `@npc-stat` (`npc`), `@fiction-excerpt` (`fiction`), `@citizen-walkthrough` (`walkthrough`), `@card-grid` (`cards`), `@flaws`, `@ideals` and `@dreams`.
+
+## Fiction excerpt
+
+Fiction, lore, a chapter-opening story. Aged paper instead of a card: no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules and an offset shadow.
+
+```markdown {.dg-split}
+@fiction-excerpt
+
+"It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!"
+
+I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out.
+
+@end-fiction-excerpt
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@fiction-excerpt
+
+"It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!"
+
+I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out.
+
+@end-fiction-excerpt
+
+</div>
+
+Tokens: `--dc-fiction-bg`, `--dc-fiction-line-height`, `--dc-fiction-rule` (top and bottom edge weight), `--dc-fiction-shadow`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
 
 ## Block
 
@@ -374,7 +480,7 @@ A 50-foot length of mechanized links that coils itself, climbs, anchors, or cinc
 </div>
 
 
-A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second. Add `.dc-allow-split` to the section so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
+Gear is a card with an orange rail. The name, the italic tagline and the bold price line are picked out by their shape, and a `@callout gear label="SPECS"` at the foot sits a gap below the body. A long run packs tighter two-up: put the entries in `@columns 2` inside a `@section`. Entries fill the first column, then the second, and a section splits by default, so a run longer than a page breaks between entries. [Gear & Tech](#ch-example-gear-tech) shows gear in columns.
 
 
 ## Tables
@@ -464,7 +570,7 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 
 </div>
 
-A block with several `####` entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no `####` is one creature and stays whole. Add `.dc-allow-split` (`@npc-stat {.dc-allow-split}`) for an unusually long entry: it may then break after its name and stat lines.
+A block with several `####` entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no `####` is one creature; add `.dc-avoid-split` (`@npc-stat .dc-avoid-split`) to keep it on one page.
 
 To set the entries in columns, put them in `@columns 2` inside the block: the bar and an optional intro stay above, full width.
 

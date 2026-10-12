@@ -1066,7 +1066,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 # Augmerc {.dc-chevron}
 
@@ -1082,45 +1082,45 @@ Augmerc learning paths assume combat-grade augmentations.
 
 </div>
 
-## Section chassis
+## Section variants
 
-A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and a `@section` with its body in `@columns 2`.
+`@section panel`, `@section flat`, `@section aside`, a bare `@section`, and a panel with its body in `@columns 2`.
 
 <div class="dg-stage dg-tall">
 
-@section
+@section panel
 
-### Bare section
+### Panel section
 
-The panel chrome: substrate, accent rule, and the first heading as a bar.
-
-@end-section
-
-@section .dc-plain
-
-### Plain section
-
-No substrate, rail or shadow: the text sits on whatever is behind it. A first heading still prints as a bar.
+The panel chrome: substrate, accent rule, clipped corner, and the first heading as a bar.
 
 @end-section
 
-@tabbed
+@section flat
 
-## Tabbed, H2
+### Flat section
 
-The heading hangs off the panel edge as the primary tab.
+The accent rail on a plain host: no clipped corner, no shadow. A heading prints as a heading, not a bar.
 
-@end-tabbed
+@end-section
 
-@tabbed
+@section aside
 
-### Tabbed, H3
+### Aside section
 
-The subordinate tab: smaller type, tighter padding.
+An inset note: the sidebar-box frame, with the rail in the section accent.
 
-@end-tabbed
+@end-section
 
-@section
+@section panel .dc-avoid-split
+
+### Panel kept whole
+
+`.dc-avoid-split` moves the whole section to the next page rather than splitting it.
+
+@end-section
+
+@section panel
 
 ### Section with columns
 
@@ -1138,9 +1138,21 @@ Nothing here is safe. Nothing here is free.
 
 </div>
 
+<div class="dg-stage dg-on-paper">
+
+@section
+
+### Bare section
+
+No variant word, no look: the text sits on whatever is behind it.
+
+@end-section
+
+</div>
+
 ## Sidebars
 
-`@sidebar` floats beside the text; `@sidebar .inset` is a full-height rail and needs its own `@page .page-sidebar` — see [Layout](#ch-layout).
+`@sidebar` floats beside the text — see [Layout](#ch-layout).
 
 <div class="dg-stage dg-on-paper">
 

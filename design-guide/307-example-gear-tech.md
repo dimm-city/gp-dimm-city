@@ -3,7 +3,7 @@
 
 @page .tech-cybernetics .second-page
 
-@section
+@section panel
 
 ### Tech and Cybernetics
 
@@ -25,7 +25,7 @@ Every install has a cost. Every edge has a crack. Push too far, and something in
 
 ---
 
-@section
+@section panel
 
 ## The Cost of Upgrades Is You
 
@@ -41,7 +41,7 @@ Cybernetics must be installed by a trained Cybersurgeon in a medlab, clinic, or 
 
 @end-section
 
-@section
+@section panel
 
 ### Ego Points (EP)
 
@@ -83,7 +83,7 @@ The affected PC rolls each round to regain control. Specialties like the Cybersu
 
 ## Example Gear Entries
 
-@section
+@section panel
 
 ### Useful Items
 
@@ -139,7 +139,7 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 
 @page-break
 
-@section
+@section panel
 
 ### Common Cybernetics
 

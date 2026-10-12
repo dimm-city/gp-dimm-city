@@ -10,6 +10,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import postcss from "postcss";
 import { createMarkdownRenderer } from "gutterpress/render";
 
 import plugin, { markers } from "../plugin.js";
@@ -28,6 +29,7 @@ const CORE_HOOKS_READ_BY_CSS = [
   ".gp-bleed",
   ".gp-behind",
   ".gp-page-break",
+  ".gp-page-full-bleed", // core's `@page full-bleed`, which shares the plate geometry and named page of `.dc-full-page`
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
   "--gp-column-rule", //   and to reset on a component that wants none
   "--gp-content-h", // read only
@@ -137,6 +139,95 @@ describe("stylesheets", () => {
       for (const [re, what] of ALPHA) if (re.test(css)) found.push(`${rel}: ${what}`);
     }
     expect(found).toEqual([]);
+  });
+});
+
+/** The simple selectors a compound selector puts on ONE element: `:is()`/`:where()` arguments are merged in (one alternative at a time), other functional pseudos are dropped. */
+function elementClassSets(compound) {
+  const m = compound.match(/:(?:is|where)\(/);
+  if (!m) return [[...compound.replace(/:[\w-]+\((?:[^()]|\([^()]*\))*\)/g, "").matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map((x) => x[1])];
+  let depth = 1;
+  let i = m.index + m[0].length;
+  for (; i < compound.length && depth; i++) depth += compound[i] === "(" ? 1 : compound[i] === ")" ? -1 : 0;
+  const args = compound.slice(m.index + m[0].length, i - 1);
+  const alts = [];
+  let cur = "";
+  depth = 0;
+  for (const ch of args) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth--;
+    if (ch === "," && !depth) (alts.push(cur), (cur = ""));
+    else cur += ch;
+  }
+  alts.push(cur);
+  const rest = compound.slice(0, m.index) + compound.slice(i);
+  return alts.flatMap((alt) => elementClassSets(rest + alt));
+}
+/** Split a selector into compounds at the combinators that sit outside parentheses and brackets. */
+function compoundsOf(selector) {
+  const out = [];
+  let cur = "";
+  let depth = 0;
+  for (const ch of selector) {
+    if ("([".includes(ch)) depth++;
+    if (")]".includes(ch)) depth--;
+    if (!depth && /[\s>+~]/.test(ch)) (cur && out.push(cur), (cur = ""));
+    else cur += ch;
+  }
+  return cur ? [...out, cur] : out;
+}
+
+
+// A bare `@section` is core's plain box. No rule here may reach it: every
+// selector that names `.section` must name a `dc-` class on the same element.
+describe("a bare @section is unstyled", () => {
+  test("no selector in styles/** matches `.section` without a dc- class on the same element", () => {
+    const bad = [];
+    const dirs = ["styles", "styles/components"];
+    for (const rel of dirs.flatMap((d) => readdirSync(path.join(ROOT, d)).filter((f) => f.endsWith(".css")).map((f) => `${d}/${f}`))) {
+      postcss.parse(read(rel)).walkRules((rule) => {
+        for (const selector of rule.selectors) {
+          for (const compound of compoundsOf(selector)) {
+            if (elementClassSets(compound).some((cls) => cls.includes("section") && !cls.some((c) => c.startsWith("dc-")))) bad.push(`${rel}: ${selector.trim()}`);
+          }
+        }
+      });
+    }
+    expect(bad, "a bare .section is core's plain box: key the rule on a variant class (.dc-section-panel, …)").toEqual([]);
+  });
+});
+
+
+// A location (a page template such as `@page chapter-start`, a chapter such as
+// `@chapter rules`) only ADJUSTS a component: it may set `--dc-*` tokens on the
+// component, and it may style its OWN element and plain elements (the page's
+// h1, its paragraphs, its margins). It never supplies the component's chrome.
+// The check is on the element a rule styles (the subject, the last compound):
+// when that is a component (`.dc-section-flat`, `.dc-toc`, `.dc-intro`, …) the
+// rule may declare custom properties only.
+describe("a location adjusts components by tokens only", () => {
+  const LOCATION = /^(dc-page-|dc-chapter-|page-[a-z]|chapter$|chapter-\d)|^(dc-credits|dc-citizen-file-page|dc-full-page)$/;
+  const MODIFIER = /^(dc-snug|dc-avoid-split)$/;
+  const isComponent = (c) => c.startsWith("dc-") && !LOCATION.test(c) && !MODIFIER.test(c);
+  /** The compound a rule styles, without its pseudo-element (`::before` belongs to the element before it). */
+  const subjectOf = (selector) => (compoundsOf(selector).at(-1) ?? "").replace(/::?(before|after|first-line|first-letter|marker)$/, "");
+
+  test("a rule keyed on a page or chapter class declares only custom properties on a component", () => {
+    const bad = [];
+    let seen = 0;
+    for (const rel of ["styles/page-templates.css", "styles/page-rules.css", "styles/dc-native.css"]) {
+      postcss.parse(read(rel)).walkRules((rule) => {
+        const chrome = rule.nodes.filter((n) => n.type === "decl" && !n.prop.startsWith("--")).map((n) => n.prop);
+        for (const selector of rule.selectors) {
+          const compounds = compoundsOf(selector);
+          if (!compounds.some((c) => elementClassSets(c).some((cls) => cls.some((x) => LOCATION.test(x))))) continue;
+          seen++;
+          if (elementClassSets(subjectOf(selector)).some((cls) => cls.some(isComponent)) && chrome.length) bad.push(`${rel}: ${selector.trim()} { ${[...new Set(chrome)].join(", ")} }`);
+        }
+      });
+    }
+    expect(seen, "found no location rules, so the check is not looking at anything").toBeGreaterThan(10);
+    expect(bad, "a location sets --dc-* tokens on a component; the component's own rule reads them").toEqual([]);
   });
 });
 

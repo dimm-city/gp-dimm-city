@@ -17,7 +17,7 @@ Gutterpress itself provides the structural markers. They wrap everything that fo
 | `@chapter #id ch="N"` | next `@chapter` / end of file | A chapter. `ch="N"` prints the `c.N` footer on every page of it |
 | `@page .class` | next `@page` | A page. Classes pick a page template ([Page Templates](#ch-templates)) |
 | `@spread` | next `@spread` / `@page` | Two facing pages kept together |
-| `@section .class` | `@end-section` | A region on the page: a panel, a named component chassis |
+| `@section [word] [.class]` | `@end-section` | A region on the page. Bare, it is a plain box; `@section panel` is the card |
 | `@columns 2` | `@end-columns` | Set what is between in 2 to 5 columns |
 | `@page-break` | — | Force a new page here |
 | `@column-break` | — | Force the next column, inside `@columns` |
@@ -27,7 +27,7 @@ A chapter is one file. A `@chapter` line opens each file, and the chapter ends w
 ```markdown
 @chapter #ch-augmerc ch="3"
 
-@section
+@section panel
 
 ## The Augmerc
 
@@ -40,7 +40,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 ## The Augmerc
 
@@ -50,14 +50,18 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
+`@section panel` is the card: cream substrate, accent rail, clipped corner, shadow, and the first `##` or `###` as a title bar. A bare `@section` is core's plain box: it groups what is inside it and adds no look, so the text sits on the page. Between them are `@section flat` (the rail, no card) and `@section aside` (an inset note); [Panels & Cards](#ch-panels) shows all three. For columns, wrap the content in `@columns 2`.
+
+Sections split across pages by default. Add `.dc-avoid-split` to keep one whole.
+
+The named components have a marker of their own, and each is also a word on `@section`: `@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`, `@citizen-walkthrough` is `@section walkthrough`, `@card-grid` is `@section cards`, and `@flaws`, `@ideals` and `@dreams` are `@section flaws`, `@section ideals` and `@section dreams`. Either spelling renders the same. Not sure which to use? [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ## Attributes
 
 Every marker takes the same attribute grammar after its name, in any order: `#id` sets an id, `.class` adds a class, `key=value` or `key="quoted value"` sets a named option.
 
 ```markdown
-@section #core-loop .dc-plain
+@section panel #core-loop .dc-avoid-split
 
 @callout warning label="Heat is shared"
 ```
@@ -216,7 +220,7 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 ```markdown
 @chapter #ch-rules ch="4"
 
-@section
+@section panel
 
 ## Augment Points
 
@@ -241,7 +245,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@section
+@section panel
 
 ## Augment Points
 

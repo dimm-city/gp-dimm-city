@@ -6,9 +6,20 @@
    OWNS:
    - .page.* content layout rules (flex, grid on page content divs)
    - .page base geometry
-   - .dc-full-page full-bleed geometry (its named-page assignment,
-     `page: full`, lives in page-rules.css alongside `@page full` — see
-     that file's "ONE BLOCK PER NAMED PAGE" contract)
+   - .dc-full-page / .gp-page-full-bleed plate geometry (`@page full-bleed`
+     is core's word; `.dc-full-page` is the raw spelling. Their named page is
+     core's `gp-page-full-bleed`, wired in page-rules.css)
+   - Location rules: what a PAGE word (`@page chapter-start`, `intro`,
+     `credits`, `contents`, `citizen-file`) or a CHAPTER word (`@chapter
+     rules`, `lore`, `citizen-file`, `specialty`) changes. A location only
+     ADJUSTS a component, and only by setting `--dc-*` tokens on it; the
+     component's own rule reads them. It may style its own element (the page's
+     margins, its h1) and plain elements (p, li, strong), never a component's
+     background, shadow, padding, clip-path or pseudo-elements
+     (test/conventions.test.js enforces it). The words are declared in
+     plugin.js `markers`; the old raw spellings (`.page-toc`,
+     `.page-chapter-start.dc-chapter-start`, `.page-credits.dc-credits`,
+     `.page-intro`, `.dc-citizen-file-page`) are no longer styled.
    - Break/overflow control scoped to a page type (.dc-specialty break rules)
 
    NOTE: Page-level typography constraints (orphans/widows on body, break-after
@@ -101,7 +112,7 @@
    bleed art must not clip it. `.gp-behind` is included because it is pinned
    art by another name (a `.gp-pin` that paints under the text). The two
    full-sheet plates are bleed art too: `.dc-specialty-art` and
-   `.dc-full-page` are sheet-wide on their zero-margin `full` page while the
+   `.dc-full-page` are sheet-wide on their zero-margin full-bleed page while the
    `.page` around them keeps the body column's width, so the guard cut them
    off at the column edge — a 100pt strip of bare wall down the outside of
    every specialty plate on a page with no other pinned art (design guide
@@ -110,58 +121,6 @@
 .page:is(:has(.gp-bleed), :has(.gp-pin), :has(.gp-behind),
          :has(.dc-specialty-art), :has(.dc-full-page)) {
   overflow-x: visible;
-}
-
-/* ── PAGE TEMPLATE: SIDEBAR (full-height inset rail + reserved column) ──────
-   Composite contract. `@sidebar .inset` renders a full-height rail pinned to
-   the page's right edge; this template is what RESERVES the column it stands
-   in. Author surface:
-
-     @page .page-sidebar
-     ...body content...
-     @sidebar .inset
-     ...rail content...
-     @end-sidebar
-
-   WHY A TEMPLATE AND NOT `.page:has(> .dc-sidebar.inset)`. A `.page` wrapper
-   is not a sheet — it is a content run that fragments across as many sheets
-   as it needs. The component gallery's wrapper measured 27,272px tall (~27
-   sheets, 149 children), so an automatic `:has()` reservation squeezed the
-   right column out of all 27 — measured: it pushed an at-a-glance card row
-   156px past its own grid box 22 sheets away. The rail only makes sense on a
-   wrapper that IS one sheet, and `@page` is how an author declares one. So
-   opting in is the feature, not a papercut.
-
-   The rail's positioning lives here too, not in components/*.css: scoping it
-   to the template means a stray `@sidebar .inset` outside one degrades to the
-   base floated sidebar (readable, in flow) instead of painting over the body
-   text — which is exactly the defect this template fixes. Component chrome
-   (transparent fill, accent rules, heading treatment) stays with the
-   component; only page-context geometry is here, per this file's contract.
-
-   `padding-right` (not a width change) is what reserves the column: an
-   absolutely positioned child resolves `right` against the page's PADDING
-   box, whose right edge does not move when padding grows. The text column
-   shrinks; the rail stays pinned to the page's right edge. */
-.page.page-sidebar {
-  padding-right: calc(
-    var(--dc-sidebar-inset-column) + var(--dc-sidebar-inset-gutter)
-  );
-}
-
-.page.page-sidebar > .dc-sidebar.inset {
-  position: absolute;
-  top: 0;
-  right: 0;
-  /* border-box so the width token is the rail's real footprint — the
-     reservation above spends the same token, so the two cannot drift. */
-  box-sizing: border-box;
-  width: var(--dc-sidebar-inset-column);
-  height: 100%;
-  padding: 0.2in 0.2in 0.15in;
-  margin: 0;
-  float: none;
-  clear: none;
 }
 
 /* `.page-break` (unprefixed) was here and is DELETED (2026-09-02): core
@@ -182,11 +141,11 @@
 /* ── FULL-PAGE GEOMETRY ────────────────────────────────────────────────────── */
 /* Empty full-bleed pages need explicit geometry so the engine allocates a page.
    The height is core's published content box for THIS page's context
-   (`@page full` is margin: 0, so its content box IS the sheet) rather than
+   (core's `gp-page-full-bleed` is margin: 0, so its content box IS the sheet) rather than
    `var(--page-height)`, which was only correct by coincidence — a non-zero
-   margin on @page full would have pushed the plate past the page box with
+   margin on that page would have pushed the plate past the page box with
    nothing to catch it. */
-.dc-full-page {
+:is(.dc-full-page, .gp-page-full-bleed) {
   width: var(--page-width);
   height: var(--gp-content-h, 11.25in);
   background-color: var(--bg);
@@ -226,15 +185,15 @@
    visual contract for the two-page TOC + Credits frontmatter so a sibling
    project gets the same spread by importing this file and writing:
 
-     @page .page-toc
+     @page contents
      # Contents {.dc-chevron}
      @lede ... @end-lede
      @toc ... @end-toc
 
-     @page .page-credits .dc-credits
+     @page credits
      # Credits {.dc-chevron}
      @lede ... @end-lede
-     @section .credits-colophon
+     @section flat
      @columns 2
      **Role:** Names
      ...
@@ -249,12 +208,12 @@
                            swatch lifted off the warm-grey wall.
 
    Per-project recolor is one rule:
-     .page.page-toc, .page.page-credits {
+     .page.dc-page-contents, .page.dc-page-credits {
        --frontmatter-accent: var(--brand-cyan);
      }
 
    ── Colophon role-label convention (dc#44) ───────────────────────────────
-   Markdown-convention, not a macro: inside .credits-colophon, whichever
+   Markdown-convention, not a macro: inside the credits page's flat section, whichever
    `**bold**` token comes FIRST in a paragraph is selected positionally
    (`p strong:first-child`) and rendered as the row's mono-caps role-label
    chrome with the accent underline. Write every colophon line as
@@ -286,12 +245,14 @@
 
 /* Identity tokens for the spread. --dc-intro-accent / --dc-intro-bg feed
    the .dc-intro component's gradient via its own var() fallback chain. */
-.page.page-toc,
-.page.page-credits {
+.page:is(.dc-page-contents, .dc-page-credits) {
   --frontmatter-accent: var(--brand-magenta-deep);
   --frontmatter-lede-bg: var(--concrete-pale);
   --dc-intro-accent: var(--frontmatter-accent);
   --dc-intro-bg: var(--frontmatter-lede-bg);
+  /* The lede stacks flush on the box below it (see "Lede flush-attaches"). */
+  --dc-intro-gap: 0;
+  --dc-intro-pad-bottom: 0;
 }
 
 /* Masthead — full-bleed dark band that escapes the page's 0.625in side
@@ -304,8 +265,7 @@
    single trigger of native print's shrink-to-fit). The 0.625in is the pages'
    literal padding in dc-native.css, not a page-margin token (those pages
    zero their @page side margins). */
-.page.page-toc h1.dc-chevron,
-.page.page-credits h1.dc-chevron {
+.page:is(.dc-page-contents, .dc-page-credits) > h1 {
   display: block;
   width: calc(100% + 1.25in);
   margin-left: -0.625in;
@@ -324,38 +284,31 @@
 }
 
 /* Lede flush-attaches to the masthead and passes straight into the next
-   element — no gap on either side. Shadow inherited from .dc-intro
+   element — no gap on either side (`--dc-intro-gap` / `--dc-intro-pad-bottom`
+   above, and its last child's margin below). Shadow inherited from .dc-intro
    base component (--shadow-poster) — its bottom edge is hidden under
    the flush primary, leaving only the right-side shadow which lines up
    continuously with the primary's own right shadow. */
-.page.page-toc .dc-intro,
-.page.page-credits .dc-intro {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.page.page-toc .dc-intro > :last-child,
-.page.page-credits .dc-intro > :last-child {
+.page:is(.dc-page-contents, .dc-page-credits,
+         .dc-page-intro) .dc-intro > :last-child {
   margin-bottom: 0;
 }
 
 /* TOC card — strip the dc-toc base component's 4pt top/bottom rust
-   rails + 1.5pt ink side rails. Those rails were the visible "seam" at
-   the lede/TOC junction in the original render — once removed, the
-   inherited --shadow-poster combines flush with the lede's right
+   rails + 1.5pt ink side rails (`--dc-toc-rail-y/-x`). Those rails were the
+   visible "seam" at the lede/TOC junction in the original render — once
+   removed, the inherited --shadow-poster combines flush with the lede's right
    shadow above to form one continuous body-column shadow. The number-
    badge accent flips to --frontmatter-accent so the cyber signature
    persists. Substrate also picks up the lede's 4px magenta
    strip so the rail extends from the top of the lede continuously
-   down through the bottom of the TOC. */
-.page.page-toc .dc-toc {
-  border: 0;
-  background: var(--paper-cream);
-  box-shadow: inset 4px 0 0 var(--frontmatter-accent), var(--shadow-poster); /* rail: see .dc-intro */
-}
-
-.page.page-toc .dc-toc ol > li::before {
-  background: var(--frontmatter-accent);
+   down through the bottom of the TOC. All of it is tokens the component
+   reads (`--dc-toc-*`). */
+.page.dc-page-contents {
+  --dc-toc-rail-y: 0pt;
+  --dc-toc-rail-x: 0pt;
+  --dc-toc-shadow: inset 4px 0 0 var(--frontmatter-accent), var(--shadow-poster); /* rail: see .dc-intro */
+  --dc-toc-badge: var(--frontmatter-accent);
 }
 
 /* Credits colophon section: the bottom block of the frontmatter stack, a flat
@@ -367,35 +320,29 @@
    the poster shadow's 3pt drop would land past the sheet and print as a
    hairline across the top of the next one. The strip lines up with the
    lede's shadow above. */
-.page.page-credits .section.credits-colophon {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:    0.18in;
-  --dc-section-pad-right:  0.22in;
-  --dc-section-pad-bottom: 0.18in;
-  --dc-section-pad-left:   0.22in;
-  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
+.page.dc-page-credits .dc-section-flat {
+  --dc-section-accent: var(--frontmatter-accent);
+  --dc-section-drop: 2pt 0 0 var(--shadow-ink);
+  --dc-section-gap: 0pt;   /* the colophon reaches the sheet foot... */
+  --dc-section-grow: 1;    /* ...so it fills the flex-column page */
   --gp-column-rule: none;  /* the names run in two plain columns, as they always have */
-  display: flex;
-  flex-direction: column;
+}
+
+/* The colophon's type: set on what the flat section holds, so it reaches the
+   `@columns` run and the paragraphs and nothing else on the page. */
+.page.dc-page-credits .dc-section-flat > * {
   font-size: 9.5pt;
   line-height: 1.35;
-  background: var(--paper-cream);
-  box-shadow: inset 4px 0 0 var(--frontmatter-accent), 2pt 0 0 var(--shadow-ink); /* rail: see .dc-intro */
 }
 
-.page.page-credits .section.credits-colophon > .gp-columns {
-  flex-grow: 1;
-}
-
-.page.page-credits .section.credits-colophon p {
+.page.dc-page-credits .dc-section-flat p {
   margin: 0 0 0.08in 0;
   break-inside: avoid;
 }
 
 /* Role labels — the first <strong> of each colophon paragraph (e.g.
    "**Designers:**") becomes a chrome label with an accent underline. */
-.page.page-credits .section.credits-colophon p strong:first-child {
+.page.dc-page-credits .dc-section-flat p strong:first-child {
   font-family: var(--font-mono);
   font-size: 9pt;
   font-weight: 700;
@@ -422,7 +369,7 @@
    it always rendered. */
 
 /* Contents page rows. */
-.page.page-toc li {
+.page.dc-page-contents li {
   list-style: none;
   margin: 0;
   padding: 10px 0;
@@ -432,35 +379,35 @@
   line-height: 1.5;
 }
 
-.page.page-toc li::before {
+.page.dc-page-contents li::before {
   content: none;
 }
 
-.page.page-toc li a {
+.page.dc-page-contents li a {
   color: inherit;
   border-bottom: 0;
 }
 
-.page.page-toc li > ul {
+.page.dc-page-contents li > ul {
   margin-top: 8px;
   padding-left: 18px;
 }
 
-.page.page-toc .dc-toc ol > li {
+.page.dc-page-contents .dc-toc ol > li {
   color: var(--ink-smoke);
   padding-left: 3.5rem;
 }
 
-.page.page-toc .dc-toc ol > li::before {
+.page.dc-page-contents .dc-toc ol > li::before {
   content: counter(list-item, decimal-leading-zero) ". ";
 }
 
 /* Credits page: role labels stay ink, prose gets room. */
-.page.dc-credits strong {
+.page.dc-page-credits strong {
   color: var(--ink);
 }
 
-.page.page-credits.dc-credits p {
+.page.dc-page-credits p {
   line-height: 1.6;
 }
 
@@ -469,15 +416,11 @@
    first block after it (a title wraps to several lines in the display face,
    so an opener that runs past its first page used to leave one line of it
    at the foot of a sheet and the rest on the next). */
-.page.page-chapter-start.dc-chapter-start > h1 {
+.page.dc-page-chapter-start > h1 {
   border: 0;
   margin-top: 24pt;
   break-inside: avoid;
   break-after: avoid;
-}
-
-.page.page-chapter-start.dc-chapter-start p {
-  line-height: 1.6;
 }
 
 /* ── SPECIALTY BREAK CONTROL (carried from the field guide, 1.0.0) ─────────
@@ -532,12 +475,9 @@
    identity and is intentional.
 
    Composite contract:
-     - Chevron is constrained to body column width. The chapter-opener
-       composite's negative margins are designed for chapters where the
-       chevron lives inside a wrapper, not for this standalone intro page.
-     - Section's ::before / ::after pseudos suppressed (their 18px TOP-
-       right cut opposed the chevron's BOTTOM-right cut, producing the
-       stepped right-edge mismatch).
+     - The section is a flat section: no ::before / ::after pseudos (their
+       18px TOP-right cut opposed the chevron's BOTTOM-right cut, producing
+       the stepped right-edge mismatch).
      - Section gets a clean paper-cream substrate with the same 4px
        magenta left rail as the lede; rail runs continuously through
        both.
@@ -550,134 +490,56 @@
 
    --intro-accent is the single recolor knob, mirroring --frontmatter-
    accent's role on the TOC/Credits template. */
-.page.page-intro {
+.page.dc-page-intro {
   --intro-accent: var(--brand-magenta-deep);
   --dc-intro-accent: var(--intro-accent);
+  --dc-chevron-bg: var(--brand-magenta-deep);
+  --dc-intro-gap: 0;           /* the lede attaches flush to the chevron above and the section below */
+  --dc-intro-pad-bottom: 0;
 }
 
-/* Chevron geometry on the standalone intro page. This page is NOT a
-   chapter-opener composite (no .chapter[data-chapter-label] ancestor,
-   data-page is "front-matter" not "intro"), so it takes the standard
-   .dc-chevron treatment explicitly rather than inheriting the composite's.
-
-   The chevron stays at lede width; the clip-path's bottom-right diagonal
-   cut (`--clip-banner`, tapering to `calc(100% - --clip-tail)`) lives
-   fully inside the column. Do NOT re-add a negative `margin-right` to land
+/* The chevron on the standalone intro page is the standard .dc-chevron at
+   lede width (`--dc-chevron-bg` above); the clip-path's bottom-right
+   diagonal cut (`--clip-banner`, tapering to `calc(100% - --clip-tail)`) lives
+   fully inside the column. Do NOT give it a negative `margin-right` to land
    the diagonal flush on the lede's right edge: print cannot paint past the
    page content box, and the widened box makes Chromium shrink the WHOLE
-   book to fit (the engine's pre-print width check hard-errors on it).
+   book to fit (the engine's pre-print width check hard-errors on it). */
 
-   --dc-chevron-bg is pinned explicitly so a chapter-opener accent token
-   cannot reach this page. */
-.page.page-intro h1.dc-chevron {
-  margin-left: 0;
-  margin-right: 0;
-  --dc-chevron-bg: var(--brand-magenta-deep);
-  box-shadow: none;
+/* Section content — a flat section (`@section flat`): the magenta 4px rail
+   continuing from the lede, plus the poster shadow. */
+.page.dc-page-intro > .dc-section-flat {
+  --dc-section-accent: var(--intro-accent);
+  --dc-section-drop: var(--shadow-poster);
 }
 
-/* Lede flush-attaches to the chevron above; bottom margin zeroed so
-   the next sibling .section sits flush below. It keeps the component's
-   own --shadow-poster. */
-.page.page-intro .dc-intro {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-.page.page-intro .dc-intro > :last-child {
-  margin-bottom: 0;
-}
-
-/* Section content — a flat paper-cream host with the magenta 4px rail
-   continuing from the lede and the poster shadow, instead of the chamfered
-   panel (so both chrome layers are off). */
-.page.page-intro > .section {
-  --dc-section-surface: none;
-  --dc-section-shadow:  none;
-  --dc-section-pad-top:    0.18in;
-  --dc-section-pad-right:  0.22in;
-  --dc-section-pad-bottom: 0.18in;
-  --dc-section-pad-left:   0.22in;
-  --dc-section-edge: 0px;  /* the box paints its own surface: its padding stays inside it (see .section) */
-  background: var(--paper-cream);
-  box-shadow: inset 4px 0 0 var(--intro-accent), var(--shadow-poster); /* rail: see .dc-intro */
+/* ── CHAPTER-START PAGE: fiction excerpt edge ───────────────────────────────
+   A fiction excerpt on a chapter-start page takes the heavier opener edge
+   (2px ink top and bottom, offset shadow), so the opening pages read as a
+   deliberate wall object rather than a tidy box. Tokens only; the excerpt's
+   own look is in components/section.css. `.dc-page-chapter-start` is the page
+   word's class. */
+.page.dc-page-chapter-start .dc-fiction-excerpt {
+  --dc-fiction-rule: 2px;
+  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
 }
 
-/* ── PAGE TEMPLATE: CHAPTER OPENER (labelled chapter's intro page) ──────────
-   The opener's .section keeps the panel chrome but restyles it: padding comes
-   from --dc-chapter-opener-pad-*, and both pseudo layers get a
-   straight right edge at the clip-tail so the chevron's diagonal meets the
-   substrate with no step. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section {
-  /* Right padding exceeds the clip-tail so body text clears the clipped edge.
-     Set as `padding`, not as pad tokens: every .section on an opener page
-     matches this selector, and only the opener's own h1 cancels these
-     values. A header bar in a later section (a plain panel or column panel)
-     keeps cancelling its own variant's pad tokens, as it always has. */
-  padding: var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-right)
-           var(--dc-chapter-opener-pad-top)
-           var(--dc-chapter-opener-pad-side);
-  --dc-section-edge: 0px;  /* explicit padding above; see .section */
-
-  /* Per-chapter opener tokens flow into the section's accent and surface. */
-  --dc-section-accent: var(--dc-chapter-opener-accent);
-  --dc-section-bg:     var(--dc-chapter-opener-bg);
-
-  /* A .dc-chevron inside tapers to the same x as this section's right edge. */
-  --clip-tail: var(--dc-chapter-opener-clip-tail);
-}
-
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::before {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* Shadow offset like --dc-chapter-opener-shadow, same clip as the substrate. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section::after {
-  top: 4px;
-  left: 3px;
-  right: -3px;
-  bottom: -4px;
-  background: var(--shadow-ink);
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 0,
-    calc(100% - var(--dc-chapter-opener-clip-tail)) 100%,
-    0 100%
-  );
-}
-
-/* The section's first h1 is a chevron banner without a `{.dc-chevron}`
-   attribute. Negative margins cancel the section padding so it reaches the
-   section's outer edges; its --clip-banner tail then tapers in by --clip-tail. */
-.chapter[data-chapter-label] > .page[data-page="intro"] > .section > h1:first-of-type {
-  /* The .dc-chevron look (components/chrome.css), applied without the class
-     so authors need not write `{.dc-chevron}` on every chapter h1. */
-  font-family: var(--font-display);
-  letter-spacing: 0.06em;
-  color: var(--dc-chevron-color);
-  text-transform: uppercase;
-  background: var(--dc-chevron-bg);
-  padding: 10px 28px 10px 14px;
-  display: block;
-  box-sizing: border-box;
-  clip-path: var(--clip-banner);
-  word-break: break-word;
-
-  /* Smaller than other h1.dc-chevron so the section body stays the focal
-     anchor below the banner. User-approved 2026-05-25. */
-  font-size: 1.1rem;
-  line-height: 1.2;
-
-  margin-top:   calc(var(--dc-chapter-opener-pad-top)   * -1);
-  margin-left:  calc(var(--dc-chapter-opener-pad-side)  * -1);
-  margin-right: calc(var(--dc-chapter-opener-pad-right) * -1);
-  margin-bottom: 0;
-  --dc-chevron-bg: var(--dc-chapter-opener-accent);
+/* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───
+   A chapter word sets the tokens the sections in that chapter read, so every
+   panel in it takes the chapter's colour without a rule per book. It is the
+   one-line version of what a book writes by hand today
+   (`#chapter-03 { --dc-section-accent: var(--rust); }`), and a book's own
+   unlayered `#id` rule still wins over it.
+     citizen-file   magenta-deep   identity: who you dream to be
+     specialty      hud-blue-dark  the specialty gateway
+     rules          rust           the rules chapters
+     lore           amber on aged paper: brass title bars, --paper-light panels */
+.chapter.dc-chapter-citizen-file { --dc-section-accent: var(--brand-magenta-deep); }
+.chapter.dc-chapter-specialty    { --dc-section-accent: var(--hud-blue-dark); }
+.chapter.dc-chapter-rules        { --dc-section-accent: var(--rust); }
+.chapter.dc-chapter-lore {
+  --dc-section-accent: var(--amber);
+  --dc-section-bg: var(--paper-light);
 }
 
 /* ── PAGE TEMPLATE: IMAGE — DELETED ─────────────────────────────────────────
