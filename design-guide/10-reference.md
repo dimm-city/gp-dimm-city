@@ -36,7 +36,6 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
 | `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
-| `@tabbed` | `@end-tabbed` | first heading (`##` or `###`) hangs as the tab |
 | `@card-grid` | `@end-card-grid` | a run of `@specialty` / `@specialty-card` inside `@columns 2` |
 | `@citizen-walkthrough` | `@end-citizen-walkthrough` | `####` field names and prose; `@columns 2` inside sets two fields side by side |
 | `@fiction-excerpt` | `@end-fiction-excerpt` | prose; the first image floats |
@@ -57,7 +56,6 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.dc-tabbed` | `@section` | Heading hung as a tab |
 | `.dc-plain` | `@section` | No panel chrome |
 | `.gp-no-break` | `@section` | Never split across pages |
 | `.dc-allow-split` | `@section`, `@skill` | Allow a tall element to split |
@@ -93,7 +91,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 
 | Component | Tokens |
 |---|---|
-| Section chassis | `--dc-section-bg` `--dc-section-accent` `--dc-section-tab-indent` `--dc-section-tab-overlap` |
+| Section chassis | `--dc-section-bg` `--dc-section-accent` |
 | Lede | `--dc-intro-bg` `--dc-intro-accent` |
 | Flavor | `--dc-flavor-accent` `--dc-flavor-accent-width` `--dc-flavor-color` |
 | Pull quote | `--dc-pullquote-accent` `--dc-pullquote-accent-soft` `--dc-pullquote-bg` |

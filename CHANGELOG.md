@@ -7,6 +7,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Removed
+
+- **`@tabbed` and `.dc-tabbed`.** The hung-tab section (the heading cut out
+  as a tab above the panel) had no use in either book, and its two tokens
+  `--dc-section-tab-overlap` and `--dc-section-tab-indent` go with it. Write a
+  plain `@section`: its first heading prints as the bar across the top.
+
 ## [1.4.1] - 2026-10-11
 
 ### Fixed

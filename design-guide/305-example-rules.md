@@ -73,17 +73,17 @@ Other worlds dream of heroes and chosen ones. Dimm City dreams of people despera
 @end-section
 
 
-@tabbed
+@section
 ## Dreamers
 
 You're a Dreamer, not because you're special, but because you're reckless enough to try. You open your mouth, your character speaks. You make a move, your character bleeds for it. You want something? Take it.
 
 The city doesn't care if you're heroic. It only remembers the ones who leave scars. A rare few burn bright enough to get noticed. Dimm City calls them Luminaries, not because they shine, but because they leave burn marks.
 
-@end-tabbed
+@end-section
 
 
-@tabbed
+@section
 ## The Dream Master
 
 Across the table sits the Dream Master: not your boss, not your babysitter, not your damn referee. They're the city's gut reaction. They show the danger, keep the consequences sharp, and laugh when your plans dissolve like cheap plastic.
@@ -94,9 +94,9 @@ Across the table sits the Dream Master: not your boss, not your babysitter, not 
 
 They don't stop you. They don't protect you. They just make sure the pain fits the crime.
 
-@end-tabbed
+@end-section
 
-@tabbed
+@section
 
 ### ROLL A DIE! {#c1-rolling-the-die}
 
@@ -104,7 +104,7 @@ When something matters—really matters—the DM might call for a roll. One toss
 
 No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite back.
 
-@end-tabbed
+@end-section
 
 @section
 

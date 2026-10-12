@@ -141,112 +141,8 @@
   --dc-section-shadow:  none;
 }
 
-/* ── Tabbed variant — first-child heading sits ABOVE the section ─────────
-   `@section .dc-tabbed` opts the section into a `.dc-card-tab → .dc-card-body`
-   silhouette. Flex container is required so the first-child heading's
-   negative margin-top actually lifts it above the section (block layout
-   clamps negative margins on the first in-flow child). `.section::before`
-   is absolutely positioned, so flex doesn't disturb the background pseudo. */
-.section.dc-tabbed {
-  --dc-section-shadow: none;
-  display: flex;
-  flex-direction: column;
-  margin-top: calc(var(--space-md) + 1.5em + 5px);
-}
-
-/* ── Shared base — both H2 and H3 tabs use the cut-corner stencil silhouette */
-.section.dc-tabbed > h2:first-child,
-.section.dc-tabbed > h3:first-child {
-  display: inline-block;
-  width: fit-content;
-  /* Surface treatment: subtle vertical gradient (top highlight + bottom
-     shadow) so the tab reads as a physical material (chipped stone /
-     anodized panel / circuit substrate) catching light from above,
-     rather than a flat colored shape. Per user feedback: "should look
-     more realistic as in, like, crystals or broken rock or circuit
-     boards, digital displays that are kinda chipped up." Stays subtle —
-     no noise overlays, no decorative additions. */
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--dc-section-accent) 86%, #fff 14%) 0%, /* PDF/X-1a: pre-composite to ~86% accent + 14% white; e.g. on --brand-magenta (#9b2b7a) → #ad4891 */
-      var(--dc-section-accent) 45%,
-      color-mix(in srgb, var(--dc-section-accent) 93%, #000 7%) 100%); /* PDF/X-1a: pre-composite to ~93% accent + 7% black; e.g. on --brand-magenta (#9b2b7a) → #912872 */
-  /* Inset highlights/shadows complete the material illusion — 1px bright
-     stripe at top, 1px dark stripe at bottom-right edge. */
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 18%, var(--dc-section-accent)),
-    inset 0 -1px 0 color-mix(in srgb, #000 22%, var(--dc-section-accent)),
-    inset -1px 0 0 color-mix(in srgb, #000 12%, var(--dc-section-accent));
-  color: var(--paper-cream);
-  margin-right: 0;
-  margin-bottom: var(--space-sm);
-  margin-left: var(--dc-section-tab-indent);
-  /* No borders — silhouette is defined entirely by the clip-path against the
-     paper background. This makes the tab read as a stenciled/torn artifact
-     rather than a bordered UI control. */
-  border: 0;
-  border-radius: 0;
-  /* Chipped-stone clip — multiple notches on all exposed edges so the tab
-     reads as a fragment of physical material placed on the card:
-       top-left     10px chamfer (beveled corner)
-       top edge     one 4px chip at ~25% from left
-       top-right    16px setback before the right diagonal
-       right side   double-V staircase — two inward bites create a jagged
-                    diagonal rather than a smooth slope
-       bottom-right flush (the card covers this edge)
-       bottom edge  clean
-       bottom-left  asymmetric triangular scar
-       left edge    small 3px chip at midpoint
-       left-top     10px from corner before entering the top edge            */
-  clip-path: polygon(
-    10px 0,
-    calc(25% - 2px) 0,  25% 4px,  calc(25% + 2px) 0,
-    calc(100% - 16px) 0,
-    calc(100% - 7px)  27%,
-    calc(100% - 12px) 38%,
-    calc(100% - 5px)  48%,
-    calc(100% - 11px) 58%,
-    calc(100% - 4px)  68%,
-    100% 100%,
-    14px 100%,
-    6px  calc(100% - 5px),
-    0    calc(100% - 11px),
-    3px  48%,  0 52%,  3px 56%,
-    0    10px
-  );
-  font-family: var(--font-tab);
-  line-height: 1.2;
-  letter-spacing: var(--ls-display);
-  /* 1px ink-dark text-shadow adds grit/weight to the tab typography without
-     triggering the clip-path+filter conflict that would kill the clip mask. */
-  text-shadow: 1px 1px 0 var(--ink-dark);
-  text-transform: uppercase;
-  position: relative;
-  z-index: 2;
-  break-after: avoid;
-}
-
-/* ── H2 tab — PRIMARY: --fs-h4 (13pt) + heavier padding for visual weight.
-   lift = section padding-top + tab height (1.2em × --fs-h4 + paddingY ~0.55em)
-   + 2px tolerance + --dc-section-tab-overlap (negative = gap above card). */
-.section.dc-tabbed > h2:first-child {
-  font-size: var(--fs-h4);
-  padding: 0.30em 0.95em calc(0.25em + 2px);
-  margin-top: calc(-1 * var(--space-md) - 1.75em - 2px + var(--dc-section-tab-overlap));
-}
-
-/* ── H3 tab — SUBORDINATE: --fs-h5 (11pt) + tighter padding.
-   Flush-bottom margin uses smaller em coefficient since H3's paddings are
-   tighter (paddingY ~0.45em + 2px). */
-.section.dc-tabbed > h3:first-child {
-  font-size: var(--fs-h5);
-  padding: 0.25em 0.75em calc(0.20em + 2px);
-  margin-top: calc(-1 * var(--space-md) - 1.65em - 2px + var(--dc-section-tab-overlap));
-}
-
 /* ── First-child heading inside a section becomes a filled top bar ───────
-   Base rule covers all sections. More-specific .section.dc-tabbed rules
-   (above) already override via higher specificity — no negation needed. */
+   Base rule covers all sections. */
 .section > h2:first-child,
 .section > h3:first-child {
   background: var(--dc-section-accent);
@@ -303,29 +199,6 @@
 h2 + .section,
 h3 + .section {
   margin-top: 20pt;
-}
-
-/* ── A1 + P1: H3 tabbed sections use ink-dark background (secondary/subordinate
-   vs chapter-accent H2 tabs). Same chipped-stone structure as H2 but with
-   notch depths scaled ~70% for the smaller tab height. */
-.section.dc-tabbed > h3:first-child {
-  background: var(--ink-dark);
-  clip-path: polygon(
-    10px 0,
-    calc(25% - 2px) 0,  25% 3px,  calc(25% + 2px) 0,
-    calc(100% - 16px) 0,
-    calc(100% - 6px)  27%,
-    calc(100% - 9px)  38%,
-    calc(100% - 4px)  48%,
-    calc(100% - 8px)  58%,
-    calc(100% - 3px)  68%,
-    100% 100%,
-    14px 100%,
-    4px  calc(100% - 4px),
-    0    calc(100% - 8px),
-    2px  48%,  0 52%,  2px 56%,
-    0    10px
-  );
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

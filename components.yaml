@@ -429,15 +429,6 @@ components:
     breaks: none
 
   # ── Author classes on core markers, attrs and raw HTML ────────────────
-  - name: tabbed
-    status: live
-    origin: plugin
-    recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
-    emits: div.section.dc-tabbed
-    css: styles/components/section.css
-    tokens: [--dc-section-tab-indent, --dc-section-tab-overlap]
-    breaks: "first heading break-after: avoid"
-
   - name: card-grid
     status: live
     origin: plugin
@@ -649,6 +640,13 @@ components:
     recipe: "| Distance | AP | table inside a skill card"
     emits: div.dc-sub-header + div.dc-distance-tags > span.dc-dist-tag > span.dc-dist-ap + span.dc-dist-name
     notes: "Removed 2026-10-09 (plugin.js buildDistanceTags, data.css, --dc-dist-* tokens): no book had an AP-by-distance table. A Distance table inside a skill now renders as a plain table."
+
+  - name: tabbed
+    status: retired
+    origin: plugin
+    recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
+    emits: div.section.dc-tabbed
+    notes: "Removed 2026-10-12 (plugin.js marker, section.css, --dc-section-tab-* tokens, snippet): no book used it. Write a plain @section; its first heading prints as the bar."
 
   - name: printer-page
     status: retired

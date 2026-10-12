@@ -25,7 +25,7 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 - **Offset tokens (14).** Add `--dc-outline`, `--dc-chrome-bleed` and `--dc-z-*`, then derive the hard-coded offsets from them. The "-2px to cancel the 2px outline" offsets are an example.
 - **Wall utility (16).** Add a `.dc-wall` utility and use it in the design guide's stages.
 - **One file per component (17).** Each component lives in one file, and each file is named for what it holds. The rules for the chevron and masthead, TOC, colophon, AP chip, sidebar and path shell are currently spread across several sheets.
-- **Gradients in PDF/X (19).** The outcome keys and tabbed headings print as 360×180 ppi images in PDF/X, and the tape dashes use a hard-stop gradient. Replace them where a flat or vector form looks the same.
+- **Gradients in PDF/X (19).** The outcome keys print as 360×180 ppi images in PDF/X, and the tape dashes use a hard-stop gradient. Replace them where a flat or vector form looks the same.
 - **Chapter-opener padding.** A second section on a chapter-opener page inherits the opener's padding, but its header bar cancels its own. This is how it always worked; it was kept for pixel identity in 1.1.2.
 
 ## Later: larger (a sprint each, with visible risk)

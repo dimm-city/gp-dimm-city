@@ -50,7 +50,7 @@ Muscle for hire. The difference is gear, grafts, and how much of them is still o
 
 </div>
 
-A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@tabbed`, `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
+A bare `@section` is a styled panel — the section chassis with its accent rule and substrate. Add `.dc-plain` to get an unstyled grouping, or one of the classes in [Layout](#ch-layout) for a named chassis. For columns, wrap the content in `@columns 2`. The named chassis also have a marker of their own: `@npc-stat` is the same section as `@section .dc-npc-stat`, and likewise `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@flaws`, `@ideals` and `@dreams`. Either spelling renders the same.
 
 ## Attributes
 

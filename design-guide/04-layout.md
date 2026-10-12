@@ -87,34 +87,6 @@ Nothing here is safe. Nothing here is free.
 
 </div>
 
-## Tabbed section
-
-`.dc-tabbed` hangs the section's heading as a tab off the panel edge — a strong break between consecutive topics on one page.
-
-```markdown
-@tabbed
-
-## Dreamers
-
-You're a Dreamer, not because you're special, but because you're reckless enough to try.
-
-@end-tabbed
-```
-
-Result {.dg-result}
-
-<div class="dg-stage">
-
-@tabbed
-
-## Dreamers
-
-You're a Dreamer, not because you're special, but because you're reckless enough to try.
-
-@end-tabbed
-
-</div>
-
 ## Sidebar
 
 `@sidebar` floats a reference panel to the right at 38% width; body text wraps on its left. Give it running prose on both sides so it never strands in white space.

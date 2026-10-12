@@ -1084,7 +1084,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section chassis
 
-A bare `@section`, `@section .dc-plain`, `@tabbed` with an `##` and a `###` tab, and a `@section` with its body in `@columns 2`.
+A bare `@section`, `@section .dc-plain`, and a `@section` with its body in `@columns 2`.
 
 <div class="dg-stage dg-tall">
 
@@ -1103,22 +1103,6 @@ The panel chrome: substrate, accent rule, and the first heading as a bar.
 No substrate, rail or shadow: the text sits on whatever is behind it. A first heading still prints as a bar.
 
 @end-section
-
-@tabbed
-
-## Tabbed, H2
-
-The heading hangs off the panel edge as the primary tab.
-
-@end-tabbed
-
-@tabbed
-
-### Tabbed, H3
-
-The subordinate tab: smaller type, tighter padding.
-
-@end-tabbed
 
 @section
 

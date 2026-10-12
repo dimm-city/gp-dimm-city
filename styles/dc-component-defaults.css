@@ -179,10 +179,6 @@
   --dc-roll-the-die-border:  var(--hud-magenta);
   --dc-roll-the-die-color:   var(--blood);
 
-  /* .section.dc-tabbed public API — tab vertical overlap and left indent */
-  --dc-section-tab-overlap:  0px;
-  --dc-section-tab-indent:   0px;
-
   /* .dc-sidebar-box public API */
   --dc-sidebar-box-accent:   var(--hud-blue-dark);
   --dc-sidebar-box-border:   var(--border-hairline);
