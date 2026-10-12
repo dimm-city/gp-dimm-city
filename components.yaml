@@ -209,7 +209,7 @@ components:
     css: styles/components/section.css
     notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks whose own class colors every card's left rule (`.section.dc-flaws > .dc-card`)."
 
-  # ── Entry cards: one rule set (.dc-entry), each marker a token setter ───
+  # ── Entry cards: one rule set (.dc-entry), each kind a token setter ─────
   - name: gear
     status: live
     origin: plugin
@@ -849,7 +849,7 @@ components:
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-drop, --dc-section-gap, --dc-section-grow, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     notes: "The rail on a plain host: no corner, no pseudo layers, no title bar. The intro and credits pages set its accent and drop shadow from their own rules (--dc-section-accent, --dc-section-drop). The credits colophon is a flat section."
 
-  # ── Retired: no CSS, no emission, no use (tombstone comments only) ─────
+  # ── Retired: no CSS, no emission, no use (tombstones only) ────────────
   - name: section-reference
     status: live
     origin: plugin

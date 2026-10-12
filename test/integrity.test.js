@@ -1,4 +1,4 @@
-// integrity.test.js — drift guards found by the orphan audit, made executable.
+// integrity.test.js — drift guards, made executable.
 //
 //   1. No dangling classes: every class a book's rendered HTML carries is
 //      styled somewhere, or is a known, explained hook.
@@ -225,9 +225,8 @@ describe("file contracts", () => {
   // Columns (css-architecture.md, "Column ownership"): this package owns NO column
   // layout. `@columns N` is core's, and so are the count, the gap, the rule and the
   // fill. The package sets the two author hooks (`--gp-column-gap`, `--gp-column-rule`)
-  // once at :root, and `column-span` stays with the column panel's header bar. The
-  // grids inside one component (`.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row`) are
-  // `grid-template-columns`, which is not column layout.
+  // once at :root. The grids inside one component (`.dc-stat-grid`, `.dc-steps`,
+  // `.dc-outcome-row`) are `grid-template-columns`, which is not column layout.
   test("no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`, `column-fill` or `column-rule`", () => {
     const bad = [];
     for (const s of PKG) {

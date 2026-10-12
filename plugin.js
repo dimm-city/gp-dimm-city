@@ -69,7 +69,7 @@
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
  *   / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
- *   into `<div class="dc-alert dc-<type>">` (moved from print-md core 2026-05-17).
+ *   into `<div class="dc-alert dc-<type>">`.
  *
  * SPECIALTY VARIANTS:
  *   Skill card and learning-path variants are controlled by the .specialty.<name>
@@ -195,21 +195,9 @@ function specialtyCodeFromClass(className) {
   return 'PATH';
 }
 
-/**
- * Skill card variants are now controlled by the .specialty.<name> parent
- * container (CSS parent-selector model). The variant= attribute on @skill,
- * @continue, and @learning-path has been removed. No SKILL_VARIANTS map.
- */
-
 function buildStickerChain(items) {
   let html = '<div class="dc-stickers">';
   items.forEach((name, i) => {
-    // The first sticker used to get .active treatment, rendering it in
-    // --blood while siblings rendered in --ink-dark. User feedback:
-    // "there's no reason for the first skill in the learning path list
-    // to be marked as active or a different color than the other skills.
-    // For example, under biting distance, punishing counter is red, and
-    // the rest are black. It should also be black." Removed.
     const cls = 'dc-sticker';
     html += '<span class="' + cls + '"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
     if (i < items.length - 1) {
@@ -323,8 +311,8 @@ function renderInlineChildren(inlineTok, md) {
 }
 
 // The blockquote opening at tokens[i], as rendered text (the last paragraph in
-// it, the way every component that turns a quote into a line has always read
-// it), and the index of its close.
+// it, which is how every component that turns a quote into a line reads it),
+// and the index of its close.
 function quoteHtml(tokens, i, md) {
   let html = '';
   let end = i + 1;
@@ -606,10 +594,8 @@ function buildProcedureList(items) {
 }
 
 /**
- * GFM-style blockquote alert types — Dimm City branded.
- *
- * Moved from print-md core (src/lib/markdown/alerts.ts) on 2026-05-17 because
- * the classes and labels are DC-specific. Core no longer leaks DC identifiers.
+ * GFM-style blockquote alert types — Dimm City branded: the classes and labels
+ * are DC-specific, so core does not know them.
  */
 const DC_ALERT_TYPES = {
   NOTE:      { classes: "dc-alert dc-note",                 label: "Note" },
@@ -1019,8 +1005,7 @@ function dcSkillCards(state) {
 
       if (tok.type === 'table_open') {
         // A table of the five standard bands is the ladder; any other table
-        // passes through untouched, thead and all (rebuilding them from tbody
-        // rows once left 64 of 86 tables headerless).
+        // passes through untouched, thead and all.
         const tableTokens = collectTableTokens(content, i);
         const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
         if (ladder) {
@@ -1183,7 +1168,7 @@ function validateRollTable({ blocks }) {
 /**
  * `@procedure`: every numbered list inside becomes the zero-padded step list
  * (`ol.dc-steps`). The declared wrapper renders nothing itself: the list is
- * the element, as it has always been.
+ * the element.
  */
 function dcProcedures(state) {
   forEachComponent(state.tokens, 'procedure', (run) => {
@@ -1209,7 +1194,7 @@ function dcProcedures(state) {
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
-// note, as it always was.
+// note.
 const CALLOUTS = {
   note: { class: 'dc-note', label: 'Note' },
   warning: { class: 'dc-note warning', label: 'Warning' },
@@ -1297,10 +1282,10 @@ function dcGear(state) {
 
 /**
  * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`):
- * one entry is one name. The name is the entry's first heading (`####`, or `###`). An entry without one has no title bar, and
- * one with a second heading is usually two entries run together: a declared
- * marker that opens again closes the one before it, so each entry starts with
- * its own marker line.
+ * one entry is one name. The name is the entry's first heading (`####`, or
+ * `###`). An entry without one has no title bar, and one with a second heading
+ * is usually two entries run together: a declared marker that opens again
+ * closes the one before it, so each entry starts with its own marker line.
  */
 function validateEntry({ name, blocks }) {
   const headings = blocks.filter((b) => b.type === 'heading' && b.level <= 4);
@@ -1460,9 +1445,7 @@ function validateProcedure({ blocks }) {
 export default function dimmCityPlugin(md, options = {}) {
   registerSkillContinueBridge(md);
 
-  // GFM-style `> [!NOTE]` alerts (moved from core 2026-05-17).
-  // Must run before markdown-it-attrs so attrs don't interfere with `[!TYPE]`
-  // detection inside blockquotes. We register on the core ruler since the
+  // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
   // transform operates on already-parsed token streams.
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
 
@@ -1539,8 +1522,8 @@ export const markers = {
   'learning-path': wrapper('dc-learning-path dc-path-block'),
   skill: wrapper('dc-skill-card', { validate: validateSkill }),
 
-  // Content components. `@card` closes silently at the end of a document, as it
-  // always has. `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
+  // Content components. `@card` closes silently at the end of a document.
+  // `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
   // open at the end gets core's `declared_marker_eof_close` warning: what
   // follows an open one is read as its rows or its steps. `@procedure` has no
   // class (its rule hides the wrapper: the step list is the element).
@@ -1627,9 +1610,7 @@ export const markers = {
   // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`;
   // `@chapter rules` is `<div class="chapter dc-chapter-rules">` (any other word
   // after `@chapter` stays its label). Core also ships `@page blank` and
-  // `@page full-bleed`. The old raw spellings (`@page .page-chapter-start .dc-chapter-start`,
-  // `.page-toc`, `.page-credits .dc-credits`, `.page-intro`,
-  // `.dc-citizen-file-page`) are no longer styled.
+  // `@page full-bleed`.
   page: {
     variants: {
       'chapter-start': 'dc-page-chapter-start',
@@ -1650,9 +1631,10 @@ export const markers = {
 
   // Section-styled components. `section: true` makes each one a real core
   // @section: `@npc-stat` is exactly `@section npc` (same element, same
-  // classes). No variants of their own: none is styled per specialty (that
-  // lives on `.dc-specialty.<name>`, from `@specialty`), and modifiers such as
-  // `.dc-snug`, `.dc-avoid-split` and `.gp-columns-2` stay author classes.
+  // classes). None is styled per specialty (that lives on
+  // `.dc-specialty.<name>`, from `@specialty`); the only variant is
+  // `@npc-stat compact`, and modifiers such as `.dc-snug`, `.dc-avoid-split`
+  // and `.gp-columns-2` stay author classes.
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },

@@ -147,13 +147,6 @@ Words: `@section panel | flat | reference | lore | dm | choose | npc | fiction |
 
 > **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@options-table` (use a pipe table). `@roll-table` returned in 1.6.0 as a new component.
 >
-> **Deprecated (2026-05-24):** `@class-entry` / `@end-class-entry` and the
-> `.section.dc-class-entry` CSS were retired after zero production usage. The
-> CSS was parked in `css/deprecated.css`, which has since been deleted —
-> the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules. Do not use
-> them in new content — author the same layout with `@section panel`
-> plus structural child elements (see the design guide's panels chapter).
->
 > **Retired — `@chapter-opener`:** never re-add it. The labelled chapter-opener
 > composite (core's `.chapter-opener` badge on a labelled chapter's first page,
 > styled by this package) was removed from the stylesheets; books open a chapter
