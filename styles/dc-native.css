@@ -229,11 +229,13 @@ figure {
    initial value and what a column run gets; core has no sequential-fill
    opt-in. */
 
-/* ── 6. WALL ART placement is the markdown's, via core's gp-* classes ──────
-   Do not add a position/float/margin declaration to a book class that the
-   markdown also pins. A book's class beats `.gp-pin` at equal specificity —
-   the book's sheets load after GUTTERPRESS_CSS — so such a rule silently
-   DE-PINS whatever the author asked for. */
+/* ── 6. WALL ART placement is the author's: core's gp-* classes, or the defaults ──
+   An image the author gives a class (core's `.gp-*`) is placed by that class,
+   and the plugin's defaults for art (an entry's picture, the credits plate)
+   read only an image with no class. A book's own sheet is unlayered, so a
+   position/float/margin declaration on a book class that the markdown also
+   pins beats `.gp-pin` at any specificity and silently DE-PINS whatever the
+   author asked for. */
 
 /* ── 7. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
    Core's `break-after: avoid` on headings keeps a heading with the box that

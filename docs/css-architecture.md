@@ -759,6 +759,28 @@ print output. The sheets in this project pair it with the legacy
 The same pairing applies to `break-after`/`page-break-after` and
 `break-before`/`page-break-before`.
 
+### Keep-whole and spacing are tokens, and the modifiers set them
+
+Whether a box may split is one token per component, declared at `:root` in
+`dc-component-defaults.css` and read by the component's own rule:
+`--dc-section-break-inside`, `--dc-catalog-break-inside`,
+`--dc-npc-stat-break-inside`, `--dc-skill-card-break-inside` and
+`--dc-faction-break-inside` (`avoid` or `auto`). `.dc-avoid-split` is a setter of
+them on the box it is written on, with `--dc-section-edge: 0px` so a whole panel
+keeps its padding inside the box; it declares nothing else. A book writes the same
+declarations for one box from its own sheet. No rule gives a section, a skill card
+or a faction `break-inside: avoid` directly (`test/conventions.test.js`).
+A catalog and a creature (an `@npc-stat` with no `####`) have defaults of their
+own: the first never stays whole and ignores `.dc-avoid-split`, the second stays
+whole.
+
+The space under a paragraph or list item is `--dc-flow-gap`, and `.dc-snug` sets
+it. It is the one token with no `:root` default, on purpose: the rule that reads
+it sits in `dc.templates` so it outranks every component's own margin, and
+`var(--dc-flow-gap, revert-layer)` hands the margin back to the component while
+the token is unset. Declaring it at `:root` would override every component's
+spacing everywhere. The "no inline fallback" rule is for the component sheets.
+
 ### `break-before: page` vs `break-before: always`
 
 These are not equivalent in multi-column layouts. `break-before: always` forces a
