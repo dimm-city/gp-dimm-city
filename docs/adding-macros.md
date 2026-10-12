@@ -57,7 +57,7 @@ Add `variants` only when the CSS styles the component differently per variant wo
 
 A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
-Declared today (wrappers): `@definition`, `@faction`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`, `@field`, `@toc`, `@lede`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `catalog`, `reference`, `lore`, `dm`, `choose` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@roll-table`, `@procedure`, `@callout` (its default label), `@faction` (its badge). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@definition`, `@faction`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear` (variants `augment` … `drug`), `@field`, `@toc`, `@lede`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `catalog`, `reference`, `lore`, `dm`, `choose` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@roll-table`, `@procedure`, `@callout` (its default label), `@faction` (its badge). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 
 ### A section variant, a page word, a chapter word
 
@@ -137,7 +137,7 @@ Rules of thumb:
 `@roll-table`, `@end-roll-table`, `@procedure`, `@end-procedure`,
 `@callout`, `@end-callout`, `@dm-note`, `@end-dm-note`,
 `@toc`, `@end-toc`,
-`@gear`, `@end-gear`, `@augment`, `@end-augment`, `@treasure`, `@end-treasure`, `@vehicle`, `@end-vehicle`, `@drug`, `@end-drug`, `@field`, `@end-field`, `@lede`, `@end-lede`,
+`@gear`, `@end-gear`, `@field`, `@end-field`, `@lede`, `@end-lede`,
 `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`,
 `@flaws`, `@ideals`, `@dreams` (each with its `@end-` form)
 
@@ -146,13 +146,6 @@ Words: `@section panel | flat | reference | lore | dm | choose | npc | fiction |
 `@chapter rules | lore | citizen-file | specialty`. Modifiers: `.dc-avoid-split`, `.dc-snug`.
 
 > **Removed in 1.2.0:** `@tape` (write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344) and the long-retired `@options-table` (use a pipe table). `@roll-table` returned in 1.6.0 as a new component.
->
-> **Deprecated (2026-05-24):** `@class-entry` / `@end-class-entry` and the
-> `.section.dc-class-entry` CSS were retired after zero production usage. The
-> CSS was parked in `css/deprecated.css`, which has since been deleted —
-> the dc-op-manual repo's history (`dc-design-guide/css/deprecated.css`) has the rules. Do not use
-> them in new content — author the same layout with `@section panel`
-> plus structural child elements (see the design guide's panels chapter).
 >
 > **Retired — `@chapter-opener`:** never re-add it. The labelled chapter-opener
 > composite (core's `.chapter-opener` badge on a labelled chapter's first page,

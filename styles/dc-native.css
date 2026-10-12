@@ -10,12 +10,10 @@
    engine and beat this whole file automatically, at any specificity, with
    no unlayered-sheet trick required on the book's side.
 
-   Mechanics, each measured against Chromium 151 (gutterpress ENGINE.md §5/§8):
+   Mechanics (gutterpress ENGINE.md §5/§8):
    - ONE `@page { background }` rule paints the brick wall across the whole
      sheet: the content box, and every margin box that carries no content of
-     its own shows it through. The old two-layer paint (`html { background }`
-     for the content area + 14 hand-fed margin boxes + 6 refills) is gone —
-     one origin for the wall instead of twenty-one.
+     its own shows it through. One origin for the wall.
    - Margin boxes support background/border/counter()/fit-content; they do
      NOT support transform: rotate() or box-shadow — the sticker chrome is
      square and unshadowed.
@@ -31,21 +29,18 @@
 
 /* ── 1. THE BRICK WALL — one rule, whole sheet ──────────────────────────────
    A margin box with no content of its own shows the page background through,
-   so this single rule paints the content box AND the margin band. It replaces
-   the old `html { background }` content-area layer, the 14 hand-fed empty
-   margin boxes, and six refills — 21 tiling origins became one, so the
-   wall is seamless: no phase break at a box edge, and no flat --bg patch in
-   the bottom band beside the chips.
+   so this single rule paints the content box AND the margin band, with one
+   tiling origin: the wall is seamless, with no phase break at a box edge and
+   no flat --bg patch in the bottom band beside the chips.
 
    The image is OPAQUE: brick-wall.png is brick-bg-01.png multiplied into
-   --bg (#c8c5bf) and flattened, which is what `background-blend-mode:
-   multiply` used to do at render time. The old RGBA tile made every page
-   transparent, and PDF/X-1a cannot carry transparency: Ghostscript
-   flattened EVERY walled page to a raster image in a DriveThruRPG build —
-   no live text, no embedded fonts, and black text left four-colour, since
+   --bg (#c8c5bf) and flattened. A transparent tile would make every page
+   transparent, and PDF/X-1a cannot carry transparency: Ghostscript would
+   flatten EVERY walled page to a raster image in a DriveThruRPG build — no
+   live text, no embedded fonts, and black text left four-colour, since
    gutterpress's `pdfx.blackText: k-only` rewrite only reaches vector text.
-   --bg stays as the fill under the tile, but a book that retints --bg no
-   longer tints the brick with it. To bake a tile for another colour, take
+   --bg stays as the fill under the tile, but a book that retints --bg does
+   not tint the brick with it. To bake a tile for another colour, take
    the RGBA source (source-art/brick-bg-01.png in the repository; it is not
    published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
    src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
@@ -64,35 +59,23 @@
    BOTH axes must be fit-content. A margin box defaults to the size of its
    SLOT, and the slot is big: per marginBoxRectPt (gutterpress
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
-   content width by the whole bottom margin — 174 x 54pt on this book's page.
-   `width: fit-content` alone tightened only the inline axis, so the stickers
-   printed as FULL-HEIGHT RECTANGLES filling the margin band rather than as
-   pills.
+   content width by the whole bottom margin (174 x 54pt on this page).
+   `width: fit-content` alone tightens only the inline axis, so the stickers
+   would print as FULL-HEIGHT RECTANGLES filling the margin band rather than
+   as pills.
 
-   MEASURED, field-guide p10/p11 rasterised at 150dpi and profiled through
-   each chip's interior:
-
-     folio (paper-cream + ink border)   52.3pt tall -> 14.9pt
-     chapter (paper-aged + dashed rule) 53.3pt tall -> 14.4pt
-
-   against a 53.8pt band. Both chips' widths and column spans are unchanged
-   (folio 71-77px, chapter 78px at 150dpi; folio left / chapter right on the
-   verso, mirrored on the recto), so this is a block-axis change only and the
-   recto/verso mirroring is untouched. NOTE for the design pass: a shrunk
-   margin box stays anchored at its slot's START edge, so the chips now sit
-   at the TOP of the bottom-margin band, tucked under the text block, rather
-   than centred in it.
-
-   Shrinking the box no longer punches a hole in the margin band: §1's
-   `@page` background paints underneath, so the wall shows through the rest
-   of the slot on its own. */
+   A shrunk margin box stays anchored at its slot's START edge, so the chips
+   sit at the TOP of the bottom-margin band, tucked under the text block,
+   rather than centred in it. Shrinking the box leaves no hole in the band:
+   §1's `@page` background paints underneath, so the wall shows through the
+   rest of the slot on its own. */
 /* `align-self: flex-start`: on a page whose footer band a `.gp-flush` pin
    frees, gutterpress re-homes these chips into a flex slot the size of the
    margin box, centred vertically (gutterpress-agent setFlushFurniture,
    `align-items: center`), and copies these declarations onto the chip. A
    native margin box anchors a fit-content chip at the TOP of the band;
    centred, a re-homed chip printed 0.24in from the trim, against
-   DriveThruRPG's 0.5in text minimum (Field Guide p.9, p.10, p.16). The
+   DriveThruRPG's 0.5in text minimum. The
    declaration does nothing to a native margin box, which is not a flex item. */
 @page :left {
   @bottom-left {
@@ -162,10 +145,10 @@
 
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
-   suppression is just clearing the chip's content — no brick refill needed,
-   which makes page-rules.css's own `@page chapter-start` / `@page full`
-   `content: none` blocks sufficient on their own; only `:blank` has no
-   counterpart there, so only `:blank` is restated here. */
+   suppression is just clearing the chip's content, which makes
+   page-rules.css's own `@page chapter-start` / `@page full` `content: none`
+   blocks sufficient on their own; only `:blank` has no counterpart there, so
+   only `:blank` is restated here. */
 @page :blank {
   @bottom-left  { content: none; }
   @bottom-right { content: none; }
@@ -180,9 +163,7 @@
    - side margins 0 and bottom margin 0 on the front-matter template — the
      content box spans the full sheet width and reaches the sheet bottom,
      so the h1's side pulls and the plate's bottom seat are VISIBLE paint
-     inside the content box, never overflow (verified clean with
-     no-founders in the side-0 variant; the bottom-0 extends the same
-     principle);
+     inside the content box, never overflow;
    - the top margin (0.5in) stays, painted ink-dark by the top margin
      boxes, so the band runs from the sheet top edge through the h1's own
      rows;
@@ -207,15 +188,13 @@
   padding-bottom: 0.75in;
 }
 /* Credits page as a full-height flex column so a pinned founders plate
-   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge. Carried from the
-   field guide's native sheet in 1.0.0: every Dimm City book writes this page.
+   (`.gp-pin .gp-bottom .gp-full`) seats on the sheet edge.
 
    `min-height`, not `height`. A page whose credits fit is exactly one sheet
    either way, so the pin still seats on the sheet edge. An exact `height`
-   broke the page whose credits do NOT fit: the colophon went to a second
-   sheet while the page box stayed one sheet tall, so the next page started
-   on that same second sheet and printed on top of it (design guide, the
-   Introduction over the credits colophon). */
+   breaks the page whose credits do NOT fit: the colophon goes to a second
+   sheet while the page box stays one sheet tall, so the next page starts
+   on that same second sheet and prints on top of it. */
 .page.dc-page-credits {
   display: flex;
   flex-direction: column;
@@ -248,42 +227,38 @@ figure {
 
 /* `column-fill` is not set anywhere in this package. `balance` is the CSS
    initial value and what a column run gets; core has no sequential-fill
-   opt-in. (A rule here used to restate `balance` for `.gp-columns-2/-3`; it
-   was a no-op.) */
+   opt-in. */
 
-/* ── 7. WALL ART placement is the markdown's, via core's gp-* classes ──────
-   Do not add a position/float/margin declaration to a `.fg-art-*` class that
-   the markdown also pins. A `.fg-art-*` class beats `.gp-pin` at equal
-   specificity — the book's sheets load after GUTTERPRESS_CSS — so such a rule
-   silently DE-PINS whatever the author asked for. Measured on blue-bot
-   (chapter-01 "At a Glance"), which the markdown authors
-   `.gp-pin .gp-bottom .gp-left`. */
+/* ── 6. WALL ART placement is the markdown's, via core's gp-* classes ──────
+   Do not add a position/float/margin declaration to a book class that the
+   markdown also pins. A book's class beats `.gp-pin` at equal specificity —
+   the book's sheets load after GUTTERPRESS_CSS — so such a rule silently
+   DE-PINS whatever the author asked for. */
 
-/* ── 8. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
+/* ── 7. NO EMPTY FIRST FRAGMENTS on boxed callouts ─────────────────────────
    Core's `break-after: avoid` on headings keeps a heading with the box that
-   follows, but the box itself can still emit a contentless first fragment (top border +
-   padding only) at a page bottom — measured: CORE ELEMENTS, p244. Gluing
-   the box's first child to the box start moves the whole start (and, via
-   the heading's break-after: avoid, the heading) to the next page. break-inside: avoid is NOT usable
-   here: these callouts routinely run taller than a page. */
+   follows, but the box itself can still emit a contentless first fragment
+   (top border + padding only) at a page bottom. Gluing the box's first child
+   to the box start moves the whole start (and, via the heading's
+   break-after: avoid, the heading) to the next page. break-inside: avoid is
+   NOT usable here: these callouts routinely run taller than a page. */
 .dc-dm-note > :first-child {
   break-before: avoid;
 }
 
-/* Measured (p243, DOM-inspected): the CORE ELEMENTS heading is a full-width
-   spanner above an `@columns` run, followed by a dc-alert callout
-   whose default break-inside: avoid is UNENFORCEABLE (the card is taller than a
-   column). Chromium then emits an empty card fragment under the spanner —
-   header stranded, content headerless on the next page. A card that may
-   fragment starts filling right under its header instead. Scoped to
-   column runs only; standalone cards keep their avoid. */
-/* Sets --dc-alert-break-inside (callouts.css reads it); a book restores `avoid`
+/* A full-width heading above an `@columns` run, followed by a dc-alert callout
+   whose default break-inside: avoid is UNENFORCEABLE (the callout is taller
+   than a column): Chromium emits an empty callout fragment under the heading,
+   header stranded and content headerless on the next page. A callout that may
+   fragment starts filling right under its header instead. Scoped to column
+   runs only; standalone callouts keep their avoid. Sets
+   --dc-alert-break-inside (callouts.css reads it); a book restores `avoid`
    for one instance by setting the token in context. */
 :is(.gp-columns, [class*="gp-columns-"]) .dc-alert {
   --dc-alert-break-inside: auto;
 }
 
-/* Skill-card tabs (MNEMONIC PLAGUE, p114): the .dc-card-tab chip is a
+/* Skill-card tabs: the .dc-card-tab chip is a
    separate block from its .dc-card-body, so a page break can land between
    them, stranding the tab alone at a page bottom. Glue tab to body, and the
    body's first child to the body start. */

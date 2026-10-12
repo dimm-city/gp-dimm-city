@@ -6,7 +6,7 @@
 
 @columns 2
 
-@augment
+@gear augment
 
 #### {{name}}
 

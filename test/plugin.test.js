@@ -209,7 +209,7 @@ describe("behaviour carried from the book repo", () => {
     const outcomeHtml = renderGp(outcomeTable).html;
     const macroHtml = renderGp(outcomeMacro).html;
 
-    expect(outcomeHtml).toMatch(/<div class="dc-outcomes" data-break-inside="avoid">/);
+    expect(outcomeHtml).toMatch(/<div class="dc-outcomes">/);
     expect(outcomeHtml).toContain(`<strong>${ROLL_HTML}</strong> but not <code>ROLL THE DIE!</code>`);
     expect(outcomeHtml).not.toMatch(/<table>/);
     expect(countRolls(macroHtml)).toBe(1);
@@ -282,10 +282,6 @@ describe("declared wrapper markers", () => {
       "specialty-intro": "dc-specialty-intro",
       "specialty-art": "dc-specialty-art",
       gear: "dc-card dc-entry dc-gear",
-      augment: "dc-card dc-entry dc-augment",
-      treasure: "dc-card dc-entry dc-treasure",
-      vehicle: "dc-card dc-entry dc-vehicle",
-      drug: "dc-card dc-entry dc-drug",
       field: "dc-field",
       toc: "dc-toc",
       lede: "dc-intro",
@@ -543,12 +539,11 @@ describe("declared specialty, learning path and skill", () => {
     test("a card splits across pages by default and is named after its title", () => {
       const { html } = renderGp(doc("@skill", "", card("Hold the Line")));
       expect(html).toContain('<div class="dc-skill-card" name="hold-the-line">');
-      expect(html).not.toContain("data-break-inside");
     });
 
     test(".dc-avoid-split keeps every card of the skill whole", () => {
       const { html } = renderGp(doc("@skill .dc-avoid-split", "", card("First | T1"), "", card("Second | T2")));
-      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)" data-break-inside="avoid">/g)).toBe(2);
+      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)">/g)).toBe(2);
     });
 
     test("tiers in a path run PATHREF.N across its skills unless the heading names one", () => {
@@ -573,7 +568,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
       expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
-      expect(html).toContain('<div class="dc-outcomes" data-break-inside="avoid">');
+      expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
       expect(count(html, />Outcomes</g)).toBe(0); // the "##### Outcomes" sub-header is swallowed: the table carries its own header
       expect(html).not.toContain("<h5");
@@ -663,7 +658,7 @@ describe("declared specialty, learning path and skill", () => {
     });
 
     test("a card kept whole with .dc-avoid-split keeps its avoid on the continuation too", () => {
-      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill" data-break-inside="avoid"/);
+      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill"/);
     });
 
     test("the continuation is claimed only inside a skill's card; elsewhere @continue is core's section continuation", () => {
@@ -848,7 +843,7 @@ describe("declared card, outcome and procedure", () => {
       const { html } = renderGp(skill(...bandTable(), "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
-      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes" data-break-inside="avoid">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
     });
 
     test("one left open at the end of the document warns, with core's own message", () => {
@@ -1137,7 +1132,6 @@ describe("declared callout and dm-note", () => {
     vibe: ["dc-vibe-callout", "Vibe"],
     origin: ["dc-origin-callout", "Origin"],
     visit: ["dc-visit-callout", "Visit"],
-    gear: ["dc-gear-callout", "Gear"],
     example: ["dc-example-callout", "Example"],
   };
 
@@ -1231,8 +1225,8 @@ describe("declared callout and dm-note", () => {
   });
 
   test("a callout in a skill's card stays in the card", () => {
-    const { html, warnings } = renderGp(doc("@skill", "", "#### Skill | T1", "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", "", "@callout gear", "", "Tip.", "", "@end-callout"));
-    expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-alert dc-gear-callout"[\s\S]*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
+    const { html, warnings } = renderGp(doc("@skill", "", "#### Skill | T1", "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", "", "@callout warning", "", "Tip.", "", "@end-callout"));
+    expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-alert dc-note warning"[\s\S]*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
     expect(warnings).toEqual([]);
   });
 
@@ -1245,24 +1239,55 @@ describe("declared callout and dm-note", () => {
 // Entry cards, the @field component and the bold-label shortcut onto it, and
 // the catalog section that holds a run of entries.
 describe("entry cards", () => {
-  const ENTRIES = ["gear", "augment", "treasure", "vehicle", "drug"];
+  const KINDS = ["augment", "treasure", "vehicle", "drug"];
+  const ENTRIES = ["gear", ...KINDS];
+  /** The marker line for an entry: bare `@gear` is general gear, a kind is a word on it. */
+  const open = (name) => (name === "gear" ? "@gear" : `@gear ${name}`);
+
+  test("@gear is the one entry marker, and the kinds are its variant words", () => {
+    expect(Object.keys(markers.gear.variants)).toEqual(KINDS);
+    for (const name of KINDS) expect(markers, `@${name} is retired`).not.toHaveProperty(name);
+  });
 
   test("each entry is a card of the shared .dc-entry family, and a run needs no @end- between entries", () => {
     for (const name of ENTRIES) {
-      const { html, warnings } = renderGp(`@${name}\n\n#### One\n\n---\n\n@${name}\n\n#### Two\n\n@end-${name}`);
+      const { html, warnings } = renderGp(`${open(name)}\n\n#### One\n\n---\n\n${open(name)}\n\n#### Two\n\n@end-gear`);
       expect(warnings, name).toEqual([]);
       expect(html.match(new RegExp(`<div class="dc-card dc-entry dc-${name}"`, "g")), name).toHaveLength(2);
     }
   });
 
+  test("entries of different kinds in one run close each other, in either order", () => {
+    const { html, warnings } = renderGp("@gear augment\n\n#### One\n\n@gear\n\n#### Two\n\n@gear drug\n\n#### Three\n\n@end-gear");
+    expect(warnings).toEqual([]);
+    expect([...html.matchAll(/<div class="dc-card dc-entry (dc-\w+)"/g)].map((m) => m[1])).toEqual(["dc-augment", "dc-gear", "dc-drug"]);
+  });
+
+  test("a word that is not a kind is reported and read as general gear", () => {
+    const { html, warnings } = renderGp("@gear augmnt\n\n#### One\n\n@end-gear");
+    expect(warnings.map((w) => w.type)).toEqual(["unknown_variant"]);
+    expect(warnings[0].message).toContain('Did you mean "augment"?');
+    expect(html).toContain('<div class="dc-card dc-entry dc-gear"');
+  });
+
   test("an entry with no name, or with two, is reported", () => {
     for (const name of ENTRIES) {
-      const none = renderGp(`@${name}\n\nJust prose.\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      const none = renderGp(`${open(name)}\n\nJust prose.\n\n@end-gear`).warnings.map((w) => w.message ?? String(w));
       expect(none.join("\n"), name).toContain("has no name");
-      const two = renderGp(`@${name}\n\n#### One\n\ntext\n\n#### Two\n\n@end-${name}`).warnings.map((w) => w.message ?? String(w));
+      const two = renderGp(`${open(name)}\n\n#### One\n\ntext\n\n#### Two\n\n@end-gear`).warnings.map((w) => w.message ?? String(w));
       expect(two.join("\n"), name).toContain('"Two" is a second name');
-      expect(renderGp(`@${name}\n\n### Three-hash name\n\n##### Sub heading\n\n@end-${name}`).warnings, name).toEqual([]);
+      expect(renderGp(`${open(name)}\n\n### Three-hash name\n\n##### Sub heading\n\n@end-gear`).warnings, name).toEqual([]);
     }
+  });
+
+  test("the retired spellings are plain text again, not a quiet wrong look", () => {
+    for (const name of KINDS) expect(renderGp(`@${name}\n\n#### One\n\n@end-${name}`).html, name).toMatch(new RegExp(`<p>@${name}\\b`));
+    const gearCallout = renderGp("@callout gear\n\nBody.\n\n@end-callout");
+    expect(gearCallout.warnings.map((w) => w.type)).toEqual(["unknown_variant"]);
+    expect(gearCallout.html).not.toContain("gear-callout");
+    const alert = renderGp("> [!GEAR]\n> Body.").html;
+    expect(alert).toContain("<blockquote>");
+    expect(alert).not.toContain("dc-alert");
   });
 });
 
@@ -1292,6 +1317,12 @@ describe("@field and the bold labels that mean it", () => {
     }
   });
 
+  test("no @field variant is an item kind: @gear owns those, and @field specs is the one SPECS box", () => {
+    const kinds = ["gear", ...Object.keys(markers.gear.variants)];
+    expect(Object.keys(markers.field.variants).filter((v) => kinds.includes(v))).toEqual([]);
+    expect(Object.keys(markers.field.variants)).toContain("specs");
+  });
+
   test("label=\"…\" replaces the default label; a bare @field has none", () => {
     expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).toContain('<span class="dc-field-label">Rules</span>');
     expect(renderGp('@field specs label="Rules"\n\nBody.\n\n@end-field').html).not.toContain(">SPECS<");
@@ -1301,7 +1332,7 @@ describe("@field and the bold labels that mean it", () => {
   test("every recognised label becomes the same markup the marker writes", () => {
     for (const [label, variant] of Object.entries(LABELS)) {
       for (const written of [label, label.toLowerCase()]) {
-        const { html, warnings } = renderGp(`@augment\n\n#### Name\n\n**${written}:** The body, with *emphasis*.\n\n@end-augment`);
+        const { html, warnings } = renderGp(`@gear augment\n\n#### Name\n\n**${written}:** The body, with *emphasis*.\n\n@end-gear`);
         expect(warnings, label).toEqual([]);
         const explicit = renderGp(`@field ${variant} label="${written}"\n\nThe body, with *emphasis*.\n\n@end-field`).html;
         expect(fieldOf(html), written).toBe(fieldOf(explicit));
@@ -1319,7 +1350,7 @@ describe("@field and the bold labels that mean it", () => {
   test("recognised only inside an entry card, @npc-stat (or @section npc) and @skill", () => {
     const line = "**Traits:** Quick, Quiet";
     const inside = [
-      ...["gear", "augment", "treasure", "vehicle", "drug"].map((n) => `@${n}\n\n#### N\n\n${line}\n\n@end-${n}`),
+      ...["@gear", "@gear augment", "@gear treasure", "@gear vehicle", "@gear drug"].map((m) => `${m}\n\n#### N\n\n${line}\n\n@end-gear`),
       `@skill\n\n#### N\n\n${line}\n\n@end-skill`,
       `@npc-stat\n\n#### N\n\n${line}\n\n@end-npc-stat`,
       `@section npc\n\n#### N\n\n${line}\n\n@end-section`,
@@ -1331,13 +1362,13 @@ describe("@field and the bold labels that mean it", () => {
       line,
       `@section panel\n\n${line}\n\n@end-section`,
       `@card\n\n#### N\n\n${line}\n\n@end-card`,
-      `@augment\n\n#### N\n\n@callout gear\n\n${line}\n\n@end-callout\n\n@end-augment`,
-      `@augment\n\n#### N\n\n- ${line}\n\n@end-augment`,
-      `@augment\n\n#### N\n\n> ${line}\n\n@end-augment`,
-      `@augment\n\n#### N\n\n@end-augment\n\n${line}`,
-      `@augment\n\n#### N\n\nA sentence, then **Traits:** inline.\n\n@end-augment`,
-      `@augment\n\n#### N\n\n**Description:** not a recognised label\n\n@end-augment`,
-      `@augment\n\n#### N\n\n**Traits** no colon\n\n@end-augment`,
+      `@gear augment\n\n#### N\n\n@callout note\n\n${line}\n\n@end-callout\n\n@end-gear`,
+      `@gear augment\n\n#### N\n\n- ${line}\n\n@end-gear`,
+      `@gear augment\n\n#### N\n\n> ${line}\n\n@end-gear`,
+      `@gear augment\n\n#### N\n\n@end-gear\n\n${line}`,
+      `@gear augment\n\n#### N\n\nA sentence, then **Traits:** inline.\n\n@end-gear`,
+      `@gear augment\n\n#### N\n\n**Description:** not a recognised label\n\n@end-gear`,
+      `@gear augment\n\n#### N\n\n**Traits** no colon\n\n@end-gear`,
     ];
     for (const src of outside) expect(renderGp(src).html, src).not.toContain("dc-field");
   });
@@ -1353,13 +1384,13 @@ describe("@section catalog", () => {
   const css = readFileSync(new URL("../styles/components/entries.css", import.meta.url), "utf8");
 
   test("is a panel with the catalog class", () => {
-    const { html, warnings } = renderGp("@section catalog\n\n## Title\n\n@columns 2\n\n@augment\n\n#### One\n\n@end-augment\n\n@end-section");
+    const { html, warnings } = renderGp("@section catalog\n\n## Title\n\n@columns 2\n\n@gear augment\n\n#### One\n\n@end-gear\n\n@end-section");
     expect(warnings).toEqual([]);
     expect(html).toContain('<div class="section dc-section-panel dc-catalog"');
   });
 
   test("a run of entries is siblings in the column run, and a leftover `---` is inside the entry before it", () => {
-    const { html } = renderGp("@section catalog\n\n@columns 2\n\n@augment\n\n#### One\n\n---\n\n@augment\n\n#### Two\n\n---\n\n@treasure\n\n#### Three\n\n@end-columns");
+    const { html } = renderGp("@section catalog\n\n@columns 2\n\n@gear augment\n\n#### One\n\n---\n\n@gear augment\n\n#### Two\n\n---\n\n@gear treasure\n\n#### Three\n\n@end-columns");
     expect(html.match(/<div class="dc-card dc-entry /g)).toHaveLength(3);
     expect(html).toMatch(/<hr[^>]*>\s*<\/div><div class="dc-card dc-entry dc-augment"/);
   });

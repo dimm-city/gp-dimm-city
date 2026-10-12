@@ -1,4 +1,4 @@
-// integrity.test.js — drift guards found by the orphan audit, made executable.
+// integrity.test.js — drift guards, made executable.
 //
 //   1. No dangling classes: every class a book's rendered HTML carries is
 //      styled somewhere, or is a known, explained hook.
@@ -225,9 +225,8 @@ describe("file contracts", () => {
   // Columns (css-architecture.md, "Column ownership"): this package owns NO column
   // layout. `@columns N` is core's, and so are the count, the gap, the rule and the
   // fill. The package sets the two author hooks (`--gp-column-gap`, `--gp-column-rule`)
-  // once at :root, and `column-span` stays with the column panel's header bar. The
-  // grids inside one component (`.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row`) are
-  // `grid-template-columns`, which is not column layout.
+  // once at :root. The grids inside one component (`.dc-stat-grid`, `.dc-steps`,
+  // `.dc-outcome-row`) are `grid-template-columns`, which is not column layout.
   test("no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`, `column-fill` or `column-rule`", () => {
     const bad = [];
     for (const s of PKG) {
@@ -304,8 +303,8 @@ describe("file contracts", () => {
 
 // ── 4. The component catalog ─────────────────────────────────────────────────
 // components.yaml is the record of what an author can write. It has to name
-// every marker plugin.js declares, every variant word on `section`, `page` and
-// `chapter`, and the two modifiers, and each needs a snippet for the desktop's
+// every marker plugin.js declares, every variant word on `section`, `page`,
+// `chapter` and `gear`, and the two modifiers, and each needs a snippet for the desktop's
 // picker. Retired items stay in it as tombstones that name their replacement.
 describe("component catalog", () => {
   const catalog = Bun.YAML.parse(read("components.yaml")).components;
@@ -313,6 +312,7 @@ describe("component catalog", () => {
   const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
   const entryFor = (spelling) => catalog.find((e) => e.status !== "retired" && asList(e.markers).includes(spelling));
   const WORD_MARKERS = ["section", "page", "chapter"]; // declared as variant words only
+  const ENTRY_KINDS = Object.keys(markers.gear.variants); // `@gear` is itself a marker, and so is each kind word on it
   const REQUIRED_MODIFIERS = ["dc-avoid-split", "dc-snug"];
   const REQUIRED_RETIRED = ["tabbed", "plain", "section-allow-split", "column-panel", "chapter-opener", "sidebar-inset"];
   /** Classes a retired entry mentions that stay styled because a live component uses them. */
@@ -327,6 +327,7 @@ describe("component catalog", () => {
   const declared = [
     ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
+    ...ENTRY_KINDS.map((w) => `@gear ${w}`),
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

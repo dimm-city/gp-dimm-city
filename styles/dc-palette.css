@@ -3,13 +3,7 @@
 /* ── DESIGN TOKENS ────────────────────────────────────────────────────────── */
 :root {
 
-  /* ── Page & Paper ─────────────────────────────────────────────────────── */
-  /* Paper substrate shifted from warm cream/manila to neutral-cool light
-     greys (2026-05-24). The previous warm-cream register read vintage /
-     fantasy-coded against the urban-concrete brick-wall background and
-     made the book feel less Dimm-City than it should. Greys read as
-     "industrial flyer paper / printer stock" — closer to the actual
-     real-world surface posters get pasted on in a creaturepunk city. */
+  /* ── Page & Paper — neutral-cool greys, "industrial flyer paper / printer stock" ── */
   --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) */
   --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream */
   --paper-cream:  #f0eee9;  /* light industrial flyer-stock — brighter than wall, more poster-vs-wall delta (L*~93) */
@@ -17,10 +11,8 @@
   --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey */
   /* Poster-wall shadow — hard offset, no blur. Pins paper-register
-     components to the wall as physical objects. Applied to specialty
-     cards, skill cards, sections, paper-variant callouts, NPC stat
-     blocks, citizen file — anything that should read as "stuck on
-     the wall" rather than "embedded in the page." */
+     components to the wall as physical objects, "stuck on the wall"
+     rather than "embedded in the page." */
   /* The wall's average colour (mean of images/brick-wall.png). Shadows and
      tints that land on the wall pre-composite against it: PDF/X-1a carries
      no transparency (see docs/print-transparency-inventory.md). */
@@ -33,7 +25,7 @@
   --ink-dark:   #2b231d;  /* warmer secondary heading weight */
   --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis */
   --ink-mid:    #594f43;  /* between smoke and dust — secondary card text */
-  --ink-dust:   #665b4e;  /* darkened (was #756a5c) — 4.58:1 on new lighter paper-cream #f0eee9 */
+  --ink-dust:   #665b4e;  /* 4.58:1 on paper-cream #f0eee9 */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
   --crimson:    #e1261c;  /* PMS Red 032 — CMYK 0 95 90 0; survives POD */
@@ -59,9 +51,9 @@
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
   --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text */
-  --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent; 5 consumers — see audit 2026-05-27 */
-  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint (was #b8d8e8 — invisible at L*84) */
-  --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta; 29 consumers — see audit 2026-05-27 */
+  --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent */
+  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint */
+  --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta */
   --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
@@ -123,7 +115,7 @@
   /* Vertical breathing room between stacked card components (skill cards,
      learning-path shells, specialty cards). This is the
      VISIBLE gap the reader sees. Components whose chrome paints OUTSIDE
-     their border-box (filter: drop-shadow / box-shadow) add their own bleed
+     their border-box (a shadow pseudo-element or box-shadow) add their own bleed
      compensation on top of this value — margin is layout space, but a shadow
      paints past the box without affecting layout, so a margin sized only for
      the box model gets visually eaten. See .dc-skill-card in components.
@@ -137,10 +129,9 @@
      DriveThruRPG "Quick Specifications for Print Books": all text at least
      0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
      outside three edges and 0.5in from the binding edge.
-       top     0.625in  = 0.5in from the trim  (was 0.5in: 0.375in, out of spec)
-       bottom  0.875in  = 0.75in from the trim (was 0.75in: the folio and
-                          chapter chips sit in this band and printed 0.43in
-                          from the trim, out of spec)
+       top     0.625in  = 0.5in from the trim
+       bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
+                          sit in this band)
        outside 0.625in  = 0.5in from the trim
        binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
   --page-margin:   0.625in;

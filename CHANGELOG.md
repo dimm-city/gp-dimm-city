@@ -7,6 +7,82 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.6.2] - 2026-10-12
+
+### Changed
+
+- **`@gear` is the one item marker; the kinds are words on it.** `@gear augment`,
+  `@gear treasure`, `@gear vehicle` and `@gear drug` give the cybernetic, magic
+  item, vehicle and drug cards, each with the look and the small kind word it
+  had. A bare `@gear` is general gear. The entries still share one card
+  family and one check (an entry with no name, or with two, is reported), and a
+  word that is not a kind is reported and read as general gear. A run still
+  needs an `@end-gear` only after its last entry, and `@section catalog` takes
+  `@gear <kind>` entries as it took the old markers. Entry cards now carry
+  `data-gear="<kind>"`.
+- **`@field specs` is the one SPECS box.** A `**SPECS:**` paragraph inside an
+  entry, an `@npc-stat` or a skill was already that field; it is now the only
+  way to get the box, since `@callout gear` drew the same one.
+- **The card footer is tagged by the plugin alone.** The `blockquote:last-of-type`
+  fallback beside `.dc-card-footer` is gone from `section.css`; the plugin
+  always tags the footer.
+- **A specialty's last learning path clips its card shadows.** The poster
+  shadow hangs 6px below a skill card; when the last card of a specialty ended
+  in the last 6px of a page, that overhang alone opened an empty page before
+  the next chapter. `.dc-specialty > .dc-learning-path:last-child` now clips
+  its block overflow (`overflow-y: clip; overflow-clip-margin: 8px`), so a book
+  no longer needs its own rule for it.
+- **A field may split between lines, as the callout it replaced did.** `.dc-field`
+  no longer has `break-inside: avoid` and sets `orphans: 2; widows: 2`, so the
+  label chip stays with the first two lines of its text and no single line is
+  left alone at either end. A short field still stays whole. The 30 SPECS boxes
+  that were pushed whole to the next page no longer cost a book pages.
+- **Skill card text never leaves one line alone at a page edge.** Paragraphs,
+  list items and ability text inside `.dc-skill-card` set `orphans: 3; widows: 2`.
+  Chromium keeps the orphans and drops the widows when a paragraph is too short
+  to satisfy both, so the body's 2 + 2 let a three-line paragraph split 2 + 1;
+  with 3 it moves whole. Cards still split by default.
+- **A panel's bottom edge is paint, not layout, so it cannot open a page.**
+  Since 1.4.1 the `::before` surface and `::after` shadow layers extended below
+  the box by `--dc-section-edge` (a negative `bottom`). That extension is
+  positioned content, and when a panel ended in the last pixels of a page, such
+  as a `@section reference .dc-snug` pulled back to fit, Chromium fragmented it
+  onto a page of its own holding only the panel's bottom rule: on a book's last
+  chapter, the page DriveThruRPG needs fully blank. The layers are now exactly
+  the box, and the edge and the shadow's 3px hang below it as `box-shadow`
+  copies pushed down by `--dc-section-edge`, with the clip-path reaching down
+  to match, so a panel looks as before and opens no page.
+- Comments in the plugin, stylesheets, catalog, snippets and docs that described
+  removed code, files or behaviour are gone or rewritten. No declaration or
+  behaviour changed with them.
+
+### Removed
+
+- The `data-break-inside="avoid"` attribute on skill cards, outcome ladders and
+  card sub-lists. Nothing read it since the pagination polyfill was removed;
+  break control is the CSS `break-inside` rules.
+- `@augment`, `@treasure`, `@vehicle`, `@drug` (and their `@end-` forms):
+  write `@gear <kind>`. They are tombstoned in `components.yaml`.
+- `@callout gear` and `> [!GEAR]`, with `.dc-gear-callout`: write `@field specs`.
+  `components.yaml` has a tombstone for each.
+
+### Moving from 1.6.1
+
+| Before | Now |
+|---|---|
+| `@augment` … `@end-augment` | `@gear augment` … `@end-gear` |
+| `@treasure` … `@end-treasure` | `@gear treasure` … `@end-gear` |
+| `@vehicle` … `@end-vehicle` | `@gear vehicle` … `@end-gear` |
+| `@drug` … `@end-drug` | `@gear drug` … `@end-gear` |
+| `@callout gear label="SPECS"` … `@end-callout` | `@field specs` … `@end-field` |
+| `> [!GEAR]` | `@field specs` |
+
+Any other `@callout gear label="…"` becomes `@field specs label="…"` for a
+one-paragraph box, or `@callout note` (or `warning`) for a longer note. The old
+spellings are not recognised any more: a marker line prints as text, and
+`@callout gear` reports an unknown variant. A book that sets its own rule on
+`.dc-gear-callout` should move it to `.dc-field-specs`.
+
 ## [1.6.1] - 2026-10-12
 
 ### Changed

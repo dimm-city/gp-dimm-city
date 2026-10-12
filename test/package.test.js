@@ -1,14 +1,11 @@
 // package.test.js — what npm would publish, and whether Gutterpress can load it.
 //
-// Ported from dc-op-manual's tools/extension-package.test.mjs and extended
-// with the checks that would have caught the two bugs found when this package
-// was first test-installed through Gutterpress's npm path:
-//   - the entry is ESM but package.json had no "type": "module", so the npm
-//     loader parsed it as CommonJS and refused it;
-//   - dc-native.css referenced an image that `files` never shipped, so every
-//     book failed at build time with "Missing asset".
-// The old test only checked paths DECLARED in package.json. This one also
-// follows every url() inside every declared stylesheet.
+// It checks every path DECLARED in package.json and follows every url() inside
+// every declared stylesheet, so each of these fails here instead of in a book:
+//   - an ESM entry with no "type": "module", which the npm loader would parse
+//     as CommonJS and refuse;
+//   - a stylesheet that references an image `files` never ships, which fails
+//     every book's build with "Missing asset".
 //
 // `npm pack --dry-run --json` is the same packer `npm publish` uses; it needs
 // `npm` on PATH (CI runners and any Node install have it).

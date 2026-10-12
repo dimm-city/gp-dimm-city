@@ -1,4 +1,4 @@
-@vehicle
+@gear vehicle
 
 #### {{name}}
 
@@ -8,4 +8,4 @@
 
 **SPECS:** {{specs}}
 
-@end-vehicle
+@end-gear

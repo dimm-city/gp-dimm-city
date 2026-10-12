@@ -30,6 +30,8 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `@block slate` | DC plugin | `.dc-block.dc-slate` |
 | `@block shard` | DC plugin | `.dc-block.dc-shard` |
 | `@faction megacorp` · `cabal` · `cult` · `enforcer` | DC plugin | `.dc-card.dc-faction.dc-faction-<kind>` + `.dc-faction-kind` badge |
+| `@gear` · `@gear augment` · `treasure` · `vehicle` · `drug` | DC plugin | `.dc-card.dc-entry.dc-gear` (bare) · `.dc-card.dc-entry.dc-<kind>` |
+| `@field specs` · `traits` · `equipment` · `effects` · `side-effects` · `requires`, or a `**SPECS:**` paragraph in an entry | DC plugin | `.dc-field.dc-field-<variant>` + `.dc-field-label` |
 | `@roll-table` | DC plugin | `.dc-roll-table` + `.dc-roll-table-caption` over the author's table |
 | a table of the five bands | DC plugin (by shape) | `.dc-outcomes` ladder |
 | a table with HP and Damage columns | DC plugin (by shape) | `table.dc-stat-strip` |
@@ -41,7 +43,6 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `> [!VIBE]` | GFM alert + DC plugin | `.dc-vibe-callout` |
 | `> [!DM]` | GFM alert + DC plugin | `.dc-dm-note` |
 | `> [!ORIGIN]` | GFM alert + DC plugin | `.dc-origin-callout` |
-| `> [!GEAR]` | GFM alert + DC plugin | `.dc-gear-callout` |
 | `> [!NOTE]` | GFM alert | `.dc-note` |
 | `> [!WARNING]` | GFM alert | `.dc-note.warning` |
 
@@ -53,7 +54,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 - `.dc-alert` — warning/info callout block
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-vibe-callout`, `.dc-human-callout`, `.dc-origin-callout`, `.dc-gear-callout`
+- `.dc-vibe-callout`, `.dc-human-callout`, `.dc-origin-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
 
@@ -69,7 +70,6 @@ Use this to choose the right callout type before reaching for a class name.
 2. What register?
    └── Atmosphere / narrative → dc-vibe-callout
    └── World / setting lore  → dc-origin-callout
-   └── Gear & equipment      → dc-gear-callout
    └── Rules / mechanics     → continue ↓
 
 3. How urgent?
@@ -150,7 +150,8 @@ These are separate components — not variants of each other.
 - `.dc-steps`
 
 ### Gear
-- `.dc-card.dc-gear` / `.dc-gear-callout`
+- `.dc-card.dc-entry` with `.dc-gear` (or `.dc-augment`, `.dc-treasure`, `.dc-vehicle`, `.dc-drug`) — `@gear [kind]`
+- `.dc-field.dc-field-specs` — the SPECS box (`@field specs`, or a `**SPECS:**` paragraph in an entry)
 
 ### Layout Helpers
 - `.dc-card-grid`

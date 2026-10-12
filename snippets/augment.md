@@ -1,4 +1,4 @@
-@augment
+@gear augment
 
 #### {{name}}
 
@@ -8,4 +8,4 @@
 
 **SPECS:** {{rules}}
 
-@end-augment
+@end-gear

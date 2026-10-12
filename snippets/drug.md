@@ -1,4 +1,4 @@
-@drug
+@gear drug
 
 #### {{name}}
 
@@ -8,4 +8,4 @@
 
 **Side Effects:** {{side_effects}}
 
-@end-drug
+@end-gear

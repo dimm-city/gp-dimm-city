@@ -61,11 +61,11 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
 | General gear | `@gear` |
-| A cybernetic or mod | `@augment` |
-| A magic item or relic | `@treasure` |
-| A vehicle | `@vehicle` |
-| A drug, elixir or consumable | `@drug` |
-| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
+| A cybernetic or mod | `@gear augment` |
+| A magic item or relic | `@gear treasure` |
+| A vehicle | `@gear vehicle` |
+| A drug, elixir or consumable | `@gear drug` |
+| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`; `specs` is the one SPECS box) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
@@ -89,12 +89,12 @@ Also in the box:
   `@specialty-card`, `@continue` (a skill card that spans a page break),
   `@card`, `@procedure`, `@lede`, `@toc`, GFM alerts
   (`> [!NOTE]`, `[!WARNING]`, `[!DM]`, `[!VIBE]`, `[!ORIGIN]`, `[!VISIT]`,
-  `[!GEAR]`, `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic `ROLL THE DIE!`
+  `[!FLAVOR]`, `[!PULLQUOTE]`), and the automatic `ROLL THE DIE!`
   chip. `docs/components-and-palette-reference.md` maps each to the classes it
   emits.
-- **Sixteen stylesheets** under `styles/`, listed in `package.json` in
+- **Seventeen stylesheets** under `styles/`, listed in `package.json` in
   cascade order: fonts and the layer statement, the palette and identity
-  tokens, the element baseline, eight component sheets, page templates,
+  tokens, the element baseline, nine component sheets, page templates,
   paged-media rules, and `dc-native.css` — the engine-specific page chrome
   (brick-wall background, folios, chapter chips) that must stay last.
 - **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
@@ -173,6 +173,25 @@ with a render-parity run (text runs, image placement, and a pixel comparison
 of every page). Public API for semver purposes: the macro vocabulary, the
 classes and tokens marked `live` in `components.yaml`, the page templates, and
 the layer names. `CHANGELOG.md` lists what each release changes.
+
+### Moving from 1.6.1 or earlier
+
+1.6.2 folds the item markers into `@gear` and gives the SPECS box one spelling.
+The old spellings are no longer recognised (a marker line prints as text, and
+`@callout gear` reports an unknown variant), so rebuild after you migrate:
+
+| Before | Now |
+|---|---|
+| `@augment` … `@end-augment` | `@gear augment` … `@end-gear` |
+| `@treasure` … `@end-treasure` | `@gear treasure` … `@end-gear` |
+| `@vehicle` … `@end-vehicle` | `@gear vehicle` … `@end-gear` |
+| `@drug` … `@end-drug` | `@gear drug` … `@end-gear` |
+| `@callout gear label="SPECS"` … `@end-callout` | `@field specs` … `@end-field` |
+| `> [!GEAR]` | `@field specs` |
+
+Any other `@callout gear label="…"` becomes `@field specs label="…"` for a
+one-paragraph box, or `@callout note` for a longer note. A `**SPECS:**`
+paragraph inside an entry needs no change.
 
 ## Licences
 

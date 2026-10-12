@@ -1,14 +1,14 @@
 @layer dc.tokens {
 
 :root {  /* ── Section Component Public Tokens ────────────────────────────────────
-     Default theming for the @section variants (panel, flat, aside).
-     Chapter-scoped overrides
+     Default theming for the @section variants (panel, flat and the kinds of
+     text built on them). Chapter-scoped overrides
      live in the book's own sheet (unlayered — it wins over this whole package
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
   --dc-section-bg:     var(--paper-cream);
-  --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header (was --blood) */
+  --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
 
   /* Column runs (`@columns N`). Core owns every column property; these are its
      two author hooks, set once, with no column selector. Gap: the book's
@@ -22,7 +22,7 @@
      removes the layer); the pads drive the padding of panel and flat and the
      panel's header-bar negative margins; `drop` is the flat variant's extra
      box-shadow. All inherit, so a section nested inside a variant would pick
-     them up (no book nests one today).
+     them up.
      Not registered with @property { inherits: false }: a pseudo-element
      inherits from its host, so a non-inheriting token never reached the
      ::before/::after that read it. */
@@ -46,18 +46,15 @@
   --dc-section-grow:      0;
 
   /* ─── Component Public Token Defaults ────────────────────────────────────
-     Override surface for per-chapter and per-project theming. These are the
-     defaults that were previously declared inside each component class rule.
-     Moving them to :root makes them visible to the theming system and lets
-     the book's own sheet override them at chapter-id scope instead of having to
-     write a full component selector chain.
-     Set them here; override at chapter id scope in the book's own sheet.
+     The override surface for per-chapter and per-project theming. They live
+     on :root so the book's own sheet can override them at chapter-id scope
+     instead of writing a full component selector chain.
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
-  --dc-alert-bg:             var(--hud-blue-dim);   /* surface-callout alias — player-facing note panel */
-  --dc-alert-border:         var(--hud-blue-dark);  /* border-callout-dm alias — left rail */
+  --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
+  --dc-alert-border:         var(--hud-blue-dark);  /* left rail */
   --dc-alert-fg:             var(--ink);
   --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
   --dc-alert-body-size:      var(--fs-body-sm);
@@ -102,13 +99,9 @@
   --dc-block-title-bg: var(--hud-blue-dark);
   --dc-block-title-fg: var(--paper-cream);
 
-  /* ─── Component Public Tokens Lifted From Inline Fallbacks ───────────────
-     Workstream B (2026-06-21): these tokens were consumed in components/*.css
-     ONLY via inline `var(--dc-X, fallback)` and were never declared on :root,
-     so they were invisible to the public override surface. Each default below
-     equals the component's existing inline fallback, so rendering is unchanged
-     — the inline fallbacks are now redundant (and harmless). Override any of
-     these at chapter-id / project scope the same way as the blocks above.
+  /* ─── More component public tokens ───────────────────────────────────────
+     Override any of these at chapter-id / project scope the same way as the
+     blocks above.
      ──────────────────────────────────────────────────────────────────────── */
 
   /* .dc-ap (action-point tag) public API */
@@ -150,7 +143,7 @@
   --dc-flavor-accent-width:  3px;
   --dc-flavor-color:         var(--ink-smoke);
 
-  /* entry cards (@gear, @augment, @treasure, @vehicle, @drug) public API;
+  /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
   --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
   --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
@@ -248,15 +241,6 @@
   --dc-tape-bg:              var(--paper-aged);
   --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, var(--dc-tape-bg));
   --dc-tape-color:           var(--ink-dust);
-
-  /* NOTE — the "Semantic Surface Roles" bridge layer that used to close this
-     file (--surface-callout / -dm / -vibe, --surface-well, --surface-panel,
-     --text-on-dark, --text-accent, --text-muted, --border-callout / -dm,
-     --border-accent, --elevation-card) was DELETED. It was proposed as a
-     layer components would consume, and then nothing ever did: twelve
-     aliases, zero `var()` call sites in any of the seven sheets. The
-     component public tokens above are the real override surface — a new
-     project retheming this library sets THOSE. */
 }
 
 }

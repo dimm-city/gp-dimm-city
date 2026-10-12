@@ -15,11 +15,11 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear                → div.dc-card.dc-entry.dc-gear
- *   @augment             → div.dc-card.dc-entry.dc-augment   (cybernetics, mods)
- *   @treasure            → div.dc-card.dc-entry.dc-treasure  (magic items, relics)
- *   @vehicle             → div.dc-card.dc-entry.dc-vehicle
- *   @drug                → div.dc-card.dc-entry.dc-drug      (drugs, elixirs, consumables)
+ *   @gear [augment|treasure|vehicle|drug]
+ *                        → div.dc-card.dc-entry.dc-gear (general gear), or
+ *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
+ *                          treasure (magic items, relics), vehicle, drug (drugs,
+ *                          elixirs, consumables)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @block [panel|slate|shard] label="Title"
@@ -44,7 +44,7 @@
  *                          zero-padded step list (the wrapper renders nothing)
  *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
  *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          visit, gear, example; none is a note. The label is `label="…"`,
+ *                          visit, example; none is a note. The label is `label="…"`,
  *                          or the variant's name. `@dm-note` is `@callout dm`
  *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
@@ -68,8 +68,8 @@
  *
  * GFM ALERT SYNTAX:
  *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
- *   / `[!GEAR]` / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
- *   into `<div class="dc-alert dc-<type>">` (moved from print-md core 2026-05-17).
+ *   / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
+ *   into `<div class="dc-alert dc-<type>">`.
  *
  * SPECIALTY VARIANTS:
  *   Skill card and learning-path variants are controlled by the .specialty.<name>
@@ -195,21 +195,9 @@ function specialtyCodeFromClass(className) {
   return 'PATH';
 }
 
-/**
- * Skill card variants are now controlled by the .specialty.<name> parent
- * container (CSS parent-selector model). The variant= attribute on @skill,
- * @continue, and @learning-path has been removed. No SKILL_VARIANTS map.
- */
-
 function buildStickerChain(items) {
   let html = '<div class="dc-stickers">';
   items.forEach((name, i) => {
-    // The first sticker used to get .active treatment, rendering it in
-    // --blood while siblings rendered in --ink-dark. User feedback:
-    // "there's no reason for the first skill in the learning path list
-    // to be marked as active or a different color than the other skills.
-    // For example, under biting distance, punishing counter is red, and
-    // the rest are black. It should also be black." Removed.
     const cls = 'dc-sticker';
     html += '<span class="' + cls + '"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
     if (i < items.length - 1) {
@@ -323,8 +311,8 @@ function renderInlineChildren(inlineTok, md) {
 }
 
 // The blockquote opening at tokens[i], as rendered text (the last paragraph in
-// it, the way every component that turns a quote into a line has always read
-// it), and the index of its close.
+// it, which is how every component that turns a quote into a line reads it),
+// and the index of its close.
 function quoteHtml(tokens, i, md) {
   let html = '';
   let end = i + 1;
@@ -432,16 +420,8 @@ function outcomeRowsHtml(rows, md, head = []) {
 }
 
 // A table of the five standard bands: tier and name come from the band.
-function buildLadderBlock({ head, rows }, md, needsAvoid = true) {
-  // data-break-inside="avoid" is added when the parent card can be split (is
-  // not avoid-split) — the polyfill needs this to keep the
-  // outcomes table together when the card itself isn't protected. When the card
-  // already has data-break-inside="avoid" (non-splittable cards), adding a
-  // nested avoid creates a conflicting inner break that the polyfill resolves
-  // by splitting the card at the outcomes boundary, leaving a headless
-  // card-body on one page and the outcomes-only continuation on the next.
-  const avoidAttr = needsAvoid ? ' data-break-inside="avoid"' : '';
-  return '<div class="dc-outcomes"' + avoidAttr + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
+function buildLadderBlock({ head, rows }, md) {
+  return '<div class="dc-outcomes">\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
 // Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
@@ -606,10 +586,8 @@ function buildProcedureList(items) {
 }
 
 /**
- * GFM-style blockquote alert types — Dimm City branded.
- *
- * Moved from print-md core (src/lib/markdown/alerts.ts) on 2026-05-17 because
- * the classes and labels are DC-specific. Core no longer leaks DC identifiers.
+ * GFM-style blockquote alert types — Dimm City branded: the classes and labels
+ * are DC-specific, so core does not know them.
  */
 const DC_ALERT_TYPES = {
   NOTE:      { classes: "dc-alert dc-note",                 label: "Note" },
@@ -618,7 +596,6 @@ const DC_ALERT_TYPES = {
   VIBE:      { classes: "dc-alert dc-vibe-callout",         label: "Vibe" },
   ORIGIN:    { classes: "dc-alert dc-origin-callout",       label: "Origin" },
   VISIT:     { classes: "dc-alert dc-visit-callout",        label: "Visit" },
-  GEAR:      { classes: "dc-alert dc-gear-callout",         label: "Gear" },
   FLAVOR:    { classes: "dc-flavor" },
   PULLQUOTE: { classes: "dc-pullquote dc-flush" },
 };
@@ -875,12 +852,6 @@ function dcSkillCards(state) {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
-    // A card splits across pages by default (a whole card is 30-50% of a page,
-    // so keeping it whole left a page of one card each); `.dc-avoid-split`
-    // keeps one whole and carries data-break-inside="avoid". An outcomes table or
-    // sub-list inside a splittable card needs its own avoid, because the card
-    // has none.
-    const canSplit = !(open.attrGet('class') || '').split(/\s+/).includes('dc-avoid-split');
     const content = run.slice(1, -1);
     const out = [];
     const emit = (html) => out.push(makeToken('html_block', html));
@@ -893,7 +864,6 @@ function dcSkillCards(state) {
     const cardOpen = (cont) => {
       const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
       attrs.push(['name', slugify(title.name)]);
-      if (!canSplit) attrs.push(['data-break-inside', 'avoid']);
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
     const endCard = () => {
@@ -1015,17 +985,13 @@ function dcSkillCards(state) {
         continue;
       }
 
-      // Keep short sub-lists whole (e.g. an "Arm:" bullet stranded from "Leg:").
-      if (tok.type === 'bullet_list_open' && canSplit) tok.attrSet('data-break-inside', 'avoid');
-
       if (tok.type === 'table_open') {
         // A table of the five standard bands is the ladder; any other table
-        // passes through untouched, thead and all (rebuilding them from tbody
-        // rows once left 64 of 86 tables headerless).
+        // passes through untouched, thead and all.
         const tableTokens = collectTableTokens(content, i);
         const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
         if (ladder) {
-          emit(buildLadderBlock(ladder, md, canSplit));
+          emit(buildLadderBlock(ladder, md));
           i = skipToTableClose(content, i);
           continue;
         }
@@ -1130,7 +1096,7 @@ function dcLadderTables(state) {
     const tableTokens = collectTableTokens(tokens, i);
     const ladder = ladderRows(readTable(tableTokens));
     if (!ladder) continue;
-    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, false)));
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md)));
   }
 }
 
@@ -1184,7 +1150,7 @@ function validateRollTable({ blocks }) {
 /**
  * `@procedure`: every numbered list inside becomes the zero-padded step list
  * (`ol.dc-steps`). The declared wrapper renders nothing itself: the list is
- * the element, as it has always been.
+ * the element.
  */
 function dcProcedures(state) {
   forEachComponent(state.tokens, 'procedure', (run) => {
@@ -1206,11 +1172,11 @@ function dcProcedures(state) {
 
 // ── Declared component: @callout (and its alias @dm-note) ──────────────────
 //
-// `@callout note|warning|dm|vibe|origin|visit|gear|example` is a declared wrapper:
+// `@callout note|warning|dm|vibe|origin|visit|example` is a declared wrapper:
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
-// note, as it always was.
+// note.
 const CALLOUTS = {
   note: { class: 'dc-note', label: 'Note' },
   warning: { class: 'dc-note warning', label: 'Warning' },
@@ -1218,7 +1184,6 @@ const CALLOUTS = {
   vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
   origin: { class: 'dc-origin-callout', label: 'Origin' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
-  gear: { class: 'dc-gear-callout', label: 'Gear' },
   example: { class: 'dc-example-callout', label: 'Example' },
 };
 
@@ -1286,13 +1251,23 @@ function validateSkill({ blocks }) {
     }));
 }
 
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug'];
+
+// A bare `@gear` (or an unrecognised word, which core reports) is general gear:
+// core added only the shared card, so the general-gear class goes right after it.
+function dcGear(state) {
+  forEachComponent(state.tokens, 'gear', ([open]) => {
+    if (GEAR_KINDS.includes(open.meta.variant)) return;
+    open.attrSet('class', open.attrGet('class').replace('dc-entry', 'dc-entry dc-gear'));
+  });
+}
+
 /**
- * Entry cards (`@gear`, `@augment`, `@treasure`, `@vehicle`, `@drug`): one
- * entry is one name. The name is the entry's first heading (`####`, or `###`
- * as `@gear` has always taken). An entry without one has no title bar, and
- * one with a second heading is usually two entries run together: a declared
- * marker that opens again closes the one before it, so each entry starts with
- * its own marker line.
+ * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`):
+ * one entry is one name. The name is the entry's first heading (`####`, or
+ * `###`). An entry without one has no title bar, and one with a second heading
+ * is usually two entries run together: a declared marker that opens again
+ * closes the one before it, so each entry starts with its own marker line.
  */
 function validateEntry({ name, blocks }) {
   const headings = blocks.filter((b) => b.type === 'heading' && b.level <= 4);
@@ -1342,7 +1317,7 @@ const FIELD_DEFAULT_LABEL = Object.fromEntries(
 const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
 
 // The cards whose paragraphs may be field lines.
-const FIELD_HOSTS = new Set(['gear', 'augment', 'treasure', 'vehicle', 'drug', 'skill']);
+const FIELD_HOSTS = new Set(['gear', 'skill']);
 
 const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
 
@@ -1452,9 +1427,7 @@ function validateProcedure({ blocks }) {
 export default function dimmCityPlugin(md, options = {}) {
   registerSkillContinueBridge(md);
 
-  // GFM-style `> [!NOTE]` alerts (moved from core 2026-05-17).
-  // Must run before markdown-it-attrs so attrs don't interfere with `[!TYPE]`
-  // detection inside blockquotes. We register on the core ruler since the
+  // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
   // transform operates on already-parsed token streams.
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
 
@@ -1477,6 +1450,7 @@ export default function dimmCityPlugin(md, options = {}) {
   // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_factions', dcFactions);
+  md.core.ruler.push('dc_gear', dcGear);
   md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
@@ -1530,8 +1504,8 @@ export const markers = {
   'learning-path': wrapper('dc-learning-path dc-path-block'),
   skill: wrapper('dc-skill-card', { validate: validateSkill }),
 
-  // Content components. `@card` closes silently at the end of a document, as it
-  // always has. `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
+  // Content components. `@card` closes silently at the end of a document.
+  // `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
   // open at the end gets core's `declared_marker_eof_close` warning: what
   // follows an open one is read as its rows or its steps. `@procedure` has no
   // class (its rule hides the wrapper: the step list is the element).
@@ -1562,14 +1536,13 @@ export const markers = {
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
-  // Entry cards: one card style family (`.dc-entry`), each marker a token setter
-  // on it (styles/components/entries.css). `@gear` is general gear; the others
-  // are what the books list in catalogs. Each starts with the entry's name.
-  gear: wrapper('dc-card dc-entry dc-gear', { validate: validateEntry }),
-  augment: wrapper('dc-card dc-entry dc-augment', { validate: validateEntry }),
-  treasure: wrapper('dc-card dc-entry dc-treasure', { validate: validateEntry }),
-  vehicle: wrapper('dc-card dc-entry dc-vehicle', { validate: validateEntry }),
-  drug: wrapper('dc-card dc-entry dc-drug', { validate: validateEntry }),
+  // Entry cards: one card family (`.dc-entry`); `@gear` is general gear and its
+  // bare word picks a kind, a token setter on that family
+  // (styles/components/entries.css). Each starts with the entry's name.
+  gear: wrapper('dc-card dc-entry', {
+    variants: Object.fromEntries(GEAR_KINDS.map((kind) => [kind, `dc-${kind}`])),
+    validate: validateEntry,
+  }),
   // An organization's profile: a card with a kind badge. The kind is the bare
   // word (`@faction cult`) and the badge reads it unless `label="…"` names its own.
   faction: wrapper('dc-card dc-faction', {
@@ -1619,9 +1592,7 @@ export const markers = {
   // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`;
   // `@chapter rules` is `<div class="chapter dc-chapter-rules">` (any other word
   // after `@chapter` stays its label). Core also ships `@page blank` and
-  // `@page full-bleed`. The old raw spellings (`@page .page-chapter-start .dc-chapter-start`,
-  // `.page-toc`, `.page-credits .dc-credits`, `.page-intro`,
-  // `.dc-citizen-file-page`) are no longer styled.
+  // `@page full-bleed`.
   page: {
     variants: {
       'chapter-start': 'dc-page-chapter-start',
@@ -1642,9 +1613,10 @@ export const markers = {
 
   // Section-styled components. `section: true` makes each one a real core
   // @section: `@npc-stat` is exactly `@section npc` (same element, same
-  // classes). No variants of their own: none is styled per specialty (that
-  // lives on `.dc-specialty.<name>`, from `@specialty`), and modifiers such as
-  // `.dc-snug`, `.dc-avoid-split` and `.gp-columns-2` stay author classes.
+  // classes). None is styled per specialty (that lives on
+  // `.dc-specialty.<name>`, from `@specialty`); the only variant is
+  // `@npc-stat compact`, and modifiers such as `.dc-snug`, `.dc-avoid-split`
+  // and `.gp-columns-2` stay author classes.
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },

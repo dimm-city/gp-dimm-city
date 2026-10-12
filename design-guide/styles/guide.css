@@ -642,8 +642,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 /* Street-sign image in the chapter opener fiction excerpt: float right so the
    ape-scenario text wraps around the sign's left side. Shadow flipped to
    -x so it falls LEFT (visible beside the float) rather than right (clipped
-   by the section's composite edge). Token overrides follow contextual
-   cascade principle. */
+   by the section's composite edge). */
 #ch-example-rules .section.dc-fiction-excerpt {
    --dc-fiction-art-float: right;
    --dc-fiction-art-shadow: -4px 4px 0 var(--hud-blue-dark);
@@ -667,11 +666,9 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 
 /* ── DM/NPC chapter: page-title h1/h2 in neutral ink, not teal ──────────────
    Default h1/h2 colors (--hud-magenta for h1, --hud-blue-dark for h2) clash
-   with this chapter's rust --dc-section-accent. Designer-eye reviewer flagged
-   "NPC STAT BLOCK: FODDER" h2 page-titles rendering teal while everything
-   else in the chapter (section tabs, stat-block accents, table headers) is
-   rust. Neutral --ink-dark page-titles let the chapter's rust components
-   carry the chroma identity without fighting the title. */
+   with this chapter's rust --dc-section-accent. Neutral --ink-dark
+   page-titles let the chapter's rust components carry the chroma identity
+   without fighting the title. */
 #ch-example-dm-npcs h2:not(.dc-spray):not(.dc-chevron) {
    color: var(--ink-dark);
    border-bottom-color: var(--rust);
@@ -690,12 +687,11 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    color: var(--paper-cream);
 }
 
-/* User feedback (2026-05-24): "The MPC stat blocks are decent but need
-   more polish, not great colors." The default --dc-npc-stat-label-color
-   is --hud-blue-dark (teal), which clashes with the rust h4 top-rule
-   inherited from this chapter's --dc-section-accent. Override the h5
-   label color + primary stat-line color so the entire stat block lives
-   in the rust/blood register instead of teal-vs-rust split. */
+/* The default --dc-npc-stat-label-color is --hud-blue-dark (teal), which
+   clashes with the rust h4 top-rule inherited from this chapter's
+   --dc-section-accent. Override the h5 label color + primary stat-line color
+   so the entire stat block lives in the rust/blood register instead of a
+   teal-vs-rust split. */
 #ch-example-dm-npcs .dc-npc-stat {
    --dc-npc-stat-label-color: var(--rust);
    --dc-npc-stat-primary: var(--blood);
@@ -705,15 +701,12 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    Plants the fluorescent-fungi pillar in the DM chapter. The rust accents on
    section headers and stat-block rules deliver the gutter pillar; this rule
    gives advisory/vibe callouts a low-level organic glow — alley fungus
-   creeping into the encounter rules. (The fungi tint it started with was
-   replaced by paper-stain and rust; see the note inside.) */
+   creeping into the encounter rules. */
 #ch-example-dm-npcs .dc-alert {
-   /* User feedback (2026-05-24): "The colors for core elements and focus
-     on the Fantascape are absolutely terrible." Previous fungi-rot 30%
-     mix produced muddy olive-green. Switched to paper-stain (warm
-     parchment tint) with --rust border accent — matches the chapter's
+   /* A paper-stain tint with a --rust border accent matches the chapter's
      rust --dc-section-accent so the callouts feel like part of the chapter
-     register, not an alien color block. */
+     register, not an alien color block (a fungi-rot mix read as muddy
+     olive-green). */
    --dc-alert-bg: var(--paper-stain);
    --dc-alert-border: var(--rust);
    --dc-alert-fg: var(--ink);

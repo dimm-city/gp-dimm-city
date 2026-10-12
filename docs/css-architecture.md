@@ -265,7 +265,7 @@ hierarchy: color → typography → spacing → geometry.
 --amber:          #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth */
 --hud-blue:       #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
 
-/* Print substrate — neutral-cool greys since 2026-05-24, not warm cream */
+/* Print substrate — neutral-cool greys, not warm cream */
 --bg:             #c8c5bf;  /* ash-concrete — the brick wall (page background) */
 --paper-cream:    #f0eee9;  /* light industrial flyer-stock — primary card surface */
 --paper-light:    #e2ded7;  /* slightly darker grey alternate surface */
@@ -458,7 +458,7 @@ selectors.
 
 **Folios use the built-in `page` counter and nothing else.** `page-rules.css`'s
 `@page :left` / `:right` margin boxes emit `"P." counter(page)` on the outer
-corner. There is no `counter-reset` for it anywhere in `dc-design-guide/css/`,
+corner. There is no `counter-reset` for it anywhere in this package,
 so page numbers run continuously from the first page of the book — front matter
 included. A book wanting body folios to restart at 1 would have to add that
 reset; none does today.
@@ -487,10 +487,6 @@ boxes in `page-rules.css`, which emit `"C." string(guideSection, first)`.
 One constraint on the producer: write `ch="N"` in the `@chapter` directive, not
 `data-ch="N"` — `markers.js`'s `attachDataAttrs()` already prefixes unknown keys
 with `data-`.
-
-Verified end-to-end on this guide: a `build --format pdf` of `dc-design-guide`
-yields footers `C.1` ×58, `C.2` ×57, `C.3` ×36, `C.4` ×5, `C.5` ×6, `C.6` ×4 —
-matching the chapter sizes.
 
 ### TOC Page Numbers — `target-counter()`
 
@@ -544,22 +540,18 @@ conventions. The gear entry tagline is always an italic paragraph immediately af
 an h3:
 
 ```css
-/* the shape of the pattern — the gear rules that carried it were removed
-   2026-08-21 (they keyed on classes nothing emits; see components/data.css) */
-.dc-card.dc-gear > p:first-of-type em:only-child,
-.dc-card.dc-gear > p.dc-flavor:first-of-type {
-  font-style: italic;
+/* components/entries.css — general gear's italic tagline */
+.dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
   color: var(--ink-smoke);
-  display: block;
+  margin: 0 0 6px;
 }
 ```
 
 The author writes `*Melee. Cyberware implant. Pair.*`. Markdown renders
-`<p><em>…</em></p>`. The selector targets the `<em>` that is the only child of the
-first paragraph. If any text falls outside the asterisks, the structural selector
-silently fails. An explicit escape-hatch class is the usual remedy; the gear
-component no longer ships one, since its rules were removed as unreachable.
+`<p><em>…</em></p>`. The selector targets a paragraph whose only child is an
+`<em>`. If any text falls outside the asterisks, the structural selector
+silently fails. An explicit escape-hatch class is the usual remedy.
 
 The adjacent sibling prevents headings from stranding without content:
 
@@ -620,13 +612,6 @@ Augmercs are muscle for hire.
 
 No `.dc-definition-block-paragraph` class is needed. The `p + p` selector handles
 multi-paragraph definitions automatically.
-
-> **Note on `:::` containers:** REMOVED. The `:::wrapper {.class}`, `:::sidebar`,
-> `:::callout` forms were deleted from print-md core on 2026-05-17 (see the comment
-> in `packages/cli/src/lib/markdown/renderer.ts`). They no longer parse — any
-> remaining `:::` in a source file renders as literal text. The `@macro` family is
-> the only container surface. See the migration table in
-> `dc-design-guide/README.md` for the old → new mapping.
 
 When two prose-box components genuinely share the same shell behavior, give them a
 real base class and emit it in markup. `@definition` carries a tiny `.dc-prose-panel`

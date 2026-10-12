@@ -555,12 +555,12 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 </div>
 
-## Gear, augments, treasure, vehicles and drugs
+## Gear and its kinds
 
-An item entry is a card with a name and the item's prose. There is one marker per kind, so a book's catalog can tell them apart at a glance: `@gear` for general gear, `@augment` for cybernetics and mods, `@treasure` for magic items and relics, `@vehicle`, and `@drug` for drugs, elixirs and other consumables. All five are the same card: a left rail in the kind's colour, a small kind word over the name, then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, and `@gear drug` for drugs, elixirs and other consumables. All five are the same card: a left rail in the kind's colour, a small kind word over the name, then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
 
 ```markdown {.dg-split}
-@augment
+@gear augment
 
 #### Kestrel Optics
 
@@ -570,9 +570,9 @@ Two lenses in the orbit, a thermal layer, and a tiny voice that names what it se
 
 **SPECS:** See in the dark to Far range. +1 to spot rolls. Needs a Neurolink to run the overlay.
 
-@end-augment
+@end-gear
 
-@treasure
+@gear treasure
 
 #### Lantern of Second Thoughts
 
@@ -583,9 +583,9 @@ Whoever carries it hears the doubts of anyone standing in its light.
 - **Rewind:** Once per cycle, take back one thing you just said.
 - **Fast Forward:** Skip a conversation that was going nowhere.
 
-@end-treasure
+@end-gear
 
-@vehicle
+@gear vehicle
 
 #### Skyskiff Courier
 
@@ -595,9 +595,9 @@ A ducted-fan runabout built for rooftops and bad ideas.
 
 **SPECS:** IL: 3. Durability: 10. Mod Slots: 2.
 
-@end-vehicle
+@end-gear
 
-@drug
+@gear drug
 
 #### Slowglass
 
@@ -607,14 +607,14 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 
 **Side Effects:** The next cycle begins with a Tough Choice you did not ask for.
 
-@end-drug
+@end-gear
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@augment
+@gear augment
 
 #### Kestrel Optics
 
@@ -624,9 +624,9 @@ Two lenses in the orbit, a thermal layer, and a tiny voice that names what it se
 
 **SPECS:** See in the dark to Far range. +1 to spot rolls. Needs a Neurolink to run the overlay.
 
-@end-augment
+@end-gear
 
-@treasure
+@gear treasure
 
 #### Lantern of Second Thoughts
 
@@ -637,9 +637,9 @@ Whoever carries it hears the doubts of anyone standing in its light.
 - **Rewind:** Once per cycle, take back one thing you just said.
 - **Fast Forward:** Skip a conversation that was going nowhere.
 
-@end-treasure
+@end-gear
 
-@vehicle
+@gear vehicle
 
 #### Skyskiff Courier
 
@@ -649,9 +649,9 @@ A ducted-fan runabout built for rooftops and bad ideas.
 
 **SPECS:** IL: 3. Durability: 10. Mod Slots: 2.
 
-@end-vehicle
+@end-gear
 
-@drug
+@gear drug
 
 #### Slowglass
 
@@ -661,11 +661,11 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 
 **Side Effects:** The next cycle begins with a Tough Choice you did not ask for.
 
-@end-drug
+@end-gear
 
 </div>
 
-A marker after another marker of the same kind closes the first, so a run needs an `@end-…` only after the last entry. An entry with no name, or with two, is reported as a problem. `@gear` is the older card and keeps its own shape: `###` name, an italic tagline paragraph and a bold price line, picked out by their shape; a `@callout gear label="SPECS"` at the foot still works.
+A `@gear` after another `@gear` closes the first, so a run needs an `@end-gear` only after the last entry. An entry with no name, or with two, is reported as a problem, and a word that is not one of the four kinds is reported and read as general gear. General gear keeps its own shape: an italic tagline paragraph and a bold price line, picked out by their shape.
 
 ```markdown {.dg-split}
 @gear
@@ -757,7 +757,7 @@ A short intro for the run.
 
 @columns 2
 
-@augment
+@gear augment
 
 #### Kestrel Optics
 
@@ -765,7 +765,7 @@ Two lenses, a thermal layer and a quiet voice.
 
 **SPECS:** See in the dark to Far range.
 
-@augment
+@gear augment
 
 #### Pinhole Ears
 
@@ -773,7 +773,7 @@ Hears a coin drop two rooms away.
 
 **SPECS:** +1 to listen rolls.
 
-@augment
+@gear augment
 
 #### Sable Voicebox
 
@@ -798,7 +798,7 @@ A short intro for the run.
 
 @columns 2
 
-@augment
+@gear augment
 
 #### Kestrel Optics
 
@@ -806,7 +806,7 @@ Two lenses, a thermal layer and a quiet voice.
 
 **SPECS:** See in the dark to Far range.
 
-@augment
+@gear augment
 
 #### Pinhole Ears
 
@@ -814,7 +814,7 @@ Hears a coin drop two rooms away.
 
 **SPECS:** +1 to listen rolls.
 
-@augment
+@gear augment
 
 #### Sable Voicebox
 

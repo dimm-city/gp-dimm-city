@@ -877,7 +877,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers, and `@callout example` makes an eighth.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh.
 
 <div class="dg-stage dg-tall">
 
@@ -899,8 +899,6 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 > [!VISIT]
 > The Neon Bazaar doesn't close.
 
-> [!GEAR]
-> **Ripper Blades (Mk II)** — Melee. Damage 1d8+STR.
 
 @callout example
 
