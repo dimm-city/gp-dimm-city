@@ -392,14 +392,21 @@
   margin-top: 0;
 }
 
-/* ── SNUG — `@section .dc-snug` / `@page .dc-snug` ──────────────────────────
-   Halves the space between paragraphs and list items so a section or page
-   that overflows by a line or two fits. Type size and leading are
-   untouched. Lives in dc.templates so it outranks the dc.components and
-   dc.base paragraph/list margins; only the contents-page rows and the
-   credits colophon, which fix their own spacing here, outrank it. */
-:is(.section, .page).dc-snug :is(p, li) {
-  margin-bottom: 0.04in;
+/* ── FLOW GAP — `--dc-flow-gap`, and `.dc-snug`, which sets it ───────────────
+   The space under a paragraph or list item. Unset, each keeps the spacing its
+   own component gives it; set (on a box, or on anything above it, from a
+   sheet or by `.dc-snug`), it is the space under every one of them in that
+   box. `.dc-snug` halves it, so a section or page
+   that overflows by a line or two fits; type size and leading are untouched.
+   Lives in dc.templates so it outranks the dc.components and dc.base
+   paragraph/list margins, and `revert-layer` hands the margin back to them
+   while the token is unset. The contents-page rows and the credits colophon,
+   which fix their own spacing here, outrank it. */
+:is(p, li) {
+  margin-bottom: var(--dc-flow-gap, revert-layer);
+}
+.dc-snug {
+  --dc-flow-gap: 0.04in;
 }
 
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────

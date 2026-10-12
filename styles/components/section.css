@@ -12,9 +12,14 @@
      npc, walkthrough, flaws, ideals, dreams  = a panel plus the component class
      fiction, cards              = the component class alone
 
-   Sections split across pages by default. `.dc-avoid-split` keeps one whole.
+   Sections split across pages by default. `.dc-avoid-split` keeps one whole,
+   by setting `--dc-section-break-inside` (below).
 
    Public tokens (defaults declared in dc-component-defaults.css :root):
+     --dc-section-break-inside — `avoid` keeps a section whole, `auto` lets it
+                            split. An `@npc-stat` with no `####` and a catalog
+                            have their own (`--dc-npc-stat-break-inside`,
+                            `--dc-catalog-break-inside`).
      --dc-section-bg      — panel / flat background surface
      --dc-section-accent  — rail and title-bar colour; the one accent knob
      --dc-section-surface / --dc-section-shadow — `content` of the panel's
@@ -37,7 +42,11 @@
                             box-shadow, never as layout), and margin-bottom
                             grows by it. `.dc-avoid-split`
                             and every box that paints its own surface keep it
-                            at 0px.
+                            at 0px. A book that keeps one section whole from
+                            its own sheet sets both
+                            (`--dc-section-break-inside: avoid;
+                            --dc-section-edge: 0px`): the first keeps the box
+                            whole, the second keeps its padding inside it.
    A variant or template owns its chrome by setting these on its own rule. */
 
 /* Float containment. flow-root makes the box a block formatting context so
@@ -79,11 +88,27 @@
   --dc-section-edge: var(--dc-section-pad-bottom);
 }
 
-/* Keep one section whole: it moves to the next page entirely if it does not
-   fit. The dead zone at the foot of the previous page is the price. */
-.section.dc-avoid-split {
-  break-inside: avoid;
+/* Keep a section whole, or let it split: the token is the one setting.
+   `:where()` keeps this at zero specificity, so a rule on one kind of section
+   (a creature, below) outranks it. The bare `.section.dc-avoid-split` is the
+   one section with no variant class that still honours the modifier. */
+:where(.dc-section-panel, .dc-section-flat, .dc-fiction-excerpt, .dc-card-grid, .section.dc-avoid-split) {
+  break-inside: var(--dc-section-break-inside);
+}
+
+/* `.dc-avoid-split` keeps one box whole: it moves to the next page entirely if
+   it does not fit, and the dead zone at the foot of the previous page is the
+   price. It is a setter of the keep-whole tokens on what it is written on (a
+   section, a skill card, a faction, an `@npc-stat`), nothing more, so a book
+   can write the same declarations for one box from its own sheet. A section
+   that is whole keeps its padding inside the box (`--dc-section-edge`). A
+   catalog does not take it: see `--dc-catalog-break-inside`. */
+.dc-avoid-split {
+  --dc-section-break-inside: avoid;
   --dc-section-edge: 0px;
+  --dc-npc-stat-break-inside: avoid;
+  --dc-skill-card-break-inside: avoid;
+  --dc-faction-break-inside: avoid;
 }
 
 /* clip-path + left accent band on ::before.
@@ -561,7 +586,7 @@ h3 + .dc-section-panel {
    first, floated to the right so the name and the text run beside it.
    Splits across pages by default (see below).
    Token contract: --dc-faction-accent (rail and badge fill),
-   --dc-faction-badge-fg (badge text). */
+   --dc-faction-badge-fg (badge text), --dc-faction-break-inside. */
 .dc-card.dc-faction {
   border-left-width: 5px;
   border-left-color: var(--dc-faction-accent);
@@ -570,10 +595,7 @@ h3 + .dc-section-panel {
      left half-empty pages through a chapter of factions. It splits between
      paragraphs like an entry; the name keeps with its first lines (below), and
      `.dc-avoid-split` on the marker keeps one whole. */
-  break-inside: auto;
-}
-.dc-card.dc-faction.dc-avoid-split {
-  break-inside: avoid;
+  break-inside: var(--dc-faction-break-inside);
 }
 .dc-card.dc-faction > :is(h3, h4):first-of-type {
   font-size: var(--fs-h4);
@@ -663,6 +685,7 @@ h3 + .dc-section-panel {
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
+     --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####` whole
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Page breaks. A section splits across pages by default. A block with `####`
    entries is a RUN of creatures: it may break between entries and never inside
@@ -673,7 +696,8 @@ h3 + .dc-section-panel {
    Chromium keeps a chain together when it fits a page and lets it break only
    when it cannot. The title bar (h3) and its intro chain on to the first entry,
    so the bar is never alone at a page foot. A block with no `h4` is ONE
-   creature (the bar names it); add `.dc-avoid-split` to keep it whole.
+   creature (the bar names it), read at one glance, so it stays whole:
+   `--dc-npc-stat-break-inside: auto` lets one split.
 
    The entries are either direct children of the section (one column) or the
    children of the `@columns` run inside it (`.gp-columns`); the rules below take
@@ -691,6 +715,13 @@ h3 + .dc-section-panel {
 }
 :is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
   break-inside: avoid;
+}
+
+/* One creature, one glance: a block with no `####` stays whole, with its
+   padding inside the box as `.dc-avoid-split` leaves it. */
+.dc-section-panel.dc-npc-stat:not(:has(h4)) {
+  break-inside: var(--dc-npc-stat-break-inside);
+  --dc-section-edge: 0px;
 }
 
 /* The `@columns` run of an entries block is glued to the bar and intro above it,

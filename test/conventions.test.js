@@ -198,11 +198,27 @@ describe("a bare @section is unstyled", () => {
 });
 
 
-// A skill card is a third to half a page: kept atomic, it left most specialty
-// pages holding one card and a third of the sheet empty. Cards split by
-// default; `.dc-avoid-split` is the only thing that keeps one whole.
-describe("skill cards split by default", () => {
-  test("no rule gives a skill card break-inside: avoid unless it names .dc-avoid-split", () => {
+// Keeping a box whole is a token per component, `--dc-<component>-break-inside`
+// (defaults at :root in dc-component-defaults.css). `.dc-avoid-split` is a setter
+// of those tokens and nothing else, so a book writes the same declarations from
+// its own sheet. A rule that gives a box `break-inside: avoid` reads the token.
+describe("keep-whole tokens", () => {
+  const TOKENS = ["--dc-section-break-inside", "--dc-catalog-break-inside", "--dc-npc-stat-break-inside", "--dc-skill-card-break-inside", "--dc-faction-break-inside"];
+
+  test("each is declared at :root, and a section, a catalog, a skill card and a faction split by default", () => {
+    const root = declsOf("styles/dc-component-defaults.css", ":root");
+    for (const token of TOKENS) expect(root[token], token).toBeDefined();
+    for (const token of TOKENS.filter((t) => t !== "--dc-npc-stat-break-inside")) expect(root[token], token).toBe("auto");
+    expect(root["--dc-npc-stat-break-inside"], "a creature stays whole").toBe("avoid");
+  });
+
+  test(".dc-avoid-split sets every token to avoid, and the section's edge to 0px, and sets nothing else", () => {
+    const setter = declsOf("styles/components/section.css", ".dc-avoid-split");
+    expect(Object.keys(setter).sort()).toEqual([...TOKENS.filter((t) => t !== "--dc-catalog-break-inside"), "--dc-section-edge"].sort());
+    for (const [prop, value] of Object.entries(setter)) expect(value, prop).toBe(prop === "--dc-section-edge" ? "0px" : "avoid");
+  });
+
+  test("no rule says `break-inside: avoid` for a section, a skill card or a faction: they read their token", () => {
     const bad = [];
     for (const rel of pkg.gutterpress.styles) {
       postcss.parse(read(rel)).walkRules((rule) => {
@@ -210,28 +226,61 @@ describe("skill cards split by default", () => {
         if (!avoids) return;
         for (const selector of rule.selectors) {
           const subject = compoundsOf(selector).at(-1) ?? "";
-          if (/\.dc-skill-card(?![\w-])/.test(subject) && !/dc-avoid-split/.test(selector)) bad.push(`${rel}: ${selector.trim()}`);
+          if (/\.(dc-skill-card|dc-faction|dc-section-panel|dc-section-flat|dc-npc-stat|dc-catalog)(?![\w-])/.test(subject)) bad.push(`${rel}: ${selector.trim()}`);
         }
       });
     }
-    expect(bad, "a skill card splits by default: key the avoid on .dc-avoid-split").toEqual([]);
+    expect(bad, "set the box's --dc-<component>-break-inside token instead").toEqual([]);
+  });
+
+  test("a catalog reads its own token, so `.dc-avoid-split` does not keep one whole", () => {
+    const catalog = declsOf("styles/components/entries.css", ".dc-section-panel.dc-catalog");
+    expect(catalog["--dc-section-break-inside"]).toBe("var(--dc-catalog-break-inside)");
+    expect(catalog["--dc-section-edge"]).toBe("var(--dc-section-pad-bottom)");
+  });
+
+  test("a creature with no `####` reads --dc-npc-stat-break-inside", () => {
+    const creature = declsOf("styles/components/section.css", ".dc-section-panel.dc-npc-stat:not(:has(h4))");
+    expect(creature["break-inside"]).toBe("var(--dc-npc-stat-break-inside)");
+  });
+});
+
+// A skill card is a third to half a page: kept atomic, it left most specialty
+// pages holding one card and a third of the sheet empty. Cards split by
+// default; `.dc-avoid-split` is the only thing that keeps one whole.
+describe("skill cards split by default", () => {
+  test("a skill card's break-inside is its token", () => {
+    expect(declsOf("styles/components/cards.css", ".dc-skill-card")["break-inside"]).toBe("var(--dc-skill-card-break-inside)");
   });
 
   test("an ability row is never cut, and a split card never opens with only its tab", () => {
     const css = read("styles/components/cards.css");
     expect(css).toMatch(/\.dc-skill-card \.dc-ability \{\s*break-inside: avoid;/);
-    expect(css).toMatch(/\.dc-skill-card:not\(\.dc-avoid-split\) \.dc-card-inner > :nth-child\(-n\+2\) \{\s*break-after: avoid;/);
+    expect(css).toMatch(/\.dc-skill-card \.dc-card-inner > :nth-child\(-n\+2\) \{\s*break-after: avoid;/);
   });
 });
 
 // A faction profile runs to half a page or more; kept whole it left half-empty
 // pages through a chapter of factions. It splits like an entry.
 describe("faction cards split by default", () => {
-  test("a faction card overrides .dc-card's avoid, and .dc-avoid-split keeps one whole", () => {
+  test("a faction card overrides .dc-card's avoid with its token, which defaults to auto", () => {
     const css = read("styles/components/section.css");
-    expect(css).toMatch(/\.dc-card\.dc-faction \{[^}]*break-inside: auto;/);
-    expect(css).toMatch(/\.dc-card\.dc-faction\.dc-avoid-split \{\s*break-inside: avoid;/);
+    expect(css).toMatch(/\.dc-card\.dc-faction \{[^}]*break-inside: var\(--dc-faction-break-inside\);/);
     expect(css).toMatch(/\.dc-card\.dc-faction > :is\(h3, h4\):first-of-type \{[^}]*break-after: avoid;/);
+  });
+});
+
+// The space under a paragraph or list item is `--dc-flow-gap`, which nothing
+// sets by default (each component keeps its own), `.dc-snug` sets, and a book
+// may set on any box. `revert-layer` hands the margin back while it is unset.
+describe("the flow gap", () => {
+  test("the rule reads the token with a `revert-layer` fallback, and `.dc-snug` sets it to 0.04in", () => {
+    expect(declsOf("styles/page-templates.css", ":is(p, li)")["margin-bottom"]).toBe("var(--dc-flow-gap, revert-layer)");
+    expect(declsOf("styles/page-templates.css", ".dc-snug")["--dc-flow-gap"]).toBe("0.04in");
+  });
+
+  test("nothing declares it at :root: unset is what keeps a component's own spacing", () => {
+    for (const rel of pkg.gutterpress.styles) postcss.parse(read(rel)).walkRules(":root", (rule) => rule.walkDecls("--dc-flow-gap", () => { throw new Error(`${rel} declares --dc-flow-gap at :root`); }));
   });
 });
 
