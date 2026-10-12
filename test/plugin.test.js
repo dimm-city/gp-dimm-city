@@ -285,7 +285,7 @@ describe("declared wrapper markers", () => {
       block: "dc-block",
     };
     const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note"]; // declared too, but their content is rewritten: see the next describe blocks
-    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && k !== "section").sort()).toEqual(Object.keys(expected).sort());
+    expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`));
       expect(html, name).toContain(`<div class="${cls}">`);
@@ -339,6 +339,29 @@ describe("declared wrapper markers", () => {
     }
     // A bare @section stays core's plain box.
     expect(render(wrap("@section", "@end-section")).html).toContain('<div class="section">');
+  });
+
+  test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
+    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file" };
+    for (const [word, cls] of Object.entries(pages)) {
+      const { html, warnings } = render(`@page ${word} .dg-x\n\nx`);
+      expect(html, word).toContain(`<div class="page ${cls} dg-x" data-page="${word}"`);
+      expect(warnings, word).toEqual([]);
+    }
+    const chapters = { rules: "dc-chapter-rules", lore: "dc-chapter-lore", "citizen-file": "dc-chapter-citizen-file", specialty: "dc-chapter-specialty" };
+    for (const [word, cls] of Object.entries(chapters)) {
+      const { html, warnings } = render(`@chapter ${word} #ch-x ch="2"\n\n@page\n\nx`);
+      expect(html, word).toContain(`<div class="chapter ${cls}"`);
+      expect(html, word).not.toContain("data-chapter-label");
+      expect(html, word).toContain("chapter-2");
+      expect(warnings, word).toEqual([]);
+    }
+    // The raw spelling the books still write renders as before: classes only, no variant.
+    const raw = render("@page .page-chapter-start .dc-chapter-start\n\nx").html;
+    expect(raw).toContain('<div class="page page-chapter-start dc-chapter-start"');
+    expect(raw).not.toContain("dc-page-");
+    // Any other word after @chapter is still its label.
+    expect(render("@chapter C.01 ch=\"1\"\n\n@page\n\nx").html).toContain('data-chapter-label="C.01"');
   });
 
   test("a section marker closes at the next @section like any section, and @continue keeps its class", () => {

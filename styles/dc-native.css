@@ -197,13 +197,12 @@
 }
 @page front-matter:left  { margin: 0.5in 0 0 0; }
 @page front-matter:right { margin: 0.5in 0 0 0; }
-.page.page-toc,
-.page.page-credits {
+.page:is(.dc-page-contents, .dc-page-credits) {
   box-sizing: border-box;
   padding: 0 0.625in;
   margin-top: 0;
 }
-.page.page-toc {
+.page.dc-page-contents {
   /* breathing room between the TOC card and the sheet bottom */
   padding-bottom: 0.75in;
 }
@@ -217,20 +216,15 @@
    sheet while the page box stayed one sheet tall, so the next page started
    on that same second sheet and printed on top of it (design guide, the
    Introduction over the credits colophon). */
-.page.page-credits {
+.page.dc-page-credits {
   display: flex;
   flex-direction: column;
   min-height: var(--gp-content-h);
   padding-bottom: 0;
 }
-.page.page-credits .dc-section-flat {
-  flex: 1 1 auto;
-  min-height: 0;
-  margin-bottom: 0;
-  /* Its flex column and box-shadow (rail + side-only shadow) are set in page-templates.css. */
-}
-/* The masthead h1 (.page-toc / .page-credits) is defined once, in
-   page-templates.css; it escapes the padding above back to the sheet edges. */
+/* The masthead h1 and the credits colophon (a flat section that fills the
+   flex column, `--dc-section-grow`) are defined once, in page-templates.css;
+   the h1 escapes the padding above back to the sheet edges. */
 
 /* In-flow art must never be sliced across a page boundary. */
 p.dc-img-wrapper,
@@ -239,7 +233,7 @@ figure {
 }
 /* Full-bleed plates fill their margin-0 page exactly; sub-pixel rounding
    was slicing the last rows of the image onto the next page. */
-.dc-full-page {
+:is(.dc-full-page, .gp-page-full-bleed) {
   overflow: clip;
 }
 

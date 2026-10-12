@@ -1372,6 +1372,32 @@ export const markers = {
     },
   },
 
+  // Locations: where the content sits. A location only adjusts components, by
+  // setting tokens (styles/page-templates.css); it never supplies chrome of its
+  // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`;
+  // `@chapter rules` is `<div class="chapter dc-chapter-rules">` (any other word
+  // after `@chapter` stays its label). Core also ships `@page blank` and
+  // `@page full-bleed`. The old raw spellings (`@page .page-chapter-start .dc-chapter-start`,
+  // `.page-toc`, `.page-credits .dc-credits`, `.page-intro`,
+  // `.dc-citizen-file-page`) are no longer styled.
+  page: {
+    variants: {
+      'chapter-start': 'dc-page-chapter-start',
+      intro: 'dc-page-intro',
+      credits: 'dc-page-credits',
+      contents: 'dc-page-contents',
+      'citizen-file': 'dc-page-citizen-file',
+    },
+  },
+  chapter: {
+    variants: {
+      rules: 'dc-chapter-rules',
+      lore: 'dc-chapter-lore',
+      'citizen-file': 'dc-chapter-citizen-file',
+      specialty: 'dc-chapter-specialty',
+    },
+  },
+
   // Section-styled components. `section: true` makes each one a real core
   // @section: `@npc-stat` is exactly `@section npc` (same element, same
   // classes). No variants of their own: none is styled per specialty (that
