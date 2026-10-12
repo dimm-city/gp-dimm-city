@@ -36,7 +36,6 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page .page-credits .dc-credits` | none | The credits page |
 | `@page .page-intro` | none | The introduction |
 | `@page .page-chapter-start .dc-chapter-start` | none | A chapter opener |
-| `@page .page-sidebar` | `p.N`, `c.N` | A page with an inset sidebar rail |
 | `@page .dc-citizen-file-page` | `p.N`, `c.N` | Running header "Citizen File" |
 | `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
 | `@page .dc-full-page` | none | Zero margins; full-bleed art |

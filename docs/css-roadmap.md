@@ -32,14 +32,14 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 - **Scope the element baseline (20).** Bare `p`, `table`, `hr`, `blockquote` and the headings stop carrying decoration, so components stop undoing it. This is the root cause of most of the remaining overrides.
 - **Specialty shapes (21).** Replace about 70 hand-written polygons with a parameterised shape system.
 - **`dc-` prefix (22).**
-  - Covers the template classes (`.page-intro`, `.page-toc`, `.page-credits`, `.credits-colophon`) and the bare modifiers (`.warning`, `.inset`, `.free`, `.variable`).
+  - Covers the template classes (`.page-intro`, `.page-toc`, `.page-credits`, `.credits-colophon`) and the bare modifiers (`.warning`, `.free`, `.variable`).
   - Ship aliases for one release.
   - This touches all three books, and the owner wants it as its own change.
 
 ## Book-side work
 
 - **Field Guide: specialty-card pages.** These pages are scheduled for a redesign.
-- **Field Guide: sidebars.** Choose sidebar areas. `@sidebar-box` suits short asides that stay in the text flow. An inset sidebar suits a long aside that runs alongside the text on its own page. The inset rail rules wait on this decision (see `cleanup-backlog.md`).
+- **Field Guide: sidebars.** Choose sidebar areas. `@sidebar-box` suits short asides that stay in the text flow. The inset rail was removed 2026-10-12.
 - **Field Guide: art.**
   - Eight pages have art below 300 DPI.
   - Cutout art with an alpha channel still flattens a few pages in PDF/X-1a.

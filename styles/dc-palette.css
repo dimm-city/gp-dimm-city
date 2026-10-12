@@ -76,7 +76,7 @@
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
   --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source */
-  --tint-hud-teal:     #2a6a8a;  /* inset-sidebar callout mix source */
+  --tint-hud-teal:     #2a6a8a;
   --tint-signal-red:   #d41200;  /* tape border mix source */
   --tint-brick-red:    #b42828;  /* skill-card header wash mix source */
 
@@ -147,15 +147,6 @@
   --bottom-margin: 0.875in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
-
-  /* Inset-sidebar right column. `.dc-sidebar.inset` is a full-height rail
-     pinned to the page's right edge, so the page must RESERVE this column or
-     the rail paints on top of the body text (it did, until 2026-08-22).
-     --dc-sidebar-inset-column is the rail's OUTER width (it is border-box);
-     the gutter is the gap between body text and the rail. page-templates.css
-     turns the pair into the hosting page's padding-right. */
-  --dc-sidebar-inset-column: 3.4in;
-  --dc-sidebar-inset-gutter: 0.2in;
 
   /* ── Page Geometry ────────────────────────────────────────────────────── */
   --page-width:     8.625in;

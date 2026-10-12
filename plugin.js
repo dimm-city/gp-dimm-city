@@ -7,7 +7,7 @@
  * DECLARED MARKERS (the `markers` export at the bottom of this file — core
  * Gutterpress parses, nests, closes and source-maps these; this file only
  * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @sidebar [inset]     → div.dc-sidebar (`.inset` shorthand works too)
+ *   @sidebar             → div.dc-sidebar
  *   @sidebar-box         → div.dc-prose-panel.dc-sidebar-box
  *   @definition          → div.dc-prose-panel.dc-definition-block
  *   @specialty-intro     → div.dc-specialty-intro
@@ -1291,8 +1291,8 @@ export default function dimmCityPlugin(md, options = {}) {
  * `snippets/<name>.md`, and the usual catalog/guide entries — see
  * docs/adding-macros.md.
  *
- * Variants are a bare word on the marker line (`@sidebar inset`) and only add
- * a class, so `.inset`-style class shorthand keeps working beside them.
+ * Variants are a bare word on the marker line (`@block panel`) and only add
+ * a class, so class shorthand (`@block .dc-panel`) keeps working beside them.
  * `autoCloseAt: ['eof']` keeps these silent at end-of-document: they have
  * never needed an explicit `@end-…`.
  */
@@ -1334,7 +1334,7 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
-  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  sidebar: wrapper('dc-sidebar'),
   'sidebar-box': wrapper('dc-prose-panel dc-sidebar-box'),
   definition: wrapper('dc-prose-panel dc-definition-block'),
   'specialty-intro': wrapper('dc-specialty-intro'),

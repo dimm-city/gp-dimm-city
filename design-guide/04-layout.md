@@ -123,48 +123,6 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 
 </div>
 
-### Inset sidebar
-
-`@sidebar .inset` is a full-height rail pinned to the page's edge. It needs the `@page .page-sidebar` template, which reserves the column the rail stands in; on an ordinary page it falls back to the floated sidebar.
-
-```markdown
-@page .page-sidebar
-
-@section
-
-Body text for this page stops at the rail's edge.
-
-@end-section
-
-@sidebar .inset
-
-### Free, Not Costless
-
-One out-of-turn ability per round is free to trigger — but it still spends its listed AP.
-
-@end-sidebar
-```
-
-The inset rail needs a page of its own, so the rendered page is the next page. {.dg-next}
-
-@page .page-sidebar
-
-@section
-
-Initiative in Dimm City is fast and loose: roll Lucidity, act in order, and remember that out-of-turn abilities still cost AP even when the first use each round is free.
-
-That distinction trips up new tables constantly, so it belongs in the margin right where the rule first bites.
-
-@end-section
-
-@sidebar .inset
-
-### Free, Not Costless
-
-One out-of-turn ability per round is *free to trigger* — but it still spends its listed AP. Each additional out-of-turn use that round costs **+1 AP** on top.
-
-@end-sidebar
-
 @page .dg-doc
 
 ## Floated images

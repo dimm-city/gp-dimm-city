@@ -104,10 +104,9 @@
   --dc-ap-fg:                var(--paper-cream);
   --dc-ap-border:            var(--ink-dark);
 
-  /* .dc-sidebar (floated inset box) public API */
+  /* .dc-sidebar (floated box) public API */
   --dc-sidebar-surface:      var(--paper-light);
   --dc-sidebar-border:       var(--hud-blue);
-  --dc-sidebar-accent:       var(--orange);
 
   /* .section.dc-fiction-excerpt public API */
   --dc-fiction-bg:           transparent;
@@ -184,10 +183,6 @@
   --dc-sidebar-box-border:   var(--border-hairline);
   --dc-sidebar-box-rail:     4px;
   --dc-sidebar-box-surface:  var(--paper-cream);
-
-  /* inset-sidebar rail callout (.dc-sidebar.inset hr ~ p, images.css) public API */
-  --dc-sidebar-callout-accent: var(--hud-blue);
-  --dc-sidebar-callout-bg:     color-mix(in srgb, var(--tint-hud-teal) 8%, var(--dc-sidebar-surface));
 
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);

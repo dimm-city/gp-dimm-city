@@ -23,6 +23,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   them. Open a chapter with `@page .page-chapter-start .dc-chapter-start` and a
   `# Title`, as both books do. The design guide's chapter-opener, specialty
   overview and rules chapters now use that form.
+- **`@sidebar .inset` and `@page .page-sidebar`.** The full-height rail pinned
+  to a page edge, the template that reserved its column, and the tokens
+  `--dc-sidebar-inset-column`, `--dc-sidebar-inset-gutter`,
+  `--dc-sidebar-callout-accent`, `--dc-sidebar-callout-bg` and
+  `--dc-sidebar-accent` are gone. `@sidebar` itself (the floated box) stays,
+  and `@sidebar` no longer takes an `inset` variant word. For a short aside in
+  the text flow, use `@sidebar-box`.
 
 ## [1.4.1] - 2026-10-11
 

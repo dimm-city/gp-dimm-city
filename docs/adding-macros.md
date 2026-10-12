@@ -20,7 +20,7 @@ A wrapper that only needs an element and classes needs no code of its own. It is
 
 ```js
 export const markers = {
-  sidebar: wrapper('dc-sidebar', { variants: { inset: 'inset' } }),
+  sidebar: wrapper('dc-sidebar'),
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
@@ -36,7 +36,7 @@ export const markers = {
 
 Things to know:
 
-- A **variant** is a bare word on the marker line (`@sidebar inset`). It adds the mapped class and a `data-<marker>="<variant>"` attribute; nothing else changes. The `.inset` class shorthand keeps working beside it.
+- A **variant** is a bare word on the marker line (`@block panel`). It adds the mapped class and a `data-<marker>="<variant>"` attribute; nothing else changes. The class shorthand (`@block .dc-panel`) keeps working beside it.
 - A **label** (`label="…"`) becomes a child element with the declared class, plus `data-label` on the wrapper.
 - Declared containers nest as a stack. Opening a second one of the same kind closes the first and everything opened after it; `@end-<name>` closes that container and everything inside it; `@page`, `@section`, `@chapter` and `@continue` close them all. Hand-written markers do not close them.
 - Attributes follow core's rules: `key=value` becomes `data-key`, `#id` becomes `id`.

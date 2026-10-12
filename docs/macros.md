@@ -9,7 +9,7 @@ All classes emitted by `plugin.js` must use the `dc-` prefix
 always check that the emitted class name has a matching CSS rule before shipping.
 
 
-**Declared markers.** `@sidebar` (`inset`), `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block` (`panel`, `slate`, `shard`, `codex`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them.
+**Declared markers.** `@sidebar`, `@sidebar-box`, `@definition`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear`, `@toc`, `@lede`, `@glossary` and `@block` (`panel`, `slate`, `shard`, `codex`) are declared in the `markers` table exported by `plugin.js`, so Gutterpress core parses and closes them.
 
 **Declared section markers.** `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals` and `@dreams` are the section-styled components, declared with `section: true`. Each is a real core `@section` carrying one class, so `@npc-stat` and `@section .dc-npc-stat` render the same element and classes (the declared form also writes `data-<marker>` only when a variant word is given, and none of these has variants). `@end-npc-stat` acts as `@end-section`; the section closes at the next `@section`/`@page` like any section, and `@continue` keeps its class. Books that write `@section .dc-…` keep working unchanged. Modifiers (`.gp-columns-2`, `.dc-plain`, `.dc-snug`, `.dc-allow-split`) stay author classes: `@card-grid .dc-snug`. See [adding-macros.md](./adding-macros.md#declared-markers-the-default-for-a-plain-wrapper) for how to add one.
 

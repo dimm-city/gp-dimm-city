@@ -293,12 +293,6 @@ describe("declared wrapper markers", () => {
     }
   });
 
-  test("@sidebar inset and @sidebar .inset both add the inset class", () => {
-    expect(render(wrap("@sidebar inset", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar inset"/);
-    expect(render(wrap("@sidebar .inset", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar inset"/);
-    expect(render(wrap("@sidebar {.top-right .inset}", "@end-sidebar")).html).toMatch(/<div class="dc-sidebar top-right inset"/);
-  });
-
   test("@block takes a variant word or a class, plus a title from label", () => {
     for (const [open, cls] of [
       ['@block panel label="A & B"', "dc-block dc-panel"],

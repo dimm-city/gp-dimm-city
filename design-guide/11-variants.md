@@ -1124,7 +1124,7 @@ Nothing here is safe. Nothing here is free.
 
 ## Sidebars
 
-`@sidebar` floats beside the text; `@sidebar .inset` is a full-height rail and needs its own `@page .page-sidebar` — see [Layout](#ch-layout).
+`@sidebar` floats beside the text — see [Layout](#ch-layout).
 
 <div class="dg-stage dg-on-paper">
 

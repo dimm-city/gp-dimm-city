@@ -29,7 +29,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `gear` (`@callout vibe`); `label="…"` |
 | `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard` `.dc-codex`, `label="…"` |
-| `@sidebar` | `@end-sidebar` | `.inset` (needs `@page .page-sidebar`) |
+| `@sidebar` | `@end-sidebar` | — |
 | `@sidebar-box` | `@end-sidebar-box` | `####` heading, `---`, body |
 | `@definition` | `@end-definition` | — |
 | `@glossary` | `@end-glossary` | `**term** — gloss` paragraphs |
@@ -101,7 +101,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-roll-the-die-color` `--dc-roll-the-die-border` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` |
-| Sidebar | `--dc-sidebar-surface` `--dc-sidebar-border` `--dc-sidebar-accent` `--dc-sidebar-inset-column` `--dc-sidebar-inset-gutter` |
+| Sidebar | `--dc-sidebar-surface` `--dc-sidebar-border` |
 | Sidebar box | `--dc-sidebar-box-surface` `--dc-sidebar-box-border` `--dc-sidebar-box-accent` `--dc-sidebar-box-rail` |
 | Definition | `--dc-definition-block-surface` `--dc-definition-block-accent` `--dc-definition-block-accent-width` |
 | Outcome ladder | `--dc-outcomes-surface` `--dc-outcomes-border` `--dc-outcomes-inner-border` `--dc-outcomes-label-bg` `--dc-outcomes-label-color` `--dc-outcome-key-color` `--dc-outcome-name-color` `--dc-outcome-name-opacity` |

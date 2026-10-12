@@ -114,19 +114,12 @@ components:
   - name: sidebar
     status: live
     origin: plugin
-    recipe: "@sidebar [inset | .inset] … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
+    recipe: "@sidebar … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
     emits: div.dc-sidebar
-    css: [styles/components/images.css, styles/page-templates.css]
-    tokens:
-      - --dc-sidebar-surface
-      - --dc-sidebar-border
-      - --dc-sidebar-accent
-      - --dc-sidebar-inset-column
-      - --dc-sidebar-inset-gutter
-      - --dc-sidebar-callout-accent
-      - --dc-sidebar-callout-bg
+    css: styles/components/images.css
+    tokens: [--dc-sidebar-surface, --dc-sidebar-border]
     breaks: "break-inside: avoid"
-    notes: "`.inset` is an unprefixed modifier read by .page.page-sidebar > .dc-sidebar.inset (page-templates.css). Design guide only."
+    notes: "Design guide only. The full-height `.inset` rail and its `@page .page-sidebar` template were removed 2026-10-12: no book used them."
 
   - name: sidebar-box
     status: live

@@ -112,58 +112,6 @@
   overflow-x: visible;
 }
 
-/* ── PAGE TEMPLATE: SIDEBAR (full-height inset rail + reserved column) ──────
-   Composite contract. `@sidebar .inset` renders a full-height rail pinned to
-   the page's right edge; this template is what RESERVES the column it stands
-   in. Author surface:
-
-     @page .page-sidebar
-     ...body content...
-     @sidebar .inset
-     ...rail content...
-     @end-sidebar
-
-   WHY A TEMPLATE AND NOT `.page:has(> .dc-sidebar.inset)`. A `.page` wrapper
-   is not a sheet — it is a content run that fragments across as many sheets
-   as it needs. The component gallery's wrapper measured 27,272px tall (~27
-   sheets, 149 children), so an automatic `:has()` reservation squeezed the
-   right column out of all 27 — measured: it pushed an at-a-glance card row
-   156px past its own grid box 22 sheets away. The rail only makes sense on a
-   wrapper that IS one sheet, and `@page` is how an author declares one. So
-   opting in is the feature, not a papercut.
-
-   The rail's positioning lives here too, not in components/*.css: scoping it
-   to the template means a stray `@sidebar .inset` outside one degrades to the
-   base floated sidebar (readable, in flow) instead of painting over the body
-   text — which is exactly the defect this template fixes. Component chrome
-   (transparent fill, accent rules, heading treatment) stays with the
-   component; only page-context geometry is here, per this file's contract.
-
-   `padding-right` (not a width change) is what reserves the column: an
-   absolutely positioned child resolves `right` against the page's PADDING
-   box, whose right edge does not move when padding grows. The text column
-   shrinks; the rail stays pinned to the page's right edge. */
-.page.page-sidebar {
-  padding-right: calc(
-    var(--dc-sidebar-inset-column) + var(--dc-sidebar-inset-gutter)
-  );
-}
-
-.page.page-sidebar > .dc-sidebar.inset {
-  position: absolute;
-  top: 0;
-  right: 0;
-  /* border-box so the width token is the rail's real footprint — the
-     reservation above spends the same token, so the two cannot drift. */
-  box-sizing: border-box;
-  width: var(--dc-sidebar-inset-column);
-  height: 100%;
-  padding: 0.2in 0.2in 0.15in;
-  margin: 0;
-  float: none;
-  clear: none;
-}
-
 /* `.page-break` (unprefixed) was here and is DELETED (2026-09-02): core
    emits `.gp-page-break` for the `@page-break` marker, and the unprefixed
    name had no emitter or author use — verified against both books'

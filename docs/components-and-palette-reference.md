@@ -68,7 +68,7 @@ Use this to choose the right callout type before reaching for a class name.
 - `.dc-block.dc-codex` — reference/glossary
 
 ### Sidebars
-- `.dc-sidebar` / `.dc-sidebar.inset`
+- `.dc-sidebar`
 - `.dc-sidebar-box`
 
 ### Skill Cards
