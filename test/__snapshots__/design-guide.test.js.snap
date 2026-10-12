@@ -2591,7 +2591,7 @@ gutterpress build my-book --format html --out ./dist/site
 <pre><code data-source-range="65:69" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
-<p>Commit the manifest and <code>plugins/npm/</code> together. The Gutterpress app does the same under Project settings → Features.</p>
+<p>Commit the manifest; <code>plugins/npm/</code> is in the book’s <code>.gitignore</code>, and a fresh clone downloads the pinned version on its first build or <code>gutterpress validate</code>. The Gutterpress app does the same under Project settings → Features.</p>
 <h2>This guide</h2>
 <p>From the package repository, <code>npm run dev</code> previews this guide against the working copy, <code>npm run build</code> renders it to <code>.build/design-guide.pdf</code>, and <code>npm run build:html</code> builds the static site. The developer workflow is in the repository’s <code>docs/developing.md</code>.</p>
 </div></div>"

@@ -25,17 +25,17 @@ in the manifest:
 
 ```yaml
 extensions:
-  - gp-dimm-city@1.0.0
+  - gp-dimm-city@1.5.0
 ```
 
-**Commit `plugins/npm/`.** Builds never fetch from the registry; the vendored
-copy is what builds your book, on every machine and in CI. If your repo
-ignores `node_modules`, add `!**/plugins/npm/**` as the last line of
-`.gitignore` — the vendored tree has a `node_modules` folder inside it — and
-`**/plugins/npm/** -text` to `.gitattributes`, because the copy is verified
-byte for byte on every build.
+**Commit the manifest, not `plugins/npm/`.** The downloaded copy is not part of
+the book's history: Gutterpress adds `plugins/npm/` to the book's `.gitignore`.
+The pin in the manifest is what you commit. On a fresh clone, the first build,
+export or `gutterpress validate` downloads exactly the pinned version through
+the same verified path (this needs the network once); after that the book works
+offline.
 
-`gutterpress ext list my-book` shows `gp-dimm-city@1.0.0 [npm; markdown, styles, components, snippets]`.
+`gutterpress ext list my-book` shows `gp-dimm-city@1.5.0 [npm; markdown, styles, components, snippets]`.
 
 ## What you get
 
@@ -149,9 +149,11 @@ Books pin an exact version, so nothing changes under you. To move a book to a
 new release:
 
 ```sh
-gutterpress ext add gp-dimm-city@1.1.0 my-book
-git rm -r my-book/plugins/npm/gp-dimm-city/1.0.0   # ext add leaves the old copy in place
+gutterpress ext add gp-dimm-city@1.5.0 my-book
 ```
+
+Installing a version removes the book's copies of other versions of this
+package, so there is nothing to clean up by hand. Commit the manifest change.
 
 Rebuild and compare before you commit — the Dimm City books gate every bump
 with a render-parity run (text runs, image placement, and a pixel comparison

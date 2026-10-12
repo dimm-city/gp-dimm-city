@@ -68,7 +68,7 @@ gutterpress ext outdated my-book            # each pinned package against npm's 
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 ```
 
-Commit the manifest and `plugins/npm/` together. The Gutterpress app does the same under Project settings → Features.
+Commit the manifest; `plugins/npm/` is in the book's `.gitignore`, and a fresh clone downloads the pinned version on its first build or `gutterpress validate`. The Gutterpress app does the same under Project settings → Features.
 
 ## This guide
 

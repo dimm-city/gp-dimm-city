@@ -63,6 +63,9 @@ words on `@section`, `@page` and `@chapter` that this release declares.
 
 ### Changed
 
+- README: books commit the manifest pin, not `plugins/npm/` (Gutterpress ignores the
+  downloaded copy and restores the pinned version on a fresh clone); installing a
+  version removes the old copy, so the manual `git rm` step is gone.
 - Documentation: a "Pick a section" table (in the README and at the start of the
   design guide) maps what you are writing to the marker; `components.yaml` now
   lists every marker, section, page and chapter word and modifier with its
