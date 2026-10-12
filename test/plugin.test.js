@@ -189,7 +189,7 @@ describe("behaviour carried from the book repo", () => {
 
   test("retains custom outcome rendering with safe inline rolls", () => {
     const outcomeTable = [
-      "@skill {.dc-allow-split}",
+      "@skill",
       "",
       "#### Risk It",
       "",
@@ -213,7 +213,7 @@ describe("behaviour carried from the book repo", () => {
 
   test("claims skill continuations before the Gutterpress layout transform", () => {
     const skill = [
-      "@skill {.dc-allow-split}",
+      "@skill",
       "",
       "#### Long Skill | T2",
       "",
@@ -233,7 +233,7 @@ describe("behaviour carried from the book repo", () => {
     const sectionHtml = md.render(section, sectionEnv);
 
     expect((skillHtml.match(/class="dc-skill-card/g) ?? []).length).toBe(2);
-    expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont dc-allow-split"/);
+    expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont"/);
     expect(skillHtml).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
     expect(JSON.stringify(skillEnv.layoutWarnings ?? [])).not.toMatch(/continue_without_section/);
 
@@ -510,21 +510,25 @@ describe("declared specialty, learning path and skill", () => {
 
   describe("@skill", () => {
     test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
-      const src = doc("@skill {.dc-allow-split .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const src = doc("@skill {.dc-highlight .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
       const { html } = renderGp(src);
-      expect(count(html, /class="dc-skill-card dc-allow-split my-class"/g)).toBe(2);
+      expect(count(html, /class="dc-skill-card dc-highlight my-class"/g)).toBe(2);
       expect(html).toContain('id="sk" data-variant="2" name="first"');
       expect(html).toContain('name="second"');
-      // `.dc-allow-split` opts out of the default avoid
-      expect(html).not.toContain("data-break-inside");
       expect(html).toContain('<div class="dc-card-tab dc-highlight">');
       expect(html).toContain('<h4 class="dc-tab-title">Second</h4>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
     });
 
-    test("a card is kept whole by default and named after its title", () => {
+    test("a card splits across pages by default and is named after its title", () => {
       const { html } = renderGp(doc("@skill", "", card("Hold the Line")));
-      expect(html).toContain('<div class="dc-skill-card" name="hold-the-line" data-break-inside="avoid">');
+      expect(html).toContain('<div class="dc-skill-card" name="hold-the-line">');
+      expect(html).not.toContain("data-break-inside");
+    });
+
+    test(".dc-avoid-split keeps every card of the skill whole", () => {
+      const { html } = renderGp(doc("@skill .dc-avoid-split", "", card("First | T1"), "", card("Second | T2")));
+      expect(count(html, /<div class="dc-skill-card dc-avoid-split" name="(first|second)" data-break-inside="avoid">/g)).toBe(2);
     });
 
     test("tiers in a path run PATHREF.N across its skills unless the heading names one", () => {
@@ -549,7 +553,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
       expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
-      expect(html).toContain('<div class="dc-outcomes">');
+      expect(html).toContain('<div class="dc-outcomes" data-break-inside="avoid">');
       expect(html).toContain('<div class="dc-outcomes-label">Outcomes</div>');
       expect(count(html, />Outcomes</g)).toBe(1); // the "##### Outcomes" sub-header is swallowed: the table carries its own label
       expect(html).not.toContain("<h5");
@@ -627,10 +631,10 @@ describe("declared specialty, learning path and skill", () => {
       doc(open, "", "#### Long Skill | T2", "", "1. **0 AP** *First:* Opening text.", "", "@continue", "", "2. **1 AP** *Second:* Continued text.", "", ...after);
 
     test("opens a continuation card that keeps the skill's classes, in a specialty and path", () => {
-      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", skill("@skill {.dc-allow-split}", "@end-skill"), "@end-learning-path", "@end-specialty");
+      const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", skill("@skill", "@end-skill"), "@end-learning-path", "@end-specialty");
       const { html, warnings } = renderGp(src);
       expect(count(html, /class="dc-skill-card/g)).toBe(2);
-      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont dc-allow-split" name="long-skill">');
+      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont" name="long-skill">');
       expect(html).toContain('<div class="dc-card-tab dc-card-tab-cont">');
       expect(html).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
@@ -638,8 +642,8 @@ describe("declared specialty, learning path and skill", () => {
       expect(warnings).toEqual([]);
     });
 
-    test("a card that is not splittable keeps its avoid on the continuation too", () => {
-      expect(renderGp(skill("@skill", "@end-skill")).html).toMatch(/dc-skill-card-cont" name="long-skill" data-break-inside="avoid"/);
+    test("a card kept whole with .dc-avoid-split keeps its avoid on the continuation too", () => {
+      expect(renderGp(skill("@skill .dc-avoid-split", "@end-skill")).html).toMatch(/dc-skill-card-cont dc-avoid-split" name="long-skill" data-break-inside="avoid"/);
     });
 
     test("the continuation is claimed only inside a skill's card; elsewhere @continue is core's section continuation", () => {
@@ -825,7 +829,7 @@ describe("declared card, outcome and procedure", () => {
       const { html } = renderGp(skill(...table, "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
-      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes" data-break-inside="avoid">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
     });
 
     test("one left open at the end of the document warns, with core's own message", () => {

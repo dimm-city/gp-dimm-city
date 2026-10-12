@@ -48,7 +48,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@specialty-art` | `@end-specialty-art` | one image |
 | `@specialty-card` | `@end-specialty-card` | `#id`; `###` name, image, `>` tagline, pitch |
 | `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
-| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-allow-split}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]`; `@columns 2` around part of the body |
+| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-avoid-split}` `{.dc-highlight}`; `#### Name \| Tier [\| highlight]`; `@columns 2` around part of the body |
 | `@continue` | — | inside a skill: continuation card |
 
 
@@ -56,9 +56,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.dc-avoid-split` | `@section` | Keep the section whole; it moves to the next page rather than splitting (sections split by default) |
+| `.dc-avoid-split` | `@section`, `@skill` | Keep the section or the skill's cards whole; each moves to the next page rather than splitting (both split by default) |
 | `.gp-no-break` | `@section` | Core's never-split class |
-| `.dc-allow-split` | `@skill` | Allow a tall skill card to split |
 | `.gp-break-before` | a heading | New page before it |
 | `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
 | `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |

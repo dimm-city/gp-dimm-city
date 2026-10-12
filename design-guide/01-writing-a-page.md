@@ -66,7 +66,7 @@ Every marker takes the same attribute grammar after its name, in any order: `#id
 @callout warning label="Heat is shared"
 ```
 
-Standard markdown elements take attributes too, with braces at the end of the element: `## Title {.dc-spray}`, `![alt](img.png){.dc-img-float-right}`, and `@skill {.dc-allow-split}` for a class on a component macro.
+Standard markdown elements take attributes too, with braces at the end of the element: `## Title {.dc-spray}`, `![alt](img.png){.dc-img-float-right}`, and `@skill {.dc-avoid-split}` for a class on a component macro.
 
 ## The blank-line rule
 

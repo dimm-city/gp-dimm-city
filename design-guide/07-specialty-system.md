@@ -360,7 +360,7 @@ Once per round, outside your turn, you exploit a target in reach:
 | Anchor | `@skill id="dirty-work"` | A link target for the card |
 | Highlight | `#### Name \| AUG4.1 \| highlight` with `@skill {.dc-highlight}` | A featured ability: crimson tab halo and body wash |
 | Two columns | `@columns 2` … `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
-| Allow split | `@skill {.dc-allow-split}` | Let a tall card break across pages |
+| Avoid split | `@skill {.dc-avoid-split}` | Keep a card whole instead of letting it break across pages |
 
 The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `VAR` or a range is variable (magenta). A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
 
@@ -415,7 +415,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ## Continuing a long card
 
-When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Prefer this to `.dc-allow-split`: the break lands at a boundary you chose.
+When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
 
 ```markdown {.dg-split}
 @specialty .augmerc

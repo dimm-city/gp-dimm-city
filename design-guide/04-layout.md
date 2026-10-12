@@ -151,17 +151,17 @@ A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch
 
 ## Break control
 
-Cards and callouts keep themselves whole by default: they move to the next page rather than split. A section does the opposite: it splits where the page ends. Two classes change that, and a third forces a break.
+Callouts keep themselves whole by default: they move to the next page rather than split. Sections and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut). Two classes change that, and a third forces a break.
 
 | You write | Effect |
 |---|---|
 | `@section panel .dc-avoid-split` | Keep this section whole: it moves to the next page rather than splitting |
 | `@section .gp-no-break` | Core's own never-split class, for a section of any kind |
-| `@skill {.dc-allow-split}` | Allow this one tall skill card to split instead of leaving a page mostly empty |
+| `@skill {.dc-avoid-split}` | Keep every card of this skill whole: it moves to the next page rather than splitting |
 | `## Heading {.gp-break-before}` | Start a new page before this element |
 | `@page-break` | Start a new page here |
 
-Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. Reach for `.dc-allow-split` only when a skill card is genuinely taller than the printable area. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
+Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
 
 ## Tighter spacing
 

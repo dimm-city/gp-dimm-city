@@ -317,7 +317,6 @@ describe("component catalog", () => {
   const REQUIRED_RETIRED = ["tabbed", "plain", "section-allow-split", "column-panel", "chapter-opener", "sidebar-inset"];
   /** Classes a retired entry mentions that stay styled because a live component uses them. */
   const SHARED_CLASSES = {
-    "dc-allow-split": "still the skill card's switch (see allow-split)",
     "dc-sub-header": "the skill card's sub-header",
     "dc-sidebar": "@sidebar, the floated box, stays",
   };

@@ -22,7 +22,7 @@ always check that the emitted class name has a matching CSS rule before shipping
 - `@specialty augmerc` and `@specialty .augmerc` (or `{.augmerc}`) are the same wrapper. The names are `augmerc`, `proxy`, `streetwarden`, `gutterdruid`, `cybersurgeon`, `wirephreak`, `technosorcerer`, `etherlock`, `dualist` and `generalist`, the specialties `.dc-specialty.<name>` styles.
 - Opening a marker that is already open closes it and everything inside it: a second `@skill` closes the first, a second `@learning-path` closes the first path and its skills, a second `@specialty` closes everything. `@end-<name>` closes that marker and what is inside it, so `@end-skill` closes only the skill and `@end-learning-path` closes the path with its skills. `@page`, `@section`, `@chapter` and `@continue` close all three; use `@page-break` to break the page inside a specialty. A closer with nothing open warns (`declared_marker_close_without_open`).
 - A skill belongs in a learning path and a path in a specialty. The plugin checks that and reports it in plain words: skills sitting directly in a specialty (one problem per run of them: "This skill (and any right after it) is outside a learning path…"), a learning path or specialty that starts inside a skill. The usual cause is an `@end-learning-path` above the skills it was meant to close.
-- Each `####` heading in a skill is its own card, wearing the classes and attributes of the `@skill` line (`@skill {.dc-allow-split}`). Inside a path a card's tier is `PATHREF.N` unless its heading names one; `data-path-ref` is the enclosing specialty's code (`AUG`, `PRX`, … `PATH` for a specialty without one) and the path's number in it.
+- Each `####` heading in a skill is its own card, wearing the classes and attributes of the `@skill` line (`@skill {.dc-avoid-split}`). Inside a path a card's tier is `PATHREF.N` unless its heading names one; `data-path-ref` is the enclosing specialty's code (`AUG`, `PRX`, … `PATH` for a specialty without one) and the path's number in it.
 - `@continue` inside a skill's card closes the card and opens a `{name} ▸` continuation card. Anywhere else it is core's section continuation.
 - `@end-skills` no longer exists, and `@end-skill` no longer closes the learning path around the skill.
 
@@ -64,7 +64,7 @@ always check that the emitted class name has a matching CSS rule before shipping
 - `@column-panel`: write `@section panel` with the body in `@columns 2`.
 - `@sidebar inset` and `@page .page-sidebar`: write `@sidebar-box` for a short aside in the text flow.
 - `@section .dc-plain`: write `@section` (a bare section is already plain).
-- `.dc-allow-split` on a section: sections split by default; write `.dc-avoid-split` where one must stay whole. `@skill {.dc-allow-split}` is unchanged.
+- `.dc-allow-split` is gone from sections and skill cards: both split by default; write `.dc-avoid-split` where one must stay whole.
 - `@chapter C.01` followed by `@page intro` (the labelled chapter-opener): open a chapter with `@page chapter-start` and a `# Title`.
 - `@chapter-opener`: the same; a chapter opens with `@page chapter-start`.
 - `@tape` (removed in 1.2.0: write the raw `<div class="dc-tape">Label</div>`; it can return as a declared marker once core has a self-closing marker, gutterpress#344).

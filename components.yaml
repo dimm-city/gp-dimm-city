@@ -402,9 +402,9 @@ components:
     origin: plugin
     markers: ["@skill"]
     snippet: skill
-    recipe: "@skill [id=…] [{.dc-allow-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
+    recipe: "@skill [id=…] [{.dc-avoid-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
     emits:
-      - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
+      - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
       - div.dc-ability > span.dc-ap + p.dc-ability-text
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
@@ -416,7 +416,7 @@ components:
       - --dc-card-body-mark
       - --dc-card-gap
       - --dc-card-tab-shadow
-    breaks: "data-break-inside=avoid by default; {.dc-allow-split} opts into splitting (see allow-split); tab break-after: avoid; last two abilities glued"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole (and writes data-break-inside=avoid)"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-highlight
@@ -435,7 +435,7 @@ components:
     recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
     emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
     css: styles/components/cards.css
-    breaks: "as skill; honours the parent card's .dc-allow-split"
+    breaks: "as skill; honours the parent card's .dc-avoid-split"
     notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
 
   - name: ap-chip
@@ -704,25 +704,16 @@ components:
     css: styles/components/data.css
     breaks: "break-inside: avoid"
 
-  - name: allow-split
-    status: live
-    origin: author
-    recipe: "@skill {.dc-allow-split}"
-    emits: .dc-allow-split (on the skill card it is written on)
-    css: [styles/components/cards.css]
-    breaks: "opts a skill card out of the default avoid (data-break-inside=avoid). A split specialty card also keeps its first two blocks, and any lead-in (ability row, bold-only line, paragraph before a list or table), with what follows (break-after: avoid)"
-    notes: "The plugin reads this class (to drop data-break-inside=avoid) but never adds it. For sections it is retired: they split by default; see avoid-split."
-
   - name: avoid-split
     status: live
     origin: author
     modifier: dc-avoid-split
     snippet: avoid-split
-    recipe: "@section panel .dc-avoid-split"
-    emits: .dc-avoid-split (on the section it is written on)
-    css: styles/components/section.css
-    breaks: "break-inside: avoid — the section moves to the next page rather than splitting. Sections split by default, so nothing else in this package sets break-inside on one"
-    notes: "Replaces .dc-allow-split on sections. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty."
+    recipe: "@section panel .dc-avoid-split  |  @skill .dc-avoid-split"
+    emits: .dc-avoid-split (on the section or skill card it is written on)
+    css: [styles/components/section.css, styles/components/cards.css]
+    breaks: "break-inside: avoid — the section or card moves to the next page rather than splitting. Sections and skill cards split by default, so nothing else in this package sets break-inside on one (a skill card also carries data-break-inside=avoid)"
+    notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object."
 
   - name: snug
     status: live
@@ -817,6 +808,14 @@ components:
     recipe: "@section .dc-plain"
     emits: div.section.dc-plain
     notes: "Removed with the section variants: a bare @section is already plain, so there is no chrome to opt out of. Write @section."
+
+  - name: allow-split
+    status: retired
+    origin: author
+    modifier: dc-allow-split
+    replaced_by: "nothing: skill cards split by default; write .dc-avoid-split to keep one whole"
+    recipe: "@skill {.dc-allow-split}"
+    notes: "Removed 1.6.0. It opted a skill card out of data-break-inside=avoid; every card now splits unless it carries .dc-avoid-split. The class is no longer read or styled."
 
   - name: section-allow-split
     status: retired

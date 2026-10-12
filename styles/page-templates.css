@@ -433,10 +433,6 @@
   break-after: auto;
 }
 
-.dc-specialty .dc-skill-card.dc-allow-split {
-  break-inside: auto;
-}
-
 /* The learning-path BANNER (the shell: title, intro, sticker row) is never
    split and stays on the page of the first card after it. (The rule above
    no longer forces a break: `break-before: always` is unsupported in

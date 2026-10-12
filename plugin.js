@@ -77,8 +77,8 @@
  *   @learning-path data-foo="bar"
  *     → <div class="dc-learning-path dc-path-block" data-foo="bar" data-path-ref="PRX1">
  *
- *   @skill {.dc-allow-split}
- *     → every card of the skill: <div class="dc-skill-card dc-allow-split" ...>
+ *   @skill {.dc-avoid-split}
+ *     → every card of the skill: <div class="dc-skill-card dc-avoid-split" ...>
  *
  * LEARNING PATH FORMAT:
  *   @learning-path
@@ -404,7 +404,7 @@ function outcomeRowsHtml(rows, md) {
 // A `| Roll | Outcome |` table in a skill card: tier and name come from the roll.
 function buildOutcomesBlock(rows, md, needsAvoid = true) {
   // data-break-inside="avoid" is added when the parent card can be split (has
-  // allow-split) — the polyfill needs this to keep the
+  // not avoid-split) — the polyfill needs this to keep the
   // outcomes table together when the card itself isn't protected. When the card
   // already has data-break-inside="avoid" (non-splittable cards), adding a
   // nested avoid creates a conflicting inner break that the polyfill resolves
@@ -858,7 +858,7 @@ function dcLearningPaths(state) {
 
 /**
  * `@skill`: every `####` heading inside it starts a card. The declared
- * wrapper only carries the author's classes and attributes (`{.dc-allow-split}`,
+ * wrapper only carries the author's classes and attributes (`{.dc-avoid-split}`,
  * `id=…`) — it renders nothing itself; each card is rendered from them.
  *
  *   h4 title     → card tab (name, tier); a skill in a learning path gets the
@@ -876,10 +876,12 @@ function dcSkillCards(state) {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
-    // `.dc-allow-split` lets a card taller than a page split; every other card
-    // carries data-break-inside="avoid". An outcomes table or sub-list inside a
-    // splittable card needs its own avoid, because the card has none.
-    const canSplit = (open.attrGet('class') || '').split(/\s+/).includes('dc-allow-split');
+    // A card splits across pages by default (a whole card is 30-50% of a page,
+    // so keeping it whole left a page of one card each); `.dc-avoid-split`
+    // keeps one whole and carries data-break-inside="avoid". An outcomes table or
+    // sub-list inside a splittable card needs its own avoid, because the card
+    // has none.
+    const canSplit = !(open.attrGet('class') || '').split(/\s+/).includes('dc-avoid-split');
     const content = run.slice(1, -1);
     const out = [];
     const emit = (html) => out.push(makeToken('html_block', html));
