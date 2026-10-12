@@ -12,7 +12,13 @@
 #
 # FIELDS
 #   name (kebab, unique) · status · origin (plugin | author | core — who puts
-#   the class in the DOM) · recipe · emits (DOM strings, one or a list) · css
+#   the class in the DOM) · markers (the author spellings this entry covers,
+#   each exactly as written: "@npc-stat", "@section npc", "@page intro",
+#   "@chapter rules"; a retired entry lists the spellings that no longer
+#   work) · snippet (the file or files in snippets/ that insert it, by name
+#   without .md) · modifier (a class that changes a component without being
+#   one: dc-avoid-split, dc-snug) · replaced_by (retired entries: what to
+#   write now) · recipe · emits (DOM strings, one or a list) · css
 #   (package-relative paths; required for live/unused, and at least one must
 #   style one of the entry's classes) · tokens (must be declared under
 #   styles/) · breaks (documentation; omitted where the component has no
@@ -31,9 +37,19 @@
 #                    never built.
 #
 # THE RULE
-#   Give every component an honest status, and every new macro or `.dc-*`
-#   class an entry. Nothing checks this file automatically beyond its `css:`
-#   paths existing (test/package.test.js), so keep it accurate by hand.
+#   Give every component an honest status, and every new macro, variant word
+#   or `.dc-*` class an entry. test/integrity.test.js ("component catalog")
+#   fails when:
+#     - a marker in plugin.js `markers`, or a variant word on `section`,
+#       `page` or `chapter`, has no entry listing it under `markers`;
+#     - an entry's `snippet` file does not exist, a snippet file belongs to no
+#       entry, or a declared marker or word has an entry with no snippet;
+#     - a live entry lists a `markers` spelling plugin.js does not declare, or
+#       emits no class any stylesheet styles;
+#     - a retired entry lists a spelling that plugin.js still declares, or
+#       emits a `dc-` class a stylesheet still styles;
+#     - tabbed, plain, section-allow-split, column-panel, chapter-opener or
+#       sidebar-inset is missing, or is not retired with `replaced_by`.
 #
 # Order: plugin macros, plugin-emitted internals, author classes, unused,
 # retired, unimplemented.
@@ -43,6 +59,7 @@ components:
   - name: alert
     status: live
     origin: plugin
+    snippet: alert
     recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!VISIT] | > [!GEAR]  (GFM-style blockquote; the label is added automatically)"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
@@ -71,6 +88,8 @@ components:
   - name: callout
     status: live
     origin: plugin
+    markers: ["@callout"]
+    snippet: callout
     recipe: "@callout [note|warning|dm|vibe|origin|visit|gear] label=\"…\" … @end-callout"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
@@ -87,6 +106,8 @@ components:
   - name: dm-note
     status: live
     origin: plugin
+    markers: ["@dm-note"]
+    snippet: dm-note
     recipe: "@dm-note label=\"…\" … @end-dm-note"
     emits: div.dc-alert.dc-dm-note > span.dc-alert-label
     css: [styles/components/callouts.css, styles/dc-native.css]
@@ -114,6 +135,8 @@ components:
   - name: sidebar
     status: live
     origin: plugin
+    markers: ["@sidebar"]
+    snippet: sidebar
     recipe: "@sidebar … @end-sidebar  (also authored as raw <div class=\"dc-sidebar\"> around an NPC human-callout)"
     emits: div.dc-sidebar
     css: styles/components/images.css
@@ -124,6 +147,8 @@ components:
   - name: sidebar-box
     status: live
     origin: plugin
+    markers: ["@sidebar-box"]
+    snippet: sidebar-box
     recipe: "@sidebar-box … @end-sidebar-box"
     emits: div.dc-prose-panel.dc-sidebar-box
     css: styles/components/data.css
@@ -134,6 +159,8 @@ components:
   - name: definition
     status: live
     origin: plugin
+    markers: ["@definition"]
+    snippet: definition
     recipe: "@definition … @end-definition"
     emits: div.dc-prose-panel.dc-definition-block
     css: styles/components/data.css
@@ -144,6 +171,8 @@ components:
   - name: procedure
     status: live
     origin: plugin
+    markers: ["@procedure"]
+    snippet: procedure
     recipe: "@procedure … 1. step … @end-procedure"
     emits: ol.dc-steps > li > span.dc-step-no
     css: styles/components/data.css
@@ -153,6 +182,8 @@ components:
   - name: block
     status: live
     origin: plugin
+    markers: ["@block"]
+    snippet: block
     recipe: "@block panel|slate|shard|codex label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
     css: styles/components/section.css
@@ -171,6 +202,8 @@ components:
   - name: card
     status: live
     origin: plugin
+    markers: ["@card"]
+    snippet: card
     recipe: "@card / #### Heading / > pull quote / body / > footer … @end-card"
     emits:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
@@ -182,6 +215,8 @@ components:
   - name: card-variants
     status: live
     origin: plugin
+    markers: ["@flaws", "@ideals", "@dreams", "@section flaws", "@section ideals", "@section dreams"]
+    snippet: [flaws, ideals, dreams]
     recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
     emits: div.section.dc-section-panel.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
@@ -190,6 +225,8 @@ components:
   - name: gear
     status: live
     origin: plugin
+    markers: ["@gear"]
+    snippet: gear
     recipe: "@gear … @end-gear"
     emits: div.dc-card.dc-gear
     css: styles/components/section.css
@@ -199,6 +236,8 @@ components:
   - name: lede
     status: live
     origin: plugin
+    markers: ["@lede"]
+    snippet: lede
     recipe: "@lede … @end-lede"
     emits: div.dc-intro
     css: [styles/components/chrome.css, styles/components/section.css, styles/page-templates.css]
@@ -219,6 +258,8 @@ components:
   - name: toc
     status: live
     origin: plugin
+    markers: ["@toc"]
+    snippet: toc
     recipe: "@toc … @end-toc  (also authored as raw <div class=\"dc-toc\">)"
     emits: div.dc-toc
     css: [styles/components/data.css, styles/page-templates.css]
@@ -227,6 +268,8 @@ components:
   - name: glossary
     status: live
     origin: plugin
+    markers: ["@glossary"]
+    snippet: glossary
     recipe: "@glossary … @end-glossary  (items are plain `**term** — gloss` paragraphs)"
     emits: div.dc-terms
     css: styles/components/images.css
@@ -236,6 +279,8 @@ components:
   - name: outcome
     status: live
     origin: plugin
+    markers: ["@outcome"]
+    snippet: outcome
     recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or a | Roll | Outcome | table inside a skill card"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
@@ -259,6 +304,8 @@ components:
   - name: specialty
     status: live
     origin: plugin
+    markers: ["@specialty"]
+    snippet: specialty
     recipe: "@specialty augmerc|proxy|streetwarden|gutterdruid|cybersurgeon|wirephreak|technosorcerer|etherlock|dualist|generalist (or .augmerc, {.augmerc}) … @end-specialty"
     emits: div.dc-specialty.<name>
     css:
@@ -285,6 +332,8 @@ components:
   - name: specialty-intro
     status: live
     origin: plugin
+    markers: ["@specialty-intro"]
+    snippet: specialty-intro
     recipe: "@specialty-intro … @end-specialty-intro"
     emits: div.dc-specialty-intro
     css: [styles/components/specialty.css, styles/components/specialty-identity.css]
@@ -294,6 +343,8 @@ components:
   - name: specialty-art
     status: live
     origin: plugin
+    markers: ["@specialty-art"]
+    snippet: specialty-art
     recipe: "@specialty-art … @end-specialty-art"
     emits: div.dc-specialty-art
     css: [styles/components/chrome.css, styles/page-rules.css]
@@ -302,6 +353,8 @@ components:
   - name: specialty-card
     status: live
     origin: plugin
+    markers: ["@specialty-card"]
+    snippet: specialty-card
     recipe: "@specialty-card … @end-specialty-card  (data-position=odd|even alternates per card)"
     emits: div.dc-specialty-card
     css:
@@ -325,6 +378,8 @@ components:
   - name: learning-path
     status: live
     origin: plugin
+    markers: ["@learning-path"]
+    snippet: learning-path
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
       - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker + span.dc-path-sep
@@ -345,6 +400,8 @@ components:
   - name: skill
     status: live
     origin: plugin
+    markers: ["@skill"]
+    snippet: skill
     recipe: "@skill [id=…] [{.dc-allow-split}] / #### Name | Tier / > flavor / 1. **N AP** *Ability:* text / ##### Sub-header … @end-skill"
     emits:
       - div.dc-skill-card[name][data-break-inside=avoid] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
@@ -424,6 +481,8 @@ components:
   - name: card-grid
     status: live
     origin: plugin
+    markers: ["@card-grid", "@section cards"]
+    snippet: card-grid
     recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section cards)"
     emits: div.section.dc-card-grid > div.gp-columns.gp-columns-2
     css: [styles/components/section.css, styles/page-templates.css]
@@ -433,6 +492,8 @@ components:
   - name: citizen-walkthrough
     status: live
     origin: plugin
+    markers: ["@citizen-walkthrough", "@section walkthrough"]
+    snippet: citizen-walkthrough
     recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section walkthrough)"
     emits: div.section.dc-section-panel.dc-citizen-walkthrough
     css: [styles/components/section.css, styles/dc-native.css]
@@ -441,6 +502,8 @@ components:
   - name: page-citizen-file
     status: live
     origin: plugin
+    markers: ["@page citizen-file"]
+    snippet: citizen-file-page
     recipe: "@page citizen-file"
     emits: div.page.dc-page-citizen-file
     css: styles/page-rules.css
@@ -450,6 +513,8 @@ components:
   - name: fiction-excerpt
     status: live
     origin: plugin
+    markers: ["@fiction-excerpt", "@section fiction"]
+    snippet: fiction-excerpt
     recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section fiction)"
     emits: div.section.dc-fiction-excerpt
     css: [styles/components/section.css]
@@ -468,6 +533,8 @@ components:
   - name: npc-stat
     status: live
     origin: plugin
+    markers: ["@npc-stat", "@section npc"]
+    snippet: npc-stat
     recipe: "@npc-stat [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
     emits: div.section.dc-section-panel.dc-npc-stat
     css: [styles/components/section.css]
@@ -482,6 +549,8 @@ components:
   - name: page-chapter-start
     status: live
     origin: plugin
+    markers: ["@page chapter-start"]
+    snippet: chapter-start-page
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
     css: [styles/page-rules.css, styles/page-templates.css]
@@ -492,6 +561,8 @@ components:
   - name: page-credits
     status: live
     origin: plugin
+    markers: ["@page credits"]
+    snippet: credits-page
     recipe: "@page credits"
     emits: div.page.dc-page-credits
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
@@ -502,6 +573,8 @@ components:
   - name: page-contents
     status: live
     origin: plugin
+    markers: ["@page contents"]
+    snippet: toc-page
     recipe: "@page contents"
     emits: div.page.dc-page-contents
     css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
@@ -512,6 +585,8 @@ components:
   - name: page-intro
     status: live
     origin: plugin
+    markers: ["@page intro"]
+    snippet: intro-page
     recipe: "@page intro"
     emits: div.page.dc-page-intro
     css: [styles/page-templates.css, styles/page-rules.css]
@@ -523,6 +598,8 @@ components:
   - name: chapter-rules
     status: live
     origin: plugin
+    markers: ["@chapter rules"]
+    snippet: rules-chapter
     recipe: "@chapter rules #id ch=\"N\""
     emits: div.chapter.dc-chapter-rules
     css: styles/page-templates.css
@@ -532,6 +609,8 @@ components:
   - name: chapter-lore
     status: live
     origin: plugin
+    markers: ["@chapter lore"]
+    snippet: lore-chapter
     recipe: "@chapter lore #id ch=\"N\""
     emits: div.chapter.dc-chapter-lore
     css: styles/page-templates.css
@@ -541,6 +620,8 @@ components:
   - name: chapter-citizen-file
     status: live
     origin: plugin
+    markers: ["@chapter citizen-file"]
+    snippet: citizen-file-chapter
     recipe: "@chapter citizen-file #id ch=\"N\""
     emits: div.chapter.dc-chapter-citizen-file
     css: styles/page-templates.css
@@ -550,6 +631,8 @@ components:
   - name: chapter-specialty
     status: live
     origin: plugin
+    markers: ["@chapter specialty"]
+    snippet: specialty-chapter
     recipe: "@chapter specialty #id ch=\"N\""
     emits: div.chapter.dc-chapter-specialty
     css: styles/page-templates.css
@@ -633,6 +716,8 @@ components:
   - name: avoid-split
     status: live
     origin: author
+    modifier: dc-avoid-split
+    snippet: avoid-split
     recipe: "@section panel .dc-avoid-split"
     emits: .dc-avoid-split (on the section it is written on)
     css: styles/components/section.css
@@ -642,6 +727,8 @@ components:
   - name: snug
     status: live
     origin: author
+    modifier: dc-snug
+    snippet: snug
     recipe: "@section .dc-snug  /  @page .dc-snug"
     emits: .dc-snug (on the section or page it is written on)
     css: styles/page-templates.css
@@ -675,6 +762,8 @@ components:
   - name: section-panel
     status: live
     origin: plugin
+    markers: ["@section panel"]
+    snippet: section-panel
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits: div.section.dc-section-panel
     css: [styles/components/section.css, styles/dc-component-defaults.css]
@@ -685,6 +774,8 @@ components:
   - name: section-flat
     status: live
     origin: plugin
+    markers: ["@section flat"]
+    snippet: section-flat
     recipe: "@section flat … @end-section  (or @section .dc-section-flat)"
     emits: div.section.dc-section-flat
     css: [styles/components/section.css, styles/page-templates.css, styles/dc-native.css]
@@ -694,6 +785,8 @@ components:
   - name: section-aside
     status: live
     origin: plugin
+    markers: ["@section aside"]
+    snippet: section-aside
     recipe: "@section aside … @end-section  (or @section .dc-section-aside)"
     emits: div.section.dc-section-aside
     css: [styles/components/section.css, styles/components/data.css]
@@ -711,6 +804,8 @@ components:
   - name: tabbed
     status: retired
     origin: plugin
+    markers: ["@tabbed"]
+    replaced_by: "@section panel"
     recipe: "@tabbed … @end-tabbed  (or @section .dc-tabbed)"
     emits: div.section.dc-tabbed
     notes: "Removed 2026-10-12 (plugin.js marker, section.css, --dc-section-tab-* tokens, snippet): no book used it. Write @section panel; its first heading prints as the bar."
@@ -718,6 +813,7 @@ components:
   - name: plain
     status: retired
     origin: author
+    replaced_by: "@section"
     recipe: "@section .dc-plain"
     emits: div.section.dc-plain
     notes: "Removed with the section variants: a bare @section is already plain, so there is no chrome to opt out of. Write @section."
@@ -725,6 +821,7 @@ components:
   - name: section-allow-split
     status: retired
     origin: author
+    replaced_by: "nothing (sections split by default); @section panel .dc-avoid-split to keep one whole"
     recipe: "@section .dc-allow-split"
     emits: div.section.dc-allow-split
     notes: "Removed with the section variants, and with --dc-section-break-inside and the column-run rule that set it: sections split by default. Add .dc-avoid-split where a section must stay whole. @skill {.dc-allow-split} is unchanged (see allow-split)."
@@ -732,9 +829,28 @@ components:
   - name: chapter-opener
     status: retired
     origin: core
+    replaced_by: "@page chapter-start"
     recipe: "@chapter C.01 / @page intro / @section / # Title  (the labelled chapter-opener composite)"
     emits: div.page[data-page=intro][data-chapter-label] > div.chapter-opener + div.section > h1
     notes: "Styling removed 2026-10-12 (page-templates.css, section.css, --dc-chapter-opener-* tokens): both books open chapters with @page chapter-start. Core still emits data-chapter-label and .chapter-opener for a labelled @chapter; nothing here styles them."
+
+  - name: sidebar-inset
+    status: retired
+    origin: plugin
+    markers: ["@sidebar inset"]
+    replaced_by: "@sidebar-box (a short aside in the text flow)"
+    recipe: "@sidebar inset … @end-sidebar  /  @page .page-sidebar"
+    emits: div.dc-sidebar.inset
+    notes: "Removed 2026-10-12 (components/images.css, page-templates.css, the --dc-sidebar-inset-* tokens): the full-height rail pinned to a page edge and its page template. No book used either. `@sidebar` itself (the floated box) stays."
+
+  - name: column-panel
+    status: retired
+    origin: plugin
+    markers: ["@column-panel"]
+    replaced_by: "@section panel with the body in @columns 2"
+    recipe: "@column-panel .gp-columns-2 … @end-column-panel"
+    emits: div.section.dc-column-panel
+    notes: "Removed in 1.4.0: columns have one spelling, core's `@columns N`. The heading and intro stay above the run, full width. Before: `@column-panel`; after: `@section panel` / `## Heading` / `@columns 2` … `@end-columns` / `@end-section`."
 
   - name: printer-page
     status: retired
@@ -846,6 +962,8 @@ components:
   - name: chapter-opener-no
     status: retired
     origin: plugin
+    markers: ["@chapter-opener"]
+    replaced_by: "@page chapter-start"
     recipe: "@chapter-opener"
     emits: .dc-chapter-opener-no
     notes: "The @chapter-opener macro and its badge class were retired when the composite became markup-driven (chrome.css tombstone)."
@@ -860,6 +978,8 @@ components:
   - name: class-entry
     status: retired
     origin: plugin
+    markers: ["@class-entry"]
+    replaced_by: "@section panel with plain child elements"
     recipe: "@class-entry … @end-class-entry"
     emits: div.section.dc-class-entry > .dc-content-col + .dc-tag-row
     notes: "Retired 2026-05-24 (images.css tombstone); the marker is no longer recognised and passes through as text."
