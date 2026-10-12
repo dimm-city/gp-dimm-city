@@ -102,10 +102,12 @@
    section, a skill card, a faction, an `@npc-stat`), nothing more, so a book
    can write the same declarations for one box from its own sheet. A section
    that is whole keeps its padding inside the box (`--dc-section-edge`). A
-   catalog does not take it: see `--dc-catalog-break-inside`. */
+   catalog splits by default, but the class keeps one whole all the same: an
+   author's override wins over a default. */
 .dc-avoid-split {
   --dc-section-break-inside: avoid;
   --dc-section-edge: 0px;
+  --dc-catalog-break-inside: avoid;
   --dc-npc-stat-break-inside: avoid;
   --dc-skill-card-break-inside: avoid;
   --dc-faction-break-inside: avoid;

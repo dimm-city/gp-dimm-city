@@ -800,7 +800,7 @@ components:
     emits: .dc-avoid-split (on the section or skill card it is written on)
     css: [styles/components/section.css, styles/components/cards.css]
     tokens: [--dc-section-break-inside, --dc-section-edge, --dc-npc-stat-break-inside, --dc-skill-card-break-inside, --dc-faction-break-inside]
-    breaks: "break-inside: avoid. The class is a setter of the keep-whole tokens on the box it is written on, nothing more; a book writes the same declarations from its own sheet. A catalog does not take it (it never stays whole: --dc-catalog-break-inside: avoid on the catalog does)"
+    breaks: "break-inside: avoid. The class is a setter of the keep-whole tokens on the box it is written on, nothing more; a book writes the same declarations from its own sheet. A catalog splits by default, but the class keeps one whole (it sets --dc-catalog-break-inside: avoid)"
     notes: "Replaces .dc-allow-split on sections and on skill cards. Avoid it on a section taller than a column inside @columns: it cannot split, and the facing column goes empty. On a skill card it costs a page of one card: use it for a card that must read as one object. A creature (an @npc-stat with at most one ####) needs none: it stays whole by default."
 
   - name: snug
@@ -874,7 +874,7 @@ components:
     emits: div.section.dc-section-panel.dc-catalog
     css: styles/components/entries.css
     tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-catalog-break-inside]
-    breaks: "a panel that never stays whole: .dc-avoid-split does not apply to it (--dc-catalog-break-inside: avoid on the catalog does); its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
+    breaks: "a panel that splits by default (--dc-catalog-break-inside: auto); .dc-avoid-split, or --dc-catalog-break-inside: avoid, keeps one whole; its entries may split across a column or page (ruled, not boxed, so there is no frame to cut), the name keeps with what follows it"
     notes: "A panel for a run of entries (@gear, of any kind). Its entries are ruled instead of boxed (and may split across columns, as the plain text they replace did): no card, no rail, a rule in the entry's own accent over each, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
 
   - name: section-flat

@@ -771,7 +771,8 @@ keeps its padding inside the box; it declares nothing else. A book writes the sa
 declarations for one box from its own sheet. No rule gives a section, a skill card
 or a faction `break-inside: avoid` directly (`test/conventions.test.js`).
 A catalog and a creature (an `@npc-stat` with at most one `####`) have defaults of their
-own: the first never stays whole and ignores `.dc-avoid-split`, the second stays
+own: the first splits by default (it reads `--dc-catalog-break-inside`, which
+`.dc-avoid-split` also sets, so an author's override still wins), the second stays
 whole.
 
 The space under a paragraph or list item is `--dc-flow-gap`, and `.dc-snug` sets

@@ -176,12 +176,11 @@
 }
 
 /* A catalog is a run of entries that may run past a page, and kept whole it
-   leaves the foot of the page before it blank, so it never stays whole:
-   `.dc-avoid-split` does not apply to it. A book that must keep one whole sets
-   `--dc-catalog-break-inside: avoid` on it. */
+   leaves the foot of the page before it blank, so by default it splits.
+   `.dc-avoid-split`, or `--dc-catalog-break-inside: avoid` from a book's sheet,
+   keeps one whole. */
 .dc-section-panel.dc-catalog {
   --dc-section-break-inside: var(--dc-catalog-break-inside);
-  --dc-section-edge: var(--dc-section-pad-bottom);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════

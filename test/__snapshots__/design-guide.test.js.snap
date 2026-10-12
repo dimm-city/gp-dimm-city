@@ -756,7 +756,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </div>
 <p>A <code>@fiction-excerpt</code> places its first image for you — see <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>.</p>
 <h2>Break control</h2>
-<p>Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an <code>@npc-stat</code> with at most one <code>####</code>) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.</p>
+<p>Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an <code>@npc-stat</code> with at most one <code>####</code>) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and so does a catalog. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.</p>
 <table>
 <thead data-source-range="151:152">
 <tr data-source-range="151:152">
@@ -788,7 +788,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air.
 </tbody>
 </table>
 <p>Reach for <code>.dc-avoid-split</code> on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — <code>@continue</code> for a long skill card.</p>
-<p>The class is a setter of one token per component, which a book can set from its own sheet instead: <code>--dc-section-break-inside</code>, <code>--dc-skill-card-break-inside</code>, <code>--dc-faction-break-inside</code> and <code>--dc-npc-stat-break-inside</code> (<code>avoid</code> keeps the box whole, <code>auto</code> lets it split). A section kept whole also keeps its padding inside its box, so a book writes <code>--dc-section-edge: 0px</code> beside the first. A catalog ignores <code>.dc-avoid-split</code>: <code>--dc-catalog-break-inside: avoid</code> keeps one whole.</p>
+<p>The class is a setter of one token per component, which a book can set from its own sheet instead: <code>--dc-section-break-inside</code>, <code>--dc-skill-card-break-inside</code>, <code>--dc-faction-break-inside</code> and <code>--dc-npc-stat-break-inside</code> (<code>avoid</code> keeps the box whole, <code>auto</code> lets it split). A section kept whole also keeps its padding inside its box, so a book writes <code>--dc-section-edge: 0px</code> beside the first. A catalog splits by default and reads <code>--dc-catalog-break-inside</code>: <code>.dc-avoid-split</code>, or that token set to <code>avoid</code>, keeps one whole.</p>
 <pre><code data-source-range="163:166" class="language-css">#core-loop { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }
 </code></pre>
 <h2>Tighter spacing</h2>
@@ -3288,7 +3288,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="58:59">
 <td><code>.dc-avoid-split</code></td>
 <td><code>@section</code>, <code>@skill</code>, <code>@faction</code>, <code>@npc-stat</code></td>
-<td>Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature; a catalog ignores it). It sets the keep-whole tokens below</td>
+<td>Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature). It sets the keep-whole tokens below</td>
 </tr>
 <tr data-source-range="59:60">
 <td><code>.dc-snug</code></td>

@@ -22,10 +22,12 @@ set from its own CSS.
   `.dc-avoid-split` did. `.dc-avoid-split` on one is now redundant. A block with
   two or more `####` entries is unchanged (it breaks between entries, never inside
   one). `--dc-npc-stat-break-inside: auto` lets one split.
-- **A catalog never stays whole.** `.dc-avoid-split` on a `@section catalog` no
-  longer applies: a run of entries kept whole left the foot of the page before it
-  blank. It splits like an unmarked catalog. A book that must keep one whole sets
-  `--dc-catalog-break-inside: avoid` on it.
+- **A catalog splits by default, and an explicit override still wins.** A
+  `@section catalog` reads its own token, `--dc-catalog-break-inside` (default
+  `auto`), because a run of entries kept whole leaves the foot of the page before
+  it blank. An author's `.dc-avoid-split` on it still keeps it whole, as it always
+  did, and so does `--dc-catalog-break-inside: avoid` from a book's CSS. A
+  container's `--dc-section-break-inside` does not reach a catalog.
 - **Keeping a box whole is a token per component.** `--dc-section-break-inside`,
   `--dc-catalog-break-inside`, `--dc-npc-stat-break-inside`,
   `--dc-skill-card-break-inside` and `--dc-faction-break-inside` are declared at

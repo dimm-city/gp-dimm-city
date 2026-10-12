@@ -214,7 +214,7 @@ describe("keep-whole tokens", () => {
 
   test(".dc-avoid-split sets every token to avoid, and the section's edge to 0px, and sets nothing else", () => {
     const setter = declsOf("styles/components/section.css", ".dc-avoid-split");
-    expect(Object.keys(setter).sort()).toEqual([...TOKENS.filter((t) => t !== "--dc-catalog-break-inside"), "--dc-section-edge"].sort());
+    expect(Object.keys(setter).sort()).toEqual([...TOKENS, "--dc-section-edge"].sort());
     for (const [prop, value] of Object.entries(setter)) expect(value, prop).toBe(prop === "--dc-section-edge" ? "0px" : "avoid");
   });
 
@@ -233,10 +233,12 @@ describe("keep-whole tokens", () => {
     expect(bad, "set the box's --dc-<component>-break-inside token instead").toEqual([]);
   });
 
-  test("a catalog reads its own token, so `.dc-avoid-split` does not keep one whole", () => {
+  test("a catalog reads its own token: it splits by default, and `.dc-avoid-split` (an author's override) keeps one whole", () => {
     const catalog = declsOf("styles/components/entries.css", ".dc-section-panel.dc-catalog");
     expect(catalog["--dc-section-break-inside"]).toBe("var(--dc-catalog-break-inside)");
-    expect(catalog["--dc-section-edge"]).toBe("var(--dc-section-pad-bottom)");
+    expect(catalog["--dc-section-edge"], "the edge is the setter's, so a catalog marked .dc-avoid-split renders as before").toBeUndefined();
+    expect(declsOf("styles/components/section.css", ".dc-avoid-split")["--dc-catalog-break-inside"]).toBe("avoid");
+    expect(declsOf("styles/dc-component-defaults.css", ":root")["--dc-catalog-break-inside"]).toBe("auto");
   });
 
   test("a creature (an @npc-stat with at most one `####`) reads --dc-npc-stat-break-inside", () => {

@@ -147,7 +147,7 @@ A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch
 
 ## Break control
 
-Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an `@npc-stat` with at most one `####`) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and a catalog never stays whole. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.
+Callouts keep themselves whole by default: they move to the next page rather than split. A creature (an `@npc-stat` with at most one `####`) stays whole too. Sections, factions and skill cards do the opposite: they split where the page ends, at a sensible place (a skill card never opens with only its tab, and an ability row is never cut), and so does a catalog. Two classes override that for one box, and a third forces a break. None is needed to make ordinary content break well.
 
 | You write | Effect |
 |---|---|
@@ -159,7 +159,7 @@ Callouts keep themselves whole by default: they move to the next page rather tha
 
 Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
 
-The class is a setter of one token per component, which a book can set from its own sheet instead: `--dc-section-break-inside`, `--dc-skill-card-break-inside`, `--dc-faction-break-inside` and `--dc-npc-stat-break-inside` (`avoid` keeps the box whole, `auto` lets it split). A section kept whole also keeps its padding inside its box, so a book writes `--dc-section-edge: 0px` beside the first. A catalog ignores `.dc-avoid-split`: `--dc-catalog-break-inside: avoid` keeps one whole.
+The class is a setter of one token per component, which a book can set from its own sheet instead: `--dc-section-break-inside`, `--dc-skill-card-break-inside`, `--dc-faction-break-inside` and `--dc-npc-stat-break-inside` (`avoid` keeps the box whole, `auto` lets it split). A section kept whole also keeps its padding inside its box, so a book writes `--dc-section-edge: 0px` beside the first. A catalog splits by default and reads `--dc-catalog-break-inside`: `.dc-avoid-split`, or that token set to `avoid`, keeps one whole.
 
 ```css
 #core-loop { --dc-section-break-inside: avoid; --dc-section-edge: 0px; }

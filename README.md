@@ -79,7 +79,7 @@ The named components are also words on `@section` (`@npc-stat` is
 renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels
 that say what kind of text they hold. Write the content and the marker that says
 what it is: the defaults set how it looks and where it breaks (sections split
-across pages, a creature and a callout stay whole, a catalog never does). A page
+across pages, a catalog too, and a creature and a callout stay whole). A page
 or chapter word draws no box of its own: it re-tunes the sections inside it. To
 change how one block sits, see [Author overrides](#author-overrides).
 
@@ -161,9 +161,10 @@ edit.
 | `.dc-sidebar` on a callout | Float it right at about a third of the width, text wrapping on its left (`@callout note .dc-sidebar`) | none: a class only |
 | `.dc-spray`, `.dc-spec-tweak`, `.dc-no-top`, `.dc-img-float-left`, `.dc-img-float-right` | Heading banners and an image float | none: classes only |
 
-A catalog (`@section catalog`) never stays whole, so `.dc-avoid-split` does not
-apply to it; to keep one whole, a book sets `--dc-catalog-break-inside: avoid`
-on it. An `@npc-stat` with at most one `####` is one creature and stays whole without
+A catalog (`@section catalog`) splits across pages by default, since one kept
+whole leaves the foot of the page before it blank; an explicit `.dc-avoid-split`
+on it still keeps it whole, as does `--dc-catalog-break-inside: avoid` from a
+book's CSS. An `@npc-stat` with at most one `####` is one creature and stays whole without
 `.dc-avoid-split` (`--dc-npc-stat-break-inside: auto` lets one split). An image
 with no class in a `@gear` entry floats right at half the card
 (`--dc-entry-art-width`), and one on its own line under the credits colophon is
@@ -235,11 +236,8 @@ the layer names. `CHANGELOG.md` lists what each release changes.
 
 ### Moving from 1.6.2 or earlier
 
-1.6.3 changes two defaults, so rebuild and compare:
+1.6.3 changes a default, so rebuild and compare:
 
-- A `@section catalog` never stays whole. A catalog marked `.dc-avoid-split` now
-  splits across pages like any other; set `--dc-catalog-break-inside: avoid` on it
-  to keep one whole.
 - An `@npc-stat` with at most one `####` (one creature) stays whole. Add
   `--dc-npc-stat-break-inside: auto` to let one split. A `.dc-avoid-split` on one
   is now redundant.

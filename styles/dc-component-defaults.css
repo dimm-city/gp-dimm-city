@@ -50,8 +50,9 @@
      these to `avoid` on the box it is written on, and a book sets one the same
      way from its own sheet (`#core-loop { --dc-section-break-inside: avoid; }`).
      A custom property inherits, so one set on a container reaches what is
-     inside it. A section splits by default, a catalog never stays whole
-     (`avoid` on a catalog needs its own token), and an `@npc-stat` with at most
+     inside it. A section splits by default, and so does a catalog (it reads its
+     own token, so a container's `--dc-section-break-inside` does not keep a
+     catalog whole), and an `@npc-stat` with at most
      one `####` is one creature and stays whole. */
   --dc-section-break-inside:    auto;
   --dc-catalog-break-inside:    auto;

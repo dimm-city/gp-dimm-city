@@ -56,7 +56,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Class | Goes on | Effect |
 |---|---|---|
-| `.dc-avoid-split` | `@section`, `@skill`, `@faction`, `@npc-stat` | Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature; a catalog ignores it). It sets the keep-whole tokens below |
+| `.dc-avoid-split` | `@section`, `@skill`, `@faction`, `@npc-stat` | Keep the box whole: it moves to the next page rather than splitting (all split by default but a creature). It sets the keep-whole tokens below |
 | `.dc-snug` | `@section`, `@page` | Tighten the space under paragraphs and list items; it sets `--dc-flow-gap` to 0.04in |
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
