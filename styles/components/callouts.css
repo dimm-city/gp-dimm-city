@@ -92,6 +92,7 @@
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
    Override at chapter-id scope in the book's own sheet (unlayered), or in variant rules below. */
 .dc-alert {
+  clip-path: var(--dc-alert-shape);
   background: var(--dc-alert-bg);
   border-left: var(--dc-alert-border-width) solid var(--dc-alert-border);
   color: var(--dc-alert-fg);
