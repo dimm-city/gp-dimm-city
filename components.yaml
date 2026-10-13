@@ -251,7 +251,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A magic item or relic: amber rail on the gold-tinted paper. Same entry rules as @gear."
+    notes: "A magic item or relic: a violet rail and name on cream. Same entry rules as @gear."
 
   - name: vehicle
     status: live

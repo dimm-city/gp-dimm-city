@@ -40,6 +40,10 @@ set from its own CSS.
 - **Lore is violet, not brass.** `@section lore` and `@chapter lore` drop the
   amber bars on aged and light-brown paper: violet bars (`--brand-violet`) on the
   panels' clean cream, italic sub-heads in violet.
+- **No tan boxes.** A treasure entry is violet on cream (rail, kind word and
+  name in `--brand-violet`) instead of amber on the gold tint, and `@definition`
+  sits on a pale HUD-blue tint of cream that matches its cyan rail instead of the
+  orange tint.
 - **ROLL THE DIE! stands out more.** Its underline is dotted, and its colour is the
   brand's deep cyber-magenta (`--brand-magenta-deep`) instead of `--blood`, which
   sat close to the body ink and is also the colour of other bold text. It keeps AA

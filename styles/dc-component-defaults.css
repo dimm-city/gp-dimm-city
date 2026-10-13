@@ -162,7 +162,7 @@
   /* .dc-definition-block public API */
   --dc-definition-block-accent:       var(--hud-blue-bright);
   --dc-definition-block-accent-width: 4px;
-  --dc-definition-block-surface:      var(--surface-orange-tint);
+  --dc-definition-block-surface:      color-mix(in srgb, var(--hud-blue-dim) 18%, var(--paper-cream));
   --dc-definition-block-shape:        polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
 
   /* .dc-fiction public API */

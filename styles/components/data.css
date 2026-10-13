@@ -477,7 +477,7 @@
 
 /* ───────── DEFINITION BLOCK ─────────
    Token contract:
-     --dc-definition-block-surface       → block background (default --surface-orange-tint)
+     --dc-definition-block-surface       → block background (default a pale HUD-blue tint of cream)
      --dc-definition-block-accent        → left rail color (default --hud-blue-bright)
      --dc-definition-block-accent-width  → left rail weight (default 4px)
    Per-section / per-column overrides set the tokens; they don't override

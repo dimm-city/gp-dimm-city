@@ -105,10 +105,11 @@
   --dc-entry-surface: var(--paper-cream);
   --dc-entry-kind: "Augment";
 }
+/* Violet, the arcane colour (6.5:1 on cream); the hues beside it are taken. */
 .dc-treasure {
-  --dc-entry-accent: var(--amber);
-  --dc-entry-ink: var(--amber-dark);
-  --dc-entry-surface: var(--surface-orange-tint);
+  --dc-entry-accent: var(--brand-violet);
+  --dc-entry-ink: var(--brand-violet);
+  --dc-entry-surface: var(--paper-cream);
   --dc-entry-kind: "Treasure";
 }
 .dc-vehicle {
