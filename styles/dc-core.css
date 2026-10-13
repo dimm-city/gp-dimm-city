@@ -4,7 +4,7 @@
 
    ── ARCHITECTURAL CONTRACT ────────────────────────────────────────────────
    OWNS:
-   - body baseline styles (font, tracking, line-height, manual hyphens,
+   - body baseline styles (font, tracking, line-height, hyphens,
      widows/orphans, positioning)
    - Global element resets driven by tokens: h1–h6, p, a, em, code/kbd/samp,
      pre, blockquote, ul/li, table/th/td, dl/dt/dd
@@ -48,12 +48,7 @@ body {
   letter-spacing: 0.005em;
   text-wrap: pretty;
   position: relative;
-  /* Manual, not auto: `auto` hyphenates only where the browser ships a
-     dictionary, and Chromium builds differ (Chrome for Testing has them,
-     Electron's desktop build has not), so the same book paginated differently
-     in the desktop app and the CLI. A soft hyphen (&shy;) still breaks; a book
-     that wants automatic hyphenation sets `hyphens: auto` in its own CSS. */
-  hyphens: manual;
+  hyphens: auto;
   /* Paged Media orphans/widows constraint: cascades to every .page box, so
      no need to repeat at .page p level — that would be pure duplication. */
   widows: 2;
@@ -75,7 +70,10 @@ body {
    A word that cannot fit now breaks as a last resort, at every level, in every
    context; words that fit are untouched. `break-word` (not `anywhere`) keeps
    min-content widths intact for shrink-to-fit headings such as banners and
-   tabs. A soft hyphen (&shy;) in the source still picks a better break. */
+   tabs. A soft hyphen (&shy;) in the source still picks a better break.
+   `hyphens: auto` (inherited from body) hyphenates where the engine has a
+   dictionary, but uppercase display words are not reliably hyphenated, so
+   the guaranteed break does not depend on it. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
