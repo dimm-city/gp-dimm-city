@@ -16,6 +16,11 @@ set from its own CSS.
 
 ### Changed
 
+- **ROLL THE DIE! stands out more.** Its underline is dotted, and its colour is the
+  brand's deep cyber-magenta (`--brand-magenta-deep`) instead of `--blood`, which
+  sat close to the body ink and is also the colour of other bold text. It keeps AA
+  contrast on every paper (7.0:1 on paper-cream). A book that wants the old colour
+  sets `--dc-roll-the-die-color: var(--blood)`.
 - **A creature stays whole by default.** An `@npc-stat` with no `####`, or one (a
   species and its one variant), is one creature, read at one glance: it keeps its
   padding inside its box and moves to the next page rather than splitting, as

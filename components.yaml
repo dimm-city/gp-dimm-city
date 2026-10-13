@@ -519,7 +519,7 @@ components:
     tokens: [--dc-roll-the-die-color]
     usage: ["ROLL THE DIE!", "ROLL A DIE!", "ROLLS A DIE!", "ROLLING THE DIE!"]
     breaks: none
-    notes: "A plain inline box (stamped label look): its padding and border paint around the text without making the line taller, so a line with a chip is the same height as one without. It never wraps: a chip that would straddle a line end moves to the next line whole."
+    notes: "Plain inline text in the line's own font and size: bold, in --dc-roll-the-die-color (default --brand-magenta-deep), with a dotted underline in that colour. The line keeps its height."
 
   - name: img-wrapper
     status: live
