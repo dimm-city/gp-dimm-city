@@ -35,12 +35,17 @@
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
 
-  /* Panel edge. A template changes the panel's silhouette through these two
+  /* Panel edge. A template changes the panel's silhouette through these
      tokens, never through its ::before/::after: `clip` is the chamfer cut off
-     the top-right corner, `rail` the accent strip down the left edge. `gap` is
-     the space below a panel or flat section, and `grow` lets a flat section
-     fill a flex-column page (the credits page sets both). */
+     the top-right corner and `cut-tl/-br/-bl` the other three (each kind of
+     panel cuts its own corners, so the shape says which kind it is), `rail`
+     the accent strip down the left edge. `gap` is the space below a panel or
+     flat section, and `grow` lets a flat section fill a flex-column page (the
+     credits page sets both). */
   --dc-section-clip:      18px;
+  --dc-section-cut-tl:    0px;
+  --dc-section-cut-br:    0px;
+  --dc-section-cut-bl:    0px;
   --dc-section-rail:      5px;
   --dc-section-gap:       12pt;
   --dc-section-grow:      0;
@@ -79,6 +84,14 @@
   --dc-alert-label-spacing:  0.12em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
+  /* Each boxed component cuts its own corners (a clip-path on the box), so its
+     shape names it, as the skill cards' shapes name their specialty. A context
+     that needs the plain box (a catalog's ruled entries, the chapter-start
+     excerpt's offset shadow) sets the token to `none`.
+       callout   top left + bottom left        card      bottom left
+       faction   both bottom                   entry     all but bottom left
+       fiction   all but top left              definition  all but top right */
+  --dc-alert-shape:          polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
 
   /* .dc-skill-card public API */
   --dc-card-accent:          var(--ink);            /* default no-specialty: plain ink */
@@ -133,6 +146,7 @@
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);
   --dc-fiction-line-height:  1.45;
+  --dc-fiction-shape:        polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px));
 
   /* .dc-chevron (chevron banner) public API */
   --dc-chevron-bg:           var(--brand-magenta-deep);
@@ -149,6 +163,7 @@
   --dc-definition-block-accent:       var(--hud-blue-bright);
   --dc-definition-block-accent-width: 4px;
   --dc-definition-block-surface:      var(--surface-orange-tint);
+  --dc-definition-block-shape:        polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
 
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
@@ -167,6 +182,7 @@
   --dc-entry-rule:           0px;                   /* a catalog sets it */
   --dc-entry-kind:           none;                  /* a quoted word over the name */
   --dc-entry-art-width:      50%;                   /* the item's picture, floated right; a classed image is the author's */
+  --dc-entry-shape:          polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);  /* a catalog sets none */
 
   /* credits page: the plate under the colophon (an image with no class) */
   --dc-credits-art-height:   2.75in;
@@ -217,8 +233,12 @@
   --dc-section-tab-bg:       var(--ink-dark);
   --dc-section-tab-fg:       var(--paper-cream);
 
+  /* card (`@card`) public API */
+  --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+
   /* faction (`@faction`) public API */
   --dc-faction-accent:       var(--hud-blue-dark);
+  --dc-faction-shape:        polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
   --dc-faction-badge-fg:     var(--paper-cream);
 
   /* stat strip (a creature's HP and Damage table) public API */

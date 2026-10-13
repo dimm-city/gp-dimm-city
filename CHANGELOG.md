@@ -16,6 +16,26 @@ set from its own CSS.
 
 ### Changed
 
+- **Each kind of box has its own shape.** As the skill cards change shape per
+  specialty, every section variant and boxed component now cuts its own corners,
+  so its silhouette says what it is:
+  - panel: top right (unchanged); reference: all four, small; lore: top left and
+    bottom right, long; dm: top right and bottom left; choose: bottom right;
+    catalog: both top; `@npc-stat`: both right; citizen walkthrough: top left.
+    The title bar follows the panel's top corners. New tokens
+    `--dc-section-cut-tl`, `--dc-section-cut-br`, `--dc-section-cut-bl` sit
+    beside `--dc-section-clip` (the top-right cut).
+  - callouts and alerts: top left and bottom left; `@card`: bottom left;
+    `@faction`: both bottom; entry cards (`@gear` and its kinds): all but the
+    bottom left; fiction excerpt: all but the top left; `@definition`: all but
+    the top right. Each reads a `--dc-<component>-shape` token; a catalog's
+    ruled entries and the chapter-start excerpt (which has an offset shadow)
+    keep the square box.
+  - Shapes are paint only: no page breaks move (the Field Guide and SysOps
+    paginate as before).
+- **Lore is violet, not brass.** `@section lore` and `@chapter lore` drop the
+  amber bars on aged and light-brown paper: violet bars (`--brand-violet`) on the
+  panels' clean cream, italic sub-heads in violet.
 - **ROLL THE DIE! stands out more.** Its underline is dotted, and its colour is the
   brand's deep cyber-magenta (`--brand-magenta-deep`) instead of `--blood`, which
   sat close to the body ink and is also the colour of other bold text. It keeps AA

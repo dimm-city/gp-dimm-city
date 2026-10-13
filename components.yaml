@@ -85,6 +85,7 @@ components:
       - --dc-alert-label-spacing
       - --dc-alert-label-margin
       - --dc-alert-margin-top
+      - --dc-alert-shape
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
     notes: "`warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
@@ -143,7 +144,7 @@ components:
     recipe: "@definition … @end-definition  (a term, a run of `#### Term` entries as a glossary, or `#### heading` / `---` / body)"
     emits: div.dc-prose-panel.dc-definition-block
     css: styles/components/data.css
-    tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width]
+    tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width, --dc-definition-block-shape]
     breaks: "break-inside: avoid (via .dc-prose-panel); a block holding several #### entries may split between them"
     notes: "The one box for a term, a glossary and a boxed note with its own heading. A run of `#### Term` entries reads as a glossary (mono-caps term, dashed rule between entries); `---` inside is the same dashed rule. It absorbed @glossary and @sidebar-box. For a plain term list a markdown definition list needs no macro."
 
@@ -201,6 +202,7 @@ components:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
     css: styles/components/section.css
+    tokens: [--dc-card-shape]
     breaks: "break-inside: avoid"
     notes: "Declared marker, no variants: author classes (@card .dc-flaws), #id and key=value attributes ride on the wrapper. Inside a skill it stays in the skill's card. Left open at the end of the file it closes silently."
 
@@ -223,7 +225,7 @@ components:
     recipe: "@gear [augment|treasure|vehicle|drug] #### Name … @end-gear  (a @gear after a @gear closes the first)"
     emits: div.dc-card.dc-entry.dc-gear
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-art-width]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-art-width, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "The item entry, and the one marker for every kind of item: bare `@gear` is general gear, and a bare word picks a kind (`augment`, `treasure`, `vehicle`, `drug`, the four entries below). A .dc-card of the entry family with an orange rail; the name (### or ####), the italic tagline paragraph and the bold price paragraph are picked out by shape. An image with no class in an entry is the item's picture: floated right at --dc-entry-art-width (half the card); a class the author writes (`{.gp-left .gp-large}`) places it instead. A `**SPECS:**` paragraph is a `@field specs`. Reports an entry with no name or with a second one, and a word that is not a kind (read as general gear). Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by its rail colour and the small kind word over its name."
 
@@ -235,7 +237,7 @@ components:
     recipe: "@gear augment #### Name … @end-gear"
     emits: div.dc-card.dc-entry.dc-augment
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "A cybernetic or mod: cyan rail, cream surface. Same entry rules as @gear."
 
@@ -247,7 +249,7 @@ components:
     recipe: "@gear treasure #### Name … @end-gear"
     emits: div.dc-card.dc-entry.dc-treasure
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "A magic item or relic: amber rail on the gold-tinted paper. Same entry rules as @gear."
 
@@ -259,7 +261,7 @@ components:
     recipe: "@gear vehicle #### Name … @end-gear"
     emits: div.dc-card.dc-entry.dc-vehicle
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "A vehicle: yellow rail on cold concrete. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
 
@@ -271,7 +273,7 @@ components:
     recipe: "@gear drug #### Name … @end-gear"
     emits: div.dc-card.dc-entry.dc-drug
     css: styles/components/entries.css
-    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind]
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "A drug, elixir or other consumable: magenta rail. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
 
@@ -590,8 +592,9 @@ components:
       - --dc-fiction-art-width
       - --dc-fiction-art-outline
       - --dc-fiction-art-shadow
+      - --dc-fiction-shape
     breaks: "orphans/widows 3 on paragraphs"
-    notes: "Aged paper (--paper-aged), no rail and no title bar. On a chapter-start page (`@page chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, set in page-templates.css by tokens."
+    notes: "Aged paper (--paper-aged), no rail and no title bar; three corners cut (all but the top left, --dc-fiction-shape). On a chapter-start page (`@page chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, and keeps the square box (the clip would cut the shadow), set in page-templates.css by tokens."
 
   - name: npc-stat
     status: live
@@ -689,7 +692,7 @@ components:
     emits: div.chapter.dc-chapter-lore
     css: styles/page-templates.css
     tokens: [--dc-section-accent, --dc-section-bg]
-    notes: "Aged register: amber (brass) title bars on --paper-light panels."
+    notes: "Violet title bars (the lore section's colour) on the panels' own cream."
 
   - name: chapter-citizen-file
     status: live
@@ -861,7 +864,7 @@ components:
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits: div.section.dc-section-panel
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
     notes: "The card: cream substrate, accent rail, clipped corner, shadow, and the first ## or ### as a title bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
 
@@ -909,7 +912,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-lore
     css: [styles/components/section.css]
     tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail]
-    notes: "A panel for the world, not the rules: brass bars on aged paper, a long shard corner, italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
+    notes: "A panel for the world, not the rules: violet bars on clean paper, long chamfers off the top-left and bottom-right corners, italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
 
   - name: section-dm
     status: live
@@ -941,7 +944,7 @@ components:
     recipe: "@faction [megacorp|cabal|cult|enforcer] [label=\"…\"] / #### Name / fields and prose … @end-faction"
     emits: [div.dc-card.dc-faction.dc-faction-megacorp|.dc-faction-cabal|.dc-faction-cult|.dc-faction-enforcer, span.dc-faction-kind]
     css: [styles/components/section.css]
-    tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside]
+    tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside, --dc-faction-shape]
     breaks: "splits between paragraphs by default (--dc-faction-break-inside: auto); .dc-avoid-split keeps one whole"
     notes: "An organization's profile: a card whose rail and kind badge take the kind's colour (megacorp blue, cabal violet, cult blood, enforcer yellow). The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."
 

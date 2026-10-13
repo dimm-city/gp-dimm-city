@@ -55,7 +55,7 @@ A **chapter word** sets the colour register of every panel in the chapter:
 | `@chapter citizen-file` | magenta-deep | Who you dream to be |
 | `@chapter specialty` | blue-dark | The specialty gateway |
 | `@chapter rules` | rust | Rules chapters |
-| `@chapter lore` | amber, panels on `--paper-light` | Setting and history |
+| `@chapter lore` | violet | Setting and history |
 
 ```markdown
 @chapter rules #ch-rules ch="3"
@@ -72,7 +72,7 @@ Any other word after `@chapter` is the chapter's label, as before. A book adjust
 .page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: 3px; }
 ```
 
-A panel's edge has two tokens of its own, `--dc-section-clip` (the cut corner, 18px) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
+A panel's edge has tokens of its own, `--dc-section-clip` (the top-right cut, 18px), `--dc-section-cut-tl`, `--dc-section-cut-br` and `--dc-section-cut-bl` (the other three corners, 0) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
 
 The old raw spellings (`@page .page-chapter-start .dc-chapter-start`, `.page-toc`, `.page-credits .dc-credits`, `.page-intro`, `.dc-citizen-file-page`) are no longer styled. Write the word.
 

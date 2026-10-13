@@ -71,14 +71,14 @@ The components below that are sections have a marker of their own and a word on 
 
 ## Kinds of text {#kinds-of-text}
 
-`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
+`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter: each cuts its own corners, as the skill cards do per specialty, so the shape says which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
 
 | You are writing | Write | Looks like |
 |---|---|---|
-| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band, tight rows, a small corner cut |
-| The world, not the rules: places, factions' history, setting | `@section lore` | Brass on aged paper, a big shard corner, italic sub-heads |
-| Advice for the Dream Master, behind the screen | `@section dm` | Ink title bar with a *Dream Master* chip, a cold concrete body |
-| A choice the player writes on the Citizen File | `@section choose` | A lighter form sheet, dotted write-in rules, tick boxes, a *Your choice* chip, in the chapter's accent |
+| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band, tight rows, all four corners cut small |
+| The world, not the rules: places, factions' history, setting | `@section lore` | Violet on clean paper, long cuts off the top-left and bottom-right corners, italic sub-heads |
+| Advice for the Dream Master, behind the screen | `@section dm` | Ink title bar with a *Dream Master* chip, a cold concrete body, top-right and bottom-left corners cut |
+| A choice the player writes on the Citizen File | `@section choose` | A lighter form sheet, dotted write-in rules, tick boxes, a *Your choice* chip, in the chapter's accent, the bottom-right corner cut |
 
 ```markdown {.dg-split}
 @section reference

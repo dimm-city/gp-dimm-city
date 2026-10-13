@@ -483,6 +483,7 @@
    Per-section / per-column overrides set the tokens; they don't override
    the properties directly. */
 .dc-definition-block {
+  clip-path: var(--dc-definition-block-shape);
   background: var(--dc-definition-block-surface);
   border-left: var(--dc-definition-block-accent-width) solid var(--dc-definition-block-accent);
   font-style: italic;

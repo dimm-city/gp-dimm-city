@@ -28,9 +28,13 @@
      --dc-section-drop    — flat only: an extra box-shadow (a drop shadow)
      --dc-section-pad-top/-right/-bottom/-left — padding; the panel's heading
                             bar derives its negative margins from them
-     --dc-section-clip / --dc-section-rail — the panel's chamfer and rail width
-                            (the ::before/::after layers read them, so a page
-                            template changes the edge without touching them)
+     --dc-section-clip / --dc-section-rail — the panel's top-right chamfer and
+                            rail width (the ::before/::after layers read them,
+                            so a page template changes the edge without
+                            touching them)
+     --dc-section-cut-tl/-br/-bl — chamfers on the other three corners (0 by
+                            default); each kind of panel cuts its own set, and
+                            the title bar follows the top two
      --dc-section-gap / --dc-section-grow — space below; flex-grow in a flex page
      --dc-section-edge  — how far the panel's bottom edge hangs below the box
                             instead of sitting in its padding. A panel splits
@@ -143,7 +147,17 @@
     inset var(--dc-section-rail) 0 0 var(--dc-section-accent),
     var(--dc-section-rail) var(--dc-section-edge) 0 0 var(--dc-section-bg),
     0 var(--dc-section-edge) 0 0 var(--dc-section-accent);
-  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% calc(100% + var(--dc-section-edge)), 0 calc(100% + var(--dc-section-edge)));
+  /* Four chamfers; the bottom two sit on the hanging edge, not the box. */
+  clip-path: polygon(
+    var(--dc-section-cut-tl) 0,
+    calc(100% - var(--dc-section-clip)) 0,
+    100% var(--dc-section-clip),
+    100% calc(100% + var(--dc-section-edge) - var(--dc-section-cut-br)),
+    calc(100% - var(--dc-section-cut-br)) calc(100% + var(--dc-section-edge)),
+    var(--dc-section-cut-bl) calc(100% + var(--dc-section-edge)),
+    0 calc(100% + var(--dc-section-edge) - var(--dc-section-cut-bl)),
+    0 var(--dc-section-cut-tl)
+  );
   z-index: -1;
 }
 
@@ -161,7 +175,16 @@
   bottom: 0;
   background: var(--ink-dark);
   box-shadow: 0 calc(3px + var(--dc-section-edge)) 0 0 var(--ink-dark);
-  clip-path: polygon(0 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% calc(100% + 3px + var(--dc-section-edge)), 0 calc(100% + 3px + var(--dc-section-edge)));
+  clip-path: polygon(
+    var(--dc-section-cut-tl) 0,
+    calc(100% - var(--dc-section-clip)) 0,
+    100% var(--dc-section-clip),
+    100% calc(100% + 3px + var(--dc-section-edge) - var(--dc-section-cut-br)),
+    calc(100% - var(--dc-section-cut-br)) calc(100% + 3px + var(--dc-section-edge)),
+    var(--dc-section-cut-bl) calc(100% + 3px + var(--dc-section-edge)),
+    0 calc(100% + 3px + var(--dc-section-edge) - var(--dc-section-cut-bl)),
+    0 var(--dc-section-cut-tl)
+  );
   z-index: -2;
   pointer-events: none;
 }
@@ -205,15 +228,17 @@
   font-size: var(--fs-h3);
   padding-top: 0.55rem;
   padding-bottom: 0.40rem;
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+  /* The bar follows the panel's two top corners. */
+  clip-path: polygon(var(--dc-section-cut-tl) 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%, 0 var(--dc-section-cut-tl));
   border-bottom: 3pt solid var(--orange);
 }
 
-/* H3 — SUBORDINATE: hierarchy reads through font size alone. */
+/* H3 — SUBORDINATE: hierarchy reads through font size alone. Its top-right cut
+   is at most 12px, so on a bigger panel chamfer the bar's own sits inside it. */
 .dc-section-panel > h3:first-child,
 .dc-section-panel > h2.dc-h3:first-child {
   font-size: var(--fs-h4);
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  clip-path: polygon(var(--dc-section-cut-tl) 0, calc(100% - min(12px, var(--dc-section-clip))) 0, 100% min(12px, var(--dc-section-clip)), 100% 100%, 0 100%, 0 var(--dc-section-cut-tl));
 }
 
 /* Heading bar followed immediately by a table — give the table head room
@@ -266,21 +291,30 @@ h3 + .dc-section-panel {
 /* ═══════════════════════════════════════════════════════════════════════════
    WHAT KIND OF TEXT IS THIS — section variants that are panels with a
    different set of tokens. Each carries `dc-section-panel` (the chassis) and
-   its own class, which sets the tokens above (colour, corner, rail) and the
+   its own class, which sets the tokens above (colour, corners, rail) and the
    few descendants that read as that kind of text. Where it sits (the chapter
    word) does not change it: a variant that names its own accent keeps it.
+   Each kind cuts its own corners, so the silhouette names it before the
+   colour does (the skill cards do the same per specialty):
 
-     reference  look it up: tables and lists scanned, not read    HUD blue
-     lore       the world, not the rules                          brass on aged paper
-     dm         behind the screen: advice for the Dream Master    ink, with a DM chip
-     choose     pick one and write it on your sheet               the chapter's accent
+     panel      the default card                    top right
+     reference  look it up                          all four, small   HUD blue
+     lore       the world, not the rules            top left + bottom right, long   violet
+     dm         behind the screen                   top right + bottom left   ink, DM chip
+     choose     pick one for your sheet             bottom right   the chapter's accent
+     catalog    a run of entries (entries.css)      both top
+     npc-stat   a creature (below)                  both right
+     citizen-walkthrough (below)                    top left
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── reference — a look-up ────────────────────────────────────────────────── */
 .dc-section-reference {
   --dc-section-accent: var(--hud-blue-dark);
   --dc-section-bg: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
-  --dc-section-clip: 8px;
+  --dc-section-clip: 7px;
+  --dc-section-cut-tl: 7px;
+  --dc-section-cut-br: 7px;
+  --dc-section-cut-bl: 7px;
   --dc-section-rail: 3px;
   --dc-section-pad-top: var(--space-sm);
   --dc-section-pad-bottom: var(--space-sm);
@@ -319,11 +353,15 @@ h3 + .dc-section-panel {
   margin-bottom: 0.02in;
 }
 
-/* ── lore — the world ─────────────────────────────────────────────────────── */
+/* ── lore — the world ─────────────────────────────────────────────────────────
+   Violet, the dream colour, on clean paper (cream on violet 6.5:1), with a
+   long shard off two opposite corners. */
 .dc-section-lore {
-  --dc-section-accent: var(--amber);
-  --dc-section-bg: var(--paper-aged);
-  --dc-section-clip: 34px;
+  --dc-section-accent: var(--brand-violet);
+  --dc-section-bg: var(--paper-cream);
+  --dc-section-clip: 0px;
+  --dc-section-cut-tl: 26px;
+  --dc-section-cut-br: 26px;
   --dc-section-rail: 6px;
 }
 .dc-section-lore p {
@@ -334,7 +372,7 @@ h3 + .dc-section-panel {
   font-style: italic;
   text-transform: none;
   letter-spacing: 0.02em;
-  color: var(--amber-dark);
+  color: var(--brand-violet);
 }
 
 /* ── dm — behind the screen ───────────────────────────────────────────────── */
@@ -342,6 +380,7 @@ h3 + .dc-section-panel {
   --dc-section-accent: var(--ink-dark);
   --dc-section-bg: var(--concrete-pale);
   --dc-section-clip: 20px;
+  --dc-section-cut-bl: 20px;
   --dc-section-tab: "Dream Master";
   --dc-section-tab-bg: var(--hud-blue-bright);
   --dc-section-tab-fg: var(--ink);
@@ -353,6 +392,8 @@ h3 + .dc-section-panel {
    chapter's. */
 .dc-section-choose {
   --dc-section-bg: var(--paper-light);
+  --dc-section-clip: 0px;
+  --dc-section-cut-br: 22px;
   --dc-section-tab: "Your choice";
   --dc-section-tab-bg: var(--paper-cream);
   --dc-section-tab-fg: var(--dc-section-accent);
@@ -520,6 +561,7 @@ h3 + .dc-section-panel {
    No selector conflict. */
 
 .dc-card {
+  clip-path: var(--dc-card-shape);
   background: var(--paper-light);
   border-left: 3px solid var(--ink-dark);
   padding: var(--space-sm) var(--space-md) var(--space-md);
@@ -590,6 +632,7 @@ h3 + .dc-section-panel {
    Token contract: --dc-faction-accent (rail and badge fill),
    --dc-faction-badge-fg (badge text), --dc-faction-break-inside. */
 .dc-card.dc-faction {
+  clip-path: var(--dc-faction-shape);
   border-left-width: 5px;
   border-left-color: var(--dc-faction-accent);
   padding: 10pt 14pt;
@@ -689,6 +732,16 @@ h3 + .dc-section-panel {
      --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
      --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
    Override per chapter / per faction in the book's own sheet selector chains. */
+/* Its shape: both right corners cut, a dossier's edge. */
+.dc-section-panel.dc-npc-stat {
+  --dc-section-clip: 14px;
+  --dc-section-cut-br: 14px;
+}
+/* The citizen walkthrough's shape: the top-left corner only. */
+.dc-section-panel.dc-citizen-walkthrough {
+  --dc-section-clip: 0px;
+  --dc-section-cut-tl: 20px;
+}
 /* Page breaks. A section splits across pages by default. A block with `####`
    entries is a RUN of creatures: it may break between entries and never inside
    one. An entry has no wrapper — it is an `h4` and the siblings that follow it
@@ -904,6 +957,7 @@ h3 + .dc-section-panel {
    context, e.g. `#chapter-02 .dc-fiction-excerpt { --dc-fiction-bg: … }`; the
    chapter-start page's heavier edge is set in page-templates.css. */
 .dc-fiction-excerpt {
+  clip-path: var(--dc-fiction-shape);
   background: var(--dc-fiction-bg);
   border-block: var(--dc-fiction-rule) solid var(--ink-dark);
   box-shadow: var(--dc-fiction-shadow);

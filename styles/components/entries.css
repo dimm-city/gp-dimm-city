@@ -33,6 +33,7 @@
    Entries are cards: they never split across pages (.dc-card). */
 
 .dc-card.dc-entry {
+  clip-path: var(--dc-entry-shape);
   background: var(--dc-entry-surface);
   border-left: var(--dc-entry-rail) solid var(--dc-entry-accent);
   border-top: var(--dc-entry-rule) solid var(--dc-entry-accent);
@@ -181,6 +182,11 @@
    keeps one whole. */
 .dc-section-panel.dc-catalog {
   --dc-section-break-inside: var(--dc-catalog-break-inside);
+  /* Its shape: both top corners cut, like a file drawer's tab. */
+  --dc-section-clip: 16px;
+  --dc-section-cut-tl: 16px;
+  /* Its entries are ruled, not boxed: no card shape. */
+  --dc-entry-shape: none;
 }
 
 /* ═════════════════════════════════════════════════════════════════════════

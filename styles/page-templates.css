@@ -472,6 +472,8 @@
 .page.dc-page-chapter-start .dc-fiction-excerpt {
   --dc-fiction-rule: 2px;
   --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
+  /* A clip would cut the offset shadow off: the opener keeps the square box. */
+  --dc-fiction-shape: none;
 }
 
 /* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───
@@ -482,13 +484,10 @@
      citizen-file   magenta-deep   identity: who you dream to be
      specialty      hud-blue-dark  the specialty gateway
      rules          rust           the rules chapters
-     lore           amber on aged paper: brass title bars, --paper-light panels */
+     lore           violet, the lore section's colour */
 .chapter.dc-chapter-citizen-file { --dc-section-accent: var(--brand-magenta-deep); }
 .chapter.dc-chapter-specialty    { --dc-section-accent: var(--hud-blue-dark); }
 .chapter.dc-chapter-rules        { --dc-section-accent: var(--rust); }
-.chapter.dc-chapter-lore {
-  --dc-section-accent: var(--amber);
-  --dc-section-bg: var(--paper-light);
-}
+.chapter.dc-chapter-lore         { --dc-section-accent: var(--brand-violet); }
 
 }
