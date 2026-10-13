@@ -170,7 +170,7 @@ Keep the pressure on. Let the dice say who gets away, and let the city complicat
 
 ## Fiction excerpt
 
-Fiction, lore, a chapter-opening story. Aged paper instead of a card: no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules and an offset shadow.
+Fiction, lore, a chapter-opening story. Aged paper set into the page instead of a card on it: an inner shadow along the top and left, three cut corners, no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules.
 
 ```markdown {.dg-split}
 @fiction-excerpt

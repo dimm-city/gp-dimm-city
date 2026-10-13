@@ -594,7 +594,7 @@ components:
       - --dc-fiction-art-shadow
       - --dc-fiction-shape
     breaks: "orphans/widows 3 on paragraphs"
-    notes: "Aged paper (--paper-aged), no rail and no title bar; three corners cut (all but the top left, --dc-fiction-shape). On a chapter-start page (`@page chapter-start`) it takes the heavier opener edge: 2px ink top and bottom and an offset shadow, and keeps the square box (the clip would cut the shadow), set in page-templates.css by tokens."
+    notes: "Aged paper (--paper-aged) set into the page: a hard inner shadow top and left (--dc-fiction-shadow), three corners cut (all but the top left, --dc-fiction-shape), no rail and no title bar. On a chapter-start page (`@page chapter-start`) it takes the heavier opener edge, 2px ink top and bottom, set in page-templates.css by a token."
 
   - name: npc-stat
     status: live
@@ -631,7 +631,7 @@ components:
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
     css: [styles/page-rules.css, styles/page-templates.css]
-    tokens: [--dc-fiction-rule, --dc-fiction-shadow]
+    tokens: [--dc-fiction-rule]
     breaks: "page: chapter-start (no footer on any page the opener spans)"
     notes: "A chapter opener: the h1 gets headroom and is kept with the block after it, and a fiction excerpt takes the heavier opener edge by tokens."
 

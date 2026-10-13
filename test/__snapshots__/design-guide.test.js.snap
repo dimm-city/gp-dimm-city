@@ -1207,7 +1207,7 @@ Keep the pressure on. Let the dice say who gets away, and let the city complicat
 </div></div>
 <p><code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code> are <code>choose</code> sections that hold a run of <code>@card</code> (below). The kind wins over the chapter: a <code>reference</code> panel stays HUD blue in a rust chapter, and only <code>choose</code> takes the chapter’s accent. Tokens are the section’s own (<code>--dc-section-accent</code>, <code>--dc-section-bg</code>, <code>--dc-section-clip</code>, <code>--dc-section-rail</code>) plus the chip: <code>--dc-section-tab</code> (its text, <code>none</code> for no chip), <code>--dc-section-tab-bg</code> and <code>--dc-section-tab-fg</code>.</p>
 <h2>Fiction excerpt</h2>
-<p>Fiction, lore, a chapter-opening story. Aged paper instead of a card: no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules and an offset shadow.</p>
+<p>Fiction, lore, a chapter-opening story. Aged paper set into the page instead of a card on it: an inner shadow along the top and left, three cut corners, no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules.</p>
 <pre><code class="dg-split language-markdown" data-source-range="174:183">@fiction-excerpt
 
 &quot;It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!&quot;

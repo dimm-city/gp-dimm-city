@@ -86,8 +86,8 @@
   --dc-alert-margin-top:     0;
   /* Each boxed component cuts its own corners (a clip-path on the box), so its
      shape names it, as the skill cards' shapes name their specialty. A context
-     that needs the plain box (a catalog's ruled entries, the chapter-start
-     excerpt's offset shadow) sets the token to `none`.
+     that needs the plain box (a catalog's ruled entries) sets the token to
+     `none`.
        callout   top left + bottom left        card      bottom left
        faction   both bottom                   entry     all but bottom left
        fiction   all but top left              definition  all but top right */
@@ -141,7 +141,7 @@
   /* .dc-fiction-excerpt public API */
   --dc-fiction-bg:           var(--paper-aged);
   --dc-fiction-rule:         0px;                  /* top/bottom edge weight; the chapter-start page sets 2px */
-  --dc-fiction-shadow:       none;                 /* offset shadow; the chapter-start page sets one */
+  --dc-fiction-shadow:       inset 5px 5px 0 color-mix(in srgb, var(--ink-dark) 40%, transparent), inset -2px -2px 0 color-mix(in srgb, var(--paper-cream) 60%, transparent);  /* recessed: dark top/left, light bottom/right */
   --dc-fiction-art-width:    3in;
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);

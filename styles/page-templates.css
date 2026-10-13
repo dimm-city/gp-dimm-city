@@ -466,14 +466,10 @@
 
 /* ── CHAPTER-START PAGE: fiction excerpt edge ───────────────────────────────
    A fiction excerpt on a chapter-start page takes the heavier opener edge
-   (2px ink top and bottom, offset shadow), so the opening pages read as a
-   deliberate wall object rather than a tidy box. Tokens only; the excerpt's
-   own look is in components/section.css. */
+   (2px ink top and bottom) over the recess every excerpt has. Tokens only;
+   the excerpt's own look is in components/section.css. */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
   --dc-fiction-rule: 2px;
-  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
-  /* A clip would cut the offset shadow off: the opener keeps the square box. */
-  --dc-fiction-shape: none;
 }
 
 /* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───

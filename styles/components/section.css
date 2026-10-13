@@ -941,9 +941,10 @@ h3 + .dc-section-panel {
    FICTION EXCERPT — narrative prose with optional inline art
    ═════════════════════════════════════════════════════════════════════════
    Wraps a fiction section (chapter opener prose, vignette, in-character
-   narrative). Aged paper instead of a panel: no rail, no title bar, narrative
-   leading, and the first image floats left (subsequent ones right) — authors
-   don't need per-image positioning classes.
+   narrative). Aged paper set INTO the page instead of a panel on it: a hard
+   inner shadow top and left (--dc-fiction-shadow) under three cut corners, no
+   rail, no title bar, narrative leading, and the first image floats left
+   (subsequent ones right) — authors don't need per-image positioning classes.
 
      @fiction-excerpt            (or @section fiction)
      "It's hard being me, but I guess..."
@@ -963,8 +964,7 @@ h3 + .dc-section-panel {
   box-shadow: var(--dc-fiction-shadow);
   line-height: var(--dc-fiction-line-height);
   padding: var(--space-md) var(--space-lg);
-  /* Room on the right for the opener's offset shadow (see .dc-section-panel). */
-  margin: 0 6px 12pt 0;
+  margin: 0 0 12pt;
 }
 
 .dc-fiction-excerpt p {

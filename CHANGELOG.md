@@ -29,10 +29,14 @@ set from its own CSS.
     `@faction`: both bottom; entry cards (`@gear` and its kinds): all but the
     bottom left; fiction excerpt: all but the top left; `@definition`: all but
     the top right. Each reads a `--dc-<component>-shape` token; a catalog's
-    ruled entries and the chapter-start excerpt (which has an offset shadow)
-    keep the square box.
+    ruled entries keep the square box.
   - Shapes are paint only: no page breaks move (the Field Guide and SysOps
     paginate as before).
+- **Fiction is set into the page.** The fiction excerpt reads as a recess, not a
+  card: a hard inner shadow along the top and left and a light edge bottom and
+  right (`--dc-fiction-shadow`), under its cut corners. The chapter-start excerpt
+  drops its raised offset shadow (and the 6px right margin kept for it) and keeps
+  its two ink rules.
 - **Lore is violet, not brass.** `@section lore` and `@chapter lore` drop the
   amber bars on aged and light-brown paper: violet bars (`--brand-violet`) on the
   panels' clean cream, italic sub-heads in violet.
