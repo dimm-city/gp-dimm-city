@@ -1090,7 +1090,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ### Panel section
 
-The panel chrome: substrate, accent rule, clipped corner, and the first heading as a bar.
+The panel chrome: substrate, accent rule, a cut top-right corner, and the first heading as a bar.
 
 @end-section
 
@@ -1119,7 +1119,7 @@ A look-up: HUD blue, a pale title band, tight rows.
 
 ### Lore section
 
-The world, not the rules: brass on aged paper with a long shard corner.
+The world, not the rules: violet on clean paper, with long cuts off two opposite corners.
 
 @end-section
 
@@ -1127,7 +1127,7 @@ The world, not the rules: brass on aged paper with a long shard corner.
 
 ### Dream Master section
 
-Behind the screen: an ink bar with a Dream Master chip on a cold body.
+Behind the screen: an ink bar with a Dream Master chip on a cold body, top-right and bottom-left corners cut.
 
 @end-section
 

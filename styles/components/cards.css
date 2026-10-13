@@ -425,15 +425,17 @@
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
-   --dc-roll-the-die-color (default --blood).
+   --dc-roll-the-die-color (default --brand-magenta-deep).
    An instruction to act, set in the text around it: the same font and size as
-   the line it sits in, made bold, in a contrasting colour, and underlined in
-   that colour. It is plain inline text, so the line keeps its height. --blood
-   on --paper-cream is 7.7:1. */
+   the line it sits in, made bold, in a contrasting colour, with a dotted
+   underline in that colour. It is plain inline text, so the line keeps its
+   height. The brand magenta's hue stands apart from the warm ink and the
+   --blood used for other bold text; deep, it holds AA contrast on every paper:
+   7.0:1 on --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
   color: var(--dc-roll-the-die-color);
-  text-decoration: underline;
+  text-decoration: underline dotted;
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
 }

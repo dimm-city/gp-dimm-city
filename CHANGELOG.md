@@ -16,6 +16,39 @@ set from its own CSS.
 
 ### Changed
 
+- **Each kind of box has its own shape.** As the skill cards change shape per
+  specialty, every section variant and boxed component now cuts its own corners,
+  so its silhouette says what it is:
+  - panel: top right (unchanged); reference: all four, small; lore: top left and
+    bottom right, long; dm: top right and bottom left; choose: bottom right;
+    catalog: both top; `@npc-stat`: both right; citizen walkthrough: top left.
+    The title bar follows the panel's top corners. New tokens
+    `--dc-section-cut-tl`, `--dc-section-cut-br`, `--dc-section-cut-bl` sit
+    beside `--dc-section-clip` (the top-right cut).
+  - callouts and alerts: top left and bottom left; `@card`: bottom left;
+    `@faction`: both bottom; entry cards (`@gear` and its kinds): all but the
+    bottom left; fiction excerpt: all but the top left; `@definition`: all but
+    the top right. Each reads a `--dc-<component>-shape` token; a catalog's
+    ruled entries keep the square box.
+  - Shapes are paint only: no page breaks move (the Field Guide and SysOps
+    paginate as before).
+- **Fiction is set into the page.** The fiction excerpt reads as a recess, not a
+  card: a hard inner shadow along the top and left and a light edge bottom and
+  right (`--dc-fiction-shadow`), under its cut corners. The chapter-start excerpt
+  drops its raised offset shadow (and the 6px right margin kept for it) and keeps
+  its two ink rules.
+- **Lore is violet, not brass.** `@section lore` and `@chapter lore` drop the
+  amber bars on aged and light-brown paper: violet bars (`--brand-violet`) on the
+  panels' clean cream, italic sub-heads in violet.
+- **No tan boxes.** A treasure entry is violet on cream (rail, kind word and
+  name in `--brand-violet`) instead of amber on the gold tint, and `@definition`
+  sits on a pale HUD-blue tint of cream that matches its cyan rail instead of the
+  orange tint.
+- **ROLL THE DIE! stands out more.** Its underline is dotted, and its colour is the
+  brand's deep cyber-magenta (`--brand-magenta-deep`) instead of `--blood`, which
+  sat close to the body ink and is also the colour of other bold text. It keeps AA
+  contrast on every paper (7.0:1 on paper-cream). A book that wants the old colour
+  sets `--dc-roll-the-die-color: var(--blood)`.
 - **A creature stays whole by default.** An `@npc-stat` with no `####`, or one (a
   species and its one variant), is one creature, read at one glance: it keeps its
   padding inside its box and moves to the next page rather than splitting, as

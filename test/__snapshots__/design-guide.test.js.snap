@@ -1099,7 +1099,7 @@ A bare section: no look at all. The text sits on the page.
 <p><code>panel</code> is the look for rules text with a heading; <code>.dc-avoid-split</code> on it keeps a short panel on one page. For a short note set off from the text, use <a href="#ch-text" data-gp-source-token="[\`@callout\`](#ch-text)" data-gp-source-occurrence="0"><code>@callout</code></a>. Tokens: <code>--dc-section-bg</code>, <code>--dc-section-accent</code>, <code>--dc-section-pad-top</code>, <code>-right</code>, <code>-bottom</code>, <code>-left</code>, and for <code>panel</code> also <code>--dc-section-surface</code> and <code>--dc-section-shadow</code> (<code>none</code> removes the layer).</p>
 <p>The components below that are sections have a marker of their own and a word on <code>@section</code>: <code>@npc-stat</code> (<code>npc</code>), <code>@fiction-excerpt</code> (<code>fiction</code>), <code>@citizen-walkthrough</code> (<code>walkthrough</code>), <code>@card-grid</code> (<code>cards</code>), <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code>.</p>
 <h2 id="kinds-of-text">Kinds of text</h2>
-<p><code>reference</code>, <code>lore</code>, <code>dm</code> and <code>choose</code> are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter. Each has a word on <code>@section</code> and nothing else to learn: write the heading and the content as you would in a panel.</p>
+<p><code>reference</code>, <code>lore</code>, <code>dm</code> and <code>choose</code> are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter: each cuts its own corners, as the skill cards do per specialty, so the shape says which kind it is before the colour does. Each has a word on <code>@section</code> and nothing else to learn: write the heading and the content as you would in a panel.</p>
 <table>
 <thead data-source-range="75:76">
 <tr data-source-range="75:76">
@@ -1112,22 +1112,22 @@ A bare section: no look at all. The text sits on the page.
 <tr data-source-range="77:78">
 <td>A table or list to look up: prices, conditions, a menu of options</td>
 <td><code>@section reference</code></td>
-<td>HUD blue, a pale title band, tight rows, a small corner cut</td>
+<td>HUD blue, a pale title band, tight rows, all four corners cut small</td>
 </tr>
 <tr data-source-range="78:79">
 <td>The world, not the rules: places, factions’ history, setting</td>
 <td><code>@section lore</code></td>
-<td>Brass on aged paper, a big shard corner, italic sub-heads</td>
+<td>Violet on clean paper, long cuts off the top-left and bottom-right corners, italic sub-heads</td>
 </tr>
 <tr data-source-range="79:80">
 <td>Advice for the Dream Master, behind the screen</td>
 <td><code>@section dm</code></td>
-<td>Ink title bar with a <em>Dream Master</em> chip, a cold concrete body</td>
+<td>Ink title bar with a <em>Dream Master</em> chip, a cold concrete body, top-right and bottom-left corners cut</td>
 </tr>
 <tr data-source-range="80:81">
 <td>A choice the player writes on the Citizen File</td>
 <td><code>@section choose</code></td>
-<td>A lighter form sheet, dotted write-in rules, tick boxes, a <em>Your choice</em> chip, in the chapter’s accent</td>
+<td>A lighter form sheet, dotted write-in rules, tick boxes, a <em>Your choice</em> chip, in the chapter’s accent, the bottom-right corner cut</td>
 </tr>
 </tbody>
 </table>
@@ -1207,7 +1207,7 @@ Keep the pressure on. Let the dice say who gets away, and let the city complicat
 </div></div>
 <p><code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code> are <code>choose</code> sections that hold a run of <code>@card</code> (below). The kind wins over the chapter: a <code>reference</code> panel stays HUD blue in a rust chapter, and only <code>choose</code> takes the chapter’s accent. Tokens are the section’s own (<code>--dc-section-accent</code>, <code>--dc-section-bg</code>, <code>--dc-section-clip</code>, <code>--dc-section-rail</code>) plus the chip: <code>--dc-section-tab</code> (its text, <code>none</code> for no chip), <code>--dc-section-tab-bg</code> and <code>--dc-section-tab-fg</code>.</p>
 <h2>Fiction excerpt</h2>
-<p>Fiction, lore, a chapter-opening story. Aged paper instead of a card: no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules and an offset shadow.</p>
+<p>Fiction, lore, a chapter-opening story. Aged paper set into the page instead of a card on it: an inner shadow along the top and left, three cut corners, no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules.</p>
 <pre><code class="dg-split language-markdown" data-source-range="174:183">@fiction-excerpt
 
 &quot;It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!&quot;
@@ -2732,7 +2732,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="57:58">
 <td><code>@chapter lore</code></td>
-<td>amber, panels on <code>--paper-light</code></td>
+<td>violet</td>
 <td>Setting and history</td>
 </tr>
 </tbody>
@@ -2747,7 +2747,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <pre><code data-source-range="69:73" class="language-css">.chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
 .page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: 3px; }
 </code></pre>
-<p>A panel’s edge has two tokens of its own, <code>--dc-section-clip</code> (the cut corner, 18px) and <code>--dc-section-rail</code> (the rail, 5px), so a template changes the silhouette without touching the panel’s layers.</p>
+<p>A panel’s edge has tokens of its own, <code>--dc-section-clip</code> (the top-right cut, 18px), <code>--dc-section-cut-tl</code>, <code>--dc-section-cut-br</code> and <code>--dc-section-cut-bl</code> (the other three corners, 0) and <code>--dc-section-rail</code> (the rail, 5px), so a template changes the silhouette without touching the panel’s layers.</p>
 <p>The old raw spellings (<code>@page .page-chapter-start .dc-chapter-start</code>, <code>.page-toc</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.dc-citizen-file-page</code>) are no longer styled. Write the word.</p>
 <h2>Contents page</h2>
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
@@ -4269,7 +4269,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><code>@section panel</code>, <code>@section flat</code>, the four kinds of text (<code>reference</code>, <code>lore</code>, <code>dm</code>, <code>choose</code>), a bare <code>@section</code>, and a panel with its body in <code>@columns 2</code>.</p>
 <div class="dg-stage dg-tall">
 <div class="section dc-section-panel" data-section="panel" data-source-range="1088:1089"><h3>Panel section</h3>
-<p>The panel chrome: substrate, accent rule, clipped corner, and the first heading as a bar.</p>
+<p>The panel chrome: substrate, accent rule, a cut top-right corner, and the first heading as a bar.</p>
 </div><div class="section dc-section-flat" data-section="flat" data-source-range="1096:1097"><h3>Flat section</h3>
 <p>The accent rail on a plain host: no clipped corner, no shadow. A heading prints as a heading, not a bar.</p>
 </div><div class="section dc-section-panel dc-section-reference" data-section="reference" data-source-range="1104:1105"><h3>Reference section</h3>
@@ -4293,9 +4293,9 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </tbody>
 </table>
 </div><div class="section dc-section-panel dc-section-lore" data-section="lore" data-source-range="1117:1118"><h3>Lore section</h3>
-<p>The world, not the rules: brass on aged paper with a long shard corner.</p>
+<p>The world, not the rules: violet on clean paper, with long cuts off two opposite corners.</p>
 </div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-source-range="1125:1126"><h3>Dream Master section</h3>
-<p>Behind the screen: an ink bar with a Dream Master chip on a cold body.</p>
+<p>Behind the screen: an ink bar with a Dream Master chip on a cold body, top-right and bottom-left corners cut.</p>
 </div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-source-range="1133:1134"><h3>Choose section</h3>
 <p>A pick-one choice for the Citizen File:</p>
 <ul>
