@@ -43,6 +43,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `> [!VIBE]` | GFM alert + DC plugin | `.dc-vibe-callout` |
 | `> [!DM]` | GFM alert + DC plugin | `.dc-dm-note` |
 | `> [!ORIGIN]` | GFM alert + DC plugin | `.dc-origin-callout` |
+| `> [!VISIT]` | GFM alert + DC plugin | `.dc-visit-callout` |
 | `> [!NOTE]` | GFM alert | `.dc-note` |
 | `> [!WARNING]` | GFM alert | `.dc-note.warning` |
 
@@ -51,10 +52,10 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 ## Supported Components
 
 ### Callouts & Notes
-- `.dc-alert` — warning/info callout block
+- `.dc-alert` — the one callout shell: seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill value, edge and label
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-vibe-callout`, `.dc-human-callout`, `.dc-origin-callout`
+- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, dashed strip foot), `.dc-origin-callout`, `.dc-visit-callout`, `.dc-example-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
 
@@ -64,31 +65,33 @@ Use this to choose the right callout type before reaching for a class name.
 
 ```
 1. Who sees it?
-   └── GM only → dc-dm-note
+   └── Dream Master only → dc-dm-note        (ink slab, cyan rail and chip)
    └── Player-facing → continue ↓
 
-2. What register?
-   └── Atmosphere / narrative → dc-vibe-callout
-   └── World / setting lore  → dc-origin-callout
-   └── Rules / mechanics     → continue ↓
+2. What is it?
+   └── A worked example              → dc-example-callout  (dashed cyan rail, taped-on label)
+   └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one dashed violet edge, italic)
+   └── Backstory, in second person   → dc-origin-callout   (warm paper, rust rail, dog-ear, crimson stamp)
+   └── A place, present tense        → dc-visit-callout    (fungi-green signpost)
+   └── Rules / mechanics             → continue ↓
 
 3. How urgent?
-   └── Caution / warning          → dc-note.warning
-   └── Informational              → dc-note
-   └── General rules callout      → dc-alert
+   └── A rule with consequences   → dc-note.warning  (hazard-stripe rail, caution-tape label)
+   └── Informational              → dc-note          (HUD-blue panel, blue rail)
 ```
 
 ### Block Components (via `@block panel`, `slate`, `shard`)
 - `.dc-block` — base block container
 - `.dc-block.dc-panel` — data/rules panel (a `@block` register; the general card is `@section panel`)
-- `.dc-block.dc-slate` — authority/authority-voice
-- `.dc-block.dc-shard` — flavor/atmosphere
+- `.dc-block.dc-slate` — authority voice: ink body, blood band, a stamped Binding tag
+- `.dc-block.dc-shard` — flavor/atmosphere: light zine paper, torn foot, no accent hue
 
 ### Sections
 - `.dc-section-panel` — the card: cream substrate, accent rail, clipped corner, title bar
 - `.dc-section-flat` — the rail on a plain host
-- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — panels that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice)
-- `.dc-npc-stat`, `.dc-citizen-walkthrough`, `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — panels that carry their own class
+- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar and sheet: a pale HUD band, a deep violet bar over lilac, an ink bar with a cyan rule, and for `choose` a form with no bar on the lightest sheet (`--paper-form`)
+- `.dc-npc-stat`, `.dc-citizen-walkthrough` — panels that carry their own class
+- `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — `choose` sections of choice cards: blood with a cracked edge, HUD blue with a steady tablet, violet with a rising edge (the card reads `--dc-choice-*`)
 - `.dc-fiction-excerpt`, `.dc-card-grid` — section components that are not panels
 - `.dc-avoid-split`, `.dc-snug` — modifiers
 
@@ -104,7 +107,7 @@ A location sets tokens on the components inside it and draws nothing of its own.
 - `.dc-sidebar` — float placement: a callout (`@callout note .dc-sidebar`) or a `.dc-human-callout` floated right
 
 ### Skill Cards
-- `.dc-skill-card` / `.dc-skill-card.dc-highlight`
+- `.dc-skill-card`
 - `.dc-skill-card-cont` — card container
 - `.dc-ability` / `.dc-ability-text`
 - `.dc-ap` — action point cost (`.free`, `.reduced`, `.increased`, `.var`, `.standard`, `.special`)
@@ -138,31 +141,31 @@ These are separate components — not variants of each other.
 > `dc-stat-cell`, `dc-stat-cell-key`, `dc-stat-cell-val`, `dc-stat-head`, `dc-stat-line`
 
 ### Typography Decorations
-- `.dc-chevron` — chevron banner heading
-- `.dc-spray` — spray-paint heading style
+- `.dc-chevron` — deep-magenta chevron banner heading
+- `.dc-spray` — stencil-tag heading: stepped overspray edge, dashed stencil line
 - `.dc-sub-header`
 - `.dc-pullquote`
-- `.dc-intro` — lede/intro text panel
-- `.dc-flavor` — italic flavor text
-- `.dc-tape` — adhesive tape label
+- `.dc-intro` — lede: upright semibold ink type on a light panel, accent rail, ink foot rule
+- `.dc-flavor` — italic flavor text with a rail and no box
+- `.dc-tape` — a strip of masking tape: tan, torn ends, ink edges, ink label
 - `.dc-sticker` / `.dc-sticker-ref` / `.dc-stickers`
-- `.dc-definition-block` — a term, a glossary run, or a boxed note with a divider
-- `.dc-steps`
+- `.dc-definition-block` — a dictionary page for a term or a glossary run: cream, heavy rule over, headword first
+- `.dc-steps` — the numbered instruction plate (`@procedure`): ink frame, hard shadow, HUD-blue number strip
 
 ### Gear
-- `.dc-card.dc-entry` with `.dc-gear` (or `.dc-augment`, `.dc-treasure`, `.dc-vehicle`, `.dc-drug`) — `@gear [kind]`
+- `.dc-card.dc-entry` with `.dc-gear` (or `.dc-augment`, `.dc-treasure`, `.dc-vehicle`, `.dc-drug`) — `@gear [kind]`; each kind has its own silhouette, surface, badge and name colour: a hang tag, a spec chip, a gem, an industrial plate, a prescription label
 - `.dc-field.dc-field-specs` — the SPECS box (`@field specs`, or a `**SPECS:**` paragraph in an entry)
 
 ### Layout Helpers
 - `.dc-card-grid`
-- `.dc-at-a-glance-card` (three across in `@columns 3`)
+- `.dc-at-a-glance-card` (three across in `@columns 3`): a reversed label band over a big value
 - `.dc-citizen-walkthrough` (two fields side by side in `@columns 2`)
 
 Note: there are no `.dc-accent-X` utility classes. Retheme a chapter by setting the component tokens at its id (`#chapter-03 { --dc-section-accent: var(--rust); }`).
 
 ### Inline Markers
 - `.dc-arrow`
-- `.dc-tag`
+- `.dc-tag` — an inline keyword chip (hard edge, ink hairline, mono caps)
 - `.dc-roll-the-die`
 
 ### Images
@@ -182,10 +185,12 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 |---|---|---|
 | `--bg` | `#c8c5bf` | Ash-concrete page background |
 | `--concrete-pale` | `#dcdad5` | Pale concrete — cold-grey panels |
+| `--paper-form` | `#f5f3ee` | The `choose` form's sheet, a hair lighter than cream |
 | `--paper-cream` | `#f0eee9` | Light flyer-stock — primary text surface |
-| `--paper-light` | `#e2ded7` | Secondary layered panel surface |
-| `--paper-aged` | `#c8c2b8` | Weathered grey — decay register |
-| `--paper-stain` | `#b0a89c` | Deep stain — dark inset wells |
+| `--paper-zine` | `#e9e6e0` | Printed-page neutral — fiction excerpt, shard block |
+| `--paper-light` | `#e2ded7` | Secondary layered panel surface; the lede |
+| `--paper-aged` | `#c8c2b8` | Weathered grey — decay register; label and rule grounds |
+| `--paper-stain` | `#b0a89c` | Deep stain — dark inset wells and label strips; never body text |
 
 ### Ink / Text
 | Token | Value | Role |
@@ -214,7 +219,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--brand-magenta-deep` | `#8a0a9a` | Small-text-on-fill safe version |
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
-| `--brand-violet` | `#7030b8` | Cyber-violet — ritual+tech |
+| `--brand-violet` | `#7030b8` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
+| `--signal-indigo` | `#4430e0` | Electric indigo — technosorcerer accent |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -235,7 +241,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Crystal / Mineral
 | Token | Value | Role |
 |---|---|---|
-| `--crystal-amethyst` | `#6a3a8a` | Deep mineral violet |
+| `--crystal-amethyst` | `#6a3a8a` | Deep mineral violet (treasure tint) |
+| `--crystal-slate` | `#52626f` | Cool slate stone — generalist accent |
 | `--crystal-aqua` | `#4a98a8` | Pale crystalline aquamarine |
 
 ### Shadows & Utility
@@ -245,8 +252,6 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--shadow-ink` | `color-mix(in srgb, #000 28%, var(--wall-tone))` | Opaque ink-on-wall shadow colour (the source of `--shadow-poster`) |
 | `--tint-magenta-rose` | `#e6007a` | Pullquote accent / paper-stain rule mix source |
 | `--tint-hud-teal` | `#2a6a8a` | Inset-sidebar callout mix source |
-| `--tint-signal-red` | `#d41200` | Tape border mix source |
-| `--tint-brick-red` | `#b42828` | Skill-card header wash mix source |
 
 ---
 
@@ -275,6 +280,46 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-alert-label-color` | `--ink-dark` | Label chip text |
 | `--dc-alert-border-width` | `4px` | Left-rail width |
 | `--dc-alert-label-size` | `8pt` | Label chip font size |
+| `--dc-alert-frame` | `none` | An inset ring (the warning's ink frame) |
+| `--dc-alert-label-bg` / `-label-pad` | `transparent` / `0` | A chip behind the label (warning tape, DM chip) |
+
+### Lede (`.dc-intro`)
+| Token | Default | Role |
+|---|---|---|
+| `--dc-intro-bg` | `--paper-light` | Panel background (lighter than the wall) |
+| `--dc-intro-accent` | `--orange` | Rail colour |
+| `--dc-intro-color` | `--ink` | Type colour |
+| `--dc-intro-size` | `--fs-h4` | Type size (13pt) |
+| `--dc-intro-weight` / `-style` | `600` / `normal` | Upright semibold |
+| `--dc-intro-rail` / `-rule` | `6px` / `3px` | Rail width and ink foot rule (flush stacks set the rule to 0) |
+
+### Inline chips and tape (`.dc-tag`, `.dc-tape`, `.dc-spray`)
+| Token | Default | Role |
+|---|---|---|
+| `--dc-tag-bg` / `-fg` / `-border` | `--paper-cream` / `--ink-dark` / `--ink-dark` | The keyword chip |
+| `--dc-tape-bg` | 30% `--brand-yellow` in `--paper-aged` | Masking-tape fill |
+| `--dc-tape-border` / `-color` | `--ink-dark` / `--ink` | Tape edges and label |
+| `--dc-tape-shape` | torn-end polygon | Tape clip-path |
+| `--dc-spray-stencil` | `--ink-dark` | The dashed stencil line along a spray tag's foot |
+
+### Choice Card, Faction, Entry (`.dc-card`, `.dc-faction`, `.dc-entry`)
+| Token | Default | Role |
+|---|---|---|
+| `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink 8% in cream / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
+| `--dc-faction-surface` / `-band` / `-band-height` / `-title` | `--paper-cream` / HUD-blue band image / `8pt` / `--hud-blue-dark` | A faction's sheet, top band (an image: `linear-gradient(c, c)` for solid) and name colour; each kind sets all of them |
+| `--dc-entry-radius` / `-mark` / `-mark-size` / `-frame` | `0` / `none` / `auto` / `none` | An entry kind's corner radius, background mark (eyelet, facet, hazard head) and inset keyline |
+| `--dc-entry-badge-bg` / `-fg` / `-shape` / `-radius` | `--ink-dark` / `--paper-cream` / `none` / `0` | The kind badge over the name |
+| `--dc-field-edge-width` / `-edge-style` | `0px` / `solid` | The frame on a field's other three sides (effects solid, side effects dashed) |
+
+### Procedure, At-a-glance, Definition, Outcome
+| Token | Default | Role |
+|---|---|---|
+| `--dc-steps-accent` / `-surface` | `--hud-blue-dark` / `--paper-cream` | Number strip; plate |
+| `--dc-at-a-glance-accent` / `-value` | `--hud-blue-dark` / `--ink` | Tile frame and label band; the value |
+| `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | Rules and term colour; the rule over the block; page; clip |
+| `--dc-outcome-key-col` | `max(130px, 26%)` | Outcome ladder chip column |
+| `--dc-fiction-bg` / `-lift` / `-lift-bg` | `--paper-zine` / `3px` / `--ink-dark` | The fiction excerpt's sheet; its hard shadow's offset and colour |
+| `--dc-fiction-rule` / `-shadow` | `0px` / `none` | An ink edge weight under the torn edge; a box-shadow value on the paper |
 
 ### Skill Card (`.dc-skill-card`)
 | Token | Default | Role |
@@ -284,6 +329,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-card-tab-bg` | `--ink-dark` | Tab strip background |
 | `--dc-card-tab-title-color` | `--paper-cream` | Tab title text |
 | `--dc-card-body-mark` | `--crimson` | Body accent mark |
+| `--dc-tier-bg` / `-fg` / `-edge` | `--ink-dark` / `--paper-cream` / `--paper-cream` | The tier pill on the tab; each specialty sets its own chip |
 
 ### Specialty Intro (`.dc-specialty-intro`)
 | Token | Default | Role |
@@ -291,6 +337,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-specialty-intro-title-bg` | `--hud-magenta` | Title bar background |
 | `--dc-specialty-intro-title-color` | `--bg` | Title bar text |
 | `--dc-specialty-intro-bg` | `--hud-panel` | Panel background |
+| `--dc-band-rule` / `-rule-h` / `-rule-art` | `--hud-magenta` / `3px` / `none` | The rule under the band: colour, height, hard-edged pattern |
+| `--dc-band-facet` / `-facet-width` / `-facet-clip` | `transparent` / `32%` / polygon | A flat plane at the band's right (magic facet, landfill patch) |
+| `--dc-band-rim` | `none` | An inset top highlight (tech bands only) |
 
 ### Learning Path Shell (`.dc-path-shell`)
 | Token | Default | Role |
@@ -298,6 +347,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-path-title-bg` | `--hud-magenta` | Path header background |
 | `--dc-path-title-color` | `--paper-cream` | Path header text |
 | `--dc-path-accent` | `--hud-magenta` | Path accent color |
+| `--dc-path-code-bg` / `-code-fg` | `--paper-cream` / `--hud-blue-dark` | The path's code chip |
+| `--dc-path-chip-bg` / `-chip-fg` / `-chip-edge` | `--ink-dark` / `--paper-cream` / `--hud-blue-dark` | The sticker chain |
+| `--dc-path-note-rail` | `--orange` | The subtitle's rail |
 
 ### Specialty Card (`.dc-specialty-card`)
 | Token | Default | Role |
@@ -327,6 +379,8 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 Project-specific. A different project using this component library replaces this block with its own identity tokens; the pillar palette and component defaults above remain untouched.
 
 ### Specialty Accents
+Every specialty also sets `--spec-band` (the title-band fill: the accent, except Augmerc's `--brand-magenta-deep`), `--spec-on-band` (ink or cream, at least 4.5:1 on the band) and the tier chip `--spec-chip-bg`, `-fg` and `-edge`.
+
 | Specialty | Accent | Mid | Dark |
 |---|---|---|---|
 | Augmerc | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
@@ -335,14 +389,8 @@ Project-specific. A different project using this component library replaces this
 | Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#2a3408` |
 | Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
 | Wirephreak | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
-| Technosorcerer | `--brand-violet` (`#7030b8`) | `#4a1878` | `#200a38` |
+| Technosorcerer | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#150c4a` |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#3d3000` |
 | Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
-| Generalist | `--crystal-amethyst` (`#6a3a8a`) | `#503070` | `#1e0e2e` |
+| Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#1c252d` |
 
-### Tier Badges
-| Token | Value | Role |
-|---|---|---|
-| `--tier-bronze` | `#8a5c28` | Tier 1 — salvage |
-| `--tier-gold` | `#b8921a` | Tier 2 — tarnished brass |
-| `--tier-silver` | `#a8b4b8` | Tier 3 — cyan-tinged chrome |

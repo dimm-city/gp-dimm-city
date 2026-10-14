@@ -23,11 +23,11 @@ The richest family in the book. A specialty wrapper sets the shape and color; in
 @end-specialty
 ```
 
-Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
+Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--spec-band` and `--spec-on-band` (the title-band fill and its type), `--spec-chip-bg`, `--spec-chip-fg` and `--spec-chip-edge` (the tier pill), `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
 
 ## Specialty intro
 
-The title-banded panel on a specialty's first page: the `##` name, the pitch, and a `###` spec tweak.
+The title-banded panel on a specialty's first page: the `##` name, the pitch, and a `###` spec tweak. The band is the specialty's own signal colour, so ten specialties read as ten colours and ten values at a glance, and each carries its own register: the tech specialties an LED rim and a rule of LED dots, the magic ones a faceted plane, Streetwarden a hazard-tape rule, and Proxy and Gutterdruid a torn bottom edge with no rule.
 
 ```markdown
 @specialty .augmerc
@@ -69,7 +69,7 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 </div>
 
-Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`.
+Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`.
 
 ## Specialty art
 
@@ -195,7 +195,7 @@ The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview
 
 ## Learning path
 
-A named path: a `###` title (rendered as a spray banner with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, …) are computed from position.
+A named path: a `###` title (rendered as a title band in the specialty's signal colour, with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, …) are computed from position.
 
 ```markdown {.dg-split}
 @specialty .augmerc
@@ -287,7 +287,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-path-title-bg`, `--dc-path-title-color`, `--dc-path-accent`, `--dc-arrow-color`.
+A path with no subtitle and no sticker chain is the band alone. Tokens: `--dc-path-title-bg`, `--dc-path-title-color`, `--dc-path-code-bg`, `--dc-path-code-fg`, `--dc-path-chip-bg`, `--dc-path-chip-fg`, `--dc-path-chip-edge`, `--dc-path-note-rail`, `--dc-path-accent`, `--dc-arrow-color`, and the band tokens above.
 
 
 ## Skill card
@@ -358,13 +358,12 @@ Once per round, outside your turn, you exploit a target in reach:
 |---|---|---|
 | Tier | `#### Name \| AUG1.3` | Override the computed tier on the tab |
 | Anchor | `@skill id="dirty-work"` | A link target for the card |
-| Capstone | `#### Name \| AUG4.5 \| highlight` (or `@skill {.dc-highlight}`) | The look of a path's capstone, the last and strongest ability: crimson tab halo and body wash. It is not a new word: write `highlight` as the third part of the heading on the card that pays off the path |
 | Two columns | `@columns 2` … `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
 | Avoid split | `@skill {.dc-avoid-split}` | Keep a card whole instead of letting it break across pages |
 
-The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `VAR` or a range is variable (magenta). A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
+The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
 
-### Capstone and two columns
+### Two columns
 
 <div class="dg-stage">
 
@@ -373,17 +372,6 @@ The AP chip reads the number: `0 AP` is free (crimson), a number is standard, `V
 @learning-path
 
 ### Example Path
-
-@skill {.dc-highlight}
-
-#### Apex Physiology | AUG4.1 | highlight
-
-> Brutality is your default setting!
-
-1. **0 AP** *Built for Violence:* Your basic unarmed attacks deal 2 HP instead of 1.
-2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
-
-##### Violence begins in the bones.
 
 @skill
 
@@ -583,4 +571,4 @@ The same path and card markdown, dropped into a different `@specialty`, takes th
 
 </div>
 
-Skill-card tokens: `--dc-card-accent`, `--dc-card-surface`, `--dc-card-tab-bg`, `--dc-card-tab-title-color`, `--dc-card-gap`, `--dc-card-tab-shadow`; AP chip: `--dc-ap-bg`, `--dc-ap-fg`, `--dc-ap-border`.
+Skill-card tokens: `--dc-card-accent`, `--dc-card-surface`, `--dc-card-tab-bg`, `--dc-card-tab-title-color`, `--dc-card-gap`, `--dc-card-tab-shadow`; tier pill: `--dc-tier-bg`, `--dc-tier-fg`, `--dc-tier-edge` (the specialty's own chip: its signal colour, or cream where that colour fails contrast for the type); AP chip: `--dc-ap-bg`, `--dc-ap-fg`, `--dc-ap-border`.

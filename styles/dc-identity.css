@@ -8,8 +8,8 @@
      ──────────────────────────────────────────────────────────────────────── */
 
   /* ── Specialty Accent Colors ──────────────────────────────────────────── */
-  /* 4 brand-anchored (augmerc=magenta, wirephreak=cyan, technosorcerer=violet, etherlock=yellow),
-     2 crystal (dualist=aqua, generalist=amethyst), 1 fungi (gutterdruid=bioluminescent rot),
+  /* 4 brand-anchored (augmerc=magenta, wirephreak=cyan, technosorcerer=indigo, etherlock=yellow),
+     2 crystal (dualist=aqua, generalist=slate), 1 fungi (gutterdruid=bioluminescent rot),
      3 bespoke creaturepunk hues (proxy=burnt orange, streetwarden=toxic-civic hazard green,
      cybersurgeon=chrome). Streetwarden's #4db840 is high-vis civic hazard, distinct from the
      quieter lichen tone; gutterdruid is the alive-and-glowing spore. */
@@ -19,10 +19,10 @@
   --gutterdruid-accent:    var(--fungi-glow);      /* bioluminescent spore — alley fungus at full flare */
   --cybersurgeon-accent:   #a8b4b8;                /* cool blue-gray chrome */
   --wirephreak-accent:     var(--brand-cyan);      /* signal interference = brand neon-cyan */
-  --technosorcerer-accent: var(--brand-violet);    /* ritual + tech = brand cyber-violet */
+  --technosorcerer-accent: var(--signal-indigo);   /* ritual + tech = electric indigo, its own hue (violet is the world's) */
   --etherlock-accent:      var(--brand-yellow);    /* spirit channeling = brand radiant gold */
   --dualist-accent:        var(--crystal-aqua);     /* refractive mineral split — two-path walker */
-  --generalist-accent:     var(--crystal-amethyst); /* deep mineral refraction — survivor's stone, opposite pole from dualist */
+  --generalist-accent:     var(--crystal-slate);    /* common stone — cool slate, the neutral of the arcane family (no hue shared with lore violet) */
 
   /* ── Specialty Dark Colors (path-shell + specialty-card backgrounds) ── */
   --augmerc-dark:          #8a1a90;  /* deep magenta-violet (TAC ~157%) */
@@ -30,11 +30,11 @@
   --cybersurgeon-dark:     #303840;  /* cold clinical near-black — ~CMYK 18/6/0/78; TAC ~102% — POD-safe */
   --wirephreak-dark:       #003a40;  /* deep teal-black — drowned circuit — ~CMYK 100/11/0/75; TAC ~186% — large fills only */
   --streetwarden-dark:     #1a3d10;  /* rot-soaked forest dark — ~CMYK 57/0/73/76; TAC ~206% — large fills only */
-  --technosorcerer-dark:   #200a38;  /* ink-bruise kin — deep ritual dark — ~CMYK 42/73/0/78; TAC ~193% — large fills only */
+  --technosorcerer-dark:   #150c4a;  /* deep indigo-black — ~CMYK 80/84/0/71; TAC ~235% — large fills only */
   --gutterdruid-dark:      #2a3408;  /* swamp-rot dark — greenish, not brown — ~CMYK 19/0/85/80; TAC ~184% — large fills only */
   --etherlock-dark:        #3d3000;  /* deep tarnished gold — ~CMYK 0/21/100/76; TAC ~197% — large fills only */
   --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark — ~CMYK 73/21/0/71; TAC ~165% */
-  --generalist-dark:       #1e0e2e;  /* deep amethyst-black — opposite crystal pole from dualist — ~CMYK 36/69/0/82; TAC ~187% — large fills only */
+  --generalist-dark:       #1c252d;  /* slate-black — ~CMYK 38/16/0/82; TAC ~136% — POD-safe */
 
   /* ── Specialty Mid Colors (card-tab bg + card border — uniform contract)
      Each mid sits perceptually midway between its specialty's accent and
@@ -46,16 +46,10 @@
   --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse */
   --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen */
   --wirephreak-mid:        #006878;  /* drowned signal teal */
-  --technosorcerer-mid:    #4a1878;  /* ritual indigo midpoint */
+  --technosorcerer-mid:    #2f2290;  /* ritual indigo midpoint */
   --etherlock-mid:         #8a6a00;  /* tarnished antique gold */
   --dualist-mid:           #2a6878;  /* drowned mineral aqua — between crystal-aqua and sapphire-trench */
-  --generalist-mid:        #503070;  /* mid amethyst — between crystal-amethyst and generalist-dark */
-
-  /* ── Skill Tier Badge Colors — salvaged, scarred metals ─────────────────
-     Bronze = rust-on-steel, Gold = pirated brass, Silver = cyan-tinged chrome. */
-  --tier-bronze:  #8a5c28;  /* tier 1 — rust-on-steel salvage */
-  --tier-gold:    #b8921a;  /* tier 2 — pirated brass, tarnished */
-  --tier-silver:  #a8b4b8;  /* tier 3 — cyan-tinged chrome */
+  --generalist-mid:        #3a4854;  /* mid slate — between crystal-slate and generalist-dark */
 
 }
 

@@ -526,12 +526,14 @@ describe("declared specialty, learning path and skill", () => {
 
   describe("@skill", () => {
     test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
-      const src = doc("@skill {.dc-highlight .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const src = doc("@skill {.my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
       const { html } = renderGp(src);
-      expect(count(html, /class="dc-skill-card dc-highlight my-class"/g)).toBe(2);
+      expect(count(html, /class="dc-skill-card my-class"/g)).toBe(2);
       expect(html).toContain('id="sk" data-variant="2" name="first"');
       expect(html).toContain('name="second"');
-      expect(html).toContain('<div class="dc-card-tab dc-highlight">');
+      expect(html).toContain('<div class="dc-card-tab">');
+      // `| highlight` is not a variant: no highlight class, and the word is not the name or the tier
+      expect(html).not.toContain('dc-highlight');
       expect(html).toContain('<h4 class="dc-tab-title">Second</h4>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
     });

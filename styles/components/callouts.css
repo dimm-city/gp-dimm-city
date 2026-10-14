@@ -86,7 +86,25 @@
 
 /* ═══ ALERTS — base+thin-variant pattern ═══
    .dc-alert base + .dc-alert-label label chrome + thin variant classes.
-   GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros. */
+   GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros.
+
+   One shell, seven registers, told apart by SILHOUETTE, FILL VALUE, EDGE and
+   LABEL before a word is read, in colour and in grayscale:
+
+     register  fill (value)        silhouette            edge                label
+     note      HUD-blue (mid)      cut TL + BL           blue rail           plain mono caps
+     warning   light, warm cream   cut bottom-right      hazard stripe + ink yellow/ink tape stamp
+                                                         frame
+     dm        ink-dark (darkest)  cut TR + BL           cyan rail           cyan chip, top right
+     vibe      barely-violet sheet plain rectangle       dashed violet edge  violet, underlined
+               (light)                                   all round, no rail
+     origin    warm paper (light)  dog-ear top right     rust rail           crimson rubber stamp
+     visit     fungi green (dark)  signpost point right  none                pin glyph + caps
+     example   cream (light)       cut TL + BL           dashed cyan rail    taped-on tag
+
+   Body copy is always upright and level; italic is kept for the two voices
+   that speak to the reader (vibe, origin). The 20% chrome is on the labels and
+   the edges, never on the reading surface. */
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
@@ -94,6 +112,7 @@
 .dc-alert {
   clip-path: var(--dc-alert-shape);
   background: var(--dc-alert-bg);
+  box-shadow: var(--dc-alert-frame);
   border-left: var(--dc-alert-border-width) solid var(--dc-alert-border);
   color: var(--dc-alert-fg);
   font-size: var(--dc-alert-body-size);
@@ -112,7 +131,6 @@
 
 .dc-alert p {
   margin: 0;
-  font-style: italic;
 }
 
 .dc-alert p+p {
@@ -148,6 +166,7 @@
 /* ── Label chrome ───────────────────────────────────────────────────────── */
 .dc-alert-label {
   display: block;
+  width: fit-content;
   font-family: var(--font-mono);
   font-size: var(--dc-alert-label-size);
   font-weight: var(--dc-alert-label-weight);
@@ -155,6 +174,8 @@
   text-transform: uppercase;
   letter-spacing: var(--dc-alert-label-spacing);
   margin-bottom: var(--dc-alert-label-margin);
+  padding: var(--dc-alert-label-pad);
+  background: var(--dc-alert-label-bg);
   color: var(--dc-alert-label-color);
   /* The label is a `span` (display: block), so core's heading rule does not
      reach it. A callout may fragment in a multicol run (dc-native.css §7), and
@@ -163,71 +184,176 @@
   break-after: avoid;
 }
 
-/* ── Variant: Note (player-facing, default) ─────────────────────────────── */
+/* ── Variant: Note (player-facing, default) — the calm baseline ──────────── */
 .dc-note {
-  --dc-alert-label-size: 9px;
-  --dc-alert-label-spacing: 2px;
   --dc-alert-label-margin: var(--space-sm);
   --dc-alert-margin-top: var(--space-lg);
 }
 
-/* ── Variant: Warning (note with distinct surface) ──────────────────────── */
+/* ── Variant: Warning — a rule with consequences: hazard register ─────────
+   A light, warm surface (body text must read), a hazard-stripe rail down the
+   left, an ink frame, and a yellow/ink caution-tape label. Yellow and ink
+   are the "danger / you must choose" pair across the system. */
 .dc-note.warning {
-  --dc-alert-bg: var(--paper-stain);
-  --dc-alert-border: var(--orange);
-  --dc-alert-label-color: var(--rust);
+  --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
+  --dc-alert-border: var(--ink);
+  --dc-alert-border-width: 14px;
+  --dc-alert-frame: inset 0 0 0 2px var(--ink);
+  --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  --dc-alert-label-color: var(--ink);
+  --dc-alert-label-bg: var(--brand-yellow);
+  --dc-alert-label-pad: 2px 9px;
+  --dc-alert-label-spacing: 0.16em;
+  --dc-alert-label-margin: var(--space-md);
+  border-left-color: transparent;  /* the stripe rail (::before) sits in this border box */
+  position: relative;
+}
+/* The hazard rail, drawn in vector (a gradient would print flat or as a bitmap
+   in PDF/X): an ink rail whose two dashed yellow borders make 14px-wide dashes,
+   skewed 45 degrees into stripes. The rail overshoots top and bottom so the skew
+   leaves no gap; the alert's own clip-path trims it. */
+.dc-note.warning::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--dc-alert-border-width));
+  top: -24px;
+  bottom: -24px;
+  width: 0;
+  background: var(--ink);
+  border-style: dashed;
+  border-color: var(--brand-yellow);
+  border-width: 0 calc(var(--dc-alert-border-width) / 2);
+  transform: skewY(-45deg);
+}
+.dc-note.warning .dc-alert-label {
+  border: 1.5px solid var(--ink);
+  transform: rotate(-1.5deg);
+  transform-origin: left center;
 }
 
-/* ── Variant: DM Note (Dream Master-facing) — dark panel, authoritative ──── */
+/* ── Variant: DM Note (Dream Master only) — the ink "intelligence drop" ───── */
 .dc-dm-note {
   --dc-alert-bg: var(--ink-dark);
   --dc-alert-fg: var(--paper-cream);
   --dc-alert-border: var(--hud-blue-bright);
-  --dc-alert-label-color: var(--hud-blue-bright);
-  --dc-alert-body-size: 9pt;
   --dc-alert-border-width: 3px;
-  --dc-alert-label-weight: 600;
-  --dc-alert-label-spacing: 0.1em;
+  --dc-alert-shape: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  --dc-alert-label-color: var(--ink);
+  --dc-alert-label-bg: var(--hud-blue-bright);
+  --dc-alert-label-pad: 2px 9px;
+  --dc-alert-body-size: 9.5pt;  /* insider small print: upright, at the running-body floor */
+  font-weight: 600;             /* reversed type is semibold */
+  --dc-alert-label-weight: 700;
+  --dc-alert-label-spacing: 0.14em;
   --dc-alert-margin-top: 9pt;
 }
+/* The cyan chip sits top right, as the Dream Master chip does on a `dm` section. */
+.dc-dm-note .dc-alert-label {
+  margin-left: auto;
+}
 
-/* ── Variant: Vibe Callout — flavor fiction, dark panel ──────────────────── */
+/* ── Variant: Vibe Callout — atmosphere, the narrator's voice ─────────────
+   Not a slab: a flat, barely violet sheet with ONE dashed violet edge all
+   round (a sign's stencilled outline), no rail, in the narrator's italic. The
+   world's colour (violet); light value and an all-round dashed edge separate
+   it from the blue note, the ink DM slab and the pull quote's magenta bar. */
 .dc-vibe-callout {
-  --dc-alert-bg: var(--ink-dark);
-  --dc-alert-fg: var(--paper-aged);
-  --dc-alert-border: var(--hud-magenta);
-  --dc-alert-label-color: var(--hud-magenta);
+  --dc-alert-bg: color-mix(in srgb, var(--brand-violet) 6%, var(--paper-cream));
+  --dc-alert-fg: var(--ink);
+  --dc-alert-border: var(--brand-violet);
+  --dc-alert-border-width: 2px;
+  --dc-alert-shape: none;
+  --dc-alert-label-color: var(--brand-violet);
+  --dc-alert-label-spacing: 0.22em;
+  --dc-alert-label-margin: var(--space-sm);
+  border: var(--dc-alert-border-width) dashed var(--dc-alert-border);
+}
+.dc-vibe-callout p {
+  font-style: italic;
+}
+.dc-vibe-callout .dc-alert-label {
+  border-bottom: 2px solid var(--brand-violet);
+  padding-bottom: 1px;
 }
 
-/* ── Variant: Origin Callout ────────────────────────────────────────────── */
+/* ── Variant: Origin Callout — backstory, a personal document ─────────────
+   Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp. */
 .dc-origin-callout {
-  --dc-alert-bg: var(--surface-orange-tint);
+  --dc-alert-bg: color-mix(in srgb, var(--surface-orange-tint) 55%, var(--paper-cream));
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
-  --dc-alert-label-color: var(--crimson);
   --dc-alert-border-width: 3px;
+  --dc-alert-shape: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  --dc-alert-label-color: var(--blood);
+  --dc-alert-label-spacing: 0.2em;
+  --dc-alert-label-margin: var(--space-md);
+}
+.dc-origin-callout {
+  position: relative;
+}
+.dc-origin-callout p {
+  font-style: italic;
+}
+/* The dog-ear fold: a solid triangle over the cut corner. */
+.dc-origin-callout::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--paper-stain);
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+.dc-origin-callout .dc-alert-label {
+  padding: 1px 9px;
+  border: 2px solid var(--blood);
+  outline: 1px solid var(--blood);
+  outline-offset: 2px;
+  margin-left: 3px;
+  transform: rotate(-2deg);
 }
 
-/* ── Variant: Visit Callout ─────────────────────────────────────────────── */
+/* ── Variant: Visit Callout — a place, a signpost ─────────────────────────
+   Fungi-green placard with a pointed (finger-post) end and a map-pin label:
+   the living city's own colour, set apart from the cyan/ink Dream Master slab. */
 .dc-visit-callout {
-  --dc-alert-border: var(--hud-blue);
-  /* --hud-blue-dark on --hud-blue-dim (default alert bg) is 3.95:1 (fails
-     AA); --ink-dark gives 7.05:1 on the same cyan bg. */
-  --dc-alert-label-color: var(--ink-dark);
+  --dc-alert-bg: color-mix(in srgb, var(--fungi-rot) 80%, var(--fungi-glow));
+  --dc-alert-fg: var(--paper-cream);
+  --dc-alert-border: var(--fungi-glow);
+  --dc-alert-border-width: 0px;
+  --dc-alert-shape: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
   --dc-alert-body-size: var(--fs-body);
+  --dc-alert-label-color: var(--paper-cream);
+  --dc-alert-label-spacing: 0.16em;
+  font-weight: 600;             /* reversed type is semibold */
   margin: 0.12in 0;
+  padding-right: calc(var(--space-xl) + 14px);
+}
+.dc-visit-callout .dc-alert-label {
+  border-bottom: 1px solid var(--paper-cream);
+  padding-bottom: 2px;
+}
+/* The place marker: a teardrop pin drawn in CSS (no glyph to fall back). */
+.dc-visit-callout .dc-alert-label::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentColor;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  margin-right: 8px;
+  vertical-align: -1px;
 }
 
 /* ── Variant: Example — a worked example, never a rule ───────────────────── */
 .dc-example-callout {
   --dc-alert-bg: var(--paper-light);
   --dc-alert-border: var(--brand-cyan);
-  --dc-alert-label-color: var(--hud-blue-dark);
+  --dc-alert-label-color: var(--dc-tape-color);
   --dc-alert-border-width: 3px;
   --dc-alert-margin-top: var(--space-lg);
   border-left-style: dashed;
-}
-.dc-example-callout p {
-  font-style: normal;
 }
 /* The label is a taped-on tag. */
 .dc-example-callout .dc-alert-label {

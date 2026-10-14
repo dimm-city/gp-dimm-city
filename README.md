@@ -76,8 +76,11 @@ package renders and prints; `docs/macros.md` is the full inventory and
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
-renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels
-that say what kind of text they hold. Write the content and the marker that says
+renders the same. `reference`, `lore`, `dm` and `choose` are words only: boxes
+that say what kind of text they hold, each by its own bar, sheet and silhouette
+(`choose` is a form, not a panel). Every variant, in every family, is told apart
+in colour and in grayscale, so a chapter re-tunes a panel's accent but never
+repaints an alert, a faction or a choice card. Write the content and the marker that says
 what it is: the defaults set how it looks and where it breaks (sections split
 across pages, a catalog too, and a creature and a callout stay whole). A page
 or chapter word draws no box of its own: it re-tunes the sections inside it. To
@@ -209,7 +212,7 @@ the package on every update. Reset the component's public tokens on a context
 selector instead:
 
 ```css
-.chapter-05 .dc-alert { --dc-alert-accent: var(--hud-blue); }
+.chapter-05 .dc-section-panel { --dc-section-accent: var(--hud-blue); }
 ```
 
 The tokens each component exposes are listed under `tokens:` in

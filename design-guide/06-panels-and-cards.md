@@ -11,7 +11,7 @@ The enclosures: the section variants and the kinds of text they hold, three bloc
 
 ## Section
 
-A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours the rail and the title bar. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
+A `@section` groups what is inside it. Bare, it is core's plain box and adds no look; a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours a panel's rail and title bar. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ```markdown {.dg-split}
 @section panel
@@ -71,14 +71,14 @@ The components below that are sections have a marker of their own and a word on 
 
 ## Kinds of text {#kinds-of-text}
 
-`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter: each cuts its own corners, as the skill cards do per specialty, so the shape says which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
+`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter, in colour and in grayscale. Each cuts its own corners, as the skill cards do per specialty, and each has its own bar and sheet: a panel's bar is solid accent on cream, a reference's is a pale band, lore is deep violet, dm is ink with a cyan rule, and choose has no bar at all. The shape, the bar and the sheet say which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
 
 | You are writing | Write | Looks like |
 |---|---|---|
 | A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band, tight rows, all four corners cut small |
-| The world, not the rules: places, factions' history, setting | `@section lore` | Violet on clean paper, long cuts off the top-left and bottom-right corners, italic sub-heads |
-| Advice for the Dream Master, behind the screen | `@section dm` | Ink title bar with a *Dream Master* chip, a cold concrete body, top-right and bottom-left corners cut |
-| A choice the player writes on the Citizen File | `@section choose` | A lighter form sheet, dotted write-in rules, tick boxes, a *Your choice* chip, in the chapter's accent, the bottom-right corner cut |
+| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar over a pale lilac sheet, long cuts off the top-left and bottom-right corners, italic sub-heads |
+| Advice for the Dream Master, behind the screen | `@section dm` | Ink title bar with a cyan rule, a cyan rail and a *Dream Master* chip over a cold concrete body, top-right and bottom-left corners cut. With no heading it gets an ink strip carrying the same words |
+| A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a paper sheet a hair lighter than cream, a dashed ink edge, no bar and no cut corners, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Your choice* stamp |
 
 ```markdown {.dg-split}
 @section reference
@@ -166,11 +166,11 @@ Keep the pressure on. Let the dice say who gets away, and let the city complicat
 
 </div>
 
-`@flaws`, `@ideals` and `@dreams` are `choose` sections that hold a run of `@card` (below). The kind wins over the chapter: a `reference` panel stays HUD blue in a rust chapter, and only `choose` takes the chapter's accent. Tokens are the section's own (`--dc-section-accent`, `--dc-section-bg`, `--dc-section-clip`, `--dc-section-rail`) plus the chip: `--dc-section-tab` (its text, `none` for no chip), `--dc-section-tab-bg` and `--dc-section-tab-fg`.
+`@flaws`, `@ideals` and `@dreams` are `choose` sections that hold a run of `@card` (below); with no heading they draw nothing around the cards, which carry the look. The kind wins over the chapter: a `reference` panel stays HUD blue in a rust chapter, and `choose` takes the chapter's accent only for its title rule and tick boxes. Tokens are the section's own (`--dc-section-accent`, `--dc-section-bg`, and for the panel kinds `--dc-section-clip`, `--dc-section-rail`; a `choose` form has no cut corners or rail) plus the chip: `--dc-section-tab` (its text, `none` for no chip), `--dc-section-tab-bg` (yellow on `choose`) and `--dc-section-tab-fg`.
 
 ## Fiction excerpt
 
-Fiction, lore, a chapter-opening story. Aged paper set into the page instead of a card on it: an inner shadow along the top and left, three cut corners, no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page it takes a heavier edge, two ink rules.
+Fiction, lore, a chapter-opening story. A torn-out printed page stuck on the wall: light neutral paper, torn top and bottom edges, straight sides, a hard ink shadow, no rail, no title bar, narrative leading, and the first image floats left. On a chapter-start page the shadow is heavier (5px).
 
 ```markdown {.dg-split}
 @fiction-excerpt
@@ -196,7 +196,7 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 </div>
 
-Tokens: `--dc-fiction-bg`, `--dc-fiction-line-height`, `--dc-fiction-rule` (top and bottom edge weight), `--dc-fiction-shadow`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
+Tokens: `--dc-fiction-bg`, `--dc-fiction-line-height`, `--dc-fiction-lift` (the offset of the hard shadow), `--dc-fiction-lift-bg` (its colour), `--dc-fiction-rule` (an ink edge weight under the torn edge, 0) and `--dc-fiction-shadow` (a box-shadow on the paper, none), `--dc-fiction-art-float`, `--dc-fiction-art-width`.
 
 ## Block
 
@@ -230,9 +230,9 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 
 | Variant | Register | Use for |
 |---|---|---|
-| `.dc-panel` | HUD blue, hex corners | Player-facing rules summaries, structured data |
-| `.dc-slate` | Dark surface, magenta band | Binding rulings, Dream Master directives |
-| `.dc-shard` | Aged paper, rust band, zine cut | Fiction, atmosphere, setting asides |
+| `.dc-panel` | HUD blue band, hex corners | Player-facing rules summaries, structured data |
+| `.dc-slate` | Ink body, a blood band with a crimson rule and a stamped *Binding* tag | Binding rulings, Dream Master directives |
+| `.dc-shard` | Light zine paper, a torn foot, a taupe label strip, no accent hue | Fiction, atmosphere, setting asides |
 
 The fourth register, `.dc-codex` (look-ups and glossaries), is retired: write a look-up as [`@section reference`](#kinds-of-text), a small box inside a section as `@block panel`, and a glossary as an `@definition` run.
 
@@ -259,7 +259,7 @@ Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title
 
 ## Definition
 
-A short italic box for a term: in-world vocabulary, an NPC type, an item category. Stack several in an `@columns 2` run for a glossary of boxes, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a small label, with a dashed rule between entries. A `---` inside is the same dashed rule, and a bold lead (`**Term** — gloss`) needs nothing.
+A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an `@columns 2` run for a glossary of entries, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a display-caps headword in blue, with a dashed rule between entries. A `---` inside is the same dashed rule, and a bold lead (`**Term** — gloss`) needs nothing.
 
 ```markdown
 @definition
@@ -361,11 +361,13 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 @end-definition
 ```
 
-Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent`, `--dc-definition-block-accent-width`. For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro — see [Writing a Page](#ch-writing).
+Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rules and the term colour), `--dc-definition-block-accent-width` (the weight of the rule over the block, not a left rail), `--dc-definition-block-shape` (none by default). For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro — see [Writing a Page](#ch-writing).
 
 ## Procedure
 
-A zero-padded step list for anything the table runs in order.
+A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, ink step text with bold leads, and dashed dividers. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
+
+Tokens: `--dc-steps-accent` (the number strip), `--dc-steps-surface` (the plate).
 
 ```markdown
 @procedure
@@ -425,7 +427,9 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg`, `--dc-outcomes-label-color`, `--dc-outcome-key-color`, `--dc-outcome-name-color`.
+The chip column is a quarter of the ladder wide (never under 130px), so a long band name wraps on two or three lines instead of cramping; band names are 8pt semibold, centred.
+
+Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg`, `--dc-outcomes-label-color`, `--dc-outcome-key-color`, `--dc-outcome-name-color`, `--dc-outcome-key-col` (the chip column's width).
 
 ### A table of the five bands is the ladder
 
@@ -497,14 +501,14 @@ Tokens: `--dc-roll-table-accent` (frame, caption and range rule), `--dc-roll-tab
 
 ## Card
 
-A choice card: heading, body, and a closing quote that becomes the card's footer. Wrap a run of cards in `@flaws`, `@ideals`, or `@dreams` to color the accent for that step of character creation.
+A choice card: heading, body, and a closing quote that becomes the card's footer. Wrap a run of cards in `@flaws`, `@ideals` or `@dreams` for that step of character creation: each kind has its own colour, silhouette and a one-word chip. A Flaw is blood with a cracked edge, an Ideal is HUD blue with a steady tablet shape, a Dream is violet with a rising edge. The heading is the first `####`: core turns only a `####` into the card's heading, so write `####`.
 
 ```markdown
 @flaws
 
 @card
 
-### Addictive Personality
+#### Addictive Personality
 
 You chase instant gratification without weighing the consequences. The city always has one more hit on offer.
 
@@ -523,7 +527,7 @@ Result {.dg-result}
 
 @card
 
-### Addictive Personality
+#### Addictive Personality
 
 You chase instant gratification without weighing the consequences. The city always has one more hit on offer.
 
@@ -535,7 +539,7 @@ You chase instant gratification without weighing the consequences. The city alwa
 
 </div>
 
-The same card under `.dc-ideals` takes the ideal accent:
+The same card under `@ideals` is an ideal: HUD blue, a steady tablet:
 
 <div class="dg-stage">
 
@@ -543,7 +547,7 @@ The same card under `.dc-ideals` takes the ideal accent:
 
 @card
 
-### Honor
+#### Honor
 
 You believe in a code, and upholding it is your duty no matter the cost.
 
@@ -557,7 +561,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 ## Gear and its kinds
 
-An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, and `@gear drug` for drugs, elixirs and other consumables. All five are the same card: a left rail in the kind's colour, a small kind word over the name, then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, and `@gear drug` for drugs, elixirs and other consumables. Each kind has its own silhouette, surface, badge and name colour, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a pale plate, a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a facet), a vehicle is an industrial plate (an ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (the one rounded shape, lime, an *Rx · Drug* pill). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
 
 ```markdown {.dg-split}
 @gear augment
@@ -665,7 +669,7 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 
 </div>
 
-A `@gear` after another `@gear` closes the first, so a run needs an `@end-gear` only after the last entry. An entry with no name, or with two, is reported as a problem, and a word that is not one of the four kinds is reported and read as general gear. General gear keeps its own shape: an italic tagline paragraph and a bold price line, picked out by their shape.
+A `@gear` after another `@gear` closes the first, so a run needs an `@end-gear` only after the last entry. An entry with no name, or with two, is reported as a problem, and a word that is not one of the four kinds is reported and read as general gear. General gear keeps its own shape: an italic tagline paragraph and a bold price line, picked out by their shape (the price line is stamped as a dashed price tag).
 
 ```markdown {.dg-split}
 @gear
@@ -695,7 +699,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the word over the name, a quoted string or `none`).
+Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the badge word, a quoted string or `none`), `--dc-entry-shape` (the silhouette), `--dc-entry-radius`, `--dc-entry-ornament` with `--dc-entry-orn-inset`, `-orn-bg`, `-orn-border`, `-orn-clip` and `-orn-z` (the kind's solid-fill ornament layer: a treasure's facet, a vehicle's rivets), `--dc-entry-frame`, `--dc-entry-badge-bg`, `--dc-entry-badge-fg`, `--dc-entry-badge-shape`, `--dc-entry-badge-radius`.
 
 ### Fields
 
@@ -706,8 +710,8 @@ A field is a labelled line of an entry: its rules, its traits, what a drug does 
 | `specs` | SPECS | the boxed rules strip: dark, with a yellow rail |
 | `traits` | Traits | a plain line under a chip |
 | `equipment` | Equipment | the same, in grey |
-| `effects` | Effects | tinted blue; sits over side effects |
-| `side-effects` | Side Effects | tinted red |
+| `effects` | Effects | a solid teal frame on a pale teal ground, a + on the chip: the benefit; sits over side effects |
+| `side-effects` | Side Effects | a dashed blood frame on a pale blood ground, a – on the chip: the cost |
 | `requires` | Requires | a grey requirement bar |
 
 ```markdown {.dg-split}
@@ -746,7 +750,7 @@ You rarely need to type it. Inside an entry card, an `@npc-stat` and a `@skill`,
 
 ### Catalog
 
-A run of entries goes in a `@section catalog`: a panel with a title bar and an intro, whose entries are ruled instead of boxed. Each entry takes a rule in its own accent colour over it, so there is no `---` between entries (one left in draws nothing). Put the entries in `@columns 2` under the intro, as for any column run.
+A run of entries goes in a `@section catalog`: a panel with a title bar and an intro, whose entries are ruled instead of boxed. The title bar is a pale ledger band with an *Inventory* chip, not an accent bar, and an entry never splits across a column or a page. Each entry takes a rule in its own accent colour over it, so there is no `---` between entries (one left in draws nothing). Put the entries in `@columns 2` under the intro, as for any column run.
 
 ```markdown {.dg-split}
 @section catalog
@@ -830,7 +834,7 @@ A voice that is never quite yours.
 
 ## Faction
 
-An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, each with its own colour for the rail and the badge. `label="…"` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
+An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a hard blue rectangle with a cyan edge, cabal violet with long corner cuts, cult blood and torn along the top and foot, enforcer an octagon with a hazard-tape band and a yellow name label. `label="…"` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
 
 ```markdown {.dg-split}
 @faction megacorp
@@ -892,7 +896,7 @@ They keep the peace, for a fee.
 
 </div>
 
-Tokens: `--dc-faction-accent` (the rail and the badge fill) and `--dc-faction-badge-fg`; a kind class sets them.
+Tokens: `--dc-faction-accent` (the rail and the badge fill), `--dc-faction-badge-fg`, `--dc-faction-shape`, `--dc-faction-surface`, `--dc-faction-band` (a box-shadow list: solid inset bands, so it prints as vector ink), `--dc-faction-band-height`, `--dc-faction-pad-bottom`, `--dc-faction-badge-shape`, `--dc-faction-title` (the name colour) and `--dc-faction-title-bg` / `-title-pad` (a label behind the name); a kind class sets them.
 
 ## Tables
 
@@ -933,7 +937,7 @@ A roll table is the same thing with a `Roll` column:
 
 ## NPC stat block
 
-The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment.
+The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block's rule colour), not a box. The stat lines are picked by position: the first paragraph after the `>` is the primary line, set as a chip (its first line 12pt bold, cream on the block's colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (8pt+); no markup is needed, `2 HP — 1 Damage` over `Fodder — Medium` is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.
 
 ```markdown
 @npc-stat
@@ -1135,7 +1139,7 @@ Tokens: `--dc-stat-strip-accent` (frame and label band), `--dc-stat-strip-value`
 
 ## Stat grid and at-a-glance cards
 
-Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one label and one value per card.
+Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one reversed label band over one big value per tile, with an ink frame and a hard shadow. Tokens for the tile: `--dc-at-a-glance-accent` (frame and label band), `--dc-at-a-glance-value`.
 
 ```markdown
 <div class="dc-stat dc-flush">
@@ -1191,7 +1195,7 @@ Result {.dg-result}
 
 ## NPC sidebar
 
-A contact capsule floated beside prose: a `.dc-human-callout` inside a raw `.dc-sidebar`.
+A contact card floated beside prose: a `.dc-human-callout` inside a raw `.dc-sidebar`. It has a blue ID header band reading *Contact*, an ink border, a hard shadow and a dashed strip foot.
 
 ```markdown
 <div class="dc-sidebar"><div class="dc-human-callout">

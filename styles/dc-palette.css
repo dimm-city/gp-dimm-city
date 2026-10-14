@@ -7,6 +7,8 @@
   --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) */
   --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream */
   --paper-cream:  #f0eee9;  /* light industrial flyer-stock — brighter than wall, more poster-vs-wall delta (L*~93) */
+  --paper-form:   #f5f3ee;  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen (C1 M1 Y3 K2 = ~7% TAC) */
+  --paper-zine:   #e9e6e0;  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream (C0 M1 Y3 K9 = ~13% TAC) */
   --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels */
   --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey */
@@ -46,7 +48,8 @@
   --brand-magenta-deep: #8a0a9a;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) */
   --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff */
   --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged */
-  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 */
+  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it */
+  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the technosorcerer's own hue. ≈ C80/M78/Y0/K12 = 170%; cream on it 6.5:1 */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
@@ -69,8 +72,6 @@
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
   --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source */
   --tint-hud-teal:     #2a6a8a;
-  --tint-signal-red:   #d41200;  /* tape border mix source */
-  --tint-brick-red:    #b42828;  /* skill-card header wash mix source */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
@@ -103,7 +104,6 @@
 
   --ls-display: 0.1em;
   --ls-heading: 0.08em;
-  --ls-cap-sm:  3px;  /* mono micro-caps */
 
   /* ── Spacing — print units ────────────────────────────────────────────── */
   --space-xs:  0.05in;  /* ~3.6pt — tighter than --space-sm */
@@ -164,9 +164,11 @@
      refractive. Distinct from brand-violet (signal-saturated) and the warm
      gold of brand-yellow (electric). CMYK-safe:
        crystal-amethyst ≈ C50/M65/Y0/K35 = 150%
-       crystal-aqua     ≈ C70/M28/Y28/K20 = 146% */
+       crystal-aqua     ≈ C70/M28/Y28/K20 = 146%
+       crystal-slate    ≈ C26/M11/Y0/K56  =  93% (cool stone: the generalist) */
   --crystal-amethyst: #6a3a8a;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) */
   --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) */
+  --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 5.4:1 */
 
 }
 

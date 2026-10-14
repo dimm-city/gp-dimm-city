@@ -79,11 +79,47 @@
   line-height: 1;
   background: var(--dc-specialty-intro-title-bg);
   display: block;
-  padding: 0.6rem 1.25rem;
+  /* The bottom padding clears the band's rule (::after, specialty-identity.css
+     "Title bands"). position: relative anchors that rule and the register's
+     facet plane (::before); the clip-path already makes the band a stacking
+     context, so the facet at z-index -1 stays above the band's fill and under
+     its type. */
+  position: relative;
+  box-shadow: var(--dc-band-rim);
+  padding: 0.55rem 1.25rem 0.7rem;
   margin: -1rem -1.25rem 0.6rem -1.25rem;
   clip-path: var(--dc-specialty-intro-title-shape);
   border: none;
   break-after: avoid;
+}
+
+/* The intro title's register layers, the same three as the learning-path
+   banner's (data.css, "The path banner"): ::before a flat plane at the right,
+   ::after the rule under the band, both read from the --dc-band-* tokens a
+   specialty sets. Solid fills, borders and a clip-path: vector in PDF/X. */
+.dc-specialty-intro>h2:first-child::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--dc-band-facet-width);
+  background: var(--dc-band-facet);
+  clip-path: var(--dc-band-facet-clip);
+  z-index: -1;
+}
+
+.dc-specialty-intro>h2:first-child::after {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--dc-band-rule-bleed));
+  right: calc(-1 * var(--dc-band-rule-bleed));
+  bottom: 0;
+  height: var(--dc-band-rule-h);
+  box-sizing: border-box;
+  background: var(--dc-band-rule);
+  border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
+  transform: skewX(var(--dc-band-rule-skew));
 }
 
 .dc-specialty-intro>h3 {
@@ -206,9 +242,13 @@
   font-size: 1.15em;
   color: var(--dc-specialty-card-title-color);
   text-align: var(--dc-specialty-card-title-align);
-  white-space: normal;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
+  /* A specialty's name is one word and sets on one line: a long one
+     ("TECHNOSORCERER") broke mid-word and orphaned its last letter. The
+     display face is tracked tighter instead (technosorcerer, the longest,
+     tighter still: specialty-identity.css). */
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  overflow-wrap: normal;
 }
 
 /* Subtitle tagline — the specialty's "archetype label" (e.g.,

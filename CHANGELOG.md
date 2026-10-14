@@ -7,6 +7,167 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+A redesign pass by component family. A reader should know what kind of box they
+are looking at from its silhouette, fill value and colour before reading a word,
+and every variant is told apart in grayscale as well as in colour (value, edge
+and label, never hue alone). Magenta is display punch only (chevrons, spray
+titles, pull quotes, `ROLL THE DIE!`, the VAR chip, the default panel accent);
+the other roles are HUD blue for player rules and look-ups, cyan on ink for the
+Dream Master only, hazard yellow with ink for danger and choices, blood and rust
+for harm and cost, violet for the world, fungi green for the organic. The
+constitution (version 2026-10-14) is revised to match: §II adds the colour roles
+and the grayscale rule, §V and §VI restate the type floors, §VII describes the
+new components, and §IX narrows the Pass 6/7/8 bans to specialty cards and
+reading surfaces.
+
+- **Type floors are print minimums, not inflated sizes.** Running body at least
+  9.5pt, component rules text at least 9pt, secondary text (captions, table cells,
+  stat lines, card pitches) at least 8pt, all-caps mono labels at least 6.5pt with
+  at least 0.08em tracking, reversed type at least 8pt semibold. Text that already
+  met its floor did not grow.
+- **Alerts: seven registers, seven silhouettes.** Each has its own fill value,
+  edge and label, and bodies are upright (only vibe and origin stay italic).
+  - note: the calm HUD-blue panel with a blue rail, as before.
+  - warning: a light cream hazard sign: a yellow and black stripe rail, an ink
+    frame and a yellow caution-tape label. It signals consequence.
+  - dm: an ink slab with a cyan rail and a cyan chip. It signals the Dream Master
+    only.
+  - vibe: a barely violet flat sheet in one dashed violet edge, italic, with no
+    rail: the world's voice, not a slab.
+  - origin: warm paper, a rust rail, a dog-eared corner and a crimson rubber-stamp
+    label: second-person backstory.
+  - visit: a fungi-green signpost with a map-pin label: a place.
+  - example: a dashed cyan rail with a taped-on label.
+  New tokens `--dc-alert-frame`, `-label-bg` and `-label-pad` carry the frame
+  and label chrome. The hazard rail, the dog-ear fold, the spray stencil line and
+  the NPC card foot are drawn in vector (dashed borders and clip-path), because
+  gradients are dropped or rasterised in PDF/X. The DM and visit bodies are
+  semibold (reversed type).
+- **Section kinds read from their bar and sheet.** Panel keeps the solid accent
+  bar on cream (magenta by default, the only kind a chapter re-themes); reference
+  a pale HUD band; lore a deep violet bar over a lilac sheet; dm an ink bar with a
+  cyan rule, a cyan rail and a Dream Master chip (cyan on ink is now the Dream
+  Master's alone), with a strip of its own when it has no heading. `choose` is a
+  printed form, not a panel: a paper sheet a hair lighter than cream, a dashed ink
+  edge, no bar or cut corners, an ink title over a double rule, heavy ink tick
+  boxes, dotted write-in rules and a yellow *Your choice* stamp. The title bar is
+  one rule reading new tokens (`--dc-section-bar-mix` / `-bar-tone` / `-bar-fg` /
+  `-bar-rule` / `-bar-rule-sub`, and `--dc-section-flag`); each kind sets them
+  instead of repainting the bar, and so does the catalog. A block's band reads
+  `--dc-block-title-rule` and `--dc-block-tag`.
+- **Blocks: three registers.** `@block panel` stays HUD blue; `slate` is an ink
+  body under a blood band with a stamped *Binding* tag (not magenta, not the
+  Dream Master's cyan); `shard` is light zine paper with a torn foot and a taupe
+  label strip, no accent hue.
+- **Choice cards say which choice they are.** A Flaw is blood with a cracked edge,
+  an Ideal HUD blue with a steady tablet shape, a Dream violet with a rising edge,
+  each with a one-word chip and a kind-tinted quote. The kind sets
+  `--dc-choice-accent`, `-surface`, `-tint` and `-kind`, and a card inside them
+  reads them (the choice chrome is scoped to `@flaws`/`@ideals`/`@dreams`, so a
+  gear entry or a faction keeps the plain card).
+  The card name is the first `####`; the docs and snippets say `####` throughout.
+- **Factions have their own silhouettes.** Megacorp a hard blue rectangle with a
+  cyan-edged band, cabal violet with long corner cuts, cult blood and torn, enforcer
+  an octagon with a hazard-stripe band and a yellow name label. The bands are
+  vector (solid inset shadows; the enforcer's tape is a skewed dashed border), not
+  gradients. New tokens `--dc-faction-surface`, `-band` (a box-shadow list),
+  `-band-height`, `-pad-bottom`, `-badge-shape`, `-title`, `-title-bg` and
+  `-title-pad`.
+- **A creature's stat line is a chip.** The first line of an `@npc-stat`'s primary
+  stat paragraph is set 12pt bold, cream on the block's colour (`::first-line`, no
+  markup); the rest falls under it as a small-caps tag.
+- **Entry cards differ by silhouette, surface and badge.** Gear is a hang tag
+  (a paper card in a heavy ink frame, an eyelet, a rust rail), an augment a spec
+  chip (a stepped notch, a cyan rule), treasure a gem (an octagon cut, a facet), a
+  vehicle an industrial plate (a dotted seam of rivets, a yellow badge), a drug a
+  prescription label (the one rounded shape, an *Rx · Drug* pill). Every mark is a
+  solid fill, border or clip, so it prints as vector in PDF/X (no gradients). New
+  tokens `--dc-entry-radius`, `-ornament`, `-orn-inset`, `-orn-bg`, `-orn-border`,
+  `-orn-clip`, `-orn-z`, `-frame` and `-badge-bg`, `-badge-fg`, `-badge-shape`,
+  `-badge-radius`. Chips and tags never hyphenate. Field labels share one chip: effects are a solid teal frame
+  with a +, side effects a dashed blood frame with a – (`--dc-field-edge-width`,
+  `-edge-style`).
+- **Catalog entries are kept whole.** An entry never splits across a column or a
+  page (the catalog itself still splits between entries), and its title bar is a
+  ledger band with an INVENTORY chip instead of an accent bar.
+- **Procedure is off the wall.** `@procedure` is an instruction plate: a cream
+  sheet with an ink frame and a hard shadow, a solid HUD-blue number strip, step
+  text in ink and dashed dividers (`--dc-steps-accent`, `--dc-steps-surface`).
+- **At-a-glance has a hierarchy.** The tile is a reversed label band over a large
+  value, with an ink frame and a hard shadow (`--dc-at-a-glance-accent`, `-value`).
+  The outcome ladder's chip column is `max(130px, 26%)` (`--dc-outcome-key-col`)
+  so long band names wrap cleanly.
+- **Definition is a dictionary page,** not a tinted note: cream, a heavy rule over
+  it, the term set first as a blue headword; the shape is `none` by default.
+- **The lede is the opening statement.** Upright semibold ink type at 13pt on a
+  light panel (lighter than the wall) with a heavy accent rail and an ink foot rule
+  (`--dc-intro-color`, `-size`, `-weight`, `-style`, `-rail`, `-rule`). Flavor is a
+  rail and no box, in ink-dark. Contents and credits ledes keep body size.
+- **Fiction is a torn-out page on the wall.** `--paper-zine`, zig-zag torn top and
+  foot, a hard ink shadow whose offset is `--dc-fiction-lift` (3px, 5px on a
+  chapter-start page) and whose colour is `--dc-fiction-lift-bg`. `--dc-fiction-rule`
+  (ink edge weight) and `--dc-fiction-shadow` (a box-shadow value) keep their names and
+  types; their defaults are now `0px` and `none`. NPC flavor lines
+  are a ruled line, not a box.
+- **Chrome.** `.dc-tag` is an inline chip with a hard edge and an ink hairline
+  (`--dc-tag-bg`, `-fg`, `-border`); `.dc-tape` is masking tape with torn ends and
+  ink edges (`--dc-tape-shape`); `.dc-spray` is a stencil tag with a stepped edge
+  and a dashed stencil line (`--dc-spray-stencil`) against the chevron's deep
+  banner; the spec tweak fits one line; the NPC sidebar is a contact card with a
+  blue ID band and a dashed strip foot.
+- **Specialties are told apart.** The title bands (path banner and specialty-intro
+  title) are each specialty's own signal colour with its own register: an LED rim
+  and a rule of LED dots on the tech specialties, a facet plane on the magic ones, a
+  hazard-tape rule on Streetwarden, a torn bottom edge on Proxy and Gutterdruid, all
+  drawn as solid fills, dotted/dashed borders and clip-paths (no gradient, so they
+  survive PDF/X). New tokens `--dc-band-rule`, `-rule-h`, `-tick`, `-tick-style`,
+  `-tick-w`, `-rule-skew`, `-rule-bleed`, `-facet`, `-facet-width`,
+  `-facet-clip` and `-rim`, and `--dc-path-code-*`, `--dc-path-chip-*`,
+  `--dc-path-note-rail`. A path with no subtitle is the band alone.
+- **The tier pill is the specialty's own.** `--dc-tier-bg`, `-fg` and `-edge`,
+  set per specialty, replace the bronze, gold and silver by position (the
+  `--tier-*` tokens are gone).
+- **AP chips differ in grayscale.** Free is an unlit LED, a grey lens with a hollow
+  lamp and an ink edge (it was the same blood red as increased), reduced is pale
+  blue with a drawn down triangle, increased blood with a drawn up triangle (CSS
+  shapes, not font glyphs), VAR deep magenta (cream on the bright one was 4.06:1),
+  special amber with cream type. Chips are 8pt semibold, the reversed floor.
+- **Technosorcerer and Generalist leave violet.** Violet is the world's colour
+  (lore, vibe, cabal, treasure), so the Technosorcerer is now electric indigo
+  (`--signal-indigo`) and the Generalist cool slate (`--crystal-slate`), with new
+  mid and dark tones. Proxy's band is a shade lighter so ink on it holds 4.5:1.
+- **New neutrals.** `--paper-form` (the `choose` sheet) and `--paper-zine` (the
+  fiction excerpt and shard sheets).
+
+### Fixed
+
+- **Contrast and type.** The special AP chip (ink on amber, 3.5:1), the tier pills
+  (accent fails 4.5:1 for 9px type on Augmerc and Proxy), the learning-path
+  subtitle (ink-smoke on `--paper-stain`, 3.4:1), the Augmerc title band (cream on
+  bright magenta, 3.6:1) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. Labels set at
+  9px are 8pt, and the DM alert body is upright 9.5pt instead of 9pt italic.
+- **A chapter no longer repaints the alerts.** The Dream Mastery chapter's override
+  turned every alert grey-brown and rust in Part 2; the alert identity now survives
+  re-theming. Its DM panel heading was ink on ink (an empty-looking bar) and is
+  readable.
+- **Names stay on one line where they can.** An NPC name in a two-column run,
+  a catalog entry name and TECHNOSORCERER on its specialty card no longer wrap
+  mid-name or orphan a letter.
+- **Empty strips are gone.** A learning path with no subtitle or stickers is the
+  band alone, not a band over an empty well.
+- **The design guide's choice-card snippets work.** They wrote `### Name`, which
+  core does not turn into the card heading (only the first `####` is); they now
+  write `####`. The Part 2 Fodder description sat between the quote and the stat
+  lines and was set as a stat line; it is now inside the quote.
+- **README example.** The author-override example set `--dc-alert-accent`, a token
+  that does not exist; it now sets `--dc-section-accent` on `.dc-section-panel`.
+
+### Removed
+
+- **The highlight skill-card variant** (`#### Name | Tier | highlight`, `@skill {.dc-highlight}`) is gone, and the guide no longer describes a capstone skill: the game has none. A third `|` part in a skill heading is ignored.
+
 ## [1.6.3] - 2026-10-12
 
 Content and markers by default, overrides when wanted: the defaults now do more,

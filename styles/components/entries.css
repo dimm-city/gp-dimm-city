@@ -7,7 +7,15 @@
    fields (`**SPECS:**`, `**Effects:**` …, below). The five kinds
    share ONE rule set, `.dc-entry` below; each kind's class is a token setter
    on it and draws nothing of its own, so a sixth kind costs one variant word
-   and five tokens.
+   and a block of tokens. The kinds differ in silhouette, surface value, mark,
+   badge and name colour, not in rail colour alone, so a reader knows what an
+   entry is before reading it (and in greyscale):
+
+     gear       a hang tag   kraft paper, clipped corners, punched eyelet, rust, ink name
+     augment    a spec chip  clean pale cool plate, stepped circuit notch, cyan top rule, teal name
+     treasure   a gem        violet tint, eight-sided cut, a hard facet, violet name
+     vehicle    a plate      concrete, riveted chamfers, hazard-stripe head, yellow badge, ink name
+     drug       a label      lime tint, rounded corners, keyline, fungi-green head, "Rx" badge
 
    Writes as the books write it:
 
@@ -26,6 +34,15 @@
      --dc-entry-rule     — width of the top rule (a catalog sets it)
      --dc-entry-kind     — a quoted word printed small above the name, or `none`
      --dc-entry-art-width — width of the item's picture, floated right (50%)
+     --dc-entry-shape    — the card's clip-path (a catalog sets none)
+     --dc-entry-radius   — corner radius (a drug label is rounded)
+     --dc-entry-ornament — `""` draws the kind's ornament layer (an `::after`), `none` removes it
+     --dc-entry-orn-inset / -bg / -border / -clip / -z — that layer's box, fill,
+                           border, clip-path and stacking (solid fills, clips and
+                           dotted borders only: they stay vector in PDF/X, where
+                           every gradient is rasterised or dropped)
+     --dc-entry-frame    — an inset keyline (box-shadow)
+     --dc-entry-badge-bg / -fg / -shape / -radius — the kind badge
 
    The labelled fields inside an entry (`@field`, `**SPECS:**`) are the last
    section of this file; they work outside an entry as well.
@@ -34,31 +51,56 @@
 
 .dc-card.dc-entry {
   clip-path: var(--dc-entry-shape);
-  background: var(--dc-entry-surface);
+  border-radius: var(--dc-entry-radius);
+  background-color: var(--dc-entry-surface);
+  position: relative;
+  box-shadow: var(--dc-entry-frame);
   border-left: var(--dc-entry-rail) solid var(--dc-entry-accent);
   border-top: var(--dc-entry-rule) solid var(--dc-entry-accent);
   padding: 10pt 14pt;
 }
 
-/* The kind word: generated, so the author never types it. */
+/* The kind badge: generated, so the author never types the word. */
 .dc-entry::before {
   content: var(--dc-entry-kind);
-  display: block;
+  display: inline-block;
+  margin: 0 0 4px;
+  padding: 1pt 8pt 1pt 7pt;
+  background: var(--dc-entry-badge-bg);
+  color: var(--dc-entry-badge-fg);
+  clip-path: var(--dc-entry-badge-shape);
+  border-radius: var(--dc-entry-badge-radius);
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  line-height: 1.2;
-  color: var(--dc-entry-ink);
+  line-height: 1.3;
+  hyphens: none;
+  white-space: nowrap;
 }
 
-/* The name. */
+/* The kind's ornament: a solid-fill or dotted-border layer over the card's own
+   box. Absolutely positioned, taking no space. */
+.dc-entry::after {
+  content: var(--dc-entry-ornament);
+  position: absolute;
+  inset: var(--dc-entry-orn-inset);
+  background: var(--dc-entry-orn-bg);
+  border: var(--dc-entry-orn-border);
+  clip-path: var(--dc-entry-orn-clip);
+  z-index: var(--dc-entry-orn-z);
+  pointer-events: none;
+}
+
+/* The name. Sized so a typical name stays on one line in a half-width card
+   (lixdu is a wide face); a long one wraps balanced. */
 .dc-entry > :is(h3, h4):first-child {
-  font-size: var(--fs-h4);
-  letter-spacing: var(--ls-display);
+  font-size: 11pt;
+  letter-spacing: 0.03em;
   color: var(--dc-entry-ink);
   margin: 0 0 4px;
+  text-wrap: balance;
   break-after: avoid;
 }
 
@@ -94,49 +136,126 @@
 }
 
 /* ── The five kinds: bare @gear, and its variant words ─────────────────── */
+
+/* GEAR — a hang tag: a paper card in a heavy ink frame, a rust rail, two
+   clipped corners and a punched eyelet (a ring on the name row). Hard and
+   utilitarian, not tan. */
 .dc-gear {
-  --dc-entry-accent: var(--orange);
-  --dc-entry-ink: var(--blood);
+  --dc-entry-accent: var(--rust);
+  --dc-entry-ink: var(--ink);
+  --dc-entry-surface: var(--paper-light);
   --dc-entry-kind: "Gear";
+  --dc-entry-rail: 6px;
+  --dc-entry-shape: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --dc-entry-frame: inset 0 0 0 2px var(--ink);
+  --dc-entry-badge-bg: var(--rust);
+  --dc-entry-badge-fg: var(--paper-cream);
+  --dc-entry-badge-shape: polygon(0 50%, 6px 0, 100% 0, 100% 100%, 6px 100%);
 }
+/* The eyelet: a ring (solid border, wall-coloured hole) floated onto the badge
+   row, taking no space. Not in a catalog (no badge row there). */
+.dc-gear > :is(h3, h4):first-child::before {
+  content: "";
+  float: right;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  margin: -21px 0 0 8px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* AUGMENT — a spec chip: the cleanest, lightest plate in a run, cyan top rule,
+   a stepped (right-angled) notch like a PCB edge, a teal name. */
 .dc-augment {
   --dc-entry-accent: var(--brand-cyan);
   --dc-entry-ink: var(--hud-blue-dark);
-  --dc-entry-surface: var(--paper-cream);
+  --dc-entry-surface: color-mix(in srgb, var(--hud-blue-dim) 12%, var(--paper-cream));
   --dc-entry-kind: "Augment";
+  --dc-entry-rule: 3px;
+  --dc-entry-rail: 3px;
+  --dc-entry-shape: polygon(0 0, calc(100% - 34px) 0, calc(100% - 34px) 9px, 100% 9px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+  --dc-entry-badge-bg: var(--hud-blue-dark);
+  --dc-entry-badge-fg: var(--paper-cream);
+  --dc-entry-badge-shape: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
 }
-/* Violet, the arcane colour (6.5:1 on cream); the hues beside it are taken. */
+
+/* TREASURE — a gem: violet (6.5:1 on cream), an eight-sided cut, one hard
+   facet across the face (a flat-tone polygon layer behind the text), a
+   hexagonal badge. */
 .dc-treasure {
   --dc-entry-accent: var(--brand-violet);
   --dc-entry-ink: var(--brand-violet);
-  --dc-entry-surface: var(--paper-cream);
+  --dc-entry-surface: color-mix(in srgb, var(--crystal-amethyst) 10%, var(--paper-cream));
   --dc-entry-kind: "Treasure";
+  --dc-entry-rail: 5px;
+  --dc-entry-shape: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
+  --dc-entry-ornament: "";
+  --dc-entry-orn-inset: 0;
+  --dc-entry-orn-bg: color-mix(in srgb, var(--crystal-amethyst) 17%, var(--paper-cream));
+  --dc-entry-orn-clip: polygon(62% 0, 100% 0, 100% 100%, 38% 100%);
+  --dc-entry-orn-z: -1;
+  --dc-entry-badge-bg: var(--brand-violet);
+  --dc-entry-badge-fg: var(--paper-cream);
+  --dc-entry-badge-shape: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
 }
+
+/* VEHICLE — an industrial plate: concrete, small chamfers all round, an ink
+   frame, a seam of rivets (a dotted border) inside it, a yellow rail and a
+   slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
   --dc-entry-ink: var(--ink-dark);
   --dc-entry-surface: var(--concrete-pale);
   --dc-entry-kind: "Vehicle";
-}
-.dc-drug {
-  --dc-entry-accent: var(--brand-magenta);
-  --dc-entry-ink: var(--brand-magenta-deep);
-  --dc-entry-kind: "Drug";
+  --dc-entry-rail: 6px;
+  --dc-entry-shape: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  --dc-entry-frame: inset 0 0 0 2px var(--ink);
+  --dc-entry-ornament: "";
+  --dc-entry-orn-inset: 6px 6px 6px 3px;
+  --dc-entry-orn-border: 3px dotted var(--ink-smoke);
+  --dc-entry-badge-bg: var(--brand-yellow);
+  --dc-entry-badge-fg: var(--ink);
+  --dc-entry-badge-shape: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* General gear: the italic tagline and the bold price line, picked out by
-   their shape. */
+/* DRUG — a prescription label: rounded (the one soft silhouette in the family),
+   lime tint, a fungi-green head band (the top border), a pill badge. One frame
+   only: the head band and rail. */
+.dc-drug {
+  --dc-entry-accent: var(--fungi-rot);
+  --dc-entry-ink: var(--fungi-rot);
+  --dc-entry-surface: color-mix(in srgb, var(--fungi-glow) 24%, var(--paper-cream));
+  --dc-entry-kind: "Rx \00B7  Drug";
+  --dc-entry-rail: 6px;
+  --dc-entry-rule: 7px;
+  --dc-entry-shape: none;
+  --dc-entry-radius: 12px;
+  --dc-entry-badge-bg: var(--fungi-rot);
+  --dc-entry-badge-fg: var(--fungi-glow);
+  --dc-entry-badge-radius: 999px;
+}
+
+/* General gear: the italic tagline, and the bold price line stamped as a
+   price tag (dashed rust box). */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
   color: var(--ink-smoke);
   margin: 0 0 6px;
 }
 .dc-gear > p:has(> strong:only-child) {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   letter-spacing: 0.04em;
-  color: var(--hud-blue-dark);
+  color: var(--blood);
+  background: var(--paper-cream);
+  border: 1.5pt dashed var(--rust);
+  padding: 0 6pt;
   margin: 0 0 6px;
+  hyphens: none;
+  text-wrap: balance;
 }
 /* A callout inside an entry sits a small gap below the body. */
 .dc-entry {
@@ -144,14 +263,21 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
-   CATALOG — `@section catalog`, a panel for a run of entries
+   CATALOG — `@section catalog`, a price board for a run of entries
    ═════════════════════════════════════════════════════════════════════════
-   A panel (title bar, intro, rail) whose entries are ruled, not boxed: each
-   entry drops its card and rail and takes a rule over it in its own accent,
-   so entries are told apart without a `---` between them, and a column that
-   starts on an entry starts on a rule. The kind word over the name is dropped, and an entry may
-   split across a column or page (it has no frame to cut). A `---` that is still there draws
-   nothing (a second rule would double up).
+   A panel whose entries are ruled, not boxed: each entry drops its card shape,
+   rail and surface and takes a rule over it in its kind's colour, with its
+   name in the kind's ink, so entries are told apart without a `---` between
+   them, and a column that starts on an entry starts on a rule. The kind badge
+   is dropped (the heading says what the run is). Each entry stays WHOLE: it
+   never splits across a column or a page (a name stranded from its SPECS strip
+   was the failure); the catalog itself splits between entries. A `---` that is
+   still there draws nothing.
+
+   Its title bar is a ledger header, not the solid accent bar of a rules panel:
+   a pale aged-paper band under heavy ink rules, with an INVENTORY chip. Ink
+   rail, ink shadow. (Magenta bars are for chapter punch; a dark bar is the
+   Dream Master's.)
 
    Columns are core's: write `@columns 2` under the intro.
 
@@ -165,35 +291,65 @@
   --dc-entry-surface: transparent;
   --dc-entry-rail: 0px;
   --dc-entry-rule: 1.5pt;
-  --dc-entry-kind: none; /* the panel's title bar already says what the run is */
+  --dc-entry-kind: none;
+  --dc-entry-shape: none;
+  --dc-entry-radius: 0;
+  --dc-entry-ornament: none;
+  --dc-entry-frame: none;
   padding: 8pt 0 6pt;
   margin: 0;
-  /* Ruled, not boxed, so there is no frame to cut: an entry may run to most of a
-     column (a long advert and a long SPECS box), and keeping it whole would leave
-     the foot of every page blank. The name still keeps with what follows it. */
-  break-inside: auto;
+  /* Whole: a column that cannot hold an entry moves it to the next. */
+  break-inside: avoid;
 }
 .dc-catalog hr {
   display: none;
 }
+/* The INVENTORY chip is reversed type on a solid fill: 8pt semibold. */
+.dc-section-panel.dc-catalog > :is(h2, h3):first-child::after {
+  font-size: 8pt;
+  font-weight: 600;
+}
+.dc-catalog .dc-gear > :is(h3, h4):first-child::before {
+  content: none;
+}
 
 /* A catalog is a run of entries that may run past a page, and kept whole it
-   leaves the foot of the page before it blank, so by default it splits.
-   `.dc-avoid-split`, or `--dc-catalog-break-inside: avoid` from a book's sheet,
-   keeps one whole. */
+   leaves the foot of the page before it blank, so by default it splits (between
+   entries). `.dc-avoid-split`, or `--dc-catalog-break-inside: avoid` from a
+   book's sheet, keeps one whole. */
 .dc-section-panel.dc-catalog {
   --dc-section-break-inside: var(--dc-catalog-break-inside);
+  --dc-section-accent: var(--ink-dark);
+  --dc-section-tab: "Inventory";
+  --dc-section-tab-bg: var(--ink-dark);
+  --dc-section-tab-fg: var(--paper-cream);
   /* Its shape: both top corners cut, like a file drawer's tab. */
   --dc-section-clip: 16px;
   --dc-section-cut-tl: 16px;
-  /* Its entries are ruled, not boxed: no card shape. */
-  --dc-entry-shape: none;
+  --dc-section-bar-mix: 0%;
+  --dc-section-bar-tone: var(--paper-aged);
+  --dc-section-bar-fg: var(--ink);
+  --dc-section-bar-rule: 3pt solid var(--ink);
+  --dc-section-bar-rule-sub: 3pt solid var(--ink);
+}
+.dc-section-panel.dc-catalog > :is(h2, h3):first-child {
+  box-shadow: inset 0 3pt 0 var(--ink-dark);
+  padding-top: 0.7rem;
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
    FIELD — `@field <variant>`, and `**Label:** …` inside a card
    ═════════════════════════════════════════════════════════════════════════
-   One shape: a rail, a surface, a label chip, then the text beside it.
+   One shape: a rail, a surface, a label chip, then the text beside it. The six
+   labels are one family (same chip, same rail); what each one means shows in
+   its colour, fill and edge:
+
+     specs        the rules          dark ink strip, yellow chip
+     traits       what it is         plain line, teal chip
+     equipment    what it carries    plain line, grey chip
+     effects      the benefit        teal chip marked +, a solid frame
+     side-effects the cost           blood chip marked –, a dashed frame
+     requires     the prerequisite   aged-paper bar, ink chip
 
      div.dc-field.dc-field-<variant>
        span.dc-field-label        the chip (the variant's name, or label="…")
@@ -208,12 +364,14 @@
    plugin.js plus one rule here.
 
    Public tokens (defaults in dc-component-defaults.css :root):
-     --dc-field-accent / -surface / -fg / -label-fg */
+     --dc-field-accent / -surface / -fg / -label-fg
+     --dc-field-edge-width / -edge-style — the frame on the other three sides */
 .dc-field {
   margin: 6pt 0;
   padding: 4pt 8pt;
   background: var(--dc-field-surface);
   color: var(--dc-field-fg);
+  border: var(--dc-field-edge-width) var(--dc-field-edge-style) var(--dc-field-accent);
   border-left: 3pt solid var(--dc-field-accent);
   /* A field splits between lines, as the callout it replaced did. The chip
      sits on the first line, so two lines at the foot keep it with its text. */
@@ -223,9 +381,11 @@
 .dc-field > .dc-field-label {
   display: inline-block;
   margin-right: 6pt;
-  padding: 1pt 5pt;
+  padding: 1pt 9pt 1pt 5pt;
   background: var(--dc-field-accent);
   color: var(--dc-field-label-fg);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+  hyphens: none;
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
@@ -261,14 +421,25 @@
   --dc-field-accent: var(--ink-smoke);
   --dc-field-surface: transparent;
 }
-/* Effects over Side Effects: the good, then the cost. */
+/* Effects over Side Effects: the benefit, then the cost. The benefit is a solid
+   teal frame on a pale teal ground with a + on its chip; the cost a dashed
+   blood frame on a pale blood ground with a – on its chip. */
 .dc-field-effects {
   --dc-field-accent: var(--hud-blue-dark);
-  --dc-field-surface: color-mix(in srgb, var(--hud-blue-dim) 30%, var(--paper-cream));
+  --dc-field-surface: color-mix(in srgb, var(--hud-blue-dim) 38%, var(--paper-cream));
+  --dc-field-edge-width: 1pt;
 }
 .dc-field-side-effects {
   --dc-field-accent: var(--blood);
-  --dc-field-surface: color-mix(in srgb, var(--crimson) 12%, var(--paper-cream));
+  --dc-field-surface: color-mix(in srgb, var(--crimson) 14%, var(--paper-cream));
+  --dc-field-edge-width: 1pt;
+  --dc-field-edge-style: dashed;
+}
+.dc-field-effects > .dc-field-label::before {
+  content: "+ ";
+}
+.dc-field-side-effects > .dc-field-label::before {
+  content: "\2013  ";
 }
 .dc-field-effects:has(+ .dc-field-side-effects) {
   margin-bottom: 0;

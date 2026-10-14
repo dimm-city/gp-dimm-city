@@ -182,6 +182,13 @@
   /* The lede stacks flush on the box below it (see "Lede flush-attaches"). */
   --dc-intro-gap: 0;
   --dc-intro-pad-bottom: 0;
+  --dc-intro-rule: 0px;     /* flush stack: no foot rule, it would show as a seam */
+}
+/* Credits and contents ledes are thanks and dedications, not an opening
+   statement: body size, regular weight. */
+.page:is(.dc-page-contents, .dc-page-credits) {
+  --dc-intro-size: var(--fs-body-sm);
+  --dc-intro-weight: 400;
 }
 
 /* Masthead — full-bleed dark band that escapes the page's 0.625in side
@@ -371,6 +378,8 @@
 }
 .page.dc-page-chapter-start:not(:has(.dc-fiction-excerpt)) > h1 + p {
   font-size: var(--fs-h4);
+  font-weight: 600;
+  color: var(--ink);
   line-height: var(--lh-normal);
   padding-left: var(--space-lg);
   margin-bottom: var(--space-lg);
@@ -447,6 +456,7 @@
   --dc-chevron-bg: var(--brand-magenta-deep);
   --dc-intro-gap: 0;           /* the lede attaches flush to the chevron above and the section below */
   --dc-intro-pad-bottom: 0;
+  --dc-intro-rule: 0px;
 }
 
 /* The chevron on the standalone intro page is the standard .dc-chevron at
@@ -469,7 +479,7 @@
    (2px ink top and bottom) over the recess every excerpt has. Tokens only;
    the excerpt's own look is in components/section.css. */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-rule: 2px;
+  --dc-fiction-lift: 5px;
 }
 
 /* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───

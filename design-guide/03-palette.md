@@ -6,7 +6,7 @@ Chapter 3 {.dg-kicker}
 
 # Color
 
-Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crimson, orange, rust, amber — for printed lore, ability text, and danger. **HUD digital** — blue and magenta — for cybernetics, tech, and system chrome. The page is never black, and fire and HUD never share one element. {.dg-lede}
+Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crimson, orange, rust, amber — for printed lore, ability text, and danger. **HUD digital** — blue and cyan — for rules, look-ups, cybernetics and system chrome, with magenta kept for display punch. The page is never black, and fire and HUD never share one element. {.dg-lede}
 
 
 ## Paper & ink
@@ -52,12 +52,27 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
   <div class="dc-palette-swatch bg-border-hairline on-light"><strong>Hairline</strong><code>#c8b898</code><code>--border-hairline</code><code>17/20/45/11</code></div>
 </div>
 
-`--paper-stain` (`#b0a89c`) is a textured fill; `--border-hairline` is a rule line. Other rules use the ink scale directly.
+`--paper-stain` (`#b0a89c`) is a dark inset well and label strip: it never carries body text, and neither does any fill darker than the wall. `--paper-form` (`#f5f3ee`, a hair lighter than cream: the `choose` form's printed sheet) and `--paper-zine` (`#e9e6e0`, a printed-page neutral used by the fiction excerpt and the shard block) sit with the paper swatches above. `--border-hairline` is a rule line. Other rules use the ink scale directly.
+
+## What each colour means
+
+Colour is a job, not a mood. A reader flipping pages should know what kind of content a box holds from its fill and silhouette before reading a word, and the same has to hold in a grayscale proof, so every variant also differs in value, edge or label: never in hue alone.
+
+| Colour | Means | Used by |
+|---|---|---|
+| Magenta | Display punch: the loudest thing on the page, never a category | Chapter chevrons, spray titles, pull quotes, `ROLL THE DIE!`, the VAR chip, the default panel accent |
+| HUD blue, pale cyan | A rule or a look-up, for the player | Note alert, reference section, definitions, megacorp faction, ideals |
+| Cyan on ink | The Dream Master only | `dm` alert and section, the Dream Master chip |
+| Hazard yellow with ink | Danger, consequence, a choice you must make | Warning alert, enforcer faction, the *Your choice* stamp, vehicle gear |
+| Blood, rust, crimson | Harm, cost, cult, a binding ruling | Slate block, flaws, cult faction, origin stamp, side effects |
+| Violet, amethyst | The world and the arcane | Vibe alert, lore section, dreams, cabal faction, treasure |
+| Fungi green | The living city: organic, toxic | Visit alert, drug gear, Gutterdruid |
+| Paper versus ink | Who it is for | Light paper is for players, an ink-dark fill is for the Dream Master, aged paper is fiction and the world |
 
 ## Usage rules
 
 - Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.
-- HUD blue and magenta mean cybernetics or tech. Never mix fire and HUD on the same element.
+- HUD blue means a rule or a look-up; magenta is display punch, not a category. Never mix fire and HUD on the same element.
 - Paper is for raised elements. The wall is the canvas; cream is the surface.
 - Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run.
 

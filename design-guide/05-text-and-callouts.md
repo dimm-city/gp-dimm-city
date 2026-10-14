@@ -11,7 +11,7 @@ The components that live inside running prose: the lede that opens a chapter, fl
 
 ## Lede
 
-The opening paragraph of a chapter or major section, set larger on its own panel.
+The opening paragraph of a chapter or major section, set larger on its own light panel: upright semibold ink type, a heavy accent rail and an ink foot rule.
 
 ```markdown
 @lede
@@ -33,11 +33,11 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 
 </div>
 
-Tokens: `--dc-intro-bg`, `--dc-intro-accent`.
+Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-rule`.
 
 ## Flavor
 
-In-world voice: italic, accent-railed, spoken from inside the fiction. Inside a `@skill` card the first `>` line is flavor automatically; anywhere else, tag the quote.
+In-world voice: italic, accent-railed, spoken from inside the fiction. It has no box: the rail is the whole container. Inside a `@skill` card the first `>` line is flavor automatically; anywhere else, tag the quote.
 
 ```markdown
 > [!FLAVOR]
@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, six registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is `[!TYPE]`, for the first six — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -132,16 +132,19 @@ Result {.dg-result}
 
 ### Which alert
 
-| Type | Who it is for | Register |
-|---|---|---|
-| `NOTE` | Players | A rules clarification |
-| `WARNING` | Players | A rule with consequences, in amber |
-| `DM` | The Dream Master only | Guidance, hooks, adjudication |
-| `VIBE` | Players | Atmosphere and narrative voice, full width |
-| `ORIGIN` | Players, in second person | Backstory addressed to the character |
-| `VISIT` | Players | A location, present tense, before an encounter |
+| Type | Who it is for | Register | Looks like |
+|---|---|---|---|
+| `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail |
+| `WARNING` | Players | A rule with consequences | Hazard: a light cream sheet, a yellow-and-black stripe rail, an ink frame and a yellow caution-tape label |
+| `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink slab with a cyan rail and a cyan chip at the top right |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet in one dashed violet edge all round, italic, with an underlined label |
+| `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a rust rail, a dog-eared corner and a crimson stamp label |
+| `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a map-pin label |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A dashed cyan rail and a taped-on label |
 
-Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`.
+Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 8pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+
+Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
 
 ## Callout block
@@ -238,7 +241,7 @@ If the players investigate before accepting, they can smell the trap with a Stre
 
 ## Tape
 
-A torn-tape strip for a section break or a label between groups — tiers of NPCs, parts of a list.
+A strip of masking tape for a section break or a label between groups — tiers of NPCs, parts of a list: tan, torn at both ends, ink edges top and bottom, an ink label.
 
 ```markdown
 <div class="dc-tape">Operators</div>
@@ -252,7 +255,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
+Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
 
 ## Dashed rule
 
@@ -280,7 +283,7 @@ Signal Jammer (single-use)
 
 ## Tags and class tags
 
-Inline pills. `.dc-tag` is a keyword or cost label; `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans — the one place the system asks for it inline.
+Inline chips. `.dc-tag` is a keyword or cost label: a hard-edged chip with an ink hairline, in mono caps (tokens `--dc-tag-bg`, `--dc-tag-fg`, `--dc-tag-border`); `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans — the one place the system asks for it inline.
 
 ```markdown
 <span class="dc-tag">Melee</span> <span class="dc-tag">Reach 2</span> <span class="dc-tag">Loud</span>

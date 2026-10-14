@@ -143,12 +143,11 @@ Two rules keep the split honest, and a test enforces each:
 ```css
 /* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-rule: 2px;
-  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
+  --dc-fiction-lift: 5px;
 }
 ```
 
-A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-lift: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 
@@ -308,7 +307,6 @@ into the token name, not scattered across heading rules.
 
 /* Letter spacing — named by use */
 --ls-display:  0.1em;   /* all-caps display headings */
---ls-cap-sm:   3px;     /* mono micro-caps (.tag, .dc-tag) */
 ```
 
 ### Spacing and Geometry Tokens
@@ -362,9 +360,6 @@ To change the page background in an adapted project, override `--bg` in
 the book's own sheet; the `@page` rules read it directly.
 
 ### What Makes a Good Token
-
-**Good — `--ls-cap-sm`**: Used in five rules across three files. Semantically distinct
-(letter-spacing for micro-cap labels). Has no alias.
 
 **Good — `--gutter`**: The column gap appears in grid declarations and structural
 margins. One change reflows all of them without changing the spacing scale.

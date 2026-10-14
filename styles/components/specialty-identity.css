@@ -26,37 +26,76 @@
        top corners (the title spans the whole panel). */
 
 /* ── Specialty identity + shape shared wiring ──────────────────────────────
-   Every .dc-specialty.<name> block below declares only its own identity
-   (--spec-accent/-mid/-dark, aliasing that specialty's own --<name>-accent/
-   -mid/-dark tokens) and its shape polygons. The four ONE-TIME wiring rules
-   here read --spec-* and apply it to every specialty's skill-card, path-
-   shell, specialty-intro and specialty-card; a specialty needs its own extra
-   override below ONLY where its rendered value genuinely differs from this
-   pattern (technosorcerer and dualist need none).
-   Adding a new specialty: declare shape + --spec-accent/-mid/-dark in its
-   own .dc-specialty.<name> block; it gets correct skill-card/path-shell/
-   specialty-intro/specialty-card theming for free from these four rules. */
+   This sheet only SETS tokens. The rules that read them live with the component:
+   the path banner in data.css, the intro title in specialty.css, the tier pill
+   and AP chips in cards.css, the sticker chain and code chip in chrome.css.
+   Every .dc-specialty.<name> block below declares its own identity and shapes:
+     --spec-accent/-mid/-dark   the triad, aliasing its own --<name>-accent/-mid/-dark
+     --spec-band / --spec-on-band   the title-band fill and the type on it: the
+                                bright signal colour, with whichever of ink or
+                                cream holds >= 4.5:1 on it (augmerc uses the
+                                deep magenta: cream on the bright one is 3.6:1)
+     --spec-chip-bg / -fg / -edge   the tier pill on the card tab. REQUIRED: the
+                                --spec-* tokens have no :root default, so a
+                                specialty that omits one gets a transparent pill
+     --dc-band-* (optional)     the register (defaults in dc-component-defaults.css):
+                                tech = LED dots on the rule and an inset rim,
+                                magic = a flat facet plane, hazard = a slanted
+                                tape rule, landfill = a torn edge (in the title
+                                shape) and no rule. Solid fills only, no gradient
+   The wiring rules here read --spec-* and apply it to every specialty's
+   skill-card, path-shell, specialty-intro and specialty-card (every sticker and
+   chip pairs cream type with --spec-dark, >= 4.5:1 on each); a specialty needs
+   its own extra override below ONLY where its rendered value genuinely differs
+   from this pattern.
+
+   ADDING A SPECIALTY: the work is not only this sheet. Touch, in order:
+     1. dc-palette.css          a new colour, only if none of the palette fits
+                                (with its CMYK/TAC comment)
+     2. dc-identity.css         --<name>-accent, -mid and -dark (accent is the
+                                band fill; mid is the tab and card frame; dark
+                                is the chip and card title)
+     3. this sheet              a .dc-specialty.<name> block: the 7 shape
+                                polygons, the --spec-* tokens above, the register
+     4. plugin.js               the name in the SPECIALTIES list and its
+                                three-letter code in specialtyCodeFromClass()
+     5. chrome.css              a .dc-classtag.<name> line
+     6. components.yaml         the specialty entry
+     7. design-guide            the ch.7 and ch.11 specimens
+   Skipping 1-2 leaves a band with no colour; skipping 3 leaves the pill
+   transparent and the shapes default; skipping 4 leaves the wrapper unnamed. */
 .dc-specialty .dc-skill-card {
   --dc-card-accent: var(--spec-accent);
   --dc-card-tab-bg: var(--spec-mid);
   --dc-card-tab-title-color: var(--paper-cream);
+  --dc-tier-bg: var(--spec-chip-bg);
+  --dc-tier-fg: var(--spec-chip-fg);
+  --dc-tier-edge: var(--spec-chip-edge);
+  --dc-flavor-accent: var(--spec-mid);
 }
 
 .dc-specialty .dc-path-shell {
-  --dc-path-title-bg: var(--spec-dark);
+  --dc-path-title-bg: var(--spec-band);
+  --dc-path-title-color: var(--spec-on-band);
   --dc-path-accent: var(--spec-accent);
+  --dc-path-code-bg: var(--ink-dark);
+  --dc-path-code-fg: var(--paper-cream);
+  --dc-path-chip-bg: var(--spec-dark);
+  --dc-path-chip-fg: var(--paper-cream);
+  --dc-path-chip-edge: var(--spec-accent);
+  --dc-path-note-rail: var(--spec-mid);
 }
 
 .dc-specialty .dc-specialty-intro {
-  --dc-specialty-intro-title-bg: var(--spec-dark);
-  --dc-specialty-intro-title-color: var(--paper-cream);
+  --dc-specialty-intro-title-bg: var(--spec-band);
+  --dc-specialty-intro-title-color: var(--spec-on-band);
   --dc-specialty-intro-bg: var(--paper-light);
 }
 
 .dc-specialty .dc-specialty-card {
   --dc-specialty-card-bg: var(--paper-cream);
   --dc-specialty-card-fg: var(--ink);
-  --dc-specialty-card-accent: var(--spec-mid);
+  --dc-specialty-card-accent: var(--spec-band);
   --dc-specialty-card-border: var(--spec-mid);
   --dc-specialty-card-title-color: var(--spec-dark);
 }
@@ -66,6 +105,18 @@
   --spec-accent: var(--augmerc-accent);
   --spec-mid: var(--augmerc-mid);
   --spec-dark: var(--augmerc-dark);
+  /* TECH: deep-magenta band, cyan LED rule with ink ticks, inset LED rim. */
+  --spec-band: var(--brand-magenta-deep);
+  --spec-on-band: var(--paper-cream);
+  --spec-chip-bg: var(--paper-cream);
+  --spec-chip-fg: var(--augmerc-dark);
+  --spec-chip-edge: var(--augmerc-dark);
+  --dc-band-rule: var(--brand-cyan);
+  --dc-band-rule-h: 5px;
+  --dc-band-tick: var(--ink);
+  --dc-band-tick-style: dotted;
+  --dc-band-tick-w: 3px;
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 26%, var(--brand-magenta-deep));
   --dc-skill-tab-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
   /* Path title + shell clip-paths must AGREE at the top-right corner. The
@@ -97,6 +148,18 @@
   --spec-accent: var(--cybersurgeon-accent);
   --spec-mid: var(--cybersurgeon-mid);
   --spec-dark: var(--cybersurgeon-dark);
+  /* TECH, CLINICAL: chrome band over a steel ruler-scale rule, LED rim. */
+  --spec-band: var(--cybersurgeon-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--cybersurgeon-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--cybersurgeon-dark);
+  --dc-band-rule-h: 5px;
+  --dc-band-tick: var(--cybersurgeon-accent);
+  --dc-band-tick-style: dashed;
+  --dc-band-tick-w: 2px;
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 45%, var(--cybersurgeon-accent));
   /* Tab diagonal capped at 18px: a 30px cut exceeds the ~27px tab height and
      makes the polygon degenerate (right edge nearly invisible). */
   --dc-skill-tab-shape: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
@@ -108,12 +171,10 @@
   --dc-specialty-intro-clip: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
 }
 
-/* Cybersurgeon — accent/border key on the shared HUD-blue chrome token,
-   not the specialty's own --spec-mid (a genuine delta; see augmerc above). */
+/* Cybersurgeon — the chrome band and steel frame come from the shared wiring;
+   only the clinical inset frame is its own. */
 .dc-specialty.cybersurgeon .dc-specialty-card {
-  --dc-specialty-card-accent: var(--hud-blue-dark);
-  --dc-specialty-card-border: var(--hud-blue-dark);
-  --dc-specialty-card-shadow: inset 0 0 0 1.5pt var(--hud-blue-dark);
+  --dc-specialty-card-shadow: inset 0 0 0 1.5pt var(--cybersurgeon-mid);
 }
 
 /* ── Proxy — covert, orange, top-left step + diagonal bottom ────────────── */
@@ -121,12 +182,23 @@
   --spec-accent: var(--proxy-accent);
   --spec-mid: var(--proxy-mid);
   --spec-dark: var(--proxy-dark);
+  /* LANDFILL + MAGIC: scorch-orange band on a torn edge, no tidy rule, a
+     burnt patch at the right. */
+  --spec-band: color-mix(in srgb, var(--proxy-accent) 90%, #fff);  /* a hair lighter so ink holds 4.5:1 at 13.5pt (4.27 on the raw orange) */
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--paper-cream);
+  --spec-chip-fg: var(--proxy-dark);
+  --spec-chip-edge: var(--proxy-dark);
+  --dc-band-rule-h: 0px;
+  --dc-band-facet: color-mix(in srgb, #000 14%, var(--spec-band));
+  --dc-band-facet-width: 26%;
+  --dc-band-facet-clip: polygon(18% 0, 100% 0, 100% 100%, 0 100%, 12% 55%);
   --dc-skill-tab-shape: polygon(0 18px, 18px 0, 100% 0, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 36px), calc(100% - 52px) 100%, 0 100%);
-  --dc-path-title-shape: polygon(0 18px, 18px 0, 100% 0, 100% 100%, 0 100%);
+  --dc-path-title-shape: polygon(0 18px, 18px 0, 100% 0, 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px));
   --dc-path-shell-clip: polygon(0 18px, 18px 0, 100% 0, 100% calc(100% - 34px), calc(100% - 56px) 100%, 0 100%);
   --dc-specialty-card-shell-shape: polygon(0 16px, 16px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 36px) 100%, 0 100%);
-  --dc-specialty-intro-title-shape: polygon(0 18px, 18px 0, 100% 0, 100% 100%, 0 100%);
+  --dc-specialty-intro-title-shape: polygon(0 18px, 18px 0, 100% 0, 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px));
   --dc-specialty-intro-clip: polygon(0 18px, 18px 0, 100% 0, 100% calc(100% - 36px), calc(100% - 56px) 100%, 0 100%);
 }
 
@@ -139,6 +211,18 @@
   --spec-accent: var(--wirephreak-accent);
   --spec-mid: var(--wirephreak-mid);
   --spec-dark: var(--wirephreak-dark);
+  /* TECH: signal-cyan band, circuit-tick rule, LED rim. */
+  --spec-band: var(--wirephreak-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--wirephreak-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--wirephreak-dark);
+  --dc-band-rule-h: 5px;
+  --dc-band-tick: var(--wirephreak-accent);
+  --dc-band-tick-style: dotted;
+  --dc-band-tick-w: 3px;
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 34%, var(--wirephreak-accent));
   --dc-skill-tab-shape: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 10px));
   --dc-skill-body-shape: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 22px 100%, 0 calc(100% - 14px));
   --dc-path-title-shape: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
@@ -157,6 +241,19 @@
   --spec-accent: var(--streetwarden-accent);
   --spec-mid: var(--streetwarden-mid);
   --spec-dark: var(--streetwarden-dark);
+  /* CIVIC HAZARD: high-vis green band over a green-and-ink hazard-tape rule. */
+  --spec-band: var(--streetwarden-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--streetwarden-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--streetwarden-mid);
+  --dc-band-rule-h: 7px;
+  --dc-band-tick: var(--ink);
+  --dc-band-tick-style: dashed;
+  --dc-band-tick-w: 7px;
+  --dc-band-rule-skew: -45deg;
+  --dc-band-rule-bleed: 10px;
   --dc-skill-tab-shape: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 18px));
   --dc-path-title-shape: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
@@ -175,6 +272,17 @@
   --spec-accent: var(--technosorcerer-accent);
   --spec-mid: var(--technosorcerer-mid);
   --spec-dark: var(--technosorcerer-dark);
+  /* TECH + MAGIC: electric-indigo band (its own hue; violet is the world's) with a faceted plane and a cyan LED rule. */
+  --spec-band: var(--technosorcerer-accent);
+  --spec-on-band: var(--paper-cream);
+  --spec-chip-bg: var(--technosorcerer-accent);
+  --spec-chip-fg: var(--paper-cream);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--brand-cyan);
+  --dc-band-rule-h: 4px;
+  --dc-band-facet: color-mix(in srgb, #000 30%, var(--technosorcerer-accent));
+  --dc-band-facet-width: 30%;
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 22%, var(--technosorcerer-accent));
   --dc-skill-tab-shape: polygon(0 0, calc(50% - 20px) 0, 50% 12px, calc(50% + 20px) 0, 100% 0, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, calc(50% - 18px) 0, 50% 10px, calc(50% + 18px) 0, 100% 0, 100% calc(100% - 20px), calc(100% - 24px) 100%, 24px 100%, 0 calc(100% - 20px));
   --dc-path-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% 100%, 0 100%);
@@ -194,25 +302,28 @@
   --dc-specialty-intro-clip: polygon(0 0, calc(50% - 24px) 0, 50% 14px, calc(50% + 24px) 0, 100% 0, 100% calc(100% - 32px), calc(100% - 56px) 100%, 0 100%);
 }
 
-/* TECHNOSORCERER title fix — "TECHNOSORCERER" is 14 chars and wraps mid-word
-   at card-grid scale ("TECHNOSORCERE / R" orphan). Tightened letter-spacing
-   keeps it on one line at the lixdu display size used in the card title. */
-.dc-specialty.technosorcerer .dc-specialty-card h3 {
-  letter-spacing: -0.04em;
-  font-size: 1.05em;
-}
-
 /* ── Gutterdruid — street nature, fungi green, center bottom pinch ──────── */
 .dc-specialty.gutterdruid {
   --spec-accent: var(--gutterdruid-accent);
   --spec-mid: var(--gutterdruid-mid);
   --spec-dark: var(--gutterdruid-dark);
+  /* LANDFILL + WONDERLAND: spore-lime band on a torn edge, no rule, a lichen
+     patch at the right. */
+  --spec-band: var(--gutterdruid-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--gutterdruid-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--gutterdruid-dark);
+  --dc-band-rule-h: 0px;
+  --dc-band-facet: color-mix(in srgb, var(--gutterdruid-mid) 38%, var(--gutterdruid-accent));
+  --dc-band-facet-width: 34%;
+  --dc-band-facet-clip: polygon(22% 0, 100% 0, 100% 100%, 0 100%, 9% 62%, 3% 30%);
   --dc-skill-tab-shape: polygon(0 0, calc(50% - 20px) 0, 50% 12px, calc(50% + 20px) 0, 100% 0, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 24px));
-  --dc-path-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% 100%, 0 100%);
+  --dc-path-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px));
   --dc-path-shell-clip: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 28px));
   --dc-specialty-card-shell-shape: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 20px));
-  --dc-specialty-intro-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% 100%, 0 100%);
+  --dc-specialty-intro-title-shape: polygon(0 0, calc(50% - 22px) 0, 50% 12px, calc(50% + 22px) 0, 100% 0, 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px));
   --dc-specialty-intro-clip: polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 28px));
 }
 
@@ -225,6 +336,17 @@
   --spec-accent: var(--etherlock-accent);
   --spec-mid: var(--etherlock-mid);
   --spec-dark: var(--etherlock-dark);
+  /* MAGIC: citrine band with a pale faceted plane over a tarnished-gold rule. */
+  --spec-band: var(--etherlock-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--etherlock-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--etherlock-dark);
+  --dc-band-rule: var(--etherlock-mid);
+  --dc-band-rule-h: 4px;
+  --dc-band-facet: color-mix(in srgb, #fff 38%, var(--etherlock-accent));
+  --dc-band-facet-width: 36%;
+  --dc-band-facet-clip: polygon(34% 0, 100% 0, 100% 100%, 0 100%, 16% 50%);
   --dc-skill-tab-shape: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 18px 100%, 0 calc(100% - 20px));
   --dc-path-title-shape: polygon(0 12px, 12px 0, 100% 0, 100% 100%, 0 100%);
@@ -243,6 +365,17 @@
   --spec-accent: var(--dualist-accent);
   --spec-mid: var(--dualist-mid);
   --spec-dark: var(--dualist-dark);
+  /* MAGIC: aqua band split by a pale facet (the two paths) over a sapphire rule. */
+  --spec-band: var(--dualist-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--dualist-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--dualist-dark);
+  --dc-band-rule-h: 4px;
+  --dc-band-facet: color-mix(in srgb, #fff 34%, var(--dualist-accent));
+  --dc-band-facet-width: 44%;
+  --dc-band-facet-clip: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
   --dc-skill-tab-shape: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%, 0 10px);
   --dc-skill-body-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
   --dc-path-title-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
@@ -261,6 +394,17 @@
   --spec-accent: var(--generalist-accent);
   --spec-mid: var(--generalist-mid);
   --spec-dark: var(--generalist-dark);
+  /* MAGIC, COMMON STONE: cool slate band, a darker slab, a pale-stone rule (steel, not violet). */
+  --spec-band: var(--generalist-accent);
+  --spec-on-band: var(--paper-cream);
+  --spec-chip-bg: var(--generalist-accent);
+  --spec-chip-fg: var(--paper-cream);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--paper-aged);
+  --dc-band-rule-h: 4px;
+  --dc-band-facet: color-mix(in srgb, #000 26%, var(--generalist-accent));
+  --dc-band-facet-width: 22%;
+  --dc-band-facet-clip: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
   --dc-skill-tab-shape: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 0 100%, 0 4px);
   --dc-skill-body-shape: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
   --dc-path-title-shape: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%, 0 5px);
@@ -274,11 +418,38 @@
   --dc-specialty-card-bg: var(--paper-light);
 }
 
-/* ───────── AP TAGS ───────── */
+/* ───────── AP TAGS ─────────
+   Colour says the cost's direction, and a drawn mark says it where colour
+   cannot (a grayscale proof): standard = deep HUD blue; reduced = pale blue and
+   a down triangle; increased = blood and an up triangle; VAR = deep magenta (the
+   display punch); special = amber; free = an UNLIT LED: the grey lens of a dead
+   indicator with an ink edge and a hollow lamp, the quietest chip, so "0 AP" is
+   no longer a blood-red flag on every card (and no longer the same blood as
+   increased). The marks are CSS shapes (borders, a radius), vector in PDF/X and
+   independent of any font. */
 
 /* Standard action point — explicit class for documentation clarity */
 .dc-ap.standard {
   --dc-ap-bg: var(--hud-blue-dark);
+}
+
+/* Free: an unlit LED. */
+.dc-ap.free {
+  --dc-ap-bg: var(--paper-aged);
+  --dc-ap-fg: var(--ink);
+  --dc-ap-border: var(--ink);
+}
+
+.dc-ap.free::before {
+  content: '';
+  display: inline-block;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  vertical-align: -0.05em;
 }
 
 /* Reduced-cost action */
@@ -287,15 +458,35 @@
   --dc-ap-fg: var(--ink);
 }
 
+.dc-ap.reduced::before,
+.dc-ap.increased::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  vertical-align: 0.02em;
+}
+
+.dc-ap.reduced::before {
+  border-top: 8px solid currentColor;
+}
+
 /* Increased-cost action */
 .dc-ap.increased {
   --dc-ap-bg: var(--blood);
 }
 
+.dc-ap.increased::before {
+  border-bottom: 8px solid currentColor;
+}
+
 /* Special action — amber */
 .dc-ap.special {
   --dc-ap-bg: var(--amber);
-  --dc-ap-fg: var(--ink);
+  --dc-ap-fg: var(--paper-cream);
 }
 
 }
