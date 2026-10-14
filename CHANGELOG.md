@@ -7,6 +7,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **Shadows and tints are translucent again, for books that opt in to
+  Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
+  poster shadow (`--shadow-ink`), skill-card and sticker shadows, tape and
+  pull-quote rules, the spray smudge, the dashed rule, the card corner mark,
+  the highlight wash, and the AP-chip and outcome-key bevels are `color-mix(…,
+  transparent)` again instead of being pre-mixed onto one surface, so a shadow
+  on the brick wall darkens the brick instead of painting a flat tone. The AP
+  chip's soft `3px 3px 6px` shadow is back. Text colours stay opaque: a
+  translucent glyph prints fully opaque on a split page. The wall tile stays
+  opaque. `--wall-tone` is removed (nothing uses it). The convention test
+  *paint nothing transparent* becomes *keep text opaque*.
+  - A book that keeps Gutterpress's default (`flatten-page`) and builds
+    PDF/X-1a now gets more pages flattened to an image than with 1.6.3: set
+    `pdfx.transparency: preserve-text` in the book's manifest. Requires the
+    Gutterpress release that ships that option.
+
 ## [1.6.3] - 2026-10-12
 
 Content and markers by default, overrides when wanted: the defaults now do more,

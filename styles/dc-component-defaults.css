@@ -253,7 +253,7 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, var(--dc-pullquote-bg));
+  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, transparent);
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* roll / die callout public API */
@@ -278,7 +278,7 @@
 
   /* .dc-tape public API */
   --dc-tape-bg:              var(--paper-aged);
-  --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, var(--dc-tape-bg));
+  --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, transparent);
   --dc-tape-color:           var(--ink-dust);
 }
 

@@ -273,8 +273,8 @@
       var(--row-color, var(--ink)) 50%,
       color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411 */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 12%, var(--row-color, var(--ink))),
-    inset 0 -1px 0 color-mix(in srgb, #000 18%, var(--row-color, var(--ink)));
+    inset 0 1px 0 color-mix(in srgb, #fff 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 18%, transparent);
   /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
      to --ink because the fungi-glow fill is too light for cream text: 1.24:1)
      propagates to the chip element itself, not just to its children. Default
