@@ -69,7 +69,9 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 3px 18px 3px 8px;
+  /* 18px right and 16px left clear the deepest tab cut (a specialty's
+     --dc-skill-tab-shape, at most 15px) by more than 2pt. */
+  padding: 3px 18px 3px 16px;
   background: var(--dc-card-tab-bg);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
@@ -298,6 +300,13 @@
   widows: 2;
 }
 
+/* The card's closing sub-header (a ##### line) is reading text in mono caps:
+   10pt, tracked, where the bare sub-header is a 7.5pt label. */
+.dc-skill-card .dc-sub-header {
+  font-size: 10pt;
+  letter-spacing: 0.08em;
+}
+
 /* An ability row (AP chip and its text) is never cut between the two. */
 .dc-skill-card .dc-ability {
   break-inside: avoid;
@@ -390,17 +399,18 @@
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
-   --dc-roll-the-die-color (default --brand-magenta-deep).
+   --dc-accent-ink (the component's own text-safe ink; default the deep magenta).
    An instruction to act, set in the text around it: the same font and size as
-   the line it sits in, made bold, in a contrasting colour, with a dotted
-   underline in that colour. It is plain inline text, so the line keeps its
-   height. The brand magenta's hue stands apart from the warm ink and the
-   --blood used for other bold text; deep, it holds AA contrast on every paper:
-   7.0:1 on --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
+   the line it sits in, made bold, in the ink of the component it sits in
+   (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
+   its cards), with a dotted underline in that colour. It is plain inline text,
+   so the line keeps its height. Each component sets --dc-accent-ink to a shade
+   that holds 4.5:1 on its own surface; the deep magenta default holds 7.0:1 on
+   --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
-  color: var(--dc-roll-the-die-color);
-  text-decoration: underline dotted;
+  color: var(--dc-accent-ink);
+  text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
 }

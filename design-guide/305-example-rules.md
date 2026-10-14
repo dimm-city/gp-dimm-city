@@ -112,7 +112,7 @@ Some abilities shift your odds.
 
 @columns 2
 
-@definition
+@definition lucid
 
 #### Lucid
 
@@ -122,7 +122,7 @@ Roll 2d20, take the higher. You're sharp, aligned, in control. When you roll a 2
 
 @column-break
 
-@definition
+@definition surreal
 
 #### Surreal
 

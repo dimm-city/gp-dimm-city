@@ -139,7 +139,9 @@ a   { color: var(--blood); text-decoration: none; border-bottom: 1px dotted var(
 code, kbd, samp {
   font-family: var(--font-mono);
   color: var(--ink);
-  font-size: 0.92em;
+  /* 10pt reading floor: code inside a 10pt cell or list item must not fall
+     under it. */
+  font-size: max(0.92em, 10pt);
   background: var(--paper-aged);
   padding: 1pt 4pt;
   border-radius: 2pt;
@@ -165,8 +167,9 @@ blockquote {
   font-style: italic;
   color: var(--ink);
   border-left: 7px solid var(--hud-blue-dim);
-  border-right: 2px solid color-mix(in srgb, var(--tint-magenta-rose) 18%, var(--paper-stain));
-  background: var(--paper-stain);
+  /* paper-light, not --paper-stain: that is darker than the wall, and no
+     reading text sits on a fill darker than the wall. */
+  background: var(--paper-light);
   padding: var(--space-md) var(--space-md) var(--space-md) var(--space-xl);
   margin: 0.75rem 0;
   text-wrap: balance;
@@ -199,7 +202,7 @@ ul li > p:first-child::before {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 9pt;
+  font-size: 10pt;
   margin: 0.1in 0;
   break-inside: avoid;
 }

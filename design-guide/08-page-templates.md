@@ -21,7 +21,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | — | 8.5 × 11 in | — |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips print about 0.55 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips are centred in the 0.25 in of it that clears that minimum, so they print 0.5 to 0.75 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.75 in | 0.75 in | 0.5 in |
 
@@ -37,11 +37,29 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page intro` | none | The introduction (a `@lede`, then a `@section flat`) |
 | `@page chapter-start` | none | A chapter opener |
 | `@page citizen-file` | `p.N`, `c.N` | Running header "Citizen File" |
-| `@page .card-grid` | `p.N`, `c.N` | The specialty catalog page |
+| `@page specialty-catalog` | `p.N`, `c.N` | The specialty catalog: a two-page spread that opens on a left page |
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
 | `@page blank` | none | A deliberately blank page (core's word) |
 
 The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter split across files repeats its `@chapter` line in each.
+
+### The page chips
+
+The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon, a solid magenta face with cream type, the same edge and shadow, and a perforated edge on the spine side. Both are 16 pt tall with their type centred in the face, and both sit in the footer band that clears DriveThruRPG's 0.5 in text minimum, so they stay put on recto and verso for every page word that prints them. A `citizen-file` page's running head is the same sticker in amber at the top.
+
+### Text on the wall
+
+Nothing is ever printed straight on the brick. Anything you write directly on a page with no `@section` or callout around it dresses itself:
+
+| You write | It prints as |
+|---|---|
+| `# Title` | A banner in the chapter's accent colour with cream type |
+| `## Heading` | A paper slip: an accent rail on the left, a dashed ink foot, a hard shadow and a strip of masking tape |
+| `### Heading` | A plainer slip: the same without the tape |
+| `#### Heading` and smaller | A label slip that shrinks to its words |
+| Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does |
+
+Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-sheet-pad` or `--dc-page-title-ink`. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
 
 
 ## Where the content sits
@@ -69,7 +87,7 @@ Any other word after `@chapter` is the chapter's label, as before. A book adjust
 
 ```css
 .chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
-.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-lift: 3px; }
+.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: 12px; }
 ```
 
 A panel's edge has tokens of its own, `--dc-section-clip` (the top-right cut, 18px), `--dc-section-cut-tl`, `--dc-section-cut-br` and `--dc-section-cut-bl` (the other three corners, 0) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
@@ -137,7 +155,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A chapter opens on `@page chapter-start` with its `# Title` and no footer. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
+A chapter opens on `@page chapter-start` with its `# Title` (a banner in the chapter's accent) and no footer. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
 
 ```markdown {.dg-split}
 @chapter #ch-citizen ch="1"
@@ -167,7 +185,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-lift`, `--dc-fiction-lift-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page it takes the heavier opener shadow (5px) by itself; nothing to add.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-depth`, `--dc-fiction-depth-bg`, `--dc-fiction-cavity`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page the hole is deeper (a 10px cast shadow) by itself; nothing to add.
 
 The snippet picker's *Chapter Start Page* inserts this opener.
 
@@ -220,10 +238,10 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 ## Specialty catalog page
 
-`@page .card-grid` plus a `@card-grid` of specialty cards, each in its own `@specialty`. Keep the cards uniform — identical chrome is what makes the choices comparable.
+`@page specialty-catalog` plus a `@card-grid` of specialty cards, each in its own `@specialty`. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other; the title, the lede and the first four cards fill the left page and the other six the right, in aligned rows of equal height, each card a poster with its portrait on top, its name, its tagline and its pitch, and an index chip (01 to 10) on the portrait. Whatever follows starts the next page: write a plain `@page` after `@end-card-grid`. Keep the cards uniform — identical chrome is what makes the choices comparable. The same `@card-grid` on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.
 
 ```markdown {.dg-split}
-@page .card-grid
+@page specialty-catalog
 
 ## Choose Your Specialty {.dc-chevron}
 

@@ -241,11 +241,11 @@ h1.dc-chevron {
   color: var(--dc-flavor-color);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-normal);
-  padding-bottom: 4px;
   margin-bottom: 6px;
   position: relative;
   border-left: var(--dc-flavor-accent-width) solid var(--dc-flavor-accent);
-  padding-left: 8px;
+  background: var(--dc-flavor-bg);
+  padding: 2px 8px 4px;
 }
 
 /* ── Sub-header ───────────────────────────────────────────────────────── */
@@ -296,6 +296,7 @@ h1.dc-chevron {
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
+  --dc-accent-ink: var(--dc-intro-ink);
 }
 .dc-intro p,
 .dc-intro em,
@@ -315,10 +316,12 @@ h1.dc-chevron {
      --brand-magenta as the left-rail accent so the brand color anchors the
      element without taking the text color hostage. */
   color: var(--ink-dark);
+  /* A paper strip behind the title: a spec-tweak is never set straight on the
+     wall (inside a panel it is paper on paper). */
+  background: var(--paper-cream);
   border-bottom: 2px solid var(--ink-dark);
   border-left: 4px solid var(--brand-magenta);
-  padding-bottom: 6px;
-  padding-left: 10px;
+  padding: 4px 8px 6px 10px;
   margin: 20px 0 14px;
 }
 

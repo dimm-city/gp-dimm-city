@@ -15,7 +15,7 @@
      augment    a spec chip  clean pale cool plate, stepped circuit notch, cyan top rule, teal name
      treasure   a gem        violet tint, eight-sided cut, a hard facet, violet name
      vehicle    a plate      concrete, riveted chamfers, hazard-stripe head, yellow badge, ink name
-     drug       a label      lime tint, rounded corners, keyline, fungi-green head, "Rx" badge
+     drug       a label      lime tint, a wobbling organic outline, fungi-green head, "Rx" pill badge
 
    Writes as the books write it:
 
@@ -35,7 +35,7 @@
      --dc-entry-kind     — a quoted word printed small above the name, or `none`
      --dc-entry-art-width — width of the item's picture, floated right (50%)
      --dc-entry-shape    — the card's clip-path (a catalog sets none)
-     --dc-entry-radius   — corner radius (a drug label is rounded)
+     --dc-entry-radius   — corner radius (0 for every kind now; kept for a book's own kind)
      --dc-entry-ornament — `""` draws the kind's ornament layer (an `::after`), `none` removes it
      --dc-entry-orn-inset / -bg / -border / -clip / -z — that layer's box, fill,
                            border, clip-path and stacking (solid fills, clips and
@@ -57,7 +57,8 @@
   box-shadow: var(--dc-entry-frame);
   border-left: var(--dc-entry-rail) solid var(--dc-entry-accent);
   border-top: var(--dc-entry-rule) solid var(--dc-entry-accent);
-  padding: 10pt 14pt;
+  /* Padding clears every cut (the deepest is 18px = 13.5pt) by 2pt or more. */
+  padding: 16pt 18pt;
 }
 
 /* The kind badge: generated, so the author never types the word. */
@@ -138,15 +139,15 @@
 /* ── The five kinds: bare @gear, and its variant words ─────────────────── */
 
 /* GEAR — a hang tag: a paper card in a heavy ink frame, a rust rail, two
-   clipped corners and a punched eyelet (a ring on the name row). Hard and
-   utilitarian, not tan. */
+   clipped corners, one nick out of the foot (the only grit) and a punched
+   eyelet (a ring on the name row). Hard and utilitarian, not tan. */
 .dc-gear {
   --dc-entry-accent: var(--rust);
   --dc-entry-ink: var(--ink);
   --dc-entry-surface: var(--paper-light);
   --dc-entry-kind: "Gear";
   --dc-entry-rail: 6px;
-  --dc-entry-shape: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --dc-entry-shape: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 38% 100%, calc(38% - 3px) calc(100% - 3px), calc(38% - 8px) 100%, 0 100%, 0 14px);
   --dc-entry-frame: inset 0 0 0 2px var(--ink);
   --dc-entry-badge-bg: var(--rust);
   --dc-entry-badge-fg: var(--paper-cream);
@@ -201,8 +202,8 @@
   --dc-entry-badge-shape: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
 }
 
-/* VEHICLE — an industrial plate: concrete, small chamfers all round, an ink
-   frame, a seam of rivets (a dotted border) inside it, a yellow rail and a
+/* VEHICLE — an industrial plate: concrete, octagonal (12px) cut corners, a
+   heavy 3px ink frame, a seam of rivets (a dotted border) inside it, a yellow rail and a
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
@@ -210,17 +211,18 @@
   --dc-entry-surface: var(--concrete-pale);
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
-  --dc-entry-shape: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
-  --dc-entry-frame: inset 0 0 0 2px var(--ink);
+  --dc-entry-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+  --dc-entry-frame: inset 0 0 0 3px var(--ink);
   --dc-entry-ornament: "";
-  --dc-entry-orn-inset: 6px 6px 6px 3px;
+  --dc-entry-orn-inset: 8px 8px 8px 5px;
   --dc-entry-orn-border: 3px dotted var(--ink-smoke);
   --dc-entry-badge-bg: var(--brand-yellow);
   --dc-entry-badge-fg: var(--ink);
   --dc-entry-badge-shape: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* DRUG — a prescription label: rounded (the one soft silhouette in the family),
+/* DRUG — a prescription label: an irregular, wobbling outline (organic: no long
+   straight edge),
    lime tint, a fungi-green head band (the top border), a pill badge. One frame
    only: the head band and rail. */
 .dc-drug {
@@ -230,8 +232,7 @@
   --dc-entry-kind: "Rx \00B7  Drug";
   --dc-entry-rail: 6px;
   --dc-entry-rule: 7px;
-  --dc-entry-shape: none;
-  --dc-entry-radius: 12px;
+  --dc-entry-shape: polygon(10px 3px, 30% 0, 55% 4px, 80% 0, calc(100% - 8px) 5px, 100% 30%, calc(100% - 4px) 60%, 100% calc(100% - 10px), calc(100% - 14px) 100%, 62% calc(100% - 4px), 35% 100%, 14px calc(100% - 3px), 0 calc(100% - 14px), 4px 55%, 0 30%);
   --dc-entry-badge-bg: var(--fungi-rot);
   --dc-entry-badge-fg: var(--fungi-glow);
   --dc-entry-badge-radius: 999px;
@@ -252,6 +253,7 @@
   color: var(--blood);
   background: var(--paper-cream);
   border: 1.5pt dashed var(--rust);
+  border-right-style: dotted; /* grit: the torn-off end of the tag */
   padding: 0 6pt;
   margin: 0 0 6px;
   hyphens: none;
@@ -260,6 +262,7 @@
 /* A callout inside an entry sits a small gap below the body. */
 .dc-entry {
   --dc-alert-margin-top: var(--space-sm);
+  --dc-accent-ink: var(--dc-entry-ink);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════

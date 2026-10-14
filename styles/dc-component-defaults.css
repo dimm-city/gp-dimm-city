@@ -38,6 +38,9 @@
   --dc-section-bar-rule:     3pt solid var(--orange);
   --dc-section-bar-rule-sub: none;
   --dc-section-flag:         0 0 0 0 var(--ink-dark);
+  --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
+  --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
+  --dc-section-ink-tone:     var(--ink);
   --dc-section-surface:   "";
   --dc-section-drop:      0 0 0 transparent;
   --dc-section-edge:      0px;
@@ -57,7 +60,7 @@
   --dc-section-clip:      18px;
   --dc-section-cut-tl:    0px;
   --dc-section-cut-br:    0px;
-  --dc-section-cut-bl:    0px;
+  --dc-section-cut-bl:    4px;
   --dc-section-rail:      5px;
   --dc-section-gap:       12pt;
   --dc-section-grow:      0;
@@ -103,10 +106,10 @@
      shape names it, as the skill cards' shapes name their specialty. A context
      that needs the plain box (a catalog's ruled entries) sets the token to
      `none`.
-       callout   top left + bottom left        card      bottom left
+       callout   machined chamfers (note)      card      bottom left
        faction   both bottom                   entry     all but bottom left
        fiction   all but top left              definition  all but top right */
-  --dc-alert-shape:          polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+  --dc-alert-shape:          polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, calc(100% - 30px) 100%, calc(100% - 32px) calc(100% - 2px), calc(100% - 38px) calc(100% - 2px), calc(100% - 40px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);  /* the note's machined chamfers and one chipped notch; each variant cuts its own (callouts.css) */
 
   /* .dc-skill-card public API */
   --dc-card-accent:          var(--ink);            /* default no-specialty: plain ink */
@@ -143,6 +146,7 @@
   --dc-band-facet-width: 32%;
   --dc-band-facet-clip:  polygon(30% 0, 100% 0, 100% 100%, 0 100%);
   --dc-band-rim:         none;
+  --dc-band-reg:         none;                 /* box-shadow on the rule: a second ink printed 2px off (tech) */
 
   /* Skill-card tab tier pill (AUG1.3) and the path's code chip and sticker
      chain: each specialty sets its own triad on them. */
@@ -170,6 +174,23 @@
   --dc-specialty-card-media-width:  0.75in;
   --dc-specialty-card-title-align: right;
   --dc-specialty-card-band-height: 16pt;
+  /* The card's layout. Defaults are the dense catalog card (a small portrait
+     floated beside the text, the grid in columns); the specialty-catalog page
+     sets them for the tall poster card in a grid of equal rows. */
+  --dc-specialty-card-display:      flow-root;   /* flex, for the poster card (portrait on top) */
+  --dc-specialty-card-media-order:  0;           /* -1 lifts the portrait above the name */
+  --dc-specialty-card-media-float:  left;
+  --dc-specialty-card-media-float-even: right;
+  --dc-specialty-card-media-margin: 0 0.14in 0.08in 0;
+  --dc-specialty-card-media-margin-even: 0 0 0.08in 0.14in;
+  --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
+  --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
+  --dc-specialty-card-name-size:    1.15em;
+  --dc-specialty-card-index:        none;        /* a counter() draws the number chip on the portrait */
+  --dc-card-grid-display:           block;       /* flex: aligned rows, two cards across */
+  --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
+  --dc-card-grid-row:               0;           /* the least height of a row */
+  --dc-card-grid-gap:               0.16in;
 
   /* .dc-block public API */
   --dc-block-bg:       var(--paper-light);
@@ -178,6 +199,7 @@
   --dc-block-title-bg: var(--hud-blue-dark);
   --dc-block-title-fg: var(--paper-cream);
   --dc-block-title-rule: none;        /* a whole `border-bottom` under the band */
+  --dc-block-tag-edge: 1.5pt solid var(--paper-cream);  /* the tag's border */
   --dc-block-tag:      none;          /* a quoted word stamped on the band's right end */
 
   /* ─── More component public tokens ───────────────────────────────────────
@@ -191,18 +213,24 @@
   --dc-ap-fg:                var(--paper-cream);
   --dc-ap-border:            var(--ink-dark);
 
-  /* .dc-fiction-excerpt public API: a torn-out printed page, light paper with a
-     hard ink shadow (a zine sheet stuck on the wall), never the wall's own value */
-  --dc-fiction-bg:           var(--paper-zine);
-  --dc-fiction-rule:         0px;                  /* top/bottom ink edge weight (drawn under the torn edge, so a book that wants it sets a straight --dc-fiction-shape too) */
-  --dc-fiction-shadow:       none;                 /* a box-shadow value on the paper (was a recessed inset pair; the sheet now sits on the wall, see --dc-fiction-lift) */
-  --dc-fiction-lift:         3px;                  /* offset of the hard ink shadow under the sheet; the chapter-start page sets 5px */
-  --dc-fiction-lift-bg:      var(--ink-dark);      /* its colour */
+  /* .dc-fiction-excerpt public API: an aged page sunk into a hole torn in the wall,
+     or revealed from behind it: a dark ragged cavity rim, hard cast shadows down
+     the page's top and left, a light lip at the cavity's bottom and right. Vector
+     and opaque; no blur. */
+  --dc-fiction-bg:           var(--paper-zine);    /* the page */
+  --dc-fiction-rule:         0px;                  /* top/bottom ink edge weight on the page */
+  --dc-fiction-shadow:       0 0 0 0 var(--ink-dark);  /* an extra box-shadow value on the page (zero-size: it sits in a list) */
+  --dc-fiction-depth:        6px;                  /* how deep the hole casts its shadow on the page (top and left); the chapter-start page sets 10px */
+  --dc-fiction-depth-bg:     var(--ink-dark);      /* that shadow's colour */
+  --dc-fiction-cavity:       var(--ink-smoke);     /* the hole's rim: what the wall is made of behind the page */
+  --dc-fiction-lip:          var(--paper-cream);   /* the lit lip at the cavity's bottom and right */
+  --dc-fiction-rim:          8px;                  /* how far the cavity reaches past the page (also the box's margin) */
   --dc-fiction-art-width:    3in;
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);
   --dc-fiction-line-height:  1.45;
-  --dc-fiction-shape:        polygon(0% 0px, 3.33% 4px, 6.67% 0px, 10% 3px, 13.33% 0px, 16.67% 5px, 20% 0px, 23.33% 2px, 26.67% 0px, 30% 2px, 33.33% 0px, 36.67% 2px, 40% 0px, 43.33% 4px, 46.67% 0px, 50% 2px, 53.33% 0px, 56.67% 3px, 60% 0px, 63.33% 2px, 66.67% 0px, 70% 2px, 73.33% 0px, 76.67% 5px, 80% 0px, 83.33% 5px, 86.67% 0px, 90% 2px, 93.33% 0px, 96.67% 3px, 100% 0px, 100% 100%, 96.67% calc(100% - 2px), 93.33% 100%, 90% calc(100% - 5px), 86.67% 100%, 83.33% calc(100% - 2px), 80% 100%, 76.67% calc(100% - 2px), 73.33% 100%, 70% calc(100% - 3px), 66.67% 100%, 63.33% calc(100% - 2px), 60% 100%, 56.67% calc(100% - 5px), 53.33% 100%, 50% calc(100% - 2px), 46.67% 100%, 43.33% calc(100% - 3px), 40% 100%, 36.67% calc(100% - 2px), 33.33% 100%, 30% calc(100% - 3px), 26.67% 100%, 23.33% calc(100% - 4px), 20% 100%, 16.67% calc(100% - 5px), 13.33% 100%, 10% calc(100% - 3px), 6.67% 100%, 3.33% calc(100% - 2px), 0% 100%);  /* torn top and bottom edges, straight sides */
+  --dc-fiction-shape:        polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 9px) 100%, 62% calc(100% - 2px), 58% 100%, 20% 100%, 17% calc(100% - 2px), 0 calc(100% - 2px));  /* the page: a dog-ear and two chipped foot edges */
+  --dc-fiction-hole:         polygon(0% 1px, 4.5% 4px, 9.1% 3px, 13.6% 4px, 18.2% 3px, 22.7% 2px, 27.3% 4px, 31.8% 5px, 36.4% 1px, 40.9% 5px, 45.5% 4px, 50% 5px, 54.5% 6px, 59.1% 1px, 63.6% 6px, 68.2% 6px, 72.7% 1px, 77.3% 5px, 81.8% 0, 86.4% 0, 90.9% 2px, 95.5% 6px, 100% 4px, 100% 11.1%, calc(100% - 1px) 22.2%, calc(100% - 5px) 33.3%, calc(100% - 5px) 44.4%, calc(100% - 1px) 55.6%, calc(100% - 1px) 66.7%, calc(100% - 3px) 77.8%, 100% 88.9%, 100% calc(100% - 4px), 95.5% calc(100% - 3px), 90.9% calc(100% - 5px), 86.4% calc(100% - 4px), 81.8% calc(100% - 6px), 77.3% calc(100% - 4px), 72.7% 100%, 68.2% calc(100% - 2px), 63.6% calc(100% - 6px), 59.1% calc(100% - 4px), 54.5% calc(100% - 3px), 50% 100%, 45.5% calc(100% - 3px), 40.9% calc(100% - 2px), 36.4% 100%, 31.8% calc(100% - 1px), 27.3% calc(100% - 3px), 22.7% calc(100% - 5px), 18.2% 100%, 13.6% 100%, 9.1% calc(100% - 5px), 4.5% 100%, 0% calc(100% - 4px), 1px 88.9%, 6px 77.8%, 3px 66.7%, 2px 55.6%, 4px 44.4%, 4px 33.3%, 1px 22.2%, 1px 11.1%);  /* the cavity: a torn polygon, clipped from a box --dc-fiction-rim larger than the page */
 
   /* .dc-chevron (chevron banner) public API */
   --dc-chevron-bg:           var(--brand-magenta-deep);
@@ -220,6 +248,12 @@
   --dc-definition-block-accent-width: 3pt;                   /* weight of the rule over the block */
   --dc-definition-block-surface:      var(--paper-cream);
   --dc-definition-block-shape:        none;                  /* a dictionary page: no cut corners */
+  --dc-definition-block-fg:           var(--ink);
+  --dc-definition-block-term:         var(--hud-blue-dark);  /* the headword */
+  --dc-definition-block-style:        italic;
+  --dc-definition-block-frame:        var(--shadow-poster);  /* a box-shadow: the hard shadow; lucid and surreal set an inset frame */
+  --dc-definition-block-rule-bottom:  1pt;
+  --dc-definition-block-pad:          8pt 12pt 9pt;
 
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
@@ -228,6 +262,7 @@
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
   --dc-flavor-color:         var(--ink-dark);
+  --dc-flavor-bg:            var(--paper-cream);   /* a flavor line is never set straight on the wall */
 
   /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
@@ -265,6 +300,7 @@
 
   /* .dc-intro public API */
   --dc-intro-accent:         var(--orange);
+  --dc-intro-ink:            var(--orange-deep);    /* text-safe accent ink on the lede (5.1:1); becomes --dc-accent-ink inside it */
   --dc-intro-bg:             var(--paper-light);   /* lighter than the wall: ink type reads at 12:1 */
   --dc-intro-color:          var(--ink);
   --dc-intro-size:           var(--fs-h4);          /* set larger than the 12pt body */
@@ -359,8 +395,11 @@
   --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, var(--dc-pullquote-bg));
   --dc-pullquote-bg:          var(--concrete-pale);
 
-  /* roll / die callout public API */
-  --dc-roll-the-die-color:   var(--brand-magenta-deep);
+  /* The text-safe ink of whatever component the prose sits in: ROLL THE DIE!
+     (text and underline) reads it. A component that can hold prose sets it on
+     its own root to a >= 4.5:1-on-its-surface shade of its accent; this default
+     is the deep magenta, safe on every paper. */
+  --dc-accent-ink:           var(--brand-magenta-deep);
 
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
@@ -390,6 +429,27 @@
   --dc-tape-border:          var(--ink-dark);
   --dc-tape-color:           var(--ink);
   --dc-tape-shape:           polygon(0 0, 100% 0, calc(100% - 6px) 25%, 100% 50%, calc(100% - 6px) 75%, 100% 100%, 0 100%, 6px 75%, 0 50%, 6px 25%);  /* torn ends */
+
+  /* Free-standing page text: nothing sits on the brick (page-templates.css,
+     "FREE-STANDING PAGE TEXT"). A heading, a paragraph, a list or a quote that is a
+     direct child of a page, with no component around it, is pasted to the wall
+     on a paper slip or sheet; a page title is a banner. The slip's accent rail
+     reads the chapter's `--dc-section-accent`, so it re-themes with the chapter.
+       slip-bg     the slip a heading is written on, and the sheet loose prose is
+                   printed on
+       slip-ink    heading type on the slip
+       slip-edge   the ink edge and dashed foot of a slip
+       slip-shadow its hard shadow (opaque, no blur)
+       slip-tape   the masking tape across a `##` slip (default: the tape's colour)
+       sheet-pad   the side padding of the prose sheet
+       title-ink   type on the page-title banner, whose fill is the chapter's accent */
+  --dc-page-slip-bg:         var(--paper-cream);
+  --dc-page-slip-ink:        var(--ink-dark);
+  --dc-page-slip-edge:       var(--ink-dark);
+  --dc-page-slip-shadow:     var(--shadow-poster);
+  --dc-page-slip-tape:       var(--dc-tape-bg);
+  --dc-page-sheet-pad:       0.18in;
+  --dc-page-title-ink:       var(--paper-cream);
 }
 
 }

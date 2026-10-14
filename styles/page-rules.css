@@ -164,18 +164,13 @@
 /* The running head is TEXT, so DriveThruRPG wants it 0.5in inside the trim
    — below the default top margin, whose whole band lies within 0.5in of
    the trim. These pages carry a deeper top margin and set the head at the
-   foot of it: 0.875in from the sheet edge, head baseline ~0.7in, 0.58in
-   from the trim. */
+   foot of it: a tab 0.625in to 0.86in from the sheet edge, 0.5in+ from the
+   trim. The tab's chrome (amber face, ink edge, offset) is dc-native.css §2b:
+   the head is text, so it never sits on the brick. */
 @page citizen-file:right {
   margin-top: 0.875in;
   @top-right {
     content: "Citizen File";
-    color: var(--amber);
-    font-family: var(--font-display);
-    letter-spacing: 0.1em;
-    font-size: 0.8em;
-    vertical-align: bottom;
-    padding-bottom: 0.08in;
   }
 }
 
@@ -183,12 +178,6 @@
   margin-top: 0.875in;
   @top-left {
     content: "Citizen File";
-    color: var(--amber);
-    font-family: var(--font-display);
-    letter-spacing: 0.1em;
-    font-size: 0.8em;
-    vertical-align: bottom;
-    padding-bottom: 0.08in;
   }
 }
 

@@ -819,7 +819,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note, a hazard-stripe warning, an ink Dream Master slab with a cyan chip, a vibe sheet in a single dashed violet edge, a dog-eared origin sheet with a crimson stamp, a green visit signpost, and a dashed cyan example with a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single dashed violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -954,6 +954,36 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 </div>
 
+## Definition: lucid and surreal
+
+`@definition lucid` and `@definition surreal`, side by side: the two states of a roll, drawn as opposites. Lucid is the light, machined, upright one; surreal is the dark, skewed, off-register one.
+
+<div class="dg-stage">
+
+@columns 2
+
+@definition lucid
+
+#### Lucid
+
+Roll 2d20, take the higher. You're sharp, aligned, in control. When you roll a 20 in the dream, your next roll is Lucid!
+
+@end-definition
+
+@column-break
+
+@definition surreal
+
+#### Surreal
+
+Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.
+
+@end-definition
+
+@end-columns
+
+</div>
+
 ## Tape
 
 `<div class="dc-tape">…</div>` is a strip of masking tape: tan, torn ends, ink edges. Then the form with `.dc-flush`, which removes the tape's outer margin.
@@ -1024,7 +1054,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section variants
 
-`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`. Each kind has its own bar and sheet as well as its own cut corners: a solid accent bar, a pale band, a deep violet bar, an ink bar with a cyan rule, and no bar at all.
+`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`. Each kind has its own bar and sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.
 
 <div class="dg-stage dg-tall">
 
@@ -1116,7 +1146,7 @@ Nothing here is safe. Nothing here is free.
 
 ### Bare section
 
-No variant word, no look: the text sits on whatever is behind it.
+No variant word, no look of its own: the text sits on a plain sheet of paper.
 
 @end-section
 

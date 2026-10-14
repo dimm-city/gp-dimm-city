@@ -71,8 +71,8 @@ Use this to choose the right callout type before reaching for a class name.
 2. What is it?
    └── A worked example              → dc-example-callout  (dashed cyan rail, taped-on label)
    └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one dashed violet edge, italic)
-   └── Backstory, in second person   → dc-origin-callout   (warm paper, rust rail, dog-ear, crimson stamp)
-   └── A place, present tense        → dc-visit-callout    (fungi-green signpost)
+   └── Backstory, in second person   → dc-origin-callout   (warm paper, torn edge, dog-ear, rust rail, worn crimson stamp)
+   └── A place, present tense        → dc-visit-callout    (wobbly fungi-green signpost)
    └── Rules / mechanics             → continue ↓
 
 3. How urgent?
@@ -318,8 +318,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-at-a-glance-accent` / `-value` | `--hud-blue-dark` / `--ink` | Tile frame and label band; the value |
 | `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | Rules and term colour; the rule over the block; page; clip |
 | `--dc-outcome-key-col` | `max(130px, 26%)` | Outcome ladder chip column |
-| `--dc-fiction-bg` / `-lift` / `-lift-bg` | `--paper-zine` / `3px` / `--ink-dark` | The fiction excerpt's sheet; its hard shadow's offset and colour |
-| `--dc-fiction-rule` / `-shadow` | `0px` / `none` | An ink edge weight under the torn edge; a box-shadow value on the paper |
+| `--dc-fiction-bg` / `-depth` / `-depth-bg` | `--paper-zine` / `6px` / `--ink-dark` | The fiction excerpt's page; the hole's cast shadow depth (10px on a chapter opener) and colour |
+| `--dc-fiction-cavity` / `-lip` / `-rim` | `--ink-smoke` / `--paper-cream` / `8px` | The hole's rim, the lit lip at its bottom and right, how far it reaches past the page |
+| `--dc-fiction-rule` / `-shadow` | `0px` / zero-size shadow | An ink edge weight on the page; an extra box-shadow value on the page |
 
 ### Skill Card (`.dc-skill-card`)
 | Token | Default | Role |

@@ -7,7 +7,7 @@
  * DECLARED MARKERS (the `markers` export at the bottom of this file — core
  * Gutterpress parses, nests, closes and source-maps these; this file only
  * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @definition          → div.dc-prose-panel.dc-definition-block (a term, or a run of `####` terms)
+ *   @definition [lucid|surreal] → div.dc-prose-panel.dc-definition-block (a term, or a run of `####` terms); the word is the roll's state, drawn as opposites
  *   @faction [megacorp|cabal|cult|enforcer]
  *                        → div.dc-card.dc-faction[.dc-faction-<kind>] + span.dc-faction-kind
  *   @roll-table [die=d20] [label="…"]
@@ -1578,7 +1578,11 @@ export const markers = {
     label: { tag: 'span', class: 'dc-field-label', from: 'attr:label' },
   }),
 
-  definition: wrapper('dc-prose-panel dc-definition-block'),
+  // A term, or a glossary. `lucid` and `surreal` are the two states of a roll,
+  // set as opposites (light, crisp, aligned / dark, skewed, off-register).
+  definition: wrapper('dc-prose-panel dc-definition-block', {
+    variants: { lucid: 'dc-definition-lucid', surreal: 'dc-definition-surreal' },
+  }),
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
@@ -1646,6 +1650,7 @@ export const markers = {
       credits: 'dc-page-credits',
       contents: 'dc-page-contents',
       'citizen-file': 'dc-page-citizen-file',
+      'specialty-catalog': 'dc-page-specialty-catalog',
     },
   },
   chapter: {

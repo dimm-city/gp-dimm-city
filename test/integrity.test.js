@@ -330,6 +330,7 @@ describe("component catalog", () => {
     ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
     ...ENTRY_KINDS.map((w) => `@gear ${w}`),
+    ...Object.keys(markers.definition.variants).map((w) => `@definition ${w}`), // the two states of a roll
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

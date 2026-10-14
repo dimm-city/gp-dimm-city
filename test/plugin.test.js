@@ -358,7 +358,7 @@ describe("declared wrapper markers", () => {
   });
 
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
-    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file" };
+    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {
       const { html, warnings } = render(`@page ${word} .dg-x\n\nx`);
       expect(html, word).toContain(`<div class="page ${cls} dg-x" data-page="${word}"`);

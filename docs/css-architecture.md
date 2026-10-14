@@ -143,11 +143,11 @@ Two rules keep the split honest, and a test enforces each:
 ```css
 /* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-lift: 5px;
+  --dc-fiction-depth: 10px;
 }
 ```
 
-A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-lift: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 
@@ -448,6 +448,42 @@ Specificity (0,2,0) beats single-class overrides from upstream CSS without
 
 Guide-only examples should live in the design guide's own sheet even when they use `.page.*`
 selectors.
+
+### Page chips: the folio, the chapter coupon and the running head
+
+The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
+**chrome** is `dc-native.css` §2 and §2b, unlayered and last. A margin box takes
+`background`, `border`, `padding`, `margin`, `height` and `vertical-align`, but no
+`transform` and no `box-shadow`, so a chip's hard shadow is a thicker bottom and
+right border. Three rules keep the type centred:
+
+- the box height is fixed (16pt) rather than `fit-content`, and the engine
+  centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
+  edge is balanced with `padding-top`, and the inline-end padding gives back the
+  tracking a `letter-spacing` leaves after the last glyph;
+- the chip sits in the **printable** footer band, not the whole margin: the
+  bottom margin is 0.875in from the sheet edge and DriveThruRPG wants text 0.5in
+  inside the trim (0.125in in from the sheet), so the usable band is 0.25in
+  (18pt). A 16pt chip with `margin-top: 1pt` is centred in it. The engine honours
+  a margin on a margin box (measured: a 4pt margin moved the box 4.3pt);
+- nothing clips: a chip is a plain bordered box, so no glyph can be cut.
+
+The Citizen File running head is the same chip in the top band (`@top-left` /
+`@top-right` on `citizen-file`), offset with `margin-top: calc(0.875in - 18pt)`.
+
+### Free-standing page text
+
+Text that is a direct child of `.page` or `.chapter` with no component around it
+is dressed by `page-templates.css` ("FREE-STANDING PAGE TEXT"): `#` a banner,
+`##` / `###` / `####+` paper slips, loose paragraphs, lists and quotes one
+paper sheet per run. These are rules on plain elements, which a location may
+style (a location styles a component by tokens only). Scope is `:is(.page,
+.chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > …`, so a heading
+inside a section or callout is never matched, the guide's `@page .dg-doc`
+explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape`,
+`--dc-page-sheet-pad`, `--dc-page-title-ink` (the slip rail and the banner fill
+read the chapter's `--dc-section-accent`, so a chapter word recolours them).
 
 ### Folios and the `.chapter-N` class
 

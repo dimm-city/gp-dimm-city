@@ -25,7 +25,7 @@ Five shadows moved as one, already inside, already gone.
 
 @end-section
 
-@page .card-grid
+@page specialty-catalog
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -206,6 +206,8 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 @end-columns
 
 @end-card-grid
+
+@page
 
 @section panel
 

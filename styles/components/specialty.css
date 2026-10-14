@@ -86,7 +86,9 @@
      its type. */
   position: relative;
   box-shadow: var(--dc-band-rim);
-  padding: 0.55rem 1.25rem 0.7rem;
+  /* top .8rem clears a 7px gate notch, right 1.75rem a 24px stair, left
+     1.25rem a 16px chamfer: each is the cut plus 2pt or more. */
+  padding: 0.8rem 1.75rem 0.7rem 1.25rem;
   margin: -1rem -1.25rem 0.6rem -1.25rem;
   clip-path: var(--dc-specialty-intro-title-shape);
   border: none;
@@ -119,6 +121,7 @@
   box-sizing: border-box;
   background: var(--dc-band-rule);
   border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
+  box-shadow: var(--dc-band-reg);
   transform: skewX(var(--dc-band-rule-skew));
 }
 
@@ -138,7 +141,7 @@
 
 .dc-specialty-intro>p {
   margin-block: 0.3rem;
-  font-size: 9.5pt;
+  font-size: 10pt;
   line-height: 1.5;
 }
 
@@ -200,7 +203,10 @@
      the brick wall, not a painted plaque. */
   background: var(--dc-specialty-card-bg);
   color: var(--dc-specialty-card-fg);
-  display: flow-root;
+  /* flow-root for the dense card; flex (a column) for the poster card of the
+     specialty-catalog page, where the portrait is ordered above the name. */
+  display: var(--dc-specialty-card-display);
+  flex-direction: column;
   overflow: hidden;
   line-height: var(--lh-tight);
   /* Card spacing: --dc-card-gap plus 4px (layout, not shadow clearance).
@@ -219,17 +225,54 @@
   clip-path: var(--dc-specialty-card-shell-shape);
 }
 
-/* Portrait image floated in specialty card. */
+/* Portrait. By default a small image floated beside the text (the dense
+   card); the specialty-catalog page sets the tokens for a full-width frame
+   above the name. The wrapper (the paragraph the image sits in) is the frame:
+   an ink mat (--dc-specialty-card-media-mat, 0 by default) clipped to the
+   specialty's own cut (--dc-specialty-card-media-shape), over a paper-aged
+   field, so it reads whether the picture loads or the field is empty. */
+.dc-specialty-card .dc-img-wrapper {
+  order: var(--dc-specialty-card-media-order);
+  position: relative;
+  margin: 0;
+  padding: var(--dc-specialty-card-media-mat);
+  background: var(--ink);
+  clip-path: var(--dc-specialty-card-media-shape);
+}
+
 .dc-specialty-card img {
+  display: block;
   width: var(--dc-specialty-card-media-width);
   height: var(--dc-specialty-card-media-height);
   object-fit: cover;
   border: none;
   padding: 0;
   box-sizing: border-box;
-  float: left;
-  margin: 0 0.14in 0.08in 0;
+  float: var(--dc-specialty-card-media-float);
+  margin: var(--dc-specialty-card-media-margin);
   border-radius: 2px;
+  background: var(--paper-aged);
+  color: var(--ink);
+}
+
+/* The number chip on the portrait (01 to 10, from the grid's counter): off
+   (`none`) unless the page turns it on with --dc-specialty-card-index. It sits
+   at the portrait's bottom centre, clear of every corner cut and of the
+   top-left where the alt text of a picture that has not loaded begins. */
+.dc-specialty-card .dc-img-wrapper::after {
+  content: var(--dc-specialty-card-index);
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  background: var(--ink-dark);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: 10pt;  /* every glyph on the spread is 10pt or more */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
 }
 
 /* Specialty name heading — colored in the specialty's accent (the "ink"
@@ -239,7 +282,9 @@
    read as ink on paper, not as a painted card. */
 .dc-specialty-card h3 {
   margin: 0;
-  font-size: 1.15em;
+  padding-top: 0;
+  border-top: 0;
+  font-size: var(--dc-specialty-card-name-size);
   color: var(--dc-specialty-card-title-color);
   text-align: var(--dc-specialty-card-title-align);
   /* A specialty's name is one word and sets on one line: a long one
@@ -297,8 +342,36 @@
 }
 
 .dc-specialty-card[data-position="even"] img {
-  float: right;
-  margin: 0 0 0.08in 0.14in;
+  float: var(--dc-specialty-card-media-float-even);
+  margin: var(--dc-specialty-card-media-margin-even);
+}
+
+/* The card grid: columns by default (core's @columns 2); a page sets
+   --dc-card-grid-display to flex for aligned ROWS, two cards across, the cards
+   of a row stretching to its tallest and every row at least
+   --dc-card-grid-row tall. (Wrapped flex rows, not `grid-template-columns`: a
+   grid is not how this package lays out columns of content, and the catalog
+   needs only what a row of equal cards needs.) A column gap is core's
+   (--gp-column-gap); only the row gap is ours. A multicol ignores the flex
+   properties, and the dense card keeps its columns. */
+.dc-card-grid > .gp-columns {
+  display: var(--dc-card-grid-display);
+  flex-wrap: wrap;
+  align-items: stretch;
+  row-gap: var(--dc-card-grid-gap);
+  counter-reset: dc-specialty;
+}
+
+.dc-card-grid .dc-specialty {
+  display: var(--dc-card-grid-item-display);
+  flex-direction: column;
+  flex: 0 0 calc(50% - var(--gp-column-gap) / 2);
+  min-height: var(--dc-card-grid-row);
+}
+
+.dc-card-grid .dc-specialty-card {
+  counter-increment: dc-specialty;
+  flex: 1 1 auto;
 }
 
 }

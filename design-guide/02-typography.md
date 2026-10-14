@@ -47,7 +47,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 
 Each level rendered at its print size:
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 # Chapter Title
 
@@ -75,7 +75,7 @@ A heading's level is its place in the outline, and the outline never skips a lev
 
 Result {.dg-result}
 
-<div class="dg-stage">
+<div class="dg-stage dg-on-paper">
 
 ## Useful Items {.dc-h3}
 
@@ -145,11 +145,7 @@ The type sizes are print minimums, not targets, and text that already meets its 
 
 | Text | Floor |
 |---|---|
-| Running body | 9.5pt (the book sets 12pt; compact text 11pt) |
-| Rules text inside a component: callout bodies, ability rows, panel text | 9pt |
-| Secondary text: captions, table cells, stat lines, card pitches | 8pt |
-| All-caps mono labels: chips, tabs, field labels | 6.5pt, tracked at least 0.08em |
-| Reversed type (light on a solid fill) | 8pt, semibold |
+| All text: body, rules, tables, captions, labels, chips, tabs and badges | 10pt (the book sets running body at 12pt) |
 
 ## Smart typography
 

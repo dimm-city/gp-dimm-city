@@ -40,6 +40,7 @@
   background: var(--paper-cream);
   border: 2px solid var(--ink-dark);
   box-shadow: var(--shadow-poster);
+  --dc-accent-ink: var(--hud-blue-dark);  /* 7:1 on the card */
   padding: 8pt 9pt 7pt;
   margin-top: 11pt;
   break-inside: avoid;

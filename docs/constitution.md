@@ -33,6 +33,7 @@ This is the single most-load-bearing visual principle. Every other component dec
 - **Components have separation from the wall** — drop shadows, hard edges, slight rotation or asymmetry, perceptible weight. They sit *on top of* the page, not *inside* it.
 - **Components do NOT bleed into the wall** — soft tinted backgrounds that fade into the page colour, low-contrast washes, "subtle web gradients" → all wrong. A poster has a hard edge against brick.
 - **The wall has texture; the posters have ink** — the page can carry concrete grain. Components are printed/displayed objects with their own surface.
+- **No text is ever printed directly on the wall.** Every glyph sits on a substrate: paper, a panel, a strip, a plate or a chip. That includes what an author writes with no component around it. A free-standing `#` is a banner in the chapter's accent; a `##` is a paper slip pasted to the wall (accent rail, dashed ink foot, hard shadow, masking tape over the foot); a `###` is a plainer slip; a `####` and below is a label slip that shrinks to its words; loose paragraphs, lists and quotes share one paper sheet per run; a `@columns` run of nothing but prose is one sheet. The folio, the chapter chip and the Citizen File running head are chips (see §IV). The design guide's explainer pages (`@page .dg-doc`) print plain on white and are the one exception: they are not wall pages.
 
 ### Component health check
 
@@ -130,6 +131,8 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 
 Each band fill is the specialty's own bright signal colour, so ten bands read as ten colours at thumbnail size and differ in grayscale value too (light: yellow, lime, chrome, cyan, green, aqua; mid: orange, indigo; dark: deep magenta, slate) and in edge (rim, facet, torn, hazard). The **specialty cards** keep their own calmer register (cream body, bright band, mid frame); the mix expresses itself on the **title bands**, the display layer.
 
+**Specialty silhouettes (shape carries the register).** Each specialty's frame, band, tab, card body and specialty card are cut from one language, and a cut is never closer to a glyph than 2pt: tech = crisp stair-steps and square bites (augmerc three small steps top right and bottom right; wirephreak two big circuit jogs; cybersurgeon single square bites, no diagonals); magic = facets and lozenges (etherlock a big and a small chamfer on opposite corners; dualist four even chamfers and a bottom point; generalist two big chamfers on opposite corners like a hewn stone; technosorcerer a shallow centre gate plus a stair and a facet); landfill = torn (proxy a burnt corner, a ragged tear across the foot and a chipped tab); organic = wobbly (gutterdruid, no long straight edge); civic hazard = a sign-plate octagon (streetwarden). The band and its frame are cut from the same point list (`--spec-edge-top`) and span the same width, so the band's top edge and both top corners coincide with the frame exactly. Grit is two cues, on edges and bands only: a chipped or torn edge on the landfill and organic specialties, and a misregistered rule (a second ink, 2px off) on the tech bands.
+
 The mix is the SOURCE of design decisions. When polishing a component for a specialty, ask: *which register dominates? what visual cues belong to that register? what does NOT belong?*
 
 **Concrete implications:**
@@ -147,6 +150,16 @@ The mix is the SOURCE of design decisions. When polishing a component for a spec
 - **20% can misbehave**: rotated stamps, broken banners, offset tabs, hard colour hits, asymmetric ornament.
 
 Apply disruption to **display elements**, never to **reading surfaces**.
+
+### Page furniture and wall-level grit
+
+Page furniture is a chip, never bare type, and stays level and legible:
+
+- **Folio** (`P.121`): a paper-cream sticker, 16pt tall, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
+- **Chapter chip** (`C.N` in a book, `E.N` in the design guide's Part 2): a stamped coupon. A solid `--brand-magenta-deep` face with cream type (6.2:1), the same ink edge and hard shadow, and a perforated gutter-side edge (a dotted ink border). It replaces a dashed magenta outline, which read as a debug box.
+- **Placement**: both sit in the printable footer band, the 0.25in between the text block and 0.5in inside the trim (DriveThruRPG's text minimum), centred in it (16pt chip, 1pt offset), on recto and verso, for every page word that prints them. Centring in the whole 0.875in bottom margin would put the chip 0.2in from the trim.
+- **Citizen File running head**: an amber tab, cream type, same edge and shadow, in the top band's printable 0.25in.
+- **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the coupon's perforation, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
 | Safe for chaos | Keep stable |
 |---|---|
@@ -268,7 +281,7 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - Large-text contrast: ≥ 3:1.
 - Reversed type: never below 8pt, semibold minimum, only on solid fills.
 - Body text never on noisy or tinted backgrounds, and never on `--paper-stain` or any fill darker than the wall (`--bg`) unless it is a decisive dark fill with light type.
-- Type floors are in §VI (running body ≥ 9.5pt; rules text ≥ 9pt; secondary text ≥ 8pt; mono caps labels ≥ 6.5pt at ≥ 0.08em; reversed ≥ 8pt semibold).
+- Type floors are in §VI (all reading text ≥ 10pt; short mono caps chrome ≥ 7pt at ≥ 0.08em; reversed chrome ≥ 8pt semibold).
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
 - Avoid rich black for small text.
@@ -280,8 +293,8 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 | Role | Preferred | Fallback | Size |
 |---|---|---|---|
 | Display | `lixdu` | Titillium Web Bold | H1 26–32pt, H2 18–24pt |
-| Body | Titillium Web | Tomorrow | Floor 9.5pt; the package sets 12pt (`--fs-body`), 11pt compact (`--fs-body-sm`), with 13–15pt leading |
-| Labels / Mono | Tomorrow | monospace | All-caps labels ≥ 6.5pt |
+| Body | Titillium Web | Tomorrow | Reading floor 10pt; the package sets 12pt (`--fs-body`), 11pt compact (`--fs-body-sm`), with 13–15pt leading |
+| Labels / Mono | Tomorrow | monospace | All-caps labels ≥ 7pt |
 
 ### Type floors (industry-standard print minimums)
 
@@ -289,11 +302,11 @@ These are floors, not targets. Text that already meets its floor stays as it is 
 
 | Text | Floor |
 |---|---|
-| Running body (prose a reader reads straight through) | **≥ 9.5pt** |
-| Component rules text (callout bodies, ability rows, panel text, definitions) | **≥ 9pt** |
-| Secondary text: captions, table cells, stat lines, card pitches, outcome result text | **≥ 8pt** |
-| All-caps mono chrome labels (display, not reading text) | **≥ 6.5pt**, with **≥ 0.08em** tracking |
-| Reversed type (light on a solid fill) | **≥ 8pt, semibold**, solid fills only |
+| **Reading text**: running body, rules and ability text, table cells, stat lines, captions, card pitches, callout and definition bodies, lede/flavor/fiction, list items, intro text | **≥ 10pt** (running body stays 12pt, compact 11pt) |
+| Short all-caps chrome: chip, badge and tab labels, tier pills, mono section labels, AP chips, table header cells | **≥ 7pt**, with **≥ 0.08em** tracking |
+| Reversed chrome (light on a solid fill) | **≥ 8pt, semibold**, solid fills only |
+
+The page baseline (`dc-core.css`) keeps to it: body 12pt, table cells 10pt (header cells are 8pt mono chrome), inline code never under 10pt, lists, definition lists and figure captions inherit the 12pt body. The credits colophon is 10pt.
 
 Display-face (lixdu) names inside a component must not wrap a short name onto two lines in a two-column run: size and track them so typical names fit (an NPC name at 11pt and 0.03em; a catalog entry name at 11pt with balanced wrapping; a specialty-card name on one line).
 
@@ -306,9 +319,9 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 | H3 | bold display or body-bold, 13–16pt | Use accent color sparingly |
 | H4 | body-bold or mono-bold, ~13pt | Component sub-headings (skill names, stat-block name) |
 | H5 | mono-caps, ~9pt with 0.14em tracking | Chrome labels (TRAITS, EQUIPMENT, OUTCOMES) |
-| Body | 12pt (floor 9.5pt) with 13–15pt leading | Default reading size |
-| Component rules text | 9.5–11pt | Never below 9pt |
-| Captions, table cells, stat lines | 8–9pt | Never below 8pt |
+| Body | 12pt (reading floor 10pt) with 13–15pt leading | Default reading size |
+| Component rules text | 10–11pt | Never below 10pt |
+| Captions, table cells, stat lines | 10pt | Never below 10pt |
 | Reversed | 8pt minimum, semibold | Only on solid fills |
 
 ### Type rules
@@ -336,32 +349,32 @@ Each component lives in ONE surface register (paper poster or digital display) a
 - Clipped edges define the banner — never use a default rectangle.
 - Background fill is solid (not gradient) — the brick-wall-poster ideal means flat-ink on substrate, not a sheen.
 - Per-chapter `--dc-section-accent` token drives the chevron + spray colour.
-- **Chevron** = a deep-magenta (`--brand-magenta-deep`) full-width banner with one clean diagonal. **Spray** = a stencilled tag: a bright-magenta slab that shrink-wraps its words, a stepped overspray right edge and a dashed ink stencil line along the foot. Two magenta titles, two silhouettes.
+- **Chevron** = a deep-magenta (`--brand-magenta-deep`) full-width banner with one clean diagonal. **Spray** = a stencilled tag: a bright-magenta slab that shrink-wraps its words, a stepped overspray right edge and a dashed ink stencil line along the foot. Two magenta titles, two silhouettes. The `spec-tweak` heading carries its own paper strip, so it never sits on the wall; the chevron and spray are slabs and so are their own substrate.
 
 ### Section kinds (what kind of text is this?)
 
-A section kind is read from its bar and sheet before its words. Each also cuts its own corners.
+A section kind is read from its bar, its sheet and its silhouette before its words. Each cuts its own corners, and the cut carries the meaning (see "Shape language" below): precise symmetric chamfers for player rules, a file-folder tab for the classified, long asymmetric slashes for the world, ticket notches for a form, a sign plate for danger, a torn edge for fiction and landfill. Padding on every clipped edge is the cut's depth plus 2pt; no glyph, rule or marker is ever cut.
 
 | Kind | Bar | Sheet | Silhouette | Colour |
 |---|---|---|---|---|
-| `panel` | solid accent bar | cream | top-right cut | the chapter accent (magenta by default; the only kind chapters re-theme) |
-| `reference` | pale HUD band | pale blue wash, tight rows | all four corners, small | HUD blue: a look-up |
-| `lore` | deep violet bar | lilac | long cuts, top-left and bottom-right | violet: the world |
-| `dm` | ink bar with a cyan rule, a cyan rail, a *Dream Master* chip | cold concrete | top-right and bottom-left | cyan on ink: Dream Master only. A heading-less `dm` section draws an ink strip carrying the same words |
-| `choose` | none: a form | a paper sheet barely lighter than cream (`--paper-form`) | a dashed ink edge, no cut corners, no shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Your choice* stamp; dotted write-in rules. A printed, stamped form, not a web control |
+| `panel` | solid accent bar | cream | one larger chamfer (top right), a chipped bottom-left corner | the chapter accent (magenta by default; the only kind chapters re-theme) |
+| `reference` | pale HUD band | pale blue wash, tight 10pt rows | four small even machined chamfers | HUD blue: a look-up |
+| `lore` | deep violet bar | lilac | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | violet: the world |
+| `dm` | ink bar with a cyan rule, a cyan rail | cold concrete | a file-folder tab rising from the top edge (it carries *Dream Master*, cyan on ink) and one opposite corner cut, bottom right | cyan on ink: Dream Master only. The tab is drawn with or without a heading |
+| `choose` | none: a form | a paper sheet barely lighter than cream (`--paper-form`) | a ticket: a V punched in the middle of each side, a perforated foot, a dashed ink edge, no shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Your choice* stamp; dotted write-in rules. A printed, stamped form, not a web control |
 
-Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow) and a bare section are distinct from all of these.
+Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow) is distinct from all of these. A bare `@section` (no variant word) is a plain sheet of paper under the text: no text is ever set straight on the brick wall. Every section kind sets `--dc-accent-ink`, the text-safe ink of its accent (the accent mixed 72% toward ink, so a chapter that re-themes the accent re-themes it; dm sets HUD blue, slate a light tint of crimson on its dark body), which `ROLL THE DIE!` and other accent text read.
 
 ### Block registers (`@block`: panel, slate, shard)
 
-- `.dc-panel`: HUD-blue band, hex corners. Player-facing rules summaries, structured data.
-- `.dc-slate`: ink body, a **blood** band with a crimson rule, a 5pt crimson rail and a stamped *Binding* tag. Binding rulings, Dream Master directives that settle an argument. Not magenta and not cyan, so it cannot be mistaken for `dm`.
-- `.dc-shard`: light zine paper (`--paper-zine`), a torn (zig-zag) foot, a taupe label strip with an ink title and a dashed rule, no accent hue. Fiction, atmosphere, setting asides.
+- `.dc-panel`: HUD-blue band, symmetric hex chamfers. Player-facing rules summaries, structured data.
+- `.dc-slate`: a sign plate: octagonal corners in a heavy crimson frame, an ink body, a **blood** band with a crimson rule and a stamped (double-edged) *Binding* tag. Binding rulings, Dream Master directives that settle an argument. Not magenta and not cyan, so it cannot be mistaken for `dm`.
+- `.dc-shard`: light zine paper (`--paper-zine`), a torn (zig-zag) foot and a dog-eared corner, a taupe label strip with an ink title and a dashed rule, no accent hue. Fiction, atmosphere, setting asides.
 
 ### Choice cards (`@flaws`, `@ideals`, `@dreams`)
 
 - A choice card says which choice it is. The enclosing kind sets `--dc-choice-accent/-tint/-kind` and the card's shape; the card reads them.
-- **Flaw** = blood, a cracked jagged foot and a nicked corner, a blood-tinted quote. **Ideal** = HUD blue, a symmetric tablet (both top corners cut), a rule under the name. **Dream** = violet, a top edge rising to the right.
+- **Flaw** = blood, a cracked jagged foot and a nicked corner (torn), a blood-tinted quote. **Ideal** = HUD blue, a steady ticket stub (a V punched out of each side), a rule under the name. **Dream** = violet, a top edge rising to the right and a perforated foot (two V tears). Siblings differ in silhouette; the two ticket shapes mean "a choice", the torn one "a cost".
 - The choice chrome is scoped to a card inside `@flaws`/`@ideals`/`@dreams`; any other `.dc-card` (a gear entry, a faction) keeps the plain card. Each choice carries a 6px rail and 5px top band in the kind colour, a 1.5pt ink edge, a one-word mono chip (8pt semibold, reversed) (FLAW / IDEAL / DREAM) over the name, and the closing quote in a kind-tinted well (ink on it, never grey `--paper-stain`).
 - The card name is the first `####` (core converts only that heading to `.dc-card-heading`). Write `####`; a `###` is dressed the same but is not the card heading.
 
@@ -370,10 +383,11 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - **Surface**: paper poster register (cream body + clipped tab + ink border)
 - Skill card body uses `--paper-cream` substrate with a colored tab on the top edge.
 - Tab background uses `--dc-card-tab-bg` (specialty's mid colour) with a clipped polygon shape.
-- Per-specialty clip-path geometry distinguishes specialties at-a-glance (augmerc = angular cuts, dualist = lozenge, generalist = soft chamfer).
+- Per-specialty clip-path geometry distinguishes specialties at-a-glance, and the silhouette follows the register (see "Specialty silhouettes" under the register table): tech = crisp stair-steps and square bites (augmerc, wirephreak, cybersurgeon), magic = facets and lozenges (etherlock, dualist, generalist, technosorcerer's gate), landfill = torn (proxy), organic = wobbly (gutterdruid), civic hazard = a sign-plate octagon (streetwarden). The tab, the card body, the path banner and the intro share a specialty's language.
 - The **tier pill** on the tab (AUG1.3) is the specialty's own chip (`--spec-chip-*`), not a position colour. There is no bronze/gold/silver and no featured-card variant: every card is the same card.
 - The flavor line's rail is the specialty's mid colour.
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
+- A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep magenta for augmerc, deep teal for wirephreak, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
 - Body and ability text ≥ 9pt; chip and tab labels at the mono floor.
 
 ### Specialty cards (the 10-card grid + profile shells)
@@ -384,8 +398,9 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - **Colored title**: the h3 title is the specialty's dark, set on one line (a name such as TECHNOSORCERER is tracked tighter, never wrapped).
 - **Thick colored left border** (3pt) in the band colour — secondary signature, vertical anchor.
 - **Outer 1.5pt border** in the specialty's mid color — frame.
-- Per-specialty clip-path geometry — secondary identity cue (rectangular tops keep the band readable; aggressive top cuts would clip the band).
-- **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths **on the cards** — those Pass 6/7/8 experiments were rejected by user-eye review as over-styling. (They are used, deliberately, one layer up: see Title bands.) Restraint wins on the card.
+- Per-specialty clip-path geometry — secondary identity cue, in the same language as the skill cards (see "Specialty silhouettes"); every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
+- **The catalog is a spread.** On `@page specialty-catalog` the ten cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and six the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
+- **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths **on the cards beyond a specialty's own silhouette** (Proxy's tear and Gutterdruid's wobble are the register, §III) — those Pass 6/7/8 experiments were rejected by user-eye review as over-styling. (They are used, deliberately, one layer up: see Title bands.) Restraint wins on the card.
 - The rule: **specialty color belongs in border, title, and at most a tint of the substrate** — not as a saturated fill across the entire card.
 
 ### Title bands (learning-path banner, specialty-intro title)
@@ -401,7 +416,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - 5-row creaturepunk gradient: crit (brand-magenta-deep) → hit (fungi-glow + ink text) → mixed (orange-deep) → miss (rust) → fail (fungi-rot).
 - Each chip has tonal gradient + inset top-highlight + inset bottom-shadow ("pressed/stamped" LED-display register).
 - Each row's text-cell has `border-left: 2px solid var(--row-color)` tethering the result text to the band colour.
-- The chip column is 26% of the ladder (min 130px, `--dc-outcome-key-col`) so a long band name wraps on two or three lines, not a cramped one. Band names are 8pt semibold (the reversed floor), centred, balanced; result text 8.5pt.
+- The chip column is 26% of the ladder (min 130px, `--dc-outcome-key-col`) so a long band name wraps on two or three lines, not a cramped one. Band names are 8pt semibold (the reversed floor), centred, balanced; result text 10pt. The frame is a machined HUD plate (four even 6px chamfers, one chip out of the foot); a roll table is a die-faced plate (two opposite 14px cuts, a die chip stuck a little off square). Both set `--dc-accent-ink`.
 
 ### AP cost chips (digital display, the LED-indicator pattern)
 
@@ -418,16 +433,17 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 | Register | Fill (value) | Silhouette | Edge | Label |
 |---|---|---|---|---|
-| `note` | HUD-blue dim (mid) | cut top-left and bottom-left | blue rail | plain mono caps |
-| `warning` | light warm cream | cut bottom-right | 14px yellow/ink hazard-stripe rail, 2px ink frame | yellow caution-tape chip with ink type, rotated -1.5deg |
-| `dm` | ink-dark (darkest) | cut top-right and bottom-left | 3px cyan rail | cyan chip with ink type, top right (Dream Master only) |
-| `vibe` | barely violet (light, flat) | plain rectangle | one dashed violet edge all round, no rail | violet, underlined; italic voice |
-| `origin` | warm paper (light) | dog-eared top-right corner | rust rail | crimson double-bordered rubber stamp, rotated -2deg; italic second-person voice |
-| `visit` | fungi green (dark) | signpost, pointed to the right | none | map-pin glyph + underlined caps |
-| `example` | cream (light) | cut top-left and bottom-left | dashed cyan rail | taped-on tag |
+| `note` | HUD-blue dim (mid) | machined 6px chamfers on all four corners, one chipped notch (player rules) | blue rail | plain mono caps |
+| `warning` | light warm cream | sign plate: octagon, 12px cuts (danger) | 14px yellow/ink hazard-stripe rail, 3px ink frame with a 2px crimson second pass out of register | yellow caution-tape chip with ink type, rotated -1.5deg |
+| `dm` | ink-dark (darkest) | file folder: a 12px tab over the left 42% and one cut corner (classified) | 3px cyan rail | cyan chip with ink type, top right (Dream Master only) |
+| `vibe` | barely violet (light, flat) | long shallow diagonals at two opposite corners (the world) | one dashed violet edge all round, no rail, a tan tape strip on top | violet, underlined; italic voice |
+| `origin` | warm paper (light) | torn bottom edge and a 16px dog-ear (backstory) | rust rail | crimson double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg; italic second-person voice |
+| `visit` | fungi green (dark) | wobbly organic polygon ending in a signpost point (a place) | none | map-pin glyph + underlined caps |
+| `example` | cream (light) | ticket: a V notch in the right edge (a sample) | dashed cyan rail | taped-on tag |
 
 - Flat solid fill — no tonal gradient, no inset cream stroke on the paper registers (the Pass 6 attempt stays reverted). The warning's ink frame is a hard ring and the vibe's edge a single dashed line, not a double stroke on a fill. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
-- Body copy is upright and level, ≥ 9.5pt (the reversed DM and visit bodies are semibold); labels 8pt mono caps tracked 0.12–0.22em. Chaos is on the labels and edges only.
+- Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is ever cut. Every variant sets `--dc-accent-ink`, the text-safe ink of its own accent on its own surface (note a 50% HUD-blue/ink mix, warning and origin `--blood`, dm `--hud-blue-bright`, vibe `--brand-violet`, visit `--fungi-glow`, example `--hud-blue-dark`); the lede sets it from `--dc-intro-ink`.
+- Body copy is upright and level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 8pt mono caps tracked 0.12–0.22em. Chaos is on the labels and edges only.
 - A chapter must NOT re-theme a callout's variant tokens: identity survives re-theming.
 
 ### NPC stat blocks
@@ -436,19 +452,19 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - Name (H4) gets a 2pt top-rule in `--rust` (chapter accent) — `border-top: 2pt solid var(--rust)`. In a two-column run the name is 11pt tracked 0.03em so "GREASE MONKEY" stays on one line.
 - TRAITS / EQUIPMENT / CYBERNETICS (H5) at 9pt mono caps with 0.14em tracking — read as chrome labels, not competing headings.
 - The flavor line (`>`) is a ruled line, not a well: a 4px rail in the block's rule colour, ink-smoke text on the paper.
-- Primary stat line (HP/damage) is a **chip**: its first line set 12pt bold, cream on the block's primary colour (`--hud-blue-dark`; blood in a rust chapter) via `::first-line`, so it is the first thing scanned. A second line in the same paragraph (Fodder/size) falls under it as a small-caps mono tag, 8.5pt (the secondary floor is 8pt), `--ink-smoke`; written as its own paragraph it is the same tag at 8pt semibold. The stat lines are chosen by position (the first two paragraphs after the `>`), so a description belongs inside the quote, not between the quote and the stat lines. The compact variant draws both as 8pt semibold chips.
+- Primary stat line (HP/damage) is a **chip**: its first line set 12pt bold, cream on the block's primary colour (`--hud-blue-dark`; blood in a rust chapter) via `::first-line`, so it is the first thing scanned. A second line in the same paragraph (Fodder/size) falls under it as a small-caps mono tag, 10pt (stat lines are reading text), `--ink-smoke`; written as its own paragraph it is the same tag at 10pt semibold. The stat lines are chosen by position (the first two paragraphs after the `>`), so a description belongs inside the quote, not between the quote and the stat lines. The compact variant draws both as 10pt semibold chips.
 
 ### Factions (`@faction megacorp | cabal | cult | enforcer`)
 
 Each kind has its own silhouette, top band, name colour and badge:
-- **megacorp**: a hard blue rectangle (no cuts), cool wash, an ink-blue band with a cyan edge, blue name, square badge. Bands are drawn as solid inset shadows (vector), never gradients.
-- **cabal**: violet, long cuts off two opposite corners, lilac sheet, deep-violet band, an inset violet shadow.
-- **cult**: blood, torn top and foot, blood band, pale blood wash, blood name.
-- **enforcer**: an octagon "badge" silhouette, an ink-and-yellow hazard-stripe band (a yellow strip under a skewed thick dashed ink border: vector), the name set as a yellow label in ink, an ink badge with yellow type.
+- **megacorp**: machined: a blue rectangle with an L-shaped step out of the top right and bottom left, cool wash, an ink-blue band with a cyan edge, blue name, square badge. Bands are drawn as solid inset shadows (vector), never gradients.
+- **cabal**: violet, long asymmetric slashes (shallow top-right, steep bottom-left: lore's cuts mirrored), lilac sheet, deep-violet band, an inset violet shadow.
+- **cult**: blood, torn top and foot, a dashed (broken) rail, blood band, pale blood wash, blood name.
+- **enforcer**: a sign plate: an octagon in a heavy ink frame, an ink-and-yellow hazard-stripe band (a yellow strip under a skewed thick dashed ink border: vector), the name set as a yellow label in ink, an ink badge with yellow type.
 
 ### Fiction excerpt
 
-- A torn-out printed page stuck on the wall: `--paper-zine` (lighter than the wall), zig-zag torn top and foot, straight sides, a hard ink shadow (`--dc-fiction-lift` is its offset, 3px; 5px on a chapter-start page), no rail, no title bar, narrative leading. Differs from the lede (a light panel with a rail), flavor (a rail and no box) and the panel (a bar and a rail). Painted by clipped sibling layers, so the box itself is not clipped.
+- A page sunk into the wall, or revealed from behind it (the opposite of a hung poster): a dark ragged cavity (`--dc-fiction-cavity`, a torn polygon `--dc-fiction-hole`) with the aged page (`--paper-zine`, a dog-eared shape) sitting back inside it. The hole casts a hard shadow down the page's top and left (`--dc-fiction-depth`, 6px; 10px on a chapter-start page) and a light lip (`--dc-fiction-lip`) catches on its bottom and right. Vector and opaque, no blur. No rail, no title bar, narrative leading; text sits only on the page, 10pt+. Differs from the lede (a light panel with a rail), flavor (a rail and no box) and the panel (a bar and a rail). Painted by clipped sibling layers, so the box itself is not clipped and its margin is the rim.
 
 ### Entry cards by kind (`@gear` and its kinds)
 
@@ -456,8 +472,8 @@ Each kind is a silhouette, a surface value, a mark, a badge and a name colour, n
 - **gear**: a hang tag — a paper card in a heavy ink frame, top-left and bottom-right clipped, a rust rail and badge, a ring eyelet, the bold price line stamped as a dashed price tag. No tan: cool paper, hard against the wall.
 - **augment**: a spec chip — the lightest cool plate, a stepped PCB notch top-right, a cyan top rule, a teal name.
 - **treasure**: a gem — pale amethyst, an octagon cut, one hard two-tone facet, a violet rail, a hexagon badge.
-- **vehicle**: an industrial plate — concrete, chamfers, an ink inset frame, a dotted seam of rivets, a yellow rail and badge. No hazard stripes: those are the danger register's.
-- **drug**: a prescription label — the one rounded silhouette, lime tint, one frame (a fungi-green head band and rail), an "Rx · Drug" pill badge, a green name.
+- **vehicle**: an industrial plate — concrete, octagonal 12px cut corners, a heavy 3px ink inset frame, a dotted seam of rivets, a yellow rail and badge. No hazard stripes: those are the danger register's.
+- **drug**: a prescription label — an irregular, wobbling organic outline, lime tint, one frame (a fungi-green head band and rail), an "Rx · Drug" pill badge, a green name.
 
 An entry never splits across pages.
 
@@ -471,15 +487,17 @@ One chip family (the same slanted-edge label chip) for all six. What each means 
 
 ### Procedure (`@procedure`)
 
-An instruction plate, not a tinted list: a cream surface, a 2px ink frame, a hard shadow, a solid HUD-blue number strip down the left (reversed 12pt mono numerals), step text in ink at 10pt, dashed dividers, bold leads in `--ink` (not red). Text never sits on the wall. The list may split between steps; each step stays whole.
+An instruction plate, not a tinted list: a cream surface, a 2px ink frame, a hard shadow, a solid HUD-blue number strip down the left (reversed 12pt mono numerals), step text in ink at 10pt, dashed dividers, bold leads in `--ink` (not red), and a staple holding the plate to the wall (the grit cue). Text never sits on the wall. The list may split between steps; each step stays whole.
 
 ### At-a-glance tile
 
-A readout: a reversed 8pt mono-caps label band (HUD blue) over a 24px display value, an ink frame and a hard shadow.
+A readout: a reversed 8pt mono-caps label band (HUD blue, its top-right corner cut) over a 24px display value, an ink frame and a hard shadow.
 
 ### Definition (`@definition`)
 
 A dictionary page: cream, a 3pt HUD-blue-dark rule above and a hairline below, a hard shadow, no rail and no cut corners. The term is a blue headword set first (display caps for a `####` term); the body is italic ink. It must not read as a tinted note.
+
+Two variant words, `@definition lucid` and `@definition surreal`, are the two roll states drawn as opposites (in colour and in greyscale). **Lucid**: the lightest sheet, four even 45-degree machined chamfers, a blue frame with a cyan hairline inside it, upright type, a headword ruled off in blue. **Surreal**: an inverted violet-black sheet with light type, a skewed outline torn along the foot, magenta and violet inks off-register on opposite inner edges, a leaning headword (the body is never rotated). Reading text in both is 11pt.
 
 ### Tables
 
@@ -493,7 +511,8 @@ A dictionary page: cream, a 3pt HUD-blue-dark rule above and a hairline below, a
 - **Surface**: paper poster register — a `--paper-light` substrate (lighter than the wall), a 6px accent-colour rail and a 3px ink foot rule, a hard poster shadow. Flat solid fill — no tonal lift, no noise overlay.
 - Upright, 600-weight ink type at 13pt (`--fs-h4`), larger than the 12pt body: the chapter's opening statement.
 - Per-chapter `--dc-section-accent` / `--dc-intro-accent` colours the rail. A lede stacked flush on a box (front matter, contents, credits) drops the foot rule and, on contents and credits, sets body size and regular weight.
-- **Flavor** (`.dc-flavor`) is the opposite register: in-world voice, italic, a rail and no box at all, ink-dark.
+- The lede sets `--dc-accent-ink` from `--dc-intro-ink` (orange-deep by default; the front-matter and intro pages set it to their deep-magenta accent), so a `ROLL THE DIE!` in a lede takes the lede's colour.
+- **Flavor** (`.dc-flavor`) is the opposite register: in-world voice, italic, a rail and a paper strip behind it (`--dc-flavor-bg`; no text is ever set on the brick), ink-dark.
 
 ### Inline chrome: tag, tape, human callout
 
@@ -635,7 +654,7 @@ The judges are dispatched as parallel agents (Sonnet model, background) with the
 
 ### Judge 2 — Print Production
 
-**Charter**: POD-safe rendering (SWOP coated v2 / GRACoL gamut). TAC ceiling 280%. Body contrast ≥ 4.5:1. Hairlines ≥ 0.5pt. Type at or above the §VI floors (body ≥ 9.5pt, rules text ≥ 9pt, secondary ≥ 8pt, mono caps ≥ 6.5pt at ≥ 0.08em); reversed type ≥ 8pt semibold.
+**Charter**: POD-safe rendering (SWOP coated v2 / GRACoL gamut). TAC ceiling 280%. Body contrast ≥ 4.5:1. Hairlines ≥ 0.5pt. Type at or above the §VI floors (reading text ≥ 10pt, short mono caps chrome ≥ 7pt at ≥ 0.08em); reversed type ≥ 8pt semibold.
 
 **Key questions**:
 - CMYK estimate every new or changed token. Any over 280%?
@@ -742,7 +761,7 @@ If those documents disagree, this file takes precedence. Update the AKM memory t
 | Overall test | Forbidden street intel, not polished UI |
 | Component register check | Paper poster OR digital display — not both |
 | Variant check | Told apart in colour AND in grayscale (value, edge, label), never by hue alone |
-| Type floors | Body ≥ 9.5pt · rules ≥ 9pt · secondary ≥ 8pt · mono caps ≥ 6.5pt at ≥ 0.08em · reversed ≥ 8pt semibold |
+| Type floors | Reading text ≥ 10pt · mono caps chrome ≥ 7pt at ≥ 0.08em · reversed ≥ 8pt semibold |
 | Specialty register check | Does the design read its per-specialty mix correctly? |
 
 If it looks like a friendly handbook, it failed. If it looks like a damaged field guide that still reads cleanly, it worked.
