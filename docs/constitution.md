@@ -155,9 +155,9 @@ Apply disruption to **display elements**, never to **reading surfaces**.
 
 Page furniture is a chip, never bare type, and stays level and legible:
 
-- **Folio** (`P.121`): a paper-cream sticker, 16pt tall, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
+- **Folio** (`P.121`): a paper-cream sticker, 17pt tall, 10pt type, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
 - **Chapter chip** (`C.N` in a book, `E.N` in the design guide's Part 2): a stamped coupon. A solid `--brand-magenta-deep` face with cream type (6.2:1), the same ink edge and hard shadow, and a perforated gutter-side edge (a dotted ink border). It replaces a dashed magenta outline, which read as a debug box.
-- **Placement**: both sit in the printable footer band, the 0.25in between the text block and 0.5in inside the trim (DriveThruRPG's text minimum), centred in it (16pt chip, 1pt offset), on recto and verso, for every page word that prints them. Centring in the whole 0.875in bottom margin would put the chip 0.2in from the trim.
+- **Placement**: both sit in the printable footer band, the 0.25in between the text block and 0.5in inside the trim (DriveThruRPG's text minimum), centred in it (17pt chip, 1pt offset), on recto and verso, for every page word that prints them. Centring in the whole 0.875in bottom margin would put the chip 0.2in from the trim.
 - **Citizen File running head**: an amber tab, cream type, same edge and shadow, in the top band's printable 0.25in.
 - **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the coupon's perforation, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
@@ -257,7 +257,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 
 ### Specialty palette (per-specialty triad plus band and chip)
 
-Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 8pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position.
+Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position.
 
 | Specialty | accent | mid | dark | band / on-band | Register lean |
 |---|---|---|---|---|---|
@@ -279,9 +279,9 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - Hairlines: ≥ 0.5pt. Any rule thinner vanishes in CMYK.
 - Body-text contrast: ≥ 4.5:1 (WCAG AA).
 - Large-text contrast: ≥ 3:1.
-- Reversed type: never below 8pt, semibold minimum, only on solid fills.
+- Reversed type: semibold minimum, only on solid fills, and never below the 10pt floor.
 - Body text never on noisy or tinted backgrounds, and never on `--paper-stain` or any fill darker than the wall (`--bg`) unless it is a decisive dark fill with light type.
-- Type floors are in §VI (all reading text ≥ 10pt; short mono caps chrome ≥ 7pt at ≥ 0.08em; reversed chrome ≥ 8pt semibold).
+- **The type floor is 10pt for every glyph, no exceptions** (§VI): body, tables, captions, chips, tabs, tier pills, AP chips, badges, labels, stamps, folios, stat keys. The token is `--fs-floor` (`dc-palette.css`).
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
 - Avoid rich black for small text.
@@ -294,19 +294,19 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 |---|---|---|---|
 | Display | `lixdu` | Titillium Web Bold | H1 26–32pt, H2 18–24pt |
 | Body | Titillium Web | Tomorrow | Reading floor 10pt; the package sets 12pt (`--fs-body`), 11pt compact (`--fs-body-sm`), with 13–15pt leading |
-| Labels / Mono | Tomorrow | monospace | All-caps labels ≥ 7pt |
+| Labels / Mono | Tomorrow | monospace | All-caps labels 10pt (the floor), tracked 0.08em or wider |
 
-### Type floors (industry-standard print minimums)
+### Type floor: 10pt, for ALL text
 
-These are floors, not targets. Text that already meets its floor stays as it is unless hierarchy or a contrast failure demands a change: do not inflate type beyond the floor to make a component "feel" legible.
+**No glyph the package prints is smaller than 10pt.** There is one floor and no second, smaller floor for "chrome". It is the token `--fs-floor` in `dc-palette.css`; components reference it rather than writing the number. It is a floor, not a target: running body stays 12pt, compact prose 11pt. Short all-caps labels sit exactly on it, with their tracking brought down (0.08–0.12em) so they do not balloon.
 
-| Text | Floor |
+| Text | Size |
 |---|---|
-| **Reading text**: running body, rules and ability text, table cells, stat lines, captions, card pitches, callout and definition bodies, lede/flavor/fiction, list items, intro text | **≥ 10pt** (running body stays 12pt, compact 11pt) |
-| Short all-caps chrome: chip, badge and tab labels, tier pills, mono section labels, AP chips, table header cells | **≥ 7pt**, with **≥ 0.08em** tracking |
-| Reversed chrome (light on a solid fill) | **≥ 8pt, semibold**, solid fills only |
+| Running body, rules and ability text, table cells, stat lines, captions, card pitches, callout and definition bodies, lede/flavor/fiction, list items, intro text | **≥ 10pt** (body 12pt, compact 11pt) |
+| Chip, badge, tab and tag labels, tier pills, AP chips, stickers, mono section labels, table header cells, field labels, stat keys, band names, running-head and folio chips, stamps | **10pt**, tracking ≥ 0.08em |
+| Reversed type (light on a solid fill) | **10pt, semibold or bold**, solid fills only |
 
-The page baseline (`dc-core.css`) keeps to it: body 12pt, table cells 10pt (header cells are 8pt mono chrome), inline code never under 10pt, lists, definition lists and figure captions inherit the 12pt body. The credits colophon is 10pt.
+The page baseline (`dc-core.css`) keeps to it: body 12pt, table cells and header cells 10pt, inline code never under 10pt, lists, definition lists and figure captions inherit the 12pt body. The credits colophon is 10pt. The footer chips (folio, chapter coupon) and the citizen-file running head are 10pt in a 17pt box. The design guide's own running foot, kickers, code fences and swatch labels are held to the same floor.
 
 Display-face (lixdu) names inside a component must not wrap a short name onto two lines in a two-column run: size and track them so typical names fit (an NPC name at 11pt and 0.03em; a catalog entry name at 11pt with balanced wrapping; a specialty-card name on one line).
 
@@ -318,11 +318,11 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 | H2 | lixdu, 18–24pt | Can sit on angled magenta banner |
 | H3 | bold display or body-bold, 13–16pt | Use accent color sparingly |
 | H4 | body-bold or mono-bold, ~13pt | Component sub-headings (skill names, stat-block name) |
-| H5 | mono-caps, ~9pt with 0.14em tracking | Chrome labels (TRAITS, EQUIPMENT, OUTCOMES) |
+| H5 | mono-caps, 10–11pt with 0.1em tracking | Chrome labels (TRAITS, EQUIPMENT, OUTCOMES) |
 | Body | 12pt (reading floor 10pt) with 13–15pt leading | Default reading size |
 | Component rules text | 10–11pt | Never below 10pt |
 | Captions, table cells, stat lines | 10pt | Never below 10pt |
-| Reversed | 8pt minimum, semibold | Only on solid fills |
+| Reversed | 10pt minimum, semibold | Only on solid fills |
 
 ### Type rules
 
@@ -331,7 +331,7 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 - Keep line length 45–75 characters.
 - Street voice in short bursts; rules text stays clear.
 - Display sizes need negative tracking (lixdu defaults are body-tuned). Apply via component-level `letter-spacing` only when justified by surface — banners on dark fills, not body copy.
-- H5 mono caps need wider tracking (0.12–0.14em) to read as chrome labels at small size; no all-caps mono label is tracked under 0.08em.
+- H5 mono caps are tracked (about 0.1em) to read as chrome labels; no all-caps mono label is tracked under 0.08em.
 - Callout bodies are upright. Italic is for voices that speak to the reader (the vibe and origin alerts, flavor lines, definitions' body).
 
 ---
@@ -375,7 +375,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 - A choice card says which choice it is. The enclosing kind sets `--dc-choice-accent/-tint/-kind` and the card's shape; the card reads them.
 - **Flaw** = blood, a cracked jagged foot and a nicked corner (torn), a blood-tinted quote. **Ideal** = HUD blue, a steady ticket stub (a V punched out of each side), a rule under the name. **Dream** = violet, a top edge rising to the right and a perforated foot (two V tears). Siblings differ in silhouette; the two ticket shapes mean "a choice", the torn one "a cost".
-- The choice chrome is scoped to a card inside `@flaws`/`@ideals`/`@dreams`; any other `.dc-card` (a gear entry, a faction) keeps the plain card. Each choice carries a 6px rail and 5px top band in the kind colour, a 1.5pt ink edge, a one-word mono chip (8pt semibold, reversed) (FLAW / IDEAL / DREAM) over the name, and the closing quote in a kind-tinted well (ink on it, never grey `--paper-stain`).
+- The choice chrome is scoped to a card inside `@flaws`/`@ideals`/`@dreams`; any other `.dc-card` (a gear entry, a faction) keeps the plain card. Each choice carries a 6px rail and 5px top band in the kind colour, a 1.5pt ink edge, a one-word mono chip (10pt semibold, reversed) (FLAW / IDEAL / DREAM) over the name, and the closing quote in a kind-tinted well (ink on it, never grey `--paper-stain`).
 - The card name is the first `####` (core converts only that heading to `.dc-card-heading`). Write `####`; a `###` is dressed the same but is not the card heading.
 
 ### Skill cards (the most-repeated component)
@@ -388,7 +388,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - The flavor line's rail is the specialty's mid colour.
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
 - A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep magenta for augmerc, deep teal for wirephreak, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
-- Body and ability text ≥ 9pt; chip and tab labels at the mono floor.
+- Body and ability text ≥ 10pt; chip and tab labels at the 10pt floor too.
 
 ### Specialty cards (the 10-card grid + profile shells)
 
@@ -416,7 +416,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - 5-row creaturepunk gradient: crit (brand-magenta-deep) → hit (fungi-glow + ink text) → mixed (orange-deep) → miss (rust) → fail (fungi-rot).
 - Each chip has tonal gradient + inset top-highlight + inset bottom-shadow ("pressed/stamped" LED-display register).
 - Each row's text-cell has `border-left: 2px solid var(--row-color)` tethering the result text to the band colour.
-- The chip column is 26% of the ladder (min 130px, `--dc-outcome-key-col`) so a long band name wraps on two or three lines, not a cramped one. Band names are 8pt semibold (the reversed floor), centred, balanced; result text 10pt. The frame is a machined HUD plate (four even 6px chamfers, one chip out of the foot); a roll table is a die-faced plate (two opposite 14px cuts, a die chip stuck a little off square). Both set `--dc-accent-ink`.
+- The chip column is 26% of the ladder (min 130px, `--dc-outcome-key-col`) so a long band name wraps on two or three lines, not a cramped one. Band names are 10pt semibold (the floor), centred, balanced; result text 10pt. The frame is a machined HUD plate (four even 6px chamfers, one chip out of the foot); a roll table is a die-faced plate (two opposite 14px cuts, a die chip stuck a little off square). Both set `--dc-accent-ink`.
 
 ### AP cost chips (digital display, the LED-indicator pattern)
 
@@ -424,7 +424,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - Tonal gradient on the chip fill + inset top-highlight + layered shadow (close + soft far) + text-shadow.
 - 1pt `--ink-dark` border for press registration grip.
 - Slight rotation (`transform: rotate(-1deg)`) keeps the chip from feeling pixel-aligned.
-- Type is 8pt semibold (the reversed floor). The triangles and the lamp are drawn as CSS shapes (borders and a radius), not glyphs: vector in PDF/X and independent of any font.
+- Type is 10pt semibold (the floor). The triangles and the lamp are drawn as CSS shapes (borders and a radius), not glyphs: vector in PDF/X and independent of any font.
 - Variants by AP cost, told apart in colour **and** by a glyph or fill value: **free** = an unlit LED (the grey lens of a dead indicator, ink type, ink edge and a hollow lamp: the quietest chip, so "0 AP" is not a red flag), **standard** = HUD blue dark, **reduced** = pale blue with a down-triangle, **increased** = blood with an up-triangle, **VAR** = deep magenta (cream on the bright magenta is 4.06:1), **special** = amber with cream type. Free and increased are never the same red.
 
 ### Callouts (.dc-alert variants)
@@ -443,14 +443,14 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 - Flat solid fill — no tonal gradient, no inset cream stroke on the paper registers (the Pass 6 attempt stays reverted). The warning's ink frame is a hard ring and the vibe's edge a single dashed line, not a double stroke on a fill. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
 - Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is ever cut. Every variant sets `--dc-accent-ink`, the text-safe ink of its own accent on its own surface (note a 50% HUD-blue/ink mix, warning and origin `--blood`, dm `--hud-blue-bright`, vibe `--brand-violet`, visit `--fungi-glow`, example `--hud-blue-dark`); the lede sets it from `--dc-intro-ink`.
-- Body copy is upright and level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 8pt mono caps tracked 0.12–0.22em. Chaos is on the labels and edges only.
+- Body copy is upright and level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 10pt mono caps tracked 0.1–0.14em. Chaos is on the labels and edges only.
 - A chapter must NOT re-theme a callout's variant tokens: identity survives re-theming.
 
 ### NPC stat blocks
 
 - **Surface**: paper poster register (cream-stamped + 2pt top-rule on name + chrome labels)
 - Name (H4) gets a 2pt top-rule in `--rust` (chapter accent) — `border-top: 2pt solid var(--rust)`. In a two-column run the name is 11pt tracked 0.03em so "GREASE MONKEY" stays on one line.
-- TRAITS / EQUIPMENT / CYBERNETICS (H5) at 9pt mono caps with 0.14em tracking — read as chrome labels, not competing headings.
+- TRAITS / EQUIPMENT / CYBERNETICS (H5) at 10pt mono caps with 0.1em tracking — read as chrome labels, not competing headings.
 - The flavor line (`>`) is a ruled line, not a well: a 4px rail in the block's rule colour, ink-smoke text on the paper.
 - Primary stat line (HP/damage) is a **chip**: its first line set 12pt bold, cream on the block's primary colour (`--hud-blue-dark`; blood in a rust chapter) via `::first-line`, so it is the first thing scanned. A second line in the same paragraph (Fodder/size) falls under it as a small-caps mono tag, 10pt (stat lines are reading text), `--ink-smoke`; written as its own paragraph it is the same tag at 10pt semibold. The stat lines are chosen by position (the first two paragraphs after the `>`), so a description belongs inside the quote, not between the quote and the stat lines. The compact variant draws both as 10pt semibold chips.
 
@@ -491,7 +491,7 @@ An instruction plate, not a tinted list: a cream surface, a 2px ink frame, a har
 
 ### At-a-glance tile
 
-A readout: a reversed 8pt mono-caps label band (HUD blue, its top-right corner cut) over a 24px display value, an ink frame and a hard shadow.
+A readout: a reversed 10pt mono-caps label band (HUD blue, its top-right corner cut) over a 24px display value, an ink frame and a hard shadow.
 
 ### Definition (`@definition`)
 
@@ -502,8 +502,8 @@ Two variant words, `@definition lucid` and `@definition surreal`, are the two ro
 ### Tables
 
 - Header row in `--ink-dark` by default (a structural bar with no chroma of its own); `reference` sections use the pale HUD band, and a chapter may set its own header colour through a declared token.
-- Header text: mono caps, 8pt, cream on a solid fill (reversed type: 8pt, semibold minimum).
-- Body rows: 9pt body font on alternating cream tints (the secondary-text floor is 8pt).
+- Header text: mono caps, 10pt, cream on a solid fill (reversed type: 10pt, semibold minimum).
+- Body rows: 10pt body font on alternating cream tints (the floor).
 - Inner cell padding generous (0.04in vertical, 0.08in horizontal).
 
 ### Lede (.dc-intro / @lede)
@@ -516,8 +516,8 @@ Two variant words, `@definition lucid` and `@definition surreal`, are the two ro
 
 ### Inline chrome: tag, tape, human callout
 
-- **Tag** (`.dc-tag`): an inline chip — mono 8pt bold, 0.12em tracking, ink on cream with a 1px ink border and a 1px hard shadow; the same family as the AP chip and the class tag.
-- **Tape** (`.dc-tape`): a strip of masking tape — tan (`--brand-yellow` 30% in `--paper-aged`), torn ends, ink edges top and bottom, an ink label at 0.3em tracking, crimson dashes either side.
+- **Tag** (`.dc-tag`): an inline chip — mono 10pt bold, 0.08em tracking, ink on cream with a 1px ink border and a 1px hard shadow; the same family as the AP chip and the class tag.
+- **Tape** (`.dc-tape`): a strip of masking tape — tan (`--brand-yellow` 30% in `--paper-aged`), torn ends, ink edges top and bottom, an ink label at 10pt, 0.2em tracking, crimson dashes either side.
 - **Human callout** (`.dc-human-callout`): a contact card — a blue ID header band, a 2px ink border, a poster shadow, a dashed ink strip foot. Floatable.
 
 ### Outcome row text-cell tether (Pass 5b finding)
@@ -654,7 +654,7 @@ The judges are dispatched as parallel agents (Sonnet model, background) with the
 
 ### Judge 2 — Print Production
 
-**Charter**: POD-safe rendering (SWOP coated v2 / GRACoL gamut). TAC ceiling 280%. Body contrast ≥ 4.5:1. Hairlines ≥ 0.5pt. Type at or above the §VI floors (reading text ≥ 10pt, short mono caps chrome ≥ 7pt at ≥ 0.08em); reversed type ≥ 8pt semibold.
+**Charter**: POD-safe rendering (SWOP coated v2 / GRACoL gamut). TAC ceiling 280%. Body contrast ≥ 4.5:1. Hairlines ≥ 0.5pt. Type at or above the §VI floor: every glyph ≥ 10pt; reversed type semibold.
 
 **Key questions**:
 - CMYK estimate every new or changed token. Any over 280%?
@@ -761,7 +761,7 @@ If those documents disagree, this file takes precedence. Update the AKM memory t
 | Overall test | Forbidden street intel, not polished UI |
 | Component register check | Paper poster OR digital display — not both |
 | Variant check | Told apart in colour AND in grayscale (value, edge, label), never by hue alone |
-| Type floors | Reading text ≥ 10pt · mono caps chrome ≥ 7pt at ≥ 0.08em · reversed ≥ 8pt semibold |
+| Type floor | Every glyph ≥ 10pt (`--fs-floor`) · mono caps tracked ≥ 0.08em · reversed type semibold |
 | Specialty register check | Does the design read its per-specialty mix correctly? |
 
 If it looks like a friendly handbook, it failed. If it looks like a damaged field guide that still reads cleanly, it worked.

@@ -94,9 +94,9 @@
   --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
   --dc-alert-body-size:      var(--fs-body-sm);
   --dc-alert-border-width:   4px;
-  --dc-alert-label-size:     8pt;
+  --dc-alert-label-size:     var(--fs-floor);
   --dc-alert-label-weight:   700;
-  --dc-alert-label-spacing:  0.12em;
+  --dc-alert-label-spacing:  0.1em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
   --dc-alert-frame:          none;                  /* an inset box-shadow ring (warning's ink frame) */

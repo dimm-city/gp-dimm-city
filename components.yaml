@@ -392,7 +392,7 @@ components:
       - --dc-outcome-key-col
     usage: ["| 20 |"]
     breaks: "break-inside: avoid"
-    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. The chip column is max(130px, 26%) wide (--dc-outcome-key-col) so long band names wrap; names are 8pt semibold, result text 8.5pt. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
+    notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. The chip column is max(130px, 26%) wide (--dc-outcome-key-col) so long band names wrap; names are 10pt semibold, result text 10pt. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
 
   - name: specialty
     status: live

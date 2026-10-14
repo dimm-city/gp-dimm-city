@@ -141,7 +141,7 @@
 
 .dc-specialty-intro>p {
   margin-block: 0.3rem;
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   line-height: 1.5;
 }
 
@@ -269,7 +269,7 @@
   background: var(--ink-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 10pt;  /* every glyph on the spread is 10pt or more */
+  font-size: var(--fs-floor);  /* every glyph on the spread is 10pt or more */
   font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -308,10 +308,10 @@
   padding: 0 0.06in 0.03in;
   margin: 0.02in 0 0.06in;
   font-family: var(--font-mono);
-  font-size: 0.72em;
+  font-size: var(--fs-floor);
   font-style: normal;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   /* Use the dark variant for text (WCAG safe on cream); border stays
      bright (graphic separation, not body-text rule). Falls back to the

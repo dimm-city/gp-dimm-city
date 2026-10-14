@@ -248,7 +248,7 @@
   padding: 0;
   border-top: 1px dashed var(--ink-dust);
   font-family: var(--font-body);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   line-height: 1.45;
   color: var(--ink);
   align-items: stretch;
@@ -325,9 +325,9 @@
   font-family: var(--font-mono);
   /* A stamped header bar with its own surface rather than a tiny label
      hovering above the chips. */
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--dc-outcomes-label-color);
   background: var(--dc-outcomes-label-bg);
@@ -398,11 +398,11 @@
 
 .dc-outcome-name {
   font-family: var(--font-mono);
-  /* Reversed type on a solid chip: 8pt semibold. A long name wraps, centred and
+  /* Reversed type on a solid chip: 10pt semibold. A long name wraps, centred and
      balanced, on its own lines under the roll number. */
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
   text-wrap: balance;
@@ -427,7 +427,7 @@
 .dc-outcome-text {
   padding: 8px 14px;
   font-family: var(--font-body);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   line-height: 1.4;
   color: var(--ink);
   align-self: center;
@@ -509,7 +509,7 @@
 /* The die chip: a cream tab with a cut corner, in the mono face. */
 .dc-roll-table-die {
   font-family: var(--font-mono);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.06em;
@@ -540,7 +540,7 @@
 
 /* Range column: mono, centred, ruled off from the results. */
 .dc-roll-table td {
-  font-size: 10pt;
+  font-size: var(--fs-floor);
 }
 .dc-roll-table tr:last-child td:first-child {
   padding-left: 18px;
@@ -778,8 +778,8 @@
 
 .dc-stat-class {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--hud-blue);
 }
@@ -810,8 +810,8 @@
 
 .dc-stat-cell-key {
   font-family: var(--font-mono);
-  font-size: 7.5pt;
-  letter-spacing: 3px;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hud-blue);
   margin-bottom: 2px;
@@ -857,14 +857,14 @@ table.dc-stat-strip {
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
   padding: 2px 8px;
 }
 .dc-stat-strip td {
   background: var(--paper-cream);
   padding: 3px 8px;
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   vertical-align: middle;
 }
 .dc-stat-strip td:first-child {
@@ -935,8 +935,8 @@ table.dc-stat-strip {
   color: var(--paper-cream);
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.06em;
   font-style: normal;
   /* Small bottom-right corner cut so the badge reads as a stamp. */
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
@@ -955,7 +955,7 @@ table.dc-stat-strip {
 .dc-toc ol>li>a::after {
   content: ' p.' target-counter(attr(href), page);
   font-family: var(--font-mono);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
   letter-spacing: 1.5px;
   color: var(--hud-blue);
@@ -1033,9 +1033,9 @@ p.dc-img-wrapper {
   background: var(--dc-at-a-glance-accent);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.4;
   /* A cut top-right corner (HUD chamfer), on the band only so the tile keeps

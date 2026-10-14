@@ -218,7 +218,7 @@
   --dc-alert-label-color: var(--ink);
   --dc-alert-label-bg: var(--brand-yellow);
   --dc-alert-label-pad: 2px 9px;
-  --dc-alert-label-spacing: 0.16em;
+  --dc-alert-label-spacing: 0.1em;
   --dc-alert-label-margin: var(--space-md);
   border-left-color: transparent;  /* the stripe rail (::before) sits in this border box */
   position: relative;
@@ -259,10 +259,10 @@
   --dc-alert-label-color: var(--ink);
   --dc-alert-label-bg: var(--hud-blue-bright);
   --dc-alert-label-pad: 2px 9px;
-  --dc-alert-body-size: 10pt;   /* insider small print: upright, at the reading-text floor */
+  --dc-alert-body-size: var(--fs-floor);   /* insider small print: upright, at the reading-text floor */
   font-weight: 600;             /* reversed type is semibold */
   --dc-alert-label-weight: 700;
-  --dc-alert-label-spacing: 0.14em;
+  --dc-alert-label-spacing: 0.1em;
   --dc-alert-margin-top: 9pt;
 }
 /* The cyan chip sits top right, as the Dream Master chip does on a `dm` section. */
@@ -287,7 +287,7 @@
   --dc-alert-shape: polygon(0 0, calc(100% - 30px) 0, 100% 8px, 100% 100%, 30px 100%, 0 calc(100% - 8px));
   --dc-accent-ink: var(--brand-violet);  /* 5.9:1 on the sheet */
   --dc-alert-label-color: var(--brand-violet);
-  --dc-alert-label-spacing: 0.22em;
+  --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
   border: var(--dc-alert-border-width) dashed var(--dc-alert-border);
   position: relative;
@@ -323,7 +323,7 @@
   --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
   --dc-accent-ink: var(--blood);  /* 6.6:1 on the paper */
   --dc-alert-label-color: var(--blood);
-  --dc-alert-label-spacing: 0.2em;
+  --dc-alert-label-spacing: 0.12em;
   --dc-alert-label-margin: var(--space-md);
 }
 .dc-origin-callout {
@@ -366,7 +366,7 @@
   --dc-accent-ink: var(--fungi-glow);  /* 4.8:1 on the green */
   --dc-alert-body-size: var(--fs-body);
   --dc-alert-label-color: var(--paper-cream);
-  --dc-alert-label-spacing: 0.16em;
+  --dc-alert-label-spacing: 0.1em;
   font-weight: 600;             /* reversed type is semibold */
   margin: 0.12in 0;
   padding-right: calc(var(--space-xl) + 14px);

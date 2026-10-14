@@ -7,6 +7,69 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+Second design pass, from review of 1.7.0-alpha.1: a 10pt type floor for all
+text, no text on the brick wall, shape that says what a box is, a little grit.
+
+### Added
+
+- **`@page specialty-catalog`**: the specialty catalog is a designed two-page
+  spread. It opens on a left page; the title, the lede and four cards fill the
+  left page and six the right, in aligned rows of equal height. Each card is a
+  poster: portrait on top in an ink mat cut to its specialty's silhouette,
+  name, tagline, pitch and an index chip. Snippet *Specialty Catalog Page*.
+- **`@definition lucid` and `@definition surreal`**: the two roll states drawn
+  as opposites. Lucid is a light, machined, upright sheet in a blue frame;
+  Surreal is an inverted violet-black sheet with a skewed torn edge,
+  off-register inks and a leaning headword.
+- **No text on the wall.** On wall pages free-standing text gets a substrate
+  with no markup: a `#` title is an accent banner, `##` a pasted paper slip
+  (accent rail, dashed foot, tape), `###` a plain slip, `####` and below a
+  label slip, and loose paragraphs, lists and quotes share one paper sheet per
+  run. A bare `@section` is a paper sheet; flavor lines and the spec tweak sit
+  on paper strips; the Citizen File running head is an amber tab. Tokens
+  `--dc-page-slip-*`, `--dc-page-sheet-pad`, `--dc-page-title-ink`,
+  `--dc-flavor-bg`.
+- **Grit**, vector and opaque, on edges and labels only: chipped corners,
+  tape strips, misregistered second-ink rules (`--dc-band-reg` on the tech
+  specialties), worn stamp rings, torn feet, a staple on the procedure plate.
+- **`--dc-accent-ink`**: the text-safe ink of the component you are in. Every
+  alert, section kind, block, card, faction, entry, table and specialty sets
+  it; chapter accents flow through.
+
+### Changed
+
+- **Type floor: 10pt for all text**, chips, tabs, tier pills, AP chips,
+  badges, stamps, folio and chapter chips, stickers and labels included. New
+  token `--fs-floor` (10pt); `--fs-h6` is the floor (was 9pt). Chrome that
+  grew was refitted so nothing wraps or clips; a five-step sticker chain may
+  now wrap to two rows.
+- **ROLL THE DIE! takes the colour of its component** (deep magenta in a
+  magenta panel, blood in a blood box, the specialty's ink on a skill card).
+  `--dc-roll-the-die-color` is replaced by `--dc-accent-ink`.
+- **Fiction is a cavity.** `@fiction-excerpt` is an aged page sunk into a
+  ragged hole in the wall: a dark torn rim, a hard shadow down the top and
+  left, a lit lip at the bottom and right, deeper on a chapter opener. New
+  tokens `--dc-fiction-depth`, `-depth-bg`, `-cavity`, `-lip`, `-rim`,
+  `-hole`; `--dc-fiction-lift` and `-lift-bg` are removed.
+- **Shape carries meaning.** Player rules and look-ups are machined chamfers;
+  Dream-Master-only boxes are file folders (the `dm` section's tab carries the
+  words, replacing its chip); danger and enforcement are sign plates; lore and
+  cabal long asymmetric slashes; fiction, backstory, cult and flaws torn;
+  choices ticket notches; gear tags; magic facets; organic boxes wobble. The
+  seven alerts, every section kind, block, choice card, faction, entry, table
+  and all ten specialties are re-cut to match, and every clipped edge is
+  padded clear of its cut by 2pt or more.
+- **Folio and chapter chips** are fixed-height boxes with their type centred,
+  on recto and verso. The chapter chip is a stamped coupon with a perforated
+  edge, replacing the dashed outline.
+
+### Fixed
+
+- The learning-path title band lines up with the path frame's top-right cut
+  for every specialty: it spans the frame and is cut from the same point list,
+  where it stopped 12px short.
+- The design guide's heading specimens sit on paper, not on brick.
+
 ## [1.7.0] - 2026-10-14
 
 ### Changed

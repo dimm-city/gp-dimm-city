@@ -165,17 +165,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 1.25rem;
-  padding: 1px 6px;
+  height: 1.4rem;
+  padding: 1px 8px;
   border-radius: 100px;
   font-family: var(--font-mono);
-  font-size: 8pt;  /* reversed type: 8pt semibold is the floor */
+  font-size: var(--fs-floor);
   font-weight: 700;
   line-height: 1;
   background-color: var(--dc-tier-bg);
   color: var(--dc-tier-fg);
   box-shadow: inset 0 0 0 1px var(--dc-tier-edge);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -301,9 +301,8 @@
 }
 
 /* The card's closing sub-header (a ##### line) is reading text in mono caps:
-   10pt, tracked, where the bare sub-header is a 7.5pt label. */
+   tracked a little less than the bare sub-header (both are at the 10pt floor). */
 .dc-skill-card .dc-sub-header {
-  font-size: 10pt;
   letter-spacing: 0.08em;
 }
 
@@ -423,10 +422,10 @@
    via .dc-ap.<variant> { }, same convention as every other component. */
 .dc-ap {
   font-family: var(--font-mono);
-  font-size: 8pt;  /* reversed type: 8pt semibold is the floor */
+  font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 3px 6px;
-  min-width: 38px;
+  padding: 3px 7px;
+  min-width: 44px;
   text-align: center;
   /* Inner ink-density gradient + top-highlight — same pattern as
      .dc-outcome-key — so the chip reads as "stamped/printed" rather than a
@@ -448,7 +447,7 @@
     inset 0 1px 0 color-mix(in srgb, #fff 15%, var(--dc-ap-bg)),
     2px 2px 0 color-mix(in srgb, #000 10%, var(--dc-card-surface));
   text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, var(--dc-ap-bg));
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 1px;

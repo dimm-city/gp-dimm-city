@@ -141,7 +141,7 @@ code, kbd, samp {
   color: var(--ink);
   /* 10pt reading floor: code inside a 10pt cell or list item must not fall
      under it. */
-  font-size: max(0.92em, 10pt);
+  font-size: max(0.92em, var(--fs-floor));
   background: var(--paper-aged);
   padding: 1pt 4pt;
   border-radius: 2pt;
@@ -202,7 +202,7 @@ ul li > p:first-child::before {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   margin: 0.1in 0;
   break-inside: avoid;
 }
@@ -221,8 +221,8 @@ th {
   background: var(--ink-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 8pt;
-  letter-spacing: 0.1em;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 6px 8px;
   text-align: left;

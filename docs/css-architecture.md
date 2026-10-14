@@ -296,10 +296,10 @@ into the token name, not scattered across heading rules.
 --font-mono:     'Tomorrow', 'Titillium Web', monospace;
 
 /* Type scale — physical units, 12pt body floor */
+--fs-floor:   10pt;    /* THE floor: no glyph is smaller (chips, tabs, labels, folios too) */
 --fs-body:    12pt;
---fs-body-sm: 11pt;    /* design floor — never go below this for prose */
+--fs-body-sm: 11pt;    /* smallest running prose in a component */
 --fs-body-xs: 11.5pt;  /* between sm and body — outcome text, cover body, TOC items */
---fs-footer:  9.5pt;   /* @page margin-box footer text */
 
 /* Line height */
 --lh-normal:  1.5;
@@ -464,7 +464,7 @@ right border. Three rules keep the type centred:
 - the chip sits in the **printable** footer band, not the whole margin: the
   bottom margin is 0.875in from the sheet edge and DriveThruRPG wants text 0.5in
   inside the trim (0.125in in from the sheet), so the usable band is 0.25in
-  (18pt). A 16pt chip with `margin-top: 1pt` is centred in it. The engine honours
+  (18pt). A 17pt chip (10pt type) with `margin-top: 1pt` is centred in it. The engine honours
   a margin on a margin box (measured: a 4pt margin moved the box 4.3pt);
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
 

@@ -266,7 +266,7 @@
 /* The colophon's type: set on what the flat section holds, so it reaches the
    `@columns` run and the paragraphs and nothing else on the page. */
 .page.dc-page-credits .dc-section-flat > * {
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   line-height: 1.35;
 }
 
@@ -279,9 +279,9 @@
    "**Designers:**") becomes a chrome label with an accent underline. */
 .page.dc-page-credits .dc-section-flat p strong:first-child {
   font-family: var(--font-mono);
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   /* Ink, not the accent: the label reads as a label, only its underline
      carries the accent. */

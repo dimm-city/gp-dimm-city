@@ -54,9 +54,9 @@
   background: var(--hud-blue-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 

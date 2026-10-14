@@ -45,7 +45,7 @@ The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter spl
 
 ### The page chips
 
-The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon, a solid magenta face with cream type, the same edge and shadow, and a perforated edge on the spine side. Both are 16 pt tall with their type centred in the face, and both sit in the footer band that clears DriveThruRPG's 0.5 in text minimum, so they stay put on recto and verso for every page word that prints them. A `citizen-file` page's running head is the same sticker in amber at the top.
+The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon, a solid magenta face with cream type, the same edge and shadow, and a perforated edge on the spine side. Both are 17 pt tall with 10 pt type centred in the face, and both sit in the footer band that clears DriveThruRPG's 0.5 in text minimum, so they stay put on recto and verso for every page word that prints them. A `citizen-file` page's running head is the same sticker in amber at the top.
 
 ### Text on the wall
 

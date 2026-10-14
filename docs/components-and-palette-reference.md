@@ -279,7 +279,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-alert-fg` | `--ink` | Body text color |
 | `--dc-alert-label-color` | `--ink-dark` | Label chip text |
 | `--dc-alert-border-width` | `4px` | Left-rail width |
-| `--dc-alert-label-size` | `8pt` | Label chip font size |
+| `--dc-alert-label-size` | `10pt` (`--fs-floor`) | Label chip font size |
 | `--dc-alert-frame` | `none` | An inset ring (the warning's ink frame) |
 | `--dc-alert-label-bg` / `-label-pad` | `transparent` / `0` | A chip behind the label (warning tape, DM chip) |
 

@@ -20,8 +20,8 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
 | Spray banner | `## Title {.dc-spray}` | H2 scale, a stencilled tag with a stepped edge | Learning paths, major topic breaks |
-| Card tab | emitted by `@skill` | 9pt · Tomorrow | Skill-card tab labels |
-| Tag | `<span class="dc-tag">` | 8pt · Tomorrow | Keyword and cost chips |
+| Card tab | emitted by `@skill` | 11pt title, 10pt tier pill · Tomorrow | Skill-card tab labels |
+| Tag | `<span class="dc-tag">` | 10pt · Tomorrow | Keyword and cost chips |
 
 ## The three faces
 
@@ -38,7 +38,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 </div>
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 7–9pt, uppercase, tracking 0.08em or wider</p>
+<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 10pt (the floor), uppercase, tracking 0.08em or wider</p>
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
 <p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
 </div>
@@ -141,7 +141,7 @@ Don't {.dg-dont-label}
 
 ## Size floors
 
-The type sizes are print minimums, not targets, and text that already meets its floor stays as it is.
+There is one floor, `--fs-floor` (10pt), and nothing prints smaller: not a chip, a tab, a tier pill, an AP chip, a folio or a stamp. It is a minimum, not a target; text that already meets it stays as it is.
 
 | Text | Floor |
 |---|---|

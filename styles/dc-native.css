@@ -62,7 +62,7 @@
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
    content width by the whole bottom margin (174 x 54pt on this page).
    `width: fit-content` tightens the inline axis; the block axis is the
-   sticker's own height (`--dc-chip-h`, 16pt) rather than `fit-content`, so
+   sticker's own height (17pt) rather than `fit-content`, so
    the box is the same height on every page, for every page word, and the
    text inside it is centred by the engine (`vertical-align: middle` +
    `line-height: 1`), not by the font's ascent. Two details keep the glyphs
@@ -78,7 +78,7 @@
    edge. DriveThruRPG wants text 0.5in inside the TRIM, and the trim is
    0.125in inside the sheet at the bottom, so the printable footer band is
    the 0.25in (18pt) between the text block and 0.625in from the sheet edge.
-   The chip is centred in THAT band: 16pt tall with `margin-top: 1pt` (the
+   The chip is centred in THAT band: 17pt tall with `margin-top: 1pt` (the
    engine honours a margin on a margin box: measured, a 4pt margin moved the
    box 4.3pt). Centring it in the whole 0.875in band would print the chip
    0.2in from the trim.
@@ -101,7 +101,7 @@
    THE TWO CHIPS.
    - folio  P.121: paper-cream face, ink type, ink edge, hard ink shadow.
    - chapter C.N / E.N: a stamped coupon. A solid magenta-deep face with
-     cream type (6.2:1, reversed type at 9pt bold), the same ink edge and hard
+     cream type (6.2:1, reversed type at 10pt bold), the same ink edge and hard
      shadow, and a perforated gutter-side edge (a 3px dotted ink border: the
      coupon tears off along it). It replaces a dashed magenta outline, which
      read as a debug box. */
@@ -109,14 +109,14 @@
   @bottom-left {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 16pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: 1pt;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-mono);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -129,14 +129,14 @@
   @bottom-right {
     /* chapter coupon: gutter edge (the right of this box) perforated */
     width: fit-content;
-    height: 16pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: 1pt;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -153,14 +153,14 @@
   @bottom-left {
     /* chapter coupon: gutter edge (the left of this box) perforated */
     width: fit-content;
-    height: 16pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: 1pt;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -174,14 +174,14 @@
   @bottom-right {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 16pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: 1pt;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-mono);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -196,22 +196,22 @@
 /* ── 2b. CITIZEN FILE RUNNING HEAD ──────────────────────────────────────────
    The amber head in the outer top corner of a `citizen-file` page is text, so
    it sits on a tab, never on the brick: a solid amber face (cream type 5.3:1,
-   display face 8pt bold, reversed) in the same ink edge and hard shadow as
+   display face 10pt bold, reversed) in the same ink edge and hard shadow as
    the footer stickers. page-rules.css gives it its content and its page
    margin (0.875in); the tab occupies the 0.25in of that band that is inside
    DriveThruRPG's 0.5in text minimum (0.625in to 0.875in from the sheet top),
-   15pt tall so its 3px shadow still ends above the text block.
+   17pt tall so its 3px shadow still ends above the text block.
    The top margin boxes anchor at the sheet edge, so the offset is a margin. */
 @page citizen-file:right {
   @top-right {
     width: fit-content;
-    height: 15pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: calc(0.875in - 18pt);
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -225,13 +225,13 @@
 @page citizen-file:left {
   @top-left {
     width: fit-content;
-    height: 15pt;
+    height: 17pt;
     box-sizing: border-box;
     margin-top: calc(0.875in - 18pt);
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;

@@ -66,7 +66,7 @@ truly exceptional and not shared.
   --dc-alert-border: var(--blood);
   border-left-width: 3px;
   padding: 6pt 9pt;                            /* ← duplicates base padding logic */
-  font-size: 9.5pt;                            /* ← duplicates base font-size */
+  font-size: 11pt;                             /* ← duplicates base font-size */
 }
 ```
 

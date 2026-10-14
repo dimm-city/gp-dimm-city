@@ -142,7 +142,7 @@ Result {.dg-result}
 | `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
 | `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a dashed cyan rail and a taped-on label |
 
-Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 8pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 
 Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
