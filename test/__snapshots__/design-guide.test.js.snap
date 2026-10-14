@@ -4505,8 +4505,8 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="40:41">
 <td>Specialty Overview</td>
-<td><code>@page chapter-start</code>, <code>.card-grid</code></td>
-<td><code>.dc-card-grid</code>, <code>@specialty</code> × 10, <code>@specialty-card</code>, <code>@procedure</code>, <code>.dc-spray</code></td>
+<td><code>@page chapter-start</code>, <code>specialty-catalog</code></td>
+<td><code>@fiction-excerpt</code>, <code>@card-grid</code>, <code>@specialty</code> × 10, <code>@specialty-card</code>, <code>@procedure</code>, <code>.dc-spray</code></td>
 </tr>
 <tr data-source-range="41:42">
 <td>Specialty Profile</td>
@@ -4710,7 +4710,7 @@ This chapter will guide you through all the choices you need to make to help you
 
 exports[`rendered output 303-example-specialty-overview.md matches its snapshot 1`] = `
 "<div class="chapter dg-guide" id="ch-example-specialty-overview" data-ch="2" data-source-range="0:1"><div class="page dc-page-chapter-start chapter-2" data-page="chapter-start" data-source-range="2:3"><h1>What Do You Dream of Doing?</h1>
-<div class="section dc-section-panel" data-section="panel" data-source-range="6:7"><p>The alley narrowed to a throat of shadow as they reached the bunker’s blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.</p>
+<div class="section dc-fiction-excerpt" data-source-range="6:7"><p>The alley narrowed to a throat of shadow as they reached the bunker’s blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.</p>
 <p>“Three layers,” he murmured, dark eyes flicking as invisible data scrolled past his vision. “Motion, thermal, facial-recognition. Someone was paranoid.”</p>
 <p>Zephyr grinned, sharp and feline, and rolled her shoulders. LEDs along her spine flared as she stretched, ready to pounce, color bleeding into sigils that crawled and rearranged themselves.
 “Someone interesting,” she purred, the words hanging, vibrating low in the air.</p>

@@ -4,7 +4,7 @@
 
 # What Do You Dream of Doing?
 
-@section panel
+@fiction-excerpt
 
 The alley narrowed to a throat of shadow as they reached the bunker's blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.
 
@@ -23,7 +23,7 @@ The door didn't explode. It failed. Metal screamed, folded, and vanished inward 
 
 Five shadows moved as one, already inside, already gone.
 
-@end-section
+@end-fiction-excerpt
 
 @page specialty-catalog
 

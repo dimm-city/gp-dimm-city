@@ -38,7 +38,7 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 |---|---|---|
 | Front Matter | `@page contents`, `credits`, `intro` | `@toc`, `@lede`, `@section flat`, `[!PULLQUOTE]`, floated art |
 | Chapter Opener | `@page chapter-start`, `citizen-file`; `@chapter citizen-file` | `.dc-fiction-excerpt`, `@callout origin`, `.dc-citizen-walkthrough` |
-| Specialty Overview | `@page chapter-start`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
+| Specialty Overview | `@page chapter-start`, `specialty-catalog` | `@fiction-excerpt`, `@card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
 | Rules Pages | `@page chapter-start` | `@section panel`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |
