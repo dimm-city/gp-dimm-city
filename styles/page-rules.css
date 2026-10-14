@@ -172,6 +172,7 @@
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
+    font-weight: 400;
     letter-spacing: 0.1em;
     font-size: 0.8em;
     vertical-align: bottom;
@@ -185,6 +186,7 @@
     content: "Citizen File";
     color: var(--amber);
     font-family: var(--font-display);
+    font-weight: 400;
     letter-spacing: 0.1em;
     font-size: 0.8em;
     vertical-align: bottom;

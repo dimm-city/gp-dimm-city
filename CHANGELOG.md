@@ -24,12 +24,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
     PDF/X-1a now gets more pages flattened to an image than with 1.6.3: set
     `pdfx.transparency: preserve-text` in the book's manifest. Requires the
     Gutterpress release that ships that option.
-- **Lixdu is never faked bold.** It has one face, and its `@font-face` now
-  serves every weight, so the chapter chips and other weight-700 display text
-  print in Lixdu's own stroke instead of Chromium's synthetic bold (slightly
-  thinner). Synthetic bold prints as a Type 3 font, which Gutterpress's PDF/X
-  `preserve-text` split cannot keep: on the Field Guide, 215 of 228 pages fell
-  back to whole-page flattening because of it.
+- **Lixdu is never faked bold.** Lixdu has one face, regular, but chapter
+  chips, outcome rolls, block and card titles and headings asked for 700, so
+  Chromium synthesized a bold, which prints as a Type 3 font that
+  Gutterpress's PDF/X `preserve-text` split cannot keep: on the Field Guide,
+  215 of 228 pages fell back to whole-page flattening. Every rule that sets
+  `--font-display` now sets `font-weight: 400` (a convention test enforces
+  it), the front-matter masthead drops its 700, and headings set
+  `font-synthesis-weight: none` so `**bold**` inside a heading prints in
+  Lixdu's own stroke. That text is slightly thinner than the synthetic bold.
+  The Field Guide now has no Type 3 text and pages as before (228).
 
 ## [1.6.3] - 2026-10-12
 

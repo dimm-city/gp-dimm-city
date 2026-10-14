@@ -302,7 +302,7 @@
 .dc-outcome-key .dc-outcome-roll {
   font-family: var(--font-display);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.03em;
   color: var(--dc-outcome-key-color);
   display: block;
@@ -405,6 +405,7 @@
 
 .dc-roll-table-name {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: var(--fs-h5);
   letter-spacing: var(--ls-heading);
   text-transform: uppercase;
@@ -455,6 +456,7 @@
   top: -6px;
   left: 10px;
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 48px;
   color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));
   line-height: 1;
@@ -609,6 +611,7 @@
 
 .dc-stat-cell-val {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 26px;
   letter-spacing: 0.04em;
   color: var(--orange);

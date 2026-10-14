@@ -106,8 +106,5 @@
 @font-face {
   font-family: 'lixdu';
   src: url("../fonts/lixdu/lixdu.woff") format('woff');
-  /* One face for every weight: Lixdu has no bold, and Chromium's synthetic
-     bold prints as a Type 3 font, which Gutterpress's PDF/X preserve-text
-     split cannot keep (#385): every page with a chapter chip fell back. */
-  font-weight: 100 900; font-style: normal; font-display: swap;
+  font-weight: normal; font-style: normal; font-display: swap;
 }

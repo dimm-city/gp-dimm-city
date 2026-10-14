@@ -126,6 +126,19 @@ describe("stylesheets", () => {
   // shadows and tints may be translucent, but text itself must stay opaque:
   // translucent glyphs print fully opaque there. Pre-mix text colours with
   // color-mix() onto their surface; see docs/print-transparency-inventory.md.
+  // Lixdu ships one face (regular). A bold weight makes Chromium synthesize a
+  // bold, which prints as a Type 3 font that PDF/X preserve-text cannot keep.
+  test("set the display font at its own weight (no synthetic bold)", () => {
+    const found = [];
+    for (const rel of [...sheets, "design-guide/styles/guide.css"]) {
+      const css = stripComments(read(rel));
+      for (const [block] of css.matchAll(/\{[^{}]*font-family:\s*var\(--font-display\)[^{}]*\}/g)) {
+        if (!/font-weight:\s*400\s*;/.test(block)) found.push(`${rel}: ${block.slice(0, 80)}`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
   test("keep text opaque (PDF/X-1a)", () => {
     const TEXT_PAINT = /(?:^|[;{\s])(color|-webkit-text-fill-color|-webkit-text-stroke-color|text-decoration-color|text-shadow)\s*:([^;}]*)/g;
     const ALPHA = /rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|color-mix\([^;]*\btransparent\b/;
