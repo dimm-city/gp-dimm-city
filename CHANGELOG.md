@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-14
+
 ### Changed
 
 A redesign pass by component family. A reader should know what kind of box they
