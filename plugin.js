@@ -162,14 +162,12 @@ function addTokenClass(tok, cls) {
 }
 
 function parseSkillTitle(text) {
-  // Parse "Skill Name" or "Skill Name | T0" or "Skill Name | T0 | highlight"
-  // (`highlight` is the capstone look: the card that pays off a path.)
+  // Parse "Skill Name" or "Skill Name | T0". Anything after a second "|" is
+  // not part of the title and is dropped.
   const parts = text.split('|');
   const name = parts[0].trim();
   const tier = parts.length > 1 ? parts[1].trim() : '';
-  const flags = parts.slice(2).map(f => f.trim().toLowerCase());
-  const highlight = flags.includes('highlight');
-  return { name, tier, highlight };
+  return { name, tier };
 }
 
 function slugify(text) {
@@ -934,11 +932,11 @@ function dcSkillCards(state) {
         // repeated title stays a span: it is not a new entry.)
         emit(
           cardOpen(false) +
-          '  <div class="dc-card-tab' + (parsed.highlight ? ' dc-highlight' : '') + '">\n' +
+          '  <div class="dc-card-tab">\n' +
           '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
           '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' +
           '  </div>\n' +
-          '  <div class="dc-card-body' + (parsed.highlight ? ' dc-highlight-body' : '') + '">\n' +
+          '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
         inCard = true;

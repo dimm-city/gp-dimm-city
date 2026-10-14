@@ -17,9 +17,9 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | H3 | `### Sub-heading` | 16pt · lixdu | Column labels and sub-topics |
 | H4 | `#### Item` | 13pt uppercase · lixdu | Skill names, gear names, stat-block names |
 | Body | a paragraph | 12pt · Titillium Web | All prose |
-| Flavor | `> [!FLAVOR]` | 12pt italic · Titillium Web | In-world voice |
+| Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
-| Spray banner | `## Title {.dc-spray}` | H2 scale, spray-paint fill | Learning paths, major topic breaks |
+| Spray banner | `## Title {.dc-spray}` | H2 scale, a stencilled tag with a stepped edge | Learning paths, major topic breaks |
 | Card tab | emitted by `@skill` | 9pt · Tomorrow | Skill-card tab labels |
 | Tag | `<span class="dc-tag">` | 8pt · Tomorrow | Keyword and cost chips |
 
@@ -38,7 +38,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 </div>
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 8–9pt, uppercase, tracking 0.1em</p>
+<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 7–9pt, uppercase, tracking 0.08em or wider</p>
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
 <p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
 </div>
@@ -126,7 +126,7 @@ Twelve-point Titillium Web carries all running narrative. Corporate enforcers ea
 
 </div>
 
-Flavor keeps the body size and switches to italic and `--ink-smoke`. Never set flavor in bold italic — it reads as urgency, not voice.
+Flavor is 11pt italic in `--ink-dark`, with a rail and no box. Never set flavor in bold italic — it reads as urgency, not voice.
 
 Don't {.dg-dont-label}
 
@@ -138,6 +138,18 @@ Don't {.dg-dont-label}
 </div>
 
 **Column-safe headings:** in a two-column layout use `###` and `####`. `#` and `##` at full print size exceed a 3.5-inch column.
+
+## Size floors
+
+The type sizes are print minimums, not targets, and text that already meets its floor stays as it is.
+
+| Text | Floor |
+|---|---|
+| Running body | 9.5pt (the book sets 12pt; compact text 11pt) |
+| Rules text inside a component: callout bodies, ability rows, panel text | 9pt |
+| Secondary text: captions, table cells, stat lines, card pitches | 8pt |
+| All-caps mono labels: chips, tabs, field labels | 6.5pt, tracked at least 0.08em |
+| Reversed type (light on a solid fill) | 8pt, semibold |
 
 ## Smart typography
 

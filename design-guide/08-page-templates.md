@@ -48,7 +48,7 @@ The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter spl
 
 A location is the page template or the chapter a section sits in. It draws nothing: it sets tokens, and the components read them. That is how one `@section panel` looks right in an opener, in a rules chapter and in a lore chapter without a rule per book.
 
-A **chapter word** sets the colour register of every panel in the chapter:
+A **chapter word** sets the colour register of every panel in the chapter. It recolours a panel's accent and nothing else: an alert, a faction, a choice card or a gear entry keeps its own identity in every chapter, so a warning is a hazard sign and a Dream Master note is an ink slab wherever they sit:
 
 | You write | Section accent | Use for |
 |---|---|---|
@@ -69,7 +69,7 @@ Any other word after `@chapter` is the chapter's label, as before. A book adjust
 
 ```css
 .chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
-.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: 3px; }
+.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-lift: 3px; }
 ```
 
 A panel's edge has tokens of its own, `--dc-section-clip` (the top-right cut, 18px), `--dc-section-cut-tl`, `--dc-section-cut-br` and `--dc-section-cut-bl` (the other three corners, 0) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
@@ -167,7 +167,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-rule`, `--dc-fiction-shadow`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page it takes the heavier opener edge (two ink rules and an offset shadow) by itself; nothing to add.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-lift`, `--dc-fiction-lift-bg`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page it takes the heavier opener shadow (5px) by itself; nothing to add.
 
 The snippet picker's *Chapter Start Page* inserts this opener.
 
@@ -307,7 +307,7 @@ Rendered: [Specialty Profile](#ch-example-specialty-profile).
 
 ## Choice page
 
-Flaws, ideals, and dreams: a `@flaws` (or `@ideals`, `@dreams`) of `@card` blocks. The section class colors every card's accent. Cards stack in one column; use a tape divider between runs rather than columns.
+Flaws, ideals, and dreams: a `@flaws` (or `@ideals`, `@dreams`) of `@card` blocks. The section class sets each card's colour, silhouette and chip (Flaw: blood, a cracked edge; Ideal: HUD blue, a steady tablet; Dream: violet, a rising edge). Cards stack in one column; use a tape divider between runs rather than columns.
 
 ```markdown
 @ideals
@@ -318,7 +318,7 @@ Your **Ideal** is the belief you fall back on when things get loud.
 
 @card
 
-### Honor
+#### Honor
 
 You believe in a code, and it's your duty to uphold it.
 

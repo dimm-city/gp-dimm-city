@@ -22,6 +22,16 @@
                             `--dc-catalog-break-inside`).
      --dc-section-bg      — panel / flat background surface
      --dc-section-accent  — rail and title-bar colour; the one accent knob
+     --dc-section-bar-mix / -bar-tone — the title bar's fill: the accent mixed
+                            with a tone, `mix` of it (100% = the accent itself,
+                            the default, so a chapter that sets only the accent
+                            still recolours every bar; 0% = the tone alone, 72%
+                            = a deepened accent). -bar-fg is the bar's text;
+                            -bar-rule / -bar-rule-sub the whole `border-bottom`
+                            under a `##` / a `###` bar. A kind of section sets
+                            them; it never repaints the bar's properties.
+     --dc-section-flag    — one more box-shadow in the surface layer's stack (the
+                            headless DM strip is an inset one)
      --dc-section-surface / --dc-section-shadow — `content` of the panel's
                             ::before / ::after layers: "" paints, `none`
                             removes the layer
@@ -144,6 +154,7 @@
      right by the rail, over the rail colour pushed down by the edge. */
   background: var(--dc-section-bg);
   box-shadow:
+    var(--dc-section-flag),
     inset var(--dc-section-rail) 0 0 var(--dc-section-accent),
     var(--dc-section-rail) var(--dc-section-edge) 0 0 var(--dc-section-bg),
     0 var(--dc-section-edge) 0 0 var(--dc-section-accent);
@@ -210,12 +221,13 @@
 /* ── First-child heading inside a panel becomes a filled top bar ────────── */
 .dc-section-panel > h2:first-child,
 .dc-section-panel > h3:first-child {
-  background: var(--dc-section-accent);
-  color: var(--paper-cream);
+  background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
+  color: var(--dc-section-bar-fg);
   /* Negative margins cancel the section's padding: the bar sits flush with its edges. */
   margin: calc(-1 * var(--dc-section-pad-top)) calc(-1 * var(--dc-section-pad-right)) var(--space-md) calc(-1 * var(--dc-section-pad-left));
   padding: 0.42rem var(--space-lg) 0.28rem;
   border: 0;
+  border-bottom: var(--dc-section-bar-rule-sub);
   letter-spacing: var(--ls-display);
   text-transform: uppercase;
   break-after: avoid;
@@ -230,7 +242,7 @@
   padding-bottom: 0.40rem;
   /* The bar follows the panel's two top corners. */
   clip-path: polygon(var(--dc-section-cut-tl) 0, calc(100% - var(--dc-section-clip)) 0, 100% var(--dc-section-clip), 100% 100%, 0 100%, 0 var(--dc-section-cut-tl));
-  border-bottom: 3pt solid var(--orange);
+  border-bottom: var(--dc-section-bar-rule);
 }
 
 /* H3 — SUBORDINATE: hierarchy reads through font size alone. Its top-right cut
@@ -269,6 +281,13 @@ h3 + .dc-section-panel {
   margin-top: var(--space-lg);
 }
 
+/* A free-standing `##` straight after a box (a section, a callout, a creature
+   strip, a table) is a new topic, not a caption on it: it takes its own room,
+   where it otherwise butts against the box's edge. */
+:is(.dc-section-panel, .dc-section-flat, .dc-npc-compact, .dc-fiction-excerpt, .dc-card, .dc-alert, table, .dc-stat) + h2 {
+  margin-top: var(--space-xl);
+}
+
 /* ── Panel tab ───────────────────────────────────────────────────────────────
    A variant may name itself on its title bar: `--dc-section-tab` is the text
    of a small chip at the bar's right end (`none`, the default, draws none),
@@ -297,14 +316,14 @@ h3 + .dc-section-panel {
    Each kind cuts its own corners, so the silhouette names it before the
    colour does (the skill cards do the same per specialty):
 
-     panel      the default card                    top right
-     reference  look it up                          all four, small   HUD blue
-     lore       the world, not the rules            top left + bottom right, long   violet
-     dm         behind the screen                   top right + bottom left   ink, DM chip
-     choose     pick one for your sheet             bottom right   the chapter's accent
-     catalog    a run of entries (entries.css)      both top
-     npc-stat   a creature (below)                  both right
-     citizen-walkthrough (below)                    top left
+     panel      the default card, a solid accent bar      top right   chapter accent (magenta by default)
+     reference  look it up, a PALE bar                    all four, small   HUD blue
+     lore       the world, not the rules                  top left + bottom right, long   violet, lilac sheet
+     dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
+     choose     a form to fill in: NO bar, lightest sheet, dashed edge, yellow "Your choice" stamp
+     catalog    a run of entries (entries.css)            both top
+     npc-stat   a creature (below)                        both right
+     citizen-walkthrough (below)                          top left
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── reference — a look-up ────────────────────────────────────────────────── */
@@ -322,10 +341,12 @@ h3 + .dc-section-panel {
   --dc-section-pad-right: var(--space-md);
 }
 /* The bar is a pale HUD band with dark text, not the solid accent of a rules panel. */
-.dc-section-reference > :is(h2, h3):first-child {
-  background: var(--hud-blue-dim);
-  color: var(--ink-dark);
-  border-bottom: 2px solid var(--dc-section-accent);
+.dc-section-reference {
+  --dc-section-bar-mix: 0%;
+  --dc-section-bar-tone: var(--hud-blue-dim);
+  --dc-section-bar-fg: var(--ink-dark);
+  --dc-section-bar-rule: 3pt solid var(--hud-blue-dark);
+  --dc-section-bar-rule-sub: 3pt solid var(--hud-blue-dark);
 }
 /* Rows are tight and the column heads are the pale band again. */
 .dc-section-reference table {
@@ -354,15 +375,20 @@ h3 + .dc-section-panel {
 }
 
 /* ── lore — the world ─────────────────────────────────────────────────────────
-   Violet, the dream colour, on clean paper (cream on violet 6.5:1), with a
-   long shard off two opposite corners. */
+   Violet, the dream colour. A pale lilac sheet under a DEEP violet bar (cream
+   on it 10:1), a violet rule, and a long shard off two opposite corners: darker
+   and cooler than the magenta panel, so the two never read alike in grey. */
 .dc-section-lore {
   --dc-section-accent: var(--brand-violet);
-  --dc-section-bg: var(--paper-cream);
+  --dc-section-bg: color-mix(in srgb, var(--brand-violet) 7%, var(--paper-cream));
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 26px;
   --dc-section-cut-br: 26px;
   --dc-section-rail: 6px;
+  --dc-section-bar-mix: 72%;
+  --dc-section-bar-tone: var(--ink);
+  --dc-section-bar-rule: 3pt solid var(--brand-violet);
+  --dc-section-bar-rule-sub: 3pt solid var(--brand-violet);
 }
 .dc-section-lore p {
   line-height: 1.5;
@@ -375,28 +401,99 @@ h3 + .dc-section-panel {
   color: var(--brand-violet);
 }
 
-/* ── dm — behind the screen ───────────────────────────────────────────────── */
+/* ── dm — behind the screen ───────────────────────────────────────────────────
+   Cyan on ink is the Dream Master's colour pair, used nowhere else: an ink bar
+   with a cyan rule, a cyan rail and a "Dream Master" chip, over a cold concrete
+   body. The accent is cyan (rail, sub-heading ticks); the bar keeps the ink. */
 .dc-section-dm {
-  --dc-section-accent: var(--ink-dark);
+  --dc-section-accent: var(--brand-cyan);
   --dc-section-bg: var(--concrete-pale);
   --dc-section-clip: 20px;
   --dc-section-cut-bl: 20px;
+  --dc-section-rail: 6px;
   --dc-section-tab: "Dream Master";
-  --dc-section-tab-bg: var(--hud-blue-bright);
+  --dc-section-tab-bg: var(--brand-cyan);
   --dc-section-tab-fg: var(--ink);
+  --dc-section-bar-mix: 0%;
+  --dc-section-bar-tone: var(--ink-dark);
+  --dc-section-bar-rule: 3pt solid var(--brand-cyan);
+  --dc-section-bar-rule-sub: 3pt solid var(--brand-cyan);
+}
+/* No heading, no bar to carry the chip: the section's own surface layer draws
+   the ink strip and names it, so the kind never goes unmarked. */
+.dc-section-dm:not(:has(> :is(h2, h3):first-child)) {
+  padding-top: calc(var(--dc-section-pad-top) + 15pt);
+}
+.dc-section-dm:not(:has(> :is(h2, h3):first-child))::before {
+  content: "Dream Master";
+  padding: 3pt 10pt 0 0;
+  /* The strip is one more inset shadow in the surface layer's own stack. */
+  --dc-section-flag: inset 0 15pt 0 0 var(--ink-dark);
+  color: var(--brand-cyan);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-align: right;
+  text-transform: uppercase;
 }
 
-/* ── choose — a pick-one choice for the Citizen File ──────────────────────────
-   A form: a lighter sheet, write-in rules under table rows, a tick box in front
-   of each list item, and a "Your choice" chip on the bar. The accent stays the
-   chapter's. */
+/* ── choose — a form the player fills in ──────────────────────────────────────
+   Not a panel: a printed form, stamped. A paper sheet barely lighter than the
+   panel's cream (`--paper-form`), no solid bar, no chamfers, no shadow layer. A
+   dashed ink edge (cut along the line), a title that is only ink on paper over
+   a double rule in the chapter's accent, a hazard-yellow "Your choice" stamp, a
+   dotted write-in rule under every row and a heavy ink tick box in front of
+   every option. The accent stays the chapter's: it colours the rule only. */
 .dc-section-choose {
-  --dc-section-bg: var(--paper-light);
-  --dc-section-clip: 0px;
-  --dc-section-cut-br: 22px;
+  --dc-section-surface: none;
+  --dc-section-shadow: none;
+  --dc-section-edge: 0px;
+  --dc-section-bg: var(--paper-form);
   --dc-section-tab: "Your choice";
-  --dc-section-tab-bg: var(--paper-cream);
-  --dc-section-tab-fg: var(--dc-section-accent);
+  --dc-section-tab-bg: var(--brand-yellow);
+  --dc-section-tab-fg: var(--ink);
+  --dc-section-bar-mix: 0%;
+  --dc-section-bar-tone: var(--paper-form);
+  --dc-section-bar-fg: var(--ink);
+  --dc-section-bar-rule: 3pt double var(--dc-section-accent);
+  --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
+  background: var(--dc-section-bg);
+  border: 2pt dashed var(--ink-dark);
+}
+.dc-section-choose.dc-section-panel > :is(h2, h3):first-child {
+  margin: 0 0 var(--space-md);
+  padding: 0 0 0.07in;
+  font-size: var(--fs-h4);
+  clip-path: none;
+}
+.dc-section-choose > :is(h2, h3):first-child::after {
+  border: 1pt solid var(--ink);
+  font-size: 7.5pt;
+  transform: rotate(-2deg);
+}
+/* No heading: the sheet carries the stamp itself, floated to its right corner. */
+.dc-section-choose:not(:has(> :is(h2, h3):first-child))::before {
+  content: "Your choice";
+  position: static;
+  float: right;
+  inset: auto;
+  z-index: auto;
+  clip-path: none;
+  margin: 0 0 var(--space-sm) var(--space-md);
+  padding: 2px 8px 1px;
+  background: var(--brand-yellow);
+  border: 1pt solid var(--ink);
+  box-shadow: none;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
 }
 .dc-section-choose td {
   border-bottom: 1pt dotted var(--ink-dust);
@@ -405,16 +502,33 @@ h3 + .dc-section-panel {
 .dc-section-choose tr:nth-child(even) td {
   background: var(--dc-section-bg);
 }
+.dc-section-choose li {
+  border-bottom: 1pt dotted var(--ink-dust);
+  padding-bottom: 0.02in;
+}
 .dc-section-choose li::before,
 .dc-section-choose li > p:first-child::before {
   content: "";
   display: inline-block;
-  width: 0.62em;
-  height: 0.62em;
+  width: 0.75em;
+  height: 0.75em;
   margin-right: 0.5em;
-  border: 1.5px solid var(--dc-section-accent);
-  background: var(--paper-cream);
-  vertical-align: -0.05em;
+  border: 2.25pt solid var(--ink);
+  background: var(--paper-form);
+  vertical-align: -0.1em;
+}
+/* A run of choice cards (`@flaws`, `@ideals`, `@dreams`) with no heading is just
+   the cards: each carries its own kind, so the sheet draws nothing around them. */
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)) {
+  --dc-section-pad-top: 0px;
+  --dc-section-pad-right: 0px;
+  --dc-section-pad-bottom: 0px;
+  --dc-section-pad-left: 0px;
+  background: none;
+  border: 0;
+}
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child))::before {
+  content: none;
 }
 /* A choice inside it keeps one card, never half of one. */
 .dc-section-choose > .dc-card {
@@ -467,7 +581,24 @@ h3 + .dc-section-panel {
   padding: 7px 18px 6px;
   margin: 0 calc(-1 * var(--space-lg)) var(--space-md) calc(-1 * var(--space-lg));
   display: block;
-  border: none;
+  border: 0;
+  border-bottom: var(--dc-block-title-rule);
+}
+/* A tag stamped on the band's right end (`--dc-block-tag`, a quoted word;
+   unset, none is drawn). Reversed type: 8pt semibold. Not declared at :root:
+   unset is what draws nothing. */
+.dc-block-title::after {
+  content: var(--dc-block-tag);
+  float: right;
+  margin-left: var(--space-md);
+  padding: 1px 7px 0;
+  border: 1.5pt solid var(--dc-block-title-fg);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+  transform: rotate(-2deg);
 }
 
 /* Content children inherit fg color (overrides dc-core.css heading defaults) */
@@ -502,15 +633,20 @@ h3 + .dc-section-panel {
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 100%, 0 100%);
 }
 
-/* ── Variant: Slate — dark authority block ───────────────────────────────── */
-/* Geometry: top-left step cut. Dark surface with magenta accent.
-   Signal: key rules, Dream Master directives, important definitions. */
+/* ── Variant: Slate — a binding ruling ───────────────────────────────────── */
+/* Geometry: top-left step cut. An ink body with a BLOOD band, a crimson rail and
+   a stamped "Binding" tag: the red of cost and consequence, read as an order.
+   Not the Dream Master's colours (ink + cyan: `@section dm`) and not magenta.
+   Signal: key rulings, Dream Master directives that settle an argument. */
 .dc-block.dc-slate {
   --dc-block-bg:        var(--ink-dark);
   --dc-block-fg:        var(--paper-cream);
-  --dc-block-accent:    var(--hud-magenta);
-  --dc-block-title-bg:  var(--hud-magenta);
+  --dc-block-accent:    var(--crimson);
+  --dc-block-title-bg:  var(--blood);
   --dc-block-title-fg:  var(--paper-cream);
+  --dc-block-title-rule: 3pt solid var(--crimson);
+  --dc-block-tag: "Binding";
+  box-shadow: inset 5px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
   clip-path: polygon(
     20px 0, 100% 0,
     100% 100%, 0 100%, 0 20px
@@ -520,22 +656,22 @@ h3 + .dc-section-panel {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-/* ── Variant: Shard — zine/punk asymmetric slash ─────────────────────────── */
-/* Geometry: diagonal bottom-right cut, left accent strip.
+/* ── Variant: Shard — a zine cutting ──────────────────────────────────────── */
+/* Geometry: a torn bottom edge. Light neutral paper, an ink-grey label strip
+   instead of a coloured band, no accent colour at all: fiction and atmosphere
+   are the one register that is paper and nothing else.
    Signal: flavor text, atmospheric descriptions, setting detail. */
 .dc-block.dc-shard {
-  --dc-block-bg:        var(--paper-aged);
+  --dc-block-bg:        var(--paper-zine);
   --dc-block-fg:        var(--ink);
-  --dc-block-accent:    var(--rust);
-  --dc-block-title-bg:  var(--rust);
-  --dc-block-title-fg:  var(--paper-cream);
-  background: var(--paper-aged);
-  box-shadow: inset 4px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
-  clip-path: polygon(
-    0 0, 100% 0,
-    100% calc(100% - 28px), calc(100% - 52px) 100%,
-    0 100%
-  );
+  --dc-block-accent:    var(--ink-smoke);
+  --dc-block-title-bg:  var(--paper-stain);
+  --dc-block-title-fg:  var(--ink);
+  --dc-block-title-rule: 2pt dashed var(--ink-smoke);
+  background: var(--paper-zine);
+  padding-bottom: calc(var(--space-lg) + 4px);
+  box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 94.44% calc(100% - 6px), 88.89% 100%, 83.33% calc(100% - 6px), 77.78% 100%, 72.22% calc(100% - 6px), 66.67% 100%, 61.11% calc(100% - 4px), 55.56% 100%, 50% calc(100% - 4px), 44.44% 100%, 38.89% calc(100% - 6px), 33.33% 100%, 27.78% calc(100% - 4px), 22.22% 100%, 16.67% calc(100% - 3px), 11.11% 100%, 5.56% calc(100% - 6px), 0% 100%);
 }
 .dc-block.dc-shard .dc-block-title {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 14px));
@@ -607,35 +743,117 @@ h3 + .dc-section-panel {
   font-style: italic;
 }
 
-/* ── Card list contexts (components/*.css owns these — NOT the book's own sheet) ── */
-
-/* Flaw cards */
-.section.dc-flaws > .dc-card {
-  border-left-color: var(--blood);
+/* ── The three kinds of choice (components/*.css owns these — NOT the book's own sheet) ──
+   `@flaws`, `@ideals` and `@dreams` set the card tokens; a card INSIDE one
+   takes the choice chrome below (and no other `.dc-card` does: a gear entry
+   or a faction is a card too). The silhouette, the name's colour, the kind
+   chip and the quote well all follow the kind. The name is the `####` (the
+   card heading); a `###` is not one (core only takes the first `####`), so it
+   sits first in the body and is dressed the same. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card {
+  background: var(--dc-choice-surface);
+  border: 1.5pt solid var(--ink-dark);
+  border-left: 6px solid var(--dc-choice-accent);
+  border-top: 5px solid var(--dc-choice-accent);
+}
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
+  margin-top: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+  margin-bottom: var(--space-xs);
+  color: var(--dc-choice-accent);
+}
+/* The kind, said in a word before the name: "Flaw", "Ideal", "Dream".
+   Reversed type: 8pt semibold. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child)::before {
+  content: var(--dc-choice-kind);
+  display: block;
+  width: fit-content;
+  margin-bottom: 3px;
+  padding: 1px 7px 0;
+  background: var(--dc-choice-accent);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+}
+/* The closing quote: the choice's one line of voice. A well tinted with the
+   card's own colour (not the page's grey), ink on it, a ruled edge. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body .dc-card-footer {
+  margin: var(--space-sm) 0 0;
+  padding: 4pt 8pt;
+  background: var(--dc-choice-tint);
+  border: 0;
+  border-left: 3px solid var(--dc-choice-accent);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-style: italic;
 }
 
-/* Ideal cards */
-.section.dc-ideals > .dc-card {
-  border-left-color: var(--hud-blue-dark);
+/* Flaws: blood. A cracked edge (jagged along the foot, a nick off the top
+   right) over a blood-tinted quote. */
+.section.dc-flaws {
+  --dc-choice-accent: var(--blood);
+  --dc-choice-tint: color-mix(in srgb, var(--blood) 11%, var(--paper-cream));
+  --dc-choice-kind: "Flaw";
+  --dc-card-shape: polygon(0 0, calc(100% - 22px) 0, 100% 14px, 100% calc(100% - 5px), 94% 100%, 88% calc(100% - 4px), 80% 100%, 71% calc(100% - 6px), 63% calc(100% - 1px), 52% calc(100% - 5px), 41% 100%, 33% calc(100% - 4px), 22% 100%, 12% calc(100% - 5px), 5% 100%, 0 calc(100% - 3px));
 }
 
-/* Dream cards */
+/* Ideals: HUD blue. A steady tablet: both top corners cut the same, nothing
+   uneven, a rule under the name. */
+.section.dc-ideals {
+  --dc-choice-accent: var(--hud-blue-dark);
+  --dc-choice-tint: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
+  --dc-choice-kind: "Ideal";
+  --dc-card-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
+}
+.section.dc-ideals > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
+  padding-bottom: 3px;
+  border-bottom: 1.5pt solid var(--hud-blue-dark);
+}
+
+/* Dreams: violet. The top edge rises to the right, as an aim does. */
+.section.dc-dreams {
+  --dc-choice-accent: var(--brand-violet);
+  --dc-choice-tint: color-mix(in srgb, var(--brand-violet) 10%, var(--paper-cream));
+  --dc-choice-kind: "Dream";
+  --dc-card-shape: polygon(0 18px, 100% 0, 100% 100%, 0 100%);
+}
 .section.dc-dreams > .dc-card {
-  border-left-color: var(--augmerc-accent);
+  padding-top: calc(var(--space-sm) + 8px);
 }
 
 /* Faction (`@faction megacorp|cabal|cult|enforcer`): an organization's profile.
-   A .dc-card whose rail and kind badge take the kind's colour. The name is the
-   first heading (`####` as authored, or `###`); the badge is a span core puts
-   first, floated to the right so the name and the text run beside it.
-   Splits across pages by default (see below).
-   Token contract: --dc-faction-accent (rail and badge fill),
-   --dc-faction-badge-fg (badge text), --dc-faction-break-inside. */
+   A .dc-card whose silhouette, top band, name and badge all say which kind it
+   is. The name is the first heading (`####` as authored, or `###`); the badge is
+   a span core puts first, floated to the right so the name and the text run
+   beside it. Splits across pages by default (see below).
+   Token contract (a kind class sets them; all defaults at :root):
+     --dc-faction-accent       rail, badge fill
+     --dc-faction-badge-fg     badge text (reversed: 8pt semibold)
+     --dc-faction-badge-shape  the badge's clip-path
+     --dc-faction-shape        the card's clip-path (its silhouette)
+     --dc-faction-surface      the sheet
+     --dc-faction-band         a box-shadow list: the top band, drawn as inset
+                               solid shadows, so it prints as vector ink
+     --dc-faction-band-height  how far the band reaches down (clears the name)
+     --dc-faction-pad-bottom   padding under the text
+     --dc-faction-title        the name's colour
+     --dc-faction-title-bg     a fill behind the name (none; the enforcer's label)
+     --dc-faction-title-pad    its side padding
+     --dc-faction-break-inside split / keep whole */
 .dc-card.dc-faction {
+  position: relative;
   clip-path: var(--dc-faction-shape);
-  border-left-width: 5px;
-  border-left-color: var(--dc-faction-accent);
-  padding: 10pt 14pt;
+  background: var(--dc-faction-surface);
+  box-shadow: var(--dc-faction-band);
+  border-left: 5px solid var(--dc-faction-accent);
+  padding: calc(var(--dc-faction-band-height) + 7pt) 14pt var(--dc-faction-pad-bottom);
   /* A profile runs to half a page or more; kept whole (.dc-card's default) it
      left half-empty pages through a chapter of factions. It splits between
      paragraphs like an entry; the name keeps with its first lines (below), and
@@ -643,9 +861,18 @@ h3 + .dc-section-panel {
   break-inside: var(--dc-faction-break-inside);
 }
 .dc-card.dc-faction > :is(h3, h4):first-of-type {
+  width: fit-content;
+  padding: 1px var(--dc-faction-title-pad) 0;
+  background: var(--dc-faction-title-bg);
   font-size: var(--fs-h4);
   letter-spacing: var(--ls-display);
   margin: 0 0 4px;
+  color: var(--dc-faction-title);
+  break-after: avoid;
+}
+/* The first paragraph keeps with the next, so a profile never leaves just its
+   name and one line at a page foot (the card moves over, or splits later). */
+.dc-card.dc-faction > p:first-of-type {
   break-after: avoid;
 }
 .dc-faction-kind {
@@ -653,21 +880,83 @@ h3 + .dc-section-panel {
   margin: 0 0 4px 10px;
   padding: 2px 9px 1px 8px;
   font-family: var(--font-mono);
-  font-size: 7.5pt;
+  font-size: 8pt;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.5;
   background: var(--dc-faction-accent);
   color: var(--dc-faction-badge-fg);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  clip-path: var(--dc-faction-badge-shape);
 }
-.dc-faction-megacorp { --dc-faction-accent: var(--hud-blue-dark); }
-.dc-faction-cabal    { --dc-faction-accent: var(--brand-violet); }
-.dc-faction-cult     { --dc-faction-accent: var(--blood); }
+
+/* Megacorp: clean corporate HUD. Hard rectangles, nothing cut, a precise blue
+   band with a cyan edge; the badge a square tag. */
+.dc-faction-megacorp {
+  --dc-faction-accent: var(--hud-blue-dark);
+  --dc-faction-shape: none;
+  --dc-faction-badge-shape: none;
+  --dc-faction-surface: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
+  --dc-faction-band: inset 0 6pt 0 0 var(--hud-blue-dark), inset 0 8pt 0 0 var(--brand-cyan);
+  --dc-faction-title: var(--hud-blue-dark);
+}
+
+/* Cabal: violet and secretive. Long cuts off two opposite corners, a deep
+   violet band, a lilac sheet, and an inset shadow down the foot. */
+.dc-faction-cabal {
+  --dc-faction-accent: var(--brand-violet);
+  --dc-faction-shape: polygon(22px 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%, 0 22px);
+  --dc-faction-surface: color-mix(in srgb, var(--brand-violet) 9%, var(--paper-cream));
+  --dc-faction-band: inset 0 10pt 0 0 color-mix(in srgb, var(--brand-violet) 72%, var(--ink)), inset 0 -5px 0 0 var(--brand-violet);
+  --dc-faction-band-height: 10pt;
+  --dc-faction-pad-bottom: calc(10pt + 5px);
+  --dc-faction-title: var(--brand-violet);
+}
+
+/* Cult: blood and ritual. Torn along the top and foot, a blood band, a pale
+   blood wash, the name in blood. Landfill, not tech. */
+.dc-faction-cult {
+  --dc-faction-accent: var(--blood);
+  --dc-faction-shape: polygon(0% 0px, 7.14% 4px, 14.29% 0px, 21.43% 7px, 28.57% 0px, 35.71% 7px, 42.86% 0px, 50% 4px, 57.14% 0px, 64.29% 5px, 71.43% 0px, 78.57% 7px, 85.71% 0px, 92.86% 6px, 100% 0px, 100% 100%, 92.86% calc(100% - 7px), 85.71% 100%, 78.57% calc(100% - 3px), 71.43% 100%, 64.29% calc(100% - 7px), 57.14% 100%, 50% calc(100% - 3px), 42.86% 100%, 35.71% calc(100% - 6px), 28.57% 100%, 21.43% calc(100% - 5px), 14.29% 100%, 7.14% calc(100% - 7px), 0% 100%);
+  --dc-faction-surface: color-mix(in srgb, var(--blood) 9%, var(--paper-cream));
+  --dc-faction-band: inset 0 12pt 0 0 var(--blood);
+  --dc-faction-band-height: 12pt;
+  --dc-faction-pad-bottom: 14pt;
+  --dc-faction-title: var(--blood);
+}
+
+/* Enforcer: civic hazard. An octagon (a badge), a hazard-tape band of ink and
+   yellow, the name set as a yellow label in ink. The tape is vector: a yellow
+   strip (::before) under a skewed thick DASHED ink border (::after), clipped
+   by the octagon. */
 .dc-faction-enforcer {
-  --dc-faction-accent: var(--brand-yellow);
-  --dc-faction-badge-fg: var(--ink);
+  --dc-faction-accent: var(--ink-dark);
+  --dc-faction-badge-fg: var(--brand-yellow);
+  --dc-faction-badge-shape: none;
+  --dc-faction-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+  --dc-faction-band: inset 0 0 0 0 var(--ink);
+  --dc-faction-band-height: 9pt;
+  --dc-faction-title: var(--ink);
+  --dc-faction-title-bg: var(--brand-yellow);
+  --dc-faction-title-pad: 8px;
+}
+.dc-card.dc-faction-enforcer::before,
+.dc-card.dc-faction-enforcer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.dc-card.dc-faction-enforcer::before {
+  height: var(--dc-faction-band-height);
+  background: var(--brand-yellow);
+}
+.dc-card.dc-faction-enforcer::after {
+  height: 0;
+  border-top: var(--dc-faction-band-height) dashed var(--ink);
+  transform: skewX(-45deg);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -793,6 +1082,24 @@ h3 + .dc-section-panel {
   padding-top: 0.05in;
   margin-top: 0.1in;
 }
+/* The names are lixdu, the widest face in the book: in a two-column run a name
+   such as GREASE MONKEY has to fit the column on one line. */
+.dc-npc-stat .gp-columns > h4 {
+  font-size: 11pt;
+  letter-spacing: 0.03em;
+}
+
+/* The flavor line: a ruled line of voice, not a box. The rail is the block's
+   rule colour; no well, no pale-blue bar (dc-core's blockquote), ink-smoke on
+   the paper itself (7.4:1). */
+.dc-npc-stat blockquote {
+  background: none;
+  border-width: 0 0 0 4px;
+  border-color: var(--dc-npc-stat-rule);
+  padding: 2pt 0 2pt 10pt;
+  margin: 0.06in 0;
+  color: var(--ink-smoke);
+}
 
 .dc-npc-stat h5 {
   /* TRAITS / EQUIPMENT / CYBERNETICS section-anchor labels — must read
@@ -813,26 +1120,44 @@ h3 + .dc-section-panel {
   margin-bottom: 0.04in;
 }
 
-/* Primary stat line — "2 HP — 1 Damage" sits directly after the flavor quote. */
-.dc-npc-stat blockquote + p {
+/* Primary stat line — "2 HP — 1 Damage" sits directly after the flavor quote, and
+   is the first thing a reader scans for: set as a chip (the first LINE, in the
+   block's primary colour, 12pt bold, cream on it; `::first-line` is how one
+   paragraph gives one line a fill, with no markup). `pre-line` turns the soft
+   break between the two lines the author wrote into a line break, so the second
+   ("Fodder — Medium") falls under the chip as a small caps tag. Written as two
+   paragraphs, the second is the same tag. */
+.dc-npc-stat:not(.dc-npc-compact) blockquote + p {
   font-family: var(--font-mono);
-  font-size: 8pt;
-  /* The default --hud-blue-dark (#14516e) gives ~5.5:1 on wall and 7.45:1 on
-     paper-cream; --hud-blue (#1f6f94) is 3.24:1 on wall and fails AA. */
-  color: var(--dc-npc-stat-primary);
-  letter-spacing: 0.04em;
-  margin-bottom: 0.02in;
+  font-size: 8.5pt;
+  /* The default --hud-blue-dark (#14516e) gives 7.45:1 under cream; --hud-blue
+     (#1f6f94) is 3.24:1 on the wall and fails AA. */
+  color: var(--dc-npc-stat-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: pre-line;
+  margin-bottom: 0.04in;
+}
+.dc-npc-stat:not(.dc-npc-compact) blockquote + p::first-line {
+  background: var(--dc-npc-stat-primary);
+  color: var(--paper-cream);
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: none;
 }
 
-/* Secondary stat line — "Fodder — Medium" type+size. Carries the
+/* Secondary stat line — "Fodder — Medium" type+size, as a tag. Carries the
    stat-summary divider: a dotted ink hairline AFTER this line and
    BEFORE the TRAITS h5 creates the visible skeleton
    (header → flavor quote → meta-stats → SEPARATOR → ability sections). */
 .dc-npc-stat blockquote + p + p {
   font-family: var(--font-mono);
-  font-size: 7.5pt;
+  font-size: 8pt;
+  font-weight: 600;
   color: var(--dc-npc-stat-secondary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   border-bottom: 0.75pt dotted var(--ink-dust);
   padding-bottom: 0.05in;
   margin-bottom: 0.06in;
@@ -868,6 +1193,7 @@ h3 + .dc-section-panel {
   margin: 0 0 4pt;
   padding: 0 0 0 8pt;
   border-width: 0 0 0 3px;
+  border-color: var(--dc-npc-stat-rule);
   background: none;
   font-size: 9pt;
 }
@@ -879,6 +1205,9 @@ h3 + .dc-section-panel {
   border-bottom: 0;
   color: var(--paper-cream);
   font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
 }
 .dc-npc-compact blockquote + p {
   background: var(--dc-npc-stat-primary);
@@ -941,8 +1270,8 @@ h3 + .dc-section-panel {
    FICTION EXCERPT — narrative prose with optional inline art
    ═════════════════════════════════════════════════════════════════════════
    Wraps a fiction section (chapter opener prose, vignette, in-character
-   narrative). Aged paper set INTO the page instead of a panel on it: a hard
-   inner shadow top and left (--dc-fiction-shadow) under three cut corners, no
+   narrative). A torn-out printed page stuck on the wall: light neutral paper,
+   torn top and bottom edges, a hard ink shadow (--dc-fiction-lift wide), no
    rail, no title bar, narrative leading, and the first image floats left
    (subsequent ones right) — authors don't need per-image positioning classes.
 
@@ -953,18 +1282,40 @@ h3 + .dc-section-panel {
      @end-fiction-excerpt
 
    Tokens (defaults in dc-component-defaults.css :root): --dc-fiction-bg,
-   --dc-fiction-line-height, --dc-fiction-rule (top/bottom edge weight),
-   --dc-fiction-shadow, --dc-fiction-art-*. A chapter or page sets them from
-   context, e.g. `#chapter-02 .dc-fiction-excerpt { --dc-fiction-bg: … }`; the
-   chapter-start page's heavier edge is set in page-templates.css. */
+   --dc-fiction-line-height, --dc-fiction-rule (ink edge weight, 0), --dc-fiction-shadow
+   (a box-shadow on the paper, none), --dc-fiction-lift / --dc-fiction-lift-bg
+   (the hard shadow's offset and colour), --dc-fiction-shape, --dc-fiction-art-*.
+   A chapter or page sets them from context, e.g.
+   `#chapter-02 .dc-fiction-excerpt { --dc-fiction-bg: … }`; the chapter-start
+   page's heavier shadow is set in page-templates.css. */
 .dc-fiction-excerpt {
-  clip-path: var(--dc-fiction-shape);
+  /* The sheet is two clipped layers behind the text (see the panel above): the
+     paper, and a hard ink shadow shifted down and right. The box itself is not
+     clipped, so the shadow can leave the torn silhouette. */
+  position: relative;
+  isolation: isolate;
+  line-height: var(--dc-fiction-line-height);
+  padding: calc(var(--space-md) + 4px) var(--space-lg);
+  margin: 0 var(--dc-fiction-lift) 12pt 0;
+}
+.dc-fiction-excerpt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background: var(--dc-fiction-bg);
   border-block: var(--dc-fiction-rule) solid var(--ink-dark);
   box-shadow: var(--dc-fiction-shadow);
-  line-height: var(--dc-fiction-line-height);
-  padding: var(--space-md) var(--space-lg);
-  margin: 0 0 12pt;
+  clip-path: var(--dc-fiction-shape);
+  z-index: -1;
+}
+.dc-fiction-excerpt::after {
+  content: "";
+  position: absolute;
+  inset: var(--dc-fiction-lift) calc(-1 * var(--dc-fiction-lift)) calc(-1 * var(--dc-fiction-lift)) var(--dc-fiction-lift);
+  background: var(--dc-fiction-lift-bg);
+  clip-path: var(--dc-fiction-shape);
+  z-index: -2;
+  pointer-events: none;
 }
 
 .dc-fiction-excerpt p {

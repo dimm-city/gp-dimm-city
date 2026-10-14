@@ -624,19 +624,27 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 }
 
 /* ── §4 Demo-chapter identity map (302–307) ────────────────────────────────── */
-/* Chapter 2 — specialty overview (Choose Your Specialty card grid): brand-magenta gateway */
+/* Accent map by role (docs/constitution.md §VII: magenta is chapter punch and the
+   package's default panel only, so no spread in this guide carries three magenta
+   section bars). Chapter 1 keeps the package's `citizen-file` word (the one
+   magenta chapter); every other example chapter takes a role colour.
+
+   Chapter 2 — specialty overview (Choose Your Specialty card grid): a choice
+   the player makes, HUD blue (player-facing look-up). */
 #ch-example-specialty-overview {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--hud-blue-dark);
 }
 
-/* Chapter 3 — specialty profile spreads (Augmerc and friends): brand-magenta gateway */
+/* Chapter 3 — specialty profile spreads (Augmerc and friends): the arcane side
+   of a specialty, amethyst (the world & the arcane). */
 #ch-example-specialty-profile {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--crystal-amethyst);
 }
 
-/* Chapter 4 — rules (Are You Lucid Yet, Dreams, City, etc.): brand identity register */
+/* Chapter 4 — rules (Are You Lucid Yet, Dreams, City, etc.): player-facing
+   rules, HUD blue. */
 #ch-example-rules {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--hud-blue-dark);
 }
 
 /* Street-sign image in the chapter opener fiction excerpt: float right so the
@@ -669,7 +677,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    with this chapter's rust --dc-section-accent. Neutral --ink-dark
    page-titles let the chapter's rust components carry the chroma identity
    without fighting the title. */
-#ch-example-dm-npcs h2:not(.dc-spray):not(.dc-chevron) {
+#ch-example-dm-npcs h2:not(.dc-spray, .dc-chevron, .dc-section-panel > h2) {
    color: var(--ink-dark);
    border-bottom-color: var(--rust);
 }
@@ -697,21 +705,9 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    --dc-npc-stat-primary: var(--blood);
 }
 
-/* ── DM/NPC chapter: callouts catch a faint fungi glow ───────────────────────
-   Plants the fluorescent-fungi pillar in the DM chapter. The rust accents on
-   section headers and stat-block rules deliver the gutter pillar; this rule
-   gives advisory/vibe callouts a low-level organic glow — alley fungus
-   creeping into the encounter rules. */
-#ch-example-dm-npcs .dc-alert {
-   /* A paper-stain tint with a --rust border accent matches the chapter's
-     rust --dc-section-accent so the callouts feel like part of the chapter
-     register, not an alien color block (a fungi-rot mix read as muddy
-     olive-green). */
-   --dc-alert-bg: var(--paper-stain);
-   --dc-alert-border: var(--rust);
-   --dc-alert-fg: var(--ink);
-   --dc-alert-label-color: var(--rust);
-}
+/* DM/NPC chapter: callouts keep their own register. (A chapter-wide
+   `--dc-alert-*` re-theme used to turn every variant grey-brown here; a
+   callout's variant is its meaning, so a chapter no longer repaints it.) */
 
 /* ── §5 Frozen field-guide art classes (301, 302, 305) ─────────────────────── */
 .fg-art-street-sign {

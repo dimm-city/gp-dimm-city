@@ -26,6 +26,18 @@
      Not registered with @property { inherits: false }: a pseudo-element
      inherits from its host, so a non-inheriting token never reached the
      ::before/::after that read it. */
+  /* The title bar: its fill is the accent mixed with a tone, `mix` of it (100% =
+     the accent itself, so a chapter that sets only the accent recolours every
+     bar); fg its text; rule / rule-sub the whole `border-bottom` under a `##` /
+     a `###` bar. A kind of section sets them (dm, lore, choose, reference, the
+     catalog). `flag` is one more box-shadow in the panel surface layer's stack,
+     zero-size unless a kind sets it. */
+  --dc-section-bar-mix:      100%;
+  --dc-section-bar-tone:     var(--ink);
+  --dc-section-bar-fg:       var(--paper-cream);
+  --dc-section-bar-rule:     3pt solid var(--orange);
+  --dc-section-bar-rule-sub: none;
+  --dc-section-flag:         0 0 0 0 var(--ink-dark);
   --dc-section-surface:   "";
   --dc-section-drop:      0 0 0 transparent;
   --dc-section-edge:      0px;
@@ -84,6 +96,9 @@
   --dc-alert-label-spacing:  0.12em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
+  --dc-alert-frame:          none;                  /* an inset box-shadow ring (warning's ink frame) */
+  --dc-alert-label-bg:       transparent;           /* a chip behind the label (warning tape, DM chip) */
+  --dc-alert-label-pad:      0;
   /* Each boxed component cuts its own corners (a clip-path on the box), so its
      shape names it, as the skill cards' shapes name their specialty. A context
      that needs the plain box (a catalog's ruled entries) sets the token to
@@ -104,6 +119,42 @@
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
   --dc-specialty-intro-title-color: var(--bg);
   --dc-specialty-intro-bg:          var(--hud-panel);
+
+  /* Title band chrome, shared by the learning-path banner (h3.dc-spray, data.css)
+     and the specialty-intro title (h2, specialty.css). A specialty sets these in
+     specialty-identity.css so the band carries its register: tech = a rule of
+     LED dots and an inset rim, magic = a flat facet plane, hazard = a diagonal
+     tape rule, landfill = a torn edge (in the title shape) and no rule. All
+     solid fills, borders and clipped polygons: vector in a PDF/X build, no
+     gradient. Rule: the bar under the band (colour, height); Tick: a dotted or
+     dashed border drawn along the bar's top (colour, style, weight; `none`
+     draws nothing); Skew/Bleed: the bar slanted (hazard tape) and how far it
+     overhangs each side so the slant fills the band (the band's clip trims it).
+     Facet: a flat plane at the band's right (colour, width, clip). Rim: an
+     inset box-shadow on the band (the LED top highlight). */
+  --dc-band-rule:        var(--hud-magenta);
+  --dc-band-rule-h:      3px;
+  --dc-band-tick:        var(--hud-magenta);
+  --dc-band-tick-style:  none;
+  --dc-band-tick-w:      0px;
+  --dc-band-rule-skew:   0deg;
+  --dc-band-rule-bleed:  0px;
+  --dc-band-facet:       transparent;
+  --dc-band-facet-width: 32%;
+  --dc-band-facet-clip:  polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+  --dc-band-rim:         none;
+
+  /* Skill-card tab tier pill (AUG1.3) and the path's code chip and sticker
+     chain: each specialty sets its own triad on them. */
+  --dc-tier-bg:          var(--ink-dark);
+  --dc-tier-fg:          var(--paper-cream);
+  --dc-tier-edge:        var(--paper-cream);
+  --dc-path-code-bg:     var(--paper-cream);
+  --dc-path-code-fg:     var(--hud-blue-dark);
+  --dc-path-chip-bg:     var(--ink-dark);
+  --dc-path-chip-fg:     var(--paper-cream);
+  --dc-path-chip-edge:   var(--hud-blue-dark);
+  --dc-path-note-rail:   var(--orange);          /* the subtitle's rail */
 
   /* .dc-path-shell public API */
   --dc-path-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> .dc-path-shell context */
@@ -126,6 +177,8 @@
   --dc-block-accent:   var(--hud-blue-dark);
   --dc-block-title-bg: var(--hud-blue-dark);
   --dc-block-title-fg: var(--paper-cream);
+  --dc-block-title-rule: none;        /* a whole `border-bottom` under the band */
+  --dc-block-tag:      none;          /* a quoted word stamped on the band's right end */
 
   /* ─── More component public tokens ───────────────────────────────────────
      Override any of these at chapter-id / project scope the same way as the
@@ -138,15 +191,18 @@
   --dc-ap-fg:                var(--paper-cream);
   --dc-ap-border:            var(--ink-dark);
 
-  /* .dc-fiction-excerpt public API */
-  --dc-fiction-bg:           var(--paper-aged);
-  --dc-fiction-rule:         0px;                  /* top/bottom edge weight; the chapter-start page sets 2px */
-  --dc-fiction-shadow:       inset 5px 5px 0 color-mix(in srgb, var(--ink-dark) 40%, transparent), inset -2px -2px 0 color-mix(in srgb, var(--paper-cream) 60%, transparent);  /* recessed: dark top/left, light bottom/right */
+  /* .dc-fiction-excerpt public API: a torn-out printed page, light paper with a
+     hard ink shadow (a zine sheet stuck on the wall), never the wall's own value */
+  --dc-fiction-bg:           var(--paper-zine);
+  --dc-fiction-rule:         0px;                  /* top/bottom ink edge weight (drawn under the torn edge, so a book that wants it sets a straight --dc-fiction-shape too) */
+  --dc-fiction-shadow:       none;                 /* a box-shadow value on the paper (was a recessed inset pair; the sheet now sits on the wall, see --dc-fiction-lift) */
+  --dc-fiction-lift:         3px;                  /* offset of the hard ink shadow under the sheet; the chapter-start page sets 5px */
+  --dc-fiction-lift-bg:      var(--ink-dark);      /* its colour */
   --dc-fiction-art-width:    3in;
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);
   --dc-fiction-line-height:  1.45;
-  --dc-fiction-shape:        polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px));
+  --dc-fiction-shape:        polygon(0% 0px, 3.33% 4px, 6.67% 0px, 10% 3px, 13.33% 0px, 16.67% 5px, 20% 0px, 23.33% 2px, 26.67% 0px, 30% 2px, 33.33% 0px, 36.67% 2px, 40% 0px, 43.33% 4px, 46.67% 0px, 50% 2px, 53.33% 0px, 56.67% 3px, 60% 0px, 63.33% 2px, 66.67% 0px, 70% 2px, 73.33% 0px, 76.67% 5px, 80% 0px, 83.33% 5px, 86.67% 0px, 90% 2px, 93.33% 0px, 96.67% 3px, 100% 0px, 100% 100%, 96.67% calc(100% - 2px), 93.33% 100%, 90% calc(100% - 5px), 86.67% 100%, 83.33% calc(100% - 2px), 80% 100%, 76.67% calc(100% - 2px), 73.33% 100%, 70% calc(100% - 3px), 66.67% 100%, 63.33% calc(100% - 2px), 60% 100%, 56.67% calc(100% - 5px), 53.33% 100%, 50% calc(100% - 2px), 46.67% 100%, 43.33% calc(100% - 3px), 40% 100%, 36.67% calc(100% - 2px), 33.33% 100%, 30% calc(100% - 3px), 26.67% 100%, 23.33% calc(100% - 4px), 20% 100%, 16.67% calc(100% - 5px), 13.33% 100%, 10% calc(100% - 3px), 6.67% 100%, 3.33% calc(100% - 2px), 0% 100%);  /* torn top and bottom edges, straight sides */
 
   /* .dc-chevron (chevron banner) public API */
   --dc-chevron-bg:           var(--brand-magenta-deep);
@@ -160,10 +216,10 @@
   --dc-card-tab-shadow:      none;
 
   /* .dc-definition-block public API */
-  --dc-definition-block-accent:       var(--hud-blue-bright);
-  --dc-definition-block-accent-width: 4px;
-  --dc-definition-block-surface:      color-mix(in srgb, var(--hud-blue-dim) 18%, var(--paper-cream));
-  --dc-definition-block-shape:        polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+  --dc-definition-block-accent:       var(--hud-blue-dark);  /* the rules over and under, and the term */
+  --dc-definition-block-accent-width: 3pt;                   /* weight of the rule over the block */
+  --dc-definition-block-surface:      var(--paper-cream);
+  --dc-definition-block-shape:        none;                  /* a dictionary page: no cut corners */
 
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
@@ -171,7 +227,7 @@
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
-  --dc-flavor-color:         var(--ink-smoke);
+  --dc-flavor-color:         var(--ink-dark);
 
   /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
@@ -182,7 +238,19 @@
   --dc-entry-rule:           0px;                   /* a catalog sets it */
   --dc-entry-kind:           none;                  /* a quoted word over the name */
   --dc-entry-art-width:      50%;                   /* the item's picture, floated right; a classed image is the author's */
-  --dc-entry-shape:          polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);  /* a catalog sets none */
+  --dc-entry-shape:          polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);  /* each kind sets its own; a catalog sets none */
+  --dc-entry-radius:         0;                     /* a drug label is rounded */
+  --dc-entry-ornament:       none;                  /* `""` draws the kind's ornament layer (::after) */
+  --dc-entry-orn-inset:      0;
+  --dc-entry-orn-bg:         none;
+  --dc-entry-orn-border:     0 none;
+  --dc-entry-orn-clip:       none;
+  --dc-entry-orn-z:          auto;
+  --dc-entry-frame:          none;                  /* an inset keyline (box-shadow) */
+  --dc-entry-badge-bg:       var(--ink-dark);       /* the kind badge over the name */
+  --dc-entry-badge-fg:       var(--paper-cream);
+  --dc-entry-badge-shape:    none;
+  --dc-entry-badge-radius:   0;
 
   /* credits page: the plate under the colophon (an image with no class) */
   --dc-credits-art-height:   2.75in;
@@ -192,12 +260,21 @@
   --dc-field-surface:        var(--paper-aged);
   --dc-field-fg:             var(--ink);
   --dc-field-label-fg:       var(--paper-cream);    /* text on the chip */
+  --dc-field-edge-width:     0px;                   /* frame on the other three sides (effects and side effects set it) */
+  --dc-field-edge-style:     solid;
 
   /* .dc-intro public API */
   --dc-intro-accent:         var(--orange);
-  --dc-intro-bg:             var(--paper-stain);
+  --dc-intro-bg:             var(--paper-light);   /* lighter than the wall: ink type reads at 12:1 */
+  --dc-intro-color:          var(--ink);
+  --dc-intro-size:           var(--fs-h4);          /* set larger than the 12pt body */
+  --dc-intro-weight:         600;
+  --dc-intro-style:          normal;
+  --dc-intro-rail:           6px;
+  --dc-intro-rule:           3px;                  /* ink foot rule; pages that stack the lede flush set 0 */
   --dc-intro-gap:            calc(0.1in + 3pt);    /* space below; the front-matter pages set 0 to stack it flush on the next box */
   --dc-intro-pad-bottom:     10px;
+  --dc-intro-drop:           var(--shadow-poster); /* hard poster shadow; a lede set on paper (the path subtitle) sets 0 0 0 transparent */
 
   /* .dc-toc (contents card) public API */
   --dc-toc-rail-y:           4pt;                  /* rust strips top and bottom */
@@ -213,6 +290,7 @@
   --dc-npc-stat-secondary:   var(--ink-smoke);
 
   /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
+  --dc-outcome-key-col:      max(130px, 26%);   /* chip column: wider on a full-width ladder so long band names wrap in three lines at most */
   --dc-outcome-key-color:    var(--paper-cream);
   --dc-outcome-name-color:   var(--paper-cream);
   --dc-outcome-name-opacity: 1;
@@ -222,6 +300,14 @@
   --dc-outcomes-label-color: var(--paper-cream);
   --dc-outcomes-surface:     var(--paper-cream);
   --dc-outcomes-divider:     var(--hud-blue-dim);
+
+  /* procedure (`@procedure`) public API */
+  --dc-steps-accent:         var(--hud-blue-dark);  /* number strip */
+  --dc-steps-surface:        var(--paper-cream);    /* plate behind the step text */
+
+  /* at-a-glance card (`.dc-at-a-glance-card`) public API */
+  --dc-at-a-glance-accent:   var(--hud-blue-dark);  /* frame and label band */
+  --dc-at-a-glance-value:    var(--ink);            /* the value */
 
   /* roll table (`@roll-table`) public API */
   --dc-roll-table-accent:    var(--hud-blue-dark);
@@ -233,13 +319,30 @@
   --dc-section-tab-bg:       var(--ink-dark);
   --dc-section-tab-fg:       var(--paper-cream);
 
-  /* card (`@card`) public API */
+  /* card (`@card`) public API. A choice card says which choice it is: the
+     enclosing @flaws / @ideals / @dreams sets accent, kind chip, tint and shape
+     (flaws = blood, a cracked edge; ideals = HUD blue, a steady tablet;
+     dreams = violet, a rising edge). Outside them a card is plain ink. */
   --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
+  --dc-choice-surface:       var(--paper-cream);
+  --dc-choice-tint:          color-mix(in srgb, var(--ink-dark) 8%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-kind:          none;                  /* the small word over the title: "Flaw", "Ideal", "Dream" */
 
-  /* faction (`@faction`) public API */
-  --dc-faction-accent:       var(--hud-blue-dark);
+  /* faction (`@faction`) public API. Each kind sets all of these on its own
+     class (megacorp = blue hard rectangle, cabal = violet cut corners, cult =
+     blood torn edges, enforcer = hazard stripes and an octagon badge). */
+  --dc-faction-accent:       var(--hud-blue-dark);   /* rail and badge fill */
   --dc-faction-shape:        polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
   --dc-faction-badge-fg:     var(--paper-cream);
+  --dc-faction-badge-shape:  polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  --dc-faction-surface:      var(--paper-cream);
+  --dc-faction-band:         inset 0 8pt 0 0 var(--hud-blue-dark);  /* a box-shadow list: solid inset bands print as vector ink */
+  --dc-faction-band-height:  8pt;
+  --dc-faction-pad-bottom:   10pt;
+  --dc-faction-title:        var(--hud-blue-dark);      /* name colour */
+  --dc-faction-title-bg:     none;                      /* a fill behind the name (the enforcer's yellow label) */
+  --dc-faction-title-pad:    0px;                       /* its side padding */
 
   /* stat strip (a creature's HP and Damage table) public API */
   --dc-stat-strip-accent:    var(--hud-blue-dark);
@@ -275,11 +378,18 @@
   /* .dc-spray public API */
   --dc-spray-bg:             var(--hud-magenta);
   --dc-spray-color:          var(--paper-cream);
+  --dc-spray-stencil:        var(--ink-dark);       /* dashed stencil line along the foot */
+
+  /* .dc-tag (inline chip) public API */
+  --dc-tag-bg:               var(--paper-cream);
+  --dc-tag-fg:               var(--ink-dark);
+  --dc-tag-border:           var(--ink-dark);
 
   /* .dc-tape public API */
-  --dc-tape-bg:              var(--paper-aged);
-  --dc-tape-border:          color-mix(in srgb, var(--tint-signal-red) 60%, var(--dc-tape-bg));
-  --dc-tape-color:           var(--ink-dust);
+  --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
+  --dc-tape-border:          var(--ink-dark);
+  --dc-tape-color:           var(--ink);
+  --dc-tape-shape:           polygon(0 0, 100% 0, calc(100% - 6px) 25%, 100% 50%, calc(100% - 6px) 75%, 100% 100%, 0 100%, 6px 75%, 0 50%, 6px 25%);  /* torn ends */
 }
 
 }

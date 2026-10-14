@@ -34,12 +34,46 @@
   break-inside: avoid;
 }
 
+/* An NPC sidebar is a contact card: a blue ID header, the entry, a dashed
+   foot, a hard poster shadow. Floatable (`.dc-sidebar`) or in flow. */
 .dc-human-callout {
   background: var(--paper-cream);
-  border: 2px solid var(--ink);
-  padding: 8pt 9pt;
+  border: 2px solid var(--ink-dark);
+  box-shadow: var(--shadow-poster);
+  padding: 8pt 9pt 7pt;
   margin-top: 11pt;
   break-inside: avoid;
+}
+
+.dc-human-callout::before {
+  content: "Contact";
+  display: block;
+  margin: -8pt -9pt 8pt;
+  padding: 3px 9px 2px;
+  background: var(--hud-blue-dark);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.dc-human-callout p {
+  margin: 0;
+}
+
+.dc-human-callout p + p {
+  margin-top: 4pt;
+}
+
+/* The foot: a machine-readable strip, a dashed ink border (vector). */
+.dc-human-callout::after {
+  content: "";
+  display: block;
+  height: 0;
+  margin-top: 8pt;
+  border-top: 5px dashed var(--ink-dark);
 }
 
 /* Tables: the universal default look lives in dc-core.css. Authors write

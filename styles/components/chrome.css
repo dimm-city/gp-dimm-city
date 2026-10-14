@@ -3,13 +3,25 @@
 /* ═══ SIMPLE COMPONENTS ═══ */
 
 /* ── Tag ──────────────────────────────────────────────────────────────── */
+/* An inline chip: a keyword or cost label, in the family of the class tag and
+   the AP chip (hard edges, an ink hairline, mono caps). Tokens --dc-tag-bg /
+   -fg / -border. */
 .dc-tag {
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 8pt;
+  line-height: 1.3;
   text-transform: uppercase;
-  letter-spacing: var(--ls-cap-sm);
-  color: var(--ink-dust);
-  font-weight: 600;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--dc-tag-fg);
+  background: var(--dc-tag-bg);
+  border: 1px solid var(--dc-tag-border);
+  padding: 1px 7px 0;
+  margin: 0 2px;
+  vertical-align: baseline;
+  white-space: nowrap;
+  box-shadow: 1px 1px 0 var(--dc-tag-border);
 }
 
 /* ── Chevron banner ───────────────────────────────────────────────────── */
@@ -72,6 +84,12 @@ h1.dc-chevron {
      --dc-spray-color → text color (default --paper-cream)
    Section-level override e.g.:
      .section.dc-augmerc .dc-spray { --dc-spray-bg: var(--augmerc-dark); } */
+/* Spray = the stencilled tag: a bright-magenta slab that shrink-wraps its words,
+   with a stepped overspray edge on the right and a dashed ink stencil line along
+   the foot. The chevron is the other magenta title: a deep, full-width banner
+   with one clean diagonal. (A learning-path banner, data.css, keeps its own
+   shell-wide shape and resets the background, so the stencil line is a
+   standalone-tag cue.) */
 .dc-spray {
   font-family: var(--font-display);
   font-size: 22px;
@@ -86,7 +104,10 @@ h1.dc-chevron {
   /* clip-path does double duty here: besides the chipped corner it makes this
      banner a stacking context, which is what keeps the ::before skew tab
      (z-index: -1) behind THIS element instead of escaping to an ancestor. */
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 25px 100%, 0 calc(100% - 15px));
+  clip-path: polygon(0 0, calc(100% - 6px) 0, calc(100% - 6px) 22%, 100% 22%, 100% 58%, calc(100% - 6px) 58%, calc(100% - 6px) 100%, 25px 100%, 0 calc(100% - 15px));
+  /* The stencil line: a dashed ink border along the foot (vector; the gaps
+     show the slab's own fill). */
+  border-bottom: 4px dashed var(--dc-spray-stencil);
   margin: 0;
   /* Leave room for the ::before skew tab, which overhangs the right edge
      (right: -8px, 14px wide, skewed): 18px measured. A long title that
@@ -136,9 +157,9 @@ h1.dc-chevron {
   font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
-  background: var(--ink-dark);
-  color: var(--paper-cream);
-  border: 1px solid var(--hud-blue-dark);
+  background: var(--dc-path-chip-bg);
+  color: var(--dc-path-chip-fg);
+  border: 1.5px solid var(--dc-path-chip-edge);
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -170,13 +191,13 @@ h1.dc-chevron {
 .dc-path-sticker {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 8pt;
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  background: var(--paper-cream);
-  color: var(--hud-blue);
-  padding: 2px 5px 1px;
+  background: var(--dc-path-code-bg);
+  color: var(--dc-path-code-fg);
+  padding: 2px 6px 1px;
   transform: rotate(-2.5deg);
   vertical-align: middle;
   position: relative;
@@ -196,18 +217,21 @@ h1.dc-chevron {
 }
 
 /* ───────── STICKER TIER REF ───────── */
+/* The numeral on a path's sticker chip: 8pt bold, in the chip's own foreground
+   (--dc-path-chip-fg, which a specialty sets with its chip fill), so it reads
+   on every specialty-dark chip. */
 .dc-sticker-ref {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8pt;
   font-weight: 700;
-  color: color-mix(in srgb, currentColor 55%, var(--ink-dark));
+  color: var(--dc-path-chip-fg);
   margin-right: 5px;
   letter-spacing: 0.5px;
 }
 
 /* ── Flavor (italic flavor text) ──────────────────────────────────────────
    Token contract:
-     --dc-flavor-color         → text color (default --ink-smoke)
+     --dc-flavor-color         → text color (default --ink-dark)
      --dc-flavor-accent        → left-rail color (default --orange)
      --dc-flavor-accent-width  → left-rail weight (default 3px)
 */
@@ -216,6 +240,7 @@ h1.dc-chevron {
   font-style: italic;
   color: var(--dc-flavor-color);
   font-size: var(--fs-body-sm);
+  line-height: var(--lh-normal);
   padding-bottom: 4px;
   margin-bottom: 6px;
   position: relative;
@@ -237,37 +262,54 @@ h1.dc-chevron {
 
 
 /* ── Intro / Lede line ──────────────────────────────────────────────────
+   The chapter's opening statement: larger, upright, semibold ink type on a
+   light substrate with a heavy accent rail and an ink foot rule. (Flavor is the
+   opposite register: small italic voice with a rail and no box at all.)
    Single-direction margin: top: 0, bottom: standard gap. This gives the
    lede flush attachment to a chevron heading above and natural
    spacing to whatever comes below. When a lede follows body text (rare),
    the paragraph's bottom margin provides the gap above the lede.
 
    Token contract:
-     --dc-intro-accent → 4px left-strip color (default --orange)
-     --dc-intro-bg     → substrate color right of the strip (default --paper-stain)
+     --dc-intro-accent → left-rail color (default --orange)
+     --dc-intro-bg     → substrate color right of the rail (default --paper-light)
+     --dc-intro-color / -size / -weight / -style → the type (ink, 13pt, 600, normal)
+     --dc-intro-rail   → rail width; --dc-intro-rule → foot rule (the pages that
+                         stack it flush set it 0)
+     --dc-intro-drop   → the outer shadow (default the poster shadow)
      --dc-intro-gap / --dc-intro-pad-bottom → space below, inside and out (the
                          front-matter pages set both to 0 to stack the lede flush) */
 .dc-intro {
   font-family: var(--font-body);
-  font-size: var(--fs-body);
-  font-style: italic;
-  color: var(--ink-smoke);
+  font-size: var(--dc-intro-size);
+  font-weight: var(--dc-intro-weight);
+  font-style: var(--dc-intro-style);
+  color: var(--dc-intro-color);
   /* The accent rail is an inset shadow, not a hard-stop gradient: in a PDF/X
      build Ghostscript turns a gradient into a 45 ppi bitmap, which printed
      the rail's edge soft. */
   background: var(--dc-intro-bg);
-  line-height: 1.5;
-  padding: 0 14px var(--dc-intro-pad-bottom) 18px;
+  line-height: 1.45;
+  padding: 0 14px var(--dc-intro-pad-bottom) 20px;
   margin: 0 0 var(--dc-intro-gap) 0;
-  box-shadow: inset 4px 0 0 var(--dc-intro-accent), var(--shadow-poster);
+  box-shadow: inset var(--dc-intro-rail) 0 0 var(--dc-intro-accent), inset 0 calc(-1 * var(--dc-intro-rule)) 0 var(--ink), var(--dc-intro-drop);
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
 }
+.dc-intro p,
+.dc-intro em,
+.dc-intro strong {
+  color: inherit;
+}
 
 /* ── Spec tweak section header ────────────────────────────────────────── */
 .dc-spec-tweak {
-  font-size: 22px;
+  /* lixdu is a wide face: 15px keeps "SPEC TWEAK: WIRED TO KILL" on one line in
+     a two-column run (~3.4in), under the 22px spray title it sits beneath. */
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
   /* Neutral --ink-dark for text + bottom-rule (--blood would read as
      "warning/wound", too strong for a structural section label), with
      --brand-magenta as the left-rail accent so the brand color anchors the
@@ -332,6 +374,9 @@ hr {
 
 
 /* ── Tape (torn-tape divider) ─────────────────────────────────────────── */
+/* A strip of masking tape: tan, torn at both ends, ink edges top and bottom,
+   an ink label, crimson dashes either side. Tokens --dc-tape-bg / -border /
+   -color / -shape. */
 .dc-tape {
   display: flex;
   align-items: center;
@@ -339,13 +384,15 @@ hr {
   margin: 28px 0 22px;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 4px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--dc-tape-color);
   background: var(--dc-tape-bg);
-  padding: 14px 14px;
-  border: 2px solid var(--dc-tape-border);
-  box-shadow: 1px 1px 0 color-mix(in srgb, #000 15%, var(--wall-tone));
+  padding: 12px 18px;
+  border-top: 2px solid var(--dc-tape-border);
+  border-bottom: 2px solid var(--dc-tape-border);
+  clip-path: var(--dc-tape-shape);
   break-inside: avoid;
 }
 

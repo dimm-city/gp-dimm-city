@@ -95,22 +95,34 @@
 
 .dc-path-shell>h3.dc-spray {
   width: stretch;
-  /* A path banner spans its shell edge to edge, with its tab pulled inside
-     (`right: -5px` below): it takes none of the standalone banner's
-     tab allowance (chrome.css .dc-spray). */
+  /* A path banner spans its shell edge to edge: it takes none of the
+     standalone banner's tab allowance (chrome.css .dc-spray). */
   max-width: none;
 }
 
+/* ── The path banner: the specialty's band ────────────────────────────────
+   Fill, type and shape are tokens (--dc-path-title-*), and its REGISTER rides
+   on three layers read from the --dc-band-* tokens a specialty sets in
+   specialty-identity.css (the intro title in specialty.css reads the same):
+     the band      box-shadow: --dc-band-rim     the tech LED top highlight
+     ::before      a flat plane at the right     a facet, or a burnt/lichen patch
+     ::after       the rule under the band       LED dots, hazard tape, a solid bar
+   All solid fills, borders and a clip-path: vector in a PDF/X build (a gradient
+   is rasterised there, or dropped). The band is clipped to its title shape, so
+   a layer that overhangs it (the tape's slant) is trimmed to the silhouette.
+   chrome.css's .dc-spray draws a skew tab on ::before and an underline on
+   ::after for a standalone banner; a path banner has neither, so both are
+   redrawn here. */
 .dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
   background: var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
-  margin-bottom: 12px;
-  padding: 10px 16px 12px;
+  box-shadow: var(--dc-band-rim);
+  margin-bottom: 10px;
+  padding: 10px 16px 7px;
   font-size: 18px;
   break-after: avoid;
   border-bottom: none;
-  padding-bottom: 0;
 }
 
 .dc-path-shell>h3.dc-spray:first-child + * {
@@ -118,19 +130,67 @@
 }
 
 .dc-path-shell>h3.dc-spray:first-child::before {
-  background: var(--dc-path-title-bg);
-  right: -5px;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: var(--dc-band-facet-width);
+  transform: none;
+  background: var(--dc-band-facet);
+  clip-path: var(--dc-band-facet-clip);
+  z-index: -1;
 }
 
 .dc-path-shell>h3.dc-spray:first-child::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  left: calc(-1 * var(--dc-band-rule-bleed));
+  right: calc(-1 * var(--dc-band-rule-bleed));
   bottom: 0;
-  height: 3px;
-  background: var(--hud-magenta);
   width: auto;
+  height: var(--dc-band-rule-h);
+  box-sizing: border-box;
+  background: var(--dc-band-rule);
+  border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
+  transform: skewX(var(--dc-band-rule-skew));
+}
+
+/* A path with no subtitle and no stickers is the band alone: the shell hugs it
+   (its own cut is the band's), where it was a band over an empty well. */
+.dc-path-shell:has(> h3.dc-spray:only-child) {
+  --dc-path-shell-padding-bottom: 0;
+  --dc-path-shell-clip: var(--dc-path-title-shape);
+  padding-right: 0;
+}
+
+.dc-path-shell:has(> .dc-stickers) {
+  --dc-path-shell-padding-bottom: 8px;
+}
+
+.dc-path-shell>h3.dc-spray:only-child {
+  margin-bottom: 0;
+}
+
+/* The subtitle is a lede on the shell's own paper: the --dc-intro-* tokens
+   (chrome.css .dc-intro) set to rule-only, ink type, the specialty's mid colour
+   as the rail. The sticker chain and the code chip read --dc-path-chip-* and
+   --dc-path-code-* in chrome.css. */
+.dc-path-shell {
+  --dc-intro-bg: transparent;
+  --dc-intro-accent: var(--dc-path-note-rail);
+  --dc-intro-color: var(--ink-dark);
+  --dc-intro-size: var(--fs-body-sm);
+  --dc-intro-weight: 400;
+  --dc-intro-style: italic;
+  --dc-intro-rail: 3px;
+  --dc-intro-rule: 0px;
+  --dc-intro-drop: 0 0 0 var(--paper-cream);
+}
+
+.dc-path-shell .dc-stickers {
+  margin: 2px 8px 10px;
 }
 
 .dc-path-shell>p,
@@ -141,33 +201,48 @@
   padding-bottom: 6px;
 }
 
+.dc-path-shell>div.dc-intro {
+  margin-bottom: 8px;
+  padding: 3px 12px 3px 14px;
+  line-height: 1.4;
+}
+
 /* ═══ OUTCOMES + STEPS ═══ */
 
-/* ── Procedure / numbered steps ───────────────────────────────────────── */
+/* ── Procedure / numbered steps ───────────────────────────────────────────
+   An instruction plate: a cream plate with a hard ink frame and shadow, the
+   step numbers down a solid HUD-blue strip on the left (display chrome:
+   reversed numerals on a solid fill), the step text on paper in ink with the
+   bold lead in ink too. Without a substrate the rules sat on the brick wall.
+   Token contract:
+     --dc-steps-accent   → number strip and frame rule (default --hud-blue-dark)
+     --dc-steps-surface  → plate behind the step text (default --paper-cream) */
 .dc-steps {
   list-style: none;
-  padding: 0 0 0 12px;
-  margin: 8px 0;
-  border-left: 2px solid var(--hud-blue-dim);
-  break-inside: avoid;
+  padding: 0;
+  margin: 10px 3px 12px 0;
+  background: var(--dc-steps-surface);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-poster);
+  break-inside: auto;
 }
 
 .dc-steps>li {
   display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 14px;
-  padding: 8px 0 8px 2px;
-  border-top: 1px dashed var(--paper-aged);
+  grid-template-columns: 40px 1fr;
+  gap: 0;
+  padding: 0;
+  border-top: 1px dashed var(--ink-dust);
   font-family: var(--font-body);
-  font-size: 9pt;
-  line-height: 1.5;
+  font-size: 10pt;
+  line-height: 1.45;
   color: var(--ink);
-  align-items: baseline;
+  align-items: stretch;
+  break-inside: avoid;
 }
 
 .dc-steps>li:first-child {
   border-top: 0;
-  padding-top: 0;
 }
 
 .dc-steps>li::before {
@@ -175,18 +250,30 @@
 }
 
 .dc-steps .dc-step-no {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dc-steps-accent);
+  color: var(--paper-cream);
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 2px;
-  color: var(--hud-blue-dark);
+  font-size: 12pt;
+  letter-spacing: 0.06em;
   line-height: 1;
-  align-self: center;
+  /* A hairline of plate between neighbouring numbers keeps each step its own cell. */
+  border-top: 1px solid var(--paper-cream);
+}
+.dc-steps>li:first-child .dc-step-no {
+  border-top: 0;
+}
+
+.dc-steps>li>span:last-child {
+  padding: 7px 12px 7px 12px;
 }
 
 .dc-steps li strong {
-  /* --crimson 4.03:1 on paper-cream → --blood 7.73:1 */
-  color: var(--blood);
+  /* The bold lead stays in ink: red bold on every step read as an alarm. */
+  color: var(--ink);
   font-weight: 700;
 }
 
@@ -220,7 +307,7 @@
   font-family: var(--font-mono);
   /* A stamped header bar with its own surface rather than a tiny label
      hovering above the chips. */
-  font-size: 10px;
+  font-size: 8pt;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -240,7 +327,7 @@
   padding-inline: 0;
 }
 .dc-outcomes-head > span:first-child {
-  flex: 0 0 130px;
+  flex: 0 0 var(--dc-outcome-key-col);
   box-sizing: border-box;
   padding-inline: 10px;
   text-align: center;
@@ -251,7 +338,10 @@
 
 .dc-outcome-row {
   display: grid;
-  grid-template-columns: 130px 1fr;
+  /* The chip column widens on a full-width ladder (26%) so a long band name
+     ("High susceptibility to manipulation and malfunction") wraps to three
+     lines at most; in a half column it stays 130px. */
+  grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
   border-bottom: 1px solid var(--dc-outcomes-divider);
   position: relative;
@@ -290,13 +380,18 @@
 
 .dc-outcome-name {
   font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.10em;
+  /* Reversed type on a solid chip: 8pt semibold. A long name wraps, centred and
+     balanced, on its own lines under the roll number. */
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
   color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink)));
   opacity: var(--dc-outcome-name-opacity);
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .dc-outcome-key .dc-outcome-roll {
@@ -476,22 +571,35 @@
 }
 
 /* ───────── DEFINITION BLOCK ─────────
+   A dictionary entry, not a note: a cream page with a heavy rule over it and a
+   hairline under, no rail and no cut corners (a note alert is a tinted panel
+   with a rail and clipped corners). The term leads, set bold and upright in
+   HUD blue; the gloss follows in italic.
    Token contract:
-     --dc-definition-block-surface       → block background (default a pale HUD-blue tint of cream)
-     --dc-definition-block-accent        → left rail color (default --hud-blue-bright)
-     --dc-definition-block-accent-width  → left rail weight (default 4px)
+     --dc-definition-block-surface       → block background (default --paper-cream)
+     --dc-definition-block-accent        → rules and term colour (default --hud-blue-dark)
+     --dc-definition-block-accent-width  → weight of the rule over the block (default 3pt)
+     --dc-definition-block-shape         → clip-path (default none)
    Per-section / per-column overrides set the tokens; they don't override
    the properties directly. */
 .dc-definition-block {
   clip-path: var(--dc-definition-block-shape);
   background: var(--dc-definition-block-surface);
-  border-left: var(--dc-definition-block-accent-width) solid var(--dc-definition-block-accent);
+  border-top: var(--dc-definition-block-accent-width) solid var(--dc-definition-block-accent);
+  border-bottom: 1pt solid var(--dc-definition-block-accent);
+  box-shadow: var(--shadow-poster);
+  margin-right: 3pt;
   font-style: italic;
-  font-size: var(--fs-body);
+  font-size: var(--fs-body-sm);
   line-height: var(--lh-normal);
   color: var(--ink);
-  /* Breathing room for prose from the colored rail and the right edge. */
-  padding: 9pt 12pt 9pt 14pt;
+  padding: 8pt 12pt 9pt;
+}
+
+/* The bold lead (`**Term:** gloss`) is the headword. */
+.dc-definition-block p > strong:first-child {
+  font-style: normal;
+  color: var(--dc-definition-block-accent);
 }
 
 .dc-definition-block p {
@@ -503,16 +611,17 @@
 }
 
 /* A run of `#### Term` entries in one `@definition` reads as a glossary: each
-   term is a small mono-caps label in the accent colour, the entries are set
+   term is a small display-caps headword in the accent colour, the entries are set
    apart by a dashed rule, and the block may split between entries (a single
    term stays whole). A `---` inside is the same dashed rule, for a box with a
    heading and a divider. A bold lead (`**Term** — gloss`) needs nothing. */
 .dc-definition-block > h4 {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: var(--fs-h5);
   font-style: normal;
-  letter-spacing: 0.1em;
-  color: var(--hud-blue-dark);
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+  color: var(--dc-definition-block-accent);
   margin: 0 0 2pt;
 }
 .dc-definition-block > h4:not(:first-child) {
@@ -647,7 +756,8 @@ table.dc-stat-strip {
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
-  font-size: 7pt;
+  font-size: 8pt;
+  font-weight: 600;
   padding: 2px 8px;
 }
 .dc-stat-strip td {
@@ -798,10 +908,45 @@ p.dc-img-wrapper {
   width: 100%;
 }
 
+/* ── AT-A-GLANCE CARD — a readout tile: label over value ──────────────────
+   `<div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>`, usually three
+   in an `@columns 3` run. The label is a small reversed mono caps band, the
+   value the big thing: the stat grid's hierarchy, as a tile of its own.
+   Token contract:
+     --dc-at-a-glance-accent → frame and label band (default --hud-blue-dark)
+     --dc-at-a-glance-value  → the value (default --ink) */
 .dc-at-a-glance-card {
-  background: var(--paper-light);
-  border: 1px solid var(--paper-aged);
-  padding: 14px 16px;
+  background: var(--paper-cream);
+  border: 2px solid var(--dc-at-a-glance-accent);
+  box-shadow: var(--shadow-poster);
+  margin: 0 3pt 4pt 0;
+  padding: 0 0 10px;
+  text-align: center;
+  break-inside: avoid;
+}
+
+.dc-at-a-glance-card > h4 {
+  margin: 0 0 8px;
+  padding: 3px 8px 2px;
+  background: var(--dc-at-a-glance-accent);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.dc-at-a-glance-card > p {
+  margin: 0;
+  padding: 0 8px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: var(--dc-at-a-glance-value);
+  overflow-wrap: anywhere;
 }
 
 }
