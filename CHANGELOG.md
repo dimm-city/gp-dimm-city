@@ -24,6 +24,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
     PDF/X-1a now gets more pages flattened to an image than with 1.6.3: set
     `pdfx.transparency: preserve-text` in the book's manifest. Requires the
     Gutterpress release that ships that option.
+- **Lixdu is never faked bold.** It has one face, and its `@font-face` now
+  serves every weight, so the chapter chips and other weight-700 display text
+  print in Lixdu's own stroke instead of Chromium's synthetic bold (slightly
+  thinner). Synthetic bold prints as a Type 3 font, which Gutterpress's PDF/X
+  `preserve-text` split cannot keep: on the Field Guide, 215 of 228 pages fell
+  back to whole-page flattening because of it.
 
 ## [1.6.3] - 2026-10-12
 
