@@ -42,13 +42,15 @@ Learn the core loop first. Everything else builds on it.
 
 
 @section panel
+@page
+
 ## Dreams {#c1-dreams}
 
 In Dimm City RPG, you're not "pretending to be someone else." You're fighting for a pulse in a city that chews nobodies into mulch. You and your crew aren't telling a story—you're tagging the city with it. One of you hijacks the world as Dream Master (DM). The rest strap in as the degenerates desperate enough to survive it.
 
 @end-section
 
-@section panel
+@section lore
 
 ## The City
 
@@ -134,7 +136,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 @end-section
 
-@section panel
+@section reference
 
 ### Augment Points
 
@@ -147,7 +149,7 @@ If an ability lists an AP cost, you spend it and the effect happens. No charge-u
 
 @end-section
 
-@section panel
+@section reference
 
 ### Status Conditions
 

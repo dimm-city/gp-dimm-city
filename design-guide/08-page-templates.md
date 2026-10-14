@@ -21,11 +21,11 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | — | 8.5 × 11 in | — |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips are centred in the 0.25 in of it that clears that minimum, so they print 0.5 to 0.75 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 1 in (0.875 in on a page with no footer) | 0.875 in | 0.5 in — the chips start 0.125 in below the text and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.75 in | 0.75 in | 0.5 in |
 
-A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
+A page carrying the "Citizen File" running head has a 1 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page words
 
@@ -45,7 +45,7 @@ The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter spl
 
 ### The page chips
 
-The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon, a solid magenta face with cream type, the same edge and shadow, and a perforated edge on the spine side. Both are 17 pt tall with 10 pt type centred in the face, and both sit in the footer band that clears DriveThruRPG's 0.5 in text minimum, so they stay put on recto and verso for every page word that prints them. A `citizen-file` page's running head is the same sticker in amber at the top.
+The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon: a solid face with cream type and the same edge and shadow. Both are 17 pt tall with 10 pt type centred in the face, and both sit 0.125 in below the text block, inside DriveThruRPG's 0.5 in text minimum, so a box that runs to the foot never touches them, on recto and verso, for every page word that prints them. The coupon is magenta by default; to colour it with a chapter, put the chapter's pages on a named page, `:where(#ch-rules) > .page { page: dc-chip-rust; }` (blue, rust, violet, amethyst or amber; the `specialty`, `rules` and `lore` chapter words do it for you). Name the page with the low-specificity `:where()` so a page's own template name still wins. A `citizen-file` page's running head is the same sticker in amber at the top.
 
 ### Text on the wall
 
@@ -55,11 +55,11 @@ Nothing is ever printed straight on the brick. Anything you write directly on a 
 |---|---|
 | `# Title` | A banner in the chapter's accent colour with cream type |
 | `## Heading` | A paper slip: an accent rail on the left, a dashed ink foot, a hard shadow and a strip of masking tape |
-| `### Heading` | A plainer slip: the same without the tape |
+| `### Heading` | A tag that shrinks to its words, hung in from the left (every second one hangs further), no tape |
 | `#### Heading` and smaller | A label slip that shrinks to its words |
 | Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does |
 
-Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-sheet-pad` or `--dc-page-title-ink`. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
+Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-slip-gap` (the space above a slip), `--dc-page-slip-offset`, `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
 
 
 ## Where the content sits

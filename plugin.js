@@ -203,7 +203,9 @@ function buildStickerChain(items) {
     const cls = 'dc-sticker';
     html += '<span class="' + cls + '"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
     if (i < items.length - 1) {
-      html += '<span class="dc-arrow">»</span>';
+      // The word joiner keeps the arrow with the chip after it, so a wrap never
+      // leaves a » at the end of a line.
+      html += '<span class="dc-arrow">»</span>\u2060';
     }
   });
   html += '</div>\n';

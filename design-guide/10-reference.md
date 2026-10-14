@@ -112,11 +112,11 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-accent-ink` |
-| Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` |
+| Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` `--dc-block-title-rule` `--dc-block-tag` `--dc-block-tag-edge` |
 | Section chip (`dm`, `choose`) | `--dc-section-tab` `--dc-section-tab-bg` `--dc-section-tab-fg` |
 | Roll table | `--dc-roll-table-accent` `--dc-roll-table-surface` `--dc-roll-table-head-bg` |
 | Faction | `--dc-faction-accent` `--dc-faction-badge-fg` `--dc-faction-shape` `--dc-faction-surface` `--dc-faction-band` `--dc-faction-band-height` `--dc-faction-title` |
-| Choice card (set by `@flaws` `@ideals` `@dreams`) | `--dc-choice-accent` `--dc-choice-surface` `--dc-choice-tint` `--dc-choice-kind` `--dc-card-shape` |
+| Choice card (set by `@flaws` `@ideals` `@dreams`) | `--dc-choice-accent` `--dc-choice-surface` `--dc-choice-tint` `--dc-choice-kind` `--dc-choice-edge` `--dc-choice-band` `--dc-choice-rail` `--dc-card-shape` |
 | Entry card (`@gear` and its kinds) | `--dc-entry-accent` `--dc-entry-ink` `--dc-entry-surface` `--dc-entry-shape` `--dc-entry-radius` `--dc-entry-ornament` `--dc-entry-orn-inset` `--dc-entry-orn-bg` `--dc-entry-orn-border` `--dc-entry-orn-clip` `--dc-entry-orn-z` `--dc-entry-frame` `--dc-entry-badge-bg` `--dc-entry-badge-fg` `--dc-entry-badge-shape` `--dc-entry-badge-radius` |
 | Field | `--dc-field-surface` `--dc-field-fg` `--dc-field-label-fg` `--dc-field-edge-width` `--dc-field-edge-style` |
 | Procedure | `--dc-steps-accent` `--dc-steps-surface` |
@@ -128,7 +128,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-depth` `--dc-fiction-depth-bg` `--dc-fiction-cavity` `--dc-fiction-lip` `--dc-fiction-rim` `--dc-fiction-rule` `--dc-fiction-shadow` `--dc-fiction-shape` `--dc-fiction-hole` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
 | Specialty wrapper | `--spec-accent` `--spec-mid` `--spec-dark` `--spec-band` `--spec-on-band` `--spec-chip-bg` `--spec-chip-fg` `--spec-chip-edge` `--dc-skill-tab-shape` `--dc-skill-body-shape` `--dc-path-title-shape` `--dc-path-shell-clip` `--dc-specialty-card-shell-shape` `--dc-specialty-intro-title-shape` `--dc-specialty-intro-clip` |
 | Specialty intro | `--dc-specialty-intro-bg` `--dc-specialty-intro-title-bg` `--dc-specialty-intro-title-color` |
-| Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` |
+| Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` `--dc-band-reg` |
 | Specialty card | `--dc-specialty-card-bg` `--dc-specialty-card-border` `--dc-specialty-card-accent` `--dc-specialty-card-fg` `--dc-specialty-card-media-height` `--dc-specialty-card-media-width` `--dc-specialty-card-title-align` `--dc-specialty-card-band-height` `--dc-specialty-card-shadow` `--dc-specialty-card-title-color` `--dc-specialty-card-display` `--dc-specialty-card-media-order` `--dc-specialty-card-media-float` `--dc-specialty-card-media-margin` `--dc-specialty-card-media-shape` `--dc-specialty-card-media-mat` `--dc-specialty-card-name-size` `--dc-specialty-card-index` `--dc-card-grid-display` `--dc-card-grid-item-display` `--dc-card-grid-row` `--dc-card-grid-gap` |
 | Learning path | `--dc-path-title-bg` `--dc-path-title-color` `--dc-path-code-bg` `--dc-path-code-fg` `--dc-path-chip-bg` `--dc-path-chip-fg` `--dc-path-chip-edge` `--dc-path-note-rail` `--dc-path-accent` `--dc-path-shell-padding-top` `--dc-path-shell-padding-bottom` `--dc-arrow-color` |
 | Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-body-mark` `--dc-card-gap` `--dc-card-tab-shadow` `--dc-tier-bg` `--dc-tier-fg` `--dc-tier-edge` |

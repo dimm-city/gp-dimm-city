@@ -32,12 +32,13 @@
      a `###` bar. A kind of section sets them (dm, lore, choose, reference, the
      catalog). `flag` is one more box-shadow in the panel surface layer's stack,
      zero-size unless a kind sets it. */
-  --dc-section-bar-mix:      100%;
+  --dc-section-bar-mix:      90%;                 /* 90% accent over ink: cream on the default magenta bar is 4.7:1 (100% is 4.06:1) */
   --dc-section-bar-tone:     var(--ink);
   --dc-section-bar-fg:       var(--paper-cream);
   --dc-section-bar-rule:     3pt solid var(--orange);
   --dc-section-bar-rule-sub: none;
   --dc-section-flag:         0 0 0 0 var(--ink-dark);
+  --dc-section-top:          0px;                 /* extra padding on top inside the box: a kind that draws a tab (dm) reserves its height here */
   --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
   --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
   --dc-section-ink-tone:     var(--ink);
@@ -363,6 +364,9 @@
   --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
   --dc-choice-surface:       var(--paper-cream);
   --dc-choice-tint:          color-mix(in srgb, var(--ink-dark) 8%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-edge:          1.5pt solid var(--ink-dark);  /* the card's border */
+  --dc-choice-band:          5px;                   /* the top band in the kind colour */
+  --dc-choice-rail:          6px;                   /* the left rail in the kind colour */
   --dc-choice-kind:          none;                  /* the small word over the title: "Flaw", "Ideal", "Dream" */
 
   /* faction (`@faction`) public API. Each kind sets all of these on its own
@@ -441,6 +445,8 @@
        slip-edge   the ink edge and dashed foot of a slip
        slip-shadow its hard shadow (opaque, no blur)
        slip-tape   the masking tape across a `##` slip (default: the tape's colour)
+       slip-gap    the space above a slip, so it never jams against the box above
+       slip-offset how far a `###` / `####` slip hangs in from the left; every second one hangs further
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
@@ -448,8 +454,15 @@
   --dc-page-slip-edge:       var(--ink-dark);
   --dc-page-slip-shadow:     var(--shadow-poster);
   --dc-page-slip-tape:       var(--dc-tape-bg);
+  --dc-page-slip-gap:        var(--space-xl);
+  --dc-page-slip-offset:     0.12in;
   --dc-page-sheet-pad:       0.18in;
   --dc-page-title-ink:       var(--paper-cream);
+
+  /* The space above a heading that follows a box (a ladder, a stat grid, a
+     callout, a table), so it never jams against the box above it. A page-level
+     slip reads `--dc-page-slip-gap`. */
+  --dc-heading-gap:          var(--space-xl);
 }
 
 }

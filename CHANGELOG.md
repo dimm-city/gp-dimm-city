@@ -69,6 +69,28 @@ text, no text on the brick wall, shape that says what a box is, a little grit.
   for every specialty: it spans the frame and is cut from the same point list,
   where it stopped 12px short.
 - The design guide's heading specimens sit on paper, not on brick.
+- Footer chips no longer touch content: body pages have a 1in bottom margin
+  and the folio and chapter chips sit 0.125in below the text. The chapter
+  chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
+  stray notch.
+- The `dm` section's folder tab stays with its box when the section splits
+  across a page; it had left cyan type on grey paper.
+- The page-level wall-text rules skip components (`[class*="dc-"]`), so a
+  `@procedure`, `@lede` or `@toc` placed straight on a page keeps its look.
+- Reversed type is semibold: slate and Surreal bodies, skill-tab names. Cream
+  on the default magenta bar is 4.7:1 (`--dc-section-bar-mix` 90%); outcome
+  band names are at least 4.5:1.
+- Flaw, Ideal and Dream cards differ in grayscale (edge style, fill value,
+  silhouette depth); `reference`, `lore`, `panel` and `dm` title bars differ
+  in treatment, not only colour.
+- A wrapped learning-path sticker chain never ends a line on its arrow.
+- Heading slips keep with what follows, prose sheets take orphans and widows
+  of 3, and `###`/`####` slips hang offset (`--dc-page-slip-gap`,
+  `-slip-offset`, `--dc-heading-gap`).
+- `--dc-accent-ink` is documented and tested as a per-component context
+  token, the one exception to the token convention.
+- Tests guard the 10pt floor, the context-token allow-list, page-level
+  components and the Lucid/Surreal variants.
 
 ## [1.7.0] - 2026-10-14
 

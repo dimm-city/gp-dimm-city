@@ -74,14 +74,16 @@
    - `letter-spacing` leaves its tracking after the last glyph, so the
      inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   WHERE IT SITS IN THE BAND. The bottom margin is 0.875in from the SHEET
-   edge. DriveThruRPG wants text 0.5in inside the TRIM, and the trim is
-   0.125in inside the sheet at the bottom, so the printable footer band is
-   the 0.25in (18pt) between the text block and 0.625in from the sheet edge.
-   The chip is centred in THAT band: 17pt tall with `margin-top: 1pt` (the
-   engine honours a margin on a margin box: measured, a 4pt margin moved the
-   box 4.3pt). Centring it in the whole 0.875in band would print the chip
-   0.2in from the trim.
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 1in) is
+   measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the TRIM,
+   and the trim is 0.125in inside the sheet at the bottom, so nothing may print
+   below 0.625in from the sheet edge. The chip is 17pt (0.236in) tall and sits
+   0.125in BELOW the text block (`margin-top: 0.125in`, which the engine
+   honours on a margin box: measured, a 4pt margin moved the box 4.3pt), so
+   its foot is at 0.639in: inside the minimum, with a clear 0.125in of bare
+   wall between any content box and the chip, on every wall page. (That is why
+   the margin is 1in: at 0.875in the band was only 0.25in, the chip had to touch
+   the text block, and a sheet that ran to the foot ran into it.)
 
    A shrunk margin box stays anchored at its slot's START edge on the block
    axis, which is why the offset is a margin. Shrinking the box leaves no hole
@@ -100,18 +102,19 @@
 
    THE TWO CHIPS.
    - folio  P.121: paper-cream face, ink type, ink edge, hard ink shadow.
-   - chapter C.N / E.N: a stamped coupon. A solid magenta-deep face with
-     cream type (6.2:1, reversed type at 10pt bold), the same ink edge and hard
-     shadow, and a perforated gutter-side edge (a 3px dotted ink border: the
-     coupon tears off along it). It replaces a dashed magenta outline, which
-     read as a debug box. */
+   - chapter C.N / E.N: a stamped coupon. A solid face in the chapter's
+     colour (magenta-deep by default, repainted per chapter by the named pages
+     of §2c) with cream type (every face is >= 4.5:1,
+     reversed type at 10pt bold), the same ink edge and hard shadow. It replaces
+     a dashed magenta outline, which read as a debug box. (A dotted perforated
+     edge was tried and dropped: its corner join printed a stray notch.) */
 @page :left {
   @bottom-left {
     /* folio sticker: civic register */
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: 1pt;
+    margin-top: 0.125in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -127,11 +130,11 @@
     border-width: 1px 3px 3px 1px;
   }
   @bottom-right {
-    /* chapter coupon: gutter edge (the right of this box) perforated */
+    /* chapter coupon */
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: 1pt;
+    margin-top: 0.125in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -145,17 +148,16 @@
     background: var(--brand-magenta-deep);
     border: 1px solid var(--ink-dark);
     border-width: 1px 3px 3px 1px;
-    border-right-style: dotted;
   }
 }
 
 @page :right {
   @bottom-left {
-    /* chapter coupon: gutter edge (the left of this box) perforated */
+    /* chapter coupon */
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: 1pt;
+    margin-top: 0.125in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -168,15 +170,14 @@
     color: var(--paper-cream);
     background: var(--brand-magenta-deep);
     border: 1px solid var(--ink-dark);
-    border-width: 1px 1px 3px 3px;
-    border-left-style: dotted;
+    border-width: 1px 3px 3px 1px;
   }
   @bottom-right {
     /* folio sticker: civic register */
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: 1pt;
+    margin-top: 0.125in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -198,16 +199,16 @@
    it sits on a tab, never on the brick: a solid amber face (cream type 5.3:1,
    display face 10pt bold, reversed) in the same ink edge and hard shadow as
    the footer stickers. page-rules.css gives it its content and its page
-   margin (0.875in); the tab occupies the 0.25in of that band that is inside
-   DriveThruRPG's 0.5in text minimum (0.625in to 0.875in from the sheet top),
-   17pt tall so its 3px shadow still ends above the text block.
-   The top margin boxes anchor at the sheet edge, so the offset is a margin. */
+   margin (1in); the tab hangs from 0.625in below the sheet top (DriveThruRPG's
+   0.5in text minimum, trim being 0.125in in), 17pt tall, so it ends 0.14in
+   clear of the text block. The top margin boxes anchor at the sheet edge, so
+   the offset is a margin. */
 @page citizen-file:right {
   @top-right {
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: calc(0.875in - 18pt);
+    margin-top: calc(0.625in + 1pt);
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
@@ -227,7 +228,7 @@
     width: fit-content;
     height: 17pt;
     box-sizing: border-box;
-    margin-top: calc(0.875in - 18pt);
+    margin-top: calc(0.625in + 1pt);
     vertical-align: middle;
     line-height: 1;
     font-family: var(--font-display);
@@ -242,6 +243,23 @@
     border-width: 1px 3px 3px 1px;
   }
 }
+
+/* ── 2c. CHAPTER CHIP COLOUR (named pages) ─────────────────────────────────
+   page-rules.css puts a chapter's pages on a named page, `dc-chip-<hue>`; this
+   repaints that page's coupon. The coupon is @bottom-right on a verso page and
+   @bottom-left on a recto one. Faces: cream type on each is >= 4.5:1
+   (blue 7.5, rust 5.2, violet 6.5, amethyst 7.0, amber 8.6; magenta 7.0). Unlayered, last,
+   so it beats the default face above, and a name outranks `:left`/`:right`. */
+@page dc-chip-blue:left      { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-chip-blue:right     { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-chip-rust:left      { @bottom-right { background: var(--rust); } }
+@page dc-chip-rust:right     { @bottom-left  { background: var(--rust); } }
+@page dc-chip-violet:left    { @bottom-right { background: var(--brand-violet); } }
+@page dc-chip-violet:right   { @bottom-left  { background: var(--brand-violet); } }
+@page dc-chip-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-chip-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-chip-amber:left     { @bottom-right { background: var(--amber-dark); } }
+@page dc-chip-amber:right    { @bottom-left  { background: var(--amber-dark); } }
 
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so

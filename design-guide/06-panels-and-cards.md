@@ -75,9 +75,9 @@ The components below that are sections have a marker of their own and a word on 
 
 | You are writing | Write | Looks like |
 |---|---|---|
-| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band, 10pt tight rows, four small even machined chamfers |
-| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar over a pale lilac sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
-| Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab rising from the top edge that carries the words *Dream Master* in cyan, an ink title bar with a cyan rule and a cyan rail over a cold concrete body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
+| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers |
+| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar with a slashed top-left corner and a torn top edge over a pale lilac sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
+| Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab in the box's top band that carries the words *Dream Master* in cyan (it never splits from the box at a page break), an ink title bar with a cyan rule and a cyan rail over a cold concrete body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
 | A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a paper sheet a hair lighter than cream, a dashed ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Your choice* stamp |
 
 ```markdown {.dg-split}
@@ -254,7 +254,7 @@ Hologram haze cuts the gloom you're stumbling through. Flickering ads claw the a
 
 </div>
 
-Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title-bg`, `--dc-block-title-fg`.
+Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title-bg`, `--dc-block-title-fg`, `--dc-block-title-rule` (a whole `border-bottom` under the band), `--dc-block-tag` (a quoted word stamped on the band) and `--dc-block-tag-edge` (its border).
 
 
 ## Definition

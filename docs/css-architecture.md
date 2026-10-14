@@ -199,6 +199,20 @@ sheet — unlayered, so it beats this whole package regardless — is the only
 sanctioned override path; do not edit the `dc.tokens` files for
 project-specific changes.
 
+**Context tokens are the one exception to "variants set tokens on ancestors".**
+A public component token is a knob: it defaults at `:root`, the component's
+base rule never re-declares it, and a book overrides it on an ancestor. A
+*context token* is different: it is a value each component derives for what is
+inside it, so the component sets it on its own root rule. The only one is
+`--dc-accent-ink`, the text-safe ink of the component the text sits in (read by
+`ROLL THE DIE!` and its underline). It defaults at `:root` (text outside any
+component still has an ink), every component that can hold prose sets it from
+its own accent and surface, and a book overrides it **per component class**
+(`#ch-x .dc-alert { --dc-accent-ink: var(--blood); }`), never at an ancestor,
+where it would lose to the component's own declaration. The allow-list is
+`CONTEXT_TOKENS` in `test/conventions.test.js`; a new context token is a design
+decision.
+
 **No upward `!important` fights.** Layers do not override each other with
 `!important`, and a layer-order flip is never fixed with `!important` either
 — see "Cascade layers, not just file order" below. Margin-box content is
@@ -461,15 +475,30 @@ right border. Three rules keep the type centred:
   centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
   edge is balanced with `padding-top`, and the inline-end padding gives back the
   tracking a `letter-spacing` leaves after the last glyph;
-- the chip sits in the **printable** footer band, not the whole margin: the
-  bottom margin is 0.875in from the sheet edge and DriveThruRPG wants text 0.5in
-  inside the trim (0.125in in from the sheet), so the usable band is 0.25in
-  (18pt). A 17pt chip (10pt type) with `margin-top: 1pt` is centred in it. The engine honours
-  a margin on a margin box (measured: a 4pt margin moved the box 4.3pt);
+- the chip sits in the **printable** footer band, below the text block with
+  clear wall between them: the bottom margin (`--bottom-margin`) is 1in from the
+  sheet edge, DriveThruRPG wants text 0.5in inside the trim (0.125in in from the
+  sheet), so nothing may print below 0.625in. A 17pt chip with
+  `margin-top: 0.125in` ends at 0.639in and leaves 0.125in of bare wall above it
+  on every wall page. The engine honours a margin on a margin box (measured: a
+  4pt margin moved the box 4.3pt). Pages without footers (`chapter-start`,
+  `front-matter-intro`) set `margin-bottom: 0.875in` and keep their old text
+  height;
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
 
+The chapter chip's **colour** reaches a margin box through a *named page*: a
+margin box is in the page context and cannot see a chapter's
+`--dc-section-accent`, and a custom property set on a named `@page` does not
+reach its margin boxes (measured). `page-rules.css` puts a chapter's pages on
+`page: dc-chip-<hue>` (the chapter words `specialty`, `rules` and `lore` do it;
+a book does the same for its own chapters with
+`:where(#ch-xyz) > .page { page: dc-chip-rust; }`), and `dc-native.css` §2c
+repaints the coupon for that name and side (blue, rust, violet, amethyst,
+amber; the default is magenta-deep). Unlayered, because layered `@page` rules
+lose to `dc-native.css`.
+
 The Citizen File running head is the same chip in the top band (`@top-left` /
-`@top-right` on `citizen-file`), offset with `margin-top: calc(0.875in - 18pt)`.
+`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 1in top margin.
 
 ### Free-standing page text
 
@@ -477,12 +506,14 @@ Text that is a direct child of `.page` or `.chapter` with no component around it
 is dressed by `page-templates.css` ("FREE-STANDING PAGE TEXT"): `#` a banner,
 `##` / `###` / `####+` paper slips, loose paragraphs, lists and quotes one
 paper sheet per run. These are rules on plain elements, which a location may
-style (a location styles a component by tokens only). Scope is `:is(.page,
-.chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > …`, so a heading
+style (a location styles a component by tokens only). Scope is one `:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > …`
+plus a guard, `:not([class*="dc-"]…)`, that leaves any element a component has
+claimed alone (`ol.dc-steps`, `div.dc-intro`, `div.dc-toc`: this layer outranks
+`dc.components`; `test/page-text.test.js` enforces it), so a heading
 inside a section or callout is never matched, the guide's `@page .dg-doc`
 explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
-their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape`,
-`--dc-page-sheet-pad`, `--dc-page-title-ink` (the slip rail and the banner fill
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
+`--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
 read the chapter's `--dc-section-accent`, so a chapter word recolours them).
 
 ### Folios and the `.chapter-N` class

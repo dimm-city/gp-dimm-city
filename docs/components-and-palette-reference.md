@@ -149,7 +149,7 @@ These are separate components — not variants of each other.
 - `.dc-flavor` — italic flavor text with a rail and no box
 - `.dc-tape` — a strip of masking tape: tan, torn ends, ink edges, ink label
 - `.dc-sticker` / `.dc-sticker-ref` / `.dc-stickers`
-- `.dc-definition-block` — a dictionary page for a term or a glossary run: cream, heavy rule over, headword first
+- `.dc-definition-block` — a dictionary page for a term or a glossary run: cream, heavy rule over, headword first; `@definition lucid` (`.dc-definition-lucid`: light, machined chamfers, upright) and `@definition surreal` (`.dc-definition-surreal`: dark, skewed, torn, off-register) are the two roll states, set as opposites
 - `.dc-steps` — the numbered instruction plate (`@procedure`): ink frame, hard shadow, HUD-blue number strip
 
 ### Gear
@@ -306,6 +306,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink 8% in cream / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
+| `--dc-choice-edge` / `-band` / `-rail` | `1.5pt solid --ink-dark` / `5px` / `6px` | The card's border and the weight of its top band and left rail (flaw: dashed, 9px; dream: a 4pt double edge, 3px band) |
 | `--dc-faction-surface` / `-band` / `-band-height` / `-title` | `--paper-cream` / HUD-blue band image / `8pt` / `--hud-blue-dark` | A faction's sheet, top band (an image: `linear-gradient(c, c)` for solid) and name colour; each kind sets all of them |
 | `--dc-entry-radius` / `-mark` / `-mark-size` / `-frame` | `0` / `none` / `auto` / `none` | An entry kind's corner radius, background mark (eyelet, facet, hazard head) and inset keyline |
 | `--dc-entry-badge-bg` / `-fg` / `-shape` / `-radius` | `--ink-dark` / `--paper-cream` / `none` / `0` | The kind badge over the name |
@@ -316,7 +317,8 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 |---|---|---|
 | `--dc-steps-accent` / `-surface` | `--hud-blue-dark` / `--paper-cream` | Number strip; plate |
 | `--dc-at-a-glance-accent` / `-value` | `--hud-blue-dark` / `--ink` | Tile frame and label band; the value |
-| `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | Rules and term colour; the rule over the block; page; clip |
+| `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | The rules; the rule over the block; page; clip |
+| `--dc-definition-block-term` / `-fg` / `-style` / `-frame` / `-rule-bottom` / `-pad` | `--hud-blue-dark` / `--ink` / `italic` / `--shadow-poster` / `1pt` / `8pt 12pt 9pt` | Headword colour; body colour; body style; box-shadow (the hard shadow, or an inset frame); the rule under; padding. `lucid` and `surreal` set them |
 | `--dc-outcome-key-col` | `max(130px, 26%)` | Outcome ladder chip column |
 | `--dc-fiction-bg` / `-depth` / `-depth-bg` | `--paper-zine` / `6px` / `--ink-dark` | The fiction excerpt's page; the hole's cast shadow depth (10px on a chapter opener) and colour |
 | `--dc-fiction-cavity` / `-lip` / `-rim` | `--ink-smoke` / `--paper-cream` / `8px` | The hole's rim, the lit lip at its bottom and right, how far it reaches past the page |
@@ -341,6 +343,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-band-rule` / `-rule-h` / `-rule-art` | `--hud-magenta` / `3px` / `none` | The rule under the band: colour, height, hard-edged pattern |
 | `--dc-band-facet` / `-facet-width` / `-facet-clip` | `transparent` / `32%` / polygon | A flat plane at the band's right (magic facet, landfill patch) |
 | `--dc-band-rim` | `none` | An inset top highlight (tech bands only) |
+| `--dc-band-reg` | `none` | A box-shadow on the rule: a second ink printed 2px off, a misregistered line (tech bands only) |
 
 ### Learning Path Shell (`.dc-path-shell`)
 | Token | Default | Role |
@@ -372,6 +375,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-block-accent` | `--hud-blue-dark` | Block accent |
 | `--dc-block-title-bg` | `--hud-blue-dark` | Title bar background |
 | `--dc-block-title-fg` | `--paper-cream` | Title bar text |
+| `--dc-block-title-rule` | `none` | A whole `border-bottom` value under the band (slate: 3pt crimson; shard: 2pt dashed) |
+| `--dc-block-tag` | `none` | A quoted word stamped on the band's right end (slate: "Binding") |
+| `--dc-block-tag-edge` | `1.5pt solid --paper-cream` | The tag's border (slate: `3pt double`, a worn stamp) |
 
 ---
 

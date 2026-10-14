@@ -20,7 +20,9 @@ A wrapper that only needs an element and classes needs no code of its own. It is
 
 ```js
 export const markers = {
-  definition: wrapper('dc-prose-panel dc-definition-block'),
+  definition: wrapper('dc-prose-panel dc-definition-block', {
+    variants: { lucid: 'dc-definition-lucid', surreal: 'dc-definition-surreal' },
+  }),
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },

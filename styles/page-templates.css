@@ -393,9 +393,21 @@
    page edge (a box past the content box makes the engine shrink the whole
    document). Opaque, vector, no gradients. */
 
+/* THE GUARD. Every rule below is scoped to a direct child of a wall page or a
+   chapter, written once as `:where(...)` (zero specificity, so a rule that
+   styles the same element more specifically, the chapter-start lede, wins),
+   and to an element a component has NOT claimed: `[class*="dc-"]` means
+   "a component emitted this" (`ol.dc-steps` from `@procedure`, `div.dc-intro`,
+   `div.dc-toc`, `p.dc-img-wrapper`, `h2.dc-chevron`), and the look classes
+   `.dc-h3`-`.dc-h6`, `.dc-snug` and `.dc-avoid-split` are the only `dc-`
+   classes that still leave a plain element plain. This sheet's layer
+   (`dc.templates`) outranks `dc.components`, so without the guard these rules
+   would repaint a component's own bare element.
+   test/conventions.test.js ("free-standing page text") keeps it that way. */
+
 /* TITLE BANNER. A chapter-start title was already a banner when no fiction
    excerpt followed it; now it always is, and so is any page's `#`. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > h1:not(.dc-chevron, .dc-spray) {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h1:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   background: var(--dc-section-accent);
   color: var(--dc-page-title-ink);
   border: 0;
@@ -416,8 +428,10 @@
   break-after: avoid;
 }
 
-/* HEADING SLIPS. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(h2, h3, h4, h5, h6):not(.dc-chevron, .dc-spray) {
+/* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
+   jams against the box above it. A heading never ends a page (`break-after`,
+   which the tape pseudo-element does not disturb: it is out of flow). */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   position: relative;
   background: var(--dc-page-slip-bg);
   color: var(--dc-page-slip-ink);
@@ -425,9 +439,11 @@
   border-bottom: 3pt dashed var(--dc-page-slip-edge);
   box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.075in 0.14in 0.07in 0.24in;
-  margin: var(--space-xl) 0 var(--space-md);
+  margin: var(--dc-page-slip-gap) 0 var(--space-md);
+  break-after: avoid;
+  break-inside: avoid;
 }
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(h2, h3, h4, h5, h6):not(.dc-chevron, .dc-spray):first-child {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
   margin-top: 0;
 }
 
@@ -435,7 +451,7 @@
    degrees off square. It hangs below the slip, into the gap that follows every
    heading (a heading never ends a page), never over the page's top edge, and
    its top ends inside the slip's foot padding, so it never touches a glyph. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > h2:not(.dc-chevron, .dc-spray)::after {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
   content: "";
   position: absolute;
   bottom: -5px;
@@ -448,53 +464,77 @@
   rotate: -2.5deg;
 }
 
-/* `###`: a plain slip, a thinner rail and foot. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > h3:not(.dc-chevron, .dc-spray) {
+/* `###`: a hung tag: it shrinks to its words, a thinner rail and foot, and
+   hangs in a little from the left; every second one hangs further, so a wall
+   page reads as posters put up by hand, not one column of cards. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  width: fit-content;
+  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
+  margin-left: var(--dc-page-slip-offset);
   border-bottom-width: 2pt;
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.06in 0.12in 0.05in 0.2in;
 }
 
-/* `####` and below: a label slip that shrinks to its words. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(h4, h5, h6):not(.dc-chevron, .dc-spray) {
+/* `####` and below: a label slip that shrinks to its words, framed in ink. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   width: fit-content;
-  max-width: 100%;
+  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
+  margin: var(--dc-page-slip-gap) 0 var(--space-sm) var(--dc-page-slip-offset);
   border: 1.5pt solid var(--dc-page-slip-edge);
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.05in 0.12in 0.04in 0.2in;
-  margin: var(--space-lg) 0 var(--space-sm);
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):nth-of-type(even) {
+  margin-left: calc(2.5 * var(--dc-page-slip-offset));
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
+  margin-top: 0;
 }
 
 /* LOOSE TEXT: one paper sheet per run. A paragraph, list or quote that is a
    direct child of a page is on the sheet; consecutive ones join (no gap, the
    same face and shadow, so the shadow reads as one) and the sheet ends where
    the run ends. A picture paragraph (an image on its own line) is not text
-   and is left to the image rules. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(p, ul, ol, blockquote):not(.dc-img-wrapper, :has(> img:only-child)) {
+   and is left to the image rules. Three orphans and three widows keep a split
+   sheet from leaving a one- or two-line scrap of paper on the next page. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)) {
   background: var(--dc-page-slip-bg);
   box-shadow: var(--dc-page-slip-shadow);
   padding: 0.05in var(--dc-page-sheet-pad);
   margin: 0;
+  orphans: 3;
+  widows: 3;
 }
 /* the run's first block takes the sheet's top edge, its last the sheet's foot and the gap to what follows */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(p, ul, ol, blockquote):not(.dc-img-wrapper, :has(> img:only-child), :is(p, ul, ol, blockquote) + :is(p, ul, ol, blockquote)) {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child), :is(p, ul, ol, blockquote) + :is(p, ul, ol, blockquote)) {
   padding-top: 0.1in;
 }
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(p, ul, ol, blockquote):not(.dc-img-wrapper, :has(> img:only-child)):is(:last-child, :has(+ :not(p, ul, ol, blockquote), + .dc-img-wrapper)) {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)):is(:last-child, :has(+ :not(p, ul, ol, blockquote), + .dc-img-wrapper)) {
   padding-bottom: 0.1in;
   margin-bottom: var(--space-md);
 }
 /* a list in the sheet keeps its markers inside the sheet's padding */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > :is(ul, ol):not(.dc-img-wrapper) {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul, ol):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   padding-left: calc(var(--dc-page-sheet-pad) + 0.25in);
 }
 
 /* A `@columns` run with nothing but prose in it is one sheet, whole. */
-:is(.page, .chapter):not(.dg-doc, .dc-page-contents, .dc-page-credits) > .gp-columns:not(:has(> :not(p, ul, ol, blockquote, hr, h2, h3, h4, h5, h6, [aria-hidden]))) {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > .gp-columns:not(:has(> :not(p, ul, ol, blockquote, hr, h2, h3, h4, h5, h6, [aria-hidden]))) {
   background: var(--dc-page-slip-bg);
   box-shadow: var(--dc-page-slip-shadow);
   padding: 0.1in var(--dc-page-sheet-pad);
   margin-bottom: var(--space-md);
+}
+
+/* HEADING AFTER A BOX. A box (an outcome ladder, a stat grid, a callout, a
+   table) spaces itself with a bottom margin of its own or none, so a heading
+   straight after one could sit hard against it ("Distance Tags" under the
+   ladder). The heading takes `--dc-heading-gap` above it. Plain headings only:
+   a component's own heading (`.dc-chevron`, `.dc-spray`, a card title) is its
+   owner's. */
+:is(.dc-outcomes, .dc-stat, .dc-alert, .dc-roll-table, table) + :is(h2, h3, h4):not([class*="dc-"]) {
+  margin-top: var(--dc-heading-gap);
 }
 
 /* ── PAGE WORD: `@page specialty-catalog` — the catalog as a two-page spread ──
@@ -522,15 +562,21 @@
   --dc-specialty-card-media-order: -1;
   --dc-specialty-card-media-float: none;
   --dc-specialty-card-media-float-even: none;
-  --dc-specialty-card-media-margin: 0 0 0.1in;
-  --dc-specialty-card-media-margin-even: 0 0 0.1in;
+  --dc-specialty-card-media-margin: 0 0 0.14in;
+  --dc-specialty-card-media-margin-even: 0 0 0.14in;
   --dc-specialty-card-media-width: 100%;
-  --dc-specialty-card-media-height: 0.95in;
+  --dc-specialty-card-media-height: 1in;
   --dc-specialty-card-media-mat: 2px;
   --dc-specialty-card-media-shape: var(--spec-media-shape);
   --dc-specialty-card-name-size: 1em;
   --dc-specialty-card-index: counter(dc-specialty, decimal-leading-zero);
   --dc-specialty-card-title-align: left;
+}
+
+/* A tape divider (`.dc-tape`: the MASTERS strip between creature blocks, a
+   section break) never ends a page: it travels with what follows it. */
+.dc-tape {
+  break-after: avoid;
 }
 
 /* ── SPECIALTY BREAK CONTROL ───────────────────────────────────────────────

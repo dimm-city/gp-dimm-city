@@ -60,7 +60,7 @@
      --dc-[component]-title-color
    Do not expose internal layout dimensions as a variable API.
 
-   TOKEN CONVENTION (dc#34, one rule, no exceptions):
+   TOKEN CONVENTION (dc#34, one rule, one named exception):
    - Every public component token DEFAULTS at :root in dc-component-defaults.css. A
      component's own base rule NEVER declares its own public token — an
      element that sets a custom property on itself makes that property
@@ -77,6 +77,19 @@
      chapter/page scopes) or on VARIANT CLASSES on the same element
      (`.dc-ap.free`, `.dc-specialty.<name> .dc-X`) —
      never by re-declaring the token on the base component selector itself.
+
+   THE EXCEPTION: CONTEXT TOKENS. A context token is not a knob on one
+   component; it is a value a component DERIVES for what is inside it. There
+   is exactly one: `--dc-accent-ink`, the text-safe ink of the component the
+   text sits in (what ROLL THE DIE! and its underline read). Every component
+   that can hold prose sets it on its OWN root rule, from its own accent and
+   surface (a blood box: `--blood`; the DM slab: a cyan tint). Because it is
+   derived per component, it is declared on the component's class on purpose,
+   it defaults at :root (so text outside any component has an ink), and a book
+   overrides it PER COMPONENT CLASS (`#ch-x .dc-alert { --dc-accent-ink: … }`),
+   never at an ancestor: an ancestor value would lose to every component's own
+   declaration. test/conventions.test.js holds the allow-list (CONTEXT_TOKENS);
+   adding a token to it is a design decision, not a shortcut around dc#34.
 
    AGENT RULE: "Is this a .dc-* component style, or a
    .dc-specialty.<name> scope block for a component?" — if NO, use another file.

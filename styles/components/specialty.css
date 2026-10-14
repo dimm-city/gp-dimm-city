@@ -282,6 +282,11 @@
    read as ink on paper, not as a painted card. */
 .dc-specialty-card h3 {
   margin: 0;
+  /* In the poster card (a flex column) the slack of a row's shorter card goes
+     above the name, between the portrait and the text, so the type block sits
+     at the foot with no dead cream under the pitch; in the dense card an auto
+     top margin is 0. */
+  margin-top: auto;
   padding-top: 0;
   border-top: 0;
   font-size: var(--dc-specialty-card-name-size);

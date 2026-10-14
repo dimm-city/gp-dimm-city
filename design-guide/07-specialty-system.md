@@ -71,7 +71,7 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 </div>
 
-Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`.
+Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`, `--dc-band-reg` (a second ink printed 2px off, tech bands).
 
 ## Specialty art
 

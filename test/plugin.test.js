@@ -1267,6 +1267,23 @@ describe("declared callout and dm-note", () => {
 
 // Entry cards, the @field component and the bold-label shortcut onto it, and
 // the catalog section that holds a run of entries.
+describe("definition variants", () => {
+  test("@definition lucid and @definition surreal add their own class", () => {
+    for (const word of ["lucid", "surreal"]) {
+      const { html, warnings } = renderGp(`@definition ${word}\n\n#### Term\n\nMeaning.\n\n@end-definition`);
+      expect(warnings, word).toEqual([]);
+      expect(html, word).toContain(`<div class="dc-prose-panel dc-definition-block dc-definition-${word}"`);
+    }
+  });
+
+  test("a bare @definition has neither variant class", () => {
+    const { html } = renderGp("@definition\n\n**Tick:** a heartbeat.\n\n@end-definition");
+    expect(html).toContain('<div class="dc-prose-panel dc-definition-block"');
+    expect(html).not.toContain("dc-definition-lucid");
+    expect(html).not.toContain("dc-definition-surreal");
+  });
+});
+
 describe("entry cards", () => {
   const KINDS = ["augment", "treasure", "vehicle", "drug"];
   const ENTRIES = ["gear", ...KINDS];

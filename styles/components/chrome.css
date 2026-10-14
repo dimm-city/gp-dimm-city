@@ -144,12 +144,19 @@ h1.dc-chevron {
 
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
+/* The chain flows inline, not as flex items: each arrow is joined to the chip
+   AFTER it by a word joiner (plugin.js), so a wrap may fall before an arrow and
+   never between an arrow and its chip. A line never ends on a »; the arrow
+   leads the next line with its chip. */
 .dc-stickers {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  align-items: center;
+  display: block;
   margin: 4px 0 22px;
+}
+
+.dc-stickers > :is(.dc-sticker, .dc-arrow) {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 6px 8px 0;
 }
 
 .dc-sticker {
@@ -163,7 +170,7 @@ h1.dc-chevron {
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, var(--paper-cream));
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -202,7 +209,7 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
+  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, var(--dc-path-title-bg));
 }
 
 /* The gap between the sticker and the banner title. It is a real space

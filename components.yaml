@@ -196,7 +196,7 @@ components:
     recipe: "@block panel|slate|shard label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
     css: styles/components/section.css
-    tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg]
+    tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg, --dc-block-title-rule, --dc-block-tag, --dc-block-tag-edge]
     breaks: "break-inside: avoid"
     notes: "A declared marker: the variant word (or the .dc-* class) selects the treatment (see block-variants). The old variant=panel attribute form was dropped; no book used it. Design guide only."
 
@@ -231,7 +231,7 @@ components:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
     css: styles/components/section.css
-    tokens: [--dc-card-shape, --dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind]
+    tokens: [--dc-card-shape, --dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail]
     breaks: "break-inside: avoid"
     notes: "Declared marker, no variants: author classes (@card .dc-flaws), #id and key=value attributes ride on the wrapper. The heading is the first `####` (core converts only a `####` to .dc-card-heading; write `####`, not `###`). A card reads its kind from the enclosing @flaws, @ideals or @dreams through the --dc-choice-* tokens (it is not styled by `.section.dc-flaws > .dc-card`); outside them it is plain ink. Inside a skill it stays in the skill's card. Left open at the end of the file it closes silently."
 
@@ -243,7 +243,7 @@ components:
     recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
     emits: div.section.dc-section-panel.dc-section-choose.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
-    tokens: [--dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-card-shape]
+    tokens: [--dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail, --dc-card-shape]
     notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks. The kind sets the --dc-choice-* tokens and the card shape, and the cards read them: flaws = blood, a cracked jagged foot and a nicked corner; ideals = HUD blue, a symmetric tablet with a rule under the name; dreams = violet, a top edge rising to the right. Each card has a rail, a top band, a one-word kind chip (FLAW, IDEAL, DREAM) and the closing quote in a kind-tinted well. With no heading the section draws nothing around the cards."
 
   # ── Entry cards: one rule set (.dc-entry), each kind a token setter ─────
@@ -435,7 +435,7 @@ components:
     recipe: "@specialty-intro … @end-specialty-intro"
     emits: div.dc-specialty-intro
     css: [styles/components/specialty.css, styles/components/specialty-identity.css]
-    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim]
+    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim, --dc-band-reg]
     breaks: "break-inside: avoid; first h2 break-after: avoid"
     notes: "The title band is the specialty's own bright signal colour (--spec-band) with a register: tech = LED rim and a rule of LED dots (a dotted border), magic = a facet plane, streetwarden = a hazard-tape rule, landfill = a torn bottom edge and no rule."
 
@@ -516,6 +516,7 @@ components:
       - --dc-band-facet-width
       - --dc-band-facet-clip
       - --dc-band-rim
+      - --dc-band-reg
       - --dc-path-accent
       - --dc-path-shell-padding-top
       - --dc-path-shell-padding-bottom
@@ -711,7 +712,7 @@ components:
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
     css: [styles/page-rules.css, styles/page-templates.css]
-    tokens: [--dc-fiction-depth, --dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-sheet-pad]
+    tokens: [--dc-fiction-depth, --dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-slip-gap, --dc-page-slip-offset, --dc-page-sheet-pad, --dc-heading-gap]
     breaks: "page: chapter-start (no footer on any page the opener spans)"
     notes: "A chapter opener: the h1 gets headroom, is kept with the block after it and is a banner in the chapter's accent (any page's free-standing `#` is), the paragraph straight under it is a lede on a paper sheet, and a fiction excerpt takes the deeper hole (10px) by tokens. Free-standing text on any wall page prints on a substrate with no markup: `##` a paper slip with an accent rail, dashed foot and tape, `###` a plain slip, `####`+ a label slip, loose paragraphs, lists and quotes one paper sheet per run (page-templates.css, FREE-STANDING PAGE TEXT; the guide's @page .dg-doc pages are exempt)."
 
@@ -946,7 +947,7 @@ components:
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits: div.section.dc-section-panel
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
     notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
 

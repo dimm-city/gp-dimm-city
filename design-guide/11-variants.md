@@ -1099,7 +1099,7 @@ The world, not the rules: a deep violet bar over a pale lilac sheet, with long c
 
 ### Dream Master section
 
-Behind the screen: an ink bar with a cyan rule and a Dream Master chip over a cold body, with a cyan rail and the top-right and bottom-left corners cut.
+Behind the screen: a file-folder tab that says Dream Master over an ink bar with a cyan rule, a cold body, a cyan rail and the bottom-right corner cut.
 
 @end-section
 

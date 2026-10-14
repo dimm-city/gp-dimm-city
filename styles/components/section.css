@@ -100,7 +100,7 @@ div[class="section"] {
      the accent, deepened. Derived here, not at :root, so a chapter that sets only
      the accent still recolours it. A kind may set its own. */
   --dc-accent-ink: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-ink-mix), var(--dc-section-ink-tone));
-  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
+  padding: calc(var(--dc-section-pad-top) + var(--dc-section-top)) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
@@ -366,8 +366,15 @@ h3 + .dc-section-panel {
   --dc-section-bar-mix: 0%;
   --dc-section-bar-tone: var(--hud-blue-dim);
   --dc-section-bar-fg: var(--ink-dark);
-  --dc-section-bar-rule: 3pt solid var(--hud-blue-dark);
-  --dc-section-bar-rule-sub: 3pt solid var(--hud-blue-dark);
+  --dc-section-bar-rule: 3pt double var(--ink-dark);
+  --dc-section-bar-rule-sub: 3pt double var(--ink-dark);
+}
+/* A machined spec-sheet header: the pale band is ruled in ink above (a 3pt inset
+   rule) and below (a double rule), so against the solid panel bar, the torn violet
+   lore bar and the ink dm bar it reads as ruled light stock, in grey too. */
+.dc-section-reference > :is(h2, h3):first-child {
+  box-shadow: inset 0 3pt 0 var(--ink-dark);
+  padding-top: 0.62rem;
 }
 /* Rows are tight and the column heads are the pale band again. */
 .dc-section-reference table {
@@ -399,7 +406,8 @@ h3 + .dc-section-panel {
    Violet, the dream colour. A pale lilac sheet under a DEEP violet bar (cream
    on it 10:1), a violet rule, and LONG ASYMMETRIC cuts: a shallow slash off the
    top left (56 x 20px) and a steep one off the bottom right (16 x 50px), so it
-   reads as secret and cut open, never as a chamfer. Darker and cooler than the
+   reads as secret and cut open, never as a chamfer; the top edge past the slash
+   is TORN (a ragged line 5px deep, the bar's own edge following it). Darker and cooler than the
    magenta panel, so the two never read alike in grey. The bar's text clears the
    shallow cut (padding left = cut-tl + 2pt, cut-tl standing for the 30px the
    slash eats at text height) and the right padding clears the steep one. */
@@ -422,6 +430,7 @@ h3 + .dc-section-panel {
   clip-path: polygon(
     0 20px,
     56px 0,
+    20% 0, 23% 4px, 27% 1px, 31% 5px, 36% 0, 41% 4px, 46% 2px, 52% 5px, 58% 0, 63% 4px, 69% 1px, 75% 5px, 81% 0, 87% 4px, 93% 2px, 
     100% 0,
     100% calc(100% + var(--dc-section-shadow-y) + var(--dc-section-edge) - 50px),
     calc(100% - 16px) calc(100% + var(--dc-section-shadow-y) + var(--dc-section-edge)),
@@ -433,7 +442,7 @@ h3 + .dc-section-panel {
 }
 .dc-section-lore.dc-section-panel > h2:first-child,
 .dc-section-lore.dc-section-panel > h3:first-child {
-  clip-path: polygon(0 20px, 56px 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(0 20px, 56px 0, 20% 0, 23% 4px, 27% 1px, 31% 5px, 36% 0, 41% 4px, 46% 2px, 52% 5px, 58% 0, 63% 4px, 69% 1px, 75% 5px, 81% 0, 87% 4px, 93% 2px, 100% 0, 100% 100%, 0 100%);
 }
 .dc-section-lore p {
   line-height: 1.5;
@@ -452,13 +461,19 @@ h3 + .dc-section-panel {
    ink is the Dream Master's colour pair, used nowhere else: the tab and bar are
    ink with a cyan rule, the rail cyan, the body a cold concrete. With or without a
    heading the tab is drawn, so the kind never goes unmarked. The accent is cyan
-   (rail, sub-heading ticks); the bar keeps the ink. The tab is part of the
-   surface layer (it reaches --dc-section-tab-h above the box, which the section's
-   top margin gives room for), so its text is the layer's own and cannot be cut.
-   Padding right and bottom are the cut + 2pt. */
+   (rail, sub-heading ticks); the bar keeps the ink.
+   The tab lives INSIDE the box: the box's top 15pt (`--dc-section-top`, added to
+   the padding) is the folder's tab band; the tab is its own small layer there and
+   the surface starts below it, so right of the tab the wall shows. Nothing hangs
+   above the box and nothing is notched by clip-path, so a page break can never
+   strand the tab, leave its text without its ink fill, or notch a continuation:
+   the first fragment holds the tab and the heading under it (the heading keeps
+   with what follows) and a continuation is plain paper. Padding right and bottom
+   are the cut + 2pt. */
 .dc-section-dm {
   --dc-section-accent: var(--brand-cyan);
   --dc-section-bg: var(--concrete-pale);
+  --dc-section-top: 15pt;
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 0px;
   --dc-section-cut-bl: 0px;
@@ -472,30 +487,39 @@ h3 + .dc-section-panel {
   --dc-section-bar-rule: 3pt solid var(--brand-cyan);
   --dc-section-bar-rule-sub: 3pt solid var(--brand-cyan);
   --dc-accent-ink: var(--hud-blue-dark);
-  margin-top: 22pt; /* room for the 15pt tab and the section above's hanging edge */
 }
-.dc-section-dm::before,
-.dc-section-dm::after {
-  top: -15pt;
+.dc-section-dm :is(.dc-section-panel, .dc-section-flat) {
+  --dc-section-top: 0px; /* the tab band is the folder's, not its nested sections' */
+}
+/* The surface starts below the tab band and keeps only the bottom-right cut; its
+   hard right and bottom edges are inset ink (the hanging shadow layer is the tab
+   instead). */
+.dc-section-dm::before {
+  top: var(--dc-section-top);
+  --dc-section-flag: inset -3px -3px 0 0 var(--ink-dark);
   clip-path: polygon(
-    0 6px,
-    6px 0,
-    1.6in 0,
-    calc(1.6in + 10px) 15pt,
-    100% 15pt,
-    100% calc(100% + var(--dc-section-shadow-y) + var(--dc-section-edge) - var(--dc-section-cut-br)),
-    calc(100% - var(--dc-section-cut-br)) calc(100% + var(--dc-section-shadow-y) + var(--dc-section-edge)),
-    0 calc(100% + var(--dc-section-shadow-y) + var(--dc-section-edge))
+    0 0,
+    100% 0,
+    100% calc(100% + var(--dc-section-edge) - var(--dc-section-cut-br)),
+    calc(100% - var(--dc-section-cut-br)) calc(100% + var(--dc-section-edge)),
+    0 calc(100% + var(--dc-section-edge))
   );
 }
+/* The tab: a small ink layer in the box's own top band (it never spans a page
+   break, so it cannot be left without its fill, and the surface under it is not
+   notched, so a continuation fragment keeps its paper). */
 .dc-section-dm::after {
-  --dc-section-shadow-y: 3px;
-  top: calc(3px - 15pt);
-}
-.dc-section-dm::before {
   content: "Dream Master";
-  /* The tab is one more inset shadow in the surface layer's own stack. */
-  --dc-section-flag: inset 0 15pt 0 0 var(--ink-dark);
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  width: calc(1.6in + 10px);
+  height: var(--dc-section-top);
+  background: var(--ink-dark);
+  box-shadow: none;
+  clip-path: polygon(0 6px, 6px 0, 1.6in 0, 100% 100%, 0 100%);
+  z-index: -1;
   padding: 2pt 0 0 14px;
   color: var(--brand-cyan);
   font-family: var(--font-mono);
@@ -734,6 +758,7 @@ h3 + .dc-section-panel {
   --dc-block-title-rule: 3pt solid var(--crimson);
   --dc-block-tag: "Binding";
   --dc-block-tag-edge: 3pt double var(--paper-cream);
+  font-weight: 600; /* reversed type is semibold */
   --dc-accent-ink: color-mix(in srgb, var(--crimson) 40%, var(--paper-cream));
   padding-bottom: 14pt;
   box-shadow: inset 0 0 0 3px var(--dc-block-accent); /* a heavy frame, drawn as inset ink */
@@ -846,9 +871,18 @@ h3 + .dc-section-panel {
    sits first in the body and is dressed the same. */
 .section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card {
   background: var(--dc-choice-surface);
-  border: 1.5pt solid var(--ink-dark);
-  border-left: 6px solid var(--dc-choice-accent);
-  border-top: 5px solid var(--dc-choice-accent);
+  border: var(--dc-choice-edge);
+  border-left: var(--dc-choice-rail) solid var(--dc-choice-accent);
+  border-top: var(--dc-choice-band) solid var(--dc-choice-accent);
+  padding-inline: 12pt;
+}
+/* The skill card's body rule (cards.css) also reaches this body: it is part of
+   the sheet here, not a second one. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body {
+  background: var(--dc-choice-surface);
+  padding: 0 0 4px;
+  border: 0;
+  clip-path: none;
 }
 .section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
   margin-top: 0;
@@ -889,42 +923,59 @@ h3 + .dc-section-panel {
   font-style: italic;
 }
 
-/* Flaws: blood. A cracked edge (jagged along the foot, a nick off the top
-   right) over a blood-tinted quote. */
+/* The three choices differ in grayscale as well as colour: fill value, edge
+   weight and how deep the silhouette bites. Flaw = the darkest sheet, a heavy
+   dashed (broken) edge and a deep crack; Ideal = the mid sheet, a clean solid
+   edge and deep V stubs; Dream = the lightest sheet, a double edge and a steep
+   rise with perforated tears. Every cut is cleared by padding of cut + 2pt. */
+
+/* Flaws: blood. A cracked, ragged edge: a 40 x 26px nick off the top right and a
+   foot that jags up to 13px, over a blood-tinted quote. */
 .section.dc-flaws {
   --dc-choice-accent: var(--blood);
-  --dc-choice-tint: color-mix(in srgb, var(--blood) 11%, var(--paper-cream));
+  --dc-choice-surface: var(--paper-light);
+  --dc-choice-edge: 2pt dashed var(--ink-dark);
+  --dc-choice-band: 9px;
+  --dc-choice-rail: 9px;
+  --dc-choice-tint: color-mix(in srgb, var(--blood) 13%, var(--paper-light));
   --dc-choice-kind: "Flaw";
   --dc-accent-ink: var(--blood);
-  --dc-card-shape: polygon(0 0, calc(100% - 22px) 0, 100% 14px, 100% calc(100% - 5px), 94% 100%, 88% calc(100% - 4px), 80% 100%, 71% calc(100% - 6px), 63% calc(100% - 1px), 52% calc(100% - 5px), 41% 100%, 33% calc(100% - 4px), 22% 100%, 12% calc(100% - 5px), 5% 100%, 0 calc(100% - 3px));
+  --dc-card-shape: polygon(0 0, calc(100% - 40px) 0, 100% 26px, 100% calc(100% - 9px), 94% 100%, 88% calc(100% - 13px), 80% calc(100% - 2px), 71% calc(100% - 12px), 63% calc(100% - 3px), 52% calc(100% - 13px), 41% calc(100% - 1px), 33% calc(100% - 11px), 22% calc(100% - 2px), 12% calc(100% - 12px), 5% calc(100% - 1px), 0 calc(100% - 8px));
+}
+.section.dc-flaws > .dc-card {
+  padding-top: 14pt;
+  padding-bottom: 14pt;
 }
 
-/* Ideals: HUD blue. A steady ticket stub: symmetric V notches on both sides,
-   nothing uneven, a rule under the name. */
+/* Ideals: HUD blue. A steady ticket stub: symmetric V notches (14px deep) in the
+   middle of both sides, nothing uneven, a rule under the name. */
 .section.dc-ideals {
   --dc-choice-accent: var(--hud-blue-dark);
+  --dc-choice-surface: var(--paper-cream);
   --dc-choice-tint: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
   --dc-choice-kind: "Ideal";
   --dc-accent-ink: var(--hud-blue-dark);
-  /* A ticket stub: a V punched out of the middle of each side (9px deep). */
-  --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 9px), calc(100% - 9px) 50%, 100% calc(50% + 9px), 100% 100%, 0 100%, 0 calc(50% + 9px), 9px 50%, 0 calc(50% - 9px));
+  --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 14px), calc(100% - 14px) 50%, 100% calc(50% + 14px), 100% 100%, 0 100%, 0 calc(50% + 14px), 14px 50%, 0 calc(50% - 14px));
 }
 .section.dc-ideals > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
   padding-bottom: 3px;
   border-bottom: 1.5pt solid var(--hud-blue-dark);
 }
 
-/* Dreams: violet. The top edge rises to the right, as an aim does. */
+/* Dreams: violet. The top edge rises steeply to the right (30px), as an aim does,
+   and the foot is perforated with two 9px V tears. */
 .section.dc-dreams {
   --dc-choice-accent: var(--brand-violet);
-  --dc-choice-tint: color-mix(in srgb, var(--brand-violet) 10%, var(--paper-cream));
+  --dc-choice-surface: var(--paper-form);
+  --dc-choice-edge: 4pt double var(--ink-dark);
+  --dc-choice-band: 3px;
+  --dc-choice-tint: color-mix(in srgb, var(--brand-violet) 10%, var(--paper-form));
   --dc-choice-kind: "Dream";
   --dc-accent-ink: var(--brand-violet);
-  /* The top edge rises to the right; the foot is perforated with two V tears. */
-  --dc-card-shape: polygon(0 18px, 100% 0, 100% 100%, 72% 100%, calc(72% - 5px) calc(100% - 5px), calc(72% - 10px) 100%, 32% 100%, calc(32% - 5px) calc(100% - 5px), calc(32% - 10px) 100%, 0 100%);
+  --dc-card-shape: polygon(0 30px, 100% 0, 100% 100%, 72% 100%, calc(72% - 9px) calc(100% - 9px), calc(72% - 18px) 100%, 32% 100%, calc(32% - 9px) calc(100% - 9px), calc(32% - 18px) 100%, 0 100%);
 }
 .section.dc-dreams > .dc-card {
-  padding-top: 17pt; /* the 18px (13.5pt) rise + 2pt, plus the border */
+  padding-top: 24pt; /* the 30px (22.5pt) rise + 2pt, less the border */
   padding-bottom: 12pt;
 }
 
@@ -1379,7 +1430,7 @@ h3 + .dc-section-panel {
 }
 .dc-card-grid .dc-specialty-card img { margin-bottom: 0; }
 .dc-card-grid .dc-specialty-card p { line-height: 1.25; font-size: var(--fs-floor); }
-.dc-card-grid .dc-specialty-card h3 { margin: 0; padding-top: 0; line-height: 1.3; }
+.dc-card-grid .dc-specialty-card h3 { padding-top: 0; line-height: 1.3; }
 .dc-card-grid .dc-specialty-card blockquote { font-size: var(--fs-floor); margin: 0; line-height: 1.3; }
 
 

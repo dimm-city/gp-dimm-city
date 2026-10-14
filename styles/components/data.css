@@ -407,7 +407,7 @@
   text-align: center;
   text-wrap: balance;
   overflow-wrap: anywhere;
-  color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink)));
+  color: var(--dc-outcome-name-color);
   opacity: var(--dc-outcome-name-opacity);
   line-height: 1.2;
 }
@@ -446,7 +446,7 @@
      miss  → rust                (GUTTER deep — paper-cream 4.59:1)
      fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 8.73:1)
    All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
-   for 9px outcome-name and 12pt roll-number text.
+   for the 8pt outcome-name and 12pt roll-number text.
 
    The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
    (below) because fungi-glow is too light to carry paper-cream text. Bright
@@ -621,7 +621,7 @@
      --dc-definition-block-accent-width  → weight of the rule over the block (default 3pt)
      --dc-definition-block-shape         → clip-path (default none)
      --dc-definition-block-fg            → body colour (default --ink)
-     --dc-definition-block-term          → headword colour (default the accent)
+     --dc-definition-block-term          → headword colour (default --hud-blue-dark; its own token, it does not follow the accent)
      --dc-definition-block-style         → body font-style (default italic)
      --dc-definition-block-frame         → box-shadow: the hard shadow, or an inset frame
      --dc-definition-block-rule-bottom   → weight of the rule under the block (default 1pt)
@@ -696,6 +696,7 @@
   --dc-definition-block-style: italic;
   --dc-definition-block-frame: inset 5px 4px 0 var(--brand-magenta-deep), inset -5px -4px 0 var(--brand-violet);
   --dc-definition-block-pad: 20pt 22pt 20pt 22pt;
+  font-weight: 600; /* reversed type: semibold */
   --dc-accent-ink: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
 }
 .dc-definition-surreal > h4,
