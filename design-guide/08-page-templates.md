@@ -21,7 +21,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | — | 8.5 × 11 in | — |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 1 in (0.875 in on a page with no footer) | 0.875 in | 0.5 in — the chips start 0.125 in below the text and end 0.5 in from the trim |
+| Bottom margin (the folio, running head and chapter chips sit in it) | 1 in (0.75 in on a page with no footer) | 0.875 in (0.625 in) | 0.5 in — the chips start 0.125 in below the text and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.75 in | 0.75 in | 0.5 in |
 
@@ -31,7 +31,7 @@ A page carrying the "Citizen File" running head has a 1 in top margin, so the he
 
 | You write | Footers | Use for |
 |---|---|---|
-| `@page` | `p.N` and `c.N` in opposing corners | Every body page |
+| `@page` | `p.N` and `c.N` in opposing corners, the chapter's name between | Every body page |
 | `@page contents` | none | The contents page |
 | `@page credits` | none | The credits page |
 | `@page intro` | none | The introduction (a `@lede`, then a `@section flat`) |
@@ -46,6 +46,26 @@ The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter spl
 ### The page chips
 
 The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon: a solid face with cream type and the same edge and shadow. Both are 17 pt tall with 10 pt type centred in the face, and both sit 0.125 in below the text block, inside DriveThruRPG's 0.5 in text minimum, so a box that runs to the foot never touches them, on recto and verso, for every page word that prints them. The coupon is magenta by default; to colour it with a chapter, put the chapter's pages on a named page, `:where(#ch-rules) > .page { page: dc-chip-rust; }` (blue, rust, violet, amethyst or amber; the `specialty`, `rules` and `lore` chapter words do it for you). Name the page with the low-specificity `:where()` so a page's own template name still wins. A `citizen-file` page's running head is the same sticker in amber at the top.
+
+### The running head
+
+Between the two chips every body page prints the chapter's name on a paper slip with an ink edge and a hard shadow, and a rail in the chapter's colour, so a reader flipping pages knows where they are. It is the same 17 pt chip family and sits in the same footer band, so it is inside DriveThruRPG's 0.5 in text minimum and costs no page height. A book writes nothing: the name is the first of these that the chapter has.
+
+| Source | Example |
+|---|---|
+| `head="…"` on the `@chapter` line | `@chapter #ch-tech ch="6" head="Tech and Cybernetics"`, also the way to shorten a long title |
+| the chapter's `#` title | the head follows the latest `#` in the chapter, so a chapter file that opens with a `#` is done |
+| "Chapter N", from `ch="N"` | a chapter with neither still prints a name |
+
+The head is not printed on chapter openers, front matter, full-bleed pages or explainer pages like this one: any page template that clears the footer clears it. To suppress it for a whole book, add `@page :left { @bottom-center { content: none; } } @page :right { @bottom-center { content: none; } }` to the book's own sheet; to suppress it on one page template, add `@bottom-center { content: none; }` to that template's `@page` block. The mono face fits about 55 letters between the chips; a longer name is clipped, never wrapped, so shorten it with `head`.
+
+### The end-of-chapter mark
+
+Each chapter's last page ends short on purpose, because the next chapter starts on a page of its own. So the last page of every chapter closes with a sign-off plate, with no markup: a stencilled "END OF FILE" on an ink plate with a dashed cream frame, masking tape across its top edge, the chapter's colour as its rail and a hard shadow, set a few degrees off square at the right of the column. It makes the short page read as designed. It follows the last block of the page; if that page already runs to within half an inch of its foot the plate would fall to a page of its own, so a chapter whose last page is that full turns it off. To change it, set `--dc-end-mark-text` (the stencil, a quoted string), `--dc-end-mark-display` (`none` turns it off), `--dc-end-mark-gap`, `--dc-end-mark-bg`, `--dc-end-mark-ink` or `--dc-end-mark-tape`, on the chapter (`#ch-rules { --dc-end-mark-display: none; }`) or on `:root`.
+
+### Where pages break
+
+Pagination is part of the package, so every book gets it: a panel of four blocks or fewer stays whole and moves to the next page rather than splitting 3 + 1; a longer panel never opens or ends with one block alone; text keeps three orphans and three widows in panels and callouts; a skill card splits between ability rows, never leaving one row on a page with a hand's breadth of empty cream under it; headings, tape dividers and stat-block names stay with what follows. A box that must be kept whole whatever it costs is `{.dc-avoid-split}`; a book's own `--dc-section-break-inside: auto` lets one split.
 
 ### Text on the wall
 
@@ -168,7 +188,7 @@ A chapter opens on `@page chapter-start` with its `# Title` (a banner in the cha
 
 "It's hard being me, but I guess it's the same for anyting sentient in the monoverse, ay?!"
 
-![Lil Thump](https://placehold.co/600x400/png?text=Lil+Thump)
+![Lil Thump](img/placeholder-lil-thump.png)
 
 I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out.
 
@@ -238,7 +258,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 ## Specialty catalog page
 
-`@page specialty-catalog` plus a `@card-grid` of specialty cards, each in its own `@specialty`. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other; the title, the lede and the first four cards fill the left page and the other six the right, in aligned rows of equal height, each card a poster with its portrait on top, its name, its tagline and its pitch, and an index chip (01 to 10) on the portrait. Whatever follows starts the next page: write a plain `@page` after `@end-card-grid`. Keep the cards uniform — identical chrome is what makes the choices comparable. The same `@card-grid` on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.
+`@page specialty-catalog` plus a `@card-grid` of specialty cards, each in its own `@specialty`. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other (the word forces no blank page when the chapter opener before it is on the facing right page, as it is meant to be; an opener that lands on a left page makes the engine insert one, so keep the opener on a right page); the title, the lede and the first four cards fill the left page and the other six the right, in aligned rows of equal height, each card a poster with its portrait on top, its name, its tagline and its pitch, and an index chip (01 to 10) on the portrait. Whatever follows starts the next page: write a plain `@page` after `@end-card-grid`. Keep the cards uniform — identical chrome is what makes the choices comparable. The same `@card-grid` on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.
 
 ```markdown {.dg-split}
 @page specialty-catalog
@@ -261,7 +281,7 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 
 ### Augmerc
 
-![Augmerc](https://placehold.co/300x340/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-card.png)
 
 > Cybernetic Commando
 
@@ -295,7 +315,7 @@ Intro, art plate, then learning paths with their skill cards, all inside one `@s
 
 @specialty-art
 
-![Augmerc](https://placehold.co/600x800/png?text=AUGMERC)
+![Augmerc](img/specialty-augmerc-art.png)
 
 @end-specialty-art
 
@@ -349,4 +369,4 @@ You believe in a code, and it's your duty to uphold it.
 
 ## Running headers and footers
 
-Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter … ch="N"`: write it at the top of every chapter file and nothing else is needed.
+Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso, with the chapter's name between them (see "The running head"). Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter … ch="N"`: write it at the top of every chapter file and nothing else is needed; add `head="…"` to name the chapter in the running head.

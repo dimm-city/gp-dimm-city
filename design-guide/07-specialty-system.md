@@ -75,14 +75,14 @@ Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specia
 
 ## Specialty art
 
-A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page.
+A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page. The art must be opaque (no alpha channel): see [Publishing](#ch-publishing) — the placeholders here are flat-colour PNGs in `design-guide/img/`, one per specialty.
 
 ```markdown
 @specialty .augmerc
 
 @specialty-art
 
-![Augmerc](https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-wide.png)
 
 @end-specialty-art
 
@@ -93,7 +93,7 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 @specialty-art
 
-![Augmerc](https://placehold.co/640x360/1a1d2b/e8503a/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-wide.png)
 
 @end-specialty-art
 
@@ -115,7 +115,7 @@ The catalog card for a "choose your specialty" page: portrait, a `>` tagline, an
 
 ### Augmerc
 
-![Augmerc](https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-card.png)
 
 > Cybernetic Commando
 
@@ -131,7 +131,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad.
 
 ### Gutterdruid
 
-![Gutterdruid](https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid)
+![Gutterdruid](img/specialty-gutterdruid-card.png)
 
 > Feral Shapeshifter
 
@@ -160,7 +160,7 @@ Result {.dg-result}
 
 ### Augmerc
 
-![Augmerc](https://placehold.co/300x340/1a1d2b/e8503a/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-card.png)
 
 > Cybernetic Commando
 
@@ -176,7 +176,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad.
 
 ### Gutterdruid
 
-![Gutterdruid](https://placehold.co/300x340/1a1d2b/4a9d6e/png?text=Gutterdruid)
+![Gutterdruid](img/specialty-gutterdruid-card.png)
 
 > Feral Shapeshifter
 

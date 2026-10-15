@@ -221,11 +221,11 @@
    are the "danger / you must choose" pair across the system. */
 .dc-note.warning {
   --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
-  --dc-alert-border: var(--ink);
+  --dc-alert-border: var(--ink-dark);
   --dc-alert-border-width: 14px;
   /* a heavy ink frame, and a crimson second pass a hair out of register along the
      right and bottom edge */
-  --dc-alert-frame: inset 0 0 0 3px var(--ink), inset -2px -2px 0 3px var(--crimson);
+  --dc-alert-frame: inset 0 0 0 3px var(--ink-dark), inset -2px -2px 0 3px var(--crimson);
   --dc-alert-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);  /* sign plate */
   --dc-accent-ink: var(--blood);  /* 7.5:1 on the cream */
   --dc-alert-label-color: var(--ink);
@@ -248,14 +248,14 @@
   top: -24px;
   bottom: -24px;
   width: 0;
-  background: var(--ink);
+  background: var(--ink-dark);
   border-style: dashed;
   border-color: var(--brand-yellow);
   border-width: 0 calc(var(--dc-alert-border-width) / 2);
   transform: skewY(-45deg);
 }
 .dc-note.warning .dc-alert-label {
-  border: 1.5px solid var(--ink);
+  border: 1.5px solid var(--ink-dark);
   transform: rotate(-1.5deg);
   transform-origin: left center;
 }

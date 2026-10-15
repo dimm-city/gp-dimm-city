@@ -195,8 +195,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Ink / Text
 | Token | Value | Role |
 |---|---|---|
-| `--ink` | `#1a1512` | Near-black with red bias |
-| `--ink-dark` | `#2b231d` | Secondary heading weight |
+| `--ink` | `#1e1d1c` | Text black: body text, rules (278% TAC; inside the build's K-only band, so small type prints 100% K; never a large fill) |
+| `--ink-dark` | `#2f2622` | Solid ink: heavy fills, frames, borders, secondary heading weight (266% TAC) |
 | `--ink-smoke` | `#4d4339` | Body emphasis mid-tone |
 | `--ink-dust` | `#665b4e` | Muted body/captions |
 
@@ -210,7 +210,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--rust` | `#b23a12` | Burnt rebar edge |
 | `--amber` | `#7a5a20` | Sulfur-scorched brass |
 | `--amber-dark` | `#5c3c10` | Charred amber |
-| `--deep-rust` | `#6a1a08` | Shadow rust |
+| `--deep-rust` | `#70200e` | Shadow rust |
 
 ### Brand Cyber
 | Token | Value | Role |
@@ -236,7 +236,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | Token | Value | Role |
 |---|---|---|
 | `--fungi-glow` | `#c8e040` | Bioluminescent yellow-green |
-| `--fungi-rot` | `#2a4015` | Deep moldering green — large fill only |
+| `--fungi-rot` | `#30461e` | Deep moldering green — large fill only |
 
 ### Crystal / Mineral
 | Token | Value | Role |
@@ -391,13 +391,13 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 | Specialty | Accent | Mid | Dark |
 |---|---|---|---|
 | Augmerc | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
-| Proxy | `--orange` (`#d4500a`) | `#7a3008` | `#3d1a00` |
-| Streetwarden | `#4db840` | `#347828` | `#1a3d10` |
-| Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#2a3408` |
+| Proxy | `--orange` (`#d4500a`) | `#7a3008` | `#4c290f` |
+| Streetwarden | `#4db840` | `#347828` | `#294c1f` |
+| Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#394017` |
 | Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
 | Wirephreak | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
-| Technosorcerer | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#150c4a` |
-| Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#3d3000` |
+| Technosorcerer | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
+| Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
 | Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
-| Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#1c252d` |
+| Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |
 

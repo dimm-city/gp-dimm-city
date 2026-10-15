@@ -285,8 +285,8 @@ hierarchy: color → typography → spacing → geometry.
 --paper-aged:     #c8c2b8;  /* weathered grey — decay register */
 
 /* Ink scale — warm sepia drift, not neutral gray */
---ink:            #1a1512;  /* near-black with red bias — riso warm black */
---ink-dark:       #2b231d;  /* warmer secondary heading weight */
+--ink:            #1e1d1c;  /* text black, inside the build's K-only band (278% TAC); never a large fill */
+--ink-dark:       #2f2622;  /* solid ink for fills, frames and borders (266% TAC) */
 --ink-smoke:      #4d4339;  /* sepia mid-tone — body emphasis */
 --ink-dust:       #665b4e;  /* muted labels, subtitles */
 ```
@@ -482,8 +482,8 @@ right border. Three rules keep the type centred:
   `margin-top: 0.125in` ends at 0.639in and leaves 0.125in of bare wall above it
   on every wall page. The engine honours a margin on a margin box (measured: a
   4pt margin moved the box 4.3pt). Pages without footers (`chapter-start`,
-  `front-matter-intro`) set `margin-bottom: 0.875in` and keep their old text
-  height;
+  `front-matter-intro`) set `margin-bottom: 0.75in`, which is still 0.625in from
+  the trim, inside the 0.5in minimum;
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
 
 The chapter chip's **colour** reaches a margin box through a *named page*: a
@@ -496,6 +496,26 @@ a book does the same for its own chapters with
 repaints the coupon for that name and side (blue, rust, violet, amethyst,
 amber; the default is magenta-deep). Unlayered, because layered `@page` rules
 lose to `dc-native.css`.
+
+**The running head** is the same chip a third time, in `@bottom-center`:
+the chapter's name between the folio and the chapter coupon, drawn by
+`dc-native.css` §2d (paper-cream face, mono type at the 10pt floor, ink edge, hard
+shadow, a rail in the chapter's colour through the same named pages). Its text is
+GCPM `string-set` / `string()`, which Gutterpress resolves itself
+(`stringValueAt`; `first`, `start`, `last` and `first-except` are all supported),
+fed in `page-rules.css` by the chapter: `@chapter … head="…"` (`data-head`),
+else the chapter's `#` title (`div.chapter:not([data-head]) > .page > h1`),
+else `"Chapter " attr(data-ch)`. The string is read with `last`, so a page where a
+new `#` begins names the chapter it ends in. A chapter with none of these has no
+source and prints no head: do NOT seed the string with a `body` rule (an engine
+string with no source falls back to a counter and prints a stray number). Every
+template that clears the footer (`front-matter`, `front-matter-intro`,
+`chapter-start`, `full`, `:blank`, and a book's own named page such as the
+guide's `dg-doc`) clears it with `@bottom-center { content: none; }`. It sits in
+the footer band and not the top, because a head at the top edge would cost every
+page 0.375in of text height (0.625in to 1in) to stay inside the 0.5in text
+minimum. A page name outranks `:left` / `:right`, so the named-page overrides
+stay unlayered in `dc-native.css`, as for the coupon.
 
 The Citizen File running head is the same chip in the top band (`@top-left` /
 `@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 1in top margin.
@@ -515,6 +535,35 @@ explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
 their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
 `--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
 read the chapter's `--dc-section-accent`, so a chapter word recolours them).
+
+### Where pages break (pagination)
+
+Break control is package CSS, so every book gets it. The rules, and where each
+lives:
+
+| Rule | File | Why |
+|---|---|---|
+| A panel of four blocks or fewer, with no column run or table, is `break-inside: avoid`; a long one keeps its 2nd block with its 3rd and its last block with the one above | `components/section.css` ("Where a panel may break") | no heading bar alone at a page foot, no two-line tail on its own page |
+| Text in a panel or callout has `orphans: 3; widows: 3` | `components/section.css` | at 2/2 Chromium still splits a three-line paragraph 2 + 1 |
+| An ability row is not glued to the block after it; only a skill card's last block stays with the one above | `components/cards.css`, `components/data.css` (the `data-ability-penultimate` / `-last` glue is gone) | a card of N rows had no place to split, so it split inside one paragraph and left a hand's breadth of empty cream |
+| `.dc-dm-note > :first-child { break-before: avoid }` only inside a column run | `dc-native.css` §7 | at page level it pulled the section above's last block onto the callout's page |
+| `h1`-`h6`, `.dc-tape`, `.dc-card-tab`, learning-path banners, `##` slips: `break-after: avoid` | `dc-core.css`, `page-templates.css`, `cards.css`, `data.css` | keep-with-next |
+| A loose-text sheet has 3 orphans / 3 widows | `page-templates.css` | same |
+
+What the package cannot fix is a forced `@page` / `@page-break` in a book that
+strands a stub; those are content (the design guide removed three).
+
+### The end-of-chapter mark
+
+`page-templates.css` ("END-OF-CHAPTER MARK"): an `::after` on
+`.chapter > .page:last-child`, so CSS can attach it reliably, but it cannot know
+how full the page is. It is one in-flow block (`break-inside: avoid`), about
+0.55in tall, not drawn on contents, credits, intro, full-bleed and art pages. A
+last page that already runs to within 0.55in of its foot pushes it onto a page of
+its own, so a chapter that full sets `--dc-end-mark-display: none`. It is
+in flow on purpose: a plate positioned out of flow below the page's last block
+lies outside the content box, which the print engine clips or answers with
+whole-document shrink-to-fit. Tokens `--dc-end-mark-text/-display/-gap/-bg/-ink/-tape`.
 
 ### Folios and the `.chapter-N` class
 

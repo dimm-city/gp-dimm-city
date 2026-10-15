@@ -145,10 +145,10 @@
   --spec-chip-edge: var(--augmerc-dark);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 5px;
-  --dc-band-tick: var(--ink);
+  --dc-band-tick: var(--ink-dark);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 26%, var(--brand-magenta-deep));
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
   --dc-band-reg: inset 0 -2px 0 var(--brand-magenta);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH, stepped: stair-step cuts, crisp and machined. */
   --spec-edge-top: 0 10px, 10px 0, calc(100% - 24px) 0, calc(100% - 24px) 6px, calc(100% - 16px) 6px, calc(100% - 16px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 18px, 100% 18px;
@@ -187,7 +187,7 @@
   --dc-band-tick: var(--cybersurgeon-accent);
   --dc-band-tick-style: dashed;
   --dc-band-tick-w: 2px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 45%, var(--cybersurgeon-accent));
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 45%, var(--cybersurgeon-accent));
   --dc-band-reg: inset 0 -2px 0 var(--cybersurgeon-accent);  /* a second ink printed 2px off: a misregistered rule */
   /* Tab diagonal capped at 18px: a 30px cut exceeds the ~27px tab height and
      makes the polygon degenerate (right edge nearly invisible). */
@@ -214,13 +214,13 @@
   --spec-ink: var(--proxy-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* LANDFILL + MAGIC: scorch-orange band on a torn edge, no tidy rule, a
      burnt patch at the right. */
-  --spec-band: color-mix(in srgb, var(--proxy-accent) 90%, #fff);  /* a hair lighter so ink holds 4.5:1 at 13.5pt (4.27 on the raw orange) */
+  --spec-band: color-mix(in srgb, var(--proxy-accent) 87%, var(--paper-cream));  /* a hair lighter so ink holds 4.5:1 at 13.5pt (4.27 on the raw orange; 4.6 at 87%) */
   --spec-on-band: var(--ink);
   --spec-chip-bg: var(--paper-cream);
   --spec-chip-fg: var(--proxy-dark);
   --spec-chip-edge: var(--proxy-dark);
   --dc-band-rule-h: 0px;
-  --dc-band-facet: color-mix(in srgb, #000 14%, var(--spec-band));
+  --dc-band-facet: color-mix(in srgb, var(--ink) 14%, var(--spec-band));
   --dc-band-facet-width: 26%;
   --dc-band-facet-clip: polygon(18% 0, 100% 0, 100% 100%, 0 100%, 12% 55%);
   /* LANDFILL, torn: a burnt corner, a ragged tear across the foot, a chipped corner. */
@@ -254,7 +254,7 @@
   --dc-band-tick: var(--wirephreak-accent);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 34%, var(--wirephreak-accent));
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 34%, var(--wirephreak-accent));
   --dc-band-reg: inset 0 -2px 0 var(--brand-cyan);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH, circuit jogs: two big right-angle steps on the diagonal corners. */
   --spec-edge-top: 0 0, calc(100% - 26px) 0, calc(100% - 26px) 10px, calc(100% - 13px) 10px, calc(100% - 13px) 20px, 100% 20px;
@@ -283,7 +283,7 @@
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--streetwarden-mid);
   --dc-band-rule-h: 7px;
-  --dc-band-tick: var(--ink);
+  --dc-band-tick: var(--ink-dark);
   --dc-band-tick-style: dashed;
   --dc-band-tick-w: 7px;
   --dc-band-rule-skew: -45deg;
@@ -315,9 +315,9 @@
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, #000 30%, var(--technosorcerer-accent));
+  --dc-band-facet: color-mix(in srgb, var(--ink) 30%, var(--technosorcerer-accent));
   --dc-band-facet-width: 30%;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, #fff 22%, var(--technosorcerer-accent));
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 22%, var(--technosorcerer-accent));
   --dc-band-reg: inset 0 -2px 0 var(--signal-indigo);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH + MAGIC: a shallow centre gate on top (the rune), a stair at one corner and a facet at the other. */
   --spec-edge-top: 0 0, calc(50% - 22px) 0, 50% 7px, calc(50% + 22px) 0, calc(100% - 14px) 0, 100% 14px;
@@ -373,7 +373,7 @@
   --spec-chip-edge: var(--etherlock-dark);
   --dc-band-rule: var(--etherlock-mid);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, #fff 38%, var(--etherlock-accent));
+  --dc-band-facet: color-mix(in srgb, var(--paper-cream) 38%, var(--etherlock-accent));
   --dc-band-facet-width: 36%;
   --dc-band-facet-clip: polygon(34% 0, 100% 0, 100% 100%, 0 100%, 16% 50%);
   /* MAGIC, facets: opposed big and small chamfers, a cut crystal. */
@@ -403,7 +403,7 @@
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--dualist-dark);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, #fff 34%, var(--dualist-accent));
+  --dc-band-facet: color-mix(in srgb, var(--paper-cream) 34%, var(--dualist-accent));
   --dc-band-facet-width: 44%;
   --dc-band-facet-clip: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
   /* MAGIC, lozenge: four even chamfers and a bottom point, symmetric (two paths). */
@@ -429,7 +429,7 @@
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--paper-aged);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, #000 26%, var(--generalist-accent));
+  --dc-band-facet: color-mix(in srgb, var(--ink) 26%, var(--generalist-accent));
   --dc-band-facet-width: 22%;
   --dc-band-facet-clip: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
   /* MAGIC, hewn stone: a big chamfer on each of two opposite corners, small on the others. */
@@ -464,7 +464,7 @@
 .dc-ap.free {
   --dc-ap-bg: var(--paper-aged);
   --dc-ap-fg: var(--ink);
-  --dc-ap-border: var(--ink);
+  --dc-ap-border: var(--ink-dark);
 }
 
 .dc-ap.free::before {

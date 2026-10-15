@@ -14,7 +14,7 @@ Gutterpress itself provides the structural markers. They wrap everything that fo
 
 | Marker | Closes with | What it is |
 |---|---|---|
-| `@chapter #id ch="N"` | next `@chapter` / end of file | A chapter. `ch="N"` prints the `c.N` footer on every page of it |
+| `@chapter #id ch="N"` | next `@chapter` / end of file | A chapter. `ch="N"` prints the `c.N` footer on every page of it; `head="Name"` names it in the running head (otherwise its `#` title) |
 | `@page .class` | next `@page` | A page. Classes pick a page template ([Page Templates](#ch-templates)) |
 | `@spread` | next `@spread` / `@page` | Two facing pages kept together |
 | `@section [word] [.class]` | `@end-section` | A region on the page. Bare, it is a plain box; `@section panel` is the card |

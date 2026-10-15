@@ -146,6 +146,43 @@ div[class="section"] {
   --dc-faction-break-inside: avoid;
 }
 
+/* ── Where a panel may break ────────────────────────────────────────────────
+   A panel is a heading bar and a few blocks. Left alone it splits wherever the
+   page ends, and the split leaves a heading bar with one line under it at a
+   page foot, or a two-line tail alone at the top of the next page (the stubs a
+   reader notices first). Three rules keep the splits clean; none needs a class,
+   and `.dc-avoid-split` / `--dc-section-break-inside` still win (a book's own
+   token, a class on the panel).
+
+   1. A SHORT panel stays whole. Four blocks or fewer (the heading bar counts)
+      is a third of a page at most, so it moves to the next page rather than
+      splitting 3 + 1. One with a column run or a table in it is left alone: it
+      is the tall kind, and keeping it whole leaves the page before it empty.
+   2. A LONG panel (five blocks or more) never opens with its heading and a single
+      block: the second block stays with the third (the heading bar already stays
+      with the second), so a panel does not start at a page foot with a bar and
+      one line.
+   3. A long panel never ends with one block alone: its last block stays with the
+      block above it, so a continuation is never a lone paragraph. (Not for a
+      heading: `break-after: avoid` on headings is core's.)
+   Text in a panel or a callout keeps 3 orphans and 3 widows (the body's are 2): at 2
+   Chromium still splits a three-line paragraph 2 + 1, and the one-line tail opens
+   the next page. At 3 a paragraph of five lines or fewer moves whole. */
+.dc-section-panel:not(:has(> :nth-child(5), > .gp-columns, > table)) {
+  --dc-section-break-inside: avoid;
+}
+.dc-section-panel:has(> :nth-child(5)) > :nth-child(2) {
+  break-after: avoid;
+}
+.dc-section-panel:has(> :nth-child(5)) > :last-child:not(h2, h3, h4) {
+  break-before: avoid;
+}
+.dc-section-panel :is(p, li),
+.dc-alert :is(p, li) {
+  orphans: 3;
+  widows: 3;
+}
+
 /* clip-path + left accent band on ::before.
 
    The substrate sits BEHIND the content (z-index: -1); it does not sit at 0
@@ -576,7 +613,7 @@ h3 + .dc-section-panel {
   clip-path: none;
 }
 .dc-section-choose > :is(h2, h3):first-child::after {
-  border: 1pt solid var(--ink);
+  border: 1pt solid var(--ink-dark);
   font-size: var(--fs-floor);
   transform: rotate(-2deg);
 }
@@ -591,7 +628,7 @@ h3 + .dc-section-panel {
   margin: 0 0 var(--space-sm) var(--space-md);
   padding: 2px 8px 1px;
   background: var(--brand-yellow);
-  border: 1pt solid var(--ink);
+  border: 1pt solid var(--ink-dark);
   box-shadow: none;
   color: var(--ink);
   font-family: var(--font-mono);
@@ -620,7 +657,7 @@ h3 + .dc-section-panel {
   width: 0.75em;
   height: 0.75em;
   margin-right: 0.5em;
-  border: 2.25pt solid var(--ink);
+  border: 2.25pt solid var(--ink-dark);
   background: var(--paper-form);
   vertical-align: -0.1em;
 }
@@ -1096,7 +1133,7 @@ h3 + .dc-section-panel {
   --dc-faction-badge-shape: none;
   --dc-faction-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
   --dc-accent-ink: var(--amber-dark);
-  --dc-faction-band: inset 0 0 0 3px var(--ink);  /* the plate's heavy frame */
+  --dc-faction-band: inset 0 0 0 3px var(--ink-dark);  /* the plate's heavy frame */
   --dc-faction-band-height: 9pt;
   --dc-faction-title: var(--ink);
   --dc-faction-title-bg: var(--brand-yellow);
@@ -1117,7 +1154,7 @@ h3 + .dc-section-panel {
 }
 .dc-card.dc-faction-enforcer::after {
   height: 0;
-  border-top: var(--dc-faction-band-height) dashed var(--ink);
+  border-top: var(--dc-faction-band-height) dashed var(--ink-dark);
   transform: skewX(-45deg);
 }
 

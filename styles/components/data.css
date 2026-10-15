@@ -74,7 +74,7 @@
   right: -2px;
   bottom: -2px;
   left: -2px;
-  background: var(--ink);
+  background: var(--ink-dark);
   clip-path: var(--dc-path-shell-clip);
   z-index: -2;
 }
@@ -219,7 +219,7 @@
   padding: 0;
   margin: 10px 3px 12px 0;
   background: var(--dc-steps-surface);
-  border: 2px solid var(--ink);
+  border: 2px solid var(--ink-dark);
   box-shadow: var(--shadow-poster);
   position: relative;
   break-inside: auto;
@@ -236,7 +236,7 @@
   width: 20px;
   height: 4px;
   background: var(--ink-smoke);
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink-dark);
   transform: rotate(-4deg);
   pointer-events: none;
 }
@@ -377,12 +377,12 @@
      to make a fill feel "lifted from above". */
   background:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--row-color, var(--ink)) 92%, #fff 8%) 0%, /* PDF/X-1a: pre-composite to ~92% ink + 8% white; on --ink (#1a1512) → #2d2926 */
-      var(--row-color, var(--ink)) 50%,
-      color-mix(in srgb, var(--row-color, var(--ink)) 96%, #000 4%) 100%); /* PDF/X-1a: pre-composite to ~96% ink + 4% black; on --ink (#1a1512) → #191411 */
+      color-mix(in srgb, var(--row-color, var(--ink-dark)) 92%, var(--paper-cream) 8%) 0%, /* PDF/X-1a: pre-composite to ~92% row colour + 8% paper-cream; on the default --ink-dark (#2f2622) → #3e3632 */
+      var(--row-color, var(--ink-dark)) 50%,
+      color-mix(in srgb, var(--row-color, var(--ink-dark)) 96%, var(--ink) 4%) 100%); /* PDF/X-1a: pre-composite to ~96% row colour + 4% ink; on the default --ink-dark (#2f2622) → #2e2622 */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 12%, var(--row-color, var(--ink))),
-    inset 0 -1px 0 color-mix(in srgb, #000 18%, var(--row-color, var(--ink)));
+    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, var(--row-color, var(--ink-dark))),
+    inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, var(--row-color, var(--ink-dark)));
   /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
      to --ink because the fungi-glow fill is too light for cream text: 1.24:1)
      propagates to the chip element itself, not just to its children. Default
@@ -743,7 +743,7 @@
 /* ───────── STAT BLOCK (compact creature/NPC reference) ───────── */
 .dc-stat {
   background: var(--paper-cream);
-  border: 2px solid var(--ink);
+  border: 2px solid var(--ink-dark);
   padding: 14px 16px 16px;
   position: relative;
   margin: 18px 0;
@@ -762,7 +762,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink-dark);
   padding-bottom: 8px;
   margin-bottom: 12px;
   position: relative;
@@ -980,13 +980,12 @@ table.dc-stat-strip {
   padding: 0;
 }
 
-.dc-card-body .dc-ability[data-ability-penultimate] {
-  break-after: avoid;
-}
-
-.dc-card-body .dc-ability[data-ability-last] {
-  break-before: avoid;
-}
+/* The card's last block (an ability row or the closing line) stays with the one
+   above it (cards.css, "the closing line of a card"): a tail is never a lone
+   row. `data-ability-penultimate` / `-last` no longer glue the last TWO rows
+   too: with the closing line's glue they made one unsplittable chain of three
+   blocks, which left a skill card on a page with one row and a hand's breadth
+   of empty cream under it (Pain Compliance, p.148 of the guide). */
 
 /* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
 p.dc-img-wrapper {
