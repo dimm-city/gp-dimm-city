@@ -145,7 +145,7 @@
   --spec-chip-edge: var(--augmerc-dark);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 5px;
-  --dc-band-tick: var(--ink-dark);
+  --dc-band-tick: var(--ink);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
   --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
@@ -283,7 +283,7 @@
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--streetwarden-mid);
   --dc-band-rule-h: 7px;
-  --dc-band-tick: var(--ink-dark);
+  --dc-band-tick: var(--ink);
   --dc-band-tick-style: dashed;
   --dc-band-tick-w: 7px;
   --dc-band-rule-skew: -45deg;
@@ -464,7 +464,7 @@
 .dc-ap.free {
   --dc-ap-bg: var(--paper-aged);
   --dc-ap-fg: var(--ink);
-  --dc-ap-border: var(--ink-dark);
+  --dc-ap-border: var(--ink);
 }
 
 .dc-ap.free::before {

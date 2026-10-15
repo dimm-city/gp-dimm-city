@@ -113,7 +113,7 @@
   --dc-alert-shape:          polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, calc(100% - 30px) 100%, calc(100% - 32px) calc(100% - 2px), calc(100% - 38px) calc(100% - 2px), calc(100% - 40px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);  /* the note's machined chamfers and one chipped notch; each variant cuts its own (callouts.css) */
 
   /* .dc-skill-card public API */
-  --dc-card-accent:          var(--ink-dark);            /* default no-specialty: plain ink */
+  --dc-card-accent:          var(--ink);            /* default no-specialty: plain ink */
   --dc-card-surface:         var(--paper-cream);
   --dc-card-tab-bg:          var(--ink-dark);       /* overridden by .dc-specialty.<name> context */
   --dc-card-tab-title-color: var(--paper-cream);
@@ -331,7 +331,7 @@
   --dc-outcome-key-color:    var(--paper-cream);
   --dc-outcome-name-color:   var(--paper-cream);
   --dc-outcome-name-opacity: 1;
-  --dc-outcomes-border:      var(--ink-dark);
+  --dc-outcomes-border:      var(--ink);
   --dc-outcomes-inner-border: var(--paper-aged);
   --dc-outcomes-label-bg:    var(--ink-dark);
   --dc-outcomes-label-color: var(--paper-cream);
@@ -431,7 +431,7 @@
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
   --dc-tape-border:          var(--ink-dark);
-  --dc-tape-color:           var(--ink-dark);
+  --dc-tape-color:           var(--ink);
   --dc-tape-shape:           polygon(0 0, 100% 0, calc(100% - 6px) 25%, 100% 50%, calc(100% - 6px) 75%, 100% 100%, 0 100%, 6px 75%, 0 50%, 6px 25%);  /* torn ends */
 
   /* Free-standing page text: nothing sits on the brick (page-templates.css,

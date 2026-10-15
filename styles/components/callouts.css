@@ -78,19 +78,6 @@
      (`.dc-ap.free`, `.dc-specialty.<name> .dc-X`) —
      never by re-declaring the token on the base component selector itself.
 
-   THE EXCEPTION: CONTEXT TOKENS. A context token is not a knob on one
-   component; it is a value a component DERIVES for what is inside it. There
-   is exactly one: `--dc-accent-ink`, the text-safe ink of the component the
-   text sits in (what ROLL THE DIE! and its underline read). Every component
-   that can hold prose sets it on its OWN root rule, from its own accent and
-   surface (a blood box: `--blood`; the DM slab: a cyan tint). Because it is
-   derived per component, it is declared on the component's class on purpose,
-   it defaults at :root (so text outside any component has an ink), and a book
-   overrides it PER COMPONENT CLASS (`#ch-x .dc-alert { --dc-accent-ink: … }`),
-   never at an ancestor: an ancestor value would lose to every component's own
-   declaration. test/conventions.test.js holds the allow-list (CONTEXT_TOKENS);
-   adding a token to it is a design decision, not a shortcut around dc#34.
-
    AGENT RULE: "Is this a .dc-* component style, or a
    .dc-specialty.<name> scope block for a component?" — if NO, use another file.
    ──────────────────────────────────────────────────────────────────────── */
@@ -126,9 +113,8 @@
    ever cut. Each variant also sets --dc-accent-ink: the text-safe ink of its own
    accent on its own surface (what ROLL THE DIE! and other accent text read).
 
-   Body copy is always upright and level; italic is kept for the two voices
-   that speak to the reader (vibe, origin). The 20% chrome is on the labels and
-   the edges, never on the reading surface. */
+   The 20% chrome is on the labels and the edges, never on the reading
+   surface. */
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
@@ -155,6 +141,7 @@
 
 .dc-alert p {
   margin: 0;
+  font-style: italic;
 }
 
 .dc-alert p+p {
@@ -221,11 +208,11 @@
    are the "danger / you must choose" pair across the system. */
 .dc-note.warning {
   --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
-  --dc-alert-border: var(--ink-dark);
+  --dc-alert-border: var(--ink);
   --dc-alert-border-width: 14px;
   /* a heavy ink frame, and a crimson second pass a hair out of register along the
      right and bottom edge */
-  --dc-alert-frame: inset 0 0 0 3px var(--ink-dark), inset -2px -2px 0 3px var(--crimson);
+  --dc-alert-frame: inset 0 0 0 3px var(--ink), inset -2px -2px 0 3px var(--crimson);
   --dc-alert-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);  /* sign plate */
   --dc-accent-ink: var(--blood);  /* 7.5:1 on the cream */
   --dc-alert-label-color: var(--ink);
@@ -248,14 +235,14 @@
   top: -24px;
   bottom: -24px;
   width: 0;
-  background: var(--ink-dark);
+  background: var(--ink);
   border-style: dashed;
   border-color: var(--brand-yellow);
   border-width: 0 calc(var(--dc-alert-border-width) / 2);
   transform: skewY(-45deg);
 }
 .dc-note.warning .dc-alert-label {
-  border: 1.5px solid var(--ink-dark);
+  border: 1.5px solid var(--ink);
   transform: rotate(-1.5deg);
   transform-origin: left center;
 }
@@ -272,7 +259,7 @@
   --dc-alert-label-color: var(--ink);
   --dc-alert-label-bg: var(--hud-blue-bright);
   --dc-alert-label-pad: 2px 9px;
-  --dc-alert-body-size: var(--fs-floor);   /* insider small print: upright, at the reading-text floor */
+  --dc-alert-body-size: var(--fs-floor);   /* insider small print, at the reading-text floor */
   font-weight: 600;             /* reversed type is semibold */
   --dc-alert-label-weight: 700;
   --dc-alert-label-spacing: 0.1em;
@@ -318,9 +305,6 @@
   border-block: 1px solid color-mix(in srgb, var(--dc-tape-bg) 70%, var(--ink));
   transform: rotate(-3deg);
 }
-.dc-vibe-callout p {
-  font-style: italic;
-}
 .dc-vibe-callout .dc-alert-label {
   border-bottom: 2px solid var(--brand-violet);
   padding-bottom: 1px;
@@ -342,9 +326,6 @@
 .dc-origin-callout {
   position: relative;
   padding-top: 14pt;  /* dog-ear 16px + 2pt */
-}
-.dc-origin-callout p {
-  font-style: italic;
 }
 /* The dog-ear fold: a solid triangle over the cut corner. */
 .dc-origin-callout::after {
@@ -412,6 +393,9 @@
   /* a ticket: one V notch (6px deep) in the right edge */
   --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(50% - 6px), calc(100% - 6px) 50%, 100% calc(50% + 6px), 100% 100%, 0 100%);
   border-left-style: dashed;
+}
+.dc-example-callout p {
+  font-style: normal;
 }
 /* The label is a taped-on tag. */
 .dc-example-callout .dc-alert-label {

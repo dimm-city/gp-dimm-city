@@ -613,7 +613,7 @@ h3 + .dc-section-panel {
   clip-path: none;
 }
 .dc-section-choose > :is(h2, h3):first-child::after {
-  border: 1pt solid var(--ink-dark);
+  border: 1pt solid var(--ink);
   font-size: var(--fs-floor);
   transform: rotate(-2deg);
 }
@@ -628,7 +628,7 @@ h3 + .dc-section-panel {
   margin: 0 0 var(--space-sm) var(--space-md);
   padding: 2px 8px 1px;
   background: var(--brand-yellow);
-  border: 1pt solid var(--ink-dark);
+  border: 1pt solid var(--ink);
   box-shadow: none;
   color: var(--ink);
   font-family: var(--font-mono);
@@ -657,7 +657,7 @@ h3 + .dc-section-panel {
   width: 0.75em;
   height: 0.75em;
   margin-right: 0.5em;
-  border: 2.25pt solid var(--ink-dark);
+  border: 2.25pt solid var(--ink);
   background: var(--paper-form);
   vertical-align: -0.1em;
 }
@@ -1133,7 +1133,7 @@ h3 + .dc-section-panel {
   --dc-faction-badge-shape: none;
   --dc-faction-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
   --dc-accent-ink: var(--amber-dark);
-  --dc-faction-band: inset 0 0 0 3px var(--ink-dark);  /* the plate's heavy frame */
+  --dc-faction-band: inset 0 0 0 3px var(--ink);  /* the plate's heavy frame */
   --dc-faction-band-height: 9pt;
   --dc-faction-title: var(--ink);
   --dc-faction-title-bg: var(--brand-yellow);
@@ -1154,7 +1154,7 @@ h3 + .dc-section-panel {
 }
 .dc-card.dc-faction-enforcer::after {
   height: 0;
-  border-top: var(--dc-faction-band-height) dashed var(--ink-dark);
+  border-top: var(--dc-faction-band-height) dashed var(--ink);
   transform: skewX(-45deg);
 }
 
