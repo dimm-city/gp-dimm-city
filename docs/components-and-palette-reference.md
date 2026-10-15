@@ -250,8 +250,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Shadows & Utility
 | Token | Value | Role |
 |---|---|---|
-| `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard, opaque offset (PDF/X-1a safe) |
-| `--shadow-ink` | `color-mix(in srgb, #000 28%, var(--wall-tone))` | Opaque ink-on-wall shadow colour (the source of `--shadow-poster`) |
+| `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard offset |
+| `--shadow-ink` | `color-mix(in srgb, var(--ink) 28%, transparent)` | Translucent shadow colour, so the wall darkens under it (the source of `--shadow-poster`) |
 | `--tint-magenta-rose` | `#e6007a` | Pullquote accent / paper-stain rule mix source |
 | `--tint-hud-teal` | `#2a6a8a` | Inset-sidebar callout mix source |
 

@@ -405,7 +405,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ## Continuing a long card
 
-When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
+When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
 
 ```markdown {.dg-split}
 @specialty .augmerc

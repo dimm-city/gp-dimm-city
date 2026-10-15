@@ -158,6 +158,14 @@
   text-wrap: wrap;
 }
 
+/* The continuation tab's mark (plugin.js CONTINUED_MARK), sized to the
+   title's cap height. */
+.dc-tab-cont-mark {
+  width: 0.45em;
+  height: 0.6em;
+  vertical-align: baseline;
+}
+
 /* The tier pill (AUG1.3) is the specialty's own: a chip of its bright signal
    colour (cream with a dark edge where the signal fails 4.5:1 for the type),
    set by the --dc-tier-* tokens the specialty wiring fills (specialty-identity.css).
@@ -456,8 +464,9 @@
   /* Layered shadow: an inset highlight plus a hard offset, so the chip reads
      as lifted off the card. */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 15%, var(--dc-ap-bg)),
-    2px 2px 0 color-mix(in srgb, var(--ink) 10%, var(--dc-card-surface));
+    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 15%, transparent),
+    2px 2px 0 color-mix(in srgb, var(--ink) 10%, transparent),
+    3px 3px 6px color-mix(in srgb, var(--ink) 8%, transparent);
   text-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 20%, var(--dc-ap-bg));
   letter-spacing: 0.06em;
   flex-shrink: 0;

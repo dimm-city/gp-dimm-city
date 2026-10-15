@@ -217,7 +217,7 @@
   border-bottom: 4px solid var(--frontmatter-accent);
   font-size: 26pt;
   letter-spacing: 0.32em;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Lede flush-attaches to the masthead and passes straight into the next

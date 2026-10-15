@@ -38,6 +38,7 @@
    warning). */
 .dc-chevron {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: var(--dc-chevron-font-size);
   letter-spacing: 0.06em;
   color: var(--dc-chevron-color);
@@ -92,6 +93,7 @@ h1.dc-chevron {
    standalone-tag cue.) */
 .dc-spray {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 22px;
   color: var(--dc-spray-color);
   text-transform: uppercase;
@@ -139,7 +141,7 @@ h1.dc-chevron {
   left: 8%;
   width: 45%;
   height: 5px;
-  background: color-mix(in srgb, var(--dc-spray-bg) 8%, var(--wall-tone));
+  background: color-mix(in srgb, var(--dc-spray-bg) 8%, transparent);
 }
 
 
@@ -170,7 +172,7 @@ h1.dc-chevron {
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, var(--paper-cream));
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, transparent);
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -209,7 +211,7 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, var(--dc-path-title-bg));
+  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, transparent);
 }
 
 /* The gap between the sticker and the banner title. It is a real space
@@ -335,7 +337,7 @@ h1.dc-chevron {
 /* ── Rule divider (hr) ─────────────────────────────────────────── */
 hr {
   border: none;
-  border-top: 1.5px solid color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
+  border-top: 1.5px solid color-mix(in srgb, var(--hud-magenta) 50%, transparent);
   margin: var(--space-lg) 0;
 }
 

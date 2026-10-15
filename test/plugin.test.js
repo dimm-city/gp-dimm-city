@@ -239,7 +239,7 @@ describe("behaviour carried from the book repo", () => {
 
     expect((skillHtml.match(/class="dc-skill-card/g) ?? []).length).toBe(2);
     expect(skillHtml).toMatch(/class="dc-skill-card dc-skill-card-cont"/);
-    expect(skillHtml).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
+    expect(skillHtml).toMatch(/<span class="dc-tab-title">Long Skill <svg class="dc-tab-cont-mark"[^>]*><path [^>]*\/><\/svg><\/span>/);
     expect(JSON.stringify(skillEnv.layoutWarnings ?? [])).not.toMatch(/continue_without_section/);
 
     expect(sectionHtml).toMatch(/class="section panel gp-continued"/);
@@ -653,7 +653,10 @@ describe("declared specialty, learning path and skill", () => {
       expect(count(html, /class="dc-skill-card/g)).toBe(2);
       expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont" name="long-skill">');
       expect(html).toContain('<div class="dc-card-tab dc-card-tab-cont">');
-      expect(html).toContain('<span class="dc-tab-title">Long Skill ▸</span>');
+      // The mark is drawn, not a character: no Dimm City font has ▸, and a
+      // borrowed glyph prints as a Type 3 font that PDF/X preserve-text cannot keep.
+      expect(html).toMatch(/<span class="dc-tab-title">Long Skill <svg class="dc-tab-cont-mark"[^>]*><path [^>]*\/><\/svg><\/span>/);
+      expect(html).not.toContain('▸');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
       expect(html).not.toMatch(/gp-continued/);
       expect(warnings).toEqual([]);

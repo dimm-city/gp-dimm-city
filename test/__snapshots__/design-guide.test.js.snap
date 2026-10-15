@@ -2522,7 +2522,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 </div></div></div>
 <h2>Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a <code>▸</code> on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose.</p>
+<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -2570,7 +2570,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 <div class="dc-skill-card dc-skill-card-cont" name="pain-compliance">
   <div class="dc-card-tab dc-card-tab-cont">
-    <span class="dc-tab-title">Pain Compliance ▸</span>
+    <span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span>
     <span class="dc-tab-tier">AUG1.4</span>
   </div>
   <div class="dc-card-body">

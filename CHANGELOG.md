@@ -7,6 +7,38 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **Shadows and tints are translucent again, for books that opt in to
+  Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
+  poster shadow (`--shadow-ink`, so the skill-card body shadow and the section
+  drop), the sticker and path-chip shadows, the rule divider, the spray smudge,
+  the pull-quote accent, and the AP-chip and outcome-key bevels are
+  `color-mix(…, transparent)` again instead of being pre-mixed onto one
+  surface, so a shadow on the brick wall darkens the brick instead of painting
+  a flat tone. The AP chip's soft `3px 3px 6px` shadow is back. Text colours
+  stay opaque: a translucent glyph prints fully opaque on a split page. The
+  wall tile stays opaque. `--wall-tone` is removed (nothing uses it). The
+  convention test *paint nothing transparent* becomes *keep text opaque*, and
+  its repeating-gradient check is kept as its own test.
+  - A book that keeps Gutterpress's default (`flatten-page`) and builds
+    PDF/X-1a gets more pages flattened to an image than with 1.7.2: set
+    `pdfx.transparency: preserve-text` in the book's manifest. Requires the
+    Gutterpress release that ships that option.
+- **Lixdu is never faked bold.** Lixdu has one face, regular, but chapter
+  chips, folio chips, outcome rolls, block and card titles and headings asked
+  for a bold weight, so Chromium synthesized one, which prints as a Type 3
+  font that Gutterpress's PDF/X `preserve-text` split cannot keep. Every rule
+  that sets `--font-display` now sets `font-weight: 400` (a convention test
+  enforces it), and headings set `font-synthesis-weight: none` so `**bold**`
+  inside a heading prints in Lixdu's own stroke. That text is slightly thinner
+  than the synthetic bold.
+- **A continuation card's tab draws its "continued" triangle** as a small
+  inline SVG in the title's colour, instead of a `▸` character. No Dimm City
+  font has that glyph, so Chromium borrowed one from a system font and printed
+  it as a Type 3 font; on the Field Guide that was the last one, and it made
+  its page fall back to whole-page flattening under `preserve-text`.
+
 ## [1.7.2] - 2026-10-15
 
 No package rule counts a book's rows or blocks any more: a threshold like

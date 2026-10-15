@@ -134,7 +134,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px calc(8px - 0.06em) 0 8px;
@@ -157,7 +157,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px calc(8px - 0.06em) 0 8px;
@@ -207,7 +207,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
@@ -227,7 +227,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
