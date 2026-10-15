@@ -1160,6 +1160,7 @@ describe("declared callout and dm-note", () => {
     dm: ["dc-dm-note", "Dream Master Note"],
     vibe: ["dc-vibe-callout", "Vibe"],
     origin: ["dc-origin-callout", "Origin"],
+    location: ["dc-location-callout", "Location"],
     visit: ["dc-visit-callout", "Visit"],
     example: ["dc-example-callout", "Example"],
   };

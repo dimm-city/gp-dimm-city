@@ -64,13 +64,14 @@ components:
     status: live
     origin: plugin
     snippet: alert
-    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!VISIT]  (GFM-style blockquote; the label is added automatically)"
+    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically)"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning > span.dc-alert-label
       - div.dc-alert.dc-dm-note > span.dc-alert-label
       - div.dc-alert.dc-vibe-callout > span.dc-alert-label
       - div.dc-alert.dc-origin-callout > span.dc-alert-label
+      - div.dc-alert.dc-location-callout > span.dc-alert-label
       - div.dc-alert.dc-visit-callout > span.dc-alert-label
     css: [styles/components/callouts.css, styles/dc-native.css]
     tokens:
@@ -90,20 +91,21 @@ components:
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
-    notes: "One shell, seven registers, told apart by silhouette, fill value, edge and label (in colour and in grayscale): note (HUD blue, blue rail, machined chamfers), warning (sign-plate octagon, light cream, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (ink file folder with a tab, cyan rail and chip, Dream Master only), vibe (barely violet sheet, long shallow diagonals, one violet edge, tape strip, italic), origin (warm paper, torn bottom edge, dog-ear, rust rail, worn crimson stamp label), visit (wobbly fungi-green signpost, map-pin label), example (ticket V notch, cyan rail, taped-on tag). Every label is a raised chip (--dc-alert-label-shadow). A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
+    notes: "One shell, eight registers, told apart by silhouette, fill value, edge and label (in colour and in grayscale): note (HUD blue, blue rail, machined chamfers), warning (sign-plate octagon, light cream, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (ink file folder with a tab, cyan rail and chip, Dream Master only), vibe (barely violet sheet, long shallow diagonals, one violet edge, tape strip, italic), origin (warm paper, torn bottom edge, dog-ear, rust rail, worn crimson stamp label), location (origin's document in map teal: cool paper, teal rail, deep-teal stamp), visit (wobbly fungi-green signpost, map-pin label), example (ticket V notch, cyan rail, taped-on tag). Every label is a raised chip (--dc-alert-label-shadow). A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
     status: live
     origin: plugin
     markers: ["@callout"]
     snippet: [callout, callout-example]
-    recipe: "@callout [note|warning|dm|vibe|origin|visit|example] label=\"…\" … @end-callout"
+    recipe: "@callout [note|warning|dm|vibe|origin|location|visit|example] label=\"…\" … @end-callout"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning
       - div.dc-alert.dc-dm-note
       - div.dc-alert.dc-vibe-callout
       - div.dc-alert.dc-origin-callout
+      - div.dc-alert.dc-location-callout
       - div.dc-alert.dc-visit-callout
       - div.dc-alert.dc-example-callout
     css: styles/components/callouts.css

@@ -44,7 +44,7 @@
  *                          zero-padded step list (the wrapper renders nothing)
  *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
  *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          visit, example; none is a note. The label is `label="…"`,
+ *                          location, visit, example; none is a note. The label is `label="…"`,
  *                          or the variant's name. `@dm-note` is `@callout dm`
  *                          (an alias). `variant=` is gone: validate reports it.
  *   Core's nesting rule is the only one: a declared marker that is already
@@ -71,7 +71,7 @@
  *                          attributes written on its line, on its list
  *
  * GFM ALERT SYNTAX:
- *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!VISIT]`
+ *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!LOCATION]` / `[!VISIT]`
  *   / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
  *   into `<div class="dc-alert dc-<type>">`.
  *
@@ -613,6 +613,7 @@ const DC_ALERT_TYPES = {
   DM:        { classes: "dc-alert dc-dm-note",              label: "Dream Master Note" },
   VIBE:      { classes: "dc-alert dc-vibe-callout",         label: "Vibe" },
   ORIGIN:    { classes: "dc-alert dc-origin-callout",       label: "Origin" },
+  LOCATION:  { classes: "dc-alert dc-location-callout",     label: "Location" },
   VISIT:     { classes: "dc-alert dc-visit-callout",        label: "Visit" },
   FLAVOR:    { classes: "dc-flavor" },
   PULLQUOTE: { classes: "dc-pullquote dc-flush" },
@@ -1219,7 +1220,7 @@ function dcProcedures(state) {
 
 // ── Declared component: @callout (and its alias @dm-note) ──────────────────
 //
-// `@callout note|warning|dm|vibe|origin|visit|example` is a declared wrapper:
+// `@callout note|warning|dm|vibe|origin|location|visit|example` is a declared wrapper:
 // core adds `dc-alert`, the variant's class and any author classes. What core
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
@@ -1230,6 +1231,7 @@ const CALLOUTS = {
   dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
   vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
   origin: { class: 'dc-origin-callout', label: 'Origin' },
+  location: { class: 'dc-location-callout', label: 'Location' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
   example: { class: 'dc-example-callout', label: 'Example' },
 };

@@ -15,7 +15,7 @@ The richest family in the book. A specialty wrapper sets the shape and color; in
 
 `augmerc` · `proxy` · `streetwarden` · `gutterdruid` · `cybersurgeon` · `wirephreak` · `technosorcerer` · `etherlock` · `dualist` · `generalist`
 
-The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Technosorcerer's gate), the Proxy is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.
+The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Proxy's gate), the Technosorcerer is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.
 
 ```markdown
 @specialty .augmerc
@@ -29,7 +29,7 @@ Opening a new `@specialty` closes the previous one, along with every path and sk
 
 ## Specialty intro
 
-The title-banded panel on a specialty's first page: the `##` name, the pitch, and a `###` spec tweak. The band is the specialty's own signal colour, so ten specialties read as ten colours and ten values at a glance, and each carries its own register: the tech specialties an LED rim and a rule of LED dots, the magic ones a faceted plane, Streetwarden a hazard-tape rule, and Proxy and Gutterdruid a torn bottom edge with no rule.
+The title-banded panel on a specialty's first page: the `##` name, the pitch, and a `###` spec tweak. The band is the specialty's own signal colour, so ten specialties read as ten colours and ten values at a glance, and each carries its own register: the tech specialties an LED rim and a rule of LED dots, the magic ones a faceted plane, Streetwarden a hazard-tape rule, and Technosorcerer and Gutterdruid a torn bottom edge with no rule.
 
 ```markdown
 @specialty .augmerc
