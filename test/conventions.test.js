@@ -263,7 +263,7 @@ describe("skill cards split by default", () => {
   test("an ability row is never cut, and a split card never opens with only its tab", () => {
     const css = read("styles/components/cards.css");
     expect(css).toMatch(/\.dc-skill-card \.dc-ability \{\s*break-inside: avoid;/);
-    expect(css).toMatch(/\.dc-skill-card \.dc-card-inner > :nth-child\(-n\+2\) \{\s*break-after: avoid;/);
+    expect(css).toMatch(/\.dc-skill-card \.dc-card-inner > :first-child,\s*\.dc-skill-card \.dc-card-inner > :first-child \+ \* \{\s*break-after: avoid;/);
   });
 });
 

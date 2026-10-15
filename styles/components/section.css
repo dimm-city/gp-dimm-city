@@ -147,36 +147,14 @@ div[class="section"] {
 }
 
 /* ── Where a panel may break ────────────────────────────────────────────────
-   A panel is a heading bar and a few blocks. Left alone it splits wherever the
-   page ends, and the split leaves a heading bar with one line under it at a
-   page foot, or a two-line tail alone at the top of the next page (the stubs a
-   reader notices first). Three rules keep the splits clean; none needs a class,
-   and `.dc-avoid-split` / `--dc-section-break-inside` still win (a book's own
-   token, a class on the panel).
-
-   1. A SHORT panel stays whole. Four blocks or fewer (the heading bar counts)
-      is a third of a page at most, so it moves to the next page rather than
-      splitting 3 + 1. One with a column run or a table in it is left alone: it
-      is the tall kind, and keeping it whole leaves the page before it empty.
-   2. A LONG panel (five blocks or more) never opens with its heading and a single
-      block: the second block stays with the third (the heading bar already stays
-      with the second), so a panel does not start at a page foot with a bar and
-      one line.
-   3. A long panel never ends with one block alone: its last block stays with the
-      block above it, so a continuation is never a lone paragraph. (Not for a
-      heading: `break-after: avoid` on headings is core's.)
+   A panel splits wherever the page ends; its heading bar stays with the block
+   under it (`break-after: avoid` on headings is core's). Which panels a book
+   keeps whole depends on how long its panels are, so that is the book's call:
+   `.dc-avoid-split` on one panel, or `--dc-section-break-inside: avoid` from
+   the book's own sheet.
    Text in a panel or a callout keeps 3 orphans and 3 widows (the body's are 2): at 2
    Chromium still splits a three-line paragraph 2 + 1, and the one-line tail opens
    the next page. At 3 a paragraph of five lines or fewer moves whole. */
-.dc-section-panel:not(:has(> :nth-child(5), > .gp-columns, > table)) {
-  --dc-section-break-inside: avoid;
-}
-.dc-section-panel:has(> :nth-child(5)) > :nth-child(2) {
-  break-after: avoid;
-}
-.dc-section-panel:has(> :nth-child(5)) > :last-child:not(h2, h3, h4) {
-  break-before: avoid;
-}
 .dc-section-panel :is(p, li),
 .dc-alert :is(p, li) {
   orphans: 3;
@@ -705,13 +683,6 @@ h3 + .dc-section-panel {
 /* A choice inside it keeps one card, never half of one. */
 .dc-section-choose > .dc-card {
   break-inside: avoid;
-}
-/* A long table of choices (12 rows or more, most of a page at the 10pt floor)
-   splits between rows: each row is a whole option and the header repeats.
-   Kept whole it jumps to the next page and leaves the section's opening page
-   empty. A short one stays whole (split, it leaves a one-row stub). */
-.dc-section-choose > table:has(> tbody > tr:nth-child(12)) {
-  break-inside: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

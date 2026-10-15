@@ -7,6 +7,33 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.7.2] - 2026-10-15
+
+No package rule counts a book's rows or blocks any more: a threshold like
+"four blocks or fewer" or "12 rows or more" only holds for the content it was
+measured on, so it belongs in that book's own sheet.
+
+### Removed
+
+- **The 1.7.1 long-choose-table rule** (`.dc-section-choose > table:has(> tbody
+  > tr:nth-child(12))`). Tables are kept whole again, as in 1.7.0. A book with a
+  table taller than the page under its heading lets that one split from its own
+  sheet, e.g. `.dc-flaws > table { break-inside: auto; }` for the Field Guide's
+  Flaw table.
+- **The panel break rules that counted blocks** (`components/section.css`,
+  "Where a panel may break"): a panel of four blocks or fewer kept whole, and a
+  panel of five or more keeping its 2nd block with its 3rd and its last block
+  with the one above. A panel now splits where the page ends; its heading still
+  stays with the block under it, and text still keeps 3 orphans and 3 widows.
+  A book that wants the 1.7.1 behaviour copies the three rules into its own
+  sheet; the design guide does (`design-guide/styles/guide.css` §7).
+
+### Changed
+
+- **A skill card's opening** is written `:first-child, :first-child + *`
+  instead of `:nth-child(-n+2)`. Same rule: the flavor line and the block
+  after it stay with what follows.
+
 ## [1.7.1] - 2026-10-15
 
 ### Fixed

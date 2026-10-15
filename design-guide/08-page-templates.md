@@ -49,7 +49,7 @@ The folio and the chapter number print as stickers, never as bare type. The foli
 
 ### Where pages break
 
-Pagination is part of the package, so every book gets it: a panel of four blocks or fewer stays whole and moves to the next page rather than splitting 3 + 1; a longer panel never opens or ends with one block alone; text keeps three orphans and three widows in panels and callouts; a skill card splits between ability rows, never leaving one row on a page with a hand's breadth of empty cream under it; headings, tape dividers and stat-block names stay with what follows. A box that must be kept whole whatever it costs is `{.dc-avoid-split}`; a book's own `--dc-section-break-inside: auto` lets one split.
+Pagination is part of the package, so every book gets it: text keeps three orphans and three widows in panels and callouts; a skill card splits between ability rows, never leaving one row on a page with a hand's breadth of empty cream under it; headings, tape dividers and stat-block names stay with what follows. A panel splits where the page ends; one that must be kept whole whatever it costs is `{.dc-avoid-split}`, and a book that wants all its short panels whole says so from its own sheet (`--dc-section-break-inside: avoid`), since what counts as short depends on its content.
 
 ### Text on the wall
 

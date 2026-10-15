@@ -23,6 +23,7 @@
         shows those pages as captured at the cutover. If the field guide
         changes an .fg-art-* rule, decide separately whether the specimen
         should follow.
+     §7 where the guide's panels may break (a book's call, not the package's)
 
    The rules every Dimm City book needs — contents rows, credits labels and
    layout, chapter-start heading, specialty break control — moved into the
@@ -781,3 +782,23 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 :where(#ch-example-specialty-profile) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-amethyst; }
 :where(#ch-example-dm-npcs) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-rust; }
 :where(#ch-example-gear-tech) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-amber; }
+
+/* ── §7 Where a panel may break ─────────────────────────────────────────────
+   Sized to this guide's panels; the package leaves it to each book (a block
+   count only holds for one book's content):
+   1. A short panel (four blocks or fewer, the heading bar counts) stays whole
+      rather than splitting 3 + 1. One with a column run or a table is the tall
+      kind and is left to split.
+   2. A long panel (five blocks or more) never opens with its heading and a
+      single block: the second block stays with the third.
+   3. A long panel never ends with one block alone: its last block stays with
+      the block above it. */
+.dc-section-panel:not(:has(> :nth-child(5), > .gp-columns, > table)) {
+  --dc-section-break-inside: avoid;
+}
+.dc-section-panel:has(> :nth-child(5)) > :nth-child(2) {
+  break-after: avoid;
+}
+.dc-section-panel:has(> :nth-child(5)) > :last-child:not(h2, h3, h4) {
+  break-before: avoid;
+}
