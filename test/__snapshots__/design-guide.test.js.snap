@@ -686,7 +686,7 @@ exports[`rendered output 03-palette.md matches its snapshot 1`] = `
 <tr data-source-range="66:67">
 <td>Hazard yellow with ink</td>
 <td>Danger, consequence, a choice you must make</td>
-<td>Warning alert, enforcer faction, the <em>Your choice</em> stamp, vehicle gear</td>
+<td>Warning alert, enforcer faction, the <em>Choose</em> stamp, vehicle gear</td>
 </tr>
 <tr data-source-range="67:68">
 <td>Blood, rust, crimson</td>
@@ -1223,7 +1223,7 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 <tr data-source-range="80:81">
 <td>A choice the player writes on the Citizen File</td>
 <td><code>@section choose</code></td>
-<td>A printed form, not a panel: a paper sheet a hair lighter than cream, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter’s accent, dotted write-in rules, heavy ink tick boxes and a yellow <em>Your choice</em> stamp</td>
+<td>A printed form, not a panel: a paper sheet a hair lighter than cream, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter’s accent, dotted write-in rules, heavy ink tick boxes and a yellow <em>Choose</em> stamp</td>
 </tr>
 </tbody>
 </table>
@@ -4428,7 +4428,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-source-range="1100:1101"><h3>Dream Master section</h3>
 <p>Behind the screen: a file-folder tab that says Dream Master over an ink bar with a cyan rule, a cold body, a cyan rail and the bottom-right corner cut.</p>
 </div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-source-range="1108:1109"><h3>Choose section</h3>
-<p>A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow <em>Your choice</em> stamp:</p>
+<p>A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow <em>Choose</em> stamp:</p>
 <ul>
 <li data-source-range="1114:1115">A first option.</li>
 <li data-source-range="1115:1117">A second option.</li>
