@@ -143,12 +143,11 @@ Two rules keep the split honest, and a test enforces each:
 ```css
 /* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-rule: 2px;
-  --dc-fiction-shadow: 6px 6px 0 var(--ink-dark);
+  --dc-fiction-depth: 10px;
 }
 ```
 
-A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-rule: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 
@@ -272,8 +271,8 @@ hierarchy: color → typography → spacing → geometry.
 --paper-aged:     #c8c2b8;  /* weathered grey — decay register */
 
 /* Ink scale — warm sepia drift, not neutral gray */
---ink:            #1a1512;  /* near-black with red bias — riso warm black */
---ink-dark:       #2b231d;  /* warmer secondary heading weight */
+--ink:            #1e1d1c;  /* near-black with red bias — riso warm black */
+--ink-dark:       #2f2622;  /* warmer secondary heading weight */
 --ink-smoke:      #4d4339;  /* sepia mid-tone — body emphasis */
 --ink-dust:       #665b4e;  /* muted labels, subtitles */
 ```
@@ -297,10 +296,10 @@ into the token name, not scattered across heading rules.
 --font-mono:     'Tomorrow', 'Titillium Web', monospace;
 
 /* Type scale — physical units, 12pt body floor */
+--fs-floor:   10pt;    /* THE floor: no glyph is smaller (chips, tabs, labels, folios too) */
 --fs-body:    12pt;
---fs-body-sm: 11pt;    /* design floor — never go below this for prose */
+--fs-body-sm: 11pt;    /* smallest running prose in a component */
 --fs-body-xs: 11.5pt;  /* between sm and body — outcome text, cover body, TOC items */
---fs-footer:  9.5pt;   /* @page margin-box footer text */
 
 /* Line height */
 --lh-normal:  1.5;
@@ -308,7 +307,6 @@ into the token name, not scattered across heading rules.
 
 /* Letter spacing — named by use */
 --ls-display:  0.1em;   /* all-caps display headings */
---ls-cap-sm:   3px;     /* mono micro-caps (.tag, .dc-tag) */
 ```
 
 ### Spacing and Geometry Tokens
@@ -362,9 +360,6 @@ To change the page background in an adapted project, override `--bg` in
 the book's own sheet; the `@page` rules read it directly.
 
 ### What Makes a Good Token
-
-**Good — `--ls-cap-sm`**: Used in five rules across three files. Semantically distinct
-(letter-spacing for micro-cap labels). Has no alias.
 
 **Good — `--gutter`**: The column gap appears in grid declarations and structural
 margins. One change reflows all of them without changing the spacing scale.
@@ -453,6 +448,72 @@ Specificity (0,2,0) beats single-class overrides from upstream CSS without
 
 Guide-only examples should live in the design guide's own sheet even when they use `.page.*`
 selectors.
+
+### Page chips: the folio and the chapter coupon
+
+The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
+**chrome** is `dc-native.css` §2 and §2b, unlayered and last. A margin box takes
+`background`, `border`, `padding`, `margin`, `height` and `vertical-align`, but no
+`transform` and no `box-shadow`, so a chip's hard shadow is a thicker bottom and
+right border. Three rules keep the type centred:
+
+- the box height is fixed (0.225in) rather than `fit-content`, and the engine
+  centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
+  edge is balanced with `padding-top`, and the inline-end padding gives back the
+  tracking a `letter-spacing` leaves after the last glyph;
+- the chip sits at the top of the footer band: the bottom margin
+  (`--bottom-margin`) is 0.875in from the sheet edge, and a 0.225in chip with
+  `margin-top: 0.025in` ends exactly 0.625in from the sheet edge, on
+  DriveThruRPG's 0.5in text minimum (0.5in from the trim). The engine honours a margin on a margin box (measured: a 4pt margin
+  moved the box 4.3pt);
+- nothing clips: a chip is a plain bordered box, so no glyph can be cut.
+
+The chapter chip's **colour** reaches a margin box through a *named page*: a
+margin box is in the page context and cannot see a chapter's
+`--dc-section-accent`, and a custom property set on a named `@page` does not
+reach its margin boxes (measured). `page-rules.css` puts a chapter's pages on
+`page: dc-chip-<hue>` (the chapter words `specialty`, `rules` and `lore` do it;
+a book does the same for its own chapters with
+`:where(#ch-xyz) > .page { page: dc-chip-rust; }`), and `dc-native.css` §2c
+repaints the coupon for that name and side (blue, rust, violet, amethyst,
+amber; the default is magenta-deep). Unlayered, because layered `@page` rules
+lose to `dc-native.css`.
+
+The Citizen File running head is the same chip in the top band (`@top-left` /
+`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 0.875in top margin.
+
+### Free-standing page text
+
+Text that is a direct child of `.page` or `.chapter` with no component around it
+is dressed by `page-templates.css` ("FREE-STANDING PAGE TEXT"): `#` a banner,
+`##` / `###` / `####+` paper slips, loose paragraphs, lists and quotes one
+paper sheet per run. These are rules on plain elements, which a location may
+style (a location styles a component by tokens only). Scope is one `:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > …`
+plus a guard, `:not([class*="dc-"]…)`, that leaves any element a component has
+claimed alone (`ol.dc-steps`, `div.dc-intro`, `div.dc-toc`: this layer outranks
+`dc.components`; `test/page-text.test.js` enforces it), so a heading
+inside a section or callout is never matched, the guide's `@page .dg-doc`
+explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
+`--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
+read the chapter's `--dc-section-accent`, so a chapter word recolours them).
+
+### Where pages break (pagination)
+
+Break control is package CSS, so every book gets it. The rules, and where each
+lives:
+
+| Rule | File | Why |
+|---|---|---|
+| A panel splits wherever the page ends; which panels stay whole is the book's call (`.dc-avoid-split`, `--dc-section-break-inside`) | `components/section.css` ("Where a panel may break") | a block-count threshold is a guess about one book's content; no package rule counts blocks or rows |
+| Text in a panel or callout has `orphans: 3; widows: 3` | `components/section.css` | at 2/2 Chromium still splits a three-line paragraph 2 + 1 |
+| An ability row is not glued to the block after it; only a skill card's last block stays with the one above | `components/cards.css`, `components/data.css` (the `data-ability-penultimate` / `-last` glue is gone) | a card of N rows had no place to split, so it split inside one paragraph and left a hand's breadth of empty cream |
+| `.dc-dm-note > :first-child { break-before: avoid }` only inside a column run | `dc-native.css` §7 | at page level it pulled the section above's last block onto the callout's page |
+| `h1`-`h6`, `.dc-tape`, `.dc-card-tab`, learning-path banners, `##` slips: `break-after: avoid` | `dc-core.css`, `page-templates.css`, `cards.css`, `data.css` | keep-with-next |
+| A loose-text sheet has 3 orphans / 3 widows | `page-templates.css` | same |
+
+What the package cannot fix is a forced `@page` / `@page-break` in a book that
+strands a stub; those are content (the design guide removed three).
 
 ### Folios and the `.chapter-N` class
 

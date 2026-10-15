@@ -33,6 +33,8 @@ const CORE_HOOKS_READ_BY_CSS = [
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
   "--gp-column-rule", //   and to reset on a component that wants none
   "--gp-content-h", // read only
+  ".gp-alert", // the gutterpress-gfm-alerts extension's `> [!NOTE]` box, drawn as a callout so it never sits on the wall
+  ".gp-alert-", //   its type classes (-note, -warning, -caution, ...) and its .gp-alert-title
 ];
 
 function stripComments(src) {
@@ -119,6 +121,17 @@ describe("stylesheets", () => {
       expect(css).not.toMatch(/@import\s/); // every sheet is listed in package.json instead
       expect(css).not.toMatch(/url\(\s*["']?https?:/); // a remote url() is a Gutterpress build error
     }
+  });
+
+  // PDF/X drops a repeating gradient outright (the tape's dashes vanished),
+  // and a preserve-text build flattens its whole page, text included (#41):
+  // tile an ordinary gradient instead.
+  test("use no repeating gradient (PDF/X)", () => {
+    const found = [];
+    for (const rel of sheets) {
+      if (/repeating-(linear|radial|conic)-gradient\(/.test(stripComments(read(rel)))) found.push(rel);
+    }
+    expect(found).toEqual([]);
   });
 
   // PDF/X-1a (DriveThruRPG) carries no transparency. Gutterpress flattens the
@@ -270,7 +283,7 @@ describe("skill cards split by default", () => {
   test("an ability row is never cut, and a split card never opens with only its tab", () => {
     const css = read("styles/components/cards.css");
     expect(css).toMatch(/\.dc-skill-card \.dc-ability \{\s*break-inside: avoid;/);
-    expect(css).toMatch(/\.dc-skill-card \.dc-card-inner > :nth-child\(-n\+2\) \{\s*break-after: avoid;/);
+    expect(css).toMatch(/\.dc-skill-card \.dc-card-inner > :first-child,\s*\.dc-skill-card \.dc-card-inner > :first-child \+ \* \{\s*break-after: avoid;/);
   });
 });
 

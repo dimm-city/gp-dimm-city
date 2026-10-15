@@ -38,7 +38,7 @@ const pkgSheet = (rel) => ({ label: rel, root: css(path.join(ROOT, rel)) });
 const PKG = PACKAGE_SHEETS.map(pkgSheet);
 const GUIDE_SHEETS = [{ label: "design-guide/styles/guide.css", root: css(path.join(GUIDE_DIR, "styles/guide.css")) }];
 const FG_SHEETS = HAS_FG
-  ? ["fg-overrides.css", "fg-native.css"].map((f) => ({ label: `field-guide/styles/${f}`, root: css(path.join(FG_DIR, "styles", f)) }))
+  ? ["fg-overrides.css", "fg-native.css"].filter((f) => existsSync(path.join(FG_DIR, "styles", f))).map((f) => ({ label: `field-guide/styles/${f}`, root: css(path.join(FG_DIR, "styles", f)) }))
   : [];
 
 /** Every selector in the sheet, outside keyframes. */
@@ -330,6 +330,7 @@ describe("component catalog", () => {
     ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
     ...ENTRY_KINDS.map((w) => `@gear ${w}`),
+    ...Object.keys(markers.definition.variants).map((w) => `@definition ${w}`), // the two states of a roll
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

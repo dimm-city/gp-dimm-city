@@ -11,29 +11,356 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 - **Shadows and tints are translucent again, for books that opt in to
   Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
-  poster shadow (`--shadow-ink`), skill-card and sticker shadows, tape and
-  pull-quote rules, the spray smudge, the dashed rule, the card corner mark,
-  the highlight wash, and the AP-chip and outcome-key bevels are `color-mix(…,
-  transparent)` again instead of being pre-mixed onto one surface, so a shadow
-  on the brick wall darkens the brick instead of painting a flat tone. The AP
-  chip's soft `3px 3px 6px` shadow is back. Text colours stay opaque: a
-  translucent glyph prints fully opaque on a split page. The wall tile stays
-  opaque. `--wall-tone` is removed (nothing uses it). The convention test
-  *paint nothing transparent* becomes *keep text opaque*.
+  poster shadow (`--shadow-ink`, so the skill-card body shadow and the section
+  drop), the sticker and path-chip shadows, the rule divider, the spray smudge,
+  the pull-quote accent, and the AP-chip and outcome-key bevels are
+  `color-mix(…, transparent)` again instead of being pre-mixed onto one
+  surface, so a shadow on the brick wall darkens the brick instead of painting
+  a flat tone. The AP chip's soft `3px 3px 6px` shadow is back. Text colours
+  stay opaque: a translucent glyph prints fully opaque on a split page. The
+  wall tile stays opaque. `--wall-tone` is removed (nothing uses it). The
+  convention test *paint nothing transparent* becomes *keep text opaque*, and
+  its repeating-gradient check is kept as its own test.
   - A book that keeps Gutterpress's default (`flatten-page`) and builds
-    PDF/X-1a now gets more pages flattened to an image than with 1.6.3: set
+    PDF/X-1a gets more pages flattened to an image than with 1.7.2: set
     `pdfx.transparency: preserve-text` in the book's manifest. Requires the
     Gutterpress release that ships that option.
 - **Lixdu is never faked bold.** Lixdu has one face, regular, but chapter
-  chips, outcome rolls, block and card titles and headings asked for 700, so
-  Chromium synthesized a bold, which prints as a Type 3 font that
-  Gutterpress's PDF/X `preserve-text` split cannot keep: on the Field Guide,
-  215 of 228 pages fell back to whole-page flattening. Every rule that sets
-  `--font-display` now sets `font-weight: 400` (a convention test enforces
-  it), the front-matter masthead drops its 700, and headings set
-  `font-synthesis-weight: none` so `**bold**` inside a heading prints in
-  Lixdu's own stroke. That text is slightly thinner than the synthetic bold.
-  The Field Guide now has no Type 3 text and pages as before (228).
+  chips, folio chips, outcome rolls, block and card titles and headings asked
+  for a bold weight, so Chromium synthesized one, which prints as a Type 3
+  font that Gutterpress's PDF/X `preserve-text` split cannot keep. Every rule
+  that sets `--font-display` now sets `font-weight: 400` (a convention test
+  enforces it), and headings set `font-synthesis-weight: none` so `**bold**`
+  inside a heading prints in Lixdu's own stroke. That text is slightly thinner
+  than the synthetic bold.
+
+## [1.7.2] - 2026-10-15
+
+No package rule counts a book's rows or blocks any more: a threshold like
+"four blocks or fewer" or "12 rows or more" only holds for the content it was
+measured on, so it belongs in that book's own sheet.
+
+### Removed
+
+- **The 1.7.1 long-choose-table rule** (`.dc-section-choose > table:has(> tbody
+  > tr:nth-child(12))`). Tables are kept whole again, as in 1.7.0. A book with a
+  table taller than the page under its heading lets that one split from its own
+  sheet, e.g. `.dc-flaws > table { break-inside: auto; }` for the Field Guide's
+  Flaw table.
+- **The panel break rules that counted blocks** (`components/section.css`,
+  "Where a panel may break"): a panel of four blocks or fewer kept whole, and a
+  panel of five or more keeping its 2nd block with its 3rd and its last block
+  with the one above. A panel now splits where the page ends; its heading still
+  stays with the block under it, and text still keeps 3 orphans and 3 widows.
+  A book that wants the 1.7.1 behaviour copies the three rules into its own
+  sheet; the design guide does (`design-guide/styles/guide.css` §7).
+
+### Changed
+
+- **A skill card's opening** is written `:first-child, :first-child + *`
+  instead of `:nth-child(-n+2)`. Same rule: the flavor line and the block
+  after it stay with what follows.
+
+## [1.7.1] - 2026-10-15
+
+### Fixed
+
+- **A long table of choices splits between rows.** A table of 12 rows or more
+  in a `choose` section (`@flaws`, `@ideals`, `@section choose`) may now break
+  between rows; each row is a whole option and the header repeats. At the 10pt
+  floor the Field Guide's 19-row Flaw table no longer fit under its heading,
+  so the whole table jumped to the next page, left the opening page empty and
+  pushed the section's last two lines onto a third page. Shorter tables, and
+  tables outside `choose` sections, still stay whole.
+
+## [1.7.0] - 2026-10-15
+
+A redesign pass by component family. A reader should know what kind of box they
+are looking at from its silhouette, fill value and colour before reading a word,
+and every variant is told apart in grayscale as well as in colour (value, edge
+and label, never hue alone). Magenta is display punch only (chevrons, spray
+titles, pull quotes, `ROLL THE DIE!`, the VAR chip, the default panel accent);
+the other roles are HUD blue for player rules and look-ups, cyan on ink for the
+Dream Master only, hazard yellow with ink for danger and choices, blood and rust
+for harm and cost, violet for the world, fungi green for the organic. The
+constitution is revised to match: §II adds the colour roles and the grayscale
+rule, §V and §VI set a 10pt type floor, and §VII describes the new
+components.
+
+A second pass, from review of 1.7.0-alpha.1, set a 10pt type floor for all
+text, took every word off the brick wall, tied shape to meaning and added a
+little grit.
+
+### Added
+
+- **`@page specialty-catalog`**: the specialty catalog is a designed two-page
+  spread. It opens on a left page; the title, the lede and four cards fill the
+  left page and six the right, in aligned rows of equal height. Each card is a
+  poster: portrait on top in an ink mat cut to its specialty's silhouette,
+  name, tagline, pitch and an index chip. Snippet *Specialty Catalog Page*.
+- **`@callout location` and `> [!LOCATION]`**: a place written up, drawn as
+  the origin callout's document (dog-eared corner, torn foot, worn rubber
+  stamp) in map teal: cool paper, a teal rail, a deep-teal stamp.
+- **`@definition lucid` and `@definition surreal`**: the two roll states drawn
+  as opposites. Lucid is a light, machined, upright sheet in a blue frame;
+  Surreal is an inverted violet-black sheet with a skewed torn edge,
+  off-register inks and a leaning headword.
+- **No text on the wall.** On wall pages free-standing text gets a substrate
+  with no markup: a `#` title is an accent banner, `##` a pasted paper slip
+  (accent rail, dashed foot, tape), `###` a plain slip, `####` and below a
+  label slip, and loose paragraphs, lists and quotes share one paper sheet per
+  run. A bare `@section` is a paper sheet; flavor lines and the spec tweak sit
+  on paper strips; the Citizen File running head is an amber tab. Tokens
+  `--dc-page-slip-*`, `--dc-page-sheet-pad`, `--dc-page-title-ink`,
+  `--dc-flavor-bg`.
+- **Grit**, vector and opaque, on edges and labels only: chipped corners,
+  tape strips, misregistered second-ink rules (`--dc-band-reg` on the tech
+  specialties), worn stamp rings, torn feet, a staple on the procedure plate.
+- **`--dc-accent-ink`**: the text-safe ink of the component you are in. Every
+  alert, section kind, block, card, faction, entry, table and specialty sets
+  it; chapter accents flow through.
+
+### Changed
+
+- **Type floor: 10pt for all text**, chips, tabs, tier pills, AP chips,
+  badges, stamps, folio and chapter chips, stickers and labels included. New
+  token `--fs-floor` (10pt); `--fs-h6` is the floor (was 9pt). Chrome that
+  grew was refitted so nothing wraps or clips; a five-step sticker chain may
+  now wrap to two rows.
+- **ROLL THE DIE! takes the colour of its component** (deep magenta in a
+  magenta panel, blood in a blood box, the specialty's ink on a skill card).
+  `--dc-roll-the-die-color` is replaced by `--dc-accent-ink`.
+- **Fiction is a cavity.** `@fiction-excerpt` is an aged page sunk into a
+  ragged hole in the wall: a dark torn rim, a hard shadow down the top and
+  left, a lit lip at the bottom and right, deeper on a chapter opener. New
+  tokens `--dc-fiction-depth`, `-depth-bg`, `-cavity`, `-lip`, `-rim`,
+  `-hole`; `--dc-fiction-lift` and `-lift-bg` are removed.
+- **Shape carries meaning.** Player rules and look-ups are machined chamfers;
+  Dream-Master-only boxes are file folders (the `dm` section's tab carries the
+  words, replacing its chip); danger and enforcement are sign plates; lore and
+  cabal long asymmetric slashes; fiction, backstory, cult and flaws torn;
+  choices ticket notches; gear tags; magic facets; organic boxes wobble. The
+  eight alerts, every section kind, block, choice card, faction, entry, table
+  and all ten specialties are re-cut to match, and every clipped edge is
+  padded clear of its cut by 2pt or more.
+- **Folio and chapter chips** are fixed-height boxes with their type centred,
+  on recto and verso. The chapter chip is a stamped coupon in the chapter's
+  colour, replacing the dashed outline.
+
+- **Alerts: eight registers, eight silhouettes.** Each has its own fill value,
+  edge and label. Bodies are italic, as before; the example's is upright.
+  - note: the calm HUD-blue panel with a blue rail, as before.
+  - warning: a light cream hazard sign: a yellow and black stripe rail, an ink
+    frame and a yellow caution-tape label. It signals consequence.
+  - dm: an ink slab with a cyan rail and a cyan chip. It signals the Dream Master
+    only.
+  - vibe: a barely violet flat sheet in one violet edge, italic, with no
+    rail: the world's voice, not a slab.
+  - origin: warm paper, a rust rail, a dog-eared corner and a crimson rubber-stamp
+    label: second-person backstory.
+  - location: the origin's document in map teal: a place written up.
+  - visit: a fungi-green signpost with a map-pin label: a place.
+  - example: a cyan rail with a taped-on label.
+  New tokens `--dc-alert-frame`, `-label-bg` and `-label-pad` carry the frame
+  and label chrome. The hazard rail, the dog-ear fold, the spray stencil line and
+  the NPC card foot are drawn in vector (borders and clip-path), because
+  gradients are dropped or rasterised in PDF/X. The DM and visit bodies are
+  semibold (reversed type).
+- **Section kinds read from their bar and sheet.** Panel keeps the solid accent
+  bar on cream (magenta by default, the only kind a chapter re-themes); reference
+  a pale HUD band; lore a deep violet bar over a lilac sheet; dm an ink bar with a
+  cyan rule, a cyan rail and a Dream Master chip (cyan on ink is now the Dream
+  Master's alone), with a strip of its own when it has no heading. `choose` is a
+  printed form, not a panel: a paper sheet a hair lighter than cream, an ink
+  edge, no bar or cut corners, an ink title over a double rule, heavy ink tick
+  boxes, dotted write-in rules and a yellow *Choose* stamp. The title bar is
+  one rule reading new tokens (`--dc-section-bar-mix` / `-bar-tone` / `-bar-fg` /
+  `-bar-rule` / `-bar-rule-sub`, and `--dc-section-flag`); each kind sets them
+  instead of repainting the bar, and so does the catalog. A block's band reads
+  `--dc-block-title-rule` and `--dc-block-tag`.
+- **Blocks: three registers.** `@block panel` stays HUD blue; `slate` is an ink
+  body under a blood band with a stamped *Binding* tag (not magenta, not the
+  Dream Master's cyan); `shard` is light zine paper with a torn foot and a taupe
+  label strip, no accent hue.
+- **Choice cards say which choice they are.** A Flaw is blood with a cracked edge,
+  an Ideal HUD blue with a steady tablet shape, a Dream violet with a rising edge,
+  each with a one-word chip and a kind-tinted quote. The kind sets
+  `--dc-choice-accent`, `-surface`, `-tint` and `-kind`, and a card inside them
+  reads them (the choice chrome is scoped to `@flaws`/`@ideals`/`@dreams`, so a
+  gear entry or a faction keeps the plain card).
+  The card name is the first `####`; the docs and snippets say `####` throughout.
+- **Factions have their own silhouettes.** Megacorp a hard blue rectangle with a
+  cyan-edged band, cabal violet with long corner cuts, cult blood and torn, enforcer
+  an octagon with a hazard-stripe band and a yellow name label. The bands are
+  vector (solid inset shadows; the enforcer's tape is a skewed dashed border), not
+  gradients. New tokens `--dc-faction-surface`, `-band` (a box-shadow list),
+  `-band-height`, `-pad-bottom`, `-badge-shape`, `-title`, `-title-bg` and
+  `-title-pad`.
+- **A creature's stat line is a chip.** The first line of an `@npc-stat`'s primary
+  stat paragraph is set 12pt bold, cream on the block's colour (`::first-line`, no
+  markup); the rest falls under it as a small-caps tag.
+- **Entry cards differ by silhouette, surface and badge.** Gear is a hang tag
+  (a paper card in a heavy ink frame, an eyelet, a rust rail), an augment a spec
+  chip (a stepped notch, a cyan rule), treasure a gem (an octagon cut, a facet), a
+  vehicle an industrial plate (an inner seam, a yellow badge), a drug a
+  prescription label (the one rounded shape, an *Rx · Drug* pill). Every mark is a
+  solid fill, border or clip, so it prints as vector in PDF/X (no gradients). New
+  tokens `--dc-entry-radius`, `-ornament`, `-orn-inset`, `-orn-bg`, `-orn-border`,
+  `-orn-clip`, `-orn-z`, `-frame` and `-badge-bg`, `-badge-fg`, `-badge-shape`,
+  `-badge-radius`. Chips and tags never hyphenate. Field labels share one chip: effects are a solid teal frame
+  with a +, side effects a dashed blood frame with a – (`--dc-field-edge-width`,
+  `-edge-style`).
+- **Catalog entries are kept whole.** An entry never splits across a column or a
+  page (the catalog itself still splits between entries), and its title bar is a
+  ledger band with an INVENTORY chip instead of an accent bar.
+- **Procedure is off the wall.** `@procedure` is an instruction plate: a cream
+  sheet with an ink frame and a hard shadow, a solid HUD-blue number strip, step
+  text in ink and ruled dividers (`--dc-steps-accent`, `--dc-steps-surface`).
+- **At-a-glance has a hierarchy.** The tile is a reversed label band over a large
+  value, with an ink frame and a hard shadow (`--dc-at-a-glance-accent`, `-value`).
+  The outcome ladder's chip column is `max(130px, 26%)` (`--dc-outcome-key-col`)
+  so long band names wrap cleanly.
+- **Definition is a dictionary page,** not a tinted note: cream, a heavy rule over
+  it, the term set first as a blue headword; the shape is `none` by default.
+- **The lede is the opening statement.** Upright semibold ink type at 13pt on a
+  light panel (lighter than the wall) with a heavy accent rail and an ink foot rule
+  (`--dc-intro-color`, `-size`, `-weight`, `-style`, `-rail`, `-rule`). Flavor is a
+  rail and no box, in ink-dark. Contents and credits ledes keep body size.
+- **NPC flavor lines** are a ruled line, not a box.
+- **Chrome.** `.dc-tag` is an inline chip with a hard edge and an ink hairline
+  (`--dc-tag-bg`, `-fg`, `-border`); `.dc-tape` is masking tape with torn ends and
+  ink edges (`--dc-tape-shape`); `.dc-spray` is a stencil tag with a stepped edge
+  and a dashed stencil line (`--dc-spray-stencil`) against the chevron's deep
+  banner; the spec tweak fits one line; the NPC sidebar is a contact card with a
+  blue ID band and an ink strip foot.
+- **Specialties are told apart.** The title bands (path banner and specialty-intro
+  title) are each specialty's own signal colour with its own register: an LED rim
+  and a rule of LED dots on the tech specialties, a facet plane on the magic ones, a
+  hazard-tape rule on Streetwarden, a torn bottom edge on Technosorcerer and Gutterdruid, all
+  drawn as solid fills, dotted/dashed borders and clip-paths (no gradient, so they
+  survive PDF/X). New tokens `--dc-band-rule`, `-rule-h`, `-tick`, `-tick-style`,
+  `-tick-w`, `-rule-skew`, `-rule-bleed`, `-facet`, `-facet-width`,
+  `-facet-clip` and `-rim`, and `--dc-path-code-*`, `--dc-path-chip-*`,
+  `--dc-path-note-rail`. A path with no subtitle is the band alone.
+- **The tier pill is the specialty's own.** `--dc-tier-bg`, `-fg` and `-edge`,
+  set per specialty, replace the bronze, gold and silver by position (the
+  `--tier-*` tokens are gone).
+- **AP chips differ in grayscale.** Free is an unlit LED, a grey lens with a hollow
+  lamp and an ink edge (it was the same blood red as increased), reduced is pale
+  blue with a drawn down triangle, increased blood with a drawn up triangle (CSS
+  shapes, not font glyphs), VAR deep magenta (cream on the bright one was 4.06:1),
+  special amber with cream type.
+- **Augmerc and Wirephreak swap colours.** The Augmerc is signal cyan (a
+  teal-black LED rule with cyan ticks, deep-teal ink) and the Wirephreak deep
+  magenta (a cyan LED rule with ink ticks); `--augmerc-*` and `--wirephreak-*`
+  swap values. Their silhouettes are unchanged.
+- **Proxy and Technosorcerer swap looks; Generalist leaves violet.** The
+  Proxy is now electric indigo (`--signal-indigo`) with the tech-and-magic
+  register (a centre gate notch, an LED rule, a facet plane), and the
+  Technosorcerer takes the scorch-orange landfill-and-magic register (a burnt
+  corner, a torn foot, a scorch patch, aged-paper card) that suits ritual on
+  scrap. `--proxy-*` and `--technosorcerer-*` swap values to match, and every
+  skill card, learning path, intro and specialty card follows. Violet is the
+  world's colour (lore, vibe, cabal, treasure), so the Generalist is cool slate
+  (`--crystal-slate`). The Technosorcerer's band is a shade lighter so ink on it
+  holds 4.5:1.
+- **New neutrals.** `--paper-form` (the `choose` sheet) and `--paper-zine` (the
+  fiction excerpt and shard sheets).
+- **Ink coverage under 280%.** Measured through the build's own PDF/X
+  conversion: `--ink` is `#1e1d1c` (278%, was 284%) and `--ink-dark` is
+  `#2f2622` (266%, was 271%). `--deep-rust`, `--fungi-rot` and six
+  specialty darks are lifted to 268% or less. Every palette and identity token
+  carries its measured CMYK and TAC. No raw `#000`/`#fff` remains in a
+  `color-mix()`.
+- **Pagination.** A panel of four blocks or fewer stays whole; a long panel
+  never opens or ends on a single block; panel and callout text keeps three
+  orphans and widows; skill cards split between ability rows.
+- **Lore, dm and choose are sunk into the wall.** No drop shadow: the wall's
+  top edge casts a hard shadow down over the sheet's top and its title bar, and
+  a light lip runs along the bottom and right (`--dc-section-recess`, `-depth`,
+  `-shade`, `-lip`). Panel and reference still hang. `@flaws`, `@ideals` and
+  `@dreams` are choose sections, so they are recessed too.
+- **Edges are solid; the dash is kept where it is the object.** Clip-path and
+  border colour tell kinds apart. Solid now: the choose edge, the flaw card
+  edge, the vibe edge, the example rail and its label, the cult rail, the shard
+  rule, the skill-card continuation tab, procedure and definition dividers,
+  `hr`, the stat-strip cells, the vehicle seam, the gear price tag, the NPC
+  stat rule and the human-callout foot. Still dashed or dotted: the warning's
+  hazard rail and the enforcer's band, the `##` slip foot and `.dc-spray`
+  stencil line, write-in rules on a form, the origin stamp ring, the
+  side-effect field frame, link and ROLL THE DIE! underlines, the LED ticks.
+- **Labels are raised.** Every label stands off what it sits on with a hard
+  2px ink shadow (`--dc-label-shadow`), or an inset bottom-and-right edge where
+  a clip-path would cut it (`--dc-label-edge`). Every alert label is now a chip
+  (`--dc-alert-label-bg` defaults to cream; `--dc-alert-label-shadow`).
+
+### Fixed
+
+- **No text on the wall from `@flaws`, `@ideals` or `@dreams`.** A headless one
+  dropped its sheet on the assumption it held only cards; one that also holds
+  prose or a table keeps its sheet.
+- **`> [!NOTE]` alerts** from the gutterpress-gfm-alerts extension (`.gp-alert`)
+  are drawn as the matching callout (note, tip and important as the note;
+  warning and caution as the warning) instead of bare text on the wall.
+
+- The learning-path title band lines up with the path frame's top-right cut
+  for every specialty: it spans the frame and is cut from the same point list,
+  where it stopped 12px short.
+- The design guide's heading specimens sit on paper, not on brick.
+- The folio and chapter chips are 0.225in tall with their type centred in
+  them, and sit 0.025in below the text block (page margins are unchanged from
+  1.6.3). The chapter chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
+  stray notch.
+- The `dm` section's folder tab stays with its box when the section splits
+  across a page; it had left cyan type on grey paper.
+- The page-level wall-text rules skip components (`[class*="dc-"]`), so a
+  `@procedure`, `@lede` or `@toc` placed straight on a page keeps its look.
+- Reversed type is semibold: slate and Surreal bodies, skill-tab names. Cream
+  on the default magenta bar is 4.7:1 (`--dc-section-bar-mix` 90%); outcome
+  band names are at least 4.5:1.
+- Flaw, Ideal and Dream cards differ in grayscale (edge style, fill value,
+  silhouette depth); `reference`, `lore`, `panel` and `dm` title bars differ
+  in treatment, not only colour.
+- A wrapped learning-path sticker chain never ends a line on its arrow.
+- Heading slips keep with what follows, prose sheets take orphans and widows
+  of 3, and `###`/`####` slips hang offset (`--dc-page-slip-gap`,
+  `-slip-offset`, `--dc-heading-gap`).
+- Tests guard the 10pt floor, page-level components, the Lucid/Surreal
+  variants, opaque paint and repeating gradients.
+- The tape divider's crimson dashes print in PDF/X: they were a repeating
+  gradient, which PDF/X drops, and are now an ordinary gradient tiled every
+  10px (#41).
+- A learning-path banner contains its slanted band rule, so the overhang no
+  longer widens the page and a book builds without `allowShrink`.
+
+- **Contrast and type.** The special AP chip (ink on amber, 3.5:1), the tier pills
+  (the accent failed 4.5:1 for 9px type on the magenta and orange bands), the learning-path
+  subtitle (ink-smoke on `--paper-stain`, 3.4:1), the magenta title band (cream on
+  bright magenta, 3.6:1; now the Wirephreak's) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. The DM alert
+  body is set at the 10pt floor instead of 9pt.
+- **A chapter no longer repaints the alerts.** The Dream Mastery chapter's override
+  turned every alert grey-brown and rust in Part 2; the alert identity now survives
+  re-theming. Its DM panel heading was ink on ink (an empty-looking bar) and is
+  readable.
+- **Names stay on one line where they can.** An NPC name in a two-column run,
+  a catalog entry name and TECHNOSORCERER on its specialty card no longer wrap
+  mid-name or orphan a letter.
+- **Empty strips are gone.** A learning path with no subtitle or stickers is the
+  band alone, not a band over an empty well.
+- **The design guide's choice-card snippets work.** They wrote `### Name`, which
+  core does not turn into the card heading (only the first `####` is); they now
+  write `####`. The Part 2 Fodder description sat between the quote and the stat
+  lines and was set as a stat line; it is now inside the quote.
+- **README example.** The author-override example set `--dc-alert-accent`, a token
+  that does not exist; it now sets `--dc-section-accent` on `.dc-section-panel`.
+- A skill card no longer leaves two lines and empty cream on a page, and a
+  page-level callout no longer pulls the previous block onto its page. The
+  guide's sample book has no stub or one-card pages left.
+- The guide's Introduction page sets its story in `@fiction-excerpt`.
+
+### Removed
+
+- **The highlight skill-card variant** (`#### Name | Tier | highlight`, `@skill {.dc-highlight}`) is gone, and the guide no longer describes a capstone skill: the game has none. A third `|` part in a skill heading is ignored.
 
 ## [1.6.3] - 2026-10-12
 

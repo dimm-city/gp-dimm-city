@@ -11,7 +11,7 @@ The components that live inside running prose: the lede that opens a chapter, fl
 
 ## Lede
 
-The opening paragraph of a chapter or major section, set larger on its own panel.
+The opening paragraph of a chapter or major section, set larger on its own light panel: upright semibold ink type, a heavy accent rail and an ink foot rule.
 
 ```markdown
 @lede
@@ -33,11 +33,11 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 
 </div>
 
-Tokens: `--dc-intro-bg`, `--dc-intro-accent`.
+Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-rule`, `--dc-intro-ink` (the lede's text-safe accent ink).
 
 ## Flavor
 
-In-world voice: italic, accent-railed, spoken from inside the fiction. Inside a `@skill` card the first `>` line is flavor automatically; anywhere else, tag the quote.
+In-world voice: italic, accent-railed, spoken from inside the fiction. It has no box: the rail is the whole container. Inside a `@skill` card the first `>` line is flavor automatically; anywhere else, tag the quote.
 
 ```markdown
 > [!FLAVOR]
@@ -53,7 +53,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-flavor-accent`, `--dc-flavor-accent-width`, `--dc-flavor-color`.
+Tokens: `--dc-flavor-accent`, `--dc-flavor-accent-width`, `--dc-flavor-color`, `--dc-flavor-bg` (a flavor line sits on paper, never on the wall).
 
 ## Pull quote
 
@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, six registers. Write a GFM alert — a blockquote whose first line is `[!TYPE]` — and the label, color, and rail come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is `[!TYPE]`, for the first seven — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -99,6 +99,9 @@ One shell, six registers. Write a GFM alert — a blockquote whose first line is
 
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
+
+> [!LOCATION]
+> The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
 
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
@@ -124,6 +127,9 @@ Result {.dg-result}
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
 
+> [!LOCATION]
+> The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
+
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
 
@@ -132,16 +138,20 @@ Result {.dg-result}
 
 ### Which alert
 
-| Type | Who it is for | Register |
-|---|---|---|
-| `NOTE` | Players | A rules clarification |
-| `WARNING` | Players | A rule with consequences, in amber |
-| `DM` | The Dream Master only | Guidance, hooks, adjudication |
-| `VIBE` | Players | Atmosphere and narrative voice, full width |
-| `ORIGIN` | Players, in second person | Backstory addressed to the character |
-| `VISIT` | Players | A location, present tense, before an encounter |
+| Type | Who it is for | Register | Looks like |
+|---|---|---|---|
+| `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail and small, even machined chamfers |
+| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a light cream sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label |
+| `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one violet edge all round, a strip of tape on top, italic, with a violet-edged label chip |
+| `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label |
+| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: cool map paper with a torn bottom edge, a dog-eared corner, a teal rail and a worn deep-teal stamp label |
+| `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail and a taped-on label |
 
-Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`.
+Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is italic except the example's, which is upright (the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+
+Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
 
 ## Callout block
@@ -174,12 +184,12 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 | Option | Values | Default |
 |---|---|---|
-| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `example` | `note` |
+| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` | `note` |
 | `label` | any text | the variant's label |
 
 ## Worked example
 
-`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a dashed cyan edge, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
+`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a cyan rail, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
 
 ```markdown
 @callout example
@@ -238,7 +248,7 @@ If the players investigate before accepting, they can smell the trap with a Stre
 
 ## Tape
 
-A torn-tape strip for a section break or a label between groups — tiers of NPCs, parts of a list.
+A strip of masking tape for a section break or a label between groups — tiers of NPCs, parts of a list: tan, torn at both ends, ink edges top and bottom, an ink label.
 
 ```markdown
 <div class="dc-tape">Operators</div>
@@ -252,11 +262,11 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
+Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
 
-## Dashed rule
+## Rule
 
-A plain `---` between entries is a red dashed rule — the separator for gear lists and NPC entries.
+A plain `---` between entries is a thin red rule — the separator for gear lists and NPC entries.
 
 ```markdown
 Trauma Kit × 2
@@ -280,7 +290,7 @@ Signal Jammer (single-use)
 
 ## Tags and class tags
 
-Inline pills. `.dc-tag` is a keyword or cost label; `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans — the one place the system asks for it inline.
+Inline chips. `.dc-tag` is a keyword or cost label: a hard-edged chip with an ink hairline, in mono caps (tokens `--dc-tag-bg`, `--dc-tag-fg`, `--dc-tag-border`); `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans — the one place the system asks for it inline.
 
 ```markdown
 <span class="dc-tag">Melee</span> <span class="dc-tag">Reach 2</span> <span class="dc-tag">Loud</span>
@@ -323,4 +333,4 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A tr
 
 </div>
 
-Token: `--dc-roll-the-die-color`.
+Token: `--dc-accent-ink`, the text-safe ink of the component the phrase sits in (the deep magenta by default; a panel, a lede, a specialty's cards and the like each set their own, so the phrase takes the colour of the box around it).

@@ -14,9 +14,10 @@
    - ONE `@page { background }` rule paints the brick wall across the whole
      sheet: the content box, and every margin box that carries no content of
      its own shows it through. One origin for the wall.
-   - Margin boxes support background/border/counter()/fit-content; they do
-     NOT support transform: rotate() or box-shadow — the sticker chrome is
-     square and unshadowed.
+   - Margin boxes support background/border/margin/height/vertical-align/
+     counter()/fit-content; they do NOT support transform: rotate() or
+     box-shadow — the sticker chrome is square, and its hard shadow is a thicker
+     bottom/right border.
    - Any box past the page content box (or the sheet, on reduced-margin
      pages) triggers whole-document print shrink-to-fit. Nothing in this
      file may protrude; the frontmatter template zeroes only the SIDE
@@ -56,92 +57,203 @@
    content rules (folio outside, chapter tag inside); the chrome swaps the
    same way.
 
-   BOTH axes must be fit-content. A margin box defaults to the size of its
-   SLOT, and the slot is big: per marginBoxRectPt (gutterpress
+   THE BOX. Both axes are fixed, not slot-sized. A margin box defaults to the
+   size of its SLOT, and the slot is big: per marginBoxRectPt (gutterpress
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
    content width by the whole bottom margin (174 x 54pt on this page).
-   `width: fit-content` alone tightens only the inline axis, so the stickers
-   would print as FULL-HEIGHT RECTANGLES filling the margin band rather than
-   as pills.
+   `width: fit-content` tightens the inline axis; the block axis is the
+   sticker's own height (0.225in) rather than `fit-content`, so
+   the box is the same height on every page, for every page word, and the
+   text inside it is centred by the engine (`vertical-align: middle` +
+   `line-height: 1`), not by the font's ascent. Two details keep the glyphs
+   centred optically:
+   - the chip is drawn with a 1px top/left edge and a 3px right/bottom edge
+     (the sticker's hard shadow: margin boxes take no box-shadow). The block
+     is `border-box`, so the thin top edge is balanced with `padding-top` and
+     the glyphs sit in the middle of the FACE, not of the shadowed box;
+   - `letter-spacing` leaves its tracking after the last glyph, so the
+     inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   A shrunk margin box stays anchored at its slot's START edge, so the chips
-   sit at the TOP of the bottom-margin band, tucked under the text block,
-   rather than centred in it. Shrinking the box leaves no hole in the band:
-   §1's `@page` background paints underneath, so the wall shows through the
-   rest of the slot on its own. */
-/* `align-self: flex-start`: on a page whose footer band a `.gp-flush` pin
-   frees, gutterpress re-homes these chips into a flex slot the size of the
-   margin box, centred vertically (gutterpress-agent setFlushFurniture,
-   `align-items: center`), and copies these declarations onto the chip. A
-   native margin box anchors a fit-content chip at the TOP of the band;
-   centred, a re-homed chip printed 0.24in from the trim, against
-   DriveThruRPG's 0.5in text minimum. The
-   declaration does nothing to a native margin box, which is not a flex item. */
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.875in)
+   is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
+   TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
+   print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
+   at the top of the band, 0.025in below the text block, so its foot is at
+   exactly 0.625in: on DriveThruRPG's 0.5in text minimum.
+
+   A shrunk margin box stays anchored at its slot's START edge on the block
+   axis, which is why the offset is a margin (`margin-top: 0.025in`). Shrinking the box leaves no hole
+   in the band: §1's `@page` background paints underneath, so the wall shows
+   through the rest of the slot on its own.
+
+   Nothing here clips: the faces are plain bordered boxes, so no glyph can be
+   cut. `align-self: flex-start`: on a page whose footer band a `.gp-flush`
+   pin frees, gutterpress re-homes these chips into a flex slot the size of
+   the margin box, centred vertically (gutterpress-agent setFlushFurniture,
+   `align-items: center`), and copies these declarations onto the chip;
+   anchored at the slot's top, it sits 0.025in below the text block there too. The declaration does nothing to a native margin box, which
+   is not a flex item.
+
+   THE TWO CHIPS.
+   - folio  P.121: paper-cream face, ink type, ink edge, hard ink shadow.
+   - chapter C.N / E.N: a stamped coupon. A solid face in the chapter's
+     colour (magenta-deep by default, repainted per chapter by the named pages
+     of §2c) with cream type (every face is >= 4.5:1,
+     reversed type at 10pt bold), the same ink edge and hard shadow. It replaces
+     a dashed magenta outline, which read as a debug box. (A dotted perforated
+     edge was tried and dropped: its corner join printed a stray notch.) */
 @page :left {
   @bottom-left {
-    /* folio sticker — civic register */
+    /* folio sticker: civic register */
     width: fit-content;
-    height: fit-content;
+    height: 0.225in;
+    box-sizing: border-box;
+    margin-top: 0.025in;
     align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
     font-family: var(--font-mono);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 2px calc(9px - 0.1em) 0 9px;
     color: var(--ink-dark);
     background: var(--paper-cream);
     border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
   }
   @bottom-right {
-    /* chapter sticker — stamped coupon */
+    /* chapter coupon */
     width: fit-content;
-    height: fit-content;
+    height: 0.225in;
+    box-sizing: border-box;
+    margin-top: 0.025in;
     align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
     font-family: var(--font-display);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 2.5px 8px;
-    color: var(--blood);
-    background: var(--paper-aged);
-    border: 1.5px dashed var(--hud-magenta);
+    padding: 2px calc(8px - 0.06em) 0 8px;
+    color: var(--paper-cream);
+    background: var(--brand-magenta-deep);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
   }
 }
 
 @page :right {
   @bottom-left {
-    /* chapter sticker — stamped coupon */
+    /* chapter coupon */
     width: fit-content;
-    height: fit-content;
+    height: 0.225in;
+    box-sizing: border-box;
+    margin-top: 0.025in;
     align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
     font-family: var(--font-display);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 2.5px 8px;
-    color: var(--blood);
-    background: var(--paper-aged);
-    border: 1.5px dashed var(--hud-magenta);
+    padding: 2px calc(8px - 0.06em) 0 8px;
+    color: var(--paper-cream);
+    background: var(--brand-magenta-deep);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
   }
   @bottom-right {
-    /* folio sticker — civic register */
+    /* folio sticker: civic register */
     width: fit-content;
-    height: fit-content;
+    height: 0.225in;
+    box-sizing: border-box;
+    margin-top: 0.025in;
     align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
     font-family: var(--font-mono);
-    font-size: 9pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 2px calc(9px - 0.1em) 0 9px;
     color: var(--ink-dark);
     background: var(--paper-cream);
     border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
   }
 }
+
+/* ── 2b. CITIZEN FILE RUNNING HEAD ──────────────────────────────────────────
+   The amber head in the outer top corner of a `citizen-file` page is text, so
+   it sits on a tab, never on the brick: a solid amber face (cream type 5.3:1,
+   display face 10pt bold, reversed) in the same ink edge and hard shadow as
+   the footer stickers. page-rules.css gives it its content and its page
+   margin (0.875in); the tab hangs from 0.625in below the sheet top
+   (DriveThruRPG's 0.5in text minimum, trim being 0.125in in), 17pt tall, so it
+   ends at the top of the text block. The top margin boxes anchor at the sheet edge, so
+   the offset is a margin. */
+@page citizen-file:right {
+  @top-right {
+    width: fit-content;
+    height: 17pt;
+    box-sizing: border-box;
+    margin-top: calc(0.625in + 1pt);
+    vertical-align: middle;
+    line-height: 1;
+    font-family: var(--font-display);
+    font-size: var(--fs-floor);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px calc(9px - 0.1em) 0 9px;
+    color: var(--paper-cream);
+    background: var(--amber);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
+  }
+}
+@page citizen-file:left {
+  @top-left {
+    width: fit-content;
+    height: 17pt;
+    box-sizing: border-box;
+    margin-top: calc(0.625in + 1pt);
+    vertical-align: middle;
+    line-height: 1;
+    font-family: var(--font-display);
+    font-size: var(--fs-floor);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px calc(9px - 0.1em) 0 9px;
+    color: var(--paper-cream);
+    background: var(--amber);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 1px;
+  }
+}
+
+/* ── 2c. CHAPTER CHIP COLOUR (named pages) ─────────────────────────────────
+   page-rules.css puts a chapter's pages on a named page, `dc-chip-<hue>`; this
+   repaints that page's coupon. The coupon is @bottom-right on a verso page and
+   @bottom-left on a recto one. Faces: cream type on each is >= 4.5:1
+   (blue 7.5, rust 5.2, violet 6.5, amethyst 7.0, amber 8.6; magenta 7.0). Unlayered, last,
+   so it beats the default face above, and a name outranks `:left`/`:right`. */
+@page dc-chip-blue:left      { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-chip-blue:right     { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-chip-rust:left      { @bottom-right { background: var(--rust); } }
+@page dc-chip-rust:right     { @bottom-left  { background: var(--rust); } }
+@page dc-chip-violet:left    { @bottom-right { background: var(--brand-violet); } }
+@page dc-chip-violet:right   { @bottom-left  { background: var(--brand-violet); } }
+@page dc-chip-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-chip-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-chip-amber:left     { @bottom-right { background: var(--amber-dark); } }
+@page dc-chip-amber:right    { @bottom-left  { background: var(--amber-dark); } }
 
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
@@ -243,8 +355,16 @@ figure {
    (top border + padding only) at a page bottom. Gluing the box's first child
    to the box start moves the whole start (and, via the heading's
    break-after: avoid, the heading) to the next page. break-inside: avoid is
-   NOT usable here: these callouts routinely run taller than a page. */
-.dc-dm-note > :first-child {
+   NOT usable here: these callouts routinely run taller than a page.
+
+   Scoped to a column run, the one place a callout may fragment
+   (`--dc-alert-break-inside: auto`, page-rules.css). At page level a callout
+   keeps its default `avoid` and moves whole, so it needs no glue, and the glue
+   was harmful there: a `break-before` on a box's first child propagates to the
+   box's own start edge, which then pulled the LAST block of the section above
+   it onto the callout's page (a three-line tail stranded on a page of its own
+   with 240px of room left on the page it came from). */
+:is(.gp-columns, [class*="gp-columns-"]) .dc-dm-note > :first-child {
   break-before: avoid;
 }
 

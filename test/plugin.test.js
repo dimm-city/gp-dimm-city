@@ -358,7 +358,7 @@ describe("declared wrapper markers", () => {
   });
 
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
-    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file" };
+    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {
       const { html, warnings } = render(`@page ${word} .dg-x\n\nx`);
       expect(html, word).toContain(`<div class="page ${cls} dg-x" data-page="${word}"`);
@@ -526,12 +526,14 @@ describe("declared specialty, learning path and skill", () => {
 
   describe("@skill", () => {
     test("each #### heading is its own card, with the author's classes and attributes on all of them", () => {
-      const src = doc("@skill {.dc-highlight .my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
+      const src = doc("@skill {.my-class} id=sk variant=2", "", card("First | T1"), "", card("Second | T2 | highlight"));
       const { html } = renderGp(src);
-      expect(count(html, /class="dc-skill-card dc-highlight my-class"/g)).toBe(2);
+      expect(count(html, /class="dc-skill-card my-class"/g)).toBe(2);
       expect(html).toContain('id="sk" data-variant="2" name="first"');
       expect(html).toContain('name="second"');
-      expect(html).toContain('<div class="dc-card-tab dc-highlight">');
+      expect(html).toContain('<div class="dc-card-tab">');
+      // `| highlight` is not a variant: no highlight class, and the word is not the name or the tier
+      expect(html).not.toContain('dc-highlight');
       expect(html).toContain('<h4 class="dc-tab-title">Second</h4>');
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
     });
@@ -1158,6 +1160,7 @@ describe("declared callout and dm-note", () => {
     dm: ["dc-dm-note", "Dream Master Note"],
     vibe: ["dc-vibe-callout", "Vibe"],
     origin: ["dc-origin-callout", "Origin"],
+    location: ["dc-location-callout", "Location"],
     visit: ["dc-visit-callout", "Visit"],
     example: ["dc-example-callout", "Example"],
   };
@@ -1265,6 +1268,23 @@ describe("declared callout and dm-note", () => {
 
 // Entry cards, the @field component and the bold-label shortcut onto it, and
 // the catalog section that holds a run of entries.
+describe("definition variants", () => {
+  test("@definition lucid and @definition surreal add their own class", () => {
+    for (const word of ["lucid", "surreal"]) {
+      const { html, warnings } = renderGp(`@definition ${word}\n\n#### Term\n\nMeaning.\n\n@end-definition`);
+      expect(warnings, word).toEqual([]);
+      expect(html, word).toContain(`<div class="dc-prose-panel dc-definition-block dc-definition-${word}"`);
+    }
+  });
+
+  test("a bare @definition has neither variant class", () => {
+    const { html } = renderGp("@definition\n\n**Tick:** a heartbeat.\n\n@end-definition");
+    expect(html).toContain('<div class="dc-prose-panel dc-definition-block"');
+    expect(html).not.toContain("dc-definition-lucid");
+    expect(html).not.toContain("dc-definition-surreal");
+  });
+});
+
 describe("entry cards", () => {
   const KINDS = ["augment", "treasure", "vehicle", "drug"];
   const ENTRIES = ["gear", ...KINDS];

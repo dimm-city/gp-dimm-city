@@ -2,17 +2,19 @@
 
 > **Update (Gutterpress #385).** Gutterpress's `pdfx.transparency:
 > preserve-text` flattens a page's artwork and keeps its text live, so the
-> shadow and tint changes below (T1, T3, T5, C1–C3, C5, C7, C8, K1–K4, O1, N1)
-> are translucent again. Text colours (T6/O2, C6, O3, the AP chip's text
-> shadow) stay pre-mixed: a translucent glyph prints opaque on a split page.
-> The wall tile stays opaque. The table records the opaque values for books
-> that keep Gutterpress's default, `flatten-page`.
+> poster shadow (`--shadow-ink`), the sticker and path-chip shadows, the rule
+> divider, the spray smudge, the pull-quote accent and the AP-chip and
+> outcome-key bevels are translucent again (see CHANGELOG, Unreleased).
+> Text colours stay pre-mixed: a translucent glyph prints opaque on a split
+> page. The wall tile stays opaque and `--wall-tone` is gone. The table
+> records the opaque values from the 1.7 series; some of those components have
+> since been redesigned.
 
 **Why this exists.** PDF/X-1a, the format DriveThruRPG accepts for print, has no transparency. Ghostscript flattens any page that uses it into a single raster image. That page loses its live text and embedded fonts, and gutterpress's `pdfx.blackText: k-only` rewrite (black text on the black plate only) can't reach its text. This package used transparency in 26 places: an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`. On the Field Guide, **185 of 232 pages** came out image-only.
 
 Every one of those uses is now opaque. Each colour is **pre-composited** with `color-mix()`: it is the colour the transparency produced on the surface it sits on. The brick wall is an opaque tile baked the same way. This document lists every change, so the books can be checked visually against it.
 
-A test enforces it: `test/conventions.test.js` → *paint nothing transparent (PDF/X-1a)* fails on any `rgba()`/`hsla()`, `opacity` below 1, 8-digit hex, blend mode, transparent gradient stop or blurred shadow in the package's stylesheets.
+Tests enforce what still matters: `test/conventions.test.js` → *keep text opaque (PDF/X-1a)* fails on a translucent text colour or `opacity` below 1, and *use no repeating gradient (PDF/X)* on any repeating gradient.
 
 ## How to verify a book
 
@@ -49,7 +51,6 @@ A test enforces it: `test/conventions.test.js` → *paint nothing transparent (P
 | C9 | Tape dash pattern (`.dc-tape::after`) (`components/chrome.css`) | `background: repeating-linear-gradient(90deg, var(--crimson) 0 6px, transparent 6px 10px); opacity: 0.85;` | `background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);` | the tape fill | Tape dividers: the dashed crimson rule after the label. |
 | K1 | Skill-card body shadow (`.dc-card-inner::before`) (`components/cards.css`) | `background: rgba(0, 0, 0, 0.28); clip-path: var(--dc-skill-body-shape);` | `background: color-mix(in srgb, #000 28%, var(--wall-tone)); clip-path: var(--dc-skill-body-shape);` | the brick wall | Every skill card: the offset shadow behind the body (all ten skill trees; Field Guide specialty chapters). |
 | K2 | Skill-card corner mark (`.dc-card-body::before`) (`components/cards.css`) | `background: var(--dc-card-body-mark); opacity: 0.15;` | `background: color-mix(in srgb, var(--dc-card-body-mark) 15%, var(--dc-card-surface));` | the card surface | The faint tilted dash at a skill card body's top right. |
-| K3 | Highlight card glow (`.dc-highlight-body`) (`components/cards.css`) | `linear-gradient(to bottom, rgba(180, 40, 40, 0.10) 0%, rgba(180, 40, 40, 0) 45%),` | `linear-gradient(to bottom, color-mix(in srgb, rgb(180 40 40) 10%, var(--dc-card-surface)) 0%, var(--dc-card-surface) 45%),` | the card surface | Highlighted skill cards (`\| highlight`, `{.dc-highlight}`): the faint red wash at the top. |
 | K4 | AP chip bevel and shadows (`.dc-ap`) (`components/cards.css`) | `inset 0 1px 0 rgba(255, 255, 255, 0.15), 2px 2px 0 rgba(0, 0, 0, 0.10), 3px 3px 6px rgba(0, 0, 0, 0.08); text-shadow: 0 1px 0 rgba(0, 0, 0, 0.20);` | `inset 0 1px 0 color-mix(in srgb, #fff 15%, var(--dc-ap-bg)), 2px 2px 0 color-mix(in srgb, #000 10%, var(--dc-card-surface)); text-shadow: 0 1px 0 colo…` | the chip fill (bevel, text shadow) and the card surface (drop shadow) | Every AP chip: the top bevel line, the hard 2px shadow, the text shadow. The soft 6px blurred shadow is REMOVED (a blur is transparency by nature). |
 | O1 | Outcome key bevel (`.dc-outcome-key`) (`components/data.css`) | `inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.18);` | `inset 0 1px 0 color-mix(in srgb, #fff 12%, var(--row-color, var(--ink))), inset 0 -1px 0 color-mix(in srgb, #000 18%, var(--row-color, var(--ink)));` | the key's own fill | Outcome ladders (Variant Gallery Outcome ladder; skill cards with outcome tables): the 1px light top and dark bottom lines on each roll key. |
 | O2 | Outcome result name (`.dc-outcome-key .dc-outcome-name`) (`components/data.css`) | `color: var(--dc-outcome-name-color); opacity: var(--dc-outcome-name-opacity);` | `color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink))); opacity: var(--dc-outcome-name-opacity);` | the key's own fill | Outcome ladders: the small result word under each roll (TRIUMPH, SUCCESS…). |
@@ -152,5 +153,5 @@ There are two fixes, and both belong to the book:
 
 - [ ] Design guide: Variant Gallery, chapter openers, ch.5 components: shadows read as shadows, tints unchanged.
 - [ ] Field Guide: a skill-tree spread (cards, AP chips, path stickers), a pull quote, a tape divider, the credits page.
-- [ ] `bun test`: *paint nothing transparent (PDF/X-1a)* passes.
+- [ ] `bun test`: *keep text opaque (PDF/X-1a)* and *use no repeating gradient (PDF/X)* pass.
 - [ ] PDF/X build: pages without alpha art keep live text (`pdftotext`).
