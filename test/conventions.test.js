@@ -131,6 +131,9 @@ describe("stylesheets", () => {
       [/#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])/, "a hex colour with alpha"],
       [/mix-blend-mode\s*:\s*(?!normal)|background-blend-mode\s*:\s*(?!normal)/, "a blend mode"],
       [/gradient\([^;]*\btransparent\b/, "a transparent gradient stop"],
+      // PDF/X drops a repeating gradient outright (the tape's dashes vanished)
+      // and a preserve-text build flattens its page (#41): tile an ordinary one
+      [/repeating-(linear|radial|conic)-gradient\(/, "a repeating gradient"],
       [/(box|text)-shadow\s*:[^;]*?-?\d[\d.]*(px|pt)\s+-?\d[\d.]*(px|pt)\s+[1-9][\d.]*(px|pt)\s/, "a blurred shadow"],
     ];
     const found = [];
