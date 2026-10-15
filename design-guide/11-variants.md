@@ -469,7 +469,7 @@ Once per round, outside your turn, you exploit a target in reach:
 
 ## Specialty intros
 
-`@specialty-intro` inside each `@specialty`: the same panel, ten title bands. Each band is the specialty's own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Proxy and Gutterdruid. Intro text is the opening of each Field Guide profile.
+`@specialty-intro` inside each `@specialty`: the same panel, ten title bands. Each band is the specialty's own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Technosorcerer and Gutterdruid. Intro text is the opening of each Field Guide profile.
 
 <div class="dg-stage">
 
@@ -819,7 +819,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers, and `@callout example` makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -837,6 +837,9 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
+
+> [!LOCATION]
+> The Undercroft: three flooded levels under the old ArkD tower.
 
 > [!VISIT]
 > The Neon Bazaar doesn't close.

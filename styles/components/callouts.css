@@ -88,7 +88,7 @@
    .dc-alert base + .dc-alert-label label chrome + thin variant classes.
    GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros.
 
-   One shell, seven registers, told apart by SILHOUETTE, FILL VALUE, EDGE and
+   One shell, eight registers, told apart by SILHOUETTE, FILL VALUE, EDGE and
    LABEL before a word is read, in colour and in grayscale:
 
      register  fill (value)       silhouette (meaning)          edge / grit          label
@@ -104,6 +104,8 @@
                (light, flat)      two opposite corners (world)  tape strip on top
      origin    warm paper (light) torn bottom edge + dog-ear    rust rail, worn      crimson rubber stamp
                                   (backstory)                   (dashed) stamp ring
+     location  cool map paper     the origin's document         teal rail, worn      deep-teal rubber stamp
+               (light)            (a place written up)          (dashed) stamp ring
      visit     fungi green (dark) wobbly organic polygon with   none                 pin glyph + caps
                                   a signpost point (a place)
      example   cream (light)      ticket: a V notch in the     cyan rail            taped-on tag
@@ -318,7 +320,8 @@
 }
 
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────
-   Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp. */
+   Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp.
+   Location (below) is the same document in the map's teal ink. */
 .dc-origin-callout {
   --dc-alert-bg: color-mix(in srgb, var(--surface-orange-tint) 55%, var(--paper-cream));
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
@@ -330,12 +333,28 @@
   --dc-alert-label-spacing: 0.12em;
   --dc-alert-label-margin: var(--space-md);
 }
-.dc-origin-callout {
+/* ── Variant: Location Callout — a place, written up like a dossier page ───
+   Origin's document (dog-eared corner, torn foot, rubber stamp) on cool map
+   paper: a teal rail and a deep-teal stamp, so a place reads apart from a
+   backstory in colour and in value, and from visit's green signpost by
+   silhouette. */
+.dc-location-callout {
+  --dc-alert-bg: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
+  --dc-alert-border: var(--hud-blue);
+  --dc-alert-border-width: 3px;
+  /* the origin's document: a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
+  --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
+  --dc-accent-ink: var(--hud-blue-dark);  /* 7.5:1 on the map paper */
+  --dc-alert-label-color: var(--hud-blue-dark);
+  --dc-alert-label-spacing: 0.12em;
+  --dc-alert-label-margin: var(--space-md);
+}
+:is(.dc-origin-callout, .dc-location-callout) {
   position: relative;
   padding-top: 14pt;  /* dog-ear 16px + 2pt */
 }
 /* The dog-ear fold: a solid triangle over the cut corner. */
-.dc-origin-callout::after {
+:is(.dc-origin-callout, .dc-location-callout)::after {
   content: "";
   position: absolute;
   top: 0;
@@ -345,10 +364,10 @@
   background: var(--paper-stain);
   clip-path: polygon(0 0, 0 100%, 100% 100%);
 }
-.dc-origin-callout .dc-alert-label {
+:is(.dc-origin-callout, .dc-location-callout) .dc-alert-label {
   padding: 1px 9px;
-  border: 2px solid var(--blood);
-  outline: 1px dashed var(--blood);  /* a worn, broken outer ring */
+  border: 2px solid currentColor;
+  outline: 1px dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
   margin-left: 3px;
   transform: rotate(-2deg);

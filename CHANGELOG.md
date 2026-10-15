@@ -33,6 +33,9 @@ little grit.
   left page and six the right, in aligned rows of equal height. Each card is a
   poster: portrait on top in an ink mat cut to its specialty's silhouette,
   name, tagline, pitch and an index chip. Snippet *Specialty Catalog Page*.
+- **`@callout location` and `> [!LOCATION]`**: a place written up, drawn as
+  the origin callout's document (dog-eared corner, torn foot, worn rubber
+  stamp) in map teal: cool paper, a teal rail, a deep-teal stamp.
 - **`@definition lucid` and `@definition surreal`**: the two roll states drawn
   as opposites. Lucid is a light, machined, upright sheet in a blue frame;
   Surreal is an inverted violet-black sheet with a skewed torn edge,
@@ -167,7 +170,7 @@ little grit.
 - **Specialties are told apart.** The title bands (path banner and specialty-intro
   title) are each specialty's own signal colour with its own register: an LED rim
   and a rule of LED dots on the tech specialties, a facet plane on the magic ones, a
-  hazard-tape rule on Streetwarden, a torn bottom edge on Proxy and Gutterdruid, all
+  hazard-tape rule on Streetwarden, a torn bottom edge on Technosorcerer and Gutterdruid, all
   drawn as solid fills, dotted/dashed borders and clip-paths (no gradient, so they
   survive PDF/X). New tokens `--dc-band-rule`, `-rule-h`, `-tick`, `-tick-style`,
   `-tick-w`, `-rule-skew`, `-rule-bleed`, `-facet`, `-facet-width`,
@@ -181,10 +184,16 @@ little grit.
   blue with a drawn down triangle, increased blood with a drawn up triangle (CSS
   shapes, not font glyphs), VAR deep magenta (cream on the bright one was 4.06:1),
   special amber with cream type.
-- **Technosorcerer and Generalist leave violet.** Violet is the world's colour
-  (lore, vibe, cabal, treasure), so the Technosorcerer is now electric indigo
-  (`--signal-indigo`) and the Generalist cool slate (`--crystal-slate`), with new
-  mid and dark tones. Proxy's band is a shade lighter so ink on it holds 4.5:1.
+- **Proxy and Technosorcerer swap looks; Generalist leaves violet.** The
+  Proxy is now electric indigo (`--signal-indigo`) with the tech-and-magic
+  register (a centre gate notch, an LED rule, a facet plane), and the
+  Technosorcerer takes the scorch-orange landfill-and-magic register (a burnt
+  corner, a torn foot, a scorch patch, aged-paper card) that suits ritual on
+  scrap. `--proxy-*` and `--technosorcerer-*` swap values to match, and every
+  skill card, learning path, intro and specialty card follows. Violet is the
+  world's colour (lore, vibe, cabal, treasure), so the Generalist is cool slate
+  (`--crystal-slate`). The Technosorcerer's band is a shade lighter so ink on it
+  holds 4.5:1.
 - **New neutrals.** `--paper-form` (the `choose` sheet) and `--paper-zine` (the
   fiction excerpt and shard sheets).
 - **Ink coverage under 280%.** Measured through the build's own PDF/X

@@ -43,6 +43,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `> [!VIBE]` | GFM alert + DC plugin | `.dc-vibe-callout` |
 | `> [!DM]` | GFM alert + DC plugin | `.dc-dm-note` |
 | `> [!ORIGIN]` | GFM alert + DC plugin | `.dc-origin-callout` |
+| `> [!LOCATION]` | GFM alert + DC plugin | `.dc-location-callout` |
 | `> [!VISIT]` | GFM alert + DC plugin | `.dc-visit-callout` |
 | `> [!NOTE]` | GFM alert | `.dc-note` |
 | `> [!WARNING]` | GFM alert | `.dc-note.warning` |
@@ -52,10 +53,10 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 ## Supported Components
 
 ### Callouts & Notes
-- `.dc-alert` — the one callout shell: seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill value, edge and label
+- `.dc-alert` — the one callout shell: eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill value, edge and label
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-visit-callout`, `.dc-example-callout`
+- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-location-callout`, `.dc-visit-callout`, `.dc-example-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
 
@@ -72,6 +73,7 @@ Use this to choose the right callout type before reaching for a class name.
    └── A worked example              → dc-example-callout  (cyan rail, taped-on label)
    └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one violet edge, italic)
    └── Backstory, in second person   → dc-origin-callout   (warm paper, torn edge, dog-ear, rust rail, worn crimson stamp)
+   └── A place, written up           → dc-location-callout (map paper, torn edge, dog-ear, teal rail, worn teal stamp)
    └── A place, present tense        → dc-visit-callout    (wobbly fungi-green signpost)
    └── Rules / mechanics             → continue ↓
 
@@ -220,7 +222,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
 | `--brand-violet` | `#7030b8` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
-| `--signal-indigo` | `#4430e0` | Electric indigo — technosorcerer accent |
+| `--signal-indigo` | `#4430e0` | Electric indigo — proxy accent |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -391,12 +393,12 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 | Specialty | Accent | Mid | Dark |
 |---|---|---|---|
 | Augmerc | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
-| Proxy | `--orange` (`#d4500a`) | `#7a3008` | `#4c290f` |
+| Technosorcerer | `--orange` (`#d4500a`) | `#7a3008` | `#4c290f` |
 | Streetwarden | `#4db840` | `#347828` | `#294c1f` |
 | Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#394017` |
 | Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
 | Wirephreak | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
-| Technosorcerer | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
+| Proxy | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
 | Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
 | Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |

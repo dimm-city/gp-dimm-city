@@ -46,7 +46,7 @@
 The public API for `.dc-alert` variants is: `--dc-alert-bg`, `--dc-alert-border`,
 `--dc-alert-fg`, `--dc-alert-label-color`, plus the edge and label chrome
 (`--dc-alert-frame`, `--dc-alert-label-bg`, …). Each of the
-seven registers (note, warning, dm, vibe, origin, visit, example) differs from
+eight registers (note, warning, dm, vibe, origin, location, visit, example) differs from
 the others in silhouette, fill value, edge and label, so it reads in grayscale
 as well as in colour; a book's chapter never sets these variant tokens. Direct property overrides (e.g. `margin`,
 `border-left-width`, `width`) are acceptable on individual variants when the value is

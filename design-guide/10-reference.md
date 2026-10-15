@@ -25,8 +25,8 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Options |
 |---|---|---|
 | `@lede` | `@end-lede` | — |
-| `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `VISIT` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `visit` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
+| `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `LOCATION` `VISIT` `FLAVOR` `PULLQUOTE` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
 | `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="…"` |
 | `@definition [lucid\|surreal]` | `@end-definition` | a term, a run of `#### Term` entries (a glossary), or `####` + `---` + body; `lucid` and `surreal` are the two roll states, set as opposites |

@@ -922,8 +922,8 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 </div>
 <p>Tokens: <code>--dc-pullquote-accent</code>, <code>--dc-pullquote-accent-soft</code>, <code>--dc-pullquote-bg</code>.</p>
 <h2>Alerts</h2>
-<p>One shell, seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is <code>[!TYPE]</code>, for the first six — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the <code>@callout</code> block below.</p>
-<pre><code class="dg-split language-markdown" data-source-range="86:106">&gt; [!NOTE]
+<p>One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is <code>[!TYPE]</code>, for the first seven — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the <code>@callout</code> block below.</p>
+<pre><code class="dg-split language-markdown" data-source-range="86:109">&gt; [!NOTE]
 &gt; A character may hold no more than one Signature Augment at a time.
 
 &gt; [!WARNING]
@@ -938,6 +938,9 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 &gt; [!ORIGIN]
 &gt; You didn't choose the street — the street chose you.
 
+&gt; [!LOCATION]
+&gt; The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
+
 &gt; [!VISIT]
 &gt; The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
 
@@ -945,72 +948,81 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
-<p data-source-range="111:113">A character may hold no more than one Signature Augment at a time.</p>
+<p data-source-range="114:116">A character may hold no more than one Signature Augment at a time.</p>
 </div>
 <div class="dc-alert dc-note warning"><span class="dc-alert-label">Warning</span>
-<p data-source-range="114:116">Trauma Patches stabilize a dying character but do not restore HP.</p>
+<p data-source-range="117:119">Trauma Patches stabilize a dying character but do not restore HP.</p>
 </div>
 <div class="dc-alert dc-dm-note"><span class="dc-alert-label">Dream Master Note</span>
-<p data-source-range="117:119">If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack and move on.</p>
+<p data-source-range="120:122">If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack and move on.</p>
 </div>
 <div class="dc-alert dc-vibe-callout"><span class="dc-alert-label">Vibe</span>
-<p data-source-range="120:122">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
+<p data-source-range="123:125">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
 </div>
 <div class="dc-alert dc-origin-callout"><span class="dc-alert-label">Origin</span>
-<p data-source-range="123:125">You didn't choose the street — the street chose you.</p>
+<p data-source-range="126:128">You didn't choose the street — the street chose you.</p>
+</div>
+<div class="dc-alert dc-location-callout"><span class="dc-alert-label">Location</span>
+<p data-source-range="129:131">The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.</p>
 </div>
 <div class="dc-alert dc-visit-callout"><span class="dc-alert-label">Visit</span>
-<p data-source-range="126:128">The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.</p>
+<p data-source-range="132:134">The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.</p>
 </div>
 </div>
 <h3>Which alert</h3>
 <table>
-<thead data-source-range="134:135">
-<tr data-source-range="134:135">
+<thead data-source-range="140:141">
+<tr data-source-range="140:141">
 <th>Type</th>
 <th>Who it is for</th>
 <th>Register</th>
 <th>Looks like</th>
 </tr>
 </thead>
-<tbody data-source-range="136:143">
-<tr data-source-range="136:137">
+<tbody data-source-range="142:150">
+<tr data-source-range="142:143">
 <td><code>NOTE</code></td>
 <td>Players</td>
 <td>A rules clarification</td>
 <td>A calm HUD-blue panel with a blue rail and small, even machined chamfers</td>
 </tr>
-<tr data-source-range="137:138">
+<tr data-source-range="143:144">
 <td><code>WARNING</code></td>
 <td>Players</td>
 <td>A rule with consequences</td>
 <td>Hazard: an octagonal sign plate, a light cream sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label</td>
 </tr>
-<tr data-source-range="138:139">
+<tr data-source-range="144:145">
 <td><code>DM</code></td>
 <td>The Dream Master only</td>
 <td>Guidance, hooks, adjudication</td>
 <td>An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right</td>
 </tr>
-<tr data-source-range="139:140">
+<tr data-source-range="145:146">
 <td><code>VIBE</code></td>
 <td>Players</td>
 <td>Atmosphere and narrative voice, full width</td>
 <td>A barely violet sheet with long shallow diagonal corners, one violet edge all round, a strip of tape on top, italic, with a violet-edged label chip</td>
 </tr>
-<tr data-source-range="140:141">
+<tr data-source-range="146:147">
 <td><code>ORIGIN</code></td>
 <td>Players, in second person</td>
 <td>Backstory addressed to the character</td>
 <td>Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label</td>
 </tr>
-<tr data-source-range="141:142">
+<tr data-source-range="147:148">
+<td><code>LOCATION</code></td>
+<td>Players</td>
+<td>A place written up: what it is, who holds it, how to get in</td>
+<td>Origin’s document in the map’s teal: cool map paper with a torn bottom edge, a dog-eared corner, a teal rail and a worn deep-teal stamp label</td>
+</tr>
+<tr data-source-range="148:149">
 <td><code>VISIT</code></td>
 <td>Players</td>
 <td>A location, present tense, before an encounter</td>
 <td>A fungi-green signpost with a wobbly, organic outline and a map-pin label</td>
 </tr>
-<tr data-source-range="142:143">
+<tr data-source-range="149:150">
 <td><code>@callout example</code></td>
 <td>Players</td>
 <td>A worked example (a block only: there is no <code>[!EXAMPLE]</code>)</td>
@@ -1018,11 +1030,11 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 </tr>
 </tbody>
 </table>
-<p>Every cut edge is padded clear of the text, and every variant sets <code>--dc-accent-ink</code>, the text-safe ink of its own accent, so a <code>ROLL THE DIE!</code> inside takes the box’s colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel’s accent, but it never repaints an alert: the register is the same on every page.</p>
+<p>Every cut edge is padded clear of the text, and every variant sets <code>--dc-accent-ink</code>, the text-safe ink of its own accent, so a <code>ROLL THE DIE!</code> inside takes the box’s colour. Every body is italic except the example’s, which is upright (the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel’s accent, but it never repaints an alert: the register is the same on every page.</p>
 <p>Tokens shared by the family: <code>--dc-alert-bg</code>, <code>--dc-alert-border</code>, <code>--dc-alert-fg</code>, <code>--dc-alert-label-color</code>, <code>--dc-alert-border-width</code>, and, for the frame and label chrome, <code>--dc-alert-frame</code>, <code>--dc-alert-label-bg</code>, <code>--dc-alert-label-pad</code>.</p>
 <h2>Callout block</h2>
 <p>The multi-paragraph form of an alert. A variant word after <code>@callout</code> picks the register; <code>label</code> replaces the default label.</p>
-<pre><code data-source-range="153:162" class="language-markdown">@callout warning label=&quot;Heat is shared&quot;
+<pre><code data-source-range="160:169" class="language-markdown">@callout warning label=&quot;Heat is shared&quot;
 
 **Heat is shared, not personal.** When any member of the crew draws Corporate attention, the whole crew's Heat track ticks up.
 
@@ -1032,25 +1044,25 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-alert dc-note warning" data-callout="warning" data-label="Heat is shared" data-source-range="167:168"><span class="dc-alert-label">Heat is shared</span>
+<div class="dc-alert dc-note warning" data-callout="warning" data-label="Heat is shared" data-source-range="174:175"><span class="dc-alert-label">Heat is shared</span>
 <p><strong>Heat is shared, not personal.</strong> When any member of the crew draws Corporate attention, the whole crew’s Heat track ticks up.</p>
 <p>At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every public roll carries a complication.</p>
 </div></div>
 <table>
-<thead data-source-range="177:178">
-<tr data-source-range="177:178">
+<thead data-source-range="184:185">
+<tr data-source-range="184:185">
 <th>Option</th>
 <th>Values</th>
 <th>Default</th>
 </tr>
 </thead>
-<tbody data-source-range="179:181">
-<tr data-source-range="179:180">
+<tbody data-source-range="186:188">
+<tr data-source-range="186:187">
 <td>a variant word (<code>@callout vibe</code>)</td>
-<td><code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>visit</code> <code>example</code></td>
+<td><code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code></td>
 <td><code>note</code></td>
 </tr>
-<tr data-source-range="180:181">
+<tr data-source-range="187:188">
 <td><code>label</code></td>
 <td>any text</td>
 <td>the variant’s label</td>
@@ -1059,7 +1071,7 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 </table>
 <h2>Worked example</h2>
 <p><code>@callout example</code> is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a cyan rail, a taped-on label that says <em>Example</em>, upright body text. Speech lines stay as <code>&gt;</code> lines inside it. (A bare <code>&gt;</code> blockquote is reserved for a flavor line.) A longer example can be a <code>@section</code>; this is for the short ones that sit inside a section.</p>
-<pre><code data-source-range="186:195" class="language-markdown">@callout example
+<pre><code data-source-range="193:202" class="language-markdown">@callout example
 
 The Dream Master: &quot;The guard turns toward you. What do you do?&quot;
 
@@ -1069,14 +1081,14 @@ You: &quot;I flip the noodle cart into the doorway.&quot; That is risky, so you 
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="200:201"><span class="dc-alert-label">Example</span>
+<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="207:208"><span class="dc-alert-label">Example</span>
 <p>The Dream Master: “The guard turns toward you. What do you do?”</p>
 <p>You: “I flip the noodle cart into the doorway.” That is risky, so you <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> and get a 14: a Success. The cart blocks the door.</p>
 </div></div>
 <p>A callout can also float beside the text: add <code>.dc-sidebar</code> (see <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>).</p>
 <h2>Dream Master note</h2>
 <p><code>@dm-note</code> is shorthand for <code>@callout dm</code>, for the longer GM asides — scene setups, adjudication, design notes.</p>
-<pre><code data-source-range="216:225" class="language-markdown">@dm-note label=&quot;Running the Setup&quot;
+<pre><code data-source-range="223:232" class="language-markdown">@dm-note label=&quot;Running the Setup&quot;
 
 The fixer offering this job doesn't know it's bait — they're a cut-out, paid to pass the contract along and ask no questions.
 
@@ -1086,13 +1098,13 @@ If the players investigate before accepting, they can smell the trap with a Stre
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-alert dc-dm-note" data-callout="dm" data-label="Running the Setup" data-source-range="230:231"><span class="dc-alert-label">Running the Setup</span>
+<div class="dc-alert dc-dm-note" data-callout="dm" data-label="Running the Setup" data-source-range="237:238"><span class="dc-alert-label">Running the Setup</span>
 <p>The fixer offering this job doesn’t know it’s bait — they’re a cut-out, paid to pass the contract along and ask no questions.</p>
 <p>If the players investigate before accepting, they can smell the trap with a Streetwise roll, DC 14.</p>
 </div></div>
 <h2>Tape</h2>
 <p>A strip of masking tape for a section break or a label between groups — tiers of NPCs, parts of a list: tan, torn at both ends, ink edges top and bottom, an ink label.</p>
-<pre><code data-source-range="245:248" class="language-markdown">&lt;div class=&quot;dc-tape&quot;&gt;Operators&lt;/div&gt;
+<pre><code data-source-range="252:255" class="language-markdown">&lt;div class=&quot;dc-tape&quot;&gt;Operators&lt;/div&gt;
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
@@ -1101,7 +1113,7 @@ If the players investigate before accepting, they can smell the trap with a Stre
 <p>Tokens: <code>--dc-tape-bg</code>, <code>--dc-tape-border</code>, <code>--dc-tape-color</code>, <code>--dc-tape-shape</code>. Add <code>dc-flush</code> (<code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code>) to run it edge to edge.</p>
 <h2>Rule</h2>
 <p>A plain <code>---</code> between entries is a thin red rule — the separator for gear lists and NPC entries.</p>
-<pre><code data-source-range="263:270" class="language-markdown">Trauma Kit × 2
+<pre><code data-source-range="270:277" class="language-markdown">Trauma Kit × 2
 
 ---
 
@@ -1110,12 +1122,12 @@ Signal Jammer (single-use)
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
 <p>Trauma Kit × 2</p>
-<hr data-source-range="277:278">
+<hr data-source-range="284:285">
 <p>Signal Jammer (single-use)</p>
 </div>
 <h2>Tags and class tags</h2>
 <p>Inline chips. <code>.dc-tag</code> is a keyword or cost label: a hard-edged chip with an ink hairline, in mono caps (tokens <code>--dc-tag-bg</code>, <code>--dc-tag-fg</code>, <code>--dc-tag-border</code>); <code>.dc-classtag.&lt;specialty&gt;</code> is a specialty identity with that specialty’s dot. These are raw HTML spans — the one place the system asks for it inline.</p>
-<pre><code data-source-range="287:292" class="language-markdown">&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt; &lt;span class=&quot;dc-tag&quot;&gt;Reach 2&lt;/span&gt; &lt;span class=&quot;dc-tag&quot;&gt;Loud&lt;/span&gt;
+<pre><code data-source-range="294:299" class="language-markdown">&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt; &lt;span class=&quot;dc-tag&quot;&gt;Reach 2&lt;/span&gt; &lt;span class=&quot;dc-tag&quot;&gt;Loud&lt;/span&gt;
 
 &lt;span class=&quot;dc-classtag augmerc&quot;&gt;Augmerc&lt;/span&gt; &lt;span class=&quot;dc-classtag wirephreak&quot;&gt;Wirephreak&lt;/span&gt;
 </code></pre>
@@ -1135,7 +1147,7 @@ Signal Jammer (single-use)
 </div>
 <h2>Roll the die</h2>
 <p>The text <code>ROLL THE DIE!</code> in prose is picked out automatically, and so are <code>ROLL A DIE!</code>, <code>ROLLS A DIE!</code> and <code>ROLLING THE DIE!</code>: uppercase, with the exclamation mark, as written. It keeps the font and size of the text around it and is set bold, in a contrasting colour, and underlined. Inside a code span, raw HTML or a heading it is left alone.</p>
-<pre><code data-source-range="316:319" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.
+<pre><code data-source-range="323:326" class="language-markdown">When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A trap may say ROLL A DIE! or ROLLING THE DIE! instead.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage dg-on-paper">
@@ -2193,7 +2205,7 @@ exports[`rendered output 07-specialty-system.md matches its snapshot 1`] = `
 <h2>Specialty</h2>
 <p><code>@specialty .&lt;name&gt;</code> is the parent scope. It emits nothing visible itself; every component inside it reads its clip-path silhouettes and accent color. Ten families ship:</p>
 <p><code>augmerc</code> · <code>proxy</code> · <code>streetwarden</code> · <code>gutterdruid</code> · <code>cybersurgeon</code> · <code>wirephreak</code> · <code>technosorcerer</code> · <code>etherlock</code> · <code>dualist</code> · <code>generalist</code></p>
-<p>The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Technosorcerer’s gate), the Proxy is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.</p>
+<p>The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Proxy’s gate), the Technosorcerer is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.</p>
 <pre><code data-source-range="19:26" class="language-markdown">@specialty .augmerc
 
 … intro, art, learning paths, skills …
@@ -2202,7 +2214,7 @@ exports[`rendered output 07-specialty-system.md matches its snapshot 1`] = `
 </code></pre>
 <p>Opening a new <code>@specialty</code> closes the previous one, along with every path and skill inside it. <code>@end-specialty</code> does the same, and so does the next <code>@chapter</code>, <code>@page</code> or <code>@section</code>: a specialty cannot straddle a page, so put a page break inside one with <code>@page-break</code>. A specialty is written one of two ways, <code>@specialty augmerc</code> or <code>@specialty .augmerc</code>, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: <code>--spec-accent</code>, <code>--spec-mid</code>, <code>--spec-dark</code>, <code>--spec-band</code> and <code>--spec-on-band</code> (the title-band fill and its type), <code>--spec-chip-bg</code>, <code>--spec-chip-fg</code> and <code>--spec-chip-edge</code> (the tier pill), <code>--dc-skill-tab-shape</code>, <code>--dc-skill-body-shape</code>, <code>--dc-path-title-shape</code>, <code>--dc-path-shell-clip</code>, <code>--dc-specialty-card-shell-shape</code>, <code>--dc-specialty-intro-title-shape</code>, <code>--dc-specialty-intro-clip</code>.</p>
 <h2>Specialty intro</h2>
-<p>The title-banded panel on a specialty’s first page: the <code>##</code> name, the pitch, and a <code>###</code> spec tweak. The band is the specialty’s own signal colour, so ten specialties read as ten colours and ten values at a glance, and each carries its own register: the tech specialties an LED rim and a rule of LED dots, the magic ones a faceted plane, Streetwarden a hazard-tape rule, and Proxy and Gutterdruid a torn bottom edge with no rule.</p>
+<p>The title-banded panel on a specialty’s first page: the <code>##</code> name, the pitch, and a <code>###</code> spec tweak. The band is the specialty’s own signal colour, so ten specialties read as ten colours and ten values at a glance, and each carries its own register: the tech specialties an LED rim and a rule of LED dots, the magic ones a faceted plane, Streetwarden a hazard-tape rule, and Technosorcerer and Gutterdruid a torn bottom edge with no rule.</p>
 <pre><code data-source-range="33:50" class="language-markdown">@specialty .augmerc
 
 @specialty-intro
@@ -3278,12 +3290,12 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="27:28">
 <td><code>&gt; [!TYPE]</code></td>
 <td>end of blockquote</td>
-<td><code>NOTE</code> <code>WARNING</code> <code>DM</code> <code>VIBE</code> <code>ORIGIN</code> <code>VISIT</code> <code>FLAVOR</code> <code>PULLQUOTE</code></td>
+<td><code>NOTE</code> <code>WARNING</code> <code>DM</code> <code>VIBE</code> <code>ORIGIN</code> <code>LOCATION</code> <code>VISIT</code> <code>FLAVOR</code> <code>PULLQUOTE</code></td>
 </tr>
 <tr data-source-range="28:29">
 <td><code>@callout</code></td>
 <td><code>@end-callout</code></td>
-<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>visit</code> <code>example</code> (<code>@callout vibe</code>); <code>label=&quot;…&quot;</code>; <code>.dc-sidebar</code> floats it</td>
+<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code> (<code>@callout vibe</code>); <code>label=&quot;…&quot;</code>; <code>.dc-sidebar</code> floats it</td>
 </tr>
 <tr data-source-range="29:30">
 <td><code>@dm-note</code></td>
@@ -4114,7 +4126,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </tbody>
 </table>
 <h2>Specialty intros</h2>
-<p><code>@specialty-intro</code> inside each <code>@specialty</code>: the same panel, ten title bands. Each band is the specialty’s own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Proxy and Gutterdruid. Intro text is the opening of each Field Guide profile.</p>
+<p><code>@specialty-intro</code> inside each <code>@specialty</code>: the same panel, ten title bands. Each band is the specialty’s own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Technosorcerer and Gutterdruid. Intro text is the opening of each Field Guide profile.</p>
 <div class="dg-stage">
 <div class="dc-specialty augmerc" data-source-range="475:476"><div class="dc-specialty-intro" data-source-range="477:478"><h2>Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.</p>
@@ -4225,7 +4237,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><span class="dc-classtag augmerc">Augmerc</span> <span class="dc-classtag proxy">Proxy</span> <span class="dc-classtag streetwarden">Streetwarden</span> <span class="dc-classtag gutterdruid">Gutterdruid</span> <span class="dc-classtag cybersurgeon">Cybersurgeon</span> <span class="dc-classtag wirephreak">Wirephreak</span> <span class="dc-classtag technosorcerer">Technosorcerer</span> <span class="dc-classtag etherlock">Etherlock</span> <span class="dc-classtag dualist">Dualist</span> <span class="dc-classtag generalist">Generalist</span></p>
 </div>
 <h2>Alerts and callouts</h2>
-<p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same six registers, and <code>@callout example</code> makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.</p>
+<p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same seven registers, and <code>@callout example</code> makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.</p>
 <div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
 <p data-source-range="825:827">A character may hold no more than one Signature Augment at a time.</p>
@@ -4242,51 +4254,54 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-alert dc-origin-callout"><span class="dc-alert-label">Origin</span>
 <p data-source-range="837:839">You didn't choose the street — the street chose you.</p>
 </div>
-<div class="dc-alert dc-visit-callout"><span class="dc-alert-label">Visit</span>
-<p data-source-range="840:842">The Neon Bazaar doesn't close.</p>
+<div class="dc-alert dc-location-callout"><span class="dc-alert-label">Location</span>
+<p data-source-range="840:842">The Undercroft: three flooded levels under the old ArkD tower.</p>
 </div>
-<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="844:845"><span class="dc-alert-label">Example</span>
+<div class="dc-alert dc-visit-callout"><span class="dc-alert-label">Visit</span>
+<p data-source-range="843:845">The Neon Bazaar doesn't close.</p>
+</div>
+<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="847:848"><span class="dc-alert-label">Example</span>
 <p>A worked example (<code>@callout example</code>, which has no blockquote form): a cyan rail and a taped-on label.</p>
 </div></div>
 <h2>Blocks</h2>
 <p><code>@block .dc-panel | .dc-slate | .dc-shard</code>: a HUD-blue band, an ink body under a blood band stamped <em>Binding</em>, and light zine paper with a torn foot and no accent hue.</p>
 <div class="dg-stage">
-<div class="dc-block dc-panel" data-label="Panel" data-source-range="858:859"><div class="dc-block-title">Panel</div>
+<div class="dc-block dc-panel" data-label="Panel" data-source-range="861:862"><div class="dc-block-title">Panel</div>
 <p>Player-facing rules summaries and structured data.</p>
-</div><div class="dc-block dc-slate" data-label="Slate" data-source-range="864:865"><div class="dc-block-title">Slate</div>
+</div><div class="dc-block dc-slate" data-label="Slate" data-source-range="867:868"><div class="dc-block-title">Slate</div>
 <p>Binding rulings and Dream Master directives.</p>
-</div><div class="dc-block dc-shard" data-label="Shard" data-source-range="870:871"><div class="dc-block-title">Shard</div>
+</div><div class="dc-block dc-shard" data-label="Shard" data-source-range="873:874"><div class="dc-block-title">Shard</div>
 <p>Fiction, atmosphere, and setting asides.</p>
 </div></div>
 <h2>Choice cards</h2>
 <p><code>@card</code> inside <code>@flaws</code>, <code>@ideals</code> or <code>@dreams</code>. Each kind has its own colour, silhouette and one-word chip: a Flaw is blood with a cracked edge, an Ideal is HUD blue with a steady tablet shape, a Dream is violet with a rising edge. The card name is the first <code>####</code>.</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-section-choose dc-flaws" data-source-range="884:885"><div class="dc-card" data-source-range="886:887"><div class="dc-card-heading">Addictive Personality</div>
+<div class="section dc-section-panel dc-section-choose dc-flaws" data-source-range="887:888"><div class="dc-card" data-source-range="889:890"><div class="dc-card-heading">Addictive Personality</div>
 <div class="dc-card-body">
 <p>You chase instant gratification without weighing the consequences.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="892:893">“Just one more, and then I’ll quit.”</p>
+<p data-source-range="895:896">“Just one more, and then I’ll quit.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-section-panel dc-section-choose dc-ideals" data-source-range="898:899"><div class="dc-card" data-source-range="900:901"><div class="dc-card-heading">Honor</div>
+</div></div><div class="section dc-section-panel dc-section-choose dc-ideals" data-source-range="901:902"><div class="dc-card" data-source-range="903:904"><div class="dc-card-heading">Honor</div>
 <div class="dc-card-body">
 <p>You believe in a code, and upholding it is your duty no matter the cost.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="906:907">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
+<p data-source-range="909:910">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-section-panel dc-section-choose dc-dreams" data-source-range="912:913"><div class="dc-card" data-source-range="914:915"><div class="dc-card-heading">Settle a Score</div>
+</div></div><div class="section dc-section-panel dc-section-choose dc-dreams" data-source-range="915:916"><div class="dc-card" data-source-range="917:918"><div class="dc-card-heading">Settle a Score</div>
 <div class="dc-card-body">
 <p>Settle a score from my past. Your Drive should pull you toward trouble, hard choices, and things worth risking your hide for.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="920:921">If chasing it can’t change you, it ain’t big enough.</p>
+<p data-source-range="923:924">If chasing it can’t change you, it ain’t big enough.</p>
 </blockquote>
 </div>
 </div></div></div>
 <h2>Outcome ladder</h2>
 <p><code>@outcome</code>, then <code>@outcome flush</code>. <code>flush</code> removes the ladder’s outer margin, so the difference is the spacing around it, not the ladder itself.</p>
 <div class="dg-stage">
-<div class="dc-outcomes" data-source-range="934:935">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="937:938">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4307,7 +4322,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="944:945">  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="947:948">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4332,10 +4347,10 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Definition: lucid and surreal</h2>
 <p><code>@definition lucid</code> and <code>@definition surreal</code>, side by side: the two states of a roll, drawn as opposites. Lucid is the light, machined, upright one; surreal is the dark, skewed, off-register one.</p>
 <div class="dg-stage">
-<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="962:963"><div class="dc-prose-panel dc-definition-block dc-definition-lucid" data-definition="lucid" data-source-range="964:965"><h4>Lucid</h4>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="965:966"><div class="dc-prose-panel dc-definition-block dc-definition-lucid" data-definition="lucid" data-source-range="967:968"><h4>Lucid</h4>
 <p>Roll 2d20, take the higher. You’re sharp, aligned, in control. When you roll a 20 in the dream, your next roll is Lucid!</p>
-</div><div class="gp-column-break" aria-hidden="true" data-source-range="972:973"></div>
-<div class="dc-prose-panel dc-definition-block dc-definition-surreal" data-definition="surreal" data-source-range="974:975"><h4>Surreal</h4>
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="975:976"></div>
+<div class="dc-prose-panel dc-definition-block dc-definition-surreal" data-definition="surreal" data-source-range="977:978"><h4>Surreal</h4>
 <p>Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.</p>
 </div></div></div>
 <h2>Tape</h2>
@@ -4375,7 +4390,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Heading chrome</h2>
 <p><code>{.dc-chevron}</code> is a deep-magenta banner with one diagonal. <code>{.dc-spray}</code> is a stencil tag: a stepped overspray edge and a dashed stencil line along its foot. <code>{.dc-spec-tweak}</code> is sized to one line, and <code>{.dc-spec-tweak .dc-no-top}</code> pulls it tight against what is above.</p>
 <div class="dg-stage">
-<div class="section dc-section-panel" data-section="panel" data-source-range="1038:1039"><h1 class="dc-chevron">Augmerc</h1>
+<div class="section dc-section-panel" data-section="panel" data-source-range="1041:1042"><h1 class="dc-chevron">Augmerc</h1>
 <h2 class="dc-spray">Biting Distance</h2>
 <h3 class="dc-spec-tweak">Spec Tweak: Wired to Kill</h3>
 <p>Augmerc learning paths assume combat-grade augmentations.</p>
@@ -4384,76 +4399,76 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2>Section variants</h2>
 <p><code>@section panel</code>, <code>@section flat</code>, the four kinds of text (<code>reference</code>, <code>lore</code>, <code>dm</code>, <code>choose</code>), a bare <code>@section</code>, and a panel with its body in <code>@columns 2</code>. Each kind has its own bar and sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.</p>
 <div class="dg-stage dg-tall">
-<div class="section dc-section-panel" data-section="panel" data-source-range="1060:1061"><h3>Panel section</h3>
+<div class="section dc-section-panel" data-section="panel" data-source-range="1063:1064"><h3>Panel section</h3>
 <p>The panel chrome: a cream substrate, an accent rule, a cut top-right corner, and the first heading as a solid accent bar.</p>
-</div><div class="section dc-section-flat" data-section="flat" data-source-range="1068:1069"><h3>Flat section</h3>
+</div><div class="section dc-section-flat" data-section="flat" data-source-range="1071:1072"><h3>Flat section</h3>
 <p>The accent rail on a plain host: no clipped corner, no shadow. A heading prints as a heading, not a bar.</p>
-</div><div class="section dc-section-panel dc-section-reference" data-section="reference" data-source-range="1076:1077"><h3>Reference section</h3>
+</div><div class="section dc-section-panel dc-section-reference" data-section="reference" data-source-range="1079:1080"><h3>Reference section</h3>
 <p>A look-up: HUD blue, a pale title band, tight rows.</p>
 <table>
-<thead data-source-range="1082:1083">
-<tr data-source-range="1082:1083">
+<thead data-source-range="1085:1086">
+<tr data-source-range="1085:1086">
 <th>Item</th>
 <th>Cost</th>
 </tr>
 </thead>
-<tbody data-source-range="1084:1086">
-<tr data-source-range="1084:1085">
+<tbody data-source-range="1087:1089">
+<tr data-source-range="1087:1088">
 <td>Noodle voucher</td>
 <td>2 DC</td>
 </tr>
-<tr data-source-range="1085:1086">
+<tr data-source-range="1088:1089">
 <td>Signal flare</td>
 <td>15 DC</td>
 </tr>
 </tbody>
 </table>
-</div><div class="section dc-section-panel dc-section-lore" data-section="lore" data-source-range="1089:1090"><h3>Lore section</h3>
+</div><div class="section dc-section-panel dc-section-lore" data-section="lore" data-source-range="1092:1093"><h3>Lore section</h3>
 <p>The world, not the rules: a deep violet bar over a pale lilac sheet, with long cuts off two opposite corners.</p>
-</div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-source-range="1097:1098"><h3>Dream Master section</h3>
+</div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-source-range="1100:1101"><h3>Dream Master section</h3>
 <p>Behind the screen: a file-folder tab that says Dream Master over an ink bar with a cyan rule, a cold body, a cyan rail and the bottom-right corner cut.</p>
-</div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-source-range="1105:1106"><h3>Choose section</h3>
+</div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-source-range="1108:1109"><h3>Choose section</h3>
 <p>A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow <em>Your choice</em> stamp:</p>
 <ul>
-<li data-source-range="1111:1112">A first option.</li>
-<li data-source-range="1112:1114">A second option.</li>
+<li data-source-range="1114:1115">A first option.</li>
+<li data-source-range="1115:1117">A second option.</li>
 </ul>
-</div><div class="section dc-section-panel dc-avoid-split" data-section="panel" data-source-range="1116:1117"><h3>Panel kept whole</h3>
+</div><div class="section dc-section-panel dc-avoid-split" data-section="panel" data-source-range="1119:1120"><h3>Panel kept whole</h3>
 <p><code>.dc-avoid-split</code> moves the whole section to the next page rather than splitting it.</p>
-</div><div class="section dc-section-panel" data-section="panel" data-source-range="1124:1125"><h3>Section with columns</h3>
-<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="1128:1129"><p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="1132:1133"></div>
+</div><div class="section dc-section-panel" data-section="panel" data-source-range="1127:1128"><h3>Section with columns</h3>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="1131:1132"><p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
+<div class="gp-column-break" aria-hidden="true" data-source-range="1135:1136"></div>
 <p>Nothing here is safe. Nothing here is free.</p>
 </div></div></div>
 <div class="dg-stage dg-on-paper">
-<div class="section" data-source-range="1144:1145"><h3>Bare section</h3>
+<div class="section" data-source-range="1147:1148"><h3>Bare section</h3>
 <p>No variant word, no look of its own: the text sits on a plain sheet of paper.</p>
 </div></div>
 <h2>Floated callouts</h2>
 <p><code>@callout note .dc-sidebar</code> floats beside the text — see <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
 <div class="dg-stage dg-on-paper">
 <p>When the Dreamers push past Too Far, the table starts asking how movement works.</p>
-<div class="dc-alert dc-note dc-sidebar" data-callout="note" data-label="Distance, Fast" data-source-range="1162:1163"><span class="dc-alert-label">Distance, Fast</span>
+<div class="dc-alert dc-note dc-sidebar" data-callout="note" data-label="Distance, Fast" data-source-range="1165:1166"><span class="dc-alert-label">Distance, Fast</span>
 <p>Three bands, no grid. <strong>In Reach</strong> is one swing away. <strong>Nearby</strong> is a burned Move.</p>
 </div><p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there.</p>
 </div>
 <h2>Factions</h2>
 <p><code>@faction megacorp | cabal | cult | enforcer</code>.</p>
 <div class="dg-stage">
-<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-source-range="1178:1179"><span class="dc-faction-kind">Megacorp</span>
+<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-source-range="1181:1182"><span class="dc-faction-kind">Megacorp</span>
 <h4>Megacorp</h4>
 <p>A hard blue rectangle with a cyan edge: the lights, the water and the lawyers.</p>
-</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-source-range="1186:1187"><span class="dc-faction-kind">Cabal</span>
+</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-source-range="1189:1190"><span class="dc-faction-kind">Cabal</span>
 <h4>Cabal</h4>
 <p>Violet, with long corner cuts: a back booth and a very long memory.</p>
-</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-source-range="1194:1195"><span class="dc-faction-kind">Cult</span>
+</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-source-range="1197:1198"><span class="dc-faction-kind">Cult</span>
 <h4>Cult</h4>
 <p>Blood red, torn along the top and foot: sing the signal and it sings back.</p>
-</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-source-range="1202:1203"><span class="dc-faction-kind">Enforcer</span>
+</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-source-range="1205:1206"><span class="dc-faction-kind">Enforcer</span>
 <h4>Enforcer</h4>
 <p>An octagon with a hazard-tape band and a yellow name label: they keep the peace, for a fee.</p>
 </div></div>
-<div class="gp-page-break" aria-hidden="true" data-source-range="1212:1213"></div>
+<div class="gp-page-break" aria-hidden="true" data-source-range="1215:1216"></div>
 <h2>Image floats</h2>
 <p><code>{.dc-img-float-left}</code> and <code>{.dc-img-float-right}</code>.</p>
 <div class="dg-stage dg-on-paper">

@@ -17,8 +17,8 @@
    SHAPE LANGUAGE (silhouette = register): tech = crisp stair-steps and square
    bites (augmerc stairs, wirephreak circuit jogs, cybersurgeon bites);
    magic = facets and lozenges (etherlock opposed chamfers, dualist symmetric
-   octagon with a point, generalist hewn stone, technosorcerer a gate);
-   landfill = torn (proxy: a burnt corner and a ragged tear); organic =
+   octagon with a point, generalist hewn stone, proxy a gate);
+   landfill = torn (technosorcerer: a burnt corner and a ragged tear); organic =
    wobbly (gutterdruid: no straight long edge); civic hazard = a sign-plate
    octagon (streetwarden).
 
@@ -136,7 +136,7 @@
   --spec-accent: var(--augmerc-accent);
   --spec-mid: var(--augmerc-mid);
   --spec-dark: var(--augmerc-dark);
-  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* TECH: deep-magenta band, cyan LED rule with ink ticks, inset LED rim. */
   --spec-band: var(--brand-magenta-deep);
   --spec-on-band: var(--paper-cream);
@@ -175,7 +175,7 @@
   --spec-accent: var(--cybersurgeon-accent);
   --spec-mid: var(--cybersurgeon-mid);
   --spec-dark: var(--cybersurgeon-dark);
-  --spec-ink: var(--cybersurgeon-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--cybersurgeon-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* TECH, CLINICAL: chrome band over a steel ruler-scale rule, LED rim. */
   --spec-band: var(--cybersurgeon-accent);
   --spec-on-band: var(--ink);
@@ -206,19 +206,19 @@
   --dc-specialty-card-shadow: inset 0 0 0 1.5pt var(--cybersurgeon-mid);
 }
 
-/* ── Proxy — covert, orange, top-left step + diagonal bottom ────────────── */
-.dc-specialty.proxy {
-  --spec-accent: var(--proxy-accent);
-  --spec-mid: var(--proxy-mid);
-  --spec-dark: var(--proxy-dark);
-  --spec-ink: var(--proxy-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+/* ── Technosorcerer — ritual on scrap, scorch orange, a burnt corner ──── */
+.dc-specialty.technosorcerer {
+  --spec-accent: var(--technosorcerer-accent);
+  --spec-mid: var(--technosorcerer-mid);
+  --spec-dark: var(--technosorcerer-dark);
+  --spec-ink: var(--technosorcerer-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* LANDFILL + MAGIC: scorch-orange band on a torn edge, no tidy rule, a
      burnt patch at the right. */
-  --spec-band: color-mix(in srgb, var(--proxy-accent) 87%, var(--paper-cream));  /* a hair lighter so ink holds 4.5:1 at 13.5pt (4.27 on the raw orange; 4.6 at 87%) */
+  --spec-band: color-mix(in srgb, var(--technosorcerer-accent) 87%, var(--paper-cream));  /* a hair lighter so ink holds 4.5:1 at 13.5pt (4.27 on the raw orange; 4.6 at 87%) */
   --spec-on-band: var(--ink);
   --spec-chip-bg: var(--paper-cream);
-  --spec-chip-fg: var(--proxy-dark);
-  --spec-chip-edge: var(--proxy-dark);
+  --spec-chip-fg: var(--technosorcerer-dark);
+  --spec-chip-edge: var(--technosorcerer-dark);
   --dc-band-rule-h: 0px;
   --dc-band-facet: color-mix(in srgb, var(--ink) 14%, var(--spec-band));
   --dc-band-facet-width: 26%;
@@ -233,7 +233,7 @@
   --spec-media-shape: polygon(0 14px, 14px 0, 100% 0, calc(100% - 2px) 40%, 100% 70%, 100% 100%, calc(100% - 20px) calc(100% - 3px), 86% calc(100% - 7px), 72% calc(100% - 2px), 58% calc(100% - 8px), 43% calc(100% - 3px), 29% calc(100% - 8px), 15% calc(100% - 2px), 6% calc(100% - 6px), 0 100%);
 }
 
-.dc-specialty.proxy .dc-specialty-card {
+.dc-specialty.technosorcerer .dc-specialty-card {
   --dc-specialty-card-bg: var(--paper-aged);
 }
 
@@ -242,7 +242,7 @@
   --spec-accent: var(--wirephreak-accent);
   --spec-mid: var(--wirephreak-mid);
   --spec-dark: var(--wirephreak-dark);
-  --spec-ink: var(--wirephreak-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--wirephreak-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* TECH: signal-cyan band, circuit-tick rule, LED rim. */
   --spec-band: var(--wirephreak-accent);
   --spec-on-band: var(--ink);
@@ -274,7 +274,7 @@
   --spec-accent: var(--streetwarden-accent);
   --spec-mid: var(--streetwarden-mid);
   --spec-dark: var(--streetwarden-dark);
-  --spec-ink: var(--streetwarden-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--streetwarden-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* CIVIC HAZARD: high-vis green band over a green-and-ink hazard-tape rule. */
   --spec-band: var(--streetwarden-accent);
   --spec-on-band: var(--ink);
@@ -301,23 +301,23 @@
   --dc-specialty-card-bg: var(--paper-light);
 }
 
-/* ── Technosorcerer — arcane + tech, indigo, top-center gate notch ──────── */
-.dc-specialty.technosorcerer {
-  --spec-accent: var(--technosorcerer-accent);
-  --spec-mid: var(--technosorcerer-mid);
-  --spec-dark: var(--technosorcerer-dark);
-  --spec-ink: var(--technosorcerer-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+/* ── Proxy — faith wired in, electric indigo, top-centre gate notch ──── */
+.dc-specialty.proxy {
+  --spec-accent: var(--proxy-accent);
+  --spec-mid: var(--proxy-mid);
+  --spec-dark: var(--proxy-dark);
+  --spec-ink: var(--proxy-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* TECH + MAGIC: electric-indigo band (its own hue; violet is the world's) with a faceted plane and a cyan LED rule. */
-  --spec-band: var(--technosorcerer-accent);
+  --spec-band: var(--proxy-accent);
   --spec-on-band: var(--paper-cream);
-  --spec-chip-bg: var(--technosorcerer-accent);
+  --spec-chip-bg: var(--proxy-accent);
   --spec-chip-fg: var(--paper-cream);
   --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, var(--ink) 30%, var(--technosorcerer-accent));
+  --dc-band-facet: color-mix(in srgb, var(--ink) 30%, var(--proxy-accent));
   --dc-band-facet-width: 30%;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 22%, var(--technosorcerer-accent));
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 22%, var(--proxy-accent));
   --dc-band-reg: inset 0 -2px 0 var(--signal-indigo);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH + MAGIC: a shallow centre gate on top (the rune), a stair at one corner and a facet at the other. */
   --spec-edge-top: 0 0, calc(50% - 22px) 0, 50% 7px, calc(50% + 22px) 0, calc(100% - 14px) 0, 100% 14px;
@@ -333,7 +333,7 @@
   --spec-accent: var(--gutterdruid-accent);
   --spec-mid: var(--gutterdruid-mid);
   --spec-dark: var(--gutterdruid-dark);
-  --spec-ink: var(--gutterdruid-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--gutterdruid-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* LANDFILL + WONDERLAND: spore-lime band on a torn edge, no rule, a lichen
      patch at the right. */
   --spec-band: var(--gutterdruid-accent);
@@ -364,7 +364,7 @@
   --spec-accent: var(--etherlock-accent);
   --spec-mid: var(--etherlock-mid);
   --spec-dark: var(--etherlock-dark);
-  --spec-ink: var(--etherlock-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--etherlock-dark);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* MAGIC: citrine band with a pale faceted plane over a tarnished-gold rule. */
   --spec-band: var(--etherlock-accent);
   --spec-on-band: var(--ink);
@@ -394,7 +394,7 @@
   --spec-accent: var(--dualist-accent);
   --spec-mid: var(--dualist-mid);
   --spec-dark: var(--dualist-dark);
-  --spec-ink: var(--dualist-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--dualist-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* MAGIC: aqua band split by a pale facet (the two paths) over a sapphire rule. */
   --spec-band: var(--dualist-accent);
   --spec-on-band: var(--ink);
@@ -420,7 +420,7 @@
   --spec-accent: var(--generalist-accent);
   --spec-mid: var(--generalist-mid);
   --spec-dark: var(--generalist-dark);
-  --spec-ink: var(--generalist-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (proxy, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  --spec-ink: var(--generalist-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
   /* MAGIC, COMMON STONE: cool slate band, a darker slab, a pale-stone rule (steel, not violet). */
   --spec-band: var(--generalist-accent);
   --spec-on-band: var(--paper-cream);

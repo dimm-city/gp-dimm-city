@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is `[!TYPE]`, for the first six — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is `[!TYPE]`, for the first seven — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -99,6 +99,9 @@ One shell, seven registers (note, warning, dm, vibe, origin, visit, example), to
 
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
+
+> [!LOCATION]
+> The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
 
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
@@ -124,6 +127,9 @@ Result {.dg-result}
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
 
+> [!LOCATION]
+> The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
+
 > [!VISIT]
 > The Neon Bazaar doesn't close. If you can name it, someone here is selling a knockoff of it two stalls down.
 
@@ -139,10 +145,11 @@ Result {.dg-result}
 | `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right |
 | `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one violet edge all round, a strip of tape on top, italic, with a violet-edged label chip |
 | `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label |
+| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: cool map paper with a torn bottom edge, a dog-eared corner, a teal rail and a worn deep-teal stamp label |
 | `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
 | `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail and a taped-on label |
 
-Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is italic except the example's, which is upright (the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 
 Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
@@ -177,7 +184,7 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 | Option | Values | Default |
 |---|---|---|
-| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `visit` `example` | `note` |
+| a variant word (`@callout vibe`) | `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` | `note` |
 | `label` | any text | the variant's label |
 
 ## Worked example

@@ -121,9 +121,9 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 | **Augmerc** | ████ HIGH | low | ██ mid | low | Deep-magenta band with an LED rim and a cyan, ink-ticked LED rule; hard angular cuts. Tech-heavy, street-salvaged. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
 | **Wirephreak** | ████ HIGH | low | ██ mid | low | Signal-cyan band, LED rim and a circuit-trace tick rule, crisp polygonal clips. Decking + interference. |
 | **Cybersurgeon** | ████ HIGH | low | █ low | low | Cold chrome band with a bright rim and a ruler-scale rule, medical mono labels, blue-grey steel. Surgical precision. |
-| **Technosorcerer** | ████ HIGH | ████ HIGH | low | low | Tech + magic: electric-indigo band (a blue-violet of its own, clear of the world's violet) with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. |
+| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: electric-indigo band (a blue-violet of its own, clear of the world's violet) with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. |
 | **Etherlock** | ██ mid | ████ HIGH | ██ mid | ██ mid | Citrine-yellow band with a pale refractive facet and a mid-gold rule. Secrets-as-currency, manifold magic. |
-| **Proxy** | low | ████ HIGH | ████ HIGH | low | Scorch-orange band, darker scorch patch, torn bottom edge, no rule. Divine force on burnt paper. |
+| **Technosorcerer** | low | ████ HIGH | ████ HIGH | low | Scorch-orange band, darker scorch patch, torn bottom edge, no rule. Ritual worked on burnt scrap. |
 | **Streetwarden** | ██ mid | low | ██ mid | low | High-vis toxic-green band over a green-and-ink hazard-tape rule. Civic-warden register. |
 | **Gutterdruid** | low | ██ mid | ████ HIGH | ████ HIGH | Fungi-glow band, torn bottom edge, a lichen patch, no rule. Trash heap + spore magic. |
 | **Dualist** | ██ mid | ████ HIGH | low | ██ mid | Crystal-aqua band split by a pale facet, dark rule. Two-path walker, lozenge geometry. |
@@ -131,14 +131,14 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 
 Each band fill is the specialty's own bright signal colour, so ten bands read as ten colours at thumbnail size and differ in grayscale value too (light: yellow, lime, chrome, cyan, green, aqua; mid: orange, indigo; dark: deep magenta, slate) and in edge (rim, facet, torn, hazard). The **specialty cards** keep their own calmer register (cream body, bright band, mid frame); the mix expresses itself on the **title bands**, the display layer.
 
-**Specialty silhouettes (shape carries the register).** Each specialty's frame, band, tab, card body and specialty card are cut from one language, and a cut is never closer to a glyph than 2pt: tech = crisp stair-steps and square bites (augmerc three small steps top right and bottom right; wirephreak two big circuit jogs; cybersurgeon single square bites, no diagonals); magic = facets and lozenges (etherlock a big and a small chamfer on opposite corners; dualist four even chamfers and a bottom point; generalist two big chamfers on opposite corners like a hewn stone; technosorcerer a shallow centre gate plus a stair and a facet); landfill = torn (proxy a burnt corner, a ragged tear across the foot and a chipped tab); organic = wobbly (gutterdruid, no long straight edge); civic hazard = a sign-plate octagon (streetwarden). The band and its frame are cut from the same point list (`--spec-edge-top`) and span the same width, so the band's top edge and both top corners coincide with the frame exactly. Grit is two cues, on edges and bands only: a chipped or torn edge on the landfill and organic specialties, and a misregistered rule (a second ink, 2px off) on the tech bands.
+**Specialty silhouettes (shape carries the register).** Each specialty's frame, band, tab, card body and specialty card are cut from one language, and a cut is never closer to a glyph than 2pt: tech = crisp stair-steps and square bites (augmerc three small steps top right and bottom right; wirephreak two big circuit jogs; cybersurgeon single square bites, no diagonals); magic = facets and lozenges (etherlock a big and a small chamfer on opposite corners; dualist four even chamfers and a bottom point; generalist two big chamfers on opposite corners like a hewn stone; proxy a shallow centre gate plus a stair and a facet); landfill = torn (technosorcerer a burnt corner, a ragged tear across the foot and a chipped tab); organic = wobbly (gutterdruid, no long straight edge); civic hazard = a sign-plate octagon (streetwarden). The band and its frame are cut from the same point list (`--spec-edge-top`) and span the same width, so the band's top edge and both top corners coincide with the frame exactly. Grit is two cues, on edges and bands only: a chipped or torn edge on the landfill and organic specialties, and a misregistered rule (a second ink, 2px off) on the tech bands.
 
 The mix is the SOURCE of design decisions. When polishing a component for a specialty, ask: *which register dominates? what visual cues belong to that register? what does NOT belong?*
 
 **Concrete implications:**
-- The LED rim (an inset top highlight on the band) and a ticked LED rule belong on the **title bands** of Augmerc / Wirephreak / Cybersurgeon / Technosorcerer (future-tech high). They do NOT belong on Gutterdruid or Proxy — those bands are torn paper, not a polished tech panel.
-- Torn edges belong on the **title bands** of Proxy / Gutterdruid (landfill high: a torn bottom edge, no rule), and on sheets and labels elsewhere (the fiction excerpt, the shard block, the cult faction, the flaw card). They do NOT belong on Augmerc / Cybersurgeon — clinical tech doesn't tear — and they are NOT used on the specialty cards themselves.
-- A flat faceted plane (a darker or paler shape cut into the band) belongs on Dualist / Technosorcerer / Etherlock / Generalist (ancient-magic high); a hazard-tape rule on Streetwarden.
+- The LED rim (an inset top highlight on the band) and a ticked LED rule belong on the **title bands** of Augmerc / Wirephreak / Cybersurgeon / Proxy (future-tech high). They do NOT belong on Gutterdruid or Technosorcerer — those bands are torn paper, not a polished tech panel.
+- Torn edges belong on the **title bands** of Technosorcerer / Gutterdruid (landfill high: a torn bottom edge, no rule), and on sheets and labels elsewhere (the fiction excerpt, the shard block, the cult faction, the flaw card). They do NOT belong on Augmerc / Cybersurgeon — clinical tech doesn't tear — and they are NOT used on the specialty cards themselves.
+- A flat faceted plane (a darker or paler shape cut into the band) belongs on Dualist / Proxy / Etherlock / Generalist (ancient-magic high); a hazard-tape rule on Streetwarden.
 - Fungi-glow and a lichen patch belong on Gutterdruid (wonderland high). The wirephreak's cyan is electric, not organic — those visually differ even though both are "bright accent on dark fill."
 - All of it is flat fill and hard-edged stripes: no gradient sheen, no filter, no text-shadow.
 
@@ -217,7 +217,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 | `--brand-cyan` | `#00bcd4` | C70 M1 Y16 K0 = 87% | Signal interference, wirephreak accent, augmerc-card pop |
 | `--brand-yellow` | `#ffd700` | C1 M13 Y100 K0 = 114% | Brand radiant — etherlock accent, peak triumph |
 | `--brand-violet` | `#7030b8` | C69 M87 Y0 K0 = 156% | The world: lore, vibe, cabal, treasure. No specialty uses it |
-| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Technosorcerer accent: an electric blue-violet of its own |
+| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Proxy accent: an electric blue-violet of its own |
 
 ### HUD / digital-display layer
 
@@ -266,12 +266,12 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 | Specialty | accent | mid | dark | band / on-band | Register lean | dark TAC |
 |---|---|---|---|---|---|---|
 | augmerc | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | future-tech HIGH + landfill mid | 156% |
-| proxy | orange | `#7a3008` | `#4c290f` | orange / ink | magic HIGH + landfill HIGH | 268% |
+| technosorcerer | orange | `#7a3008` | `#4c290f` | orange / ink | magic HIGH + landfill HIGH | 268% |
 | streetwarden | `#4db840` toxic-civic | `#347828` | `#294c1f` | accent / ink | tech mid + landfill mid | 268% |
 | gutterdruid | fungi-glow | `#4d6020` | `#394017` | accent / ink | landfill HIGH + wonderland HIGH | 268% |
 | cybersurgeon | `#a8b4b8` chrome | `#606870` | `#303840` | accent / ink | future-tech HIGH | 246% |
 | wirephreak | brand-cyan | `#006878` | `#003a40` | accent / ink | future-tech HIGH + landfill mid | 260% |
-| technosorcerer | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | tech HIGH + magic HIGH | 268% |
+| proxy | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | tech HIGH + magic HIGH | 268% |
 | etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 267% |
 | dualist | crystal-aqua | `#2a6878` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 252% |
 | generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 265% |
@@ -392,7 +392,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - **Surface**: paper poster register (cream body + clipped tab + ink border)
 - Skill card body uses `--paper-cream` substrate with a colored tab on the top edge.
 - Tab background uses `--dc-card-tab-bg` (specialty's mid colour) with a clipped polygon shape.
-- Per-specialty clip-path geometry distinguishes specialties at-a-glance, and the silhouette follows the register (see "Specialty silhouettes" under the register table): tech = crisp stair-steps and square bites (augmerc, wirephreak, cybersurgeon), magic = facets and lozenges (etherlock, dualist, generalist, technosorcerer's gate), landfill = torn (proxy), organic = wobbly (gutterdruid), civic hazard = a sign-plate octagon (streetwarden). The tab, the card body, the path banner and the intro share a specialty's language.
+- Per-specialty clip-path geometry distinguishes specialties at-a-glance, and the silhouette follows the register (see "Specialty silhouettes" under the register table): tech = crisp stair-steps and square bites (augmerc, wirephreak, cybersurgeon), magic = facets and lozenges (etherlock, dualist, generalist, proxy's gate), landfill = torn (technosorcerer), organic = wobbly (gutterdruid), civic hazard = a sign-plate octagon (streetwarden). The tab, the card body, the path banner and the intro share a specialty's language.
 - The **tier pill** on the tab (AUG1.3) is the specialty's own chip (`--spec-chip-*`), not a position colour. There is no bronze/gold/silver and no featured-card variant: every card is the same card.
 - The flavor line's rail is the specialty's mid colour.
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
@@ -438,7 +438,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 ### Callouts (.dc-alert variants)
 
-- **Surface**: mostly paper poster register; `dm` and `visit` are dark placards (display register). One shell, seven registers, told apart by silhouette, fill value, edge and label — in colour and in grayscale.
+- **Surface**: mostly paper poster register; `dm` and `visit` are dark placards (display register). One shell, eight registers, told apart by silhouette, fill value, edge and label — in colour and in grayscale.
 
 | Register | Fill (value) | Silhouette | Edge | Label |
 |---|---|---|---|---|
@@ -447,6 +447,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 | `dm` | ink-dark (darkest) | file folder: a 12px tab over the left 42% and one cut corner (classified) | 3px cyan rail | cyan chip with ink type, top right (Dream Master only) |
 | `vibe` | barely violet (light, flat) | long shallow diagonals at two opposite corners (the world) | one violet edge all round, no rail, a tan tape strip on top | violet-edged chip; italic voice |
 | `origin` | warm paper (light) | torn bottom edge and a 16px dog-ear (backstory) | rust rail | crimson double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg; italic second-person voice |
+| `location` | cool map paper (light) | torn bottom edge and a 16px dog-ear, as origin (a place written up) | teal rail | deep-teal double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg |
 | `visit` | fungi green (dark) | wobbly organic polygon ending in a signpost point (a place) | none | map-pin glyph + underlined caps |
 | `example` | cream (light) | ticket: a V notch in the right edge (a sample) | cyan rail | taped-on tag |
 
