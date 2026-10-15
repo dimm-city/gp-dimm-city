@@ -458,7 +458,7 @@
   right: 0.5in;
   width: 0.42in;
   height: 11px;
-  background: var(--dc-page-slip-tape);
+  background: color-mix(in srgb, var(--dc-page-slip-tape) 78%, transparent);
   border: 1px solid var(--dc-page-slip-edge);
   border-width: 1px 0;
   rotate: -2.5deg;
@@ -553,6 +553,9 @@
   --dc-card-grid-display: flex;
   --dc-card-grid-item-display: flex;
   --dc-card-grid-row: 3.05in;
+  --dc-card-grid-row-tall: 4.45in;     /* the right page's rows */
+  --dc-card-grid-media-tall: 2.35in;   /* their portraits */
+  --dc-card-grid-media-wide: 0.75in;   /* the portrait of a card that spans both columns */
   --dc-card-grid-gap: 0.12in;
   --dc-intro-size: var(--fs-body-sm);  /* the lede at body size, so the left page holds two rows of cards */
 }
@@ -571,6 +574,48 @@
   --dc-specialty-card-name-size: 1em;
   --dc-specialty-card-index: counter(dc-specialty, decimal-leading-zero);
   --dc-specialty-card-title-align: left;
+}
+
+/* Dualist and Generalist, the two specialties built from the others, close the
+   spread: each spans both columns as the last row, Dualist under the left
+   page's four cards and Generalist under the right page's, whatever order the
+   book lists them in. The fifth of the other cards opens the right page, and
+   that page's rows are taller (it has no title or lede above them), with
+   taller portraits, so Generalist closes the page at its foot. */
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:nth-child(-n + 4 of :not(.dualist, .generalist)) {
+  --dc-card-grid-item-order: 1;
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:nth-child(n + 5 of :not(.dualist, .generalist)) {
+  --dc-card-grid-item-order: 3;
+  --dc-card-grid-row: var(--dc-card-grid-row-tall);
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:nth-child(5 of :not(.dualist, .generalist)) {
+  --dc-card-grid-item-break: page;
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:nth-child(n + 5 of :not(.dualist, .generalist)) > .dc-specialty-card {
+  --dc-specialty-card-media-height: var(--dc-card-grid-media-tall);
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:is(.dualist, .generalist) {
+  --dc-card-grid-item-span: 2;
+  --dc-card-grid-row: 0;
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty.dualist {
+  --dc-card-grid-item-order: 2;
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty.generalist {
+  --dc-card-grid-item-order: 4;
+}
+/* A full-width card is the dense card again: the band on top, the portrait
+   floated left of the tagline and pitch. */
+.dc-page-specialty-catalog .dc-card-grid :is(.dualist, .generalist) > .dc-specialty-card {
+  --dc-specialty-card-display: flow-root;
+  --dc-specialty-card-media-order: 0;
+  --dc-specialty-card-media-float: left;
+  --dc-specialty-card-media-float-even: left;
+  --dc-specialty-card-media-margin: 0 0.18in 0.06in 0;
+  --dc-specialty-card-media-margin-even: 0 0.18in 0.06in 0;
+  --dc-specialty-card-media-width: 2.4in;
+  --dc-specialty-card-media-height: var(--dc-card-grid-media-wide);
 }
 
 /* A tape divider (`.dc-tape`: the MASTERS strip between creature blocks, a

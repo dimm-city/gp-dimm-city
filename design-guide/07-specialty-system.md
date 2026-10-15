@@ -25,7 +25,7 @@ The silhouette says what kind of specialty it is, on the card, its tab, the path
 @end-specialty
 ```
 
-Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--spec-band` and `--spec-on-band` (the title-band fill and its type), `--spec-chip-bg`, `--spec-chip-fg` and `--spec-chip-edge` (the tier pill), `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
+Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--spec-band` and `--spec-on-band` (the title-band fill and its type), `--spec-chip-bg`, `--spec-chip-fg` and `--spec-chip-edge` (the tier pill), `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
 
 ## Specialty intro
 
@@ -192,7 +192,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 </div>
 
-The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview). Tokens: `--dc-specialty-card-bg`, `--dc-specialty-card-border`, `--dc-specialty-card-accent`, `--dc-specialty-card-media-height`, `--dc-specialty-card-title-color`, `--dc-specialty-card-shadow`.
+The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview). Tokens: `--dc-specialty-card-bg`, `--dc-specialty-card-accent`, `--dc-specialty-card-band-bg`, `--dc-specialty-card-band-fg`, `--dc-specialty-card-media-height`, `--dc-specialty-card-title-color`.
 
 
 ## Learning path

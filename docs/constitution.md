@@ -31,6 +31,8 @@ This is the single most-load-bearing visual principle. Every other component dec
 - **The page background is the WALL** — concrete-ash, gritty, urban, structural. It does not compete for attention.
 - **Components are objects HUNG on the wall** — posters glued up, LED panels bolted on, spray-painted sigils, stamped warnings, hand-pasted notices. Each has its own visual register, weight, and edges, but all share the same plane: applied to the wall.
 - **Components have separation from the wall** — drop shadows, hard edges, slight rotation or asymmetry, perceptible weight. They sit *on top of* the page, not *inside* it.
+- **Depth is two shadows: a hard contact and a soft lift.** The hard offset copy (`--shadow-ink`, the section's hard shadow) says the object is pasted flat; a soft, translucent `box-shadow` under it (`--shadow-lift`, `--dc-section-lift`) says it stands a little off the brick. Recessed things (the fiction cavity, `lore`/`dm`/`choose` panels) take a soft inset (`--shadow-press`) instead of a lift. Both are `box-shadow`, never `filter: drop-shadow()`: a filter on an element that holds text prints that text as a picture (§V production rules).
+- **The wall is lit.** `--light-wall` lays a soft vignette over the brick, and title bands and skill-card tabs carry a top gloss (`--light-gloss`). The light is a gradient over flat fill, never a sheen on text.
 - **Components do NOT bleed into the wall** — soft tinted backgrounds that fade into the page colour, low-contrast washes, "subtle web gradients" → all wrong. A poster has a hard edge against brick.
 - **The wall has texture; the posters have ink** — the page can carry concrete grain. Components are printed/displayed objects with their own surface.
 - **No text is ever printed directly on the wall.** Every glyph sits on a substrate: paper, a panel, a strip, a plate or a chip. That includes what an author writes with no component around it. A free-standing `#` is a banner in the chapter's accent; a `##` is a paper slip pasted to the wall (accent rail, dashed ink foot, hard shadow, masking tape over the foot); a `###` is a plainer tag that shrinks to its words and hangs in from the left (every second one hangs further, so a wall page reads as posters put up by hand); a `####` and below is a label slip that shrinks to its words; loose paragraphs, lists and quotes share one paper sheet per run; a `@columns` run of nothing but prose is one sheet. The folio, the chapter chip and the Citizen File running head are chips (see §IV). The design guide's explainer pages (`@page .dg-doc`) print plain on white and are the one exception: they are not wall pages.
@@ -160,7 +162,7 @@ Page furniture is a chip, never bare type, and stays level and legible:
 - **Placement**: both sit at the top of the footer band (the 0.875in bottom margin, measured from the sheet edge), 0.025in below the text block; the 0.225in chip ends exactly 0.625in from the sheet edge, on DriveThruRPG's 0.5in text minimum. On recto and verso, for every page word that prints them.
 - **Pagination** is a package duty, not the book's, wherever the rule holds for any book's content: text keeps three orphans and three widows, a card splits between ability rows, headings and dividers stay with what follows. See the per-spread verdict scheme (§XI): a page under about 40% full with no design reason, or a one- to three-line continuation, is a fault to fix in the package first and the book's forced breaks second. A rule that only holds for one book's content (a row or block count, a size guess) is never the package's: it goes in the book's own sheet.
 - **Citizen File running head**: an amber tab, cream type, same edge and shadow, hung 0.625in below the sheet top in a 0.875in top margin, ending at the top of the text block.
-- **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
+- **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Tape is translucent, so the edge it holds reads through it; text never is (§V). Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
 | Safe for chaos | Keep stable |
 |---|---|
@@ -289,6 +291,8 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
 - Avoid rich black for small text.
+- **Translucency is for artwork, never text.** Shadows, tints, tape and the wall light may be translucent; a PDF/X build sets Gutterpress's `pdfx.transparency: preserve-text`, which rasterises that artwork at print resolution and keeps the text live. Text colours stay opaque (a convention test enforces it).
+- **No `filter` on an element that holds text.** Chromium prints the text of a filtered element as a picture, in the plain PDF as well. A filter may sit only on a text-free `::before`/`::after` layer (a convention test enforces it).
 
 ---
 
@@ -401,16 +405,13 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 ### Specialty cards (the 10-card grid + profile shells)
 
-- **Surface**: paper poster register — paper-cream substrate with a printed colored header. The full-dark-fill pattern was over-styled; specialty color lives in the **header band + title + thick left border**, NOT the card body.
-- Card body: `--paper-cream` (default). Body text: `--ink`. Reads as a printed flyer pasted on the brick wall.
-- **Colored header band**: thick top border (~16pt) in the specialty's bright band colour (`--spec-band`). This is the specialty's primary visual signature at grid scale.
-- **Colored title**: the h3 title is the specialty's dark, set on one line (a name such as TECHNOSORCERER is tracked tighter, never wrapped).
-- **Thick colored left border** (3pt) in the band colour — secondary signature, vertical anchor.
-- **Outer 1.5pt border** in the specialty's mid color — frame.
-- Per-specialty clip-path geometry — secondary identity cue, in the same language as the skill cards (see "Specialty silhouettes"); every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
-- **The catalog is a spread.** On `@page specialty-catalog` the ten cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and six the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
+- **Surface**: the specialty's own learning-path banner, as a sheet. A specialty card reads as the same family as that specialty's skill cards and path banner: the same colour and the same cut.
+- Card body: `--paper-cream` (aged or light paper where the specialty's skill cards use it). Body text: `--ink`. An ink outline cut in the banner's silhouette (`--dc-path-shell-clip`), with a soft lift off the wall.
+- **Title band**: the name on the specialty's band colour (`--spec-band`, type `--spec-on-band`), cut in the path banner's title shape (`--dc-path-title-shape`), with the band's top gloss and rule. This is the specialty's primary visual signature at grid scale. The name is set on one line (a name such as TECHNOSORCERER is tracked tighter, never wrapped).
+- Every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
+- **The catalog is a spread.** On `@page specialty-catalog` the cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and four the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Dualist and Generalist, the two specialties built from the others, span both columns as the last row of each page (Dualist on the left, Generalist on the right) whatever order the book lists them in, as dense cards with the portrait beside the text. The right page's rows and portraits are taller, since it has no title above them. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
 - **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths — all Pass 6/7/8 experiments were rejected by user-eye review as over-styling. Restraint wins.
-- The rule: **specialty color belongs in border, title, and at most a tint of the substrate** — not as a saturated fill across the entire card.
+- The rule: **specialty color belongs in the band, the cut, and at most a tint of the substrate** — not as a saturated fill across the entire card.
 
 ### Title bands (learning-path banner, specialty-intro title)
 

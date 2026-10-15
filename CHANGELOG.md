@@ -11,6 +11,37 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Depth, recess and light, now that translucency prints.** Components get
+  a soft, translucent lift off the wall (`--shadow-lift`) under their hard
+  contact shadow: section panels (`--dc-section-lift`), path banners, skill
+  cards and specialty cards. The section's hard shadow and the skill-card and
+  `##` slip tape are translucent, so the brick reads through them. Recessed
+  things sink: the fiction excerpt's cavity and the `lore`/`dm`/`choose`
+  panels and title bars take a soft inset (`--shadow-press`). Title bands and
+  skill-card tabs carry a top gloss (`--light-gloss`), and a soft vignette
+  (`--light-wall`) lights each page of wall. All of it is `box-shadow` and
+  gradients; a PDF/X build needs `pdfx.transparency: preserve-text`. A new
+  convention test allows `filter` only on a `::before`/`::after` layer:
+  Chromium prints the text of a filtered element as a picture.
+- **A specialty card looks like its specialty's skill cards.** The card is
+  now that specialty's path banner as a sheet: the name on the specialty's
+  band colour, cut in the banner's title shape with its gloss and rule, and
+  a paper sheet with an ink outline in the banner's silhouette. The thick
+  top and left borders, the per-specialty card cut and the Augmerc override
+  are gone. Removed tokens: `--dc-specialty-card-border`,
+  `--dc-specialty-card-band-height`, `--dc-specialty-card-shadow`. New:
+  `--dc-specialty-card-band-bg`, `--dc-specialty-card-band-fg`,
+  `--dc-specialty-card-band-shape`, `--dc-specialty-card-pad-x`. A card's
+  portrait floats on its frame (the image wrapper) rather than on the image.
+- **The specialty catalog spread closes each page with a full-width card.**
+  On `@page specialty-catalog`, Dualist spans both columns as the last row of
+  the left page and Generalist as the last row of the right page, whatever
+  order the book lists them in; the right page's other four cards are taller
+  with taller portraits. New tokens: `--dc-card-grid-item-span`,
+  `--dc-card-grid-item-order`, `--dc-card-grid-item-break`,
+  `--dc-card-grid-row-tall`, `--dc-card-grid-media-tall`,
+  `--dc-card-grid-media-wide`.
+
 - **Needs Gutterpress 0.11.20-alpha.3 or later**, the first with PDF/X
   `preserve-text`, which the translucent styles below print with. The
   requirement is in `package.json`'s `engines.gutterpress`: a Gutterpress

@@ -361,13 +361,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-specialty-card-bg` | `--paper-cream` | Card background |
-| `--dc-specialty-card-border` | `--hud-blue` | Card border color |
 | `--dc-specialty-card-accent` | `--crimson` | Card accent |
 | `--dc-specialty-card-fg` | `--ink` | Card text |
 | `--dc-specialty-card-media-height` | `0.85in` | Portrait image height |
 | `--dc-specialty-card-media-width` | `0.75in` | Portrait image width |
 | `--dc-specialty-card-title-align` | `right` | Name heading alignment |
-| `--dc-specialty-card-band-height` | `16pt` | Accent band height |
+| `--dc-specialty-card-band-bg` | the accent | Name band fill (in a specialty: its banner colour) |
+| `--dc-specialty-card-band-fg` | `--paper-cream` | Type on the name band |
+| `--dc-specialty-card-band-shape` | `none` | Name band clip (in a specialty: its banner cut) |
+| `--dc-specialty-card-shell-shape` | a chamfer | The sheet's silhouette (in a specialty: its banner's) |
+| `--dc-specialty-card-pad-x` | `0.18in` | The sheet's side padding (the band bleeds out over it) |
 
 ### Block (`.dc-block`)
 | Token | Default | Role |

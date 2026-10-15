@@ -6,9 +6,14 @@
 > divider, the spray smudge, the pull-quote accent and the AP-chip and
 > outcome-key bevels are translucent again (see CHANGELOG, Unreleased).
 > Text colours stay pre-mixed: a translucent glyph prints opaque on a split
-> page. The wall tile stays opaque and `--wall-tone` is gone. The table
-> records the opaque values from the 1.7 series; some of those components have
-> since been redesigned.
+> page. The wall tile stays opaque and `--wall-tone` is gone. 1.8.0 adds
+> more translucent artwork on top: soft lifts (`--shadow-lift`, the section's
+> `--dc-section-lift`), soft insets (`--shadow-press`), a translucent section
+> hard shadow and tape, the band and tab gloss (`--light-gloss`) and a wall
+> vignette over the tile (`--light-wall`). No `filter` sits on an element
+> that holds text (a convention test enforces it). The table records the
+> opaque values from the 1.7 series; some of those components have since been
+> redesigned.
 
 **Why this exists.** PDF/X-1a, the format DriveThruRPG accepts for print, has no transparency. Ghostscript flattens any page that uses it into a single raster image. That page loses its live text and embedded fonts, and gutterpress's `pdfx.blackText: k-only` rewrite (black text on the black plate only) can't reach its text. This package used transparency in 26 places: an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`. On the Field Guide, **185 of 232 pages** came out image-only.
 
