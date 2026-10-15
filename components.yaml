@@ -90,7 +90,7 @@ components:
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
-    notes: "One shell, seven registers, told apart by silhouette, fill value, edge and label (in colour and in grayscale): note (HUD blue, blue rail, machined chamfers), warning (sign-plate octagon, light cream, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (ink file folder with a tab, cyan rail and chip, Dream Master only), vibe (barely violet sheet, long shallow diagonals, one dashed violet edge, tape strip, italic), origin (warm paper, torn bottom edge, dog-ear, rust rail, worn crimson stamp label), visit (wobbly fungi-green signpost, map-pin label), example (ticket V notch, dashed cyan rail, taped-on tag). Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
+    notes: "One shell, seven registers, told apart by silhouette, fill value, edge and label (in colour and in grayscale): note (HUD blue, blue rail, machined chamfers), warning (sign-plate octagon, light cream, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (ink file folder with a tab, cyan rail and chip, Dream Master only), vibe (barely violet sheet, long shallow diagonals, one violet edge, tape strip, italic), origin (warm paper, torn bottom edge, dog-ear, rust rail, worn crimson stamp label), visit (wobbly fungi-green signpost, map-pin label), example (ticket V notch, cyan rail, taped-on tag). Every label is a raised chip (--dc-alert-label-shadow). A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
     status: live
@@ -150,7 +150,7 @@ components:
     css: styles/components/data.css
     tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-accent-width, --dc-definition-block-shape, --dc-definition-block-fg, --dc-definition-block-term, --dc-definition-block-style, --dc-definition-block-frame, --dc-definition-block-rule-bottom, --dc-definition-block-pad]
     breaks: "break-inside: avoid (via .dc-prose-panel); a block holding several #### entries may split between them"
-    notes: "The one box for a term, a glossary and a boxed note with its own heading. A dictionary page: cream, a heavy HUD-blue rule over and a hairline under, a hard shadow, no rail and no cut corners; the bold lead (`**Term:**`) is the blue headword. A run of `#### Term` entries reads as a glossary (display-caps headword, dashed rule between entries); `---` inside is the same dashed rule. It absorbed @glossary and @sidebar-box. For a plain term list a markdown definition list needs no macro."
+    notes: "The one box for a term, a glossary and a boxed note with its own heading. A dictionary page: cream, a heavy HUD-blue rule over and a hairline under, a hard shadow, no rail and no cut corners; the bold lead (`**Term:**`) is the blue headword. A run of `#### Term` entries reads as a glossary (display-caps headword, a rule between entries); `---` inside is the same rule. It absorbed @glossary and @sidebar-box. For a plain term list a markdown definition list needs no macro."
 
   - name: definition-lucid
     status: live
@@ -186,7 +186,7 @@ components:
     css: styles/components/data.css
     tokens: [--dc-steps-accent, --dc-steps-surface]
     breaks: "the list may break between steps; a step (li) is never cut"
-    notes: "An instruction plate: cream surface, 2px ink frame, hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold ink leads, dashed dividers; never text on the wall. Declared marker; no element of its own (its wrapper renders nothing), each numbered list inside is the step list. Left open at the end of the file it warns (declared_marker_eof_close); with no numbered list inside it is reported."
+    notes: "An instruction plate: cream surface, 2px ink frame, hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold ink leads, ruled dividers; never text on the wall. Declared marker; no element of its own (its wrapper renders nothing), each numbered list inside is the step list. Left open at the end of the file it warns (declared_marker_eof_close); with no numbered list inside it is reported."
 
   - name: block
     status: live
@@ -293,7 +293,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A vehicle: an industrial plate, cold concrete with chamfers, an ink inset frame, a dotted seam of rivets, a yellow rail and slanted yellow badge. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
+    notes: "A vehicle: an industrial plate, cold concrete with chamfers, an ink inset frame, an inner seam, a yellow rail and slanted yellow badge. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
 
   - name: drug
     status: live
@@ -849,7 +849,7 @@ components:
   - name: human-callout
     status: live
     origin: author
-    description: "A boxed NPC contact card (blue ID header band, dashed strip foot), usually floated inside a .dc-sidebar (raw HTML div)."
+    description: "A boxed NPC contact card (blue ID header band, ink strip foot), usually floated inside a .dc-sidebar (raw HTML div)."
     recipe: "raw <div class=\"dc-sidebar\"><div class=\"dc-human-callout\">…  (NPC sidebar)"
     emits: div.dc-human-callout
     css: styles/components/images.css
@@ -1017,7 +1017,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-choose
     css: [styles/components/section.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
-    notes: "A printed, stamped form, not a panel: a paper sheet a hair lighter than cream (--paper-form), a dashed ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no shadow layer, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Your choice' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
+    notes: "A printed, stamped form, not a panel: a paper sheet a hair lighter than cream (--paper-form), recessed (sunk into the wall: a cast shadow along its top, a light lip on its bottom and right) in an ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no drop shadow, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Your choice' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
 
   - name: faction
     status: live

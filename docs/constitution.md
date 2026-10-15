@@ -362,9 +362,15 @@ A section kind is read from its bar, its sheet and its silhouette before its wor
 |---|---|---|---|---|
 | `panel` | solid accent bar | cream | one larger chamfer (top right), a chipped bottom-left corner | the chapter accent (magenta by default; the only kind chapters re-theme) |
 | `reference` | pale HUD band ruled in ink above and below (a machined spec-sheet header) | pale blue wash, tight 10pt rows | four small even machined chamfers | HUD blue: a look-up |
-| `lore` | deep violet bar, torn along the top | lilac | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | violet: the world |
-| `dm` | ink bar with a cyan rule, a cyan rail | cold concrete | a file-folder tab in the box's own top band (it carries *Dream Master*, cyan on ink; its own layer, so a page break cannot strand it) and one opposite corner cut, bottom right | cyan on ink: Dream Master only. The tab is drawn with or without a heading |
-| `choose` | none: a form | a paper sheet barely lighter than cream (`--paper-form`) | a ticket: a V punched in the middle of each side, a perforated foot, a dashed ink edge, no shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Your choice* stamp; dotted write-in rules. A printed, stamped form, not a web control |
+| `lore` | deep violet bar, torn along the top | lilac, recessed | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | violet: the world |
+| `dm` | ink bar with a cyan rule, a cyan rail | cold concrete, recessed | a file-folder tab in the box's own top band (it carries *Dream Master*, cyan on ink; its own layer, so a page break cannot strand it) and one opposite corner cut, bottom right | cyan on ink: Dream Master only. The tab is drawn with or without a heading |
+| `choose` | none: a form | a paper sheet barely lighter than cream (`--paper-form`) | a ticket: a V punched in the middle of each side, a perforated foot, an ink edge, recessed (sunk into the wall: a cast shadow along the top, a light lip on the bottom and right), no drop shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Your choice* stamp; dotted write-in rules. A printed, stamped form, not a web control |
+
+**Hung or sunk.** `panel` and `reference` hang on the wall like posters (a hard drop shadow). `lore`, `dm` and `choose` are recessed, sunk into the wall: no drop shadow, the wall's top edge casting a hard shadow down over the sheet's top and its title bar (the rail stays clear), and a light lip along the bottom and right (`--dc-section-recess`, `-recess-depth`, `-shade`, `-lip`). All vector, opaque inset shadows.
+
+**Edges carry the kind by shape and colour.** Clip-path silhouettes and border colour are the primary way a kind is told apart; dashed and dotted borders are kept for the few places where the dash is the object itself: the warning's hazard-stripe rail and the enforcer's hazard band, stencil lines (the `##` slip foot, `.dc-spray`), write-in rules on a form, the origin stamp's worn ring, the side-effect field frame, link and ROLL THE DIE! underlines, and the tech specialties' LED tick rules. Everything else is a solid edge.
+
+**Labels are raised.** Every label (an alert label, a section tab or stamp, a block tag, a choice chip, a faction or entry badge, a field label, a tier pill, a price tag, a die chip) stands off the element it sits on with a hard 2px ink shadow (`--dc-label-shadow`), or, where a clip-path would cut an outer shadow, the same ink as an inset bottom-and-right edge (`--dc-label-edge`).
 
 Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow) is distinct from all of these. A bare `@section` (no variant word) is a plain sheet of paper under the text: no text is ever set straight on the brick wall. Every section kind sets `--dc-accent-ink`, the text-safe ink of its accent (the accent mixed 72% toward ink, so a chapter that re-themes the accent re-themes it; dm sets HUD blue, slate a light tint of crimson on its dark body), which `ROLL THE DIE!` and other accent text read.
 
@@ -372,12 +378,12 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 - `.dc-panel`: HUD-blue band, symmetric hex chamfers. Player-facing rules summaries, structured data.
 - `.dc-slate`: a sign plate: octagonal corners in a heavy crimson frame, an ink body, a **blood** band with a crimson rule and a stamped (double-edged) *Binding* tag. Binding rulings, Dream Master directives that settle an argument. Not magenta and not cyan, so it cannot be mistaken for `dm`.
-- `.dc-shard`: light zine paper (`--paper-zine`), a torn (zig-zag) foot and a dog-eared corner, a taupe label strip with an ink title and a dashed rule, no accent hue. Fiction, atmosphere, setting asides.
+- `.dc-shard`: light zine paper (`--paper-zine`), a torn (zig-zag) foot and a dog-eared corner, a taupe label strip with an ink title and a solid rule, no accent hue. Fiction, atmosphere, setting asides.
 
 ### Choice cards (`@flaws`, `@ideals`, `@dreams`)
 
 - A choice card says which choice it is. The enclosing kind sets `--dc-choice-accent/-tint/-kind` and the card's shape; the card reads them.
-- **Flaw** = blood, the darkest sheet with a heavy dashed edge, a deep crack (a 40x26px nick and a foot jagged up to 13px) and a blood-tinted quote. **Ideal** = HUD blue, the mid sheet with a clean solid edge, a steady ticket stub (14px V notches in each side), a rule under the name. **Dream** = violet, the lightest sheet with a double edge, a top edge rising 30px to the right and a perforated foot (two V tears). The three differ in fill value and edge weight, so they differ in grayscale. Siblings differ in silhouette; the two ticket shapes mean "a choice", the torn one "a cost".
+- **Flaw** = blood, the darkest sheet with a heavy solid edge, a deep crack (a 40x26px nick and a foot jagged up to 13px) and a blood-tinted quote. **Ideal** = HUD blue, the mid sheet with a clean solid edge, a steady ticket stub (14px V notches in each side), a rule under the name. **Dream** = violet, the lightest sheet with a double edge, a top edge rising 30px to the right and a perforated foot (two V tears). The three differ in fill value and edge weight, so they differ in grayscale. Siblings differ in silhouette; the two ticket shapes mean "a choice", the torn one "a cost".
 - The choice chrome is scoped to a card inside `@flaws`/`@ideals`/`@dreams`; any other `.dc-card` (a gear entry, a faction) keeps the plain card. Each choice carries a 6px rail and 5px top band in the kind colour, a 1.5pt ink edge, a one-word mono chip (10pt semibold, reversed) (FLAW / IDEAL / DREAM) over the name, and the closing quote in a kind-tinted well (ink on it, never grey `--paper-stain`).
 - The card name is the first `####` (core converts only that heading to `.dc-card-heading`). Write `####`; a `###` is dressed the same but is not the card heading.
 
@@ -439,12 +445,12 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 | `note` | HUD-blue dim (mid) | machined 6px chamfers on all four corners, one chipped notch (player rules) | blue rail | plain mono caps |
 | `warning` | light warm cream | sign plate: octagon, 12px cuts (danger) | 14px yellow/ink hazard-stripe rail, 3px ink frame with a 2px crimson second pass out of register | yellow caution-tape chip with ink type, rotated -1.5deg |
 | `dm` | ink-dark (darkest) | file folder: a 12px tab over the left 42% and one cut corner (classified) | 3px cyan rail | cyan chip with ink type, top right (Dream Master only) |
-| `vibe` | barely violet (light, flat) | long shallow diagonals at two opposite corners (the world) | one dashed violet edge all round, no rail, a tan tape strip on top | violet, underlined; italic voice |
+| `vibe` | barely violet (light, flat) | long shallow diagonals at two opposite corners (the world) | one violet edge all round, no rail, a tan tape strip on top | violet-edged chip; italic voice |
 | `origin` | warm paper (light) | torn bottom edge and a 16px dog-ear (backstory) | rust rail | crimson double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg; italic second-person voice |
 | `visit` | fungi green (dark) | wobbly organic polygon ending in a signpost point (a place) | none | map-pin glyph + underlined caps |
-| `example` | cream (light) | ticket: a V notch in the right edge (a sample) | dashed cyan rail | taped-on tag |
+| `example` | cream (light) | ticket: a V notch in the right edge (a sample) | cyan rail | taped-on tag |
 
-- Flat solid fill — no tonal gradient, no inset cream stroke on the paper registers (the Pass 6 attempt stays reverted). The warning's ink frame is a hard ring and the vibe's edge a single dashed line, not a double stroke on a fill. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
+- Flat solid fill — no tonal gradient, no inset cream stroke on the paper registers (the Pass 6 attempt stays reverted). The warning's ink frame is a hard ring and the vibe's edge a single line, not a double stroke on a fill. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
 - Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is ever cut. Every variant sets `--dc-accent-ink`, the text-safe ink of its own accent on its own surface (note a 50% HUD-blue/ink mix, warning and origin `--blood`, dm `--hud-blue-bright`, vibe `--brand-violet`, visit `--fungi-glow`, example `--hud-blue-dark`); the lede sets it from `--dc-intro-ink`.
 - Body copy is level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 10pt mono caps tracked 0.1–0.14em. Chaos is on the labels and edges only.
 - A chapter must NOT re-theme a callout's variant tokens: identity survives re-theming.
@@ -462,7 +468,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 Each kind has its own silhouette, top band, name colour and badge:
 - **megacorp**: machined: a blue rectangle with an L-shaped step out of the top right and bottom left, cool wash, an ink-blue band with a cyan edge, blue name, square badge. Bands are drawn as solid inset shadows (vector), never gradients.
 - **cabal**: violet, long asymmetric slashes (shallow top-right, steep bottom-left: lore's cuts mirrored), lilac sheet, deep-violet band, an inset violet shadow.
-- **cult**: blood, torn top and foot, a dashed (broken) rail, blood band, pale blood wash, blood name.
+- **cult**: blood, torn top and foot, a blood rail, blood band, pale blood wash, blood name.
 - **enforcer**: a sign plate: an octagon in a heavy ink frame, an ink-and-yellow hazard-stripe band (a yellow strip under a skewed thick dashed ink border: vector), the name set as a yellow label in ink, an ink badge with yellow type.
 
 ### Fiction excerpt
@@ -472,10 +478,10 @@ Each kind has its own silhouette, top band, name colour and badge:
 ### Entry cards by kind (`@gear` and its kinds)
 
 Each kind is a silhouette, a surface value, a mark, a badge and a name colour, not a rail colour alone:
-- **gear**: a hang tag — a paper card in a heavy ink frame, top-left and bottom-right clipped, a rust rail and badge, a ring eyelet, the bold price line stamped as a dashed price tag. No tan: cool paper, hard against the wall.
+- **gear**: a hang tag — a paper card in a heavy ink frame, top-left and bottom-right clipped, a rust rail and badge, a ring eyelet, the bold price line stamped as a raised, rust-edged price tag. No tan: cool paper, hard against the wall.
 - **augment**: a spec chip — the lightest cool plate, a stepped PCB notch top-right, a cyan top rule, a teal name.
 - **treasure**: a gem — pale amethyst, an octagon cut, one hard two-tone facet, a violet rail, a hexagon badge.
-- **vehicle**: an industrial plate — concrete, octagonal 12px cut corners, a heavy 3px ink inset frame, a dotted seam of rivets, a yellow rail and badge. No hazard stripes: those are the danger register's.
+- **vehicle**: an industrial plate — concrete, octagonal 12px cut corners, a heavy 3px ink inset frame, an inner seam, a yellow rail and badge. No hazard stripes: those are the danger register's.
 - **drug**: a prescription label — an irregular, wobbling organic outline, lime tint, one frame (a fungi-green head band and rail), an "Rx · Drug" pill badge, a green name.
 
 An entry never splits across pages.
@@ -490,7 +496,7 @@ One chip family (the same slanted-edge label chip) for all six. What each means 
 
 ### Procedure (`@procedure`)
 
-An instruction plate, not a tinted list: a cream surface, a 2px ink frame, a hard shadow, a solid HUD-blue number strip down the left (reversed 12pt mono numerals), step text in ink at 10pt, dashed dividers, bold leads in `--ink` (not red), and a staple holding the plate to the wall (the grit cue). Text never sits on the wall. The list may split between steps; each step stays whole.
+An instruction plate, not a tinted list: a cream surface, a 2px ink frame, a hard shadow, a solid HUD-blue number strip down the left (reversed 12pt mono numerals), step text in ink at 10pt, ruled dividers, bold leads in `--ink` (not red), and a staple holding the plate to the wall (the grit cue). Text never sits on the wall. The list may split between steps; each step stays whole.
 
 ### At-a-glance tile
 
@@ -521,7 +527,7 @@ Two variant words, `@definition lucid` and `@definition surreal`, are the two ro
 
 - **Tag** (`.dc-tag`): an inline chip — mono 10pt bold, 0.08em tracking, ink on cream with a 1px ink border and a 1px hard shadow; the same family as the AP chip and the class tag.
 - **Tape** (`.dc-tape`): a strip of masking tape — tan (`--brand-yellow` 30% in `--paper-aged`), torn ends, ink edges top and bottom, an ink label at 10pt, 0.2em tracking, crimson dashes either side.
-- **Human callout** (`.dc-human-callout`): a contact card — a blue ID header band, a 2px ink border, a poster shadow, a dashed ink strip foot. Floatable.
+- **Human callout** (`.dc-human-callout`): a contact card — a blue ID header band, a 2px ink border, a poster shadow, a solid ink strip foot. Floatable.
 
 ### Outcome row text-cell tether (Pass 5b finding)
 

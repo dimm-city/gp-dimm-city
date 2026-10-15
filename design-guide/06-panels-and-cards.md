@@ -78,7 +78,7 @@ The components below that are sections have a marker of their own and a word on 
 | A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers |
 | The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar with a slashed top-left corner and a torn top edge over a pale lilac sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
 | Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab in the box's top band that carries the words *Dream Master* in cyan (it never splits from the box at a page break), an ink title bar with a cyan rule and a cyan rail over a cold concrete body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
-| A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a paper sheet a hair lighter than cream, a dashed ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Your choice* stamp |
+| A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a paper sheet a hair lighter than cream, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Your choice* stamp |
 
 ```markdown {.dg-split}
 @section reference
@@ -259,7 +259,7 @@ Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title
 
 ## Definition
 
-A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an `@columns 2` run for a glossary of entries, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a display-caps headword in blue, with a dashed rule between entries. A `---` inside is the same dashed rule, and a bold lead (`**Term** — gloss`) needs nothing.
+A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an `@columns 2` run for a glossary of entries, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a display-caps headword in blue, with a rule between entries. A `---` inside is the same rule, and a bold lead (`**Term** — gloss`) needs nothing.
 
 ```markdown
 @definition
@@ -415,7 +415,7 @@ Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rul
 
 ## Procedure
 
-A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, dashed dividers, and a staple holding the plate to the wall. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
+A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, ruled dividers, and a staple holding the plate to the wall. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
 
 Tokens: `--dc-steps-accent` (the number strip), `--dc-steps-surface` (the plate).
 
@@ -1245,7 +1245,7 @@ Result {.dg-result}
 
 ## NPC sidebar
 
-A contact card floated beside prose: a `.dc-human-callout` inside a raw `.dc-sidebar`. It has a blue ID header band reading *Contact*, an ink border, a hard shadow and a dashed strip foot.
+A contact card floated beside prose: a `.dc-human-callout` inside a raw `.dc-sidebar`. It has a blue ID header band reading *Contact*, an ink border, a hard shadow and a solid ink strip foot.
 
 ```markdown
 <div class="dc-sidebar"><div class="dc-human-callout">

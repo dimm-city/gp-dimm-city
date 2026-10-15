@@ -55,7 +55,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 - `.dc-alert` — the one callout shell: seven registers (note, warning, dm, vibe, origin, visit, example), told apart by silhouette, fill value, edge and label
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, dashed strip foot), `.dc-origin-callout`, `.dc-visit-callout`, `.dc-example-callout`
+- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-visit-callout`, `.dc-example-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
 
@@ -69,8 +69,8 @@ Use this to choose the right callout type before reaching for a class name.
    └── Player-facing → continue ↓
 
 2. What is it?
-   └── A worked example              → dc-example-callout  (dashed cyan rail, taped-on label)
-   └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one dashed violet edge, italic)
+   └── A worked example              → dc-example-callout  (cyan rail, taped-on label)
+   └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one violet edge, italic)
    └── Backstory, in second person   → dc-origin-callout   (warm paper, torn edge, dog-ear, rust rail, worn crimson stamp)
    └── A place, present tense        → dc-visit-callout    (wobbly fungi-green signpost)
    └── Rules / mechanics             → continue ↓
@@ -306,7 +306,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink 8% in cream / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
-| `--dc-choice-edge` / `-band` / `-rail` | `1.5pt solid --ink-dark` / `5px` / `6px` | The card's border and the weight of its top band and left rail (flaw: dashed, 9px; dream: a 4pt double edge, 3px band) |
+| `--dc-choice-edge` / `-band` / `-rail` | `1.5pt solid --ink-dark` / `5px` / `6px` | The card's border and the weight of its top band and left rail (flaw: 2pt solid, 9px; dream: a 4pt double edge, 3px band) |
 | `--dc-faction-surface` / `-band` / `-band-height` / `-title` | `--paper-cream` / HUD-blue band image / `8pt` / `--hud-blue-dark` | A faction's sheet, top band (an image: `linear-gradient(c, c)` for solid) and name colour; each kind sets all of them |
 | `--dc-entry-radius` / `-mark` / `-mark-size` / `-frame` | `0` / `none` / `auto` / `none` | An entry kind's corner radius, background mark (eyelet, facet, hazard head) and inset keyline |
 | `--dc-entry-badge-bg` / `-fg` / `-shape` / `-radius` | `--ink-dark` / `--paper-cream` / `none` / `0` | The kind badge over the name |
@@ -375,7 +375,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-block-accent` | `--hud-blue-dark` | Block accent |
 | `--dc-block-title-bg` | `--hud-blue-dark` | Title bar background |
 | `--dc-block-title-fg` | `--paper-cream` | Title bar text |
-| `--dc-block-title-rule` | `none` | A whole `border-bottom` value under the band (slate: 3pt crimson; shard: 2pt dashed) |
+| `--dc-block-title-rule` | `none` | A whole `border-bottom` value under the band (slate: 3pt crimson; shard: 2pt solid) |
 | `--dc-block-tag` | `none` | A quoted word stamped on the band's right end (slate: "Binding") |
 | `--dc-block-tag-edge` | `1.5pt solid --paper-cream` | The tag's border (slate: `3pt double`, a worn stamp) |
 

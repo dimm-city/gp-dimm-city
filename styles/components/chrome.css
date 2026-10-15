@@ -332,10 +332,10 @@ h1.dc-chevron {
   margin: 20px 0 14px;
 }
 
-/* ── Dashed rule divider (hr) ─────────────────────────────────────────── */
+/* ── Rule divider (hr) ─────────────────────────────────────────── */
 hr {
   border: none;
-  border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
+  border-top: 1.5px solid color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
   margin: var(--space-lg) 0;
 }
 

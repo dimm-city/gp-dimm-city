@@ -210,10 +210,12 @@ div[class="section"] {
      right by the rail, over the rail colour pushed down by the edge. */
   background: var(--dc-section-bg);
   box-shadow:
+    var(--dc-section-recess),
     var(--dc-section-flag),
     inset var(--dc-section-rail) 0 0 var(--dc-section-accent),
-    var(--dc-section-rail) var(--dc-section-edge) 0 0 var(--dc-section-bg),
-    0 var(--dc-section-edge) 0 0 var(--dc-section-accent);
+    var(--dc-section-rail) calc(var(--dc-section-edge) - var(--dc-section-recess-foot)) 0 0 var(--dc-section-bg),
+    0 calc(var(--dc-section-edge) - var(--dc-section-recess-foot)) 0 0 var(--dc-section-accent),
+    0 var(--dc-section-edge) 0 0 var(--dc-section-recess-lip);
   /* Four chamfers; the bottom two sit on the hanging edge, not the box. */
   clip-path: polygon(
     var(--dc-section-cut-tl) 0,
@@ -363,6 +365,7 @@ h3 + .dc-section-panel {
   letter-spacing: 0.1em;
   background: var(--dc-section-tab-bg);
   color: var(--dc-section-tab-fg);
+  box-shadow: var(--dc-label-shadow);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -378,7 +381,7 @@ h3 + .dc-section-panel {
      reference  look it up, a PALE bar                    all four, small   HUD blue
      lore       the world, not the rules                  top left + bottom right, long   violet, lilac sheet
      dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
-     choose     a form to fill in: NO bar, lightest sheet, dashed edge, yellow "Your choice" stamp
+     choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Your choice" stamp
      catalog    a run of entries (entries.css)            both top
      npc-stat   a creature (below)                        both right
      citizen-walkthrough (below)                          top left
@@ -437,6 +440,30 @@ h3 + .dc-section-panel {
 }
 .dc-section-reference li {
   margin-bottom: 0.02in;
+}
+
+/* ── Recessed kinds: lore, dm, choose ─────────────────────────────────────────
+   These sit sunk into the wall instead of hung on it: no drop-shadow layer, the
+   wall's top edge casting a hard shadow down over the sheet's top (over its title
+   bar too; the left rail stays clear) and a light lip along its bottom and right. Vector and opaque box-
+   shadows. A panel's bottom padding hangs below its box as paint (the edge, see
+   the panel chassis), so the bottom lip is the foot of that edge: the sheet's
+   copy stops --dc-section-recess-foot short of it and the lip shows under it.
+   `choose` paints its own surface (edge 0), so its lip is the inset one. */
+:is(.dc-section-lore, .dc-section-dm) {
+  --dc-section-recess:
+    inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
+    inset -2px 0 0 0 var(--dc-section-recess-lip);
+  --dc-section-recess-foot: 2px;
+  --dc-section-shadow: none;
+}
+.dc-section-choose {
+  --dc-section-recess:
+    inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
+    inset -2px -2px 0 0 var(--dc-section-recess-lip);
+}
+:is(.dc-section-lore, .dc-section-dm) > :is(h2, h3):first-child {
+  box-shadow: inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade);
 }
 
 /* ── lore — the world ─────────────────────────────────────────────────────────
@@ -528,12 +555,9 @@ h3 + .dc-section-panel {
 .dc-section-dm :is(.dc-section-panel, .dc-section-flat) {
   --dc-section-top: 0px; /* the tab band is the folder's, not its nested sections' */
 }
-/* The surface starts below the tab band and keeps only the bottom-right cut; its
-   hard right and bottom edges are inset ink (the hanging shadow layer is the tab
-   instead). */
+/* The surface starts below the tab band and keeps only the bottom-right cut. */
 .dc-section-dm::before {
   top: var(--dc-section-top);
-  --dc-section-flag: inset -3px -3px 0 0 var(--ink-dark);
   clip-path: polygon(
     0 0,
     100% 0,
@@ -570,8 +594,8 @@ h3 + .dc-section-panel {
 
 /* ── choose — a form the player fills in ──────────────────────────────────────
    Not a panel: a printed form, stamped. A paper sheet barely lighter than the
-   panel's cream (`--paper-form`), no solid bar, no chamfers, no shadow layer. A
-   dashed ink edge (cut along the line), a title that is only ink on paper over
+   panel's cream (`--paper-form`), no solid bar, no chamfers, sunk into the wall
+   (see "Recessed kinds"). An ink edge, a title that is only ink on paper over
    a double rule in the chapter's accent, a hazard-yellow "Your choice" stamp, a
    dotted write-in rule under every row and a heavy ink tick box in front of
    every option. The accent stays the chapter's: it colours the rule only. */
@@ -589,7 +613,8 @@ h3 + .dc-section-panel {
   --dc-section-bar-rule: 3pt double var(--dc-section-accent);
   --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
   background: var(--dc-section-bg);
-  border: 2pt dashed var(--ink-dark);
+  border: 2pt solid var(--ink-dark);
+  box-shadow: var(--dc-section-recess);
   /* A ticket: a V punched out of the middle of each side and a perforated
      (square-notched) foot, as if it tears off. Padding clears the notches. */
   clip-path: polygon(
@@ -604,7 +629,7 @@ h3 + .dc-section-panel {
     0 100%,
     0 calc(50% + 8px), 8px 50%, 0 calc(50% - 8px)
   );
-  --dc-section-pad-bottom: 14pt;
+  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
 }
 .dc-section-choose.dc-section-panel > :is(h2, h3):first-child {
   margin: 0 0 var(--space-md);
@@ -629,7 +654,7 @@ h3 + .dc-section-panel {
   padding: 2px 8px 1px;
   background: var(--brand-yellow);
   border: 1pt solid var(--ink);
-  box-shadow: none;
+  box-shadow: var(--dc-label-shadow);
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
@@ -661,17 +686,20 @@ h3 + .dc-section-panel {
   background: var(--paper-form);
   vertical-align: -0.1em;
 }
-/* A run of choice cards (`@flaws`, `@ideals`, `@dreams`) with no heading is just
-   the cards: each carries its own kind, so the sheet draws nothing around them. */
-.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)) {
+/* A run of choice cards (`@flaws`, `@ideals`, `@dreams`) with no heading and
+   nothing in it but the cards is just the cards: each carries its own kind, so
+   the sheet draws nothing around them. One that also holds prose or a table
+   keeps its sheet, so no line of it sits on the wall. */
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card))) {
   --dc-section-pad-top: 0px;
   --dc-section-pad-right: 0px;
   --dc-section-pad-bottom: 0px;
   --dc-section-pad-left: 0px;
   background: none;
   border: 0;
+  box-shadow: none;
 }
-.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child))::before {
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::before {
   content: none;
 }
 /* A choice inside it keeps one card, never half of one. */
@@ -737,6 +765,7 @@ h3 + .dc-section-panel {
   margin-left: var(--space-md);
   padding: 1px 7px 0;
   border: var(--dc-block-tag-edge);
+  box-shadow: var(--dc-label-shadow);
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
@@ -821,7 +850,7 @@ h3 + .dc-section-panel {
   --dc-block-accent:    var(--ink-smoke);
   --dc-block-title-bg:  var(--paper-stain);
   --dc-block-title-fg:  var(--ink);
-  --dc-block-title-rule: 2pt dashed var(--ink-smoke);
+  --dc-block-title-rule: 2pt solid var(--ink-smoke);
   --dc-accent-ink: var(--ink-smoke);
   background: var(--paper-zine);
   padding-bottom: calc(var(--space-lg) + 4px);
@@ -946,6 +975,7 @@ h3 + .dc-section-panel {
   font-weight: 700;
   letter-spacing: 0.1em;
   line-height: 1.4;
+  box-shadow: var(--dc-label-shadow);
 }
 /* The closing quote: the choice's one line of voice. A well tinted with the
    card's own colour (not the page's grey), ink on it, a ruled edge. */
@@ -962,7 +992,7 @@ h3 + .dc-section-panel {
 
 /* The three choices differ in grayscale as well as colour: fill value, edge
    weight and how deep the silhouette bites. Flaw = the darkest sheet, a heavy
-   dashed (broken) edge and a deep crack; Ideal = the mid sheet, a clean solid
+   solid edge and a deep crack; Ideal = the mid sheet, a clean solid
    edge and deep V stubs; Dream = the lightest sheet, a double edge and a steep
    rise with perforated tears. Every cut is cleared by padding of cut + 2pt. */
 
@@ -971,7 +1001,7 @@ h3 + .dc-section-panel {
 .section.dc-flaws {
   --dc-choice-accent: var(--blood);
   --dc-choice-surface: var(--paper-light);
-  --dc-choice-edge: 2pt dashed var(--ink-dark);
+  --dc-choice-edge: 2pt solid var(--ink-dark);
   --dc-choice-band: 9px;
   --dc-choice-rail: 9px;
   --dc-choice-tint: color-mix(in srgb, var(--blood) 13%, var(--paper-light));
@@ -1076,6 +1106,7 @@ h3 + .dc-section-panel {
   background: var(--dc-faction-accent);
   color: var(--dc-faction-badge-fg);
   clip-path: var(--dc-faction-badge-shape);
+  box-shadow: var(--dc-label-edge);
 }
 
 /* Megacorp: clean corporate HUD. Hard rectangles, nothing cut, a precise blue
@@ -1117,10 +1148,6 @@ h3 + .dc-section-panel {
   --dc-faction-band-height: 12pt;
   --dc-faction-pad-bottom: 14pt;
   --dc-faction-title: var(--blood);
-}
-/* Worn: the rail is a broken (dashed) line, not a solid one. */
-.dc-card.dc-faction-cult {
-  border-left-style: dashed;
 }
 
 /* Enforcer: civic hazard, a SIGN PLATE. An octagon (a badge) in a heavy ink frame, a hazard-tape band of ink and
@@ -1351,7 +1378,7 @@ h3 + .dc-section-panel {
 }
 
 /* Secondary stat line — "Fodder — Medium" type+size, as a tag. Carries the
-   stat-summary divider: a dotted ink hairline AFTER this line and
+   stat-summary divider: an ink hairline AFTER this line and
    BEFORE the TRAITS h5 creates the visible skeleton
    (header → flavor quote → meta-stats → SEPARATOR → ability sections). */
 .dc-npc-stat blockquote + p + p {
@@ -1361,7 +1388,7 @@ h3 + .dc-section-panel {
   color: var(--dc-npc-stat-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-bottom: 0.75pt dotted var(--ink-dust);
+  border-bottom: 0.75pt solid var(--ink-dust);
   padding-bottom: 0.05in;
   margin-bottom: 0.06in;
 }

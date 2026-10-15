@@ -819,7 +819,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single dashed violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -844,7 +844,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 @callout example
 
-A worked example (`@callout example`, which has no blockquote form): a dashed cyan edge and a taped-on label.
+A worked example (`@callout example`, which has no blockquote form): a cyan rail and a taped-on label.
 
 @end-callout
 
@@ -1107,7 +1107,7 @@ Behind the screen: a file-folder tab that says Dream Master over an ink bar with
 
 ### Choose section
 
-A pick-one choice for the Citizen File, set as a form: the lightest sheet, a dashed ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Your choice* stamp:
+A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Your choice* stamp:
 
 - A first option.
 - A second option.
