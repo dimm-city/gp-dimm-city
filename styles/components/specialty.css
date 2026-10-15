@@ -174,67 +174,81 @@
 }
 
 /* Token contract for .dc-specialty-card:
-     --dc-specialty-card-bg            → card body background (default --paper-cream)
-     --dc-specialty-card-border        → outer card border color (default --hud-blue)
-     --dc-specialty-card-accent        → inner accent rule color (default --crimson)
+     --dc-specialty-card-bg            → the sheet's paper (default --paper-cream)
+     --dc-specialty-card-accent        → the tagline's rule (default --crimson)
      --dc-specialty-card-fg            → body text color (default --ink)
+     --dc-specialty-card-band-bg / -fg → the name band and the type on it
      --dc-specialty-card-media-width   → portrait image width (default 0.75in)
      --dc-specialty-card-media-height  → portrait image height (default 0.85in)
-     --dc-specialty-card-title-align   → title text-align (default right)
-     --dc-specialty-card-shell-shape   → outer clip-path polygon
-     --dc-specialty-card-shadow        → box-shadow (default none) — future-tech-high
-                                          specialties opt into LED-rim inset highlight here
-   Specialty themes override via .dc-specialty.<name> .dc-specialty-card { }. */
+     --dc-specialty-card-title-align   → tagline text-align (default right)
+     --dc-specialty-card-shell-shape   → the sheet's silhouette (clip-path)
+     --dc-specialty-card-band-shape    → the band's silhouette (clip-path)
+   Inside a .dc-specialty the wiring (specialty-identity.css) sets them from
+   the specialty: the sheet is cut like its path banner, and the band is the
+   banner's own colour and cut, so a card reads as the same family as that
+   specialty's skill cards. */
 
 /* ── Specialty card (.dc-specialty-card + descendants + nth-of-type(even)) */
 /* Token defaults for .dc-specialty-card are declared in :root in dc-component-defaults.css.
    Specialty contexts override via .dc-specialty.<name> .dc-specialty-card { } above. */
+/* The path banner's construction (data.css .dc-path-shell): the element is
+   unclipped, the paper is ::before cut to the silhouette, a 2px ink outline is
+   ::after (the silhouette on a box 2px larger), and the name is a band clipped
+   to the banner's own cut. Its soft lift is this element's box-shadow, which
+   paints first in its own stacking context, under both layers; it is pulled in
+   (negative spread) so it never shows past a cut corner. */
 .dc-specialty-card {
-  /* Only the optional per-specialty inset shadow (LED rim) is declared:
-     clip-path below clips this element's own outer box-shadow, so a
-     --shadow-poster layer here would never paint. */
-  box-shadow: var(--dc-specialty-card-shadow);
-  /* Poster-header pattern: thick colored TOP border = the specialty's
-     header ribbon. paper-cream body below = the printed flyer substrate.
-     Title h3 + body content sit inside the padding box, naturally below
-     the border (which is part of the box model, not content area).
-     This puts the specialty signature in the band + title color + side
-     border — NOT in the card body. Reads as a printed poster pasted on
-     the brick wall, not a painted plaque. */
-  background: var(--dc-specialty-card-bg);
+  box-shadow: var(--shadow-lift);
   color: var(--dc-specialty-card-fg);
   /* flow-root for the dense card; flex (a column) for the poster card of the
-     specialty-catalog page, where the portrait is ordered above the name. */
+     specialty-catalog page, where the portrait sits under the band. */
   display: var(--dc-specialty-card-display);
   flex-direction: column;
-  overflow: hidden;
   line-height: var(--lh-tight);
   /* Card spacing: --dc-card-gap plus 4px (layout, not shadow clearance).
      .dc-card-grid resets this to 0 — the grid packs cards deliberately tight
      and owns its own spacing. */
   margin: 0 0 calc(var(--dc-card-gap) + 4px) 0;
-  padding: 0.14in 0.18in 0.18in 0.18in;
+  /* Top: the outline's 2px rim; the band starts under it and reaches out
+     through the side padding to the sheet's edges. */
+  padding: 2px var(--dc-specialty-card-pad-x) 0.18in;
   position: relative;
+  isolation: isolate;
   break-inside: avoid;
-  border: 1.5pt solid var(--dc-specialty-card-border);
-  border-top: var(--dc-specialty-card-band-height) solid var(--dc-specialty-card-accent);
-  border-left: 3pt solid var(--dc-specialty-card-accent);
-  /* The top band gets a small chip cut at the upper-right to break the flat
-     rectangle reading. Per-specialty --dc-specialty-card-shell-shape takes
-     precedence over the default 12px chamfer at the top-right corner. */
+}
+
+.dc-specialty-card::before {
+  content: '';
+  position: absolute;
+  inset: 2px 0 0;
+  background: var(--dc-specialty-card-bg);
   clip-path: var(--dc-specialty-card-shell-shape);
+  z-index: -1;
+}
+
+.dc-specialty-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  background: var(--ink);
+  clip-path: var(--dc-specialty-card-shell-shape);
+  z-index: -2;
 }
 
 /* Portrait. By default a small image floated beside the text (the dense
    card); the specialty-catalog page sets the tokens for a full-width frame
-   above the name. The wrapper (the paragraph the image sits in) is the frame:
+   above the name. The wrapper (the paragraph the image sits in) is the frame, and it is what floats:
    an ink mat (--dc-specialty-card-media-mat, 0 by default) clipped to the
    specialty's own cut (--dc-specialty-card-media-shape), over a paper-aged
    field, so it reads whether the picture loads or the field is empty. */
 .dc-specialty-card .dc-img-wrapper {
   order: var(--dc-specialty-card-media-order);
   position: relative;
-  margin: 0;
+  float: var(--dc-specialty-card-media-float);
+  margin: var(--dc-specialty-card-media-margin);
   padding: var(--dc-specialty-card-media-mat);
   background: var(--ink);
   clip-path: var(--dc-specialty-card-media-shape);
@@ -248,8 +262,7 @@
   border: none;
   padding: 0;
   box-sizing: border-box;
-  float: var(--dc-specialty-card-media-float);
-  margin: var(--dc-specialty-card-media-margin);
+  margin: 0;
   border-radius: 2px;
   background: var(--paper-aged);
   color: var(--ink);
@@ -280,18 +293,23 @@
    here, in the border, and in the body-accent rule — NOT in the card
    background. The card itself stays paper-cream so the colored elements
    read as ink on paper, not as a painted card. */
+/* The name is the specialty's band, as on its path banner: the banner's fill,
+   type colour and cut, spanning the sheet edge to edge, its padding the
+   deepest cut plus 2pt (data.css, the path banner). First in the poster card
+   too: the portrait sits under it. */
 .dc-specialty-card h3 {
-  margin: 0;
-  /* In the poster card (a flex column) the slack of a row's shorter card goes
-     above the name, between the portrait and the text, so the type block sits
-     at the foot with no dead cream under the pitch; in the dense card an auto
-     top margin is 0. */
-  margin-top: auto;
-  padding-top: 0;
+  order: -2;
+  position: relative;
+  margin: 0 calc(-1 * var(--dc-specialty-card-pad-x)) 0.1in;
+  padding: 12px 28px 7px 20px;
   border-top: 0;
+  background: var(--light-gloss), var(--dc-specialty-card-band-bg);
+  box-shadow: var(--dc-band-rim);
+  clip-path: var(--dc-specialty-card-band-shape);
+  overflow: clip;
   font-size: var(--dc-specialty-card-name-size);
-  color: var(--dc-specialty-card-title-color);
-  text-align: var(--dc-specialty-card-title-align);
+  color: var(--dc-specialty-card-band-fg);
+  text-align: left;
   /* A specialty's name is one word and sets on one line: a long one
      ("TECHNOSORCERER") broke mid-word and orphaned its last letter. The
      display face is tracked tighter instead (technosorcerer, the longest,
@@ -299,6 +317,22 @@
   white-space: nowrap;
   letter-spacing: -0.02em;
   overflow-wrap: normal;
+}
+
+/* The band's rule, as under the path banner: the register (LED dots, hazard
+   tape, a solid bar) from the --dc-band-* tokens the specialty sets. */
+.dc-specialty-card h3::after {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--dc-band-rule-bleed));
+  right: calc(-1 * var(--dc-band-rule-bleed));
+  bottom: 0;
+  height: var(--dc-band-rule-h);
+  box-sizing: border-box;
+  background: var(--dc-band-rule);
+  border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
+  box-shadow: var(--dc-band-reg);
+  transform: skewX(var(--dc-band-rule-skew));
 }
 
 /* Subtitle tagline — the specialty's "archetype label" (e.g.,
@@ -311,7 +345,11 @@
   border: none;
   border-bottom: 0.75pt solid var(--dc-specialty-card-accent);
   padding: 0 0.06in 0.03in;
-  margin: 0.02in 0 0.06in;
+  /* In the poster card (a flex column) the slack of a row's shorter card goes
+     above the tagline, between the portrait and the text, so the type block
+     sits at the foot with no dead paper under the pitch; in the dense card an
+     auto top margin is 0. */
+  margin: auto 0 0.06in;
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-style: normal;
@@ -336,17 +374,14 @@
   overflow-wrap: anywhere;
 }
 
-/* Even cards flip the border accent to the right. data-position is emitted by
-   the plugin (dcSpecialtyCardPositions), which counts every specialty card
-   in the document — :nth-of-type() would count within the DOM parent instead. */
+/* Even cards float the portrait right. data-position is emitted by the plugin
+   (dcSpecialtyCardPositions), which counts every specialty card in the
+   document — :nth-of-type() would count within the DOM parent instead. */
 .dc-specialty-card[data-position="even"] {
   --dc-specialty-card-title-align: left;
-
-  border-left: 1.5pt solid var(--dc-specialty-card-border);
-  border-right: var(--callout-border-width-small) solid var(--dc-specialty-card-accent);
 }
 
-.dc-specialty-card[data-position="even"] img {
+.dc-specialty-card[data-position="even"] .dc-img-wrapper {
   float: var(--dc-specialty-card-media-float-even);
   margin: var(--dc-specialty-card-media-margin-even);
 }
@@ -367,11 +402,16 @@
   counter-reset: dc-specialty;
 }
 
+/* A card spans one column or both (--dc-card-grid-item-span, 1 or 2); a page
+   may reorder the cards (--dc-card-grid-item-order) and break before one
+   (--dc-card-grid-item-break). */
 .dc-card-grid .dc-specialty {
   display: var(--dc-card-grid-item-display);
   flex-direction: column;
-  flex: 0 0 calc(50% - var(--gp-column-gap) / 2);
+  flex: 0 0 calc(50% * var(--dc-card-grid-item-span) + (var(--dc-card-grid-item-span) - 2) * var(--gp-column-gap) / 2);
   min-height: var(--dc-card-grid-row);
+  order: var(--dc-card-grid-item-order);
+  break-before: var(--dc-card-grid-item-break);
 }
 
 .dc-card-grid .dc-specialty-card {

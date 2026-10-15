@@ -38,8 +38,10 @@
   padding-right: 0;
   position: relative;
   /* Both pseudos sit at negative z-index; this is the stacking context that
-     keeps them behind THIS shell's content instead of behind the page. */
+     keeps them behind THIS shell's content instead of behind the page. It
+     paints its own soft lift first, under both. */
   isolation: isolate;
+  box-shadow: var(--shadow-lift);
 }
 
 /* Background + clip-path on ::before — the element itself stays unclipped so
@@ -109,7 +111,7 @@
    redrawn here. */
 .dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
-  background: var(--dc-path-title-bg);
+  background: var(--light-gloss), var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
   /* the slanted rule (::after) overhangs the band by --dc-band-rule-bleed; the
      clip-path trims it on paper, this keeps it out of the page's scroll width
@@ -693,7 +695,7 @@
    violet bands on opposite inner edges), the headword leaning. Body copy stays
    upright and unrotated; only the label leans. */
 .dc-definition-surreal {
-  --dc-definition-block-surface: var(--proxy-dark);  /* indigo-black */
+  --dc-definition-block-surface: var(--wirephreak-dark);  /* indigo-black */
   --dc-definition-block-accent: var(--brand-magenta);
   --dc-definition-block-accent-width: 0px;
   --dc-definition-block-rule-bottom: 0px;

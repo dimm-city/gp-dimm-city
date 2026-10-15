@@ -31,6 +31,8 @@ This is the single most-load-bearing visual principle. Every other component dec
 - **The page background is the WALL** — concrete-ash, gritty, urban, structural. It does not compete for attention.
 - **Components are objects HUNG on the wall** — posters glued up, LED panels bolted on, spray-painted sigils, stamped warnings, hand-pasted notices. Each has its own visual register, weight, and edges, but all share the same plane: applied to the wall.
 - **Components have separation from the wall** — drop shadows, hard edges, slight rotation or asymmetry, perceptible weight. They sit *on top of* the page, not *inside* it.
+- **Depth is two shadows: a hard contact and a soft lift.** The hard offset copy (`--shadow-ink`, the section's hard shadow) says the object is pasted flat; a soft, translucent `box-shadow` under it (`--shadow-lift`, `--dc-section-lift`) says it stands a little off the brick. Recessed things (the fiction cavity, `lore`/`dm`/`choose` panels) take a soft inset (`--shadow-press`) instead of a lift. Both are `box-shadow`, never `filter: drop-shadow()`: a filter on an element that holds text prints that text as a picture (§V production rules).
+- **Displays catch the light.** Title bands and skill-card tabs carry a top gloss (`--light-gloss`): a gradient over flat fill, never a sheen on text. The wall itself carries no light or vignette: Chromium paints an `@page` background image in the page area apart from the margins, so a gradient over the wall breaks with a hard edge at the margin line.
 - **Components do NOT bleed into the wall** — soft tinted backgrounds that fade into the page colour, low-contrast washes, "subtle web gradients" → all wrong. A poster has a hard edge against brick.
 - **The wall has texture; the posters have ink** — the page can carry concrete grain. Components are printed/displayed objects with their own surface.
 - **No text is ever printed directly on the wall.** Every glyph sits on a substrate: paper, a panel, a strip, a plate or a chip. That includes what an author writes with no component around it. A free-standing `#` is a banner in the chapter's accent; a `##` is a paper slip pasted to the wall (accent rail, dashed ink foot, hard shadow, masking tape over the foot); a `###` is a plainer tag that shrinks to its words and hangs in from the left (every second one hangs further, so a wall page reads as posters put up by hand); a `####` and below is a label slip that shrinks to its words; loose paragraphs, lists and quotes share one paper sheet per run; a `@columns` run of nothing but prose is one sheet. The folio, the chapter chip and the Citizen File running head are chips (see §IV). The design guide's explainer pages (`@page .dg-doc`) print plain on white and are the one exception: they are not wall pages.
@@ -119,9 +121,9 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 | Specialty | Future tech | Ancient magic | Landfill | Wonderland | Visual cues (title bands) |
 |---|---|---|---|---|---|
 | **Augmerc** | ████ HIGH | low | ██ mid | low | Signal-cyan band with an LED rim and a teal-black, cyan-ticked LED rule; hard angular stair-step cuts. Tech-heavy, street-salvaged. |
-| **Wirephreak** | ████ HIGH | low | ██ mid | low | Deep-magenta band, LED rim and a cyan, ink-ticked circuit rule; crisp circuit-jog clips. Decking + interference. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
+| **Wirephreak** | ████ HIGH | low | ██ mid | low | Electric-indigo band (a blue-violet of its own, clear of the world's violet), LED rim and a cyan, ink-ticked circuit rule; crisp circuit-jog clips. Decking + interference. |
 | **Cybersurgeon** | ████ HIGH | low | █ low | low | Cold chrome band with a bright rim and a ruler-scale rule, medical mono labels, blue-grey steel. Surgical precision. |
-| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: electric-indigo band (a blue-violet of its own, clear of the world's violet) with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. |
+| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: deep-magenta band with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
 | **Etherlock** | ██ mid | ████ HIGH | ██ mid | ██ mid | Citrine-yellow band with a pale refractive facet and a mid-gold rule. Secrets-as-currency, manifold magic. |
 | **Technosorcerer** | low | ████ HIGH | ████ HIGH | low | Scorch-orange band, darker scorch patch, torn bottom edge, no rule. Ritual worked on burnt scrap. |
 | **Streetwarden** | ██ mid | low | ██ mid | low | High-vis toxic-green band over a green-and-ink hazard-tape rule. Civic-warden register. |
@@ -160,7 +162,7 @@ Page furniture is a chip, never bare type, and stays level and legible:
 - **Placement**: both sit at the top of the footer band (the 0.875in bottom margin, measured from the sheet edge), 0.025in below the text block; the 0.225in chip ends exactly 0.625in from the sheet edge, on DriveThruRPG's 0.5in text minimum. On recto and verso, for every page word that prints them.
 - **Pagination** is a package duty, not the book's, wherever the rule holds for any book's content: text keeps three orphans and three widows, a card splits between ability rows, headings and dividers stay with what follows. See the per-spread verdict scheme (§XI): a page under about 40% full with no design reason, or a one- to three-line continuation, is a fault to fix in the package first and the book's forced breaks second. A rule that only holds for one book's content (a row or block count, a size guess) is never the package's: it goes in the book's own sheet.
 - **Citizen File running head**: an amber tab, cream type, same edge and shadow, hung 0.625in below the sheet top in a 0.875in top margin, ending at the top of the text block.
-- **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
+- **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Tape is translucent, so the edge it holds reads through it; text never is (§V). Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
 | Safe for chaos | Keep stable |
 |---|---|
@@ -217,7 +219,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 | `--brand-cyan` | `#00bcd4` | C70 M1 Y16 K0 = 87% | Augmerc accent, wirephreak's LED rule |
 | `--brand-yellow` | `#ffd700` | C1 M13 Y100 K0 = 114% | Brand radiant — etherlock accent, peak triumph |
 | `--brand-violet` | `#7030b8` | C69 M87 Y0 K0 = 156% | The world: lore, vibe, cabal, treasure. No specialty uses it |
-| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Proxy accent: an electric blue-violet of its own |
+| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Wirephreak accent: an electric blue-violet of its own |
 
 ### HUD / digital-display layer
 
@@ -261,7 +263,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 
 ### Specialty palette (per-specialty triad plus band and chip)
 
-Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. Measured TAC of the dark in the last column: every dark is ≤ 268%.
+Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Proxy's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Technosorcerer and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. Measured TAC of the dark in the last column: every dark is ≤ 268%.
 
 | Specialty | accent | mid | dark | band / on-band | Register lean | dark TAC |
 |---|---|---|---|---|---|---|
@@ -270,8 +272,8 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 | streetwarden | `#4db840` toxic-civic | `#347828` | `#294c1f` | accent / ink | tech mid + landfill mid | 268% |
 | gutterdruid | fungi-glow | `#4d6020` | `#394017` | accent / ink | landfill HIGH + wonderland HIGH | 268% |
 | cybersurgeon | `#a8b4b8` chrome | `#606870` | `#303840` | accent / ink | future-tech HIGH | 246% |
-| wirephreak | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | future-tech HIGH + landfill mid | 156% |
-| proxy | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | tech HIGH + magic HIGH | 268% |
+| wirephreak | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | future-tech HIGH + landfill mid | 268% |
+| proxy | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | tech HIGH + magic HIGH | 156% |
 | etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 267% |
 | dualist | crystal-aqua | `#2a6878` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 252% |
 | generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 265% |
@@ -289,6 +291,8 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
 - Avoid rich black for small text.
+- **Translucency is for artwork, never text.** Shadows, tints, tape and the wall light may be translucent; a PDF/X build sets Gutterpress's `pdfx.transparency: preserve-text`, which rasterises that artwork at print resolution and keeps the text live. Text colours stay opaque (a convention test enforces it).
+- **No `filter` on an element that holds text.** Chromium prints the text of a filtered element as a picture, in the plain PDF as well. A filter may sit only on a text-free `::before`/`::after` layer (a convention test enforces it).
 
 ---
 
@@ -396,21 +400,18 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - The **tier pill** on the tab (AUG1.3) is the specialty's own chip (`--spec-chip-*`), not a position colour. There is no bronze/gold/silver and no featured-card variant: every card is the same card.
 - The flavor line's rail is the specialty's mid colour.
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
-- A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep teal for augmerc, deep magenta for wirephreak, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
+- A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep teal for augmerc, deep magenta for proxy, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
 - Body and ability text ≥ 10pt; chip and tab labels at the 10pt floor too.
 
 ### Specialty cards (the 10-card grid + profile shells)
 
-- **Surface**: paper poster register — paper-cream substrate with a printed colored header. The full-dark-fill pattern was over-styled; specialty color lives in the **header band + title + thick left border**, NOT the card body.
-- Card body: `--paper-cream` (default). Body text: `--ink`. Reads as a printed flyer pasted on the brick wall.
-- **Colored header band**: thick top border (~16pt) in the specialty's bright band colour (`--spec-band`). This is the specialty's primary visual signature at grid scale.
-- **Colored title**: the h3 title is the specialty's dark, set on one line (a name such as TECHNOSORCERER is tracked tighter, never wrapped).
-- **Thick colored left border** (3pt) in the band colour — secondary signature, vertical anchor.
-- **Outer 1.5pt border** in the specialty's mid color — frame.
-- Per-specialty clip-path geometry — secondary identity cue, in the same language as the skill cards (see "Specialty silhouettes"); every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
-- **The catalog is a spread.** On `@page specialty-catalog` the ten cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and six the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
+- **Surface**: the specialty's own learning-path banner, as a sheet. A specialty card reads as the same family as that specialty's skill cards and path banner: the same colour and the same cut.
+- Card body: `--paper-cream` (aged or light paper where the specialty's skill cards use it). Body text: `--ink`. An ink outline cut in the banner's silhouette (`--dc-path-shell-clip`), with a soft lift off the wall.
+- **Title band**: the name on the specialty's band colour (`--spec-band`, type `--spec-on-band`), cut in the path banner's title shape (`--dc-path-title-shape`), with the band's top gloss and rule. This is the specialty's primary visual signature at grid scale. The name is set on one line (a name such as TECHNOSORCERER is tracked tighter, never wrapped).
+- Every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
+- **The catalog is a spread.** On `@page specialty-catalog` the cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and four the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Dualist and Generalist, the two specialties built from the others, span both columns as the last row of each page (Dualist on the left, Generalist on the right) whatever order the book lists them in, as dense cards with the portrait beside the text. The right page's rows and portraits are taller, since it has no title above them. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
 - **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths — all Pass 6/7/8 experiments were rejected by user-eye review as over-styling. Restraint wins.
-- The rule: **specialty color belongs in border, title, and at most a tint of the substrate** — not as a saturated fill across the entire card.
+- The rule: **specialty color belongs in the band, the cut, and at most a tint of the substrate** — not as a saturated fill across the entire card.
 
 ### Title bands (learning-path banner, specialty-intro title)
 

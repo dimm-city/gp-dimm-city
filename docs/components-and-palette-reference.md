@@ -222,7 +222,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
 | `--brand-violet` | `#7030b8` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
-| `--signal-indigo` | `#4430e0` | Electric indigo — proxy accent |
+| `--signal-indigo` | `#4430e0` | Electric indigo — wirephreak accent |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -361,13 +361,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-specialty-card-bg` | `--paper-cream` | Card background |
-| `--dc-specialty-card-border` | `--hud-blue` | Card border color |
 | `--dc-specialty-card-accent` | `--crimson` | Card accent |
 | `--dc-specialty-card-fg` | `--ink` | Card text |
 | `--dc-specialty-card-media-height` | `0.85in` | Portrait image height |
 | `--dc-specialty-card-media-width` | `0.75in` | Portrait image width |
 | `--dc-specialty-card-title-align` | `right` | Name heading alignment |
-| `--dc-specialty-card-band-height` | `16pt` | Accent band height |
+| `--dc-specialty-card-band-bg` | the accent | Name band fill (in a specialty: its banner colour) |
+| `--dc-specialty-card-band-fg` | `--paper-cream` | Type on the name band |
+| `--dc-specialty-card-band-shape` | `none` | Name band clip (in a specialty: its banner cut) |
+| `--dc-specialty-card-shell-shape` | a chamfer | The sheet's silhouette (in a specialty: its banner's) |
+| `--dc-specialty-card-pad-x` | `0.18in` | The sheet's side padding (the band bleeds out over it) |
 
 ### Block (`.dc-block`)
 | Token | Default | Role |
@@ -388,7 +391,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 Project-specific. A different project using this component library replaces this block with its own identity tokens; the pillar palette and component defaults above remain untouched.
 
 ### Specialty Accents
-Every specialty also sets `--spec-band` (the title-band fill: the accent, except Wirephreak's `--brand-magenta-deep`), `--spec-on-band` (ink or cream, at least 4.5:1 on the band) and the tier chip `--spec-chip-bg`, `-fg` and `-edge`.
+Every specialty also sets `--spec-band` (the title-band fill: the accent, except Proxy's `--brand-magenta-deep`), `--spec-on-band` (ink or cream, at least 4.5:1 on the band) and the tier chip `--spec-chip-bg`, `-fg` and `-edge`.
 
 | Specialty | Accent | Mid | Dark |
 |---|---|---|---|
@@ -397,8 +400,8 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 | Streetwarden | `#4db840` | `#347828` | `#294c1f` |
 | Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#394017` |
 | Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
-| Wirephreak | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
-| Proxy | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
+| Wirephreak | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
+| Proxy | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
 | Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
 | Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |

@@ -12,14 +12,30 @@
   --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels · TAC 32% (C10 M9 Y13 K0) */
   --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
-  /* Poster-wall shadow — hard offset, no blur. Pins paper-register
-     components to the wall as physical objects, "stuck on the wall"
-     rather than "embedded in the page." */
-  /* Translucent, so the wall's texture darkens under it. A PDF/X build
+  /* Poster-wall shadow — a hard offset that pins paper-register components to
+     the wall as physical objects ("stuck on the wall", not "embedded in the
+     page"), over a soft lift (below).
+     Translucent, so the wall's texture darkens under it. A PDF/X build
      flattens the pages that use transparency and keeps their text live
      (Gutterpress #385; see docs/print-transparency-inventory.md). */
   --shadow-ink: color-mix(in srgb, var(--ink) 28%, transparent);
-  --shadow-poster: 2pt 3pt 0 var(--shadow-ink);
+  /* Depth (PDF/X preserve-text keeps text live over soft effects; see
+     docs/constitution.md §II "Depth"). Anything hung on the wall casts two
+     shadows: the hard contact edge (--shadow-ink, offset, no blur) that pins it
+     like a poster, and a soft ambient lift under it. The lift is pulled in
+     (negative spread), so it never shows past a clipped corner and only its
+     falloff reaches the wall. Blur comes only from box-shadow or a blurred
+     empty layer, never from `filter` on anything that holds text: Chromium
+     prints a filtered subtree, text included, as a picture. */
+  --shadow-soft: color-mix(in srgb, var(--ink) 34%, transparent);
+  --shadow-lift: 3pt 7pt 12pt -5pt var(--shadow-soft);
+  --shadow-poster: 2pt 3pt 0 var(--shadow-ink), var(--shadow-lift);
+  /* Recess: the soft falloff under a hard cast-shadow band, for anything sunk
+     into the wall (the fiction cavity, the lore/dm/choose sheets). */
+  --shadow-press: color-mix(in srgb, var(--ink-dark) 42%, transparent);
+  /* Light: a soft highlight across the top of a digital-display fill (a band,
+     a tab, a chip): the LED panel's sheen, layered over its colour. */
+  --light-gloss: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, transparent), transparent 62%);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────
      TAC figures in this file are MEASURED, not estimated: a swatch PDF
@@ -56,7 +72,7 @@
   --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 87% (C70 M1 Y16 K0) */
   --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 114% (C1 M13 Y100 K0) */
   --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
-  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the proxy's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
+  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the wirephreak's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 167% (C87 M50 Y26 K4) */

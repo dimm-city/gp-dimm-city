@@ -152,6 +152,23 @@ describe("stylesheets", () => {
     expect(found).toEqual([]);
   });
 
+  // A `filter` on an element that holds text makes Chromium print that text
+  // as a picture, in the plain PDF as well as the PDF/X. Shadows are
+  // box-shadow (which keeps text live); a filter may sit only on a
+  // text-free ::before/::after layer.
+  test("put a filter only on a ::before or ::after layer", () => {
+    const found = [];
+    for (const rel of sheets) {
+      const css = stripComments(read(rel));
+      for (const [, selectors] of css.matchAll(/([^{}]*)\{[^{}]*(?:^|[;{\s])(?:-webkit-)?filter\s*:[^;}]*/g)) {
+        for (const sel of selectors.split(",")) {
+          if (!/::?(before|after)\s*$/.test(sel.trim())) found.push(`${rel}: ${sel.trim()}`);
+        }
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
   test("keep text opaque (PDF/X-1a)", () => {
     const TEXT_PAINT = /(?:^|[;{\s])(color|-webkit-text-fill-color|-webkit-text-stroke-color|text-decoration-color|text-shadow)\s*:([^;}]*)/g;
     const ALPHA = /rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|color-mix\([^;]*\btransparent\b/;

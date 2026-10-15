@@ -119,6 +119,11 @@ div[class="section"] {
 .dc-section-panel {
   background: transparent;
   --dc-section-edge: var(--dc-section-pad-bottom);
+  /* The soft lift under the hung sheet (--shadow-lift, sized to include the
+     hanging edge). A host that is a stacking context paints it first, under
+     the surface and hard-shadow layers. Recessed kinds set its colour to
+     transparent: they are sunk into the wall, not hung on it. */
+  box-shadow: 3pt calc(7pt + var(--dc-section-edge)) 12pt -5pt var(--dc-section-lift);
 }
 
 /* Keep a section whole, or let it split: the token is the one setting.
@@ -220,8 +225,8 @@ div[class="section"] {
   left: 3px;
   right: -3px;
   bottom: 0;
-  background: var(--ink-dark);
-  box-shadow: 0 calc(3px + var(--dc-section-edge)) 0 0 var(--ink-dark);
+  background: var(--dc-section-hard-shadow);
+  box-shadow: 0 calc(3px + var(--dc-section-edge)) 0 0 var(--dc-section-hard-shadow);
   clip-path: polygon(
     var(--dc-section-cut-tl) 0,
     calc(100% - var(--dc-section-clip)) 0,
@@ -431,17 +436,23 @@ h3 + .dc-section-panel {
 :is(.dc-section-lore, .dc-section-dm) {
   --dc-section-recess:
     inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
+    inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press),
     inset -2px 0 0 0 var(--dc-section-recess-lip);
   --dc-section-recess-foot: 2px;
   --dc-section-shadow: none;
+  --dc-section-lift: transparent;
 }
 .dc-section-choose {
   --dc-section-recess:
     inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
+    inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press),
     inset -2px -2px 0 0 var(--dc-section-recess-lip);
+  --dc-section-lift: transparent;
 }
 :is(.dc-section-lore, .dc-section-dm) > :is(h2, h3):first-child {
-  box-shadow: inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade);
+  box-shadow:
+    inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
+    inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press);
 }
 
 /* ── lore — the world ─────────────────────────────────────────────────────────
@@ -1467,12 +1478,13 @@ h3 + .dc-section-panel {
   --dc-specialty-card-media-width: 0.38in;
   --dc-specialty-card-name-size: 0.95em;
   /* Padding clears the deepest cut (14px) by 2pt: no glyph meets a corner. */
-  padding: 0.1in 0.14in 0.22in;
+  --dc-specialty-card-pad-x: 0.14in;
+  padding-bottom: 0.22in;
   margin: 0;
 }
 .dc-card-grid .dc-specialty-card img { margin-bottom: 0; }
 .dc-card-grid .dc-specialty-card p { line-height: 1.25; font-size: var(--fs-floor); }
-.dc-card-grid .dc-specialty-card h3 { padding-top: 0; line-height: 1.3; }
+.dc-card-grid .dc-specialty-card h3 { line-height: 1.3; }
 .dc-card-grid .dc-specialty-card blockquote { font-size: var(--fs-floor); margin: 0; line-height: 1.3; }
 
 
@@ -1526,7 +1538,8 @@ h3 + .dc-section-panel {
   border-block: var(--dc-fiction-rule) solid var(--ink-dark);
   box-shadow:
     var(--dc-fiction-shadow),
-    inset var(--dc-fiction-depth) var(--dc-fiction-depth) 0 0 var(--dc-fiction-depth-bg);
+    inset var(--dc-fiction-depth) var(--dc-fiction-depth) 0 0 var(--dc-fiction-depth-bg),
+    inset calc(var(--dc-fiction-depth) + 5pt) calc(var(--dc-fiction-depth) + 5pt) 11pt -6pt var(--shadow-press);
   clip-path: var(--dc-fiction-shape);
   z-index: -1;
 }

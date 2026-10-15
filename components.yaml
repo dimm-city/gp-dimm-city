@@ -423,7 +423,6 @@ components:
       - --dc-skill-body-shape
       - --dc-path-title-shape
       - --dc-path-shell-clip
-      - --dc-specialty-card-shell-shape
       - --dc-specialty-intro-title-shape
       - --dc-specialty-intro-clip
     breaks: "none on the wrapper; children carry their own"
@@ -465,14 +464,16 @@ components:
       - styles/page-templates.css
     tokens:
       - --dc-specialty-card-bg
-      - --dc-specialty-card-border
       - --dc-specialty-card-accent
       - --dc-specialty-card-fg
       - --dc-specialty-card-media-height
       - --dc-specialty-card-media-width
       - --dc-specialty-card-title-align
-      - --dc-specialty-card-band-height
-      - --dc-specialty-card-shadow
+      - --dc-specialty-card-band-bg
+      - --dc-specialty-card-band-fg
+      - --dc-specialty-card-band-shape
+      - --dc-specialty-card-shell-shape
+      - --dc-specialty-card-pad-x
       - --dc-specialty-card-title-color
       - --dc-specialty-card-display
       - --dc-specialty-card-media-order
@@ -648,8 +649,14 @@ components:
       - --dc-card-grid-item-display
       - --dc-card-grid-row
       - --dc-card-grid-gap
-    breaks: "break-before: left (the spread opens on a left page, so its two pages face each other); the left page holds the title, the lede and four cards and the right page the other six (the row height, --dc-card-grid-row, sets the split)"
-    notes: "The specialty catalog as a designed two-page spread: title and lede and the first four cards on the left, six cards on the right, in aligned rows of equal height (wrapped flex rows, not columns), each card a tall poster with its portrait on top. A location: it only sets tokens (the grid's flex layout, and the card's portrait, order, name size and index chip) and the page breaks. Whatever follows the grid starts on the next page: write a plain @page after @end-card-grid. The Variant Gallery's @card-grid, which sits on no such page, keeps the dense floated-thumbnail cards."
+      - --dc-card-grid-item-span
+      - --dc-card-grid-item-order
+      - --dc-card-grid-item-break
+      - --dc-card-grid-row-tall
+      - --dc-card-grid-media-tall
+      - --dc-card-grid-media-wide
+    breaks: "break-before: left (the spread opens on a left page, so its two pages face each other); the fifth card other than Dualist and Generalist opens the right page (--dc-card-grid-item-break: page)"
+    notes: "The specialty catalog as a designed two-page spread: title and lede and four cards on the left, four taller cards on the right, in aligned rows of equal height (wrapped flex rows, not columns), each card a poster with its portrait on top. Dualist and Generalist span both columns as the last row of the left and right page, as dense cards, whatever order the book lists them in. A location: it only sets tokens (the grid's flex layout, and the card's portrait, order, name size and index chip) and the page breaks. Whatever follows the grid starts on the next page: write a plain @page after @end-card-grid. The Variant Gallery's @card-grid, which sits on no such page, keeps the dense floated-thumbnail cards."
 
   - name: fiction-excerpt
     status: live

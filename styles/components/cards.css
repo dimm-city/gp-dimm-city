@@ -72,7 +72,7 @@
   /* 18px right and 16px left clear the deepest tab cut (a specialty's
      --dc-skill-tab-shape, at most 15px) by more than 2pt. */
   padding: 3px 18px 3px 16px;
-  background: var(--dc-card-tab-bg);
+  background: var(--light-gloss), var(--dc-card-tab-bg);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
   margin-left: 10px;
@@ -217,6 +217,7 @@
   background: transparent;
   clip-path: none;
   padding: 0;
+  box-shadow: var(--shadow-lift);
 }
 
 .dc-skill-card > .dc-card-body > .dc-card-inner {
@@ -359,11 +360,10 @@
   right: 18px;
   width: 34px;
   height: 11px;
-  /* A strip of masking tape holding the card to the wall: an opaque flat tint
-     of the card's mark colour on paper-aged, with a hard edge line, slightly
-     rotated. It was a 2px hairline at 15% mark colour, which read as a stray
-     scratch rather than as a deliberate cue. */
-  background: color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged));
+  /* A strip of masking tape holding the card to the wall: a translucent tint
+     of the card's mark colour on paper-aged, so the card edge and the wall
+     read through it, with a hard edge line, slightly rotated. */
+  background: color-mix(in srgb, color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged)) 78%, transparent);
   box-shadow: inset 0 -1px 0 var(--ink-dust);
   transform: rotate(3deg);
   z-index: 2;
