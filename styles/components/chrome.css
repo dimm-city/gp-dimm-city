@@ -411,7 +411,13 @@ hr {
   content: '';
   flex: 1;
   height: 4px;
-  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
+  /* crimson dashes: an ordinary gradient tiled every 10px, not a
+     repeating-linear-gradient, which a preserve-text PDF/X build cannot keep
+     live and answers by flattening the whole page (#41) */
+  background-color: var(--dc-tape-bg);
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
+  background-size: 10px 100%;
+  background-repeat: repeat-x;
 }
 
 /* ── Specialty art full-page plate ─────────────────────────────────────────── */
