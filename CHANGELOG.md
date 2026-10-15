@@ -51,6 +51,19 @@ little grit.
 - **`--dc-accent-ink`**: the text-safe ink of the component you are in. Every
   alert, section kind, block, card, faction, entry, table and specialty sets
   it; chapter accents flow through.
+- **Running head.** Every body page prints its chapter's name on a paper chip
+  in the footer band, between the folio and the chapter coupon:
+  `@chapter … head="Name"`, else the chapter's `#` title, else "Chapter N". Not
+  on chapter openers, front matter, full-bleed or explainer pages.
+- **End-of-chapter mark.** A chapter's last page closes with an "END OF FILE"
+  plate (ink, stencil type, tape), so a short page reads as designed. Tokens
+  `--dc-end-mark-text`, `-display`, `-gap`, `-bg`, `-ink`, `-tape`;
+  `--dc-end-mark-display: none` turns it off for a chapter whose last page is
+  full.
+- **Images must be opaque, and a test says so.** `test/images.test.js` fails on
+  an alpha channel in the package's or the guide's images, on remote image URLs
+  and on missing local images. The guide's art is local and opaque (specialty
+  placeholders from `scripts/make-placeholders.mjs` replace `placehold.co`).
 
 ### Changed
 
@@ -187,6 +200,17 @@ little grit.
   mid and dark tones. Proxy's band is a shade lighter so ink on it holds 4.5:1.
 - **New neutrals.** `--paper-form` (the `choose` sheet) and `--paper-zine` (the
   fiction excerpt and shard sheets).
+- **Ink coverage under 280%.** Measured through the build's own PDF/X
+  conversion: `--ink` is `#1e1d1c` (278%, was 284%), the text black that still
+  prints as 100% K; `--ink-dark` is `#2f2622` (266%) and is the solid ink for
+  heavy fills, frames and borders. `--deep-rust`, `--fungi-rot` and six
+  specialty darks are lifted to 268% or less. Every palette and identity token
+  carries its measured CMYK and TAC. No raw `#000`/`#fff` remains in a
+  `color-mix()`.
+- **Pagination.** A panel of four blocks or fewer stays whole; a long panel
+  never opens or ends on a single block; panel and callout text keeps three
+  orphans and widows; skill cards split between ability rows; pages without
+  footers have a 0.75in bottom margin.
 
 ### Fixed
 
@@ -237,6 +261,12 @@ little grit.
   lines and was set as a stat line; it is now inside the quote.
 - **README example.** The author-override example set `--dc-alert-accent`, a token
   that does not exist; it now sets `--dc-section-accent` on `.dc-section-panel`.
+- PDF/X no longer flattens whole pages to bitmaps: the guide's images were
+  RGBA, which made Ghostscript rasterise 14 pages, text included.
+- A skill card no longer leaves two lines and empty cream on a page, and a
+  page-level callout no longer pulls the previous block onto its page. The
+  guide's sample book has no stub or one-card pages left.
+- The guide's Introduction page sets its story in `@fiction-excerpt`.
 
 ### Removed
 

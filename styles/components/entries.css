@@ -148,7 +148,7 @@
   --dc-entry-kind: "Gear";
   --dc-entry-rail: 6px;
   --dc-entry-shape: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 38% 100%, calc(38% - 3px) calc(100% - 3px), calc(38% - 8px) 100%, 0 100%, 0 14px);
-  --dc-entry-frame: inset 0 0 0 2px var(--ink);
+  --dc-entry-frame: inset 0 0 0 2px var(--ink-dark);
   --dc-entry-badge-bg: var(--rust);
   --dc-entry-badge-fg: var(--paper-cream);
   --dc-entry-badge-shape: polygon(0 50%, 6px 0, 100% 0, 100% 100%, 6px 100%);
@@ -162,7 +162,7 @@
   width: 12px;
   height: 12px;
   margin: -21px 0 0 8px;
-  border: 3px solid var(--ink);
+  border: 3px solid var(--ink-dark);
   border-radius: 50%;
   background: var(--bg);
 }
@@ -212,7 +212,7 @@
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
   --dc-entry-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
-  --dc-entry-frame: inset 0 0 0 3px var(--ink);
+  --dc-entry-frame: inset 0 0 0 3px var(--ink-dark);
   --dc-entry-ornament: "";
   --dc-entry-orn-inset: 8px 8px 8px 5px;
   --dc-entry-orn-border: 3px dotted var(--ink-smoke);
@@ -332,8 +332,8 @@
   --dc-section-bar-mix: 0%;
   --dc-section-bar-tone: var(--paper-aged);
   --dc-section-bar-fg: var(--ink);
-  --dc-section-bar-rule: 3pt solid var(--ink);
-  --dc-section-bar-rule-sub: 3pt solid var(--ink);
+  --dc-section-bar-rule: 3pt solid var(--ink-dark);
+  --dc-section-bar-rule-sub: 3pt solid var(--ink-dark);
 }
 .dc-section-panel.dc-catalog > :is(h2, h3):first-child {
   box-shadow: inset 0 3pt 0 var(--ink-dark);

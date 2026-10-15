@@ -68,16 +68,18 @@
   margin-right: var(--binding-margin);
   margin-left: var(--outer-margin);
 
-  @bottom-left  { content: "P." counter(page); }
-  @bottom-right { content: "C." string(guideSection, first); }
+  @bottom-left   { content: "P." counter(page); }
+  @bottom-center { content: string(dcRunningHead, last); }
+  @bottom-right  { content: "C." string(guideSection, first); }
 }
 
 @page :right {
   margin-left: var(--binding-margin);
   margin-right: var(--outer-margin);
 
-  @bottom-left  { content: "C." string(guideSection, first); }
-  @bottom-right { content: "P." counter(page); }
+  @bottom-left   { content: "C." string(guideSection, first); }
+  @bottom-center { content: string(dcRunningHead, last); }
+  @bottom-right  { content: "P." counter(page); }
 }
 
 /* ---------------------------------------------------------------------------
@@ -105,8 +107,9 @@
    --------------------------------------------------------------------------- */
 
 @page front-matter {
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
 }
 
 .page:is(.dc-page-contents, .dc-page-credits) {
@@ -120,9 +123,10 @@
    flush against the sheet edge. Its own name keeps the default margins and
    drops only the footers. */
 @page front-matter-intro {
-  margin-bottom: 0.875in;  /* no footer, so no chip band to clear */
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  margin-bottom: 0.75in;  /* no footer, so no chip band to clear: the text block runs to the safe area, 0.625in from the trim */
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
 }
 
 .page.dc-page-intro {
@@ -146,10 +150,12 @@
 
 @page chapter-start {
   /* no chip band to clear on a page without footers: the text block runs to
-     the old 0.875in margin (0.75in from the trim) */
-  margin-bottom: 0.875in;
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+     0.75in from the sheet edge: 0.625in from the trim, inside DriveThruRPG's 0.5in text
+     minimum (it was 0.875in, which wasted a line on every opener) */
+  margin-bottom: 0.75in;
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
 }
 
 .dc-page-chapter-start {
@@ -170,8 +176,9 @@
 @page full {
   margin: 0;
 
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
 }
 
 .dc-specialty-art { page: full; }
@@ -233,6 +240,37 @@
    ─────────────────────────────────────────────────────────────────────────── */
 div.chapter[data-ch] {
   string-set: guideSection attr(data-ch);
+}
+
+/* ── Running head: the chapter's name ───────────────────────────────────────
+   `string(dcRunningHead, last)` in the `@bottom-center` boxes above prints the
+   name of the chapter the page belongs to, as a chip between the folio and the
+   chapter chip (dc-native.css §2d). It is fed by ONE of these, whichever the
+   chapter has, so no markup is needed:
+     1. `@chapter ... head="Tech and Cybernetics"`  → `data-head`: the name the
+        author wants in the head (also the way to shorten a long title);
+     2. else the chapter's `#` title (a chapter-start page's `h1`, or any `#`
+        written on one of its pages): the head follows the latest `#`, so a book
+        whose chapter files each open with a `#` is done;
+     3. else "Chapter N" (from `ch="N"`), so a chapter with neither still prints
+        a name and the chip is never empty.
+   `last`, not `first`: on a page where a new `#` appears the head names the
+   chapter the page ends in, and a chapter that continues across files (the
+   same `ch`, several `@chapter` lines) keeps its `#`'s name until the next one.
+   `body` seeds an empty string so the name always has a source: a book with no
+   chapters at all prints no head rather than a stray page number (an engine
+   string with no source falls back to a counter).
+   A page does not print the head if its template clears the box
+   (`@bottom-center { content: none; }`: chapter-start, front matter, full-bleed
+   and a book's own named page such as the design guide's `dg-doc`). */
+div.chapter[data-head] {
+  string-set: dcRunningHead attr(data-head);
+}
+div.chapter:not([data-head]) > .page > h1 {
+  string-set: dcRunningHead content(text);
+}
+div.chapter[data-ch]:not([data-head]):not(:has(> .page > h1)) {
+  string-set: dcRunningHead "Chapter " attr(data-ch);
 }
 
 }

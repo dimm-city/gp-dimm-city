@@ -6,7 +6,7 @@
 
 @fiction-excerpt
 
-![01-street-sign](https://placehold.co/600x800/png?text=Street+Sign){.fg-art-street-sign}
+![01-street-sign](img/placeholder-street-sign.png){.fg-art-street-sign}
 
 Hologram haze cuts the gloom you're stumbling through. Flickering ads claw the air above blades of neon that contrast the scents of burnt oil and hot garbage. On the littered pavement around you, other pedestrians in the murk shuffle past, lit by glitchy devices and glowing bodymods.
 
@@ -41,8 +41,9 @@ Learn the core loop first. Everything else builds on it.
 @end-section
 
 
-@section panel
 @page
+
+@section panel
 
 ## Dreams {#c1-dreams}
 

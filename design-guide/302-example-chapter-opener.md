@@ -14,7 +14,7 @@ I turned hard an hit a dead end. Balcony. High rise. Peak chaos screaming thirty
 
 No exits.
 
-![Lil Thump](https://placehold.co/600x400/png?text=Lil+Thump)
+![Lil Thump](img/placeholder-lil-thump.png)
 
 I spun to face dem, back to da rail, fists up an shakin.
 Bats fanned out, claws flexing, chromed teeth catchin the light.
@@ -50,7 +50,7 @@ I locked in da hack, jacked out, an leapt clean onto a passing airbus like I mea
 
 Thump is a PC created for dreams in Dimm City by an actual dreamer. Their personality, looks, vibe, equipment, and skills are all chosen by the dreamer themselves. You can do the same by filling in the blanks on a character profile to create your very own character. For many dreamers, this is one of the most exciting parts of this experience: thinking about a character you want to play and designing them for the dream to come.
 
-![Image is everything](https://placehold.co/600x400/png?text=Portrait){.fg-art-portrait}
+![Image is everything](img/placeholder-portrait.png){.fg-art-portrait}
 This chapter will guide you through all the choices you need to make to help you fill in the blanks and create a unique and interesting character. Don't worry about making mistakes or doing something wrong, just try to have fun with it and let your imagination do the work.
 
 Before reputation comes recognition. Before recognition comes a glance. Dimmers speed-read bodies like text: names, scars, size, and stance all scanned in a heartbeat. This section defines how you're read when the Dream first lays eyes on you.

@@ -76,13 +76,9 @@ Thirteen chapters of dreams, dirt, and what bites back. Read them in any order �
 
 # Introduction {.dc-chevron}
 
-@lede
+@fiction-excerpt
 
 The city didn't go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.
-
-@end-lede
-
-@section flat
 
 > [!PULLQUOTE]
 > "How bright's it ay?!"
@@ -95,7 +91,7 @@ Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. 
 
 DimmCitz scattered, vanished into bolted dens and reinforced rooftops. Some just slinked into a corner, shut their eyes, and hoped the riot passed them by. The air stank of scorched fur, ozone, and cordite. Concrete buckled under pulsefire and the ground groaned like it wanted no part of any of it.
 
-@end-section
+@end-fiction-excerpt
 
 @page 
 @section panel

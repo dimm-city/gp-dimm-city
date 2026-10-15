@@ -12,13 +12,14 @@ Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crims
 ## Paper & ink
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch border on-light"><strong>BG</strong><code>#c8c5bf</code><code>--bg</code><code>21/17/21/5</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Cream</strong><code>#f0eee9</code><code>--paper-cream</code><code>6/5/7/0</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Light</strong><code>#e2ded7</code><code>--paper-light</code><code>12/10/14/0</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Aged</strong><code>#c8c2b8</code><code>--paper-aged</code><code>20/18/25/6</code></div>
-  <div class="dc-palette-swatch bg-ink on-dark"><strong>Ink</strong><code>#1a1512</code><code>--ink</code><code>42/49/45/99</code></div>
-  <div class="dc-palette-swatch bg-ink-smoke on-dark"><strong>Ink Smoke</strong><code>#4d4339</code><code>--ink-smoke</code><code>32/47/55/100</code></div>
-  <div class="dc-palette-swatch bg-ink-dust on-dark"><strong>Ink Dust</strong><code>#665b4e</code><code>--ink-dust</code><code>27/44/62/99</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>BG</strong><code>#c8c5bf</code><code>--bg</code><code>21/18/22/0<br>61%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Cream</strong><code>#f0eee9</code><code>--paper-cream</code><code>4/4/7/0<br>14%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Light</strong><code>#e2ded7</code><code>--paper-light</code><code>10/9/13/0<br>32%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Aged</strong><code>#c8c2b8</code><code>--paper-aged</code><code>21/20/26/0<br>66%</code></div>
+  <div class="dc-palette-swatch bg-ink on-dark"><strong>Ink</strong><code>#1e1d1c</code><code>--ink</code><code>69/66/67/76<br>278%</code></div>
+  <div class="dc-palette-swatch bg-ink-dark on-dark"><strong>Ink Dark</strong><code>#2f2622</code><code>--ink-dark</code><code>61/66/69/69<br>266%</code></div>
+  <div class="dc-palette-swatch bg-ink-smoke on-dark"><strong>Ink Smoke</strong><code>#4d4339</code><code>--ink-smoke</code><code>57/60/68/47<br>231%</code></div>
+  <div class="dc-palette-swatch bg-ink-dust on-dark"><strong>Ink Dust</strong><code>#665b4e</code><code>--ink-dust</code><code>53/54/64/29<br>200%</code></div>
 </div>
 
 The page background (`--bg`) is the wall; a brick texture is painted over it by the package's `@page` rule. Paper surfaces are what sits on the wall — cards, callouts, panels. Components are posters and displays hung on the wall: hard edges, decisive separation, never a soft tint that lets the texture through.
@@ -26,30 +27,30 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
 ## Creaturepunk fire
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-crimson on-dark"><strong>Crimson</strong><code>#e1261c</code><code>--crimson</code><code>0/95/100/17</code></div>
-  <div class="dc-palette-swatch bg-blood on-dark"><strong>Blood</strong><code>#901a12</code><code>--blood</code><code>0/92/100/45</code></div>
-  <div class="dc-palette-swatch bg-orange on-dark"><strong>Orange</strong><code>#d4500a</code><code>--orange</code><code>0/75/100/24</code></div>
-  <div class="dc-palette-swatch bg-rust on-dark"><strong>Rust</strong><code>#b23a12</code><code>--rust</code><code>0/83/100/40</code></div>
-  <div class="dc-palette-swatch bg-amber on-light"><strong>Amber</strong><code>#7a5a20</code><code>--amber</code><code>1/29/100/80</code></div>
-  <div class="dc-palette-swatch bg-deep-rust on-dark"><strong>Deep Rust</strong><code>#6a1a08</code><code>--deep-rust</code><code>0/84/91/63</code></div>
+  <div class="dc-palette-swatch bg-crimson on-dark"><strong>Crimson</strong><code>#e1261c</code><code>--crimson</code><code>5/98/100/0<br>203%</code></div>
+  <div class="dc-palette-swatch bg-blood on-dark"><strong>Blood</strong><code>#901a12</code><code>--blood</code><code>27/99/100/28<br>254%</code></div>
+  <div class="dc-palette-swatch bg-orange on-dark"><strong>Orange</strong><code>#d4500a</code><code>--orange</code><code>11/82/100/2<br>195%</code></div>
+  <div class="dc-palette-swatch bg-rust on-dark"><strong>Rust</strong><code>#b23a12</code><code>--rust</code><code>21/89/100/12<br>222%</code></div>
+  <div class="dc-palette-swatch bg-amber on-light"><strong>Amber</strong><code>#7a5a20</code><code>--amber</code><code>41/57/100/29<br>227%</code></div>
+  <div class="dc-palette-swatch bg-deep-rust on-dark"><strong>Deep Rust</strong><code>#70200e</code><code>--deep-rust</code><code>32/91/100/45<br>268%</code></div>
 </div>
 
 ## HUD digital
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-hud-blue on-dark"><strong>HUD Blue</strong><code>#1f6f94</code><code>--hud-blue</code><code>100/28/0/46</code></div>
-  <div class="dc-palette-swatch bg-hud-blue-bright on-light"><strong>HUD Bright</strong><code>#00bcd4</code><code>--hud-blue-bright</code><code>100/0/13/0</code></div>
-  <div class="dc-palette-swatch bg-hud-blue-dim border on-light"><strong>HUD Dim</strong><code>#7ab8d0</code><code>--hud-blue-dim</code><code>60/11/9/5</code></div>
-  <div class="dc-palette-swatch bg-hud-magenta on-dark"><strong>HUD Magenta</strong><code>#c026d3</code><code>--hud-magenta</code><code>38/100/0/5</code></div>
+  <div class="dc-palette-swatch bg-hud-blue on-dark"><strong>HUD Blue</strong><code>#1f6f94</code><code>--hud-blue</code><code>87/50/26/4<br>167%</code></div>
+  <div class="dc-palette-swatch bg-hud-blue-bright on-light"><strong>HUD Bright</strong><code>#00bcd4</code><code>--hud-blue-bright</code><code>70/1/16/0<br>87%</code></div>
+  <div class="dc-palette-swatch bg-hud-blue-dim border on-light"><strong>HUD Dim</strong><code>#7ab8d0</code><code>--hud-blue-dim</code><code>50/13/12/0<br>76%</code></div>
+  <div class="dc-palette-swatch bg-hud-magenta on-dark"><strong>HUD Magenta</strong><code>#c026d3</code><code>--hud-magenta</code><code>41/85/0/0<br>126%</code></div>
 </div>
 
 ## Surfaces & borders
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-hud-panel border on-light"><strong>HUD Panel</strong><code>#eeece8</code><code>--hud-panel</code><code>7/5/7/0</code></div>
-  <div class="dc-palette-swatch bg-surface-tint-3 border on-light"><strong>Surface 3</strong><code>#f2f0ec</code><code>--surface-tint-3</code><code>5/4/6/0</code></div>
-  <div class="dc-palette-swatch bg-surface-orange-tint border on-light"><strong>Orange Tint</strong><code>#d8cfb4</code><code>--surface-orange-tint</code><code>15/14/32/3</code></div>
-  <div class="dc-palette-swatch bg-border-hairline on-light"><strong>Hairline</strong><code>#c8b898</code><code>--border-hairline</code><code>17/20/45/11</code></div>
+  <div class="dc-palette-swatch bg-hud-panel border on-light"><strong>HUD Panel</strong><code>#eeece8</code><code>--hud-panel</code><code>5/5/7/0<br>16%</code></div>
+  <div class="dc-palette-swatch bg-surface-tint-3 border on-light"><strong>Surface 3</strong><code>#f2f0ec</code><code>--surface-tint-3</code><code>3/4/6/0<br>12%</code></div>
+  <div class="dc-palette-swatch bg-surface-orange-tint border on-light"><strong>Orange Tint</strong><code>#d8cfb4</code><code>--surface-orange-tint</code><code>14/14/30/0<br>59%</code></div>
+  <div class="dc-palette-swatch bg-border-hairline on-light"><strong>Hairline</strong><code>#c8b898</code><code>--border-hairline</code><code>22/24/42/0<br>88%</code></div>
 </div>
 
 `--paper-stain` (`#b0a89c`) is a dark inset well and label strip: it never carries body text, and neither does any fill darker than the wall. `--paper-form` (`#f5f3ee`, a hair lighter than cream: the `choose` form's printed sheet) and `--paper-zine` (`#e9e6e0`, a printed-page neutral used by the fiction excerpt and the shard block) sit with the paper swatches above. `--border-hairline` is a rule line. Other rules use the ink scale directly.
@@ -74,7 +75,7 @@ Colour is a job, not a mood. A reader flipping pages should know what kind of co
 - Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.
 - HUD blue means a rule or a look-up; magenta is display punch, not a category. Never mix fire and HUD on the same element.
 - Paper is for raised elements. The wall is the canvas; cream is the surface.
-- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run.
+- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a `pdfx` build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate: that conversion turns dark RGB into a heavy four-colour black, so `--ink` (278%) is the text black and never a large fill, and solid fills use `--ink-dark` (266%). Every token is at or under 270% except `--ink`.
 
 Running text goes on a paper surface, never straight on the wall: the brick texture under body type cuts its contrast and breaks up the letterforms.
 

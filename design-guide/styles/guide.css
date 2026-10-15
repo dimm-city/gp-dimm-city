@@ -48,7 +48,7 @@
 
 :root {
   --dg-paper: #ffffff;
-  --dg-ink: #222222;
+  --dg-ink: var(--ink);  /* the package ink: near-black text prints K-only (see dc-palette.css); #222 sat outside the build's K-only band */
   --dg-ink-soft: #555555;
   --dg-rule: #c8c8c8;
   --dg-fill: #f2f2f2;
@@ -63,8 +63,23 @@
    (dc-native.css §1) because book sheets sit outside the package layer. */
 .page.dg-doc { page: dg-doc; }
 
+/* The Citizen File opener's excerpt fills its page to the foot: a smaller inline
+   picture (a token the fiction excerpt reads) keeps its last paragraph on the page. */
+#ch-example-chapter-opener .dc-fiction-excerpt {
+  --dc-fiction-art-width: 2in;
+}
+
+/* An explainer page closes without the package's end-of-chapter plate, and so
+   does the Citizen File chapter, whose last page runs to the foot: a plate that
+   does not fit prints on a page of its own
+   (page-templates.css, "END-OF-CHAPTER MARK"). */
+.page.dg-doc,
+#ch-example-chapter-opener { --dc-end-mark-display: none; }
+
 @page dg-doc {
   background: var(--dg-paper);
+  /* no running-head chip on a plain explainer page: its own foot names the chapter */
+  @bottom-center { content: none; }
 }
 
 /* Running foot on doc pages: a plain folio and the chapter title, replacing
@@ -186,6 +201,11 @@ div.chapter[id^="ch-example-"][data-ch] {
   line-height: 1.4;
 }
 
+/* a guide contents list is a few lines: one block, never 4 + 3 */
+.page.dg-doc > .dg-toc {
+  break-inside: avoid;
+}
+
 .page.dg-doc > :is(h1, h2, h3),
 .page.dg-doc > .dg-toc > h2 {
   font-family: var(--font-sans);
@@ -211,7 +231,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 .page.dg-doc > h1 {
   font-size: 26pt;
   line-height: 1.15;
-  border-bottom: 1.5pt solid var(--dg-ink);
+  border-bottom: 1.5pt solid var(--ink-dark);
   padding-bottom: 0.08in;
   margin-bottom: 0.18in;
 }
@@ -269,7 +289,7 @@ div.chapter[id^="ch-example-"][data-ch] {
   padding: 5pt 6pt;
   background: var(--dg-fill);
   color: var(--dg-ink);
-  border-bottom: 1pt solid var(--dg-ink);
+  border-bottom: 1pt solid var(--ink-dark);
 }
 
 /* Contents: the title links, each with its page number at the right edge. */
@@ -559,6 +579,10 @@ div.chapter.dg-guide .dc-palette-swatch.bg-ink {
   background: var(--ink);
 }
 
+div.chapter.dg-guide .dc-palette-swatch.bg-ink-dark {
+  background: var(--ink-dark);
+}
+
 div.chapter.dg-guide .dc-palette-swatch.bg-ink-smoke {
   background: var(--ink-smoke);
 }
@@ -724,7 +748,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 .fg-art-portrait {
    float: right;
    width: 2.25in;
-   height: 2.75in;
+   height: 2.25in;
    object-fit: cover;
    outline: 3px solid var(--ink-dark);
    box-shadow: -4px 4px 0 var(--hud-magenta);

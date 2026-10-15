@@ -299,7 +299,7 @@ h1.dc-chevron {
   line-height: 1.45;
   padding: 0 14px var(--dc-intro-pad-bottom) 20px;
   margin: 0 0 var(--dc-intro-gap) 0;
-  box-shadow: inset var(--dc-intro-rail) 0 0 var(--dc-intro-accent), inset 0 calc(-1 * var(--dc-intro-rule)) 0 var(--ink), var(--dc-intro-drop);
+  box-shadow: inset var(--dc-intro-rail) 0 0 var(--dc-intro-accent), inset 0 calc(-1 * var(--dc-intro-rule)) 0 var(--ink-dark), var(--dc-intro-drop);
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
@@ -336,7 +336,7 @@ h1.dc-chevron {
 hr {
   border: none;
   border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
-  margin: var(--space-xl) 0;
+  margin: var(--space-lg) 0;
 }
 
 
@@ -351,7 +351,7 @@ hr {
   text-transform: uppercase;
   background: var(--paper-light);
   color: var(--ink);
-  border: 2px solid var(--ink);
+  border: 2px solid var(--ink-dark);
   padding: 4px 10px 4px 6px;
   font-weight: 600;
 }

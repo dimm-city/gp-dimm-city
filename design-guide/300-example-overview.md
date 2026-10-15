@@ -10,13 +10,13 @@ Part 2 {.dg-kicker}
 
 # Field Guide in Action
 
-Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a `placehold.co` placeholder image stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
+Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (`design-guide/img/specialty-*.png`, `placeholder-*.png`, an opaque flat-colour stand-in) stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
 
 ## What Part 2 is
 
 Part 1 shows each component on its own. Part 2 is the payoff: whole pages of the Dimm City Field Guide, rendered live from the same markdown and CSS as the published book, so you can see how the components combine under real conditions — how a chapter opens, how a specialty profile flows across pages, how a Dream Master's reference pages read.
 
-Each chapter is the book's own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, a `placehold.co` placeholder stands in at the correct size. If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.
+Each chapter is the book's own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, an opaque local placeholder stands in at the correct size (no network, no alpha channel, so the PDF/X build keeps live text). If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.
 
 ## Part 2 contents
 

@@ -261,6 +261,87 @@
 @page dc-chip-amber:left     { @bottom-right { background: var(--amber-dark); } }
 @page dc-chip-amber:right    { @bottom-left  { background: var(--amber-dark); } }
 
+/* ── 2d. RUNNING HEAD: the chapter's name, centred in the footer band ───────
+   A slip in the chip family: between the folio (outer corner) and the chapter
+   coupon (inner corner), the same 17pt box, 0.125in below the text block and
+   inside DriveThruRPG's 0.5in text minimum. Paper-cream face, ink type in the
+   mono face at the 10pt floor (the folio's face: the display face is so wide
+   that a 27-letter title ran out of the box and lost its last glyphs), the
+   same ink edge and hard shadow, and a
+   thick left edge in the chapter's colour (the coupon's colour, repainted per
+   named page below): it is the slip's rail, the `##` heading slip's family.
+   page-rules.css feeds it (`string(dcRunningHead, last)`) and clears it on
+   chapter-start, front-matter and full-bleed pages.
+
+   WHY THE FOOTER AND NOT THE TOP. A head at the top edge must clear the 0.5in
+   text minimum AND the text block, which moves every page's top margin from
+   0.625in to 1in: 0.375in lost on every page of every book. The footer band is
+   already reserved, so the head costs no page height. A book that wants it at
+   the top corner anyway sets `margin-top: 1in` on its pages and copies this box
+   into `@top-left` / `@top-right` (docs: constitution §IV).
+
+   Width: `max-width` keeps a long name between the two chips (the box is
+   centred on the text block, the chips are about 0.6in each): in mono a name of
+   up to about 55 letters fits whole; a longer one is clipped at the box edge,
+   never wrapped (`white-space: nowrap`), so shorten it with `head="..."` on the
+   `@chapter`. Nothing is clipped by a
+   clip-path: the box is a plain bordered rectangle. */
+@page :left {
+  @bottom-center {
+    width: fit-content;
+    max-width: 4.4in;
+    height: 17pt;
+    box-sizing: border-box;
+    margin-top: 0.125in;
+    align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--fs-floor);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px calc(10px - 0.08em) 0 10px;
+    color: var(--ink-dark);
+    background: var(--paper-cream);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 6px;
+    border-left-color: var(--brand-magenta-deep);
+  }
+}
+@page :right {
+  @bottom-center {
+    width: fit-content;
+    max-width: 4.4in;
+    height: 17pt;
+    box-sizing: border-box;
+    margin-top: 0.125in;
+    align-self: flex-start;
+    vertical-align: middle;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--fs-floor);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px calc(10px - 0.08em) 0 10px;
+    color: var(--ink-dark);
+    background: var(--paper-cream);
+    border: 1px solid var(--ink-dark);
+    border-width: 1px 3px 3px 6px;
+    border-left-color: var(--brand-magenta-deep);
+  }
+}
+@page dc-chip-blue     { @bottom-center { border-left-color: var(--hud-blue-dark); } }
+@page dc-chip-rust     { @bottom-center { border-left-color: var(--rust); } }
+@page dc-chip-violet   { @bottom-center { border-left-color: var(--brand-violet); } }
+@page dc-chip-amethyst { @bottom-center { border-left-color: var(--crystal-amethyst); } }
+@page dc-chip-amber    { @bottom-center { border-left-color: var(--amber-dark); } }
+
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content, which makes
@@ -268,8 +349,9 @@
    blocks sufficient on their own; only `:blank` has no counterpart there, so
    only `:blank` is restated here. */
 @page :blank {
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  @bottom-left   { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right  { content: none; }
 }
 
 /* ── 4. FRONTMATTER (TOC + Credits): full-bleed composite under native ──────
@@ -361,8 +443,16 @@ figure {
    (top border + padding only) at a page bottom. Gluing the box's first child
    to the box start moves the whole start (and, via the heading's
    break-after: avoid, the heading) to the next page. break-inside: avoid is
-   NOT usable here: these callouts routinely run taller than a page. */
-.dc-dm-note > :first-child {
+   NOT usable here: these callouts routinely run taller than a page.
+
+   Scoped to a column run, the one place a callout may fragment
+   (`--dc-alert-break-inside: auto`, page-rules.css). At page level a callout
+   keeps its default `avoid` and moves whole, so it needs no glue, and the glue
+   was harmful there: a `break-before` on a box's first child propagates to the
+   box's own start edge, which then pulled the LAST block of the section above
+   it onto the callout's page (a three-line tail stranded on a page of its own
+   with 240px of room left on the page it came from). */
+:is(.gp-columns, [class*="gp-columns-"]) .dc-dm-note > :first-child {
   break-before: avoid;
 }
 

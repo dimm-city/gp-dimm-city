@@ -157,7 +157,10 @@ Page furniture is a chip, never bare type, and stays level and legible:
 
 - **Folio** (`P.121`): a paper-cream sticker, 17pt tall, 10pt type, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
 - **Chapter chip** (`C.N` in a book, `E.N` in the design guide's Part 2): a stamped coupon in the chapter's colour (magenta-deep by default; blue, rust, violet, amethyst or amber through a named page, `dc-chip-<hue>`, since a margin box cannot see the chapter's accent), cream type (every face ≥ 4.5:1), the same ink edge and hard shadow. It replaces a dashed magenta outline, which read as a debug box.
-- **Placement**: both sit in the footer band below the text block, 0.125in of bare wall clear of any content box, and inside DriveThruRPG's text minimum: the bottom margin is 1in from the sheet edge, the chip (17pt) starts 0.125in below the text block and ends 0.639in from the sheet edge (0.5in from the trim). On recto and verso, for every page word that prints them; pages that print no chips (chapter-start, intro) keep the older 0.875in margin.
+- **Placement**: both sit in the footer band below the text block, 0.125in of bare wall clear of any content box, and inside DriveThruRPG's text minimum: the bottom margin is 1in from the sheet edge, the chip (17pt) starts 0.125in below the text block and ends 0.639in from the sheet edge (0.5in from the trim). On recto and verso, for every page word that prints them; pages that print no chips (chapter-start, intro) use a 0.75in margin (0.625in from the trim).
+- **Running head** (the chapter's name): a third chip in the same family, centred in the footer band between the folio and the chapter coupon: paper-cream face, mono type at the 10pt floor, ink edge, hard shadow, and a thick left edge in the chapter's colour. It sits in the footer and not at the top because a head at the top edge would move every page's top margin from 0.625in to 1in to stay inside the 0.5in text minimum. It names the chapter (`@chapter … head="…"`, else the chapter's `#` title, else "Chapter N"), and is not printed on chapter openers, front matter, full-bleed pages or a book's plain explainer pages. A book that needs it at the top copies the box into `@top-left` / `@top-right` with a 1in top margin.
+- **End-of-chapter mark**: the last page of every chapter closes with an "END OF FILE" plate after its last block, so an intentionally short page reads as designed, not abandoned: an ink plate, cream stencil type, a dashed cream frame, masking tape across the top edge, the chapter's colour as its rail, a hard shadow, a few degrees off square. A label (20% layer), never a reading surface, vector and opaque. CSS can attach it to the last page of a chapter but cannot know how full that page is, so a chapter whose last page runs to the foot turns it off (`--dc-end-mark-display: none`) rather than let it fall to a page of its own.
+- **Pagination** is a package duty, not the book's: a short panel is kept whole, a long one never opens or ends with a single block, text keeps three orphans and three widows, a card splits between ability rows, headings and dividers stay with what follows. See the per-spread verdict scheme (§XI): a page under about 40% full with no design reason, or a one- to three-line continuation, is a fault to fix in the package first and the book's forced breaks second.
 - **Citizen File running head**: an amber tab, cream type, same edge and shadow, hung 0.625in below the sheet top in a 1in top margin, 0.14in clear of the text block.
 - **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
@@ -188,94 +191,99 @@ Use a cold-grey page base with narrow, deliberate accent hits. Do not build full
 
 ### Page substrate
 
-| Token | Hex | Use |
-|---|---|---|
-| `--bg` | `#c8c5bf` | The wall. Ash-concrete page background — gritty, urban, structural. |
-| `--paper-form` | `#f5f3ee` | The `choose` form's sheet: barely lighter than cream, printed stock not a screen (~7% TAC). |
-| `--paper-cream` | `#f0eee9` | Paper-poster substrate — flyers, callouts, cards on the cream register. Brighter than the wall. |
-| `--paper-zine` | `#e9e6e0` | Printed-page neutral between cream and light — the fiction excerpt and the shard block (~13% TAC). A neutral, not parchment. |
-| `--paper-light` | `#e2ded7` | Lighter-than-the-wall grey paper — the lede, specialty intros, alternate panel fills. |
-| `--paper-aged` | `#c8c2b8` | Weathered grey, about the wall's own value — the outcomes ladder rows, field chips, catalog ledger band. Label and rule grounds, not a reading surface. |
-| `--paper-stain` | `#b0a89c` | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
-| `--ink` | `#1a1512` | Body text, key rules, heavy borders. |
-| `--ink-dark` | `#2b231d` | Heavy fills (DM slab), border anchors, flavor text. |
-| `--ink-smoke` | `#4d4339` | Secondary labels, the NPC flavor line (7.4:1 on paper). |
-| `--ink-dust` | `#665b4e` | Form-label micro-headings, dashed dividers (4.58:1 on cream). |
+Every TAC figure in this section is **measured**, not estimated: a swatch PDF converted with the build's own Ghostscript arguments and its CGATS21_CRPC1 profile (gutterpress `convertToPdfxCmyk`), the CMYK fill operator read back. That conversion builds dark RGB as a heavy four-colour black (raw `#000` = C72 M68 Y67 K88 = 295%), so a token that looks "just black" can sit over the ceiling. House target: **every token ≤ 270%**; hard ceiling 280%.
+
+| Token | Hex | Measured CMYK = TAC | Use |
+|---|---|---|---|
+| `--bg` | `#c8c5bf` | C21 M18 Y22 K0 = 61% | The wall. Ash-concrete page background — gritty, urban, structural. |
+| `--paper-form` | `#f5f3ee` | C2 M2 Y5 K0 = 10% | The `choose` form's sheet: barely lighter than cream, printed stock not a screen. |
+| `--paper-cream` | `#f0eee9` | C4 M4 Y7 K0 = 14% | Paper-poster substrate — flyers, callouts, cards on the cream register. Brighter than the wall. |
+| `--paper-zine` | `#e9e6e0` | C7 M7 Y10 K0 = 24% | Printed-page neutral between cream and light — the fiction excerpt and the shard block. A neutral, not parchment. |
+| `--paper-light` | `#e2ded7` | C10 M9 Y13 K0 = 32% | Lighter-than-the-wall grey paper — the lede, specialty intros, alternate panel fills. |
+| `--paper-aged` | `#c8c2b8` | C21 M20 Y26 K0 = 66% | Weathered grey, about the wall's own value — the outcomes ladder rows, field chips, catalog ledger band. Label and rule grounds, not a reading surface. |
+| `--paper-stain` | `#b0a89c` | C32 M30 Y37 K0 = 99% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
+| `--ink` | `#1e1d1c` | C69 M66 Y67 K76 = 278% | **Text black**: body text, key rules, hairlines. Inside the build's K-only band (every channel ≤ 30, spread ≤ 10), so type at 24pt and below prints 100% K on the black plate. At 278% it is the darkest token that stays in that band: never a large fill. Was `#1a1512`, 284%, over the ceiling. |
+| `--ink-dark` | `#2f2622` | C61 M66 Y69 K69 = 266% | **Solid ink**: heavy fills (DM slab, AP chip, outcome-key ground), frames, borders ≥ 2px, flavor text. Outside the K-only band, so type in it is four-colour: use it for fills and large display type. Was `#2b231d`, 271%. |
+| `--ink-smoke` | `#4d4339` | C57 M60 Y68 K47 = 231% | Secondary labels, the NPC flavor line (7.4:1 on paper). |
+| `--ink-mid` | `#594f43` | C55 M56 Y67 K38 = 217% | Secondary card text. |
+| `--ink-dust` | `#665b4e` | C53 M54 Y64 K29 = 200% | Form-label micro-headings, dashed dividers (4.58:1 on cream). |
+
+**Two inks, because text and fills are different jobs.** The dtrpg preset sets `pdfx.blackText: k-only`: near-black text at 24pt and below is rewritten to 100% K (what a printer wants for small type), while fills keep the ICC conversion's rich black. The darkest token that still counts as near-black measures about 277%, so the text ink sits there and **solid fills use `--ink-dark` (266%)**. Lifting `--ink` out of the band to reach 270% would turn every line of body copy into four-colour type; darkening either token puts it back over 280%. Pure `#000` is not a token: it measures 295%.
 
 ### Brand signature layer
 
 The dimm.city web-palette analogs, SWOP-corrected for POD:
 
-| Token | Hex | CMYK est | Use |
+| Token | Hex | Measured CMYK = TAC | Use |
 |---|---|---|---|
-| `--brand-magenta` | `#c026d3` | C50/M95/Y0/K0 = 145% | Bright neon signal — section accents, gateway banners |
-| `--brand-magenta-deep` | `#8a0a9a` | C10/M94/Y0/K40 = 144% | Press-safe magenta on cream (crit row text-on-fill 6.21:1) |
-| `--brand-cyan` | `#00bcd4` | C75/M10/Y15/K0 = 100% | Signal interference, wirephreak accent, augmerc-card pop |
-| `--brand-yellow` | `#ffd700` | C0/M14/Y100/K0 = 114% | Brand radiant — etherlock accent, peak triumph |
-| `--brand-violet` | `#7030b8` | C57/M82/Y0/K28 = 167% | The world: lore, vibe, cabal, treasure. No specialty uses it |
-| `--signal-indigo` | `#4430e0` | C80/M78/Y0/K12 = 170% | Technosorcerer accent: an electric blue-violet of its own |
+| `--brand-magenta` | `#c026d3` | C41 M85 Y0 K0 = 126% | Bright neon signal — section accents, gateway banners |
+| `--brand-magenta-deep` | `#8a0a9a` | C56 M100 Y0 K0 = 156% | Press-safe magenta on cream (crit row text-on-fill 6.21:1) |
+| `--brand-cyan` | `#00bcd4` | C70 M1 Y16 K0 = 87% | Signal interference, wirephreak accent, augmerc-card pop |
+| `--brand-yellow` | `#ffd700` | C1 M13 Y100 K0 = 114% | Brand radiant — etherlock accent, peak triumph |
+| `--brand-violet` | `#7030b8` | C69 M87 Y0 K0 = 156% | The world: lore, vibe, cabal, treasure. No specialty uses it |
+| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Technosorcerer accent: an electric blue-violet of its own |
 
 ### HUD / digital-display layer
 
-| Token | Hex | Use |
-|---|---|---|
-| `--hud-blue` | `#1f6f94` | Mid HUD teal — primary stat lines, secondary chrome |
-| `--hud-blue-dark` | `#14516e` | Deep teal — borders, rules, H2 text |
-| `--hud-blue-dim` | `#7ab8d0` | Light cyan panel tint — note alert fill, table headers default, reduced-cost AP chip |
-| `--hud-magenta` | (alias --brand-magenta) | Brand-signature cyber-magenta |
-| `--hud-panel` | `#eeece8` | Neutral light cream — note/callout default fill |
+| Token | Hex | Measured CMYK = TAC | Use |
+|---|---|---|---|
+| `--hud-blue` | `#1f6f94` | C87 M50 Y26 K4 = 167% | Mid HUD teal — primary stat lines, secondary chrome |
+| `--hud-blue-dark` | `#14516e` | C93 M64 Y38 K20 = 214% | Deep teal — borders, rules, H2 text |
+| `--hud-blue-dim` | `#7ab8d0` | C50 M13 Y12 K0 = 76% | Light cyan panel tint — note alert fill, table headers default, reduced-cost AP chip |
+| `--hud-magenta` | (alias --brand-magenta) | — | Brand-signature cyber-magenta |
+| `--hud-panel` | `#eeece8` | C5 M5 Y7 K0 = 16% | Neutral light cream — note/callout default fill |
 
 ### Gutter / fire-and-blood layer
 
-| Token | Hex | CMYK est | Use |
+| Token | Hex | Measured CMYK = TAC | Use |
 |---|---|---|---|
-| `--crimson` | `#e1261c` | C0/M95/Y90/K0 = 185% | PMS Red 032 — danger, harm, active states, ROLL THE DIE tags |
-| `--blood` | `#901a12` | C0/M82/Y87/K44 = 213% | Oxidised arterial — DM-chapter table headers (6.3:1 on cream) |
-| `--orange` | `#d4500a` | C0/M62/Y95/K17 = 174% | Burnt circuit-board — warnings, AP tags, arrows |
-| `--orange-deep` | `#a03808` | C0/M65/Y95/K37 = 197% | Press-safe orange on cream (mixed row 5.25:1) |
-| `--rust` | `#b23a12` | C0/M67/Y90/K30 = 187% | Burnt rebar — section accents, miss row |
-| `--amber` | `#7a5a20` | (TAC mid) | Sulphur-scorched brass — gear-chapter section accent |
-| `--deep-rust` | `#6a1a08` | (TAC mid-high) | Shadow rust — deepest warm dark |
-| `--amber-dark` | `#5c3c10` | (TAC mid-high) | Charred amber |
+| `--crimson` | `#e1261c` | C5 M98 Y100 K0 = 203% | PMS Red 032 — danger, harm, active states, ROLL THE DIE tags |
+| `--blood` | `#901a12` | C27 M99 Y100 K28 = 254% | Oxidised arterial — DM-chapter table headers (6.3:1 on cream) |
+| `--orange` | `#d4500a` | C11 M82 Y100 K2 = 195% | Burnt circuit-board — warnings, AP tags, arrows |
+| `--orange-deep` | `#a03808` | C25 M88 Y100 K20 = 233% | Press-safe orange on cream (mixed row 5.25:1) |
+| `--rust` | `#b23a12` | C21 M89 Y100 K12 = 222% | Burnt rebar — section accents, miss row |
+| `--amber` | `#7a5a20` | C41 M57 Y100 K29 = 227% | Sulphur-scorched brass — gear-chapter section accent |
+| `--deep-rust` | `#70200e` | C32 M91 Y100 K45 = 268% | Shadow rust — deepest warm dark (was `#6a1a08`, 273%) |
+| `--amber-dark` | `#5c3c10` | C44 M66 Y100 K49 = 258% | Charred amber |
 
 ### Fluorescent fungi layer (wonderland)
 
-| Token | Hex | CMYK est | Use |
+| Token | Hex | Measured CMYK = TAC | Use |
 |---|---|---|---|
-| `--fungi-glow` | `#c8e040` | C30/M0/Y90/K0 = 120% | Bioluminescent yellow-green — gutterdruid accent, outcome-row.hit (with ink text) |
-| `--fungi-mid` | `#6aa030` | C58/M18/Y100/K8 = 184% | Luminous lichen mid — reserved for future fungi-faction signal |
-| `--fungi-rot` | `#2a4015` | C50/M30/Y100/K60 = 240% | Deep moldering green — outcome-row.fail (large-fill only) |
+| `--fungi-glow` | `#c8e040` | C26 M0 Y91 K0 = 116% | Bioluminescent yellow-green — gutterdruid accent, outcome-row.hit (with ink text) |
+| `--fungi-mid` | `#6aa030` | C64 M17 Y100 K2 = 183% | Luminous lichen mid — reserved for a future fungi-faction signal (not yet a token) |
+| `--fungi-rot` | `#30461e` | C72 M47 Y97 K51 = 268% | Deep moldering green — outcome-row.fail (large-fill only; was `#2a4015`, 274%) |
 
 ### Ancient crystals layer (magic)
 
-| Token | Hex | CMYK est | Use |
+| Token | Hex | Measured CMYK = TAC | Use |
 |---|---|---|---|
-| `--crystal-amethyst` | `#6a3a8a` | C50/M65/Y0/K35 = 150% | Mineral violet — the world's gem tint (treasure); no longer a specialty accent |
-| `--crystal-slate` | `#52626f` | C26/M11/Y0/K56 = 93% | Cool slate stone — generalist accent |
-| `--crystal-aqua` | `#4a98a8` | C70/M28/Y28/K20 = 146% | Crystalline aquamarine — dualist accent |
-| `--crystal-citrine` | `#b89a3a` | C20/M30/Y90/K20 = 160% | Burnt mineral gold — reserved for future crystal-faction signal |
+| `--crystal-amethyst` | `#6a3a8a` | C71 M92 Y9 K1 = 173% | Mineral violet — the world's gem tint (treasure); no longer a specialty accent |
+| `--crystal-slate` | `#52626f` | C70 M54 Y43 K18 = 185% | Cool slate stone — generalist accent |
+| `--crystal-aqua` | `#4a98a8` | C71 M26 Y30 K0 = 127% | Crystalline aquamarine — dualist accent |
+| `--crystal-citrine` | `#b89a3a` | C28 M35 Y96 K3 = 162% | Burnt mineral gold — reserved for a future crystal-faction signal (not yet a token) |
 
 ### Specialty palette (per-specialty triad plus band and chip)
 
-Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position.
+Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. Measured TAC of the dark in the last column: every dark is ≤ 268%.
 
-| Specialty | accent | mid | dark | band / on-band | Register lean |
-|---|---|---|---|---|---|
-| augmerc | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | future-tech HIGH + landfill mid |
-| proxy | orange | `#7a3008` | `#3d1a00` | orange / ink | magic HIGH + landfill HIGH |
-| streetwarden | `#4db840` toxic-civic | `#347828` | `#1a3d10` | accent / ink | tech mid + landfill mid |
-| gutterdruid | fungi-glow | `#4d6020` | `#2a3408` | accent / ink | landfill HIGH + wonderland HIGH |
-| cybersurgeon | `#a8b4b8` chrome | `#606870` | `#303840` | accent / ink | future-tech HIGH |
-| wirephreak | brand-cyan | `#006878` | `#003a40` | accent / ink | future-tech HIGH + landfill mid |
-| technosorcerer | signal-indigo | `#2f2290` | `#150c4a` | accent / cream | tech HIGH + magic HIGH |
-| etherlock | brand-yellow | `#8a6a00` | `#3d3000` | accent / ink | magic HIGH + landfill mid + wonderland mid |
-| dualist | crystal-aqua | `#2a6878` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid |
-| generalist | crystal-slate | `#3a4854` | `#1c252d` | accent / cream | magic HIGH |
+| Specialty | accent | mid | dark | band / on-band | Register lean | dark TAC |
+|---|---|---|---|---|---|---|
+| augmerc | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | future-tech HIGH + landfill mid | 156% |
+| proxy | orange | `#7a3008` | `#4c290f` | orange / ink | magic HIGH + landfill HIGH | 268% |
+| streetwarden | `#4db840` toxic-civic | `#347828` | `#294c1f` | accent / ink | tech mid + landfill mid | 268% |
+| gutterdruid | fungi-glow | `#4d6020` | `#394017` | accent / ink | landfill HIGH + wonderland HIGH | 268% |
+| cybersurgeon | `#a8b4b8` chrome | `#606870` | `#303840` | accent / ink | future-tech HIGH | 246% |
+| wirephreak | brand-cyan | `#006878` | `#003a40` | accent / ink | future-tech HIGH + landfill mid | 260% |
+| technosorcerer | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | tech HIGH + magic HIGH | 268% |
+| etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 267% |
+| dualist | crystal-aqua | `#2a6878` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 252% |
+| generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 265% |
 
 ### Production rules (CMYK + press-safe)
 
 - POD target: SWOP coated v2 / GRACoL gamut.
-- **TAC ceiling: 280%.** Any token over 280% is print-unsafe.
+- **TAC ceiling: 280%; house target ≤ 270% for every token.** Any token over 280% is print-unsafe. TAC is measured through the build's own conversion (see the substrate note above), never estimated from a hex: a dark that looks fine can read 284%. Re-measure when you add or retune a dark, and write the figure in the token's comment in `dc-palette.css`.
 - Hairlines: ≥ 0.5pt. Any rule thinner vanishes in CMYK.
 - Body-text contrast: ≥ 4.5:1 (WCAG AA).
 - Large-text contrast: ≥ 3:1.
@@ -284,7 +292,7 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - **The type floor is 10pt for every glyph, no exceptions** (§VI): body, tables, captions, chips, tabs, tier pills, AP chips, badges, labels, stamps, folios, stat keys. The token is `--fs-floor` (`dc-palette.css`).
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
-- Avoid rich black for small text.
+- Avoid rich black for small text: small text is the `--ink` text black, which the dtrpg preset prints 100% K. Fills and large type use `--ink-dark`; never raw `#000`/`#fff`, not even inside `color-mix()` (mix toward `--ink` and `--paper-cream`).
 
 ---
 
@@ -631,6 +639,8 @@ When in doubt: keep components FLAT, give them HARD SHADOWS, hard edges, decisiv
 - Let art interrupt layout instead of sitting politely in frames.
 - Magenta or orange light accents as supporting note, not whole image strategy.
 - Avoid cute expressions, fantasy scrollwork, sleek luxury tech imagery.
+- **Art must be opaque: no alpha channel, no transparent PNG.** PDF/X has no transparency, so Ghostscript flattens every page that shows an image with an alpha channel into one full-page bitmap, and the page's live text, rules and chrome become pixels (fonts dropped, text no longer sharp or searchable). Flatten each image onto the solid colour it sits on, at full resolution, before it enters a book. `test/images.test.js` fails on any alpha channel (PNG colour type 4 or 6, or a `tRNS` chunk) under `design-guide/img/` or `images/`.
+- **No remote images.** An image URL (a placeholder service included) fails offline and breaks the build. Stand-in art is a local, opaque, flat-colour file (`scripts/make-placeholders.mjs` makes the guide's: the specialty's dark ground, its name in the bold face, a silhouette, under about 30 KB each).
 
 ---
 
