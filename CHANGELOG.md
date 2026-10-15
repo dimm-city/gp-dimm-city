@@ -33,6 +33,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
   enforces it), and headings set `font-synthesis-weight: none` so `**bold**`
   inside a heading prints in Lixdu's own stroke. That text is slightly thinner
   than the synthetic bold.
+- **A continuation card's tab draws its "continued" triangle** as a small
+  inline SVG in the title's colour, instead of a `▸` character. No Dimm City
+  font has that glyph, so Chromium borrowed one from a system font and printed
+  it as a Type 3 font; on the Field Guide that was the last one, and it made
+  its page fall back to whole-page flattening under `preserve-text`.
 
 ## [1.7.2] - 2026-10-15
 

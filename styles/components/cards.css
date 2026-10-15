@@ -158,6 +158,14 @@
   text-wrap: wrap;
 }
 
+/* The continuation tab's mark (plugin.js CONTINUED_MARK), sized to the
+   title's cap height. */
+.dc-tab-cont-mark {
+  width: 0.45em;
+  height: 0.6em;
+  vertical-align: baseline;
+}
+
 /* The tier pill (AUG1.3) is the specialty's own: a chip of its bright signal
    colour (cream with a dark edge where the signal fails 4.5:1 for the type),
    set by the --dc-tier-* tokens the specialty wiring fills (specialty-identity.css).
