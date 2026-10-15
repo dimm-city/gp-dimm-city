@@ -120,7 +120,7 @@ h1.dc-chevron {
   left: 8%;
   width: 45%;
   height: 5px;
-  background: color-mix(in srgb, var(--dc-spray-bg) 8%, transparent);
+  background: color-mix(in srgb, var(--dc-spray-bg) 8%, var(--wall-tone));
 }
 
 
@@ -144,7 +144,7 @@ h1.dc-chevron {
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, transparent);
+  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -183,7 +183,7 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, transparent);
+  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
 }
 
 /* The gap between the sticker and the banner title. It is a real space
@@ -285,7 +285,7 @@ h1.dc-chevron {
 /* ── Dashed rule divider (hr) ─────────────────────────────────────────── */
 hr {
   border: none;
-  border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, transparent);
+  border-top: 1.5px dashed color-mix(in srgb, var(--hud-magenta) 50%, var(--paper-cream));
   margin: var(--space-xl) 0;
 }
 
@@ -347,7 +347,7 @@ hr {
   background: var(--dc-tape-bg);
   padding: 14px 14px;
   border: 2px solid var(--dc-tape-border);
-  box-shadow: 1px 1px 0 color-mix(in srgb, #000 15%, transparent);
+  box-shadow: 1px 1px 0 color-mix(in srgb, #000 15%, var(--wall-tone));
   break-inside: avoid;
 }
 

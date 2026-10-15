@@ -9,31 +9,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
-- **Shadows and tints are translucent again, for books that opt in to
-  Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
-  poster shadow (`--shadow-ink`), skill-card and sticker shadows, tape and
-  pull-quote rules, the spray smudge, the dashed rule, the card corner mark,
-  the highlight wash, and the AP-chip and outcome-key bevels are `color-mix(…,
-  transparent)` again instead of being pre-mixed onto one surface, so a shadow
-  on the brick wall darkens the brick instead of painting a flat tone. The AP
-  chip's soft `3px 3px 6px` shadow is back. Text colours stay opaque: a
-  translucent glyph prints fully opaque on a split page. The wall tile stays
-  opaque. `--wall-tone` is removed (nothing uses it). The convention test
-  *paint nothing transparent* becomes *keep text opaque*.
-  - A book that keeps Gutterpress's default (`flatten-page`) and builds
-    PDF/X-1a now gets more pages flattened to an image than with 1.6.3: set
-    `pdfx.transparency: preserve-text` in the book's manifest. Requires the
-    Gutterpress release that ships that option.
 - **Lixdu is never faked bold.** Lixdu has one face, regular, but chapter
   chips, outcome rolls, block and card titles and headings asked for 700, so
-  Chromium synthesized a bold, which prints as a Type 3 font that
-  Gutterpress's PDF/X `preserve-text` split cannot keep: on the Field Guide,
-  215 of 228 pages fell back to whole-page flattening. Every rule that sets
+  Chromium synthesized a bold. A synthetic bold prints as a Type 3 font: its
+  glyphs are drawn shapes, not the font, and a heading such as CREDITS
+  extracts from the PDF as "C R E D I T S". Every rule that sets
   `--font-display` now sets `font-weight: 400` (a convention test enforces
   it), the front-matter masthead drops its 700, and headings set
   `font-synthesis-weight: none` so `**bold**` inside a heading prints in
   Lixdu's own stroke. That text is slightly thinner than the synthetic bold.
-  The Field Guide now has no Type 3 text and pages as before (228).
+  The Field Guide now has no Type 3 text, its headings extract as words, and
+  it pages as before (228).
 
 ## [1.6.3] - 2026-10-12
 

@@ -121,13 +121,9 @@ describe("stylesheets", () => {
     }
   });
 
-  // PDF/X-1a (DriveThruRPG) carries no transparency. Gutterpress flattens the
-  // artwork of a page that uses it and keeps the text live on top (#385), so
-  // shadows and tints may be translucent, but text itself must stay opaque:
-  // translucent glyphs print fully opaque there. Pre-mix text colours with
-  // color-mix() onto their surface; see docs/print-transparency-inventory.md.
   // Lixdu ships one face (regular). A bold weight makes Chromium synthesize a
-  // bold, which prints as a Type 3 font that PDF/X preserve-text cannot keep.
+  // bold, which prints as a Type 3 font: no real glyphs, and its words extract
+  // as separate letters from the PDF.
   test("set the display font at its own weight (no synthetic bold)", () => {
     const found = [];
     for (const rel of [...sheets, "design-guide/styles/guide.css"]) {
@@ -139,16 +135,22 @@ describe("stylesheets", () => {
     expect(found).toEqual([]);
   });
 
-  test("keep text opaque (PDF/X-1a)", () => {
-    const TEXT_PAINT = /(?:^|[;{\s])(color|-webkit-text-fill-color|-webkit-text-stroke-color|text-decoration-color|text-shadow)\s*:([^;}]*)/g;
-    const ALPHA = /rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|color-mix\([^;]*\btransparent\b/;
+  // PDF/X-1a (DriveThruRPG) carries no transparency: Ghostscript flattens any
+  // page that uses it to a raster image — no live text, and black text stays
+  // four-colour. Every colour is opaque; see docs/print-transparency-inventory.md.
+  test("paint nothing transparent (PDF/X-1a)", () => {
+    const ALPHA = [
+      [/rgba\(|hsla\(/, "an rgba()/hsla() colour"],
+      [/(^|[^-\w])opacity\s*:\s*0?\.\d/, "opacity below 1"],
+      [/#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])/, "a hex colour with alpha"],
+      [/mix-blend-mode\s*:\s*(?!normal)|background-blend-mode\s*:\s*(?!normal)/, "a blend mode"],
+      [/gradient\([^;]*\btransparent\b/, "a transparent gradient stop"],
+      [/(box|text)-shadow\s*:[^;]*?-?\d[\d.]*(px|pt)\s+-?\d[\d.]*(px|pt)\s+[1-9][\d.]*(px|pt)\s/, "a blurred shadow"],
+    ];
     const found = [];
     for (const rel of sheets) {
       const css = stripComments(read(rel));
-      for (const [, prop, value] of css.matchAll(TEXT_PAINT)) {
-        if (ALPHA.test(value)) found.push(`${rel}: ${prop}: ${value.trim()}`);
-      }
-      if (/(^|[^-\w])opacity\s*:\s*0?\.\d/.test(css)) found.push(`${rel}: opacity below 1`);
+      for (const [re, what] of ALPHA) if (re.test(css)) found.push(`${rel}: ${what}`);
     }
     expect(found).toEqual([]);
   });
