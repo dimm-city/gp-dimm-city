@@ -505,7 +505,7 @@ lives:
 
 | Rule | File | Why |
 |---|---|---|
-| A panel of four blocks or fewer, with no column run or table, is `break-inside: avoid`; a long one keeps its 2nd block with its 3rd and its last block with the one above | `components/section.css` ("Where a panel may break") | no heading bar alone at a page foot, no two-line tail on its own page |
+| A panel splits wherever the page ends; which panels stay whole is the book's call (`.dc-avoid-split`, `--dc-section-break-inside`) | `components/section.css` ("Where a panel may break") | a block-count threshold is a guess about one book's content; no package rule counts blocks or rows |
 | Text in a panel or callout has `orphans: 3; widows: 3` | `components/section.css` | at 2/2 Chromium still splits a three-line paragraph 2 + 1 |
 | An ability row is not glued to the block after it; only a skill card's last block stays with the one above | `components/cards.css`, `components/data.css` (the `data-ability-penultimate` / `-last` glue is gone) | a card of N rows had no place to split, so it split inside one paragraph and left a hand's breadth of empty cream |
 | `.dc-dm-note > :first-child { break-before: avoid }` only inside a column run | `dc-native.css` §7 | at page level it pulled the section above's last block onto the callout's page |

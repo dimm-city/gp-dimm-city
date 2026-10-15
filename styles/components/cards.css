@@ -289,7 +289,8 @@
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
-.dc-skill-card .dc-card-inner > :nth-child(-n+2) {
+.dc-skill-card .dc-card-inner > :first-child,
+.dc-skill-card .dc-card-inner > :first-child + * {
   break-after: avoid;
 }
 
