@@ -13,7 +13,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 
 | Marker | Closes | Notes |
 |---|---|---|
-| `@chapter [word] #id ch="N" [head="Name"]` | next `@chapter` / EOF | `ch` prints the footer; `head` names the chapter in the running head (else its `#` title, else "Chapter N"). Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
+| `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
 | `@page [word] [.class…]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |

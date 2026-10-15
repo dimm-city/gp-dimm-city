@@ -69,17 +69,8 @@
   --dc-fiction-art-width: 2in;
 }
 
-/* An explainer page closes without the package's end-of-chapter plate, and so
-   does the Citizen File chapter, whose last page runs to the foot: a plate that
-   does not fit prints on a page of its own
-   (page-templates.css, "END-OF-CHAPTER MARK"). */
-.page.dg-doc,
-#ch-example-chapter-opener { --dc-end-mark-display: none; }
-
 @page dg-doc {
   background: var(--dg-paper);
-  /* no running-head chip on a plain explainer page: its own foot names the chapter */
-  @bottom-center { content: none; }
 }
 
 /* Running foot on doc pages: a plain folio and the chapter title, replacing

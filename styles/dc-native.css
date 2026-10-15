@@ -62,7 +62,7 @@
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
    content width by the whole bottom margin (174 x 54pt on this page).
    `width: fit-content` tightens the inline axis; the block axis is the
-   sticker's own height (17pt) rather than `fit-content`, so
+   sticker's own height (0.225in) rather than `fit-content`, so
    the box is the same height on every page, for every page word, and the
    text inside it is centred by the engine (`vertical-align: middle` +
    `line-height: 1`), not by the font's ascent. Two details keep the glyphs
@@ -74,19 +74,15 @@
    - `letter-spacing` leaves its tracking after the last glyph, so the
      inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 1in) is
-   measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the TRIM,
-   and the trim is 0.125in inside the sheet at the bottom, so nothing may print
-   below 0.625in from the sheet edge. The chip is 17pt (0.236in) tall and sits
-   0.125in BELOW the text block (`margin-top: 0.125in`, which the engine
-   honours on a margin box: measured, a 4pt margin moved the box 4.3pt), so
-   its foot is at 0.639in: inside the minimum, with a clear 0.125in of bare
-   wall between any content box and the chip, on every wall page. (That is why
-   the margin is 1in: at 0.875in the band was only 0.25in, the chip had to touch
-   the text block, and a sheet that ran to the foot ran into it.)
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.875in)
+   is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
+   TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
+   print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
+   at the top of the band, 0.025in below the text block, so its foot is at
+   exactly 0.625in: on DriveThruRPG's 0.5in text minimum.
 
    A shrunk margin box stays anchored at its slot's START edge on the block
-   axis, which is why the offset is a margin. Shrinking the box leaves no hole
+   axis, which is why the offset is a margin (`margin-top: 0.025in`). Shrinking the box leaves no hole
    in the band: §1's `@page` background paints underneath, so the wall shows
    through the rest of the slot on its own.
 
@@ -94,10 +90,8 @@
    cut. `align-self: flex-start`: on a page whose footer band a `.gp-flush`
    pin frees, gutterpress re-homes these chips into a flex slot the size of
    the margin box, centred vertically (gutterpress-agent setFlushFurniture,
-   `align-items: center`), and copies these declarations onto the chip. A
-   native margin box anchors the chip at the TOP of the band; centred, a
-   re-homed chip printed 0.24in from the trim, against DriveThruRPG's 0.5in
-   text minimum. The declaration does nothing to a native margin box, which
+   `align-items: center`), and copies these declarations onto the chip;
+   anchored at the slot's top, it sits 0.025in below the text block there too. The declaration does nothing to a native margin box, which
    is not a flex item.
 
    THE TWO CHIPS.
@@ -112,9 +106,9 @@
   @bottom-left {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.125in;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -132,9 +126,9 @@
   @bottom-right {
     /* chapter coupon */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.125in;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -155,9 +149,9 @@
   @bottom-left {
     /* chapter coupon */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.125in;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -175,9 +169,9 @@
   @bottom-right {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.125in;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -199,9 +193,9 @@
    it sits on a tab, never on the brick: a solid amber face (cream type 5.3:1,
    display face 10pt bold, reversed) in the same ink edge and hard shadow as
    the footer stickers. page-rules.css gives it its content and its page
-   margin (1in); the tab hangs from 0.625in below the sheet top (DriveThruRPG's
-   0.5in text minimum, trim being 0.125in in), 17pt tall, so it ends 0.14in
-   clear of the text block. The top margin boxes anchor at the sheet edge, so
+   margin (0.875in); the tab hangs from 0.625in below the sheet top
+   (DriveThruRPG's 0.5in text minimum, trim being 0.125in in), 17pt tall, so it
+   ends at the top of the text block. The top margin boxes anchor at the sheet edge, so
    the offset is a margin. */
 @page citizen-file:right {
   @top-right {
@@ -261,87 +255,6 @@
 @page dc-chip-amber:left     { @bottom-right { background: var(--amber-dark); } }
 @page dc-chip-amber:right    { @bottom-left  { background: var(--amber-dark); } }
 
-/* ── 2d. RUNNING HEAD: the chapter's name, centred in the footer band ───────
-   A slip in the chip family: between the folio (outer corner) and the chapter
-   coupon (inner corner), the same 17pt box, 0.125in below the text block and
-   inside DriveThruRPG's 0.5in text minimum. Paper-cream face, ink type in the
-   mono face at the 10pt floor (the folio's face: the display face is so wide
-   that a 27-letter title ran out of the box and lost its last glyphs), the
-   same ink edge and hard shadow, and a
-   thick left edge in the chapter's colour (the coupon's colour, repainted per
-   named page below): it is the slip's rail, the `##` heading slip's family.
-   page-rules.css feeds it (`string(dcRunningHead, last)`) and clears it on
-   chapter-start, front-matter and full-bleed pages.
-
-   WHY THE FOOTER AND NOT THE TOP. A head at the top edge must clear the 0.5in
-   text minimum AND the text block, which moves every page's top margin from
-   0.625in to 1in: 0.375in lost on every page of every book. The footer band is
-   already reserved, so the head costs no page height. A book that wants it at
-   the top corner anyway sets `margin-top: 1in` on its pages and copies this box
-   into `@top-left` / `@top-right` (docs: constitution §IV).
-
-   Width: `max-width` keeps a long name between the two chips (the box is
-   centred on the text block, the chips are about 0.6in each): in mono a name of
-   up to about 55 letters fits whole; a longer one is clipped at the box edge,
-   never wrapped (`white-space: nowrap`), so shorten it with `head="..."` on the
-   `@chapter`. Nothing is clipped by a
-   clip-path: the box is a plain bordered rectangle. */
-@page :left {
-  @bottom-center {
-    width: fit-content;
-    max-width: 4.4in;
-    height: 17pt;
-    box-sizing: border-box;
-    margin-top: 0.125in;
-    align-self: flex-start;
-    vertical-align: middle;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    font-family: var(--font-mono);
-    font-size: var(--fs-floor);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px calc(10px - 0.08em) 0 10px;
-    color: var(--ink-dark);
-    background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 6px;
-    border-left-color: var(--brand-magenta-deep);
-  }
-}
-@page :right {
-  @bottom-center {
-    width: fit-content;
-    max-width: 4.4in;
-    height: 17pt;
-    box-sizing: border-box;
-    margin-top: 0.125in;
-    align-self: flex-start;
-    vertical-align: middle;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    font-family: var(--font-mono);
-    font-size: var(--fs-floor);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px calc(10px - 0.08em) 0 10px;
-    color: var(--ink-dark);
-    background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 6px;
-    border-left-color: var(--brand-magenta-deep);
-  }
-}
-@page dc-chip-blue     { @bottom-center { border-left-color: var(--hud-blue-dark); } }
-@page dc-chip-rust     { @bottom-center { border-left-color: var(--rust); } }
-@page dc-chip-violet   { @bottom-center { border-left-color: var(--brand-violet); } }
-@page dc-chip-amethyst { @bottom-center { border-left-color: var(--crystal-amethyst); } }
-@page dc-chip-amber    { @bottom-center { border-left-color: var(--amber-dark); } }
-
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content, which makes
@@ -349,9 +262,8 @@
    blocks sufficient on their own; only `:blank` has no counterpart there, so
    only `:blank` is restated here. */
 @page :blank {
-  @bottom-left   { content: none; }
-  @bottom-center { content: none; }
-  @bottom-right  { content: none; }
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
 }
 
 /* ── 4. FRONTMATTER (TOC + Credits): full-bleed composite under native ──────

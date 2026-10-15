@@ -155,13 +155,11 @@ Apply disruption to **display elements**, never to **reading surfaces**.
 
 Page furniture is a chip, never bare type, and stays level and legible:
 
-- **Folio** (`P.121`): a paper-cream sticker, 17pt tall, 10pt type, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
+- **Folio** (`P.121`): a paper-cream sticker, 0.225in tall, 10pt type, ink edge, a hard ink shadow drawn as a thicker bottom/right border (margin boxes take no `box-shadow`). Type is centred in the face by the engine (`vertical-align: middle`), not by the font's ascent.
 - **Chapter chip** (`C.N` in a book, `E.N` in the design guide's Part 2): a stamped coupon in the chapter's colour (magenta-deep by default; blue, rust, violet, amethyst or amber through a named page, `dc-chip-<hue>`, since a margin box cannot see the chapter's accent), cream type (every face ≥ 4.5:1), the same ink edge and hard shadow. It replaces a dashed magenta outline, which read as a debug box.
-- **Placement**: both sit in the footer band below the text block, 0.125in of bare wall clear of any content box, and inside DriveThruRPG's text minimum: the bottom margin is 1in from the sheet edge, the chip (17pt) starts 0.125in below the text block and ends 0.639in from the sheet edge (0.5in from the trim). On recto and verso, for every page word that prints them; pages that print no chips (chapter-start, intro) use a 0.75in margin (0.625in from the trim).
-- **Running head** (the chapter's name): a third chip in the same family, centred in the footer band between the folio and the chapter coupon: paper-cream face, mono type at the 10pt floor, ink edge, hard shadow, and a thick left edge in the chapter's colour. It sits in the footer and not at the top because a head at the top edge would move every page's top margin from 0.625in to 1in to stay inside the 0.5in text minimum. It names the chapter (`@chapter … head="…"`, else the chapter's `#` title, else "Chapter N"), and is not printed on chapter openers, front matter, full-bleed pages or a book's plain explainer pages. A book that needs it at the top copies the box into `@top-left` / `@top-right` with a 1in top margin.
-- **End-of-chapter mark**: the last page of every chapter closes with an "END OF FILE" plate after its last block, so an intentionally short page reads as designed, not abandoned: an ink plate, cream stencil type, a dashed cream frame, masking tape across the top edge, the chapter's colour as its rail, a hard shadow, a few degrees off square. A label (20% layer), never a reading surface, vector and opaque. CSS can attach it to the last page of a chapter but cannot know how full that page is, so a chapter whose last page runs to the foot turns it off (`--dc-end-mark-display: none`) rather than let it fall to a page of its own.
+- **Placement**: both sit at the top of the footer band (the 0.875in bottom margin, measured from the sheet edge), 0.025in below the text block; the 0.225in chip ends exactly 0.625in from the sheet edge, on DriveThruRPG's 0.5in text minimum. On recto and verso, for every page word that prints them.
 - **Pagination** is a package duty, not the book's: a short panel is kept whole, a long one never opens or ends with a single block, text keeps three orphans and three widows, a card splits between ability rows, headings and dividers stay with what follows. See the per-spread verdict scheme (§XI): a page under about 40% full with no design reason, or a one- to three-line continuation, is a fault to fix in the package first and the book's forced breaks second.
-- **Citizen File running head**: an amber tab, cream type, same edge and shadow, hung 0.625in below the sheet top in a 1in top margin, 0.14in clear of the text block.
+- **Citizen File running head**: an amber tab, cream type, same edge and shadow, hung 0.625in below the sheet top in a 0.875in top margin, ending at the top of the text block.
 - **Wall-level grit** is restrained and sits on edges and labels: the tape on a `##` slip, the dashed foot, the hard-border shadows. Vector and opaque only. Nothing clips a glyph: chips and slips are plain bordered boxes; only the title banner's diagonal tail is clipped, and its padding clears it.
 
 | Safe for chaos | Keep stable |
@@ -202,13 +200,11 @@ Every TAC figure in this section is **measured**, not estimated: a swatch PDF co
 | `--paper-light` | `#e2ded7` | C10 M9 Y13 K0 = 32% | Lighter-than-the-wall grey paper — the lede, specialty intros, alternate panel fills. |
 | `--paper-aged` | `#c8c2b8` | C21 M20 Y26 K0 = 66% | Weathered grey, about the wall's own value — the outcomes ladder rows, field chips, catalog ledger band. Label and rule grounds, not a reading surface. |
 | `--paper-stain` | `#b0a89c` | C32 M30 Y37 K0 = 99% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
-| `--ink` | `#1e1d1c` | C69 M66 Y67 K76 = 278% | **Text black**: body text, key rules, hairlines. Inside the build's K-only band (every channel ≤ 30, spread ≤ 10), so type at 24pt and below prints 100% K on the black plate. At 278% it is the darkest token that stays in that band: never a large fill. Was `#1a1512`, 284%, over the ceiling. |
-| `--ink-dark` | `#2f2622` | C61 M66 Y69 K69 = 266% | **Solid ink**: heavy fills (DM slab, AP chip, outcome-key ground), frames, borders ≥ 2px, flavor text. Outside the K-only band, so type in it is four-colour: use it for fills and large display type. Was `#2b231d`, 271%. |
+| `--ink` | `#1e1d1c` | C69 M66 Y67 K76 = 278% | Body text, key rules, heavy borders. |
+| `--ink-dark` | `#2f2622` | C61 M66 Y69 K69 = 266% | Heavy callout fills (DM notes), border anchors. |
 | `--ink-smoke` | `#4d4339` | C57 M60 Y68 K47 = 231% | Secondary labels, the NPC flavor line (7.4:1 on paper). |
 | `--ink-mid` | `#594f43` | C55 M56 Y67 K38 = 217% | Secondary card text. |
 | `--ink-dust` | `#665b4e` | C53 M54 Y64 K29 = 200% | Form-label micro-headings, dashed dividers (4.58:1 on cream). |
-
-**Two inks, because text and fills are different jobs.** The dtrpg preset sets `pdfx.blackText: k-only`: near-black text at 24pt and below is rewritten to 100% K (what a printer wants for small type), while fills keep the ICC conversion's rich black. The darkest token that still counts as near-black measures about 277%, so the text ink sits there and **solid fills use `--ink-dark` (266%)**. Lifting `--ink` out of the band to reach 270% would turn every line of body copy into four-colour type; darkening either token puts it back over 280%. Pure `#000` is not a token: it measures 295%.
 
 ### Brand signature layer
 
@@ -292,7 +288,7 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 - **The type floor is 10pt for every glyph, no exceptions** (§VI): body, tables, captions, chips, tabs, tier pills, AP chips, badges, labels, stamps, folios, stat keys. The token is `--fs-floor` (`dc-palette.css`).
 - Every variant must also pass the colour-and-grayscale test (§II).
 - Magenta + crimson drift muddy in early proofs — proof these first.
-- Avoid rich black for small text: small text is the `--ink` text black, which the dtrpg preset prints 100% K. Fills and large type use `--ink-dark`; never raw `#000`/`#fff`, not even inside `color-mix()` (mix toward `--ink` and `--paper-cream`).
+- Avoid rich black for small text.
 
 ---
 
@@ -340,7 +336,6 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 - Street voice in short bursts; rules text stays clear.
 - Display sizes need negative tracking (lixdu defaults are body-tuned). Apply via component-level `letter-spacing` only when justified by surface — banners on dark fills, not body copy.
 - H5 mono caps are tracked (about 0.1em) to read as chrome labels; no all-caps mono label is tracked under 0.08em.
-- Callout bodies are upright. Italic is for voices that speak to the reader (the vibe and origin alerts, flavor lines, definitions' body).
 
 ---
 
@@ -408,14 +403,14 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - **Outer 1.5pt border** in the specialty's mid color — frame.
 - Per-specialty clip-path geometry — secondary identity cue, in the same language as the skill cards (see "Specialty silhouettes"); every cut stays clear of the type (padding on a clipped edge is the cut depth plus 2pt or more).
 - **The catalog is a spread.** On `@page specialty-catalog` the ten cards are one designed two-page spread: it opens on a left page, the title, the lede and four cards fill the left page and six the right, in aligned rows of equal height (wrapped flex rows, two across; the package keeps `grid-template-columns` for single components), and nothing else shares the two pages. Each card is a poster: the portrait on top in a single ink-matted frame cut in the specialty's own silhouette (a picture that has not loaded reads as a paper-aged field with its alt text), then the name (display, on one line), the tagline (mono caps over a rule) and the pitch (10pt), with an index chip (01 to 10) on the portrait. The dense card (a floated thumbnail) is the card anywhere else.
-- **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths **on the cards beyond a specialty's own silhouette** (Proxy's tear and Gutterdruid's wobble are the register, §III) — those Pass 6/7/8 experiments were rejected by user-eye review as over-styling. (They are used, deliberately, one layer up: see Title bands.) Restraint wins on the card.
+- **NO** corner accent triangles, NO portrait double-edge framing, NO noise overlays, NO LED-rim inset highlights, NO tonal-lift gradient on the body, NO hazard-tape borders, NO torn-paper irregular clip-paths — all Pass 6/7/8 experiments were rejected by user-eye review as over-styling. Restraint wins.
 - The rule: **specialty color belongs in border, title, and at most a tint of the substrate** — not as a saturated fill across the entire card.
 
 ### Title bands (learning-path banner, specialty-intro title)
 
 - **Surface**: digital display register. The band fill is the specialty's own bright signal colour with ink or cream type at ≥ 4.5:1, so ten specialties read as ten colours (and ten values) at a glance.
 - The register rides on three flat layers: the **rim** (an inset top highlight, tech only), a **facet** plane at the right (magic: pale or dark; landfill: a burnt or lichen patch) and a **rule** under the band (tech: a rule of ink or accent LED dots (a dotted border); Streetwarden: hazard tape, a slanted dashed border; landfill: none, the bottom edge is torn instead).
-- Display layer only, so the Pass 6/7/8 rejections of hazard tape, torn edges and LED rims for the cards do not apply to the bands. All flat fills, borders and clipped polygons, no gradient at all: a gradient is dropped or rasterised in a PDF/X build, so the dots, tape and facets are drawn as borders and clip-paths.
+- All flat fills, borders and clipped polygons, no gradient at all: a gradient is dropped or rasterised in a PDF/X build, so the dots, tape and facets are drawn as borders and clip-paths.
 - A path with no subtitle and no stickers is the band alone (the shell hugs it). The subtitle sits on the shell's own paper in `--ink-dark`, with a 3px rail in the specialty's mid colour.
 
 ### Outcome ladder chips (digital display)
@@ -451,7 +446,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 
 - Flat solid fill — no tonal gradient, no inset cream stroke on the paper registers (the Pass 6 attempt stays reverted). The warning's ink frame is a hard ring and the vibe's edge a single dashed line, not a double stroke on a fill. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
 - Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is ever cut. Every variant sets `--dc-accent-ink`, the text-safe ink of its own accent on its own surface (note a 50% HUD-blue/ink mix, warning and origin `--blood`, dm `--hud-blue-bright`, vibe `--brand-violet`, visit `--fungi-glow`, example `--hud-blue-dark`); the lede sets it from `--dc-intro-ink`.
-- Body copy is upright and level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 10pt mono caps tracked 0.1–0.14em. Chaos is on the labels and edges only.
+- Body copy is level, ≥ 10pt (the reversed DM and visit bodies are semibold); labels 10pt mono caps tracked 0.1–0.14em. Chaos is on the labels and edges only.
 - A chapter must NOT re-theme a callout's variant tokens: identity survives re-theming.
 
 ### NPC stat blocks
@@ -559,7 +554,6 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 
 - Component styles in `components/*.css` expose `--dc-X-*` token surfaces defaulted in `dc-component-defaults.css`.
 - Per-book overrides in the book's own sheet (unlayered — it beats this package at any specificity) set those tokens via **natural selector chains** (chapter id → page template → section component).
-- One named exception to "tokens are set on ancestors": the **context token** `--dc-accent-ink` (the text-safe ink of the component the text sits in). A component sets it on its own root rule from its own accent and surface; it defaults at `:root`; a book overrides it per component class, not at an ancestor. The allow-list lives in `test/conventions.test.js`.
 - Override files NEVER carry bare `.dc-*` rules — only context-scoped selectors (`#ch-X .dc-Y`, `.page.dc-page-Z .dc-Y`, `.dc-chapter-Z .dc-Y`, `.section.dc-X`).
 - Section variants ride on the section's own variant word (`@section panel`, `@section flat`, `@section reference`, `lore`, `dm`, `choose`, or a component word such as `@section npc`) or its `.dc-X` class. No utility variant classes (`.dc-accent-X`, `.variant-Y` are forbidden); declared section, page and chapter variants (`@section panel`, `@page chapter-start`, `@chapter rules`) are not utility classes, because each is one word the plugin declares, resolves to one `dc-` class, and sets tokens rather than drawing a one-off look.
 - Authors NEVER write per-element class attributes for styling (`{.dc-warning}` on a paragraph is forbidden).
@@ -602,7 +596,7 @@ Do not drift into:
 - **Low-contrast, soft-tint text on a stain.** No body text on `--paper-stain` or any fill darker than the wall; no italic-on-grey reading surfaces.
 - **Type under the floors, or inflated past them.** The §VI floors are minimums; do not under-run them and do not pad text beyond them to fake hierarchy.
 
-### Component-level failures (Pass 6/7/8)
+### Component-level failures (Pass 6/7 specifically)
 
 These polish moves were tried and REJECTED:
 
@@ -612,13 +606,6 @@ These polish moves were tried and REJECTED:
 - Corner accent triangle via `::after` on specialty cards (broke clipping on lozenge / chamfered shapes)
 - Portrait double-edge frame chrome (made empty placeholders MORE prominent)
 - Inset cream double-stroke on callouts (looks deluxe-web, not creaturepunk)
-- On the **specialty cards**: LED-rim inset highlights, hazard-tape borders, torn-paper irregular clip-paths, a tonal-lift gradient on the body. These were rejected as over-styling the card.
-
-**Revised in 2026-10 (the review showed the blanket bans were wrong).** Hazard tape, torn edges and LED rims are the 20% display layer; the ban holds only for the cards and for reading surfaces. They are now used, deliberately, on:
-- **title bands** (learning-path banner, specialty-intro title): an LED rim and ticked rule on the tech specialties, a hazard-tape rule on Streetwarden, a torn bottom edge on Proxy and Gutterdruid;
-- **labels and sheets**: the warning alert's hazard-stripe rail and caution-tape label, the fiction excerpt and shard block's torn edges, the cult faction and flaw card's torn or cracked edges, the enforcer faction's hazard band, tape and spray chrome.
-
-Still true: no `filter`, no `text-shadow` on display type, no gloss or sheen gradients (hard-edged stripes are ink, not sheen), no warm-parchment fantasy paper (`--paper-zine` and `--paper-form` are neutrals; there is no tan sheet), and body copy is never rotated or torn.
 
 When in doubt: keep components FLAT, give them HARD SHADOWS, hard edges, decisive separation from the wall. **Subtle ≠ better. Decisive ≠ overdone.**
 
@@ -639,8 +626,6 @@ When in doubt: keep components FLAT, give them HARD SHADOWS, hard edges, decisiv
 - Let art interrupt layout instead of sitting politely in frames.
 - Magenta or orange light accents as supporting note, not whole image strategy.
 - Avoid cute expressions, fantasy scrollwork, sleek luxury tech imagery.
-- **Art must be opaque: no alpha channel, no transparent PNG.** PDF/X has no transparency, so Ghostscript flattens every page that shows an image with an alpha channel into one full-page bitmap, and the page's live text, rules and chrome become pixels (fonts dropped, text no longer sharp or searchable). Flatten each image onto the solid colour it sits on, at full resolution, before it enters a book. `test/images.test.js` fails on any alpha channel (PNG colour type 4 or 6, or a `tRNS` chunk) under `design-guide/img/` or `images/`.
-- **No remote images.** An image URL (a placeholder service included) fails offline and breaks the build. Stand-in art is a local, opaque, flat-colour file (`scripts/make-placeholders.mjs` makes the guide's: the specialty's dark ground, its name in the bold face, a silhouette, under about 30 KB each).
 
 ---
 
@@ -764,15 +749,14 @@ If those documents disagree, this file takes precedence. Update the AKM memory t
 |---|---|
 | Page background ("the wall") | `--bg` cold ash-concrete |
 | Primary text | `--ink` near-black |
-| Main accents | Each colour has a job (§II roles): magenta = display punch; HUD blue = player rules; cyan on ink = Dream Master; hazard yellow = danger and choices; blood/rust = harm and cost; violet = the world; fungi green = organic |
+| Main accents | brand-magenta / brand-cyan / rust / fungi-glow / crystal-amethyst |
 | Body copy | Stable, upright, readable |
 | Chaos placement | Labels, banners, image edges, stickers — never body |
-| Card feel | Industrial, clipped, paper lighter than the wall (never body text on a fill darker than it) |
+| Card feel | Industrial, clipped, slightly darker than page |
 | Texture | Barely visible grime on wall only |
 | Overall test | Forbidden street intel, not polished UI |
 | Component register check | Paper poster OR digital display — not both |
-| Variant check | Told apart in colour AND in grayscale (value, edge, label), never by hue alone |
-| Type floor | Every glyph ≥ 10pt (`--fs-floor`) · mono caps tracked ≥ 0.08em · reversed type semibold |
+| Type floor | Every glyph ≥ 10pt (`--fs-floor`) |
 | Specialty register check | Does the design read its per-specialty mix correctly? |
 
 If it looks like a friendly handbook, it failed. If it looks like a damaged field guide that still reads cleanly, it worked.

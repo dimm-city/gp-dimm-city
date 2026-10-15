@@ -21,11 +21,11 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | — | 8.5 × 11 in | — |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio, running head and chapter chips sit in it) | 1 in (0.75 in on a page with no footer) | 0.875 in (0.625 in) | 0.5 in — the chips start 0.125 in below the text and end 0.5 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips sit at the top of the band and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.75 in | 0.75 in | 0.5 in |
 
-A page carrying the "Citizen File" running head has a 1 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
+A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page words
 
@@ -46,22 +46,6 @@ The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter spl
 ### The page chips
 
 The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon: a solid face with cream type and the same edge and shadow. Both are 17 pt tall with 10 pt type centred in the face, and both sit 0.125 in below the text block, inside DriveThruRPG's 0.5 in text minimum, so a box that runs to the foot never touches them, on recto and verso, for every page word that prints them. The coupon is magenta by default; to colour it with a chapter, put the chapter's pages on a named page, `:where(#ch-rules) > .page { page: dc-chip-rust; }` (blue, rust, violet, amethyst or amber; the `specialty`, `rules` and `lore` chapter words do it for you). Name the page with the low-specificity `:where()` so a page's own template name still wins. A `citizen-file` page's running head is the same sticker in amber at the top.
-
-### The running head
-
-Between the two chips every body page prints the chapter's name on a paper slip with an ink edge and a hard shadow, and a rail in the chapter's colour, so a reader flipping pages knows where they are. It is the same 17 pt chip family and sits in the same footer band, so it is inside DriveThruRPG's 0.5 in text minimum and costs no page height. A book writes nothing: the name is the first of these that the chapter has.
-
-| Source | Example |
-|---|---|
-| `head="…"` on the `@chapter` line | `@chapter #ch-tech ch="6" head="Tech and Cybernetics"`, also the way to shorten a long title |
-| the chapter's `#` title | the head follows the latest `#` in the chapter, so a chapter file that opens with a `#` is done |
-| "Chapter N", from `ch="N"` | a chapter with neither still prints a name |
-
-The head is not printed on chapter openers, front matter, full-bleed pages or explainer pages like this one: any page template that clears the footer clears it. To suppress it for a whole book, add `@page :left { @bottom-center { content: none; } } @page :right { @bottom-center { content: none; } }` to the book's own sheet; to suppress it on one page template, add `@bottom-center { content: none; }` to that template's `@page` block. The mono face fits about 55 letters between the chips; a longer name is clipped, never wrapped, so shorten it with `head`.
-
-### The end-of-chapter mark
-
-Each chapter's last page ends short on purpose, because the next chapter starts on a page of its own. So the last page of every chapter closes with a sign-off plate, with no markup: a stencilled "END OF FILE" on an ink plate with a dashed cream frame, masking tape across its top edge, the chapter's colour as its rail and a hard shadow, set a few degrees off square at the right of the column. It makes the short page read as designed. It follows the last block of the page; if that page already runs to within half an inch of its foot the plate would fall to a page of its own, so a chapter whose last page is that full turns it off. To change it, set `--dc-end-mark-text` (the stencil, a quoted string), `--dc-end-mark-display` (`none` turns it off), `--dc-end-mark-gap`, `--dc-end-mark-bg`, `--dc-end-mark-ink` or `--dc-end-mark-tape`, on the chapter (`#ch-rules { --dc-end-mark-display: none; }`) or on `:root`.
 
 ### Where pages break
 
@@ -369,4 +353,4 @@ You believe in a code, and it's your duty to uphold it.
 
 ## Running headers and footers
 
-Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso, with the chapter's name between them (see "The running head"). Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter … ch="N"`: write it at the top of every chapter file and nothing else is needed; add `head="…"` to name the chapter in the running head.
+Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter … ch="N"`: write it at the top of every chapter file and nothing else is needed.

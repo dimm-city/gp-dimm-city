@@ -25,7 +25,7 @@
   page-break-inside: avoid;
 }
 
-.dc-alert p             { margin: 0; }   /* upright: only the vibe and origin voices are italic */
+.dc-alert p             { margin: 0; }
 .dc-alert p + p         { margin-top: 6pt; }
 ```
 

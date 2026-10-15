@@ -75,7 +75,7 @@ Colour is a job, not a mood. A reader flipping pages should know what kind of co
 - Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.
 - HUD blue means a rule or a look-up; magenta is display punch, not a category. Never mix fire and HUD on the same element.
 - Paper is for raised elements. The wall is the canvas; cream is the surface.
-- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a `pdfx` build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate: that conversion turns dark RGB into a heavy four-colour black, so `--ink` (278%) is the text black and never a large fill, and solid fills use `--ink-dark` (266%). Every token is at or under 270% except `--ink`.
+- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a `pdfx` build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate.
 
 Running text goes on a paper surface, never straight on the wall: the brick texture under body type cuts its contrast and breaks up the letterforms.
 

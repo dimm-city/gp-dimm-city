@@ -30,20 +30,9 @@
      #000 comes out C72 M68 Y67 K88 = 295%, so a "black" token is over the 280%
      ceiling unless it is lifted off black. House target: every token <= 270%.
 
-     TWO INKS, because text and fills are different jobs in the PDF/X build:
-     - `--ink` is the TEXT black. The build's `pdfx.blackText: k-only` rewrites
-       near-black text (every RGB channel <= 30, spread <= 10) at 24pt and
-       below to 100% K on the black plate alone, which is what a printer wants
-       for small type. That band is also the darkest a token can be and still
-       be rewritten, and the lowest TAC reachable inside it is ~277%, so
-       --ink stays in it (278%: under the ceiling, as a rule or a heading above
-       24pt) and is NEVER used as a large fill.
-     - `--ink-dark` is the SOLID black: DM slabs, bands, frames, borders >= 2px,
-       the AP chip and outcome-key ground. It sits outside the K-only band, so
-       type set in it is four-colour; keep it for fills and large display type.
-     Do not "darken" either: below these values the TAC passes 280%. -------- */
-  --ink:        #1e1d1c;  /* text black, inside the K-only band · was #1a1512 (284%) · TAC 278% (C69 M66 Y67 K76) */
-  --ink-dark:   #2f2622;  /* solid ink for fills, frames and borders · was #2b231d (271%) · TAC 266% (C61 M66 Y69 K69) */
+     -------------------------------------------------------------------- */
+  --ink:        #1e1d1c;  /* near-black with red bias — riso warm black · TAC 278% (C69 M66 Y67 K76) */
+  --ink-dark:   #2f2622;  /* warmer secondary heading weight · TAC 266% (C61 M66 Y69 K69) */
   --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis · TAC 231% (C57 M60 Y68 K47) */
   --ink-mid:    #594f43;  /* between smoke and dust — secondary card text · TAC 217% (C55 M56 Y67 K38) */
   --ink-dust:   #665b4e;  /* 4.58:1 on paper-cream #f0eee9 · TAC 200% (C53 M54 Y64 K29) */
@@ -150,12 +139,12 @@
      0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
      outside three edges and 0.5in from the binding edge.
        top     0.625in  = 0.5in from the trim
-       bottom  1in      = 0.875in from the trim (the folio and chapter chips
-                          sit in this band, 0.125in clear of the text block)
+       bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
+                          sit at the top of this band)
        outside 0.625in  = 0.5in from the trim
        binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
   --page-margin:   0.625in;
-  --bottom-margin: 1in;
+  --bottom-margin: 0.875in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 

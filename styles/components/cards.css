@@ -131,7 +131,7 @@
   right: -4px;
   bottom: 0;
   left: -4px;
-  background: var(--ink-dark);
+  background: var(--ink);
   clip-path: var(--dc-skill-tab-shape);
   z-index: -2;
 }
@@ -252,7 +252,7 @@
   content: '';
   position: absolute;
   inset: -2px;
-  background: var(--ink-dark);
+  background: var(--ink);
   clip-path: var(--dc-skill-body-shape);
   z-index: -3;
 }

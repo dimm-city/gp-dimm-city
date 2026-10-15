@@ -537,50 +537,6 @@
   margin-top: var(--dc-heading-gap);
 }
 
-/* ── END-OF-CHAPTER MARK: the last page of a chapter closes with a plate ─────
-   Every chapter's last page ends short by design (the next chapter starts on a
-   page of its own), and a short page with nothing at its foot reads as
-   abandoned. So the last page of every chapter (`.chapter > .page:last-child`)
-   gets a sign-off plate after its last block, with no markup: a stencilled
-   "END OF FILE" on an ink plate (cream type, a dashed cream stencil frame cut
-   inside the edge, the chapter's accent as the plate's left rail, a strip of
-   masking tape as its top edge, a hard shadow), set a few degrees off square at
-   the right, like a stamp. A label, not a reading surface: the body is level
-   and unrotated, and the 12pt type sits well inside every edge (nothing is
-   clipped). Vector and opaque: solid fills, `border`, `outline`, inset and hard
-   `box-shadow`, no gradient.
-
-   It is one in-flow block of about 0.55in. It attaches reliably (CSS knows the
-   last page of a chapter) but CSS cannot know how full that page is: on a last
-   page that already runs to within 0.55in of its foot the plate falls to a page
-   of its own. A chapter whose last page is that full (or any page that must not
-   carry it) turns it off with `--dc-end-mark-display: none` (a chapter id in the
-   book's own sheet, `#ch-citizen-file { --dc-end-mark-display: none; }`), and a
-   book words it with `--dc-end-mark-text` (`"FIN"`). Not printed on contents,
-   credits, intro, full-bleed and art pages, which close themselves. */
-.chapter > .page:last-child:not(.dc-page-contents, .dc-page-credits, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art)::after {
-  content: var(--dc-end-mark-text);
-  display: var(--dc-end-mark-display);
-  width: fit-content;
-  margin: var(--dc-end-mark-gap) 0.1in 0 auto;
-  padding: 0.09in 0.26in 0.07in 0.34in;
-  border-top: 5px solid var(--dc-end-mark-tape);
-  background: var(--dc-end-mark-bg);
-  color: var(--dc-end-mark-ink);
-  outline: 1.5pt dashed var(--dc-end-mark-ink);
-  outline-offset: -6px;
-  box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
-  font-family: var(--font-display);
-  font-size: var(--fs-h4);
-  font-weight: 700;
-  letter-spacing: 0.28em;
-  line-height: 1.2;
-  text-transform: uppercase;
-  white-space: nowrap;
-  rotate: -1.5deg;
-  break-inside: avoid;
-}
-
 /* ── PAGE WORD: `@page specialty-catalog` — the catalog as a two-page spread ──
    The ten specialty cards as a designed spread, not a column run that happens
    to cross a page. It opens on a LEFT page, so its two pages face each other:

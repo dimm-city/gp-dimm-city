@@ -195,8 +195,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Ink / Text
 | Token | Value | Role |
 |---|---|---|
-| `--ink` | `#1e1d1c` | Text black: body text, rules (278% TAC; inside the build's K-only band, so small type prints 100% K; never a large fill) |
-| `--ink-dark` | `#2f2622` | Solid ink: heavy fills, frames, borders, secondary heading weight (266% TAC) |
+| `--ink` | `#1e1d1c` | Near-black with red bias |
+| `--ink-dark` | `#2f2622` | Secondary heading weight |
 | `--ink-smoke` | `#4d4339` | Body emphasis mid-tone |
 | `--ink-dust` | `#665b4e` | Muted body/captions |
 
