@@ -706,6 +706,13 @@ h3 + .dc-section-panel {
 .dc-section-choose > .dc-card {
   break-inside: avoid;
 }
+/* A long table of choices (12 rows or more, most of a page at the 10pt floor)
+   splits between rows: each row is a whole option and the header repeats.
+   Kept whole it jumps to the next page and leaves the section's opening page
+   empty. A short one stays whole (split, it leaves a one-row stub). */
+.dc-section-choose > table:has(> tbody > tr:nth-child(12)) {
+  break-inside: auto;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    SECTION ENCLOSURES — dc-block family
