@@ -73,6 +73,9 @@
     "gutterpress": "0.11.17",
     "markdown-it": "^14.1.0"
   },
+  "engines": {
+    "gutterpress": ">=0.11.20-alpha.3"
+  },
   "peerDependencies": {
     "markdown-it": ">=14"
   },
