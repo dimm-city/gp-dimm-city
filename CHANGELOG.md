@@ -76,6 +76,25 @@ cut a version that has no `## [X.Y.Z]` heading below.
   it as a Type 3 font; on the Field Guide that was the last one, and it made
   its page fall back to whole-page flattening under `preserve-text`.
 
+## [1.7.4] - 2026-10-15
+
+### Changed
+
+- **Proxy and Wirephreak swap colours.** Proxy now takes the magenta (the more
+  purple of the two: `--brand-magenta` accent, `#9a1896` mid, `#8a1a90` dark,
+  a deep-magenta title band with a cream tier chip) and Wirephreak the electric
+  indigo (`--signal-indigo` accent, `#2f2290` mid, `#1e0f50` dark, an indigo
+  band and chip). Each keeps its own shapes and band register (Proxy's facet
+  plane, Wirephreak's ticked LED rule). The Surreal definition block keeps its
+  indigo-black surface, now read from `--wirephreak-dark`.
+- **The design guide and tests run on Gutterpress 0.11.20-alpha.3** (a
+  development dependency only: the published package does not depend on
+  Gutterpress). Its preview repeats a table header only where print does
+  (dimm-city/gutterpress#398). The tests drop core's new `data-name` block
+  stamp before comparing markup, as they already drop its source stamps, and
+  read a column's alignment from `data-align`, which core now writes in place
+  of markdown-it's inline `text-align`.
+
 ## [1.7.3] - 2026-10-15
 
 ### Fixed

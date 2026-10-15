@@ -695,7 +695,7 @@
    violet bands on opposite inner edges), the headword leaning. Body copy stays
    upright and unrotated; only the label leans. */
 .dc-definition-surreal {
-  --dc-definition-block-surface: var(--proxy-dark);  /* indigo-black */
+  --dc-definition-block-surface: var(--wirephreak-dark);  /* indigo-black */
   --dc-definition-block-accent: var(--brand-magenta);
   --dc-definition-block-accent-width: 0px;
   --dc-definition-block-rule-bottom: 0px;

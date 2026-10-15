@@ -27,8 +27,8 @@ function createGutterpressMarkdown() {
   return createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: {}, markers }]);
 }
 
-/** Core stamps source ranges and link tokens on blocks; they say nothing about the structure under test. */
-const stripSource = (html) => html.replace(/ data-(source-range|source-line|gp-source-token|gp-source-occurrence)="[^"]*"/g, "");
+/** Core stamps source ranges, link tokens and block names (`data-name`) on blocks; they say nothing about the structure under test. */
+const stripSource = (html) => html.replace(/ data-(source-range|source-line|gp-source-token|gp-source-occurrence|name)="[^"]*"/g, "");
 
 /** Render through Gutterpress (declared markers need it), with source stamps removed. */
 function renderGp(src) {
@@ -65,11 +65,12 @@ describe("behaviour carried from the book repo", () => {
   test("preserves unclassified skill tables as native markdown-it tables", () => {
     const table = ["| Name | Detail |", "| :--- | ---: |", "| **Alpha** | [Linked](https://example.test) |"].join("\n");
     const source = ["@skill", "", "#### Test Skill | T0", "", table, "", "@end-skill"].join("\n");
-    const expectedTable = new MarkdownIt({ html: true }).render(table);
+    // Gutterpress writes a column's alignment as `data-align` (its own CSS sets text-align from it), not markdown-it's inline style.
+    const expectedTable = new MarkdownIt({ html: true }).render(table).replace(/ style="text-align:(\w+)"/g, ' data-align="$1"');
     const { html } = renderGp(source);
 
     expect(html).toContain(expectedTable);
-    expect(html).toMatch(/<thead>[\s\S]*<th style="text-align:left">Name<\/th>/);
+    expect(html).toMatch(/<thead>[\s\S]*<th data-align="left">Name<\/th>/);
     expect(html).toMatch(/<tbody>[\s\S]*<strong>Alpha<\/strong>/);
     expect(html).not.toMatch(/dc-outcomes/);
   });
@@ -272,7 +273,7 @@ describe("declared wrapper markers", () => {
   const render = (src) => {
     const env = {};
     const html = createGutterpressMarkdown().render(src, env);
-    return { html: html.replace(/ data-source-(range|line)="[^"]*"/g, ""), warnings: env.layoutWarnings ?? [] };
+    return { html: stripSource(html), warnings: env.layoutWarnings ?? [] };
   };
   const wrap = (open, close, body = "x") => [open, "", body, "", close].join("\n");
 
@@ -973,7 +974,7 @@ describe("declared card, outcome and procedure", () => {
     });
 
     test("any other attribute written on the table moves too", () => {
-      expect(ladder(...bandTable(), "", '{#roll-z data-name="repair"}')).toContain('<div class="dc-outcomes" id="roll-z" data-name="repair">');
+      expect(ladder(...bandTable(), "", '{#roll-z data-kind="repair"}')).toContain('<div class="dc-outcomes" id="roll-z" data-kind="repair">');
     });
   });
 
@@ -1019,8 +1020,8 @@ describe("declared card, outcome and procedure", () => {
     });
 
     test("what is written on the @procedure line lands on the list, since the wrapper renders nothing", () => {
-      const { html } = renderGp(doc("@procedure #install .tight name=install", "", "1. One", "2. Two", "", "@end-procedure"));
-      expect(html).toContain('<ol class="dc-steps tight" id="install" data-name="install">');
+      const { html } = renderGp(doc("@procedure #install .tight data-kind=install", "", "1. One", "2. Two", "", "@end-procedure"));
+      expect(html).toContain('<ol class="dc-steps tight" id="install" data-kind="install">');
     });
 
     test("a procedure with two lists puts its attributes on the first only, so the id stays unique", () => {

@@ -38,7 +38,7 @@
      --spec-accent/-mid/-dark   the triad, aliasing its own --<name>-accent/-mid/-dark
      --spec-band / --spec-on-band   the title-band fill and the type on it: the
                                 bright signal colour, with whichever of ink or
-                                cream holds >= 4.5:1 on it (wirephreak uses the
+                                cream holds >= 4.5:1 on it (proxy uses the
                                 deep magenta: cream on the bright one is 3.6:1)
      --spec-chip-bg / -fg / -edge   the tier pill on the card tab. REQUIRED: the
                                 --spec-* tokens have no :root default, so a
@@ -223,25 +223,25 @@
   --dc-specialty-card-bg: var(--paper-aged);
 }
 
-/* ── Wirephreak — hacker, cyan, asymmetric cross-cuts ──────────────────── */
+/* ── Wirephreak — hacker, electric indigo, asymmetric cross-cuts ───────── */
 .dc-specialty.wirephreak {
   --spec-accent: var(--wirephreak-accent);
   --spec-mid: var(--wirephreak-mid);
   --spec-dark: var(--wirephreak-dark);
-  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH: deep-magenta band, cyan LED rule with ink ticks, inset LED rim. */
-  --spec-band: var(--brand-magenta-deep);
+  --spec-ink: var(--wirephreak-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  /* TECH: electric-indigo band, cyan LED rule with ink ticks, inset LED rim. */
+  --spec-band: var(--wirephreak-accent);
   --spec-on-band: var(--paper-cream);
-  --spec-chip-bg: var(--paper-cream);
-  --spec-chip-fg: var(--wirephreak-dark);
-  --spec-chip-edge: var(--wirephreak-dark);
+  --spec-chip-bg: var(--wirephreak-accent);
+  --spec-chip-fg: var(--paper-cream);
+  --spec-chip-edge: var(--paper-cream);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 5px;
   --dc-band-tick: var(--ink);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
-  --dc-band-reg: inset 0 -2px 0 var(--brand-magenta);  /* a second ink printed 2px off: a misregistered rule */
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 22%, var(--wirephreak-accent));
+  --dc-band-reg: inset 0 -2px 0 var(--signal-indigo);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH, circuit jogs: two big right-angle steps on the diagonal corners. */
   --spec-edge-top: 0 0, calc(100% - 26px) 0, calc(100% - 26px) 10px, calc(100% - 13px) 10px, calc(100% - 13px) 20px, 100% 20px;
   --spec-edge-rest: 100% calc(100% - 10px), calc(100% - 10px) 100%, 22px 100%, 22px calc(100% - 6px), 11px calc(100% - 6px), 11px calc(100% - 12px), 0 calc(100% - 12px);
@@ -281,24 +281,24 @@
   --dc-specialty-card-bg: var(--paper-light);
 }
 
-/* ── Proxy — faith wired in, electric indigo, top-centre gate notch ──── */
+/* ── Proxy — faith wired in, magenta, top-centre gate notch ──────────── */
 .dc-specialty.proxy {
   --spec-accent: var(--proxy-accent);
   --spec-mid: var(--proxy-mid);
   --spec-dark: var(--proxy-dark);
-  --spec-ink: var(--proxy-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH + MAGIC: electric-indigo band (its own hue; violet is the world's) with a faceted plane and a cyan LED rule. */
-  --spec-band: var(--proxy-accent);
+  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  /* TECH + MAGIC: deep-magenta band (cream on the bright magenta is 3.6:1) with a faceted plane and a cyan LED rule. */
+  --spec-band: var(--brand-magenta-deep);
   --spec-on-band: var(--paper-cream);
-  --spec-chip-bg: var(--proxy-accent);
-  --spec-chip-fg: var(--paper-cream);
-  --spec-chip-edge: var(--paper-cream);
+  --spec-chip-bg: var(--paper-cream);
+  --spec-chip-fg: var(--proxy-dark);
+  --spec-chip-edge: var(--proxy-dark);
   --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 4px;
-  --dc-band-facet: color-mix(in srgb, var(--ink) 30%, var(--proxy-accent));
+  --dc-band-facet: color-mix(in srgb, var(--ink) 30%, var(--brand-magenta-deep));
   --dc-band-facet-width: 30%;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 22%, var(--proxy-accent));
-  --dc-band-reg: inset 0 -2px 0 var(--signal-indigo);  /* a second ink printed 2px off: a misregistered rule */
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
+  --dc-band-reg: inset 0 -2px 0 var(--brand-magenta);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH + MAGIC: a shallow centre gate on top (the rune), a stair at one corner and a facet at the other. */
   --spec-edge-top: 0 0, calc(50% - 22px) 0, 50% 7px, calc(50% + 22px) 0, calc(100% - 14px) 0, 100% 14px;
   --spec-edge-rest: 100% calc(100% - 12px), calc(100% - 10px) calc(100% - 12px), calc(100% - 10px) calc(100% - 6px), calc(100% - 20px) calc(100% - 6px), calc(100% - 20px) 100%, 12px 100%, 0 calc(100% - 12px);
