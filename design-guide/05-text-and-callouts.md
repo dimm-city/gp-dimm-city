@@ -137,10 +137,10 @@ Result {.dg-result}
 | `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail and small, even machined chamfers |
 | `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a light cream sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label |
 | `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right |
-| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one dashed violet edge all round, a strip of tape on top, italic, with an underlined label |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one violet edge all round, a strip of tape on top, italic, with a violet-edged label chip |
 | `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label |
 | `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
-| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a dashed cyan rail and a taped-on label |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail and a taped-on label |
 
 Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 
@@ -182,7 +182,7 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 ## Worked example
 
-`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a dashed cyan edge, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
+`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a cyan rail, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
 
 ```markdown
 @callout example
@@ -257,9 +257,9 @@ Result {.dg-result}
 
 Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`. Add `dc-flush` (`<div class="dc-tape dc-flush">Label</div>`) to run it edge to edge.
 
-## Dashed rule
+## Rule
 
-A plain `---` between entries is a red dashed rule — the separator for gear lists and NPC entries.
+A plain `---` between entries is a thin red rule — the separator for gear lists and NPC entries.
 
 ```markdown
 Trauma Kit × 2

@@ -86,15 +86,15 @@ little grit.
     frame and a yellow caution-tape label. It signals consequence.
   - dm: an ink slab with a cyan rail and a cyan chip. It signals the Dream Master
     only.
-  - vibe: a barely violet flat sheet in one dashed violet edge, italic, with no
+  - vibe: a barely violet flat sheet in one violet edge, italic, with no
     rail: the world's voice, not a slab.
   - origin: warm paper, a rust rail, a dog-eared corner and a crimson rubber-stamp
     label: second-person backstory.
   - visit: a fungi-green signpost with a map-pin label: a place.
-  - example: a dashed cyan rail with a taped-on label.
+  - example: a cyan rail with a taped-on label.
   New tokens `--dc-alert-frame`, `-label-bg` and `-label-pad` carry the frame
   and label chrome. The hazard rail, the dog-ear fold, the spray stencil line and
-  the NPC card foot are drawn in vector (dashed borders and clip-path), because
+  the NPC card foot are drawn in vector (borders and clip-path), because
   gradients are dropped or rasterised in PDF/X. The DM and visit bodies are
   semibold (reversed type).
 - **Section kinds read from their bar and sheet.** Panel keeps the solid accent
@@ -102,7 +102,7 @@ little grit.
   a pale HUD band; lore a deep violet bar over a lilac sheet; dm an ink bar with a
   cyan rule, a cyan rail and a Dream Master chip (cyan on ink is now the Dream
   Master's alone), with a strip of its own when it has no heading. `choose` is a
-  printed form, not a panel: a paper sheet a hair lighter than cream, a dashed ink
+  printed form, not a panel: a paper sheet a hair lighter than cream, an ink
   edge, no bar or cut corners, an ink title over a double rule, heavy ink tick
   boxes, dotted write-in rules and a yellow *Your choice* stamp. The title bar is
   one rule reading new tokens (`--dc-section-bar-mix` / `-bar-tone` / `-bar-fg` /
@@ -133,7 +133,7 @@ little grit.
 - **Entry cards differ by silhouette, surface and badge.** Gear is a hang tag
   (a paper card in a heavy ink frame, an eyelet, a rust rail), an augment a spec
   chip (a stepped notch, a cyan rule), treasure a gem (an octagon cut, a facet), a
-  vehicle an industrial plate (a dotted seam of rivets, a yellow badge), a drug a
+  vehicle an industrial plate (an inner seam, a yellow badge), a drug a
   prescription label (the one rounded shape, an *Rx · Drug* pill). Every mark is a
   solid fill, border or clip, so it prints as vector in PDF/X (no gradients). New
   tokens `--dc-entry-radius`, `-ornament`, `-orn-inset`, `-orn-bg`, `-orn-border`,
@@ -146,7 +146,7 @@ little grit.
   ledger band with an INVENTORY chip instead of an accent bar.
 - **Procedure is off the wall.** `@procedure` is an instruction plate: a cream
   sheet with an ink frame and a hard shadow, a solid HUD-blue number strip, step
-  text in ink and dashed dividers (`--dc-steps-accent`, `--dc-steps-surface`).
+  text in ink and ruled dividers (`--dc-steps-accent`, `--dc-steps-surface`).
 - **At-a-glance has a hierarchy.** The tile is a reversed label band over a large
   value, with an ink frame and a hard shadow (`--dc-at-a-glance-accent`, `-value`).
   The outcome ladder's chip column is `max(130px, 26%)` (`--dc-outcome-key-col`)
@@ -163,7 +163,7 @@ little grit.
   ink edges (`--dc-tape-shape`); `.dc-spray` is a stencil tag with a stepped edge
   and a dashed stencil line (`--dc-spray-stencil`) against the chevron's deep
   banner; the spec tweak fits one line; the NPC sidebar is a contact card with a
-  blue ID band and a dashed strip foot.
+  blue ID band and an ink strip foot.
 - **Specialties are told apart.** The title bands (path banner and specialty-intro
   title) are each specialty's own signal colour with its own register: an LED rim
   and a rule of LED dots on the tech specialties, a facet plane on the magic ones, a
@@ -197,8 +197,33 @@ little grit.
 - **Pagination.** A panel of four blocks or fewer stays whole; a long panel
   never opens or ends on a single block; panel and callout text keeps three
   orphans and widows; skill cards split between ability rows.
+- **Lore, dm and choose are sunk into the wall.** No drop shadow: the wall's
+  top edge casts a hard shadow down over the sheet's top and its title bar, and
+  a light lip runs along the bottom and right (`--dc-section-recess`, `-depth`,
+  `-shade`, `-lip`). Panel and reference still hang. `@flaws`, `@ideals` and
+  `@dreams` are choose sections, so they are recessed too.
+- **Edges are solid; the dash is kept where it is the object.** Clip-path and
+  border colour tell kinds apart. Solid now: the choose edge, the flaw card
+  edge, the vibe edge, the example rail and its label, the cult rail, the shard
+  rule, the skill-card continuation tab, procedure and definition dividers,
+  `hr`, the stat-strip cells, the vehicle seam, the gear price tag, the NPC
+  stat rule and the human-callout foot. Still dashed or dotted: the warning's
+  hazard rail and the enforcer's band, the `##` slip foot and `.dc-spray`
+  stencil line, write-in rules on a form, the origin stamp ring, the
+  side-effect field frame, link and ROLL THE DIE! underlines, the LED ticks.
+- **Labels are raised.** Every label stands off what it sits on with a hard
+  2px ink shadow (`--dc-label-shadow`), or an inset bottom-and-right edge where
+  a clip-path would cut it (`--dc-label-edge`). Every alert label is now a chip
+  (`--dc-alert-label-bg` defaults to cream; `--dc-alert-label-shadow`).
 
 ### Fixed
+
+- **No text on the wall from `@flaws`, `@ideals` or `@dreams`.** A headless one
+  dropped its sheet on the assumption it held only cards; one that also holds
+  prose or a table keeps its sheet.
+- **`> [!NOTE]` alerts** from the gutterpress-gfm-alerts extension (`.gp-alert`)
+  are drawn as the matching callout (note, tip and important as the note;
+  warning and caution as the warning) instead of bare text on the wall.
 
 - The learning-path title band lines up with the path frame's top-right cut
   for every specialty: it spans the frame and is cut from the same point list,

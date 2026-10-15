@@ -100,13 +100,13 @@
      dm        ink-dark (darkest) file folder: a tab rising     cyan rail            cyan chip, top right
                                   from the top + one cut corner
                                   (classified)
-     vibe      barely violet      long shallow diagonals at     dashed violet edge,  violet, underlined
+     vibe      barely violet      long shallow diagonals at     violet edge,         violet chip
                (light, flat)      two opposite corners (world)  tape strip on top
      origin    warm paper (light) torn bottom edge + dog-ear    rust rail, worn      crimson rubber stamp
                                   (backstory)                   (dashed) stamp ring
      visit     fungi green (dark) wobbly organic polygon with   none                 pin glyph + caps
                                   a signpost point (a place)
-     example   cream (light)      ticket: a V notch in the     dashed cyan rail     taped-on tag
+     example   cream (light)      ticket: a V notch in the     cyan rail            taped-on tag
                                   right edge (a sample)
 
    Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is
@@ -118,8 +118,13 @@
 
 /* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
-   Override at chapter-id scope in the book's own sheet (unlayered), or in variant rules below. */
-.dc-alert {
+   Override at chapter-id scope in the book's own sheet (unlayered), or in variant rules below.
+   A GitHub-style alert (`> [!NOTE]`, from the gutterpress-gfm-alerts extension:
+   `div.gp-alert.gp-alert-<type>` with a `p.gp-alert-title`) is drawn as the
+   matching callout, so it never sits bare on the wall: note, tip and important
+   as the note, warning and caution as the warning. */
+.dc-alert,
+.gp-alert {
   clip-path: var(--dc-alert-shape);
   background: var(--dc-alert-bg);
   box-shadow: var(--dc-alert-frame);
@@ -139,12 +144,12 @@
   clear: right;
 }
 
-.dc-alert p {
+:is(.dc-alert, .gp-alert) p {
   margin: 0;
   font-style: italic;
 }
 
-.dc-alert p+p {
+:is(.dc-alert, .gp-alert) p+p {
   margin-top: 6pt;
 }
 
@@ -153,29 +158,27 @@
    dark text colors (color: --ink / --ink-smoke). Inside dark-fill callout
    variants (.dc-dm-note etc.), dark-on-dark measured 1.17:1 — invisible.
    Inherit makes p/em/strong adopt the alert's own foreground. */
-.dc-alert p,
-.dc-alert em,
-.dc-alert strong {
+:is(.dc-alert, .gp-alert) :is(p, em, strong) {
   color: inherit;
 }
 
-.dc-alert ul,
-.dc-alert ol {
+:is(.dc-alert, .gp-alert) :is(ul, ol) {
   margin: 6pt 0 0;
   padding-left: 0.2in;
 }
 
-.dc-alert li {
+:is(.dc-alert, .gp-alert) li {
   margin-bottom: 0.04in;
 }
 
-.dc-alert li::before,
-.dc-alert li > p:first-child::before {
+:is(.dc-alert, .gp-alert) li::before,
+:is(.dc-alert, .gp-alert) li > p:first-child::before {
   color: var(--dc-alert-border);
 }
 
 /* ── Label chrome ───────────────────────────────────────────────────────── */
-.dc-alert-label {
+.dc-alert-label,
+.gp-alert > .gp-alert-title {
   display: block;
   width: fit-content;
   font-family: var(--font-mono);
@@ -188,6 +191,7 @@
   padding: var(--dc-alert-label-pad);
   background: var(--dc-alert-label-bg);
   color: var(--dc-alert-label-color);
+  box-shadow: var(--dc-alert-label-shadow);
   /* The label is a `span` (display: block), so core's heading rule does not
      reach it. A callout may fragment in a multicol run (dc-native.css §7), and
      without this the label can sit alone at a column or page foot with its
@@ -206,7 +210,8 @@
    A light, warm surface (body text must read), a hazard-stripe rail down the
    left, an ink frame, and a yellow/ink caution-tape label. Yellow and ink
    are the "danger / you must choose" pair across the system. */
-.dc-note.warning {
+.dc-note.warning,
+.gp-alert:is(.gp-alert-warning, .gp-alert-caution) {
   --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
   --dc-alert-border: var(--ink);
   --dc-alert-border-width: 14px;
@@ -228,7 +233,8 @@
    in PDF/X): an ink rail whose two dashed yellow borders make 14px-wide dashes,
    skewed 45 degrees into stripes. The rail overshoots top and bottom so the skew
    leaves no gap; the alert's own clip-path trims it. */
-.dc-note.warning::before {
+.dc-note.warning::before,
+.gp-alert:is(.gp-alert-warning, .gp-alert-caution)::before {
   content: "";
   position: absolute;
   left: calc(-1 * var(--dc-alert-border-width));
@@ -241,7 +247,8 @@
   border-width: 0 calc(var(--dc-alert-border-width) / 2);
   transform: skewY(-45deg);
 }
-.dc-note.warning .dc-alert-label {
+.dc-note.warning .dc-alert-label,
+.gp-alert:is(.gp-alert-warning, .gp-alert-caution) > .gp-alert-title {
   border: 1.5px solid var(--ink);
   transform: rotate(-1.5deg);
   transform-origin: left center;
@@ -258,6 +265,7 @@
   --dc-accent-ink: var(--hud-blue-bright);  /* 6.7:1 on the ink slab */
   --dc-alert-label-color: var(--ink);
   --dc-alert-label-bg: var(--hud-blue-bright);
+  --dc-alert-label-shadow: 2px 2px 0 0 var(--ink);  /* the darkest ink, so it reads on the slab */
   --dc-alert-label-pad: 2px 9px;
   --dc-alert-body-size: var(--fs-floor);   /* insider small print, at the reading-text floor */
   font-weight: 600;             /* reversed type is semibold */
@@ -274,9 +282,9 @@
 }
 
 /* ── Variant: Vibe Callout — atmosphere, the narrator's voice ─────────────
-   Not a slab: a flat, barely violet sheet with ONE dashed violet edge all
-   round (a sign's stencilled outline), no rail, in the narrator's italic. The
-   world's colour (violet); light value and an all-round dashed edge separate
+   Not a slab: a flat, barely violet sheet with ONE violet edge all round, no
+   rail, in the narrator's italic. The world's colour (violet); light value and
+   an all-round edge with no rail separate
    it from the blue note, the ink DM slab and the pull quote's magenta bar. */
 .dc-vibe-callout {
   --dc-alert-bg: color-mix(in srgb, var(--brand-violet) 6%, var(--paper-cream));
@@ -289,7 +297,7 @@
   --dc-alert-label-color: var(--brand-violet);
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
-  border: var(--dc-alert-border-width) dashed var(--dc-alert-border);
+  border: var(--dc-alert-border-width) solid var(--dc-alert-border);
   position: relative;
 }
 /* A strip of tape holding the sheet to the wall: a small tan solid, a few
@@ -306,8 +314,7 @@
   transform: rotate(-3deg);
 }
 .dc-vibe-callout .dc-alert-label {
-  border-bottom: 2px solid var(--brand-violet);
-  padding-bottom: 1px;
+  border: 1.5px solid var(--brand-violet);
 }
 
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────
@@ -360,15 +367,13 @@
   --dc-accent-ink: var(--fungi-glow);  /* 4.8:1 on the green */
   --dc-alert-body-size: var(--fs-body);
   --dc-alert-label-color: var(--paper-cream);
+  --dc-alert-label-bg: var(--fungi-rot);
   --dc-alert-label-spacing: 0.1em;
   font-weight: 600;             /* reversed type is semibold */
   margin: 0.12in 0;
   padding-right: calc(var(--space-xl) + 14px);
 }
-.dc-visit-callout .dc-alert-label {
-  border-bottom: 1px solid var(--paper-cream);
-  padding-bottom: 2px;
-}
+
 /* The place marker: a teardrop pin drawn in CSS (no glyph to fall back). */
 .dc-visit-callout .dc-alert-label::before {
   content: "";
@@ -392,7 +397,6 @@
   --dc-accent-ink: var(--hud-blue-dark);  /* 6.4:1 on the sheet */
   /* a ticket: one V notch (6px deep) in the right edge */
   --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(50% - 6px), calc(100% - 6px) 50%, 100% calc(50% + 6px), 100% 100%, 0 100%);
-  border-left-style: dashed;
 }
 .dc-example-callout p {
   font-style: normal;
@@ -402,7 +406,7 @@
   display: inline-block;
   padding: 1px 7px;
   background: var(--dc-tape-bg);
-  border: 1px dashed var(--dc-tape-border);
+  border: 1px solid var(--dc-tape-border);
   color: var(--dc-tape-color);
 }
 

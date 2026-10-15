@@ -176,7 +176,7 @@
   line-height: 1;
   background-color: var(--dc-tier-bg);
   color: var(--dc-tier-fg);
-  box-shadow: inset 0 0 0 1px var(--dc-tier-edge);
+  box-shadow: inset 0 0 0 1px var(--dc-tier-edge), var(--dc-label-shadow);
   letter-spacing: 0.05em;
   white-space: nowrap;
   flex-shrink: 0;
@@ -371,14 +371,12 @@
 }
 
 .dc-card-tab-cont {
-  border-top-style: dashed;
   border-top-color: var(--hud-blue);
 }
 
 /* Inside a skill card the tab's border paints on ::before (tab chrome rules
-   above), so the continuation dash goes there too. */
+   above), so the continuation colour goes there too. */
 .dc-skill-card > .dc-card-tab-cont::before {
-  border-top-style: dashed;
   border-top-color: var(--hud-blue);
 }
 

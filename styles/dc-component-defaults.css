@@ -38,6 +38,15 @@
   --dc-section-bar-rule:     3pt solid var(--orange);
   --dc-section-bar-rule-sub: none;
   --dc-section-flag:         0 0 0 0 var(--ink-dark);
+  /* A recessed kind (lore, dm, choose) sits sunk into the wall: the wall's top
+     edge casts a hard shadow down over the sheet's top, and its bottom and right
+     catch a light lip. --dc-section-recess is that pair of inset shadows on the
+     surface (zero-size on a hung kind); -depth, -shade and -lip set it. */
+  --dc-section-recess:       0 0 0 0 var(--ink-dark);
+  --dc-section-recess-depth: 6px;
+  --dc-section-recess-shade: var(--ink-dark);
+  --dc-section-recess-lip:   var(--paper-cream);
+  --dc-section-recess-foot:  0px;                 /* how far the sheet's hanging edge stops short of the lip */
   --dc-section-top:          0px;                 /* extra padding on top inside the box: a kind that draws a tab (dm) reserves its height here */
   --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
   --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
@@ -87,6 +96,14 @@
      instead of writing a full component selector chain.
      ──────────────────────────────────────────────────────────────────────── */
 
+  /* Every label (an alert label, a section's tab or stamp, a block tag, a kind
+     chip or badge, a field label, a tier pill, a price tag, a die) is raised off
+     the element it sits on: a hard ink shadow down and right. A label cut by a
+     clip-path, which would clip an outer shadow, carries the same ink as an
+     inset edge on its bottom and right instead. Opaque, no blur. */
+  --dc-label-shadow:         2px 2px 0 0 var(--ink-dark);
+  --dc-label-edge:           inset -2px -2px 0 0 var(--ink-dark);
+
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
   --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
@@ -101,8 +118,9 @@
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
   --dc-alert-frame:          none;                  /* an inset box-shadow ring (warning's ink frame) */
-  --dc-alert-label-bg:       transparent;           /* a chip behind the label (warning tape, DM chip) */
-  --dc-alert-label-pad:      0;
+  --dc-alert-label-bg:       var(--paper-cream);    /* the label's chip: every label is a raised chip */
+  --dc-alert-label-pad:      2px 9px;
+  --dc-alert-label-shadow:   var(--dc-label-shadow);
   /* Each boxed component cuts its own corners (a clip-path on the box), so its
      shape names it, as the skill cards' shapes name their specialty. A context
      that needs the plain box (a catalog's ruled entries) sets the token to

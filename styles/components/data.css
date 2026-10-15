@@ -250,7 +250,7 @@
   grid-template-columns: 40px 1fr;
   gap: 0;
   padding: 0;
-  border-top: 1px dashed var(--ink-dust);
+  border-top: 1px solid var(--ink-dust);
   font-family: var(--font-body);
   font-size: var(--fs-floor);
   line-height: 1.45;
@@ -522,6 +522,7 @@
   background: var(--paper-cream);
   padding: 3px 9px 3px 7px;
   clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+  box-shadow: var(--dc-label-edge);
   /* Grit: the chip is stuck on a degree or two off square. */
   transform: rotate(-2deg);
 }
@@ -718,8 +719,8 @@
 
 /* A run of `#### Term` entries in one `@definition` reads as a glossary: each
    term is a small display-caps headword in the accent colour, the entries are set
-   apart by a dashed rule, and the block may split between entries (a single
-   term stays whole). A `---` inside is the same dashed rule, for a box with a
+   apart by a rule, and the block may split between entries (a single
+   term stays whole). A `---` inside is the same rule, for a box with a
    heading and a divider. A bold lead (`**Term** — gloss`) needs nothing. */
 .dc-definition-block > h4 {
   font-family: var(--font-display);
@@ -733,14 +734,14 @@
 .dc-definition-block > h4:not(:first-child) {
   margin-top: 8pt;
   padding-top: 7pt;
-  border-top: 1px dashed var(--dc-definition-block-accent);
+  border-top: 1px solid var(--dc-definition-block-accent);
 }
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
 }
 .dc-definition-block hr {
   border: none;
-  border-top: 1px dashed var(--dc-definition-block-accent);
+  border-top: 1px solid var(--dc-definition-block-accent);
   margin: 7.5pt 0;
 }
 
@@ -799,7 +800,7 @@
 }
 
 .dc-stat-cell {
-  border-right: 1px dashed var(--paper-aged);
+  border-right: 1px solid var(--paper-aged);
   padding: 4px 8px 6px;
   text-align: center;
   display: flex;

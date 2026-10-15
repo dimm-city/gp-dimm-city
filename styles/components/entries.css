@@ -39,7 +39,7 @@
      --dc-entry-ornament — `""` draws the kind's ornament layer (an `::after`), `none` removes it
      --dc-entry-orn-inset / -bg / -border / -clip / -z — that layer's box, fill,
                            border, clip-path and stacking (solid fills, clips and
-                           dotted borders only: they stay vector in PDF/X, where
+                           borders only: they stay vector in PDF/X, where
                            every gradient is rasterised or dropped)
      --dc-entry-frame    — an inset keyline (box-shadow)
      --dc-entry-badge-bg / -fg / -shape / -radius — the kind badge
@@ -71,6 +71,7 @@
   color: var(--dc-entry-badge-fg);
   clip-path: var(--dc-entry-badge-shape);
   border-radius: var(--dc-entry-badge-radius);
+  box-shadow: var(--dc-label-edge);
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
@@ -81,7 +82,7 @@
   white-space: nowrap;
 }
 
-/* The kind's ornament: a solid-fill or dotted-border layer over the card's own
+/* The kind's ornament: a solid-fill or bordered layer over the card's own
    box. Absolutely positioned, taking no space. */
 .dc-entry::after {
   content: var(--dc-entry-ornament);
@@ -203,7 +204,7 @@
 }
 
 /* VEHICLE — an industrial plate: concrete, octagonal (12px) cut corners, a
-   heavy 3px ink frame, a seam of rivets (a dotted border) inside it, a yellow rail and a
+   heavy 3px ink frame, an inner seam inside it, a yellow rail and a
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
@@ -215,7 +216,7 @@
   --dc-entry-frame: inset 0 0 0 3px var(--ink);
   --dc-entry-ornament: "";
   --dc-entry-orn-inset: 8px 8px 8px 5px;
-  --dc-entry-orn-border: 3px dotted var(--ink-smoke);
+  --dc-entry-orn-border: 2px solid var(--ink-smoke);
   --dc-entry-badge-bg: var(--brand-yellow);
   --dc-entry-badge-fg: var(--ink);
   --dc-entry-badge-shape: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
@@ -239,7 +240,7 @@
 }
 
 /* General gear: the italic tagline, and the bold price line stamped as a
-   price tag (dashed rust box). */
+   price tag (a raised rust-edged box). */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
   color: var(--ink-smoke);
@@ -252,8 +253,8 @@
   letter-spacing: 0.04em;
   color: var(--blood);
   background: var(--paper-cream);
-  border: 1.5pt dashed var(--rust);
-  border-right-style: dotted; /* grit: the torn-off end of the tag */
+  border: 1.5pt solid var(--rust);
+  box-shadow: var(--dc-label-shadow);
   padding: 0 6pt;
   margin: 0 0 6px;
   hyphens: none;
@@ -388,6 +389,7 @@
   background: var(--dc-field-accent);
   color: var(--dc-field-label-fg);
   clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+  box-shadow: var(--dc-label-edge);
   hyphens: none;
   font-family: var(--font-mono);
   font-size: var(--fs-h6);

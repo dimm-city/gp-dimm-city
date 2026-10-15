@@ -34,8 +34,8 @@
   break-inside: avoid;
 }
 
-/* An NPC sidebar is a contact card: a blue ID header, the entry, a dashed
-   foot, a hard poster shadow. Floatable (`.dc-sidebar`) or in flow. */
+/* An NPC sidebar is a contact card: a blue ID header, the entry, an ink
+   strip foot, a hard poster shadow. Floatable (`.dc-sidebar`) or in flow. */
 .dc-human-callout {
   background: var(--paper-cream);
   border: 2px solid var(--ink-dark);
@@ -68,13 +68,13 @@
   margin-top: 4pt;
 }
 
-/* The foot: a machine-readable strip, a dashed ink border (vector). */
+/* The foot: a machine-readable strip, a solid ink border (vector). */
 .dc-human-callout::after {
   content: "";
   display: block;
   height: 0;
   margin-top: 8pt;
-  border-top: 5px dashed var(--ink-dark);
+  border-top: 5px solid var(--ink-dark);
 }
 
 /* Tables: the universal default look lives in dc-core.css. Authors write
