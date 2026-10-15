@@ -45,7 +45,8 @@
    the RGBA source (source-art/brick-bg-01.png in the repository; it is not
    published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
    src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
-   of the new --bg. */
+   of the new --bg, then resize it to 900px wide (Lanczos): the tile prints
+   1.5in wide, so 900px is 600 DPI, twice the 300 DPI print bar. */
 @page {
   background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
@@ -258,7 +259,7 @@
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content, which makes
-   page-rules.css's own `@page chapter-start` / `@page full` `content: none`
+   page-rules.css's own `@page front-matter` / `@page full` `content: none`
    blocks sufficient on their own; only `:blank` has no counterpart there, so
    only `:blank` is restated here. */
 @page :blank {
