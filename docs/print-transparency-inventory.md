@@ -1,5 +1,13 @@
 # Print transparency inventory
 
+> **Update (Gutterpress #385).** Gutterpress's `pdfx.transparency:
+> preserve-text` flattens a page's artwork and keeps its text live, so the
+> shadow and tint changes below (T1, T3, T5, C1–C3, C5, C7, C8, K1–K4, O1, N1)
+> are translucent again. Text colours (T6/O2, C6, O3, the AP chip's text
+> shadow) stay pre-mixed: a translucent glyph prints opaque on a split page.
+> The wall tile stays opaque. The table records the opaque values for books
+> that keep Gutterpress's default, `flatten-page`.
+
 **Why this exists.** PDF/X-1a, the format DriveThruRPG accepts for print, has no transparency. Ghostscript flattens any page that uses it into a single raster image. That page loses its live text and embedded fonts, and gutterpress's `pdfx.blackText: k-only` rewrite (black text on the black plate only) can't reach its text. This package used transparency in 26 places: an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`. On the Field Guide, **185 of 232 pages** came out image-only.
 
 Every one of those uses is now opaque. Each colour is **pre-composited** with `color-mix()`: it is the colour the transparency produced on the surface it sits on. The brick wall is an opaque tile baked the same way. This document lists every change, so the books can be checked visually against it.

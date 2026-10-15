@@ -13,11 +13,10 @@
   /* Poster-wall shadow — hard offset, no blur. Pins paper-register
      components to the wall as physical objects, "stuck on the wall"
      rather than "embedded in the page." */
-  /* The wall's average colour (mean of images/brick-wall.png). Shadows and
-     tints that land on the wall pre-composite against it: PDF/X-1a carries
-     no transparency (see docs/print-transparency-inventory.md). */
-  --wall-tone: #c1beb8;
-  --shadow-ink: color-mix(in srgb, #000 28%, var(--wall-tone));  /* opaque ink-on-wall shadow colour */
+  /* Translucent, so the wall's texture darkens under it. A PDF/X build
+     flattens the pages that use transparency and keeps their text live
+     (Gutterpress #385; see docs/print-transparency-inventory.md). */
+  --shadow-ink: color-mix(in srgb, #000 28%, transparent);
   --shadow-poster: 2pt 3pt 0 var(--shadow-ink);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ─────────────────── */
@@ -75,8 +74,8 @@
   /* ── Type Families ────────────────────────────────────────────────────── */
   /* Lixdu has one face, regular. Every rule that sets --font-display sets
      font-weight: 400 (a test enforces it): a bold weight makes Chromium
-     synthesize a bold, which prints as a Type 3 font: drawn shapes, not the
-     font, whose words extract from the PDF as separate letters. */
+     synthesize a bold, which prints as a Type 3 font that Gutterpress's
+     PDF/X preserve-text split cannot keep (gutterpress#385). */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
   --font-tab:     'Tomorrow', 'lixdu', sans-serif;
   --font-body:    'Titillium Web', Georgia, sans-serif;
