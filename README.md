@@ -37,20 +37,6 @@ offline.
 
 `gutterpress ext list my-book` shows `gp-dimm-city@1.5.0 [npm; markdown, styles, components, snippets]`.
 
-**Art must be opaque.** Give the book images with no alpha channel: no RGBA
-PNG, no transparent PNG, no GIF or WebP with transparency. PDF/X has no
-transparency, so when an image has an alpha channel Ghostscript flattens every
-page that shows it into a single full-page bitmap, and the page's text stops
-being live type (it loses its fonts and prints as pixels). Flatten each image
-onto the solid colour it sits on, at full resolution, before you add it:
-
-```sh
-convert art.png -background '#f0eee9' -alpha remove -alpha off PNG24:art.png
-```
-
-`gutterpress build --format pdfx` warns "Image contains alpha channel" for any
-that slip through. This package's own test fails on one in `design-guide/img/`.
-
 ## What you get
 
 Pick by what you are writing. Every row is a marker (or a word on one) that the

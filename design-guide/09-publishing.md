@@ -47,18 +47,6 @@ The package's page geometry follows DriveThruRPG's print specification: 0.125 in
 
 Don't set `print.signature` yourself, and don't end the book with a blank page of your own: the preset does both. (`@page .dc-printer-page`, the package's stand-in from before gutterpress 0.11.15, was removed in 1.1.2.)
 
-## Art must be opaque
-
-PDF/X-1a and X-3 have no transparency. When an image carries an alpha channel (an RGBA PNG, or a PNG with a transparent palette entry), Ghostscript flattens **every page that shows it** into one full-page bitmap: the page's live text, rules and vector chrome become pixels, the fonts drop out and the text is no longer sharp or searchable. The build only warns (`Image contains alpha channel`).
-
-Flatten each image onto the solid colour it will sit on, at full resolution, before it goes into the book: an image on a cream panel flattens onto `--paper-cream` (`#f0eee9`), one on a dark card onto that card's dark. Export with no alpha channel, or with ImageMagick:
-
-```sh
-convert art.png -background '#f0eee9' -alpha remove -alpha off PNG24:art.png
-```
-
-Use a PNG of colour type 2 (RGB) or a JPEG; never a PNG with transparency, GIF, WebP or an SVG with `opacity`. The package's own test (`test/images.test.js`) fails on any alpha channel under `design-guide/img/`, and on a remote image URL in the guide: a placeholder service fails offline. `scripts/make-placeholders.mjs` regenerates the guide's placeholder art with ImageMagick.
-
 ## Flags
 
 | Flag | Commands | Purpose |

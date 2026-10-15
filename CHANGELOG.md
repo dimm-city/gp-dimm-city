@@ -60,10 +60,6 @@ little grit.
   `--dc-end-mark-text`, `-display`, `-gap`, `-bg`, `-ink`, `-tape`;
   `--dc-end-mark-display: none` turns it off for a chapter whose last page is
   full.
-- **Images must be opaque, and a test says so.** `test/images.test.js` fails on
-  an alpha channel in the package's or the guide's images, on remote image URLs
-  and on missing local images. The guide's art is local and opaque (specialty
-  placeholders from `scripts/make-placeholders.mjs` replace `placehold.co`).
 
 ### Changed
 
@@ -261,8 +257,6 @@ little grit.
   lines and was set as a stat line; it is now inside the quote.
 - **README example.** The author-override example set `--dc-alert-accent`, a token
   that does not exist; it now sets `--dc-section-accent` on `.dc-section-panel`.
-- PDF/X no longer flattens whole pages to bitmaps: the guide's images were
-  RGBA, which made Ghostscript rasterise 14 pages, text included.
 - A skill card no longer leaves two lines and empty cream on a page, and a
   page-level callout no longer pulls the previous block onto its page. The
   guide's sample book has no stub or one-card pages left.

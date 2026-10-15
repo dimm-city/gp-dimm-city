@@ -639,8 +639,6 @@ When in doubt: keep components FLAT, give them HARD SHADOWS, hard edges, decisiv
 - Let art interrupt layout instead of sitting politely in frames.
 - Magenta or orange light accents as supporting note, not whole image strategy.
 - Avoid cute expressions, fantasy scrollwork, sleek luxury tech imagery.
-- **Art must be opaque: no alpha channel, no transparent PNG.** PDF/X has no transparency, so Ghostscript flattens every page that shows an image with an alpha channel into one full-page bitmap, and the page's live text, rules and chrome become pixels (fonts dropped, text no longer sharp or searchable). Flatten each image onto the solid colour it sits on, at full resolution, before it enters a book. `test/images.test.js` fails on any alpha channel (PNG colour type 4 or 6, or a `tRNS` chunk) under `design-guide/img/` or `images/`.
-- **No remote images.** An image URL (a placeholder service included) fails offline and breaks the build. Stand-in art is a local, opaque, flat-colour file (`scripts/make-placeholders.mjs` makes the guide's: the specialty's dark ground, its name in the bold face, a silhouette, under about 30 KB each).
 
 ---
 

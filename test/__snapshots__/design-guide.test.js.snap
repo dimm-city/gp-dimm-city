@@ -2228,7 +2228,7 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 </div></div></div>
 <p>Tokens: <code>--dc-specialty-intro-bg</code>, <code>--dc-specialty-intro-title-bg</code>, <code>--dc-specialty-intro-title-color</code>, and for the band’s register <code>--dc-band-rule</code>, <code>--dc-band-rule-h</code>, <code>--dc-band-tick</code>, <code>--dc-band-tick-style</code>, <code>--dc-band-tick-w</code>, <code>--dc-band-rule-skew</code>, <code>--dc-band-rule-bleed</code>, <code>--dc-band-facet</code>, <code>--dc-band-facet-width</code>, <code>--dc-band-facet-clip</code>, <code>--dc-band-rim</code>, <code>--dc-band-reg</code> (a second ink printed 2px off, tech bands).</p>
 <h2>Specialty art</h2>
-<p>A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page. The art must be opaque (no alpha channel): see <a href="#ch-publishing" data-gp-source-token="[Publishing](#ch-publishing)" data-gp-source-occurrence="0">Publishing</a> — the placeholders here are flat-colour PNGs in <code>design-guide/img/</code>, one per specialty.</p>
+<p>A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page. The placeholders here are local PNGs in <code>design-guide/img/</code>, one per specialty.</p>
 <pre><code data-source-range="79:90" class="language-markdown">@specialty .augmerc
 
 @specialty-art
@@ -3183,53 +3183,47 @@ gutterpress build my-book --format html --out ./dist/site
 </tbody>
 </table>
 <p>Don’t set <code>print.signature</code> yourself, and don’t end the book with a blank page of your own: the preset does both. (<code>@page .dc-printer-page</code>, the package’s stand-in from before gutterpress 0.11.15, was removed in 1.1.2.)</p>
-<h2>Art must be opaque</h2>
-<p>PDF/X-1a and X-3 have no transparency. When an image carries an alpha channel (an RGBA PNG, or a PNG with a transparent palette entry), Ghostscript flattens <strong>every page that shows it</strong> into one full-page bitmap: the page’s live text, rules and vector chrome become pixels, the fonts drop out and the text is no longer sharp or searchable. The build only warns (<code>Image contains alpha channel</code>).</p>
-<p>Flatten each image onto the solid colour it will sit on, at full resolution, before it goes into the book: an image on a cream panel flattens onto <code>--paper-cream</code> (<code>#f0eee9</code>), one on a dark card onto that card’s dark. Export with no alpha channel, or with ImageMagick:</p>
-<pre><code data-source-range="55:58" class="language-sh">convert art.png -background '#f0eee9' -alpha remove -alpha off PNG24:art.png
-</code></pre>
-<p>Use a PNG of colour type 2 (RGB) or a JPEG; never a PNG with transparency, GIF, WebP or an SVG with <code>opacity</code>. The package’s own test (<code>test/images.test.js</code>) fails on any alpha channel under <code>design-guide/img/</code>, and on a remote image URL in the guide: a placeholder service fails offline. <code>scripts/make-placeholders.mjs</code> regenerates the guide’s placeholder art with ImageMagick.</p>
 <h2>Flags</h2>
 <table>
-<thead data-source-range="63:64">
-<tr data-source-range="63:64">
+<thead data-source-range="51:52">
+<tr data-source-range="51:52">
 <th>Flag</th>
 <th>Commands</th>
 <th>Purpose</th>
 </tr>
 </thead>
-<tbody data-source-range="65:72">
-<tr data-source-range="65:66">
+<tbody data-source-range="53:60">
+<tr data-source-range="53:54">
 <td><code>--port N</code></td>
 <td>preview</td>
 <td>Port to listen on (default 3579)</td>
 </tr>
-<tr data-source-range="66:67">
+<tr data-source-range="54:55">
 <td><code>--open</code></td>
 <td>preview</td>
 <td>Open the browser</td>
 </tr>
-<tr data-source-range="67:68">
+<tr data-source-range="55:56">
 <td><code>--format</code></td>
 <td>build</td>
 <td><code>html</code>, <code>pdf</code> (default), or <code>pdfx</code></td>
 </tr>
-<tr data-source-range="68:69">
+<tr data-source-range="56:57">
 <td><code>--out</code></td>
 <td>build</td>
 <td>Output directory, or a <code>.pdf</code> path for <code>pdf</code> / <code>pdfx</code></td>
 </tr>
-<tr data-source-range="69:70">
+<tr data-source-range="57:58">
 <td><code>--pdfx-flavor</code></td>
 <td>build</td>
 <td><code>x1a</code> or <code>x3</code>, with <code>--format pdfx</code></td>
 </tr>
-<tr data-source-range="70:71">
+<tr data-source-range="58:59">
 <td><code>--icc</code></td>
 <td>build</td>
 <td>ICC profile; falls back to the manifest’s <code>pdfx.icc</code>, then the embedded profile</td>
 </tr>
-<tr data-source-range="71:72">
+<tr data-source-range="59:60">
 <td><code>--category</code></td>
 <td>validate</td>
 <td><code>source</code>, <code>pdf</code>, <code>asset</code>, or <code>heuristic</code></td>
@@ -3238,7 +3232,7 @@ gutterpress build my-book --format html --out ./dist/site
 </table>
 <h2>Keeping the package current</h2>
 <p>A book pins an exact package version and builds from the copy vendored under <code>plugins/npm/</code>. To see whether a newer version exists and move to it:</p>
-<pre><code data-source-range="77:81" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
+<pre><code data-source-range="65:69" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
 <p>Commit the manifest; <code>plugins/npm/</code> is in the book’s <code>.gitignore</code>, and a fresh clone downloads the pinned version on its first build or <code>gutterpress validate</code>. The Gutterpress app does the same under Project settings → Features.</p>
@@ -4504,10 +4498,10 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 "<div class="chapter examples chapter-03 dg-guide" id="ch-examples" data-ch="3" data-source-range="0:1"><div class="page dg-doc dg-part chapter-03" data-source-range="2:3"><p class="dg-kicker">Part 2</p>
 <h1>A Book, Page by Page</h1>
 </div><div class="page dg-doc chapter-03" data-source-range="8:9"><h1>Field Guide in Action</h1>
-<p class="dg-lede">Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (<code>design-guide/img/specialty-*.png</code>, <code>placeholder-*.png</code>, an opaque flat-colour stand-in) stands in at the correct size. This is the project’s proofing approach — the layout is final, the images are proxies.</p>
+<p class="dg-lede">Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (<code>design-guide/img/specialty-*.png</code>, <code>placeholder-*.png</code>) stands in at the correct size. This is the project’s proofing approach — the layout is final, the images are proxies.</p>
 <h2>What Part 2 is</h2>
 <p>Part 1 shows each component on its own. Part 2 is the payoff: whole pages of the Dimm City Field Guide, rendered live from the same markdown and CSS as the published book, so you can see how the components combine under real conditions — how a chapter opens, how a specialty profile flows across pages, how a Dream Master’s reference pages read.</p>
-<p>Each chapter is the book’s own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, an opaque local placeholder stands in at the correct size (no network, no alpha channel, so the PDF/X build keeps live text). If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.</p>
+<p>Each chapter is the book’s own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, a local placeholder stands in at the correct size. If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.</p>
 <h2>Part 2 contents</h2>
 <div class="dg-toc">
 <ol>
