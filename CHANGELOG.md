@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-10-15
+
 ### Changed
 
 - **Shadows and tints are translucent again, for books that opt in to
