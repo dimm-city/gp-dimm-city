@@ -62,7 +62,7 @@
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
    content width by the whole bottom margin (174 x 54pt on this page).
    `width: fit-content` tightens the inline axis; the block axis is the
-   sticker's own height (17pt) rather than `fit-content`, so
+   sticker's own height (0.225in) rather than `fit-content`, so
    the box is the same height on every page, for every page word, and the
    text inside it is centred by the engine (`vertical-align: middle` +
    `line-height: 1`), not by the font's ascent. Two details keep the glyphs
@@ -77,13 +77,12 @@
    WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.875in)
    is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
    TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
-   print below 0.625in from the sheet edge. The chip is 17pt (0.236in) tall and
-   is centred in the band: (63pt band - 17pt chip) / 2 = 23pt from its top, so
-   its foot is 0.32in from the sheet edge (0.2in from the trim, inside
-   DriveThruRPG's 0.5in text minimum: a deliberate choice).
+   print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
+   at the top of the band, 0.025in below the text block, so its foot is at
+   exactly 0.625in: on DriveThruRPG's 0.5in text minimum.
 
    A shrunk margin box stays anchored at its slot's START edge on the block
-   axis, which is why the offset is a margin (`margin-top: 23pt`). Shrinking the box leaves no hole
+   axis, which is why the offset is a margin (`margin-top: 0.025in`). Shrinking the box leaves no hole
    in the band: §1's `@page` background paints underneath, so the wall shows
    through the rest of the slot on its own.
 
@@ -92,7 +91,7 @@
    pin frees, gutterpress re-homes these chips into a flex slot the size of
    the margin box, centred vertically (gutterpress-agent setFlushFurniture,
    `align-items: center`), and copies these declarations onto the chip;
-   anchored at the slot's top, the same 23pt margin centres it there too. The declaration does nothing to a native margin box, which
+   anchored at the slot's top, it sits 0.025in below the text block there too. The declaration does nothing to a native margin box, which
    is not a flex item.
 
    THE TWO CHIPS.
@@ -107,9 +106,9 @@
   @bottom-left {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 23pt;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -127,9 +126,9 @@
   @bottom-right {
     /* chapter coupon */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 23pt;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -150,9 +149,9 @@
   @bottom-left {
     /* chapter coupon */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 23pt;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -170,9 +169,9 @@
   @bottom-right {
     /* folio sticker: civic register */
     width: fit-content;
-    height: 17pt;
+    height: 0.225in;
     box-sizing: border-box;
-    margin-top: 23pt;
+    margin-top: 0.025in;
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;

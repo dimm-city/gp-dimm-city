@@ -204,8 +204,9 @@ little grit.
   for every specialty: it spans the frame and is cut from the same point list,
   where it stopped 12px short.
 - The design guide's heading specimens sit on paper, not on brick.
-- The folio and chapter chips are centred vertically in the footer band
-  (page margins are unchanged from 1.6.3). The chapter chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
+- The folio and chapter chips are 0.225in tall with their type centred in
+  them, and sit 0.025in below the text block (page margins are unchanged from
+  1.6.3). The chapter chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
   stray notch.
 - The `dm` section's folder tab stays with its box when the section splits
   across a page; it had left cyan type on grey paper.

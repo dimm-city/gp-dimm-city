@@ -457,15 +457,14 @@ The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
 `transform` and no `box-shadow`, so a chip's hard shadow is a thicker bottom and
 right border. Three rules keep the type centred:
 
-- the box height is fixed (16pt) rather than `fit-content`, and the engine
+- the box height is fixed (0.225in) rather than `fit-content`, and the engine
   centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
   edge is balanced with `padding-top`, and the inline-end padding gives back the
   tracking a `letter-spacing` leaves after the last glyph;
-- the chip is centred vertically in the footer band: the bottom margin
-  (`--bottom-margin`) is 0.875in (63pt) from the sheet edge, and a 17pt chip with
-  `margin-top: 23pt` sits in its middle, ending 0.32in from the sheet edge
-  (0.2in from the trim, inside DriveThruRPG's 0.5in text minimum, a deliberate
-  choice). The engine honours a margin on a margin box (measured: a 4pt margin
+- the chip sits at the top of the footer band: the bottom margin
+  (`--bottom-margin`) is 0.875in from the sheet edge, and a 0.225in chip with
+  `margin-top: 0.025in` ends exactly 0.625in from the sheet edge, on
+  DriveThruRPG's 0.5in text minimum (0.5in from the trim). The engine honours a margin on a margin box (measured: a 4pt margin
   moved the box 4.3pt);
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
 

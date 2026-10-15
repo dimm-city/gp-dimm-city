@@ -2718,7 +2718,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <td>Bottom margin (the folio and chapter chips sit in it)</td>
 <td>0.875 in</td>
 <td>0.75 in</td>
-<td>0.5 in — the chips are centred in the band and print about 0.2 in from the trim</td>
+<td>0.5 in — the chips sit at the top of the band and end 0.5 in from the trim</td>
 </tr>
 <tr data-source-range="24:25">
 <td>Outside margin</td>

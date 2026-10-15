@@ -21,7 +21,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | — | 8.5 × 11 in | — |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips are centred in the band and print about 0.2 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips sit at the top of the band and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.75 in | 0.75 in | 0.5 in |
 
