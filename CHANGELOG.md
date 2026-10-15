@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.7.4] - 2026-10-15
+
 ### Changed
 
 - **Proxy and Wirephreak swap colours.** Proxy now takes the magenta (the more
