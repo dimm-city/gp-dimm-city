@@ -57,7 +57,7 @@
   --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 87% (C70 M1 Y16 K0) */
   --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 114% (C1 M13 Y100 K0) */
   --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
-  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the proxy's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
+  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the wirephreak's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 167% (C87 M50 Y26 K4) */
