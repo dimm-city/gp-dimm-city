@@ -199,20 +199,6 @@ sheet — unlayered, so it beats this whole package regardless — is the only
 sanctioned override path; do not edit the `dc.tokens` files for
 project-specific changes.
 
-**Context tokens are the one exception to "variants set tokens on ancestors".**
-A public component token is a knob: it defaults at `:root`, the component's
-base rule never re-declares it, and a book overrides it on an ancestor. A
-*context token* is different: it is a value each component derives for what is
-inside it, so the component sets it on its own root rule. The only one is
-`--dc-accent-ink`, the text-safe ink of the component the text sits in (read by
-`ROLL THE DIE!` and its underline). It defaults at `:root` (text outside any
-component still has an ink), every component that can hold prose sets it from
-its own accent and surface, and a book overrides it **per component class**
-(`#ch-x .dc-alert { --dc-accent-ink: var(--blood); }`), never at an ancestor,
-where it would lose to the component's own declaration. The allow-list is
-`CONTEXT_TOKENS` in `test/conventions.test.js`; a new context token is a design
-decision.
-
 **No upward `!important` fights.** Layers do not override each other with
 `!important`, and a layer-order flip is never fixed with `!important` either
 — see "Cascade layers, not just file order" below. Margin-box content is
@@ -285,8 +271,8 @@ hierarchy: color → typography → spacing → geometry.
 --paper-aged:     #c8c2b8;  /* weathered grey — decay register */
 
 /* Ink scale — warm sepia drift, not neutral gray */
---ink:            #1e1d1c;  /* text black, inside the build's K-only band (278% TAC); never a large fill */
---ink-dark:       #2f2622;  /* solid ink for fills, frames and borders (266% TAC) */
+--ink:            #1e1d1c;  /* near-black with red bias — riso warm black */
+--ink-dark:       #2f2622;  /* warmer secondary heading weight */
 --ink-smoke:      #4d4339;  /* sepia mid-tone — body emphasis */
 --ink-dust:       #665b4e;  /* muted labels, subtitles */
 ```

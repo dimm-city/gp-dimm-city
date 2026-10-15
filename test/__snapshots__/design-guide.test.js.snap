@@ -715,7 +715,7 @@ exports[`rendered output 03-palette.md matches its snapshot 1`] = `
 <li data-source-range="74:75">Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.</li>
 <li data-source-range="75:76">HUD blue means a rule or a look-up; magenta is display punch, not a category. Never mix fire and HUD on the same element.</li>
 <li data-source-range="76:77">Paper is for raised elements. The wall is the canvas; cream is the surface.</li>
-<li data-source-range="77:79">Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a <code>pdfx</code> build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate: that conversion turns dark RGB into a heavy four-colour black, so <code>--ink</code> (278%) is the text black and never a large fill, and solid fills use <code>--ink-dark</code> (266%). Every token is at or under 270% except <code>--ink</code>.</li>
+<li data-source-range="77:79">Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a <code>pdfx</code> build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate.</li>
 </ul>
 <p>Running text goes on a paper surface, never straight on the wall: the brick texture under body type cuts its contrast and breaks up the letterforms.</p>
 <p class="dg-dont-label">Don’t</p>
@@ -3178,7 +3178,7 @@ gutterpress build my-book --format html --out ./dist/site
 </tr>
 <tr data-source-range="45:46">
 <td><code>pdfx.blackText: k-only</code></td>
-<td>In a <code>--format pdfx</code> build, near-black text (the book’s ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black, which the ICC conversion makes heavy: see the ink tokens in <a href="#ch-palette" data-gp-source-token="[Color](#ch-palette)" data-gp-source-occurrence="0">Color</a>.</td>
+<td>In a <code>--format pdfx</code> build, near-black text (the book’s ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black.</td>
 </tr>
 </tbody>
 </table>
