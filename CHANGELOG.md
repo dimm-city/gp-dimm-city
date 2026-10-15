@@ -51,15 +51,6 @@ little grit.
 - **`--dc-accent-ink`**: the text-safe ink of the component you are in. Every
   alert, section kind, block, card, faction, entry, table and specialty sets
   it; chapter accents flow through.
-- **Running head.** Every body page prints its chapter's name on a paper chip
-  in the footer band, between the folio and the chapter coupon:
-  `@chapter … head="Name"`, else the chapter's `#` title, else "Chapter N". Not
-  on chapter openers, front matter, full-bleed or explainer pages.
-- **End-of-chapter mark.** A chapter's last page closes with an "END OF FILE"
-  plate (ink, stencil type, tape), so a short page reads as designed. Tokens
-  `--dc-end-mark-text`, `-display`, `-gap`, `-bg`, `-ink`, `-tape`;
-  `--dc-end-mark-display: none` turns it off for a chapter whose last page is
-  full.
 
 ### Changed
 
@@ -205,8 +196,7 @@ little grit.
   `color-mix()`.
 - **Pagination.** A panel of four blocks or fewer stays whole; a long panel
   never opens or ends on a single block; panel and callout text keeps three
-  orphans and widows; skill cards split between ability rows; pages without
-  footers have a 0.75in bottom margin.
+  orphans and widows; skill cards split between ability rows.
 
 ### Fixed
 
@@ -214,9 +204,8 @@ little grit.
   for every specialty: it spans the frame and is cut from the same point list,
   where it stopped 12px short.
 - The design guide's heading specimens sit on paper, not on brick.
-- Footer chips no longer touch content: body pages have a 1in bottom margin
-  and the folio and chapter chips sit 0.125in below the text. The chapter
-  chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
+- The folio and chapter chips are centred vertically in the footer band
+  (page margins are unchanged from 1.6.3). The chapter chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
   stray notch.
 - The `dm` section's folder tab stays with its box when the section splits
   across a page; it had left cyan type on grey paper.

@@ -1,4 +1,4 @@
-@chapter #ch-example-specialty-profile .dg-guide ch="3" head="The Augmerc"
+@chapter #ch-example-specialty-profile .dg-guide ch="3"
 
 @page .specialty-profile
 

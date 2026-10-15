@@ -111,6 +111,10 @@
   color: var(--dc-path-title-color);
   background: var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
+  /* the slanted rule (::after) overhangs the band by --dc-band-rule-bleed; the
+     clip-path trims it on paper, this keeps it out of the page's scroll width
+     (overflow there makes Chromium shrink the whole book) */
+  overflow: clip;
   box-shadow: var(--dc-band-rim);
   margin-bottom: 10px;
   /* Padding is the deepest cut plus 2pt or more on every clipped edge: left

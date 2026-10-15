@@ -449,7 +449,7 @@ Specificity (0,2,0) beats single-class overrides from upstream CSS without
 Guide-only examples should live in the design guide's own sheet even when they use `.page.*`
 selectors.
 
-### Page chips: the folio, the chapter coupon and the running head
+### Page chips: the folio and the chapter coupon
 
 The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
 **chrome** is `dc-native.css` §2 and §2b, unlayered and last. A margin box takes
@@ -461,15 +461,12 @@ right border. Three rules keep the type centred:
   centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
   edge is balanced with `padding-top`, and the inline-end padding gives back the
   tracking a `letter-spacing` leaves after the last glyph;
-- the chip sits in the **printable** footer band, below the text block with
-  clear wall between them: the bottom margin (`--bottom-margin`) is 1in from the
-  sheet edge, DriveThruRPG wants text 0.5in inside the trim (0.125in in from the
-  sheet), so nothing may print below 0.625in. A 17pt chip with
-  `margin-top: 0.125in` ends at 0.639in and leaves 0.125in of bare wall above it
-  on every wall page. The engine honours a margin on a margin box (measured: a
-  4pt margin moved the box 4.3pt). Pages without footers (`chapter-start`,
-  `front-matter-intro`) set `margin-bottom: 0.75in`, which is still 0.625in from
-  the trim, inside the 0.5in minimum;
+- the chip is centred vertically in the footer band: the bottom margin
+  (`--bottom-margin`) is 0.875in (63pt) from the sheet edge, and a 17pt chip with
+  `margin-top: 23pt` sits in its middle, ending 0.32in from the sheet edge
+  (0.2in from the trim, inside DriveThruRPG's 0.5in text minimum, a deliberate
+  choice). The engine honours a margin on a margin box (measured: a 4pt margin
+  moved the box 4.3pt);
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
 
 The chapter chip's **colour** reaches a margin box through a *named page*: a
@@ -483,28 +480,8 @@ repaints the coupon for that name and side (blue, rust, violet, amethyst,
 amber; the default is magenta-deep). Unlayered, because layered `@page` rules
 lose to `dc-native.css`.
 
-**The running head** is the same chip a third time, in `@bottom-center`:
-the chapter's name between the folio and the chapter coupon, drawn by
-`dc-native.css` §2d (paper-cream face, mono type at the 10pt floor, ink edge, hard
-shadow, a rail in the chapter's colour through the same named pages). Its text is
-GCPM `string-set` / `string()`, which Gutterpress resolves itself
-(`stringValueAt`; `first`, `start`, `last` and `first-except` are all supported),
-fed in `page-rules.css` by the chapter: `@chapter … head="…"` (`data-head`),
-else the chapter's `#` title (`div.chapter:not([data-head]) > .page > h1`),
-else `"Chapter " attr(data-ch)`. The string is read with `last`, so a page where a
-new `#` begins names the chapter it ends in. A chapter with none of these has no
-source and prints no head: do NOT seed the string with a `body` rule (an engine
-string with no source falls back to a counter and prints a stray number). Every
-template that clears the footer (`front-matter`, `front-matter-intro`,
-`chapter-start`, `full`, `:blank`, and a book's own named page such as the
-guide's `dg-doc`) clears it with `@bottom-center { content: none; }`. It sits in
-the footer band and not the top, because a head at the top edge would cost every
-page 0.375in of text height (0.625in to 1in) to stay inside the 0.5in text
-minimum. A page name outranks `:left` / `:right`, so the named-page overrides
-stay unlayered in `dc-native.css`, as for the coupon.
-
 The Citizen File running head is the same chip in the top band (`@top-left` /
-`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 1in top margin.
+`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 0.875in top margin.
 
 ### Free-standing page text
 
@@ -538,18 +515,6 @@ lives:
 
 What the package cannot fix is a forced `@page` / `@page-break` in a book that
 strands a stub; those are content (the design guide removed three).
-
-### The end-of-chapter mark
-
-`page-templates.css` ("END-OF-CHAPTER MARK"): an `::after` on
-`.chapter > .page:last-child`, so CSS can attach it reliably, but it cannot know
-how full the page is. It is one in-flow block (`break-inside: avoid`), about
-0.55in tall, not drawn on contents, credits, intro, full-bleed and art pages. A
-last page that already runs to within 0.55in of its foot pushes it onto a page of
-its own, so a chapter that full sets `--dc-end-mark-display: none`. It is
-in flow on purpose: a plate positioned out of flow below the page's last block
-lies outside the content box, which the print engine clips or answers with
-whole-document shrink-to-fit. Tokens `--dc-end-mark-text/-display/-gap/-bg/-ink/-tape`.
 
 ### Folios and the `.chapter-N` class
 
