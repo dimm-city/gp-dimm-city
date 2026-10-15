@@ -69,7 +69,9 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 3px 18px 3px 8px;
+  /* 18px right and 16px left clear the deepest tab cut (a specialty's
+     --dc-skill-tab-shape, at most 15px) by more than 2pt. */
+  padding: 3px 18px 3px 16px;
   background: var(--dc-card-tab-bg);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
@@ -147,10 +149,12 @@
   letter-spacing: 0.05em;
   line-height: 1.2;
   word-break: break-word;
+  /* Reversed type (cream on the specialty's tab): semibold. Tomorrow ships 400,
+     500 and 700, so 600 resolves to the 700 cut. */
+  font-weight: 600;
   /* The title is the skill's h4 (plugin.js): clear what the h4 look adds
      (dc-core.css) so the tab sets as plain text. */
   margin: 0;
-  font-weight: inherit;
   text-wrap: wrap;
 }
 
@@ -163,17 +167,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 1.25rem;
-  padding: 1px 6px;
+  height: 1.4rem;
+  padding: 1px 8px;
   border-radius: 100px;
   font-family: var(--font-mono);
-  font-size: 8pt;  /* reversed type: 8pt semibold is the floor */
+  font-size: var(--fs-floor);
   font-weight: 700;
   line-height: 1;
   background-color: var(--dc-tier-bg);
   color: var(--dc-tier-fg);
   box-shadow: inset 0 0 0 1px var(--dc-tier-edge);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -298,6 +302,12 @@
   widows: 2;
 }
 
+/* The card's closing sub-header (a ##### line) is reading text in mono caps:
+   tracked a little less than the bare sub-header (both are at the 10pt floor). */
+.dc-skill-card .dc-sub-header {
+  letter-spacing: 0.08em;
+}
+
 /* An ability row (AP chip and its text) is never cut between the two. */
 .dc-skill-card .dc-ability {
   break-inside: avoid;
@@ -330,12 +340,17 @@
 .dc-skill-card > .dc-card-body::before {
   content: '';
   position: absolute;
-  top: 10px;
-  right: 16px;
-  width: 28px;
-  height: 2px;
-  background: color-mix(in srgb, var(--dc-card-body-mark) 15%, var(--dc-card-surface));
-  transform: rotate(-3deg);
+  top: -5px;
+  right: 18px;
+  width: 34px;
+  height: 11px;
+  /* A strip of masking tape holding the card to the wall: an opaque flat tint
+     of the card's mark colour on paper-aged, with a hard edge line, slightly
+     rotated. It was a 2px hairline at 15% mark colour, which read as a stray
+     scratch rather than as a deliberate cue. */
+  background: color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged));
+  box-shadow: inset 0 -1px 0 var(--ink-dust);
+  transform: rotate(3deg);
   z-index: 2;
 }
 
@@ -390,17 +405,18 @@
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
-   --dc-roll-the-die-color (default --brand-magenta-deep).
+   --dc-accent-ink (the component's own text-safe ink; default the deep magenta).
    An instruction to act, set in the text around it: the same font and size as
-   the line it sits in, made bold, in a contrasting colour, with a dotted
-   underline in that colour. It is plain inline text, so the line keeps its
-   height. The brand magenta's hue stands apart from the warm ink and the
-   --blood used for other bold text; deep, it holds AA contrast on every paper:
-   7.0:1 on --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
+   the line it sits in, made bold, in the ink of the component it sits in
+   (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
+   its cards), with a dotted underline in that colour. It is plain inline text,
+   so the line keeps its height. Each component sets --dc-accent-ink to a shade
+   that holds 4.5:1 on its own surface; the deep magenta default holds 7.0:1 on
+   --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
-  color: var(--dc-roll-the-die-color);
-  text-decoration: underline dotted;
+  color: var(--dc-accent-ink);
+  text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
 }
@@ -413,10 +429,10 @@
    via .dc-ap.<variant> { }, same convention as every other component. */
 .dc-ap {
   font-family: var(--font-mono);
-  font-size: 8pt;  /* reversed type: 8pt semibold is the floor */
+  font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 3px 6px;
-  min-width: 38px;
+  padding: 3px 7px;
+  min-width: 44px;
   text-align: center;
   /* Inner ink-density gradient + top-highlight — same pattern as
      .dc-outcome-key — so the chip reads as "stamped/printed" rather than a
@@ -438,7 +454,7 @@
     inset 0 1px 0 color-mix(in srgb, #fff 15%, var(--dc-ap-bg)),
     2px 2px 0 color-mix(in srgb, #000 10%, var(--dc-card-surface));
   text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, var(--dc-ap-bg));
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 1px;

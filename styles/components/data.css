@@ -30,18 +30,12 @@
   margin: 6px 8px calc(var(--dc-card-gap) + 4px);
   padding-top:    calc(var(--dc-path-shell-padding-top) + 2px);
   padding-bottom: var(--dc-path-shell-padding-bottom);
-  /* Room for `.dc-spray::before`, the skewed tab pinned at `right: -8px` with
-     `width: 14px`. Without it that decoration escapes this shell and, with
-     nothing clipping it, escapes the document — at which point Chromium's
-     native print widens its layout past the page content box (696 -> 697 CSS
-     px). One pixel is enough to re-break a line: a paragraph sets in 3 lines
-     instead of 4 and the page count changes, while the on-screen viewer keeps
-     the spec-correct 696 and disagrees with the PDF.
-
-     Giving the decoration room keeps it fully visible; clipping it here would
-     work too but would cut the tab, and a blanket `.chapter { overflow-x:
-     clip }` would also clip every full-bleed plate back to the content box. */
-  padding-right: 12px;
+  /* No right padding: the title band spans the shell's full width, so the
+     band's clip and the shell's clip (the same point list, specialty-identity.css)
+     meet at the right as well as the left. (It was 12px, for a skewed tab on
+     .dc-spray::before that the band no longer draws: the band stopped 12px short
+     of the frame's top-right cut.) */
+  padding-right: 0;
   position: relative;
   /* Both pseudos sit at negative z-index; this is the stacking context that
      keeps them behind THIS shell's content instead of behind the page. */
@@ -119,7 +113,10 @@
   clip-path: var(--dc-path-title-shape);
   box-shadow: var(--dc-band-rim);
   margin-bottom: 10px;
-  padding: 10px 16px 7px;
+  /* Padding is the deepest cut plus 2pt or more on every clipped edge: left
+     20px (a 16px chamfer), right 28px (a 24px stair or a 22px chamfer), top
+     12px (a 7px gate notch). */
+  padding: 12px 28px 7px 20px;
   font-size: 18px;
   break-after: avoid;
   border-bottom: none;
@@ -154,6 +151,7 @@
   box-sizing: border-box;
   background: var(--dc-band-rule);
   border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
+  box-shadow: var(--dc-band-reg);
   transform: skewX(var(--dc-band-rule-skew));
 }
 
@@ -162,7 +160,6 @@
 .dc-path-shell:has(> h3.dc-spray:only-child) {
   --dc-path-shell-padding-bottom: 0;
   --dc-path-shell-clip: var(--dc-path-title-shape);
-  padding-right: 0;
 }
 
 .dc-path-shell:has(> .dc-stickers) {
@@ -224,7 +221,24 @@
   background: var(--dc-steps-surface);
   border: 2px solid var(--ink);
   box-shadow: var(--shadow-poster);
+  position: relative;
   break-inside: auto;
+  --dc-accent-ink: var(--dc-steps-accent);
+}
+
+/* Grit: a staple holding the plate to the wall, a solid bar a few degrees off
+   square, on the top edge where no text is. */
+.dc-steps::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 14px;
+  width: 20px;
+  height: 4px;
+  background: var(--ink-smoke);
+  border-bottom: 1px solid var(--ink);
+  transform: rotate(-4deg);
+  pointer-events: none;
 }
 
 .dc-steps>li {
@@ -234,7 +248,7 @@
   padding: 0;
   border-top: 1px dashed var(--ink-dust);
   font-family: var(--font-body);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   line-height: 1.45;
   color: var(--ink);
   align-items: stretch;
@@ -292,6 +306,10 @@
   background: var(--dc-outcomes-surface);
   position: relative;
   break-inside: avoid;
+  /* A machined HUD plate: four even 45-degree chamfers (6px), and one tiny
+     chip out of the foot, the only grit. Text cells keep 12px padding. */
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 62% 100%, calc(62% - 3px) calc(100% - 3px), calc(62% - 7px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  --dc-accent-ink: var(--dc-outcomes-border);
   /* Inset hairline, 4px in from the frame: a 4px ring of the surface over a
      5px ring of the hairline colour leaves a 1px line between them. It is a
      shadow, not an absolutely positioned `::after` box: an absolutely
@@ -307,9 +325,9 @@
   font-family: var(--font-mono);
   /* A stamped header bar with its own surface rather than a tiny label
      hovering above the chips. */
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--dc-outcomes-label-color);
   background: var(--dc-outcomes-label-bg);
@@ -380,16 +398,16 @@
 
 .dc-outcome-name {
   font-family: var(--font-mono);
-  /* Reversed type on a solid chip: 8pt semibold. A long name wraps, centred and
+  /* Reversed type on a solid chip: 10pt semibold. A long name wraps, centred and
      balanced, on its own lines under the roll number. */
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
   text-wrap: balance;
   overflow-wrap: anywhere;
-  color: color-mix(in srgb, var(--dc-outcome-name-color) 85%, var(--row-color, var(--ink)));
+  color: var(--dc-outcome-name-color);
   opacity: var(--dc-outcome-name-opacity);
   line-height: 1.2;
 }
@@ -407,10 +425,10 @@
 }
 
 .dc-outcome-text {
-  padding: 8px 12px;
+  padding: 8px 14px;
   font-family: var(--font-body);
-  font-size: 8.5pt;
-  line-height: 1.55;
+  font-size: var(--fs-floor);
+  line-height: 1.4;
   color: var(--ink);
   align-self: center;
   /* Container rule tethers the result text to its row color — without it the
@@ -428,7 +446,7 @@
      miss  → rust                (GUTTER deep — paper-cream 4.59:1)
      fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 8.73:1)
    All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
-   for 9px outcome-name and 12pt roll-number text.
+   for the 8pt outcome-name and 12pt roll-number text.
 
    The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
    (below) because fungi-glow is too light to carry paper-cream text. Bright
@@ -472,6 +490,10 @@
   margin: 8px 0;
   border: 2px solid var(--dc-roll-table-accent);
   background: var(--dc-roll-table-surface);
+  /* A die-faced plate: two opposite 14px cuts (top right, bottom left), where
+     the ladder has four small even ones. Cells keep >= 18px clear of the cut. */
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  --dc-accent-ink: var(--dc-roll-table-accent);
 }
 
 .dc-roll-table-caption {
@@ -487,7 +509,7 @@
 /* The die chip: a cream tab with a cut corner, in the mono face. */
 .dc-roll-table-die {
   font-family: var(--font-mono);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.06em;
@@ -496,6 +518,8 @@
   background: var(--paper-cream);
   padding: 3px 9px 3px 7px;
   clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%);
+  /* Grit: the chip is stuck on a degree or two off square. */
+  transform: rotate(-2deg);
 }
 
 .dc-roll-table-name {
@@ -515,6 +539,12 @@
 }
 
 /* Range column: mono, centred, ruled off from the results. */
+.dc-roll-table td {
+  font-size: var(--fs-floor);
+}
+.dc-roll-table tr:last-child td:first-child {
+  padding-left: 18px;
+}
 .dc-roll-table td:first-child {
   font-family: var(--font-mono);
   font-weight: 700;
@@ -527,6 +557,7 @@
 
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
+  --dc-accent-ink: var(--brand-magenta-deep);  /* 5.8:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
   border-right: 2px solid var(--dc-pullquote-accent-soft);
@@ -575,39 +606,110 @@
    hairline under, no rail and no cut corners (a note alert is a tinted panel
    with a rail and clipped corners). The term leads, set bold and upright in
    HUD blue; the gloss follows in italic.
+
+   Two variant words make a pair of opposites, for the two states of a roll
+   (`@definition lucid` / `@definition surreal`): LUCID is the light, crisp,
+   aligned one (bright cream, machined 45-degree chamfers on all four corners,
+   a ruled-off upright headword, a cyan-edged frame); SURREAL is reality
+   pushing back (inverted value: a dark violet-black sheet with light type, a
+   skewed, torn outline, two inks misregistered against each other, a leaning
+   headword). They differ in value, edge and type, so they read as opposites
+   in greyscale.
    Token contract:
      --dc-definition-block-surface       → block background (default --paper-cream)
      --dc-definition-block-accent        → rules and term colour (default --hud-blue-dark)
      --dc-definition-block-accent-width  → weight of the rule over the block (default 3pt)
      --dc-definition-block-shape         → clip-path (default none)
+     --dc-definition-block-fg            → body colour (default --ink)
+     --dc-definition-block-term          → headword colour (default --hud-blue-dark; its own token, it does not follow the accent)
+     --dc-definition-block-style         → body font-style (default italic)
+     --dc-definition-block-frame         → box-shadow: the hard shadow, or an inset frame
+     --dc-definition-block-rule-bottom   → weight of the rule under the block (default 1pt)
+     --dc-definition-block-pad           → padding (default 8pt 12pt 9pt)
    Per-section / per-column overrides set the tokens; they don't override
    the properties directly. */
 .dc-definition-block {
   clip-path: var(--dc-definition-block-shape);
   background: var(--dc-definition-block-surface);
   border-top: var(--dc-definition-block-accent-width) solid var(--dc-definition-block-accent);
-  border-bottom: 1pt solid var(--dc-definition-block-accent);
-  box-shadow: var(--shadow-poster);
+  border-bottom: var(--dc-definition-block-rule-bottom) solid var(--dc-definition-block-accent);
+  box-shadow: var(--dc-definition-block-frame);
   margin-right: 3pt;
-  font-style: italic;
+  font-style: var(--dc-definition-block-style);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-normal);
-  color: var(--ink);
-  padding: 8pt 12pt 9pt;
+  color: var(--dc-definition-block-fg);
+  padding: var(--dc-definition-block-pad);
+  --dc-accent-ink: var(--dc-definition-block-accent);
 }
 
 /* The bold lead (`**Term:** gloss`) is the headword. */
 .dc-definition-block p > strong:first-child {
   font-style: normal;
-  color: var(--dc-definition-block-accent);
+  color: var(--dc-definition-block-term);
 }
 
 .dc-definition-block p {
   margin: 0;
+  color: inherit; /* a paragraph's own colour would hide the text on a dark sheet */
 }
 
 .dc-definition-block p+p {
   margin-top: 6pt;
+}
+
+/* LUCID — sharp, aligned, in control. Machined chamfers (all four, 9px), a
+   2px inset frame in HUD blue with a cyan hairline inside it, upright body,
+   the headword ruled off in blue. */
+.dc-definition-lucid {
+  --dc-definition-block-surface: var(--paper-form);
+  --dc-definition-block-accent: var(--hud-blue-dark);
+  --dc-definition-block-accent-width: 0px;
+  --dc-definition-block-rule-bottom: 0px;
+  --dc-definition-block-shape: polygon(9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px), 0 9px);
+  --dc-definition-block-style: normal;
+  --dc-definition-block-frame: inset 0 0 0 2px var(--hud-blue-dark), inset 0 0 0 4px var(--paper-form), inset 0 0 0 5px var(--brand-cyan);
+  --dc-definition-block-pad: 14pt 18pt 14pt;
+}
+.dc-definition-lucid > h4,
+.dc-definition-lucid p > strong:first-child {
+  letter-spacing: 0.06em;
+}
+.dc-definition-lucid > h4:first-child {
+  padding-bottom: 3pt;
+  border-bottom: 2px solid var(--hud-blue-dark);
+  margin-bottom: 5pt;
+}
+
+/* SURREAL — reality pushing back. Inverted: a violet-black sheet, light type.
+   A skewed outline torn along the foot, two inks off-register (magenta and
+   violet bands on opposite inner edges), the headword leaning. Body copy stays
+   upright and unrotated; only the label leans. */
+.dc-definition-surreal {
+  --dc-definition-block-surface: var(--technosorcerer-dark);
+  --dc-definition-block-accent: var(--brand-magenta);
+  --dc-definition-block-accent-width: 0px;
+  --dc-definition-block-rule-bottom: 0px;
+  --dc-definition-block-shape: polygon(0 12px, 100% 0, calc(100% - 9px) 46%, 100% calc(100% - 7px), 71% 100%, calc(71% - 6px) calc(100% - 6px), calc(71% - 12px) 100%, 38% calc(100% - 5px), calc(38% - 8px) 100%, 8px calc(100% - 9px), 0 62%);
+  --dc-definition-block-fg: var(--paper-cream);
+  --dc-definition-block-term: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
+  --dc-definition-block-style: italic;
+  --dc-definition-block-frame: inset 5px 4px 0 var(--brand-magenta-deep), inset -5px -4px 0 var(--brand-violet);
+  --dc-definition-block-pad: 20pt 22pt 20pt 22pt;
+  font-weight: 600; /* reversed type: semibold */
+  --dc-accent-ink: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
+}
+.dc-definition-surreal > h4,
+.dc-definition-surreal p > strong:first-child {
+  display: inline-block;
+  transform: skewX(-9deg);
+  letter-spacing: 0.04em;
+}
+.dc-definition-surreal > h4:not(:first-child) {
+  border-top-color: var(--brand-violet);
+}
+.dc-definition-surreal hr {
+  border-top-color: var(--brand-violet);
 }
 
 /* A run of `#### Term` entries in one `@definition` reads as a glossary: each
@@ -621,7 +723,7 @@
   font-style: normal;
   letter-spacing: var(--ls-heading);
   text-transform: uppercase;
-  color: var(--dc-definition-block-accent);
+  color: var(--dc-definition-block-term);
   margin: 0 0 2pt;
 }
 .dc-definition-block > h4:not(:first-child) {
@@ -677,8 +779,8 @@
 
 .dc-stat-class {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--hud-blue);
 }
@@ -709,8 +811,8 @@
 
 .dc-stat-cell-key {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 3px;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hud-blue);
   margin-bottom: 2px;
@@ -756,14 +858,14 @@ table.dc-stat-strip {
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
   padding: 2px 8px;
 }
 .dc-stat-strip td {
   background: var(--paper-cream);
   padding: 3px 8px;
-  font-size: 8.5pt;
+  font-size: var(--fs-floor);
   vertical-align: middle;
 }
 .dc-stat-strip td:first-child {
@@ -773,7 +875,7 @@ table.dc-stat-strip {
   text-align: center;
   font-family: var(--font-tab);
   font-weight: 700;
-  font-size: 13pt;
+  font-size: 15pt;
   line-height: 1.1;
   color: var(--dc-stat-strip-value);
 }
@@ -834,8 +936,8 @@ table.dc-stat-strip {
   color: var(--paper-cream);
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.06em;
   font-style: normal;
   /* Small bottom-right corner cut so the badge reads as a stamp. */
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
@@ -854,7 +956,7 @@ table.dc-stat-strip {
 .dc-toc ol>li>a::after {
   content: ' p.' target-counter(attr(href), page);
   font-family: var(--font-mono);
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   font-weight: 600;
   letter-spacing: 1.5px;
   color: var(--hud-blue);
@@ -923,6 +1025,7 @@ p.dc-img-wrapper {
   padding: 0 0 10px;
   text-align: center;
   break-inside: avoid;
+  --dc-accent-ink: var(--dc-at-a-glance-accent);
 }
 
 .dc-at-a-glance-card > h4 {
@@ -931,11 +1034,15 @@ p.dc-img-wrapper {
   background: var(--dc-at-a-glance-accent);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.4;
+  /* A cut top-right corner (HUD chamfer), on the band only so the tile keeps
+     its hard shadow; the label is centred, 8px clear of the cut. */
+  padding-inline: 12px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
 }
 
 .dc-at-a-glance-card > p {

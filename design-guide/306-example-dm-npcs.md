@@ -30,6 +30,8 @@ You're not here to run a game. You're here to make the Dream burn bright.
 
 @end-section
 
+@page
+
 ### Core Elements
 
 @dm-note

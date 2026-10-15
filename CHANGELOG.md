@@ -7,9 +7,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
-## [1.7.0] - 2026-10-14
-
-### Changed
+## [1.7.0] - 2026-10-15
 
 A redesign pass by component family. A reader should know what kind of box they
 are looking at from its silhouette, fill value and colour before reading a word,
@@ -19,16 +17,68 @@ titles, pull quotes, `ROLL THE DIE!`, the VAR chip, the default panel accent);
 the other roles are HUD blue for player rules and look-ups, cyan on ink for the
 Dream Master only, hazard yellow with ink for danger and choices, blood and rust
 for harm and cost, violet for the world, fungi green for the organic. The
-constitution (version 2026-10-14) is revised to match: §II adds the colour roles
-and the grayscale rule, §V and §VI restate the type floors, §VII describes the
+constitution is revised to match: §II adds the colour roles and the grayscale
+rule, §V and §VI set a 10pt type floor, §VII describes the
 new components, and §IX narrows the Pass 6/7/8 bans to specialty cards and
 reading surfaces.
 
-- **Type floors are print minimums, not inflated sizes.** Running body at least
-  9.5pt, component rules text at least 9pt, secondary text (captions, table cells,
-  stat lines, card pitches) at least 8pt, all-caps mono labels at least 6.5pt with
-  at least 0.08em tracking, reversed type at least 8pt semibold. Text that already
-  met its floor did not grow.
+A second pass, from review of 1.7.0-alpha.1, set a 10pt type floor for all
+text, took every word off the brick wall, tied shape to meaning and added a
+little grit.
+
+### Added
+
+- **`@page specialty-catalog`**: the specialty catalog is a designed two-page
+  spread. It opens on a left page; the title, the lede and four cards fill the
+  left page and six the right, in aligned rows of equal height. Each card is a
+  poster: portrait on top in an ink mat cut to its specialty's silhouette,
+  name, tagline, pitch and an index chip. Snippet *Specialty Catalog Page*.
+- **`@definition lucid` and `@definition surreal`**: the two roll states drawn
+  as opposites. Lucid is a light, machined, upright sheet in a blue frame;
+  Surreal is an inverted violet-black sheet with a skewed torn edge,
+  off-register inks and a leaning headword.
+- **No text on the wall.** On wall pages free-standing text gets a substrate
+  with no markup: a `#` title is an accent banner, `##` a pasted paper slip
+  (accent rail, dashed foot, tape), `###` a plain slip, `####` and below a
+  label slip, and loose paragraphs, lists and quotes share one paper sheet per
+  run. A bare `@section` is a paper sheet; flavor lines and the spec tweak sit
+  on paper strips; the Citizen File running head is an amber tab. Tokens
+  `--dc-page-slip-*`, `--dc-page-sheet-pad`, `--dc-page-title-ink`,
+  `--dc-flavor-bg`.
+- **Grit**, vector and opaque, on edges and labels only: chipped corners,
+  tape strips, misregistered second-ink rules (`--dc-band-reg` on the tech
+  specialties), worn stamp rings, torn feet, a staple on the procedure plate.
+- **`--dc-accent-ink`**: the text-safe ink of the component you are in. Every
+  alert, section kind, block, card, faction, entry, table and specialty sets
+  it; chapter accents flow through.
+
+### Changed
+
+- **Type floor: 10pt for all text**, chips, tabs, tier pills, AP chips,
+  badges, stamps, folio and chapter chips, stickers and labels included. New
+  token `--fs-floor` (10pt); `--fs-h6` is the floor (was 9pt). Chrome that
+  grew was refitted so nothing wraps or clips; a five-step sticker chain may
+  now wrap to two rows.
+- **ROLL THE DIE! takes the colour of its component** (deep magenta in a
+  magenta panel, blood in a blood box, the specialty's ink on a skill card).
+  `--dc-roll-the-die-color` is replaced by `--dc-accent-ink`.
+- **Fiction is a cavity.** `@fiction-excerpt` is an aged page sunk into a
+  ragged hole in the wall: a dark torn rim, a hard shadow down the top and
+  left, a lit lip at the bottom and right, deeper on a chapter opener. New
+  tokens `--dc-fiction-depth`, `-depth-bg`, `-cavity`, `-lip`, `-rim`,
+  `-hole`; `--dc-fiction-lift` and `-lift-bg` are removed.
+- **Shape carries meaning.** Player rules and look-ups are machined chamfers;
+  Dream-Master-only boxes are file folders (the `dm` section's tab carries the
+  words, replacing its chip); danger and enforcement are sign plates; lore and
+  cabal long asymmetric slashes; fiction, backstory, cult and flaws torn;
+  choices ticket notches; gear tags; magic facets; organic boxes wobble. The
+  seven alerts, every section kind, block, choice card, faction, entry, table
+  and all ten specialties are re-cut to match, and every clipped edge is
+  padded clear of its cut by 2pt or more.
+- **Folio and chapter chips** are fixed-height boxes with their type centred,
+  on recto and verso. The chapter chip is a stamped coupon with a perforated
+  edge, replacing the dashed outline.
+
 - **Alerts: seven registers, seven silhouettes.** Each has its own fill value,
   edge and label, and bodies are upright (only vibe and origin stay italic).
   - note: the calm HUD-blue panel with a blue rail, as before.
@@ -107,12 +157,7 @@ reading surfaces.
   light panel (lighter than the wall) with a heavy accent rail and an ink foot rule
   (`--dc-intro-color`, `-size`, `-weight`, `-style`, `-rail`, `-rule`). Flavor is a
   rail and no box, in ink-dark. Contents and credits ledes keep body size.
-- **Fiction is a torn-out page on the wall.** `--paper-zine`, zig-zag torn top and
-  foot, a hard ink shadow whose offset is `--dc-fiction-lift` (3px, 5px on a
-  chapter-start page) and whose colour is `--dc-fiction-lift-bg`. `--dc-fiction-rule`
-  (ink edge weight) and `--dc-fiction-shadow` (a box-shadow value) keep their names and
-  types; their defaults are now `0px` and `none`. NPC flavor lines
-  are a ruled line, not a box.
+- **NPC flavor lines** are a ruled line, not a box.
 - **Chrome.** `.dc-tag` is an inline chip with a hard edge and an ink hairline
   (`--dc-tag-bg`, `-fg`, `-border`); `.dc-tape` is masking tape with torn ends and
   ink edges (`--dc-tape-shape`); `.dc-spray` is a stencil tag with a stepped edge
@@ -135,7 +180,7 @@ reading surfaces.
   lamp and an ink edge (it was the same blood red as increased), reduced is pale
   blue with a drawn down triangle, increased blood with a drawn up triangle (CSS
   shapes, not font glyphs), VAR deep magenta (cream on the bright one was 4.06:1),
-  special amber with cream type. Chips are 8pt semibold, the reversed floor.
+  special amber with cream type.
 - **Technosorcerer and Generalist leave violet.** Violet is the world's colour
   (lore, vibe, cabal, treasure), so the Technosorcerer is now electric indigo
   (`--signal-indigo`) and the Generalist cool slate (`--crystal-slate`), with new
@@ -145,11 +190,38 @@ reading surfaces.
 
 ### Fixed
 
+- The learning-path title band lines up with the path frame's top-right cut
+  for every specialty: it spans the frame and is cut from the same point list,
+  where it stopped 12px short.
+- The design guide's heading specimens sit on paper, not on brick.
+- Footer chips no longer touch content: body pages have a 1in bottom margin
+  and the folio and chapter chips sit 0.125in below the text. The chapter
+  chip takes the chapter's colour (named pages `dc-chip-<hue>`) and lost a
+  stray notch.
+- The `dm` section's folder tab stays with its box when the section splits
+  across a page; it had left cyan type on grey paper.
+- The page-level wall-text rules skip components (`[class*="dc-"]`), so a
+  `@procedure`, `@lede` or `@toc` placed straight on a page keeps its look.
+- Reversed type is semibold: slate and Surreal bodies, skill-tab names. Cream
+  on the default magenta bar is 4.7:1 (`--dc-section-bar-mix` 90%); outcome
+  band names are at least 4.5:1.
+- Flaw, Ideal and Dream cards differ in grayscale (edge style, fill value,
+  silhouette depth); `reference`, `lore`, `panel` and `dm` title bars differ
+  in treatment, not only colour.
+- A wrapped learning-path sticker chain never ends a line on its arrow.
+- Heading slips keep with what follows, prose sheets take orphans and widows
+  of 3, and `###`/`####` slips hang offset (`--dc-page-slip-gap`,
+  `-slip-offset`, `--dc-heading-gap`).
+- `--dc-accent-ink` is documented and tested as a per-component context
+  token, the one exception to the token convention.
+- Tests guard the 10pt floor, the context-token allow-list, page-level
+  components and the Lucid/Surreal variants.
+
 - **Contrast and type.** The special AP chip (ink on amber, 3.5:1), the tier pills
   (accent fails 4.5:1 for 9px type on Augmerc and Proxy), the learning-path
   subtitle (ink-smoke on `--paper-stain`, 3.4:1), the Augmerc title band (cream on
-  bright magenta, 3.6:1) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. Labels set at
-  9px are 8pt, and the DM alert body is upright 9.5pt instead of 9pt italic.
+  bright magenta, 3.6:1) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. The DM alert
+  body is upright instead of 9pt italic.
 - **A chapter no longer repaints the alerts.** The Dream Mastery chapter's override
   turned every alert grey-brown and rust in Part 2; the alert identity now survives
   re-theming. Its DM panel heading was ink on ink (an empty-looking bar) and is

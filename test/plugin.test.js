@@ -358,7 +358,7 @@ describe("declared wrapper markers", () => {
   });
 
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
-    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file" };
+    const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {
       const { html, warnings } = render(`@page ${word} .dg-x\n\nx`);
       expect(html, word).toContain(`<div class="page ${cls} dg-x" data-page="${word}"`);
@@ -1267,6 +1267,23 @@ describe("declared callout and dm-note", () => {
 
 // Entry cards, the @field component and the bold-label shortcut onto it, and
 // the catalog section that holds a run of entries.
+describe("definition variants", () => {
+  test("@definition lucid and @definition surreal add their own class", () => {
+    for (const word of ["lucid", "surreal"]) {
+      const { html, warnings } = renderGp(`@definition ${word}\n\n#### Term\n\nMeaning.\n\n@end-definition`);
+      expect(warnings, word).toEqual([]);
+      expect(html, word).toContain(`<div class="dc-prose-panel dc-definition-block dc-definition-${word}"`);
+    }
+  });
+
+  test("a bare @definition has neither variant class", () => {
+    const { html } = renderGp("@definition\n\n**Tick:** a heartbeat.\n\n@end-definition");
+    expect(html).toContain('<div class="dc-prose-panel dc-definition-block"');
+    expect(html).not.toContain("dc-definition-lucid");
+    expect(html).not.toContain("dc-definition-surreal");
+  });
+});
+
 describe("entry cards", () => {
   const KINDS = ["augment", "treasure", "vehicle", "drug"];
   const ENTRIES = ["gear", ...KINDS];

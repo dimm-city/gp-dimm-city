@@ -33,7 +33,7 @@ The city didn't go quiet — it got loud. You came to Dimm City to disappear, an
 
 </div>
 
-Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-rule`.
+Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-rule`, `--dc-intro-ink` (the lede's text-safe accent ink).
 
 ## Flavor
 
@@ -53,7 +53,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-flavor-accent`, `--dc-flavor-accent-width`, `--dc-flavor-color`.
+Tokens: `--dc-flavor-accent`, `--dc-flavor-accent-width`, `--dc-flavor-color`, `--dc-flavor-bg` (a flavor line sits on paper, never on the wall).
 
 ## Pull quote
 
@@ -134,15 +134,15 @@ Result {.dg-result}
 
 | Type | Who it is for | Register | Looks like |
 |---|---|---|---|
-| `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail |
-| `WARNING` | Players | A rule with consequences | Hazard: a light cream sheet, a yellow-and-black stripe rail, an ink frame and a yellow caution-tape label |
-| `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink slab with a cyan rail and a cyan chip at the top right |
-| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet in one dashed violet edge all round, italic, with an underlined label |
-| `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a rust rail, a dog-eared corner and a crimson stamp label |
-| `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a map-pin label |
-| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A dashed cyan rail and a taped-on label |
+| `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail and small, even machined chamfers |
+| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a light cream sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label |
+| `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one dashed violet edge all round, a strip of tape on top, italic, with an underlined label |
+| `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label |
+| `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a dashed cyan rail and a taped-on label |
 
-Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 8pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is upright (only the vibe and origin voices are italic; the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 
 Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
@@ -326,4 +326,4 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A tr
 
 </div>
 
-Token: `--dc-roll-the-die-color`.
+Token: `--dc-accent-ink`, the text-safe ink of the component the phrase sits in (the deep magenta by default; a panel, a lede, a specialty's cards and the like each set their own, so the phrase takes the colour of the box around it).

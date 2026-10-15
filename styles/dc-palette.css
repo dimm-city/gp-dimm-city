@@ -84,10 +84,11 @@
   /* ── Type Scale — modular ~1.23× ratio, 12pt body anchor ──────────────
      h1/h2: 1.30×  h2/h3: 1.25×  h3/h4: 1.23×  h4/h5: 1.18×  h5/h6: 1.22×
      H5 == body-sm: display font + caps + tracking provide differentiation.
-     H6 below body: metadata-only; display font keeps it legible.
+     H6 sits on the 10pt floor: metadata-only; display font keeps it legible.
      ────────────────────────────────────────────────────────────────────── */
+  --fs-floor:   10pt;    /* THE type floor: no glyph the package prints is smaller — chips, tabs, tier pills, labels, stamps, folios included */
   --fs-body:    12pt;
-  --fs-body-sm: 11pt;    /* design floor — never below this for prose */
+  --fs-body-sm: 11pt;    /* smallest running prose in a component */
   --fs-body-xs: 11.5pt;  /* between sm and body */
   --fs-sm:      11pt;    /* small body — aligns to --fs-body-sm */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
@@ -95,7 +96,7 @@
   --fs-h3:      16pt;    /* sub-section, gear card titles; 1.25× below h2 */
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
-  --fs-h6:      9pt;     /* metadata only; 1.22× below h5 */
+  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; 1.10× below h5 */
 
   --fw-bold:     700;
 
@@ -130,12 +131,12 @@
      0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
      outside three edges and 0.5in from the binding edge.
        top     0.625in  = 0.5in from the trim
-       bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
-                          sit in this band)
+       bottom  1in      = 0.875in from the trim (the folio and chapter chips
+                          sit in this band, 0.125in clear of the text block)
        outside 0.625in  = 0.5in from the trim
        binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
   --page-margin:   0.625in;
-  --bottom-margin: 0.875in;
+  --bottom-margin: 1in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 

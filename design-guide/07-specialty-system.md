@@ -15,6 +15,8 @@ The richest family in the book. A specialty wrapper sets the shape and color; in
 
 `augmerc` · `proxy` · `streetwarden` · `gutterdruid` · `cybersurgeon` · `wirephreak` · `technosorcerer` · `etherlock` · `dualist` · `generalist`
 
+The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Technosorcerer's gate), the Proxy is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.
+
 ```markdown
 @specialty .augmerc
 
@@ -69,7 +71,7 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 </div>
 
-Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`.
+Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`, `--dc-band-reg` (a second ink printed 2px off, tech bands).
 
 ## Specialty art
 
@@ -100,7 +102,7 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 ## Specialty card
 
-The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color.
+The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color, its silhouette and its own portrait cut. On a [`@page specialty-catalog`](#ch-templates) the ten cards become a two-page spread of tall poster cards (portrait on top, then name, tagline and pitch, an index chip on the portrait); anywhere else they are the dense card, a small thumbnail beside the text. The card's layout is tokens: `--dc-specialty-card-display`, `-media-order`, `-media-float`, `-media-margin`, `-media-shape`, `-media-mat`, `-name-size` and `-index`, and the grid's `--dc-card-grid-display`, `-item-display`, `-row` and `-gap`.
 
 ```markdown {.dg-split}
 @card-grid

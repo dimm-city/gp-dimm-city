@@ -281,6 +281,33 @@ describe("file contracts", () => {
     expect(bad, "declare it in dc-palette / dc-identity / dc-component-defaults (css-architecture.md, 'Tokens flow downward only')").toEqual([]);
   });
 
+  // The ONE named exception to dc#34: a CONTEXT token. It is not a knob on one
+  // component but the value each component derives for what is inside it
+  // (`--dc-accent-ink`: the text-safe ink ROLL THE DIE! reads). So components set it
+  // on their own root rule on purpose; it still defaults at :root; a book overrides
+  // it per component class, never at an ancestor. Adding a token here is a design
+  // decision (callouts.css header "THE EXCEPTION"; css-architecture.md).
+  const CONTEXT_TOKENS = new Set(["--dc-accent-ink"]);
+
+  test("context tokens (the dc#34 exception) default at :root and are set only on component selectors", () => {
+    const defaults = PKG.find((x) => x.label === "styles/dc-component-defaults.css");
+    for (const tok of CONTEXT_TOKENS) {
+      let atRoot = false;
+      defaults.root.walkDecls(tok, (d) => { if (d.parent.selectors?.some((x) => x.trim() === ":root")) atRoot = true; });
+      expect(atRoot, `${tok} must default at :root in dc-component-defaults.css`).toBe(true);
+    }
+    const bad = [];
+    for (const s of PKG) {
+      if (s.label === "styles/dc-component-defaults.css") continue;
+      s.root.walkDecls((d) => {
+        if (!CONTEXT_TOKENS.has(d.prop)) return;
+        // a component or page-template selector (a `.dc-*` / `.section` / `.page` class), never an id or bare ancestor
+        for (const sel of d.parent.selectors ?? []) if (!/\.(dc-|section|page)/.test(sel) || /#/.test(sel)) bad.push(`${s.label}: ${sel} { ${d.prop} }`);
+      });
+    }
+    expect(bad, "a context token is set on a component's own class, not on an id or ancestor").toEqual([]);
+  });
+
   test("a component's base rule never declares its own public --dc-* token (dc#34)", () => {
     const bad = [];
     for (const s of COMPONENT_SHEETS) {
@@ -289,6 +316,7 @@ describe("file contracts", () => {
         // base rule = a lone `.dc-name` declaring `--dc-name-*`, its OWN component's token.
         // (`.dc-note { --dc-alert-* }` is a variant of .dc-alert, which the convention allows.)
         const own = (x) => { const m = /^(?:[a-z0-9]+)?\.(dc-[\w-]+)$/.exec(x.trim()); return m && d.prop.startsWith(`--${m[1]}-`); };
+        if (CONTEXT_TOKENS.has(d.prop)) return; // the named exception above
         if (sels.some(own)) bad.push(`${s.label}: ${d.parent.selector} { ${d.prop}: ${d.value} }`);
       });
     }
@@ -330,6 +358,7 @@ describe("component catalog", () => {
     ...Object.keys(markers).filter((k) => !WORD_MARKERS.includes(k)).map((k) => `@${k}`),
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
     ...ENTRY_KINDS.map((w) => `@gear ${w}`),
+    ...Object.keys(markers.definition.variants).map((w) => `@definition ${w}`), // the two states of a roll
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

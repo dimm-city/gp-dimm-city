@@ -9,10 +9,10 @@
 .dc-tag {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 8pt;
-  line-height: 1.3;
+  font-size: var(--fs-floor);
+  line-height: 1.25;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
@@ -144,26 +144,33 @@ h1.dc-chevron {
 
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
+/* The chain flows inline, not as flex items: each arrow is joined to the chip
+   AFTER it by a word joiner (plugin.js), so a wrap may fall before an arrow and
+   never between an arrow and its chip. A line never ends on a »; the arrow
+   leads the next line with its chip. */
 .dc-stickers {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
+  display: block;
   margin: 4px 0 22px;
+}
+
+.dc-stickers > :is(.dc-sticker, .dc-arrow) {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 6px 8px 0;
 }
 
 .dc-sticker {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 4px 8px;
   background: var(--dc-path-chip-bg);
   color: var(--dc-path-chip-fg);
   border: 1.5px solid var(--dc-path-chip-edge);
   transform: rotate(-0.5deg);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 2px 2px 0 color-mix(in srgb, #000 35%, var(--paper-cream));
+  letter-spacing: 0.03em;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -191,18 +198,18 @@ h1.dc-chevron {
 .dc-path-sticker {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.10em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   background: var(--dc-path-code-bg);
   color: var(--dc-path-code-fg);
-  padding: 2px 6px 1px;
+  padding: 2px 7px 1px;
   transform: rotate(-2.5deg);
   vertical-align: middle;
   position: relative;
   top: -1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, #000 30%, var(--dc-path-title-bg));
+  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, var(--dc-path-title-bg));
 }
 
 /* The gap between the sticker and the banner title. It is a real space
@@ -217,16 +224,16 @@ h1.dc-chevron {
 }
 
 /* ───────── STICKER TIER REF ───────── */
-/* The numeral on a path's sticker chip: 8pt bold, in the chip's own foreground
+/* The numeral on a path's sticker chip: 10pt bold, in the chip's own foreground
    (--dc-path-chip-fg, which a specialty sets with its chip fill), so it reads
    on every specialty-dark chip. */
 .dc-sticker-ref {
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   color: var(--dc-path-chip-fg);
-  margin-right: 5px;
-  letter-spacing: 0.5px;
+  margin-right: 4px;
+  letter-spacing: 0.04em;
 }
 
 /* ── Flavor (italic flavor text) ──────────────────────────────────────────
@@ -241,19 +248,19 @@ h1.dc-chevron {
   color: var(--dc-flavor-color);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-normal);
-  padding-bottom: 4px;
   margin-bottom: 6px;
   position: relative;
   border-left: var(--dc-flavor-accent-width) solid var(--dc-flavor-accent);
-  padding-left: 8px;
+  background: var(--dc-flavor-bg);
+  padding: 2px 8px 4px;
 }
 
 /* ── Sub-header ───────────────────────────────────────────────────────── */
 .dc-sub-header {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-floor);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 0.12em;
   color: var(--hud-blue);
   margin: 6px 0 3px;
   padding-top: 4px;
@@ -296,6 +303,7 @@ h1.dc-chevron {
   /* A lede is one to three short paragraphs: never split it. Split, its
      panel paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
+  --dc-accent-ink: var(--dc-intro-ink);
 }
 .dc-intro p,
 .dc-intro em,
@@ -315,10 +323,12 @@ h1.dc-chevron {
      --brand-magenta as the left-rail accent so the brand color anchors the
      element without taking the text color hostage. */
   color: var(--ink-dark);
+  /* A paper strip behind the title: a spec-tweak is never set straight on the
+     wall (inside a panel it is paper on paper). */
+  background: var(--paper-cream);
   border-bottom: 2px solid var(--ink-dark);
   border-left: 4px solid var(--brand-magenta);
-  padding-bottom: 6px;
-  padding-left: 10px;
+  padding: 4px 8px 6px 10px;
   margin: 20px 0 14px;
 }
 
@@ -336,8 +346,8 @@ hr {
   align-items: center;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: var(--fs-floor);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   background: var(--paper-light);
   color: var(--ink);
@@ -383,9 +393,9 @@ hr {
   gap: 12px;
   margin: 28px 0 22px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--dc-tape-color);
   background: var(--dc-tape-bg);

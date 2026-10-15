@@ -6,15 +6,15 @@
 
 @lede
 
-Twelve chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn't care where you start.
+Thirteen chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn't care where you start.
 
 @end-lede
 
 @toc
 
-1. Who Do You Dream to Be? — Citizen file, vibe, origins, ideals, flaws.
-2. What Do You Dream of Doing? — How abilities work. Choose a specialty.
-3. The Augmerc — Muscle for hire. Backbiters and worse.
+1. [Who Do You Dream to Be?](#ch-example-chapter-opener) — Citizen file, vibe, origins, ideals, flaws.
+2. [What Do You Dream of Doing?](#ch-example-specialty-overview) — How abilities work. Choose a specialty.
+3. [The Augmerc](#ch-example-specialty-profile) — Muscle for hire. Backbiters and worse.
 4. The Proxy — Bodies for hire. Divine force as a weapon.
 5. The Streetwarden — The closest thing to law in the alleys.
 6. The Gutterdruid — Sacred ground in broken pavement.
@@ -22,9 +22,9 @@ Twelve chapters of dreams, dirt, and what bites back. Read them in any order —
 8. The Wirephreak — Killers, thieves, forgers — clean or loud.
 9. The Technosorcerer — Code that bites. Magic with root access.
 10. The Etherlock — Secrets as currency. Power has a price.
-11. Are You Lucid Yet? — Core rules, scenes, distances, rolling the die.
-12. Dream Mastery & Cosmology — NPCs, traits, time, districts.
-13. Cybernetics, Weapons, and Gear — Useful items, tech, blasters, blades.
+11. [Are You Lucid Yet?](#ch-example-rules) — Core rules, scenes, distances, rolling the die.
+12. [Dream Mastery & Cosmology](#ch-example-dm-npcs) — NPCs, traits, time, districts.
+13. [Cybernetics, Weapons, and Gear](#ch-example-gear-tech) — Useful items, tech, blasters, blades.
 
 @end-toc
 

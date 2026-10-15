@@ -143,11 +143,11 @@ Two rules keep the split honest, and a test enforces each:
 ```css
 /* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-lift: 5px;
+  --dc-fiction-depth: 10px;
 }
 ```
 
-A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-lift: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 
@@ -198,6 +198,20 @@ the `dc.tokens` layer (`dc-palette.css`, `dc-identity.css`,
 sheet — unlayered, so it beats this whole package regardless — is the only
 sanctioned override path; do not edit the `dc.tokens` files for
 project-specific changes.
+
+**Context tokens are the one exception to "variants set tokens on ancestors".**
+A public component token is a knob: it defaults at `:root`, the component's
+base rule never re-declares it, and a book overrides it on an ancestor. A
+*context token* is different: it is a value each component derives for what is
+inside it, so the component sets it on its own root rule. The only one is
+`--dc-accent-ink`, the text-safe ink of the component the text sits in (read by
+`ROLL THE DIE!` and its underline). It defaults at `:root` (text outside any
+component still has an ink), every component that can hold prose sets it from
+its own accent and surface, and a book overrides it **per component class**
+(`#ch-x .dc-alert { --dc-accent-ink: var(--blood); }`), never at an ancestor,
+where it would lose to the component's own declaration. The allow-list is
+`CONTEXT_TOKENS` in `test/conventions.test.js`; a new context token is a design
+decision.
 
 **No upward `!important` fights.** Layers do not override each other with
 `!important`, and a layer-order flip is never fixed with `!important` either
@@ -296,10 +310,10 @@ into the token name, not scattered across heading rules.
 --font-mono:     'Tomorrow', 'Titillium Web', monospace;
 
 /* Type scale — physical units, 12pt body floor */
+--fs-floor:   10pt;    /* THE floor: no glyph is smaller (chips, tabs, labels, folios too) */
 --fs-body:    12pt;
---fs-body-sm: 11pt;    /* design floor — never go below this for prose */
+--fs-body-sm: 11pt;    /* smallest running prose in a component */
 --fs-body-xs: 11.5pt;  /* between sm and body — outcome text, cover body, TOC items */
---fs-footer:  9.5pt;   /* @page margin-box footer text */
 
 /* Line height */
 --lh-normal:  1.5;
@@ -448,6 +462,59 @@ Specificity (0,2,0) beats single-class overrides from upstream CSS without
 
 Guide-only examples should live in the design guide's own sheet even when they use `.page.*`
 selectors.
+
+### Page chips: the folio, the chapter coupon and the running head
+
+The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
+**chrome** is `dc-native.css` §2 and §2b, unlayered and last. A margin box takes
+`background`, `border`, `padding`, `margin`, `height` and `vertical-align`, but no
+`transform` and no `box-shadow`, so a chip's hard shadow is a thicker bottom and
+right border. Three rules keep the type centred:
+
+- the box height is fixed (16pt) rather than `fit-content`, and the engine
+  centres the line in it (`vertical-align: middle; line-height: 1`); the thin top
+  edge is balanced with `padding-top`, and the inline-end padding gives back the
+  tracking a `letter-spacing` leaves after the last glyph;
+- the chip sits in the **printable** footer band, below the text block with
+  clear wall between them: the bottom margin (`--bottom-margin`) is 1in from the
+  sheet edge, DriveThruRPG wants text 0.5in inside the trim (0.125in in from the
+  sheet), so nothing may print below 0.625in. A 17pt chip with
+  `margin-top: 0.125in` ends at 0.639in and leaves 0.125in of bare wall above it
+  on every wall page. The engine honours a margin on a margin box (measured: a
+  4pt margin moved the box 4.3pt). Pages without footers (`chapter-start`,
+  `front-matter-intro`) set `margin-bottom: 0.875in` and keep their old text
+  height;
+- nothing clips: a chip is a plain bordered box, so no glyph can be cut.
+
+The chapter chip's **colour** reaches a margin box through a *named page*: a
+margin box is in the page context and cannot see a chapter's
+`--dc-section-accent`, and a custom property set on a named `@page` does not
+reach its margin boxes (measured). `page-rules.css` puts a chapter's pages on
+`page: dc-chip-<hue>` (the chapter words `specialty`, `rules` and `lore` do it;
+a book does the same for its own chapters with
+`:where(#ch-xyz) > .page { page: dc-chip-rust; }`), and `dc-native.css` §2c
+repaints the coupon for that name and side (blue, rust, violet, amethyst,
+amber; the default is magenta-deep). Unlayered, because layered `@page` rules
+lose to `dc-native.css`.
+
+The Citizen File running head is the same chip in the top band (`@top-left` /
+`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 1in top margin.
+
+### Free-standing page text
+
+Text that is a direct child of `.page` or `.chapter` with no component around it
+is dressed by `page-templates.css` ("FREE-STANDING PAGE TEXT"): `#` a banner,
+`##` / `###` / `####+` paper slips, loose paragraphs, lists and quotes one
+paper sheet per run. These are rules on plain elements, which a location may
+style (a location styles a component by tokens only). Scope is one `:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > …`
+plus a guard, `:not([class*="dc-"]…)`, that leaves any element a component has
+claimed alone (`ol.dc-steps`, `div.dc-intro`, `div.dc-toc`: this layer outranks
+`dc.components`; `test/page-text.test.js` enforces it), so a heading
+inside a section or callout is never matched, the guide's `@page .dg-doc`
+explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
+`--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
+read the chapter's `--dc-section-accent`, so a chapter word recolours them).
 
 ### Folios and the `.chapter-N` class
 

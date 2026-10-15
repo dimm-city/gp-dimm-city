@@ -20,7 +20,9 @@ A wrapper that only needs an element and classes needs no code of its own. It is
 
 ```js
 export const markers = {
-  definition: wrapper('dc-prose-panel dc-definition-block'),
+  definition: wrapper('dc-prose-panel dc-definition-block', {
+    variants: { lucid: 'dc-definition-lucid', surreal: 'dc-definition-surreal' },
+  }),
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
@@ -57,7 +59,7 @@ Add `variants` only when the CSS styles the component differently per variant wo
 
 A section-styled component is also a word on `@section`: add it to the `section: { variants: { … } }` entry in `plugin.js` with the SAME classes as the marker, so one CSS rule serves both spellings. A component that is a card carries `dc-section-panel` in that class string. No rule in `styles/` may match `.section` without a `dc-` class beside it; a bare `@section` is core's plain box.
 
-Declared today (wrappers): `@definition`, `@faction`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear` (variants `augment` … `drug`), `@field`, `@toc`, `@lede`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `catalog`, `reference`, `lore`, `dm`, `choose` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@roll-table`, `@procedure`, `@callout` (its default label), `@faction` (its badge). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
+Declared today (wrappers): `@definition`, `@faction`, `@specialty-intro`, `@specialty-art`, `@specialty-card`, `@gear` (variants `augment` … `drug`), `@field`, `@toc`, `@lede`, `@block`, `@callout`. Declared today (sections): `@card-grid`, `@citizen-walkthrough`, `@fiction-excerpt`, `@npc-stat`, `@flaws`, `@ideals`, `@dreams`. Declared today (variant words only): `section` (`panel`, `flat`, `catalog`, `reference`, `lore`, `dm`, `choose` and a word per section component), `page` (`chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `specialty-catalog`) and `chapter` (`rules`, `lore`, `citizen-file`, `specialty`). Declared and transformed: `@specialty` (variants `augmerc` … `generalist`), `@learning-path`, `@skill`, `@card`, `@outcome` (variant `flush`), `@roll-table`, `@procedure`, `@callout` (its default label), `@faction` (its badge). Declared as an alias: `@dm-note`. Nothing is hand-written any more: `plugin.js` has no marker parser.
 
 ### A section variant, a page word, a chapter word
 

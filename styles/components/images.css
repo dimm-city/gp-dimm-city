@@ -40,6 +40,7 @@
   background: var(--paper-cream);
   border: 2px solid var(--ink-dark);
   box-shadow: var(--shadow-poster);
+  --dc-accent-ink: var(--hud-blue-dark);  /* 7:1 on the card */
   padding: 8pt 9pt 7pt;
   margin-top: 11pt;
   break-inside: avoid;
@@ -53,9 +54,9 @@
   background: var(--hud-blue-dark);
   color: var(--paper-cream);
   font-family: var(--font-mono);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
