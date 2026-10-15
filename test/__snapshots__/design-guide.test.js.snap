@@ -2937,7 +2937,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 </code></pre>
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2 data-name="chapter-opener">Chapter opener</h2>
-<p>A chapter opens on <code>@page chapter-start</code> with its <code># Title</code> (a banner in the chapter’s accent) and no footer. A fiction excerpt can open the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow.</p>
+<p>A chapter opens on <code>@page chapter-start</code> with its <code># Title</code> (a banner in the chapter’s accent). Its pages carry the folio and chapter chip like any other page, so an opener that runs onto a second page stays numbered. A fiction excerpt can open the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow.</p>
 <pre><code class="dg-split language-markdown" data-source-range="163:190">@chapter #ch-citizen ch=&quot;1&quot;
 
 @page chapter-start

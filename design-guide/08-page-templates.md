@@ -159,7 +159,7 @@ Rendered: [Front Matter](#ch-example-front-matter).
 
 ## Chapter opener
 
-A chapter opens on `@page chapter-start` with its `# Title` (a banner in the chapter's accent) and no footer. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
+A chapter opens on `@page chapter-start` with its `# Title` (a banner in the chapter's accent). Its pages carry the folio and chapter chip like any other page, so an opener that runs onto a second page stays numbered. A fiction excerpt can open the chapter: `@fiction-excerpt` sets narrative typography and floats the first image in the flow.
 
 ```markdown {.dg-split}
 @chapter #ch-citizen ch="1"

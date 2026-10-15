@@ -11,6 +11,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **A chapter opener's pages carry the folio and chapter chip** (#12).
+  `@page chapter-start` dropped both footers, and because a named page covers
+  every page its box spans, an opener that ran onto a second page printed
+  that page unnumbered too, so authors ended openers with `@page` to get the
+  numbers back. Chromium cannot drop the folio on the opener's first page
+  alone, so the suppression is removed: every opener page is numbered, the
+  first included, with its chip in the chapter's colour like any page. The
+  `chapter-start` named page is gone; the page word and its styling stay.
+- **The brick wall tile is 900px wide instead of 2550px** (#1), which is
+  600 DPI at its 1.5in repeat, twice the 300 DPI print bar. The package's
+  unpacked size falls by 1.6 MB, and the wall looks the same in print.
+- **Print qualification for `preserve-text` PDF/X** (#43). The design guide
+  now builds its PDF/X with `pdfx.transparency: preserve-text`, and
+  `docs/print-qualification.md` records the measured result: the pinned
+  versions, a component table with crops, and the limits authors need to
+  know (opaque text, no `filter` on text, text above artwork, 300 DPI
+  artwork, `pdfx.flattenPages`).
+
 - **Depth, recess and light, now that translucency prints.** Components get
   a soft, translucent lift off the wall (`--shadow-lift`) under their hard
   contact shadow: section panels (`--dc-section-lift`), path banners, skill

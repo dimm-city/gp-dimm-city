@@ -720,9 +720,8 @@ components:
     snippet: chapter-start-page
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
-    css: [styles/page-rules.css, styles/page-templates.css]
+    css: styles/page-templates.css
     tokens: [--dc-fiction-depth, --dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-slip-gap, --dc-page-slip-offset, --dc-page-sheet-pad, --dc-heading-gap]
-    breaks: "page: chapter-start (no footer on any page the opener spans)"
     notes: "A chapter opener: the h1 gets headroom, is kept with the block after it and is a banner in the chapter's accent (any page's free-standing `#` is), the paragraph straight under it is a lede on a paper sheet, and a fiction excerpt takes the deeper hole (10px) by tokens. Free-standing text on any wall page prints on a substrate with no markup: `##` a paper slip with an accent rail, dashed foot and tape, `###` a plain slip, `####`+ a label slip, loose paragraphs, lists and quotes one paper sheet per run (page-templates.css, FREE-STANDING PAGE TEXT; the guide's @page .dg-doc pages are exempt)."
 
   - name: page-credits
