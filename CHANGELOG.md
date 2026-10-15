@@ -18,8 +18,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `##` slip tape are translucent, so the brick reads through them. Recessed
   things sink: the fiction excerpt's cavity and the `lore`/`dm`/`choose`
   panels and title bars take a soft inset (`--shadow-press`). Title bands and
-  skill-card tabs carry a top gloss (`--light-gloss`), and a soft vignette
-  (`--light-wall`) lights each page of wall. All of it is `box-shadow` and
+  skill-card tabs carry a top gloss (`--light-gloss`). All of it is `box-shadow` and
   gradients; a PDF/X build needs `pdfx.transparency: preserve-text`. A new
   convention test allows `filter` only on a `::before`/`::after` layer:
   Chromium prints the text of a filtered element as a picture.

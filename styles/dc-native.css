@@ -45,15 +45,10 @@
    the RGBA source (source-art/brick-bg-01.png in the repository; it is not
    published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
    src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
-   of the new --bg.
-
-   --light-wall lays a soft vignette over the tile so each sheet reads as a
-   lit patch of wall. It is translucent: a PDF/X build needs gutterpress's
-   `pdfx.transparency: preserve-text`, which rasterises the wall at print
-   resolution and keeps the text live. */
+   of the new --bg. */
 @page {
-  background: var(--light-wall) no-repeat, var(--bg) url("../images/brick-wall.png") repeat;
-  background-size: 100% 100%, 1.5in auto;
+  background: var(--bg) url("../images/brick-wall.png") repeat;
+  background-size: 1.5in auto;
 }
 
 /* ── 2. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────

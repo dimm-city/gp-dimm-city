@@ -36,8 +36,6 @@
   /* Light: a soft highlight across the top of a digital-display fill (a band,
      a tab, a chip): the LED panel's sheen, layered over its colour. */
   --light-gloss: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, transparent), transparent 62%);
-  /* The wall's light: a faint falloff toward the sheet's edges, over the brick. */
-  --light-wall: radial-gradient(ellipse 85% 75% at 50% 42%, transparent 55%, color-mix(in srgb, var(--ink) 18%, transparent) 100%);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────
      TAC figures in this file are MEASURED, not estimated: a swatch PDF

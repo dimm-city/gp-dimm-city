@@ -9,8 +9,7 @@
 > page. The wall tile stays opaque and `--wall-tone` is gone. 1.8.0 adds
 > more translucent artwork on top: soft lifts (`--shadow-lift`, the section's
 > `--dc-section-lift`), soft insets (`--shadow-press`), a translucent section
-> hard shadow and tape, the band and tab gloss (`--light-gloss`) and a wall
-> vignette over the tile (`--light-wall`). No `filter` sits on an element
+> hard shadow and tape, and the band and tab gloss (`--light-gloss`). No `filter` sits on an element
 > that holds text (a convention test enforces it). The table records the
 > opaque values from the 1.7 series; some of those components have since been
 > redesigned.
