@@ -8,17 +8,17 @@
      ──────────────────────────────────────────────────────────────────────── */
 
   /* ── Specialty Accent Colors ──────────────────────────────────────────── */
-  /* 4 brand-anchored (augmerc=magenta, wirephreak=cyan, proxy=indigo, etherlock=yellow),
+  /* 4 brand-anchored (augmerc=cyan, wirephreak=magenta, proxy=indigo, etherlock=yellow),
      2 crystal (dualist=aqua, generalist=slate), 1 fungi (gutterdruid=bioluminescent rot),
      3 bespoke creaturepunk hues (technosorcerer=burnt orange, streetwarden=toxic-civic hazard green,
      cybersurgeon=chrome). Streetwarden's #4db840 is high-vis civic hazard, distinct from the
      quieter lichen tone; gutterdruid is the alive-and-glowing spore. */
-  --augmerc-accent:        var(--brand-magenta);  /* cyber-augmentation = brand-signature magenta */
+  --augmerc-accent:        var(--brand-cyan);      /* cyber-augmentation = brand neon-cyan */
   --proxy-accent:          var(--signal-indigo);   /* ritual + tech = electric indigo, its own hue (violet is the world's) */
   --streetwarden-accent:   #4db840;                /* toxic civic green — hazard, not park bench · TAC 171% (C70 M0 Y100 K0) */
   --gutterdruid-accent:    var(--fungi-glow);      /* bioluminescent spore — alley fungus at full flare */
   --cybersurgeon-accent:   #a8b4b8;                /* cool blue-gray chrome · TAC 79% (C34 M22 Y23 K0) */
-  --wirephreak-accent:     var(--brand-cyan);      /* signal interference = brand neon-cyan */
+  --wirephreak-accent:     var(--brand-magenta);  /* signal interference = brand-signature magenta */
   --technosorcerer-accent: var(--orange);          /* burnt-circuit orange */
   --etherlock-accent:      var(--brand-yellow);    /* spirit channeling = brand radiant gold */
   --dualist-accent:        var(--crystal-aqua);     /* refractive mineral split — two-path walker */
@@ -31,10 +31,10 @@
      (280%), gutterdruid #2a3408 (276%), proxy #150c4a (275%),
      etherlock #3d3000 (272%), generalist #1c252d (272%). The hue and the
      light-type contrast (cream on any of them is >= 8:1) are unchanged. */
-  --augmerc-dark:          #8a1a90;  /* deep magenta-violet · TAC 156% (C55 M100 Y1 K0) */
+  --augmerc-dark:          #003a40;  /* deep teal-black — cold chrome under the skin · TAC 260% (C92 M59 Y58 K50) */
   --proxy-dark:            #1e0f50;  /* deep indigo-black · TAC 268% (C99 M100 Y30 K39) */
   --cybersurgeon-dark:     #303840;  /* cold clinical near-black · TAC 246% (C76 M65 Y55 K50) */
-  --wirephreak-dark:       #003a40;  /* deep teal-black — drowned circuit · TAC 260% (C92 M59 Y58 K50) */
+  --wirephreak-dark:       #8a1a90;  /* deep magenta-violet · TAC 156% (C55 M100 Y1 K0) */
   --streetwarden-dark:     #294c1f;  /* rot-soaked forest dark · TAC 268% (C77 M44 Y100 K46) */
   --technosorcerer-dark:   #4c290f;  /* near-black scorch · TAC 268% (C44 M73 Y89 K62) */
   --gutterdruid-dark:      #394017;  /* swamp-rot dark — greenish, not brown · TAC 268% (C65 M52 Y97 K54) */
@@ -46,12 +46,12 @@
      Each mid sits perceptually midway between its specialty's accent and
      dark, slightly shifted toward the dark hue. Used wherever a specialty
      needs a chrome/structural tone that isn't accent-glare or dark-mass. */
-  --augmerc-mid:           #9a1896;  /* between brand-magenta and augmerc-dark · TAC 146% (C46 M100 Y0 K0) */
+  --augmerc-mid:           #006878;  /* drowned signal teal · TAC 193% (C89 M46 Y43 K15) */
   --proxy-mid:             #2f2290;  /* ritual indigo midpoint · TAC 202% (C97 M100 Y4 K1) */
   --cybersurgeon-mid:      #606870;  /* cool steel mid · TAC 176% (C64 M52 Y45 K16) */
   --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse · TAC 227% (C80 M30 Y100 K17) */
   --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen · TAC 240% (C66 M42 Y100 K32) */
-  --wirephreak-mid:        #006878;  /* drowned signal teal · TAC 193% (C89 M46 Y43 K15) */
+  --wirephreak-mid:        #9a1896;  /* between brand-magenta and wirephreak-dark · TAC 146% (C46 M100 Y0 K0) */
   --technosorcerer-mid:    #7a3008;  /* burnt umber, between scorch-orange and dark · TAC 253% (C31 M84 Y100 K38) */
   --etherlock-mid:         #8a6a00;  /* tarnished antique gold · TAC 211% (C40 M51 Y100 K20) */
   --dualist-mid:           #2a6878;  /* drowned mineral aqua — between crystal-aqua and sapphire-trench · TAC 188% (C84 M48 Y42 K15) */

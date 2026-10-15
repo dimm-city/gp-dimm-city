@@ -38,7 +38,7 @@
      --spec-accent/-mid/-dark   the triad, aliasing its own --<name>-accent/-mid/-dark
      --spec-band / --spec-on-band   the title-band fill and the type on it: the
                                 bright signal colour, with whichever of ink or
-                                cream holds >= 4.5:1 on it (augmerc uses the
+                                cream holds >= 4.5:1 on it (wirephreak uses the
                                 deep magenta: cream on the bright one is 3.6:1)
      --spec-chip-bg / -fg / -edge   the tier pill on the card tab. REQUIRED: the
                                 --spec-* tokens have no :root default, so a
@@ -136,20 +136,20 @@
   --spec-accent: var(--augmerc-accent);
   --spec-mid: var(--augmerc-mid);
   --spec-dark: var(--augmerc-dark);
-  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH: deep-magenta band, cyan LED rule with ink ticks, inset LED rim. */
-  --spec-band: var(--brand-magenta-deep);
-  --spec-on-band: var(--paper-cream);
-  --spec-chip-bg: var(--paper-cream);
-  --spec-chip-fg: var(--augmerc-dark);
-  --spec-chip-edge: var(--augmerc-dark);
-  --dc-band-rule: var(--brand-cyan);
+  --spec-ink: var(--augmerc-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  /* TECH: signal-cyan band, a teal-black LED rule with cyan ticks, LED rim. */
+  --spec-band: var(--augmerc-accent);
+  --spec-on-band: var(--ink);
+  --spec-chip-bg: var(--augmerc-accent);
+  --spec-chip-fg: var(--ink);
+  --spec-chip-edge: var(--paper-cream);
+  --dc-band-rule: var(--augmerc-dark);
   --dc-band-rule-h: 5px;
-  --dc-band-tick: var(--ink);
+  --dc-band-tick: var(--augmerc-accent);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
-  --dc-band-reg: inset 0 -2px 0 var(--brand-magenta);  /* a second ink printed 2px off: a misregistered rule */
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 34%, var(--augmerc-accent));
+  --dc-band-reg: inset 0 -2px 0 var(--brand-cyan);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH, stepped: stair-step cuts, crisp and machined. */
   --spec-edge-top: 0 10px, 10px 0, calc(100% - 24px) 0, calc(100% - 24px) 6px, calc(100% - 16px) 6px, calc(100% - 16px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 18px, 100% 18px;
   --spec-edge-rest: 100% calc(100% - 12px), calc(100% - 8px) calc(100% - 12px), calc(100% - 8px) calc(100% - 8px), calc(100% - 16px) calc(100% - 8px), calc(100% - 16px) calc(100% - 4px), calc(100% - 24px) calc(100% - 4px), calc(100% - 24px) 100%, 10px 100%, 0 calc(100% - 10px);
@@ -242,20 +242,20 @@
   --spec-accent: var(--wirephreak-accent);
   --spec-mid: var(--wirephreak-mid);
   --spec-dark: var(--wirephreak-dark);
-  --spec-ink: var(--wirephreak-mid);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH: signal-cyan band, circuit-tick rule, LED rim. */
-  --spec-band: var(--wirephreak-accent);
-  --spec-on-band: var(--ink);
-  --spec-chip-bg: var(--wirephreak-accent);
-  --spec-chip-fg: var(--ink);
-  --spec-chip-edge: var(--paper-cream);
-  --dc-band-rule: var(--wirephreak-dark);
+  --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
+  /* TECH: deep-magenta band, cyan LED rule with ink ticks, inset LED rim. */
+  --spec-band: var(--brand-magenta-deep);
+  --spec-on-band: var(--paper-cream);
+  --spec-chip-bg: var(--paper-cream);
+  --spec-chip-fg: var(--wirephreak-dark);
+  --spec-chip-edge: var(--wirephreak-dark);
+  --dc-band-rule: var(--brand-cyan);
   --dc-band-rule-h: 5px;
-  --dc-band-tick: var(--wirephreak-accent);
+  --dc-band-tick: var(--ink);
   --dc-band-tick-style: dotted;
   --dc-band-tick-w: 3px;
-  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 34%, var(--wirephreak-accent));
-  --dc-band-reg: inset 0 -2px 0 var(--brand-cyan);  /* a second ink printed 2px off: a misregistered rule */
+  --dc-band-rim: inset 0 2px 0 color-mix(in srgb, var(--paper-cream) 26%, var(--brand-magenta-deep));
+  --dc-band-reg: inset 0 -2px 0 var(--brand-magenta);  /* a second ink printed 2px off: a misregistered rule */
   /* TECH, circuit jogs: two big right-angle steps on the diagonal corners. */
   --spec-edge-top: 0 0, calc(100% - 26px) 0, calc(100% - 26px) 10px, calc(100% - 13px) 10px, calc(100% - 13px) 20px, 100% 20px;
   --spec-edge-rest: 100% calc(100% - 10px), calc(100% - 10px) 100%, 22px 100%, 22px calc(100% - 6px), 11px calc(100% - 6px), 11px calc(100% - 12px), 0 calc(100% - 12px);

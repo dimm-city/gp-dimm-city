@@ -184,6 +184,10 @@ little grit.
   blue with a drawn down triangle, increased blood with a drawn up triangle (CSS
   shapes, not font glyphs), VAR deep magenta (cream on the bright one was 4.06:1),
   special amber with cream type.
+- **Augmerc and Wirephreak swap colours.** The Augmerc is signal cyan (a
+  teal-black LED rule with cyan ticks, deep-teal ink) and the Wirephreak deep
+  magenta (a cyan LED rule with ink ticks); `--augmerc-*` and `--wirephreak-*`
+  swap values. Their silhouettes are unchanged.
 - **Proxy and Technosorcerer swap looks; Generalist leaves violet.** The
   Proxy is now electric indigo (`--signal-indigo`) with the tech-and-magic
   register (a centre gate notch, an LED rule, a facet plane), and the

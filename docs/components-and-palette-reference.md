@@ -388,16 +388,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 Project-specific. A different project using this component library replaces this block with its own identity tokens; the pillar palette and component defaults above remain untouched.
 
 ### Specialty Accents
-Every specialty also sets `--spec-band` (the title-band fill: the accent, except Augmerc's `--brand-magenta-deep`), `--spec-on-band` (ink or cream, at least 4.5:1 on the band) and the tier chip `--spec-chip-bg`, `-fg` and `-edge`.
+Every specialty also sets `--spec-band` (the title-band fill: the accent, except Wirephreak's `--brand-magenta-deep`), `--spec-on-band` (ink or cream, at least 4.5:1 on the band) and the tier chip `--spec-chip-bg`, `-fg` and `-edge`.
 
 | Specialty | Accent | Mid | Dark |
 |---|---|---|---|
-| Augmerc | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
+| Augmerc | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
 | Technosorcerer | `--orange` (`#d4500a`) | `#7a3008` | `#4c290f` |
 | Streetwarden | `#4db840` | `#347828` | `#294c1f` |
 | Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#394017` |
 | Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
-| Wirephreak | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
+| Wirephreak | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
 | Proxy | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
 | Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
