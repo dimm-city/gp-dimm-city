@@ -119,9 +119,9 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 | Specialty | Future tech | Ancient magic | Landfill | Wonderland | Visual cues (title bands) |
 |---|---|---|---|---|---|
 | **Augmerc** | ████ HIGH | low | ██ mid | low | Signal-cyan band with an LED rim and a teal-black, cyan-ticked LED rule; hard angular stair-step cuts. Tech-heavy, street-salvaged. |
-| **Wirephreak** | ████ HIGH | low | ██ mid | low | Deep-magenta band, LED rim and a cyan, ink-ticked circuit rule; crisp circuit-jog clips. Decking + interference. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
+| **Wirephreak** | ████ HIGH | low | ██ mid | low | Electric-indigo band (a blue-violet of its own, clear of the world's violet), LED rim and a cyan, ink-ticked circuit rule; crisp circuit-jog clips. Decking + interference. |
 | **Cybersurgeon** | ████ HIGH | low | █ low | low | Cold chrome band with a bright rim and a ruler-scale rule, medical mono labels, blue-grey steel. Surgical precision. |
-| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: electric-indigo band (a blue-violet of its own, clear of the world's violet) with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. |
+| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: deep-magenta band with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
 | **Etherlock** | ██ mid | ████ HIGH | ██ mid | ██ mid | Citrine-yellow band with a pale refractive facet and a mid-gold rule. Secrets-as-currency, manifold magic. |
 | **Technosorcerer** | low | ████ HIGH | ████ HIGH | low | Scorch-orange band, darker scorch patch, torn bottom edge, no rule. Ritual worked on burnt scrap. |
 | **Streetwarden** | ██ mid | low | ██ mid | low | High-vis toxic-green band over a green-and-ink hazard-tape rule. Civic-warden register. |
@@ -217,7 +217,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 | `--brand-cyan` | `#00bcd4` | C70 M1 Y16 K0 = 87% | Augmerc accent, wirephreak's LED rule |
 | `--brand-yellow` | `#ffd700` | C1 M13 Y100 K0 = 114% | Brand radiant — etherlock accent, peak triumph |
 | `--brand-violet` | `#7030b8` | C69 M87 Y0 K0 = 156% | The world: lore, vibe, cabal, treasure. No specialty uses it |
-| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Proxy accent: an electric blue-violet of its own |
+| `--signal-indigo` | `#4430e0` | C81 M78 Y0 K0 = 159% | Wirephreak accent: an electric blue-violet of its own |
 
 ### HUD / digital-display layer
 
@@ -261,7 +261,7 @@ The dimm.city web-palette analogs, SWOP-corrected for POD:
 
 ### Specialty palette (per-specialty triad plus band and chip)
 
-Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Augmerc's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Augmerc and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. Measured TAC of the dark in the last column: every dark is ≤ 268%.
+Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Proxy's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Technosorcerer and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. Measured TAC of the dark in the last column: every dark is ≤ 268%.
 
 | Specialty | accent | mid | dark | band / on-band | Register lean | dark TAC |
 |---|---|---|---|---|---|---|
@@ -270,8 +270,8 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 | streetwarden | `#4db840` toxic-civic | `#347828` | `#294c1f` | accent / ink | tech mid + landfill mid | 268% |
 | gutterdruid | fungi-glow | `#4d6020` | `#394017` | accent / ink | landfill HIGH + wonderland HIGH | 268% |
 | cybersurgeon | `#a8b4b8` chrome | `#606870` | `#303840` | accent / ink | future-tech HIGH | 246% |
-| wirephreak | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | future-tech HIGH + landfill mid | 156% |
-| proxy | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | tech HIGH + magic HIGH | 268% |
+| wirephreak | signal-indigo | `#2f2290` | `#1e0f50` | accent / cream | future-tech HIGH + landfill mid | 268% |
+| proxy | brand-magenta | `#9a1896` | `#8a1a90` | magenta-deep / cream | tech HIGH + magic HIGH | 156% |
 | etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 267% |
 | dualist | crystal-aqua | `#2a6878` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 252% |
 | generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 265% |
@@ -396,7 +396,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - The **tier pill** on the tab (AUG1.3) is the specialty's own chip (`--spec-chip-*`), not a position colour. There is no bronze/gold/silver and no featured-card variant: every card is the same card.
 - The flavor line's rail is the specialty's mid colour.
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
-- A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep teal for augmerc, deep magenta for wirephreak, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
+- A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep teal for augmerc, deep magenta for proxy, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
 - Body and ability text ≥ 10pt; chip and tab labels at the 10pt floor too.
 
 ### Specialty cards (the 10-card grid + profile shells)
