@@ -11,6 +11,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Needs Gutterpress 0.11.20-alpha.3 or later**, the first with PDF/X
+  `preserve-text`, which the translucent styles below print with. The
+  requirement is in `package.json`'s `engines.gutterpress`: a Gutterpress
+  that checks it (gutterpress#402) refuses to load this package and names the
+  version to update to. Older Gutterpress versions ignore the field.
 - **Shadows and tints are translucent again, for books that opt in to
   Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
   poster shadow (`--shadow-ink`, so the skill-card body shadow and the section
