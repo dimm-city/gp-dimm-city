@@ -139,12 +139,12 @@
      0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
      outside three edges and 0.5in from the binding edge.
        top     0.625in  = 0.5in from the trim
-       bottom  1in      = 0.875in from the trim (the folio and chapter chips
-                          sit in this band, 0.125in clear of the text block)
+       bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
+                          sit at the top of this band)
        outside 0.625in  = 0.5in from the trim
        binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
   --page-margin:   0.625in;
-  --bottom-margin: 1in;
+  --bottom-margin: 0.875in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 

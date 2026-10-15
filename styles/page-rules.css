@@ -123,7 +123,6 @@
    flush against the sheet edge. Its own name keeps the default margins and
    drops only the footers. */
 @page front-matter-intro {
-  margin-bottom: 0.75in;  /* no footer, so no chip band to clear: the text block runs to the safe area, 0.625in from the trim */
   @bottom-left   { content: none; }
   @bottom-center { content: none; }
   @bottom-right  { content: none; }
@@ -149,10 +148,6 @@
    --------------------------------------------------------------------------- */
 
 @page chapter-start {
-  /* no chip band to clear on a page without footers: the text block runs to
-     0.75in from the sheet edge: 0.625in from the trim, inside DriveThruRPG's 0.5in text
-     minimum (it was 0.875in, which wasted a line on every opener) */
-  margin-bottom: 0.75in;
   @bottom-left   { content: none; }
   @bottom-center { content: none; }
   @bottom-right  { content: none; }
@@ -194,17 +189,17 @@
    — below the default top margin, whose whole band lies within 0.5in of
    the trim. These pages carry a deeper top margin and set the head at the
    foot of it: a tab from 0.625in to 0.86in below the sheet edge, 0.5in+ from the
-   trim, 0.14in clear of the text block. The tab's chrome (amber face, ink edge, offset) is dc-native.css §2b:
+   trim, at the top of the text block. The tab's chrome (amber face, ink edge, offset) is dc-native.css §2b:
    the head is text, so it never sits on the brick. */
 @page citizen-file:right {
-  margin-top: 1in;
+  margin-top: 0.875in;
   @top-right {
     content: "Citizen File";
   }
 }
 
 @page citizen-file:left {
-  margin-top: 1in;
+  margin-top: 0.875in;
   @top-left {
     content: "Citizen File";
   }
