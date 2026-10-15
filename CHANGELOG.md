@@ -18,9 +18,8 @@ the other roles are HUD blue for player rules and look-ups, cyan on ink for the
 Dream Master only, hazard yellow with ink for danger and choices, blood and rust
 for harm and cost, violet for the world, fungi green for the organic. The
 constitution is revised to match: §II adds the colour roles and the grayscale
-rule, §V and §VI set a 10pt type floor, §VII describes the
-new components, and §IX narrows the Pass 6/7/8 bans to specialty cards and
-reading surfaces.
+rule, §V and §VI set a 10pt type floor, and §VII describes the new
+components.
 
 A second pass, from review of 1.7.0-alpha.1, set a 10pt type floor for all
 text, took every word off the brick wall, tied shape to meaning and added a
@@ -75,15 +74,15 @@ little grit.
   words, replacing its chip); danger and enforcement are sign plates; lore and
   cabal long asymmetric slashes; fiction, backstory, cult and flaws torn;
   choices ticket notches; gear tags; magic facets; organic boxes wobble. The
-  seven alerts, every section kind, block, choice card, faction, entry, table
+  eight alerts, every section kind, block, choice card, faction, entry, table
   and all ten specialties are re-cut to match, and every clipped edge is
   padded clear of its cut by 2pt or more.
 - **Folio and chapter chips** are fixed-height boxes with their type centred,
-  on recto and verso. The chapter chip is a stamped coupon with a perforated
-  edge, replacing the dashed outline.
+  on recto and verso. The chapter chip is a stamped coupon in the chapter's
+  colour, replacing the dashed outline.
 
-- **Alerts: seven registers, seven silhouettes.** Each has its own fill value,
-  edge and label, and bodies are upright (only vibe and origin stay italic).
+- **Alerts: eight registers, eight silhouettes.** Each has its own fill value,
+  edge and label. Bodies are italic, as before; the example's is upright.
   - note: the calm HUD-blue panel with a blue rail, as before.
   - warning: a light cream hazard sign: a yellow and black stripe rail, an ink
     frame and a yellow caution-tape label. It signals consequence.
@@ -93,6 +92,7 @@ little grit.
     rail: the world's voice, not a slab.
   - origin: warm paper, a rust rail, a dog-eared corner and a crimson rubber-stamp
     label: second-person backstory.
+  - location: the origin's document in map teal: a place written up.
   - visit: a fungi-green signpost with a map-pin label: a place.
   - example: a cyan rail with a taped-on label.
   New tokens `--dc-alert-frame`, `-label-bg` and `-label-pad` carry the frame
@@ -107,7 +107,7 @@ little grit.
   Master's alone), with a strip of its own when it has no heading. `choose` is a
   printed form, not a panel: a paper sheet a hair lighter than cream, an ink
   edge, no bar or cut corners, an ink title over a double rule, heavy ink tick
-  boxes, dotted write-in rules and a yellow *Your choice* stamp. The title bar is
+  boxes, dotted write-in rules and a yellow *Choose* stamp. The title bar is
   one rule reading new tokens (`--dc-section-bar-mix` / `-bar-tone` / `-bar-fg` /
   `-bar-rule` / `-bar-rule-sub`, and `--dc-section-flag`); each kind sets them
   instead of repainting the bar, and so does the catalog. A block's band reads
@@ -201,9 +201,8 @@ little grit.
 - **New neutrals.** `--paper-form` (the `choose` sheet) and `--paper-zine` (the
   fiction excerpt and shard sheets).
 - **Ink coverage under 280%.** Measured through the build's own PDF/X
-  conversion: `--ink` is `#1e1d1c` (278%, was 284%), the text black that still
-  prints as 100% K; `--ink-dark` is `#2f2622` (266%) and is the solid ink for
-  heavy fills, frames and borders. `--deep-rust`, `--fungi-rot` and six
+  conversion: `--ink` is `#1e1d1c` (278%, was 284%) and `--ink-dark` is
+  `#2f2622` (266%, was 271%). `--deep-rust`, `--fungi-rot` and six
   specialty darks are lifted to 268% or less. Every palette and identity token
   carries its measured CMYK and TAC. No raw `#000`/`#fff` remains in a
   `color-mix()`.
@@ -260,16 +259,19 @@ little grit.
 - Heading slips keep with what follows, prose sheets take orphans and widows
   of 3, and `###`/`####` slips hang offset (`--dc-page-slip-gap`,
   `-slip-offset`, `--dc-heading-gap`).
-- `--dc-accent-ink` is documented and tested as a per-component context
-  token, the one exception to the token convention.
-- Tests guard the 10pt floor, the context-token allow-list, page-level
-  components and the Lucid/Surreal variants.
+- Tests guard the 10pt floor, page-level components, the Lucid/Surreal
+  variants, opaque paint and repeating gradients.
+- The tape divider's crimson dashes print in PDF/X: they were a repeating
+  gradient, which PDF/X drops, and are now an ordinary gradient tiled every
+  10px (#41).
+- A learning-path banner contains its slanted band rule, so the overhang no
+  longer widens the page and a book builds without `allowShrink`.
 
 - **Contrast and type.** The special AP chip (ink on amber, 3.5:1), the tier pills
-  (accent fails 4.5:1 for 9px type on Augmerc and Proxy), the learning-path
-  subtitle (ink-smoke on `--paper-stain`, 3.4:1), the Augmerc title band (cream on
-  bright magenta, 3.6:1) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. The DM alert
-  body is upright instead of 9pt italic.
+  (the accent failed 4.5:1 for 9px type on the magenta and orange bands), the learning-path
+  subtitle (ink-smoke on `--paper-stain`, 3.4:1), the magenta title band (cream on
+  bright magenta, 3.6:1; now the Wirephreak's) now pass 4.5:1, and the NPC flavor line is a ruled line on the paper instead of italic on a grey box. The DM alert
+  body is set at the 10pt floor instead of 9pt.
 - **A chapter no longer repaints the alerts.** The Dream Mastery chapter's override
   turned every alert grey-brown and rust in Part 2; the alert identity now survives
   re-theming. Its DM panel heading was ink on ink (an empty-looking bar) and is

@@ -1110,7 +1110,7 @@ Behind the screen: a file-folder tab that says Dream Master over an ink bar with
 
 ### Choose section
 
-A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Your choice* stamp:
+A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Choose* stamp:
 
 - A first option.
 - A second option.

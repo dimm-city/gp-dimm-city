@@ -381,7 +381,7 @@ h3 + .dc-section-panel {
      reference  look it up, a PALE bar                    all four, small   HUD blue
      lore       the world, not the rules                  top left + bottom right, long   violet, lilac sheet
      dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
-     choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Your choice" stamp
+     choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Choose" stamp
      catalog    a run of entries (entries.css)            both top
      npc-stat   a creature (below)                        both right
      citizen-walkthrough (below)                          top left
@@ -596,7 +596,7 @@ h3 + .dc-section-panel {
    Not a panel: a printed form, stamped. A paper sheet barely lighter than the
    panel's cream (`--paper-form`), no solid bar, no chamfers, sunk into the wall
    (see "Recessed kinds"). An ink edge, a title that is only ink on paper over
-   a double rule in the chapter's accent, a hazard-yellow "Your choice" stamp, a
+   a double rule in the chapter's accent, a hazard-yellow "Choose" stamp, a
    dotted write-in rule under every row and a heavy ink tick box in front of
    every option. The accent stays the chapter's: it colours the rule only. */
 .dc-section-choose {
@@ -604,7 +604,7 @@ h3 + .dc-section-panel {
   --dc-section-shadow: none;
   --dc-section-edge: 0px;
   --dc-section-bg: var(--paper-form);
-  --dc-section-tab: "Your choice";
+  --dc-section-tab: "Choose";
   --dc-section-tab-bg: var(--brand-yellow);
   --dc-section-tab-fg: var(--ink);
   --dc-section-bar-mix: 0%;
@@ -644,7 +644,7 @@ h3 + .dc-section-panel {
 }
 /* No heading: the sheet carries the stamp itself, floated to its right corner. */
 .dc-section-choose:not(:has(> :is(h2, h3):first-child))::before {
-  content: "Your choice";
+  content: "Choose";
   position: static;
   float: right;
   inset: auto;

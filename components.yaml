@@ -1019,7 +1019,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-choose
     css: [styles/components/section.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
-    notes: "A printed, stamped form, not a panel: a paper sheet a hair lighter than cream (--paper-form), recessed (sunk into the wall: a cast shadow along its top, a light lip on its bottom and right) in an ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no drop shadow, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Your choice' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
+    notes: "A printed, stamped form, not a panel: a paper sheet a hair lighter than cream (--paper-form), recessed (sunk into the wall: a cast shadow along its top, a light lip on its bottom and right) in an ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no drop shadow, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Choose' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
 
   - name: faction
     status: live

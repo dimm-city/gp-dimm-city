@@ -64,7 +64,7 @@ Colour is a job, not a mood. A reader flipping pages should know what kind of co
 | Magenta | Display punch: the loudest thing on the page, never a category | Chapter chevrons, spray titles, pull quotes, `ROLL THE DIE!`, the VAR chip, the default panel accent |
 | HUD blue, pale cyan | A rule or a look-up, for the player | Note alert, reference section, definitions, megacorp faction, ideals |
 | Cyan on ink | The Dream Master only | `dm` alert and section, the Dream Master chip |
-| Hazard yellow with ink | Danger, consequence, a choice you must make | Warning alert, enforcer faction, the *Your choice* stamp, vehicle gear |
+| Hazard yellow with ink | Danger, consequence, a choice you must make | Warning alert, enforcer faction, the *Choose* stamp, vehicle gear |
 | Blood, rust, crimson | Harm, cost, cult, a binding ruling | Slate block, flaws, cult faction, origin stamp, side effects |
 | Violet, amethyst | The world and the arcane | Vibe alert, lore section, dreams, cabal faction, treasure |
 | Fungi green | The living city: organic, toxic | Visit alert, drug gear, Gutterdruid |
