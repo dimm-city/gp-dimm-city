@@ -58,6 +58,11 @@ function walk(dir, out = []) {
   return out;
 }
 
+// `npm pack` runs once, inside whichever test reaches packed() first, and on a
+// busy CI runner it alone can outlast bun's default 5s test timeout (it failed
+// the 1.7.1 release run that way), so these tests get a pack-sized one.
+const PACK_TIMEOUT_MS = 60_000;
+
 let packedFiles;
 function packed() {
   if (!packedFiles) {
@@ -123,7 +128,7 @@ describe("the tarball npm would publish", () => {
     for (const entry of readdirSync(path.join(ROOT, gp.snippets))) {
       expect(packed().paths.has(path.posix.join(gp.snippets, entry))).toBe(true);
     }
-  });
+  }, PACK_TIMEOUT_MS);
 
   test("ships every asset the stylesheets reference (fonts, images)", () => {
     const refs = (gp.styles ?? []).flatMap(cssAssetRefs);
@@ -134,7 +139,7 @@ describe("the tarball npm would publish", () => {
       // The check that would have caught images/brick-bg-01.png going missing.
       if (!packed().paths.has(resolved)) throw new Error(`${sheet} references ${target} but npm pack would not ship ${resolved}`);
     }
-  });
+  }, PACK_TIMEOUT_MS);
 
   test("ships nothing it should not, and stays within Gutterpress's limits", () => {
     for (const p of packed().paths) {
@@ -151,7 +156,7 @@ describe("the tarball npm would publish", () => {
       }
     }
     expect(packed().unpackedSize).toBeLessThan(50 * 1024 * 1024);
-  });
+  }, PACK_TIMEOUT_MS);
 });
 
 describe("fonts", () => {

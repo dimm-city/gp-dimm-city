@@ -7,6 +7,25 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-10-15
+
+### Fixed
+
+- **A specialty opener's art runs to the bottom edge of the sheet** (#54). The
+  image sits in a paragraph wrapper that stayed at its content height, so the
+  image's `height: 100%` resolved to nothing and it kept its own aspect ratio,
+  and core's in-flow image cap (`max-height: calc(var(--gp-content-h) - 4px)`)
+  held it 4px under the page besides. On the Field Guide's 8 openers the art
+  stopped 6.36pt (0.04in) short of the 810pt sheet, inside the bleed band, with
+  only the plate's dark backdrop under the gap. The wrapper now fills the
+  plate and the plate's image drops the cap (the plate is exactly one sheet
+  and clips its own overflow), so the art reaches every edge. Gutterpress
+  0.11.20's art safe-area overlay no longer flags those pages.
+- **The release run's tarball tests have a timeout sized for `npm pack`.** The
+  first of them runs `npm pack`, which on a busy runner can take longer than
+  bun's default 5s test timeout; that failed the 1.7.1 release run before it
+  published.
+
 ## [1.7.2] - 2026-10-15
 
 No package rule counts a book's rows or blocks any more: a threshold like
@@ -15,8 +34,9 @@ measured on, so it belongs in that book's own sheet.
 
 ### Removed
 
-- **The 1.7.1 long-choose-table rule** (`.dc-section-choose > table:has(> tbody
-  > tr:nth-child(12))`). Tables are kept whole again, as in 1.7.0. A book with a
+- **The long-choose-table rule from 1.7.1** (`.dc-section-choose > table:has(>
+  tbody > tr:nth-child(12))`), which never reached npm. Tables are kept whole,
+  as in 1.7.0. A book with a
   table taller than the page under its heading lets that one split from its own
   sheet, e.g. `.dc-flaws > table { break-inside: auto; }` for the Field Guide's
   Flaw table.
@@ -34,7 +54,10 @@ measured on, so it belongs in that book's own sheet.
   instead of `:nth-child(-n+2)`. Same rule: the flavor line and the block
   after it stay with what follows.
 
-## [1.7.1] - 2026-10-15
+## [1.7.1] - not released
+
+Never published: its release run failed in the test job (the tarball test
+timeout fixed in 1.7.3), and 1.7.2 removed its one change before the next run.
 
 ### Fixed
 

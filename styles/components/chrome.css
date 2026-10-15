@@ -430,10 +430,21 @@ hr {
   background: var(--ink-dark); /* dark fallback so a missing image reads as intentional art plate */
 }
 
+/* The image runs to every edge of the sheet (#54). Its paragraph wrapper
+   fills the plate too: left at its content height, the image's `height: 100%`
+   has nothing to resolve against and the image keeps its own aspect ratio,
+   stopping short of the bottom edge. Core caps an in-flow picture 4px under
+   the page's content height so it cannot spill onto the next page; the plate
+   is exactly one sheet and clips its own overflow, so its image drops the cap. */
+.dc-specialty-art > .dc-img-wrapper {
+  height: 100%;
+}
+
 .dc-specialty-art img {
   display: block;
   width: 100%;
   height: 100%;
+  max-height: none;
   object-fit: cover;
 }
 
