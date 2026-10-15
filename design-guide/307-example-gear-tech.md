@@ -83,7 +83,7 @@ The affected PC rolls each round to regain control. Specialties like the Cybersu
 
 ## Example Gear Entries
 
-@section panel
+@section panel .dc-snug
 
 ### Useful Items
 
@@ -136,8 +136,6 @@ Destroys standard doors, locks, and light barriers. Very loud. Single use. Don't
 @end-columns
 
 @end-section
-
-@page-break
 
 @section panel
 

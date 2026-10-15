@@ -69,7 +69,9 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 3px 18px 3px 8px;
+  /* 18px right and 16px left clear the deepest tab cut (a specialty's
+     --dc-skill-tab-shape, at most 15px) by more than 2pt. */
+  padding: 3px 18px 3px 16px;
   background: var(--dc-card-tab-bg);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
@@ -147,44 +149,37 @@
   letter-spacing: 0.05em;
   line-height: 1.2;
   word-break: break-word;
+  /* Reversed type (cream on the specialty's tab): semibold. Tomorrow ships 400,
+     500 and 700, so 600 resolves to the 700 cut. */
+  font-weight: 600;
   /* The title is the skill's h4 (plugin.js): clear what the h4 look adds
      (dc-core.css) so the tab sets as plain text. */
   margin: 0;
-  font-weight: inherit;
   text-wrap: wrap;
 }
 
+/* The tier pill (AUG1.3) is the specialty's own: a chip of its bright signal
+   colour (cream with a dark edge where the signal fails 4.5:1 for the type),
+   set by the --dc-tier-* tokens the specialty wiring fills (specialty-identity.css).
+   Outside a specialty it is ink with cream type. It was bronze/gold/silver by
+   position, colours unrelated to the card's specialty. */
 .dc-tab-tier {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 1.25rem;
-  padding: 1px 5px;
+  height: 1.4rem;
+  padding: 1px 8px;
   border-radius: 100px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-floor);
   font-weight: 700;
   line-height: 1;
-  background-color: var(--tier-bronze);
-  color: var(--paper-cream);
-  letter-spacing: 0;
+  background-color: var(--dc-tier-bg);
+  color: var(--dc-tier-fg);
+  box-shadow: inset 0 0 0 1px var(--dc-tier-edge), var(--dc-label-shadow);
+  letter-spacing: 0.05em;
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-/* Tier 2 (mid-level specialties): gold badges with dark text for WCAG AA contrast */
-.dc-specialty.streetwarden .dc-tab-tier,
-.dc-specialty.cybersurgeon .dc-tab-tier,
-.dc-specialty.technosorcerer .dc-tab-tier {
-  background-color: var(--tier-gold);
-  color: var(--ink);
-}
-
-/* Tier 3 (advanced specialties): silver badges with dark text for WCAG AA contrast */
-.dc-specialty.gutterdruid .dc-tab-tier,
-.dc-specialty.etherlock .dc-tab-tier {
-  background-color: var(--tier-silver);
-  color: var(--ink);
 }
 
 /* ── Path block (structural section hook) ─────────────────────────────── */
@@ -307,18 +302,30 @@
   widows: 2;
 }
 
+/* The card's closing sub-header (a ##### line) is reading text in mono caps:
+   tracked a little less than the bare sub-header (both are at the 10pt floor). */
+.dc-skill-card .dc-sub-header {
+  letter-spacing: 0.08em;
+}
+
 /* An ability row (AP chip and its text) is never cut between the two. */
 .dc-skill-card .dc-ability {
   break-inside: avoid;
 }
 
-/* A lead-in stays with what it introduces: an ability row with its first
-   lines, a bold-only pseudo-heading with the paragraph under it, a paragraph
-   with the list or table it opens. CSS cannot see text nodes, so
-   `strong:only-child` also takes a paragraph whose only markup is one bold
-   run. A last child is left out: its break-after would pass up to the card
-   and glue the next path banner to it. */
-.dc-skill-card .dc-card-inner > :is(.dc-ability, p:has(> strong:only-child)):not(:last-child),
+/* A lead-in stays with what it introduces: a bold-only pseudo-heading with the
+   paragraph under it, a paragraph with the list or table it opens. CSS cannot
+   see text nodes, so `strong:only-child` also takes a paragraph whose only
+   markup is one bold run. A last child is left out: its break-after would pass
+   up to the card and glue the next path banner to it.
+
+   An ability row is NOT a lead-in. It used to be glued to the block after it, so
+   a card of N rows had no place to split at all, and a card that reached a
+   page foot split inside its one breakable paragraph instead (a row or two on
+   one page, a hand's breadth of empty cream under them, the rest on the next).
+   Rows now split between rows; only the last block stays with the one above it
+   (below). */
+.dc-skill-card .dc-card-inner > p:has(> strong:only-child):not(:last-child),
 .dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table)) {
   break-after: avoid;
 }
@@ -339,12 +346,17 @@
 .dc-skill-card > .dc-card-body::before {
   content: '';
   position: absolute;
-  top: 10px;
-  right: 16px;
-  width: 28px;
-  height: 2px;
-  background: color-mix(in srgb, var(--dc-card-body-mark) 15%, var(--dc-card-surface));
-  transform: rotate(-3deg);
+  top: -5px;
+  right: 18px;
+  width: 34px;
+  height: 11px;
+  /* A strip of masking tape holding the card to the wall: an opaque flat tint
+     of the card's mark colour on paper-aged, with a hard edge line, slightly
+     rotated. It was a 2px hairline at 15% mark colour, which read as a stray
+     scratch rather than as a deliberate cue. */
+  background: color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged));
+  box-shadow: inset 0 -1px 0 var(--ink-dust);
+  transform: rotate(3deg);
   z-index: 2;
 }
 
@@ -353,46 +365,18 @@
   z-index: 1;
 }
 
-/* ── Highlight variant — featured skill card (| highlight suffix in title) */
-/* On ::before because that is where the tab's clip lives; the ring sits
-   entirely outside the clipped box. */
-.dc-skill-card.dc-highlight .dc-card-tab::before {
-  box-shadow: 0 0 0 3px var(--crimson);
-}
-
-/* The crimson wash must sit OVER the light card substrate, not replace it:
-   a single `background: linear-gradient(... transparent ...)` would drop the
-   --dc-card-surface (--paper-cream) fill, leaving the lower 60% of the body
-   transparent and dark ink text illegible against the page backdrop.
-   Layering the gradient on top of an explicit --dc-card-surface base keeps
-   the body light end-to-end while preserving the featured crimson accent at
-   the top edge. Text color is pinned to --ink for a guaranteed legible
-   value. The surface is the .dc-card-inner::after layer, so the wash goes
-   there. */
-.dc-skill-card.dc-highlight .dc-highlight-body {
-  color: var(--ink);
-}
-
-.dc-skill-card.dc-highlight .dc-highlight-body > .dc-card-inner::after {
-  background:
-    linear-gradient(to bottom, color-mix(in srgb, var(--tint-brick-red) 10%, var(--dc-card-surface)) 0%, var(--dc-card-surface) 45%),
-    var(--dc-card-surface);
-}
-
 /* ── Continuation card variants ───────────────────────────────────────── */
 .dc-skill-card-cont {
   margin-top: -4px; /* the card's own offset: see .dc-skill-card */
 }
 
 .dc-card-tab-cont {
-  border-top-style: dashed;
   border-top-color: var(--hud-blue);
 }
 
 /* Inside a skill card the tab's border paints on ::before (tab chrome rules
-   above), so the continuation dash goes there too. */
+   above), so the continuation colour goes there too. */
 .dc-skill-card > .dc-card-tab-cont::before {
-  border-top-style: dashed;
   border-top-color: var(--hud-blue);
 }
 
@@ -425,17 +409,18 @@
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
-   --dc-roll-the-die-color (default --brand-magenta-deep).
+   --dc-accent-ink (the component's own text-safe ink; default the deep magenta).
    An instruction to act, set in the text around it: the same font and size as
-   the line it sits in, made bold, in a contrasting colour, with a dotted
-   underline in that colour. It is plain inline text, so the line keeps its
-   height. The brand magenta's hue stands apart from the warm ink and the
-   --blood used for other bold text; deep, it holds AA contrast on every paper:
-   7.0:1 on --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
+   the line it sits in, made bold, in the ink of the component it sits in
+   (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
+   its cards), with a dotted underline in that colour. It is plain inline text,
+   so the line keeps its height. Each component sets --dc-accent-ink to a shade
+   that holds 4.5:1 on its own surface; the deep magenta default holds 7.0:1 on
+   --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
-  color: var(--dc-roll-the-die-color);
-  text-decoration: underline dotted;
+  color: var(--dc-accent-ink);
+  text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
 }
@@ -448,19 +433,19 @@
    via .dc-ap.<variant> { }, same convention as every other component. */
 .dc-ap {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 3px 6px;
-  min-width: 38px;
+  padding: 3px 7px;
+  min-width: 44px;
   text-align: center;
   /* Inner ink-density gradient + top-highlight — same pattern as
      .dc-outcome-key — so the chip reads as "stamped/printed" rather than a
      flat CSS rectangle. */
   background:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--dc-ap-bg) 90%, #fff 10%) 0%, /* PDF/X-1a: pre-composite to ~90% bg + 10% white; e.g. on --crimson (#e1261c) → #e64030 */
+      color-mix(in srgb, var(--dc-ap-bg) 90%, var(--paper-cream) 10%) 0%, /* PDF/X-1a: pre-composite to ~90% bg + 10% paper-cream; e.g. on --crimson (#e1261c) → #e64030 */
       var(--dc-ap-bg) 50%,
-      color-mix(in srgb, var(--dc-ap-bg) 94%, #000 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% black; e.g. on --crimson (#e1261c) → #d42419 */
+      color-mix(in srgb, var(--dc-ap-bg) 94%, var(--ink) 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% ink; e.g. on --crimson (#e1261c) → #d42419 */
   color: var(--dc-ap-fg);
   /* 1pt ink-dark hairline gives registration grip — without it, adjacent
      red-family AP chips (free/var/increased) merge under CMYK dot gain
@@ -470,24 +455,23 @@
   /* Layered shadow: an inset highlight plus a hard offset, so the chip reads
      as lifted off the card. */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 15%, var(--dc-ap-bg)),
-    2px 2px 0 color-mix(in srgb, #000 10%, var(--dc-card-surface));
-  text-shadow: 0 1px 0 color-mix(in srgb, #000 20%, var(--dc-ap-bg));
-  letter-spacing: 1px;
+    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 15%, var(--dc-ap-bg)),
+    2px 2px 0 color-mix(in srgb, var(--ink) 10%, var(--dc-card-surface));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 20%, var(--dc-ap-bg));
+  letter-spacing: 0.06em;
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 1px;
 }
 
-.dc-ap.free {
-  /* cream on --crimson = 4.03:1 (fails AA). --blood = 7.73:1. */
-  --dc-ap-bg: var(--blood);
-}
+/* .dc-ap.free is in specialty-identity.css with the other cost variants. */
 
 /* The plugin emits `.variable` (a range, X or VAR); `.var` is the raw
    authored spelling. */
 .dc-ap:is(.var, .variable) {
-  --dc-ap-bg: var(--hud-magenta);
+  /* --brand-magenta-deep, not the bright --hud-magenta: cream type on the
+     bright one is 4.06:1. */
+  --dc-ap-bg: var(--brand-magenta-deep);
 }
 
 /* A card title is a wide display word in a narrow box (a gear card in a

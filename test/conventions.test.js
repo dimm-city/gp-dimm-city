@@ -33,6 +33,8 @@ const CORE_HOOKS_READ_BY_CSS = [
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
   "--gp-column-rule", //   and to reset on a component that wants none
   "--gp-content-h", // read only
+  ".gp-alert", // the gutterpress-gfm-alerts extension's `> [!NOTE]` box, drawn as a callout so it never sits on the wall
+  ".gp-alert-", //   its type classes (-note, -warning, -caution, ...) and its .gp-alert-title
 ];
 
 function stripComments(src) {
@@ -131,6 +133,9 @@ describe("stylesheets", () => {
       [/#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])/, "a hex colour with alpha"],
       [/mix-blend-mode\s*:\s*(?!normal)|background-blend-mode\s*:\s*(?!normal)/, "a blend mode"],
       [/gradient\([^;]*\btransparent\b/, "a transparent gradient stop"],
+      // PDF/X drops a repeating gradient outright (the tape's dashes vanished)
+      // and a preserve-text build flattens its page (#41): tile an ordinary one
+      [/repeating-(linear|radial|conic)-gradient\(/, "a repeating gradient"],
       [/(box|text)-shadow\s*:[^;]*?-?\d[\d.]*(px|pt)\s+-?\d[\d.]*(px|pt)\s+[1-9][\d.]*(px|pt)\s/, "a blurred shadow"],
     ];
     const found = [];

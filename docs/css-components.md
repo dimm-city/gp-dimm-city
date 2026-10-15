@@ -10,22 +10,22 @@
 ```css
 /* Base: owns structure, spacing, typography, break behavior, and the public API */
 .dc-alert {
-  --dc-alert-bg:          var(--paper-light);
-  --dc-alert-border:      var(--crimson);
-  --dc-alert-fg:          var(--ink-smoke);
+  --dc-alert-bg:          var(--hud-blue-dim);
+  --dc-alert-border:      var(--hud-blue-dark);
+  --dc-alert-fg:          var(--ink);
   --dc-alert-label-color: var(--dc-alert-border);
 
   background:   var(--dc-alert-bg);
   border-left:  4px solid var(--dc-alert-border);
   color:        var(--dc-alert-fg);
-  font-size:    var(--fs-body-sm);
+  font-size:    var(--dc-alert-body-size);
   line-height:  var(--lh-normal);
   padding:      var(--space-lg) var(--space-xl);
   break-inside: avoid;
   page-break-inside: avoid;
 }
 
-.dc-alert p             { margin: 0; font-style: italic; }
+.dc-alert p             { margin: 0; }
 .dc-alert p + p         { margin-top: 6pt; }
 ```
 
@@ -36,15 +36,19 @@
 }
 
 .dc-origin-callout {
-  --dc-alert-bg:           var(--surface-orange-tint);
-  --dc-alert-border:       var(--blood);
-  --dc-alert-label-color:  var(--crimson);
+  --dc-alert-bg:           var(--paper-cream);
+  --dc-alert-border:       var(--rust);
+  --dc-alert-label-color:  var(--blood);
   --dc-alert-border-width: 3px;
 }
 ```
 
 The public API for `.dc-alert` variants is: `--dc-alert-bg`, `--dc-alert-border`,
-`--dc-alert-fg`, `--dc-alert-label-color`. Direct property overrides (e.g. `margin`,
+`--dc-alert-fg`, `--dc-alert-label-color`, plus the edge and label chrome
+(`--dc-alert-frame`, `--dc-alert-label-bg`, …). Each of the
+eight registers (note, warning, dm, vibe, origin, location, visit, example) differs from
+the others in silhouette, fill value, edge and label, so it reads in grayscale
+as well as in colour; a book's chapter never sets these variant tokens. Direct property overrides (e.g. `margin`,
 `border-left-width`, `width`) are acceptable on individual variants when the value is
 truly exceptional and not shared.
 
@@ -62,7 +66,7 @@ truly exceptional and not shared.
   --dc-alert-border: var(--blood);
   border-left-width: 3px;
   padding: 6pt 9pt;                            /* ← duplicates base padding logic */
-  font-size: 9.5pt;                            /* ← duplicates base font-size */
+  font-size: 11pt;                             /* ← duplicates base font-size */
 }
 ```
 
@@ -96,10 +100,11 @@ one-off exceptions; use custom properties only for the small shared API.
 **How This Applies to Alert Variants**
 
 Keep `.dc-alert` as the only shell. Let variant classes `.dc-note`, `.dc-vibe-callout`,
-`.dc-origin-callout`, `.dc-visit-callout`, `.dc-dm-note` override:
+`.dc-origin-callout`, `.dc-visit-callout`, `.dc-dm-note`, `.dc-example-callout` override:
 - surface/background (`--dc-alert-bg`)
 - accent/border color (`--dc-alert-border`)
-- label color (`--dc-alert-label-color`)
+- label color and chip (`--dc-alert-label-color`, `--dc-alert-label-bg`)
+- frame (`--dc-alert-frame`) and the silhouette (`--dc-alert-shape`)
 - exceptional spacing only when truly needed (direct property, not a new variable)
 
 **Reference Methodologies**

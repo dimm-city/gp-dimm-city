@@ -81,6 +81,24 @@
 }
 
 /* ---------------------------------------------------------------------------
+   The chapter chip's colour. A margin box sits in the PAGE context, which
+   cannot see a chapter's `--dc-section-accent` (and a custom property set on a
+   named `@page` does not reach its margin boxes: measured), so a chapter's
+   colour reaches its chip through a NAMED page: `page: dc-chip-<hue>` on the
+   chapter's pages, whose faces dc-native.css §2c paints (every face holds
+   cream type at >= 4.5:1; the default is magenta-deep). The chapter words wire
+   their pages here (`citizen-file` is the default magenta, so it needs none);
+   a book wires its own chapters the same way, with the same low-specificity
+   selector so a page's own template name (chapter-start, citizen-file, full)
+   still wins:
+     :where(#ch-xyz) > .page { page: dc-chip-rust; }
+   Hues: blue (hud-blue-dark), rust, violet, amethyst, amber (amber-dark).
+   --------------------------------------------------------------------------- */
+:where(.chapter.dc-chapter-specialty) > .page { page: dc-chip-blue; }
+:where(.chapter.dc-chapter-rules)     > .page { page: dc-chip-rust; }
+:where(.chapter.dc-chapter-lore)      > .page { page: dc-chip-violet; }
+
+/* ---------------------------------------------------------------------------
    Front matter — no folio, no chapter chip. Constitution: front matter is
    unnumbered. (dc-native.css additionally zeroes this template's side
    and bottom margins for the full-bleed masthead composite.)
@@ -164,18 +182,13 @@
 /* The running head is TEXT, so DriveThruRPG wants it 0.5in inside the trim
    — below the default top margin, whose whole band lies within 0.5in of
    the trim. These pages carry a deeper top margin and set the head at the
-   foot of it: 0.875in from the sheet edge, head baseline ~0.7in, 0.58in
-   from the trim. */
+   foot of it: a tab from 0.625in to 0.86in below the sheet edge, 0.5in+ from the
+   trim, at the top of the text block. The tab's chrome (amber face, ink edge, offset) is dc-native.css §2b:
+   the head is text, so it never sits on the brick. */
 @page citizen-file:right {
   margin-top: 0.875in;
   @top-right {
     content: "Citizen File";
-    color: var(--amber);
-    font-family: var(--font-display);
-    letter-spacing: 0.1em;
-    font-size: 0.8em;
-    vertical-align: bottom;
-    padding-bottom: 0.08in;
   }
 }
 
@@ -183,12 +196,6 @@
   margin-top: 0.875in;
   @top-left {
     content: "Citizen File";
-    color: var(--amber);
-    font-family: var(--font-display);
-    letter-spacing: 0.1em;
-    font-size: 0.8em;
-    vertical-align: bottom;
-    padding-bottom: 0.08in;
   }
 }
 

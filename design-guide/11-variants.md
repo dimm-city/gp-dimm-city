@@ -10,7 +10,7 @@ Every element that ships more than one variant, with all of its variants on one 
 
 ## Skill trees — one per specialty
 
-A learning path is a skill tree: the spray title, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
+A learning path is a skill tree: the title band, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
 
 ### Augmerc — `.augmerc`
 
@@ -328,64 +328,6 @@ The tier is written on the heading and printed on the tab.
 
 </div>
 
-### Capstone on the heading — `#### Name | AUG4.1 | highlight`
-
-The capstone look, for the last and strongest ability of a path: the featured tab and body.
-
-<div class="dg-stage">
-
-@specialty .augmerc
-
-@learning-path
-
-### Example Path
-
-@skill
-
-#### Apex Physiology | AUG4.1 | highlight
-
-> Brutality is your default setting!
-
-1. **0 AP** *Built for Violence:* Your basic unarmed attacks deal 2 HP instead of 1.
-2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
-### Highlight on the card — `@skill {.dc-highlight}`
-
-The same register with the class on the card root.
-
-<div class="dg-stage">
-
-@specialty .augmerc
-
-@learning-path
-
-### Example Path
-
-@skill {.dc-highlight}
-
-#### Apex Physiology | AUG4.1
-
-> Brutality is your default setting!
-
-1. **0 AP** *Built for Violence:* Your basic unarmed attacks deal 2 HP instead of 1.
-2. **0 AP** *Hammerfist Synergy:* Your Triumph range expands to 19–20.
-
-@end-skill
-
-@end-learning-path
-
-@end-specialty
-
-</div>
-
 ### Two columns — `@columns 2` inside a `@skill`
 
 A long ability list packed into two columns. The columns are core's `@columns 2` … `@end-columns` around just that part of the body; the flavor line and the lead paragraph stay full width.
@@ -461,7 +403,7 @@ The table becomes the card's outcome ladder.
 
 ## AP chips
 
-The plugin picks the chip from the cost written in bold at the start of an ability. The cards are the Augmerc's Dirty Work and the Proxy's Borrowed Mercy (its range line excerpted). The last four registers have no markdown form; they are raw spans.
+The plugin picks the chip from the cost written in bold at the start of an ability. The cards are the Augmerc's Dirty Work and the Proxy's Borrowed Mercy (its range line excerpted). The last four registers have no markdown form; they are raw spans. Free is an unlit LED (a grey lens with a hollow lamp and an ink edge: the quietest chip), standard is HUD blue, reduced is pale blue with a down-triangle, increased is blood with an up-triangle, VAR is deep magenta and special is amber: the drawn triangles keep reduced and increased apart in grayscale.
 
 <div class="dg-stage dg-on-paper">
 
@@ -527,7 +469,7 @@ Once per round, outside your turn, you exploit a target in reach:
 
 ## Specialty intros
 
-`@specialty-intro` inside each `@specialty`: the same panel, ten title bands. Intro text is the opening of each Field Guide profile.
+`@specialty-intro` inside each `@specialty`: the same panel, ten title bands. Each band is the specialty's own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Technosorcerer and Gutterdruid. Intro text is the opening of each Field Guide profile.
 
 <div class="dg-stage">
 
@@ -705,7 +647,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ### Augmerc
 
-![Augmerc](https://placehold.co/300x340/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-card.png)
 
 > Cybernetic Commando
 
@@ -721,7 +663,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad. They
 
 ### Proxy
 
-![Proxy](https://placehold.co/300x340/png?text=Proxy)
+![Proxy](img/specialty-proxy-card.png)
 
 > Militant Monolith
 
@@ -737,7 +679,7 @@ Marked by something higher—god, ghost, code, or conviction—Proxies walk the 
 
 ### Streetwarden
 
-![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)
+![Streetwarden](img/specialty-streetwarden-card.png)
 
 > Sprawl Sentinel
 
@@ -753,7 +695,7 @@ They don't wear badges—they are the law when no one else shows. Streetwardens 
 
 ### Gutterdruid
 
-![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)
+![Gutterdruid](img/specialty-gutterdruid-card.png)
 
 > Wold Witch
 
@@ -769,7 +711,7 @@ They walk the alleys like sacred ground—feeding the hungry, tending weeds, rai
 
 ### Cybersurgeon
 
-![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)
+![Cybersurgeon](img/specialty-cybersurgeon-card.png)
 
 > Mech Medic
 
@@ -785,7 +727,7 @@ Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading fl
 
 ### Wirephreak
 
-![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)
+![Wirephreak](img/specialty-wirephreak-card.png)
 
 > Ping Predator
 
@@ -801,7 +743,7 @@ Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firew
 
 ### Technosorcerer
 
-![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)
+![Technosorcerer](img/specialty-technosorcerer-card.png)
 
 > Modular Magician
 
@@ -817,7 +759,7 @@ Technosorcerers walk on the razor's edge between magic and technology. They beli
 
 ### Etherlock
 
-![Etherlock](https://placehold.co/300x340/png?text=Etherlock)
+![Etherlock](img/specialty-etherlock-card.png)
 
 > Manifold Magus
 
@@ -833,7 +775,7 @@ Secrets are currency—and Etherlocks are rich in them. Tapping into elemental f
 
 ### Dualist
 
-![Dualist](https://placehold.co/300x340/png?text=Dualist)
+![Dualist](img/specialty-dualist-card.png)
 
 > Two-Path Walker
 
@@ -849,7 +791,7 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 ### Generalist
 
-![Generalist](https://placehold.co/300x340/png?text=Generalist)
+![Generalist](img/specialty-generalist-card.png)
 
 > Sprawl Survivor
 
@@ -877,7 +819,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same six registers, and `@callout example` makes a seventh.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers, and `@callout example` makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -896,13 +838,16 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 > [!ORIGIN]
 > You didn't choose the street — the street chose you.
 
+> [!LOCATION]
+> The Undercroft: three flooded levels under the old ArkD tower.
+
 > [!VISIT]
 > The Neon Bazaar doesn't close.
 
 
 @callout example
 
-A worked example (`@callout example`, which has no blockquote form): a dashed cyan edge and a taped-on label.
+A worked example (`@callout example`, which has no blockquote form): a cyan rail and a taped-on label.
 
 @end-callout
 
@@ -910,7 +855,7 @@ A worked example (`@callout example`, which has no blockquote form): a dashed cy
 
 ## Blocks
 
-`@block .dc-panel | .dc-slate | .dc-shard`.
+`@block .dc-panel | .dc-slate | .dc-shard`: a HUD-blue band, an ink body under a blood band stamped *Binding*, and light zine paper with a torn foot and no accent hue.
 
 <div class="dg-stage">
 
@@ -936,7 +881,7 @@ Fiction, atmosphere, and setting asides.
 
 ## Choice cards
 
-`@card` inside `@flaws`, `@ideals` or `@dreams`.
+`@card` inside `@flaws`, `@ideals` or `@dreams`. Each kind has its own colour, silhouette and one-word chip: a Flaw is blood with a cracked edge, an Ideal is HUD blue with a steady tablet shape, a Dream is violet with a rising edge. The card name is the first `####`.
 
 <div class="dg-stage">
 
@@ -944,7 +889,7 @@ Fiction, atmosphere, and setting asides.
 
 @card
 
-### Addictive Personality
+#### Addictive Personality
 
 You chase instant gratification without weighing the consequences.
 
@@ -958,7 +903,7 @@ You chase instant gratification without weighing the consequences.
 
 @card
 
-### Honor
+#### Honor
 
 You believe in a code, and upholding it is your duty no matter the cost.
 
@@ -972,7 +917,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 @card
 
-### Settle a Score
+#### Settle a Score
 
 Settle a score from my past. Your Drive should pull you toward trouble, hard choices, and things worth risking your hide for.
 
@@ -1012,9 +957,39 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 </div>
 
+## Definition: lucid and surreal
+
+`@definition lucid` and `@definition surreal`, side by side: the two states of a roll, drawn as opposites. Lucid is the light, machined, upright one; surreal is the dark, skewed, off-register one.
+
+<div class="dg-stage">
+
+@columns 2
+
+@definition lucid
+
+#### Lucid
+
+Roll 2d20, take the higher. You're sharp, aligned, in control. When you roll a 20 in the dream, your next roll is Lucid!
+
+@end-definition
+
+@column-break
+
+@definition surreal
+
+#### Surreal
+
+Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.
+
+@end-definition
+
+@end-columns
+
+</div>
+
 ## Tape
 
-`<div class="dc-tape">…</div>`, then the form with `.dc-flush`, which removes the tape's outer margin.
+`<div class="dc-tape">…</div>` is a strip of masking tape: tan, torn ends, ink edges. Then the form with `.dc-flush`, which removes the tape's outer margin.
 
 <div class="dg-stage">
 
@@ -1060,7 +1035,7 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 
 ## Heading chrome
 
-`{.dc-chevron}`, `{.dc-spray}`, `{.dc-spec-tweak}` and `{.dc-spec-tweak .dc-no-top}`.
+`{.dc-chevron}` is a deep-magenta banner with one diagonal. `{.dc-spray}` is a stencil tag: a stepped overspray edge and a dashed stencil line along its foot. `{.dc-spec-tweak}` is sized to one line, and `{.dc-spec-tweak .dc-no-top}` pulls it tight against what is above.
 
 <div class="dg-stage">
 
@@ -1082,7 +1057,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section variants
 
-`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`.
+`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`. Each kind has its own bar and sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.
 
 <div class="dg-stage dg-tall">
 
@@ -1090,7 +1065,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ### Panel section
 
-The panel chrome: substrate, accent rule, a cut top-right corner, and the first heading as a bar.
+The panel chrome: a cream substrate, an accent rule, a cut top-right corner, and the first heading as a solid accent bar.
 
 @end-section
 
@@ -1119,7 +1094,7 @@ A look-up: HUD blue, a pale title band, tight rows.
 
 ### Lore section
 
-The world, not the rules: violet on clean paper, with long cuts off two opposite corners.
+The world, not the rules: a deep violet bar over a pale lilac sheet, with long cuts off two opposite corners.
 
 @end-section
 
@@ -1127,7 +1102,7 @@ The world, not the rules: violet on clean paper, with long cuts off two opposite
 
 ### Dream Master section
 
-Behind the screen: an ink bar with a Dream Master chip on a cold body, top-right and bottom-left corners cut.
+Behind the screen: a file-folder tab that says Dream Master over an ink bar with a cyan rule, a cold body, a cyan rail and the bottom-right corner cut.
 
 @end-section
 
@@ -1135,7 +1110,7 @@ Behind the screen: an ink bar with a Dream Master chip on a cold body, top-right
 
 ### Choose section
 
-A pick-one choice for the Citizen File:
+A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Choose* stamp:
 
 - A first option.
 - A second option.
@@ -1174,7 +1149,7 @@ Nothing here is safe. Nothing here is free.
 
 ### Bare section
 
-No variant word, no look: the text sits on whatever is behind it.
+No variant word, no look of its own: the text sits on a plain sheet of paper.
 
 @end-section
 
@@ -1208,7 +1183,7 @@ Keep the bands fictional, not metric. The Dream Master sets the band; the dice d
 
 #### Megacorp
 
-Cool HUD blue: the lights, the water and the lawyers.
+A hard blue rectangle with a cyan edge: the lights, the water and the lawyers.
 
 @end-faction
 
@@ -1216,7 +1191,7 @@ Cool HUD blue: the lights, the water and the lawyers.
 
 #### Cabal
 
-Violet: a back booth and a very long memory.
+Violet, with long corner cuts: a back booth and a very long memory.
 
 @end-faction
 
@@ -1224,7 +1199,7 @@ Violet: a back booth and a very long memory.
 
 #### Cult
 
-Blood red: sing the signal and it sings back.
+Blood red, torn along the top and foot: sing the signal and it sings back.
 
 @end-faction
 
@@ -1232,11 +1207,13 @@ Blood red: sing the signal and it sings back.
 
 #### Enforcer
 
-Hazard yellow: they keep the peace, for a fee.
+An octagon with a hazard-tape band and a yellow name label: they keep the peace, for a fee.
 
 @end-faction
 
 </div>
+
+@page-break
 
 ## Image floats
 

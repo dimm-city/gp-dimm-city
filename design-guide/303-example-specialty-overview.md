@@ -4,7 +4,7 @@
 
 # What Do You Dream of Doing?
 
-@section panel
+@fiction-excerpt
 
 The alley narrowed to a throat of shadow as they reached the bunker's blind side. Rook paused, agile fingers lifting mid-air, knuckles flexing with simian grace. The ambient hum dipped a fraction.
 
@@ -23,9 +23,9 @@ The door didn't explode. It failed. Metal screamed, folded, and vanished inward 
 
 Five shadows moved as one, already inside, already gone.
 
-@end-section
+@end-fiction-excerpt
 
-@page .card-grid
+@page specialty-catalog
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -49,7 +49,7 @@ Every dreamer's got a sharp edge — your specialty is where it starts.
 
 ### Augmerc
 
-![Augmerc](https://placehold.co/300x340/png?text=Augmerc)
+![Augmerc](img/specialty-augmerc-card.png)
 
 > Cybernetic Commando
 
@@ -65,7 +65,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad. They
 
 ### Proxy
 
-![Proxy](https://placehold.co/300x340/png?text=Proxy)
+![Proxy](img/specialty-proxy-card.png)
 
 > Militant Monolith
 
@@ -81,7 +81,7 @@ Marked by something higher—god, ghost, code, or conviction—Proxies walk the 
 
 ### Streetwarden
 
-![Streetwarden](https://placehold.co/300x340/png?text=Streetwarden)
+![Streetwarden](img/specialty-streetwarden-card.png)
 
 > Sprawl Sentinel
 
@@ -97,7 +97,7 @@ They don't wear badges—they are the law when no one else shows. Streetwardens 
 
 ### Gutterdruid
 
-![Gutterdruid](https://placehold.co/300x340/png?text=Gutterdruid)
+![Gutterdruid](img/specialty-gutterdruid-card.png)
 
 > Wold Witch
 
@@ -113,7 +113,7 @@ They walk the alleys like sacred ground—feeding the hungry, tending weeds, rai
 
 ### Cybersurgeon
 
-![Cybersurgeon](https://placehold.co/300x340/png?text=Cybersurgeon)
+![Cybersurgeon](img/specialty-cybersurgeon-card.png)
 
 > Mech Medic
 
@@ -129,7 +129,7 @@ Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading fl
 
 ### Wirephreak
 
-![Wirephreak](https://placehold.co/300x340/png?text=Wirephreak)
+![Wirephreak](img/specialty-wirephreak-card.png)
 
 > Ping Predator
 
@@ -145,7 +145,7 @@ Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firew
 
 ### Technosorcerer
 
-![Technosorcerer](https://placehold.co/300x340/png?text=Technosorcerer)
+![Technosorcerer](img/specialty-technosorcerer-card.png)
 
 > Modular Magician
 
@@ -161,7 +161,7 @@ Technosorcerers walk on the razor's edge between magic and technology. They beli
 
 ### Etherlock
 
-![Etherlock](https://placehold.co/300x340/png?text=Etherlock)
+![Etherlock](img/specialty-etherlock-card.png)
 
 > Manifold Magus
 
@@ -177,7 +177,7 @@ Secrets are currency—and Etherlocks are rich in them. Tapping into elemental f
 
 ### Dualist
 
-![Dualist](https://placehold.co/300x340/png?text=Dualist)
+![Dualist](img/specialty-dualist-card.png)
 
 > Two-Path Walker
 
@@ -193,7 +193,7 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 ### Generalist
 
-![Generalist](https://placehold.co/300x340/png?text=Generalist)
+![Generalist](img/specialty-generalist-card.png)
 
 > Sprawl Survivor
 
@@ -206,6 +206,8 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 @end-columns
 
 @end-card-grid
+
+@page
 
 @section panel
 

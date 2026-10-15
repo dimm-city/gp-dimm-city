@@ -48,7 +48,7 @@
 
 :root {
   --dg-paper: #ffffff;
-  --dg-ink: #222222;
+  --dg-ink: var(--ink);  /* the package ink: near-black text prints K-only (see dc-palette.css); #222 sat outside the build's K-only band */
   --dg-ink-soft: #555555;
   --dg-rule: #c8c8c8;
   --dg-fill: #f2f2f2;
@@ -62,6 +62,12 @@
    margin band — prints plain. This rule beats the package's `@page` brick
    (dc-native.css §1) because book sheets sit outside the package layer. */
 .page.dg-doc { page: dg-doc; }
+
+/* The Citizen File opener's excerpt fills its page to the foot: a smaller inline
+   picture (a token the fiction excerpt reads) keeps its last paragraph on the page. */
+#ch-example-chapter-opener .dc-fiction-excerpt {
+  --dc-fiction-art-width: 2in;
+}
 
 @page dg-doc {
   background: var(--dg-paper);
@@ -77,7 +83,7 @@
   @bottom-left {
     content: counter(page);
     font-family: var(--font-sans);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0;
     text-transform: none;
@@ -89,7 +95,7 @@
   @bottom-right {
     content: string(dgTitle, first);
     font-family: var(--font-sans);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
@@ -104,7 +110,7 @@
   @bottom-left {
     content: string(dgTitle, first);
     font-family: var(--font-sans);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
@@ -116,7 +122,7 @@
   @bottom-right {
     content: counter(page);
     font-family: var(--font-sans);
-    font-size: 8pt;
+    font-size: var(--fs-floor);
     font-weight: 700;
     letter-spacing: 0;
     text-transform: none;
@@ -186,6 +192,11 @@ div.chapter[id^="ch-example-"][data-ch] {
   line-height: 1.4;
 }
 
+/* a guide contents list is a few lines: one block, never 4 + 3 */
+.page.dg-doc > .dg-toc {
+  break-inside: avoid;
+}
+
 .page.dg-doc > :is(h1, h2, h3),
 .page.dg-doc > .dg-toc > h2 {
   font-family: var(--font-sans);
@@ -199,7 +210,7 @@ div.chapter[id^="ch-example-"][data-ch] {
    above the chapter's `#` title. */
 .page.dg-doc > p.dg-kicker {
   font-family: var(--font-sans);
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -211,7 +222,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 .page.dg-doc > h1 {
   font-size: 26pt;
   line-height: 1.15;
-  border-bottom: 1.5pt solid var(--dg-ink);
+  border-bottom: 1.5pt solid var(--ink-dark);
   padding-bottom: 0.08in;
   margin-bottom: 0.18in;
 }
@@ -258,18 +269,18 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 .page.dg-doc > table td {
-  font-size: 10pt;
+  font-size: var(--fs-floor);
   padding: 4pt 6pt;
   background: none;
   border-bottom: 0.5pt solid var(--dg-rule);
 }
 
 .page.dg-doc > table th {
-  font-size: 8.5pt;
+  font-size: var(--fs-floor);
   padding: 5pt 6pt;
   background: var(--dg-fill);
   color: var(--dg-ink);
-  border-bottom: 1pt solid var(--dg-ink);
+  border-bottom: 1pt solid var(--ink-dark);
 }
 
 /* Contents: the title links, each with its page number at the right edge. */
@@ -339,7 +350,7 @@ div.chapter[id^="ch-example-"][data-ch] {
    must render exactly as the package prints them. */
 .page.dg-doc pre:not(.dg-stage *) {
   font-family: var(--dg-mono);
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   line-height: 1.4;
   background: var(--dg-fill);
   border-left: 3pt solid var(--blood);
@@ -376,7 +387,7 @@ div.chapter[id^="ch-example-"][data-ch] {
    own inline code. */
 .page.dg-doc :not(pre) > code:not(.dg-stage *) {
   font-family: var(--dg-mono);
-  font-size: 0.85em;
+  font-size: max(0.85em, var(--fs-floor));
   color: var(--blood);
   background: var(--dg-fill);
   border: 0;
@@ -400,7 +411,7 @@ div.chapter[id^="ch-example-"][data-ch] {
    author marks the rendered block with a `Result {.dg-result}` paragraph
    followed by the specimen wrapped in `<div class="dg-stage">` (§0), or by a
    whole-page specimen. The RESULT tab sits on the stage's top edge and stays
-   with it. Labels are 8pt on dark fills: cream on --blood is 7.7:1. */
+   with it. Labels are 10pt on dark fills: cream on --blood is 7.7:1. */
 .page.dg-doc pre:has(code.language-markdown) {
   position: relative;
   padding-top: 20px;
@@ -410,7 +421,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 .page.dg-doc p.dg-result,
 .page.dg-doc p.dg-dont-label {
   font-family: var(--font-sans);
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -438,7 +449,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 .page.dg-doc p.dg-dont-label {
-  background: var(--crimson);
+  background: var(--blood);  /* cream on blood 7.7:1 (was crimson, 4.0:1) */
 }
 
 /* A whole-page specimen gets a plain note instead of a RESULT tab, so no tab
@@ -461,7 +472,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 .dg-face > p.dg-face-meta {
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   color: var(--dg-ink-soft);
 }
 
@@ -494,7 +505,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 .dg-face-tab.dg-face-set {
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -519,21 +530,21 @@ div.chapter.dg-guide .dc-palette-grid {
 }
 
 div.chapter.dg-guide .dc-palette-swatch {
-  width: 1in;
-  min-height: 1in;
+  width: 1.3in;
+  min-height: 1.1in;
   padding: 5px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font-size: 8pt;
+  font-size: var(--fs-floor);
   line-height: 1.25;
 }
 
 /* Swatch labels take the swatch's own text color, not guide inline code
    (§1), which this selector must outrank. */
 .page.dg-doc .dc-palette-grid .dc-palette-swatch code {
-  font-size: 7pt;
+  font-size: var(--fs-floor);
   color: inherit;
   background: none;
   padding: 0;
@@ -557,6 +568,10 @@ div.chapter.dg-guide .dc-palette-swatch.on-dark {
 
 div.chapter.dg-guide .dc-palette-swatch.bg-ink {
   background: var(--ink);
+}
+
+div.chapter.dg-guide .dc-palette-swatch.bg-ink-dark {
+  background: var(--ink-dark);
 }
 
 div.chapter.dg-guide .dc-palette-swatch.bg-ink-smoke {
@@ -585,6 +600,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-rust {
 
 div.chapter.dg-guide .dc-palette-swatch.bg-amber {
   background: var(--amber);
+  color: var(--paper-cream);  /* 5.5:1; ink on amber was 2.9:1 */
 }
 
 div.chapter.dg-guide .dc-palette-swatch.bg-deep-rust {
@@ -624,19 +640,27 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 }
 
 /* ── §4 Demo-chapter identity map (302–307) ────────────────────────────────── */
-/* Chapter 2 — specialty overview (Choose Your Specialty card grid): brand-magenta gateway */
+/* Accent map by role (docs/constitution.md §VII: magenta is chapter punch and the
+   package's default panel only, so no spread in this guide carries three magenta
+   section bars). Chapter 1 keeps the package's `citizen-file` word (the one
+   magenta chapter); every other example chapter takes a role colour.
+
+   Chapter 2 — specialty overview (Choose Your Specialty card grid): a choice
+   the player makes, HUD blue (player-facing look-up). */
 #ch-example-specialty-overview {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--hud-blue-dark);
 }
 
-/* Chapter 3 — specialty profile spreads (Augmerc and friends): brand-magenta gateway */
+/* Chapter 3 — specialty profile spreads (Augmerc and friends): the arcane side
+   of a specialty, amethyst (the world & the arcane). */
 #ch-example-specialty-profile {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--crystal-amethyst);
 }
 
-/* Chapter 4 — rules (Are You Lucid Yet, Dreams, City, etc.): brand identity register */
+/* Chapter 4 — rules (Are You Lucid Yet, Dreams, City, etc.): player-facing
+   rules, HUD blue. */
 #ch-example-rules {
-   --dc-section-accent: var(--brand-magenta-deep);
+   --dc-section-accent: var(--hud-blue-dark);
 }
 
 /* Street-sign image in the chapter opener fiction excerpt: float right so the
@@ -669,7 +693,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    with this chapter's rust --dc-section-accent. Neutral --ink-dark
    page-titles let the chapter's rust components carry the chroma identity
    without fighting the title. */
-#ch-example-dm-npcs h2:not(.dc-spray):not(.dc-chevron) {
+#ch-example-dm-npcs h2:not(.dc-spray, .dc-chevron, .dc-section-panel > h2) {
    color: var(--ink-dark);
    border-bottom-color: var(--rust);
 }
@@ -697,21 +721,9 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
    --dc-npc-stat-primary: var(--blood);
 }
 
-/* ── DM/NPC chapter: callouts catch a faint fungi glow ───────────────────────
-   Plants the fluorescent-fungi pillar in the DM chapter. The rust accents on
-   section headers and stat-block rules deliver the gutter pillar; this rule
-   gives advisory/vibe callouts a low-level organic glow — alley fungus
-   creeping into the encounter rules. */
-#ch-example-dm-npcs .dc-alert {
-   /* A paper-stain tint with a --rust border accent matches the chapter's
-     rust --dc-section-accent so the callouts feel like part of the chapter
-     register, not an alien color block (a fungi-rot mix read as muddy
-     olive-green). */
-   --dc-alert-bg: var(--paper-stain);
-   --dc-alert-border: var(--rust);
-   --dc-alert-fg: var(--ink);
-   --dc-alert-label-color: var(--rust);
-}
+/* DM/NPC chapter: callouts keep their own register. (A chapter-wide
+   `--dc-alert-*` re-theme used to turn every variant grey-brown here; a
+   callout's variant is its meaning, so a chapter no longer repaints it.) */
 
 /* ── §5 Frozen field-guide art classes (301, 302, 305) ─────────────────────── */
 .fg-art-street-sign {
@@ -727,7 +739,7 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 .fg-art-portrait {
    float: right;
    width: 2.25in;
-   height: 2.75in;
+   height: 2.25in;
    object-fit: cover;
    outline: 3px solid var(--ink-dark);
    box-shadow: -4px 4px 0 var(--hud-magenta);
@@ -758,3 +770,14 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 :where(.dc-page-intro) {
    --dc-section-accent: var(--hud-magenta);
 }
+
+/* ── §6 Chapter chip colour (Part 2) ────────────────────────────────────────
+   The E.N chip takes its chapter's colour through a named page
+   (page-rules.css, `dc-chip-<hue>`), since a margin box cannot see the
+   chapter's accent. Unlayered, so the pages that carry their own template
+   name (an opener, a Citizen File page, a plate) are left out by name, and
+   the rule itself costs no specificity. E.1 is the default magenta. */
+:where(#ch-example-specialty-overview, #ch-example-rules) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-blue; }
+:where(#ch-example-specialty-profile) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-amethyst; }
+:where(#ch-example-dm-npcs) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-rust; }
+:where(#ch-example-gear-tech) > .page:not(.dc-page-chapter-start, .dc-page-citizen-file, .dc-page-intro, .dc-full-page, .gp-page-full-bleed, .dc-specialty-art) { page: dc-chip-amber; }

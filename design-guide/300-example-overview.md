@@ -10,13 +10,13 @@ Part 2 {.dg-kicker}
 
 # Field Guide in Action
 
-Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a `placehold.co` placeholder image stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
+Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (`design-guide/img/specialty-*.png`, `placeholder-*.png`) stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
 
 ## What Part 2 is
 
 Part 1 shows each component on its own. Part 2 is the payoff: whole pages of the Dimm City Field Guide, rendered live from the same markdown and CSS as the published book, so you can see how the components combine under real conditions — how a chapter opens, how a specialty profile flows across pages, how a Dream Master's reference pages read.
 
-Each chapter is the book's own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, a `placehold.co` placeholder stands in at the correct size. If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.
+Each chapter is the book's own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, a local placeholder stands in at the correct size. If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.
 
 ## Part 2 contents
 
@@ -38,7 +38,7 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 |---|---|---|
 | Front Matter | `@page contents`, `credits`, `intro` | `@toc`, `@lede`, `@section flat`, `[!PULLQUOTE]`, floated art |
 | Chapter Opener | `@page chapter-start`, `citizen-file`; `@chapter citizen-file` | `.dc-fiction-excerpt`, `@callout origin`, `.dc-citizen-walkthrough` |
-| Specialty Overview | `@page chapter-start`, `.card-grid` | `.dc-card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
+| Specialty Overview | `@page chapter-start`, `specialty-catalog` | `@fiction-excerpt`, `@card-grid`, `@specialty` × 10, `@specialty-card`, `@procedure`, `.dc-spray` |
 | Specialty Profile | `@page` | `@specialty-intro`, `@specialty-art`, `@learning-path`, `@skill` with tiers and outcome tables, `@dm-note`, `@procedure` |
 | Rules Pages | `@page chapter-start` | `@section panel`, `@columns 2`, `@definition`, `@callout note`, `@outcome`, a conditions table |
 | DM & NPC Pages | `@page` | `@dm-note`, `@tape`, `.dc-npc-stat` × 3, `@procedure`, tables |

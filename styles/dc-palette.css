@@ -4,73 +4,82 @@
 :root {
 
   /* ── Page & Paper — neutral-cool greys, "industrial flyer paper / printer stock" ── */
-  --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) */
-  --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream */
-  --paper-cream:  #f0eee9;  /* light industrial flyer-stock — brighter than wall, more poster-vs-wall delta (L*~93) */
-  --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels */
-  --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age */
-  --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey */
+  --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) · TAC 61% (C21 M18 Y22 K0) */
+  --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 35% (C12 M10 Y13 K0) */
+  --paper-cream:  #f0eee9;  /* light industrial flyer-stock — brighter than wall, more poster-vs-wall delta (L*~93) · TAC 14% (C4 M4 Y7 K0) */
+  --paper-form:   #f5f3ee;  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen · TAC 10% (C2 M2 Y5 K0) */
+  --paper-zine:   #e9e6e0;  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream · TAC 24% (C7 M7 Y10 K0) */
+  --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels · TAC 32% (C10 M9 Y13 K0) */
+  --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
+  --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
   /* Poster-wall shadow — hard offset, no blur. Pins paper-register
      components to the wall as physical objects, "stuck on the wall"
      rather than "embedded in the page." */
   /* The wall's average colour (mean of images/brick-wall.png). Shadows and
      tints that land on the wall pre-composite against it: PDF/X-1a carries
      no transparency (see docs/print-transparency-inventory.md). */
-  --wall-tone: #c1beb8;
-  --shadow-ink: color-mix(in srgb, #000 28%, var(--wall-tone));  /* opaque ink-on-wall shadow colour */
+  --wall-tone: #c1beb8;  /* TAC 70% (C24 M21 Y25 K0) */
+  --shadow-ink: color-mix(in srgb, var(--ink) 28%, var(--wall-tone));  /* opaque ink-on-wall shadow colour */
   --shadow-poster: 2pt 3pt 0 var(--shadow-ink);
 
-  /* ── Ink & Text — warm sepia drift, not neutral gray ─────────────────── */
-  --ink:        #1a1512;  /* near-black with red bias — riso warm black */
-  --ink-dark:   #2b231d;  /* warmer secondary heading weight */
-  --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis */
-  --ink-mid:    #594f43;  /* between smoke and dust — secondary card text */
-  --ink-dust:   #665b4e;  /* 4.58:1 on paper-cream #f0eee9 */
+  /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────
+     TAC figures in this file are MEASURED, not estimated: a swatch PDF
+     converted with the build's own Ghostscript arguments and CGATS21_CRPC1
+     profile (gutterpress convertToPdfxCmyk), then the CMYK fill operator read
+     back. That conversion builds dark RGB as a heavy four-colour black: raw
+     #000 comes out C72 M68 Y67 K88 = 295%, so a "black" token is over the 280%
+     ceiling unless it is lifted off black. House target: every token <= 270%.
+
+     -------------------------------------------------------------------- */
+  --ink:        #1e1d1c;  /* near-black with red bias — riso warm black · TAC 278% (C69 M66 Y67 K76) */
+  --ink-dark:   #2f2622;  /* warmer secondary heading weight · TAC 266% (C61 M66 Y69 K69) */
+  --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis · TAC 231% (C57 M60 Y68 K47) */
+  --ink-mid:    #594f43;  /* between smoke and dust — secondary card text · TAC 217% (C55 M56 Y67 K38) */
+  --ink-dust:   #665b4e;  /* 4.58:1 on paper-cream #f0eee9 · TAC 200% (C53 M54 Y64 K29) */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
-  --crimson:    #e1261c;  /* PMS Red 032 — CMYK 0 95 90 0; survives POD */
-  --blood:      #901a12;  /* oxidised arterial — 5.2:1 on paper-cream */
-  --orange:     #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone */
-  --orange-deep: #a03808; /* burnt fire-deep — paper-cream 5.25:1 (deeper variant for small-text-on-fill contexts) */
-  --rust:       #b23a12;  /* burnt rebar edge */
-  --amber:      #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth */
-  --deep-rust:  #6a1a08;  /* shadow rust — deepest warm dark */
-  --amber-dark: #5c3c10;  /* charred amber — follows amber down */
+  --crimson:    #e1261c;  /* PMS Red 032; survives POD · TAC 203% (C5 M98 Y100 K0) */
+  --blood:      #901a12;  /* oxidised arterial — 5.2:1 on paper-cream · TAC 254% (C27 M99 Y100 K28) */
+  --orange:     #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone · TAC 195% (C11 M82 Y100 K2) */
+  --orange-deep: #a03808; /* burnt fire-deep — paper-cream 5.25:1 (deeper variant for small-text-on-fill contexts) · TAC 233% (C25 M88 Y100 K20) */
+  --rust:       #b23a12;  /* burnt rebar edge · TAC 222% (C21 M89 Y100 K12) */
+  --amber:      #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth · TAC 227% (C41 M57 Y100 K29) */
+  --deep-rust:  #70200e;  /* shadow rust — deepest warm dark · TAC 268% (C32 M91 Y100 K45) */
+  --amber-dark: #5c3c10;  /* charred amber — follows amber down · TAC 258% (C44 M66 Y100 K49) */
 
   /* ── Brand Signature Layer — print-safe analogs of dimm.city web palette
      These three are the source of truth for "the dimm.city signature in print."
      Values are SWOP/substrate-corrected from the website's pure-RGB tokens
      (#d946ef / #00ffff / #ffd700) so they survive POD press without muddying.
      HUD + signal tokens below alias these — touch the brand layer first. */
-  --brand-magenta: #c026d3;  /* dimm.city cyber-magenta, SWOP-corrected from web #d946ef */
-  --brand-magenta-deep: #8a0a9a;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) */
-  --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff */
-  --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged */
-  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 */
+  --brand-magenta: #c026d3;  /* dimm.city cyber-magenta, SWOP-corrected from web #d946ef · TAC 126% (C41 M85 Y0 K0) */
+  --brand-magenta-deep: #8a0a9a;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) · TAC 156% (C56 M100 Y0 K0) */
+  --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 87% (C70 M1 Y16 K0) */
+  --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 114% (C1 M13 Y100 K0) */
+  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
+  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the proxy's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
-  --hud-blue:        #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
-  --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text */
+  --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 167% (C87 M50 Y26 K4) */
+  --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text · TAC 214% (C93 M64 Y38 K20) */
   --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent */
-  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint */
+  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint · TAC 76% (C50 M13 Y12 K0) */
   --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta */
-  --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars */
+  --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars · TAC 16% (C5 M5 Y7 K0) */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
-  --surface-tint-3:      #f2f0ec;  /* public token: consumed by the Dimm City design guide's own sheet (palette swatches), not by this package */
-  --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper */
+  --surface-tint-3:      #f2f0ec;  /* public token: consumed by the Dimm City design guide's own sheet (palette swatches), not by this package · TAC 12% (C3 M4 Y6 K0) */
+  --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 59% (C14 M14 Y30 K0) */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  --border-hairline: #c8b898;  /* warmer/darker hairline on aged paper */
+  --border-hairline: #c8b898;  /* warmer/darker hairline on aged paper · TAC 88% (C22 M24 Y42 K0) */
   --bw-thin:         1px;
   --callout-border-width-small: 2px;
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
-  --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source */
-  --tint-hud-teal:     #2a6a8a;
-  --tint-signal-red:   #d41200;  /* tape border mix source */
-  --tint-brick-red:    #b42828;  /* skill-card header wash mix source */
+  --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source · TAC 120% (C3 M100 Y17 K0) */
+  --tint-hud-teal:     #2a6a8a;/* TAC 175% (C85 M52 Y31 K8) */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
@@ -83,10 +92,11 @@
   /* ── Type Scale — modular ~1.23× ratio, 12pt body anchor ──────────────
      h1/h2: 1.30×  h2/h3: 1.25×  h3/h4: 1.23×  h4/h5: 1.18×  h5/h6: 1.22×
      H5 == body-sm: display font + caps + tracking provide differentiation.
-     H6 below body: metadata-only; display font keeps it legible.
+     H6 sits on the 10pt floor: metadata-only; display font keeps it legible.
      ────────────────────────────────────────────────────────────────────── */
+  --fs-floor:   10pt;    /* THE type floor: no glyph the package prints is smaller — chips, tabs, tier pills, labels, stamps, folios included */
   --fs-body:    12pt;
-  --fs-body-sm: 11pt;    /* design floor — never below this for prose */
+  --fs-body-sm: 11pt;    /* smallest running prose in a component */
   --fs-body-xs: 11.5pt;  /* between sm and body */
   --fs-sm:      11pt;    /* small body — aligns to --fs-body-sm */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
@@ -94,7 +104,7 @@
   --fs-h3:      16pt;    /* sub-section, gear card titles; 1.25× below h2 */
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
-  --fs-h6:      9pt;     /* metadata only; 1.22× below h5 */
+  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; 1.10× below h5 */
 
   --fw-bold:     700;
 
@@ -103,7 +113,6 @@
 
   --ls-display: 0.1em;
   --ls-heading: 0.08em;
-  --ls-cap-sm:  3px;  /* mono micro-caps */
 
   /* ── Spacing — print units ────────────────────────────────────────────── */
   --space-xs:  0.05in;  /* ~3.6pt — tighter than --space-sm */
@@ -131,7 +140,7 @@
      outside three edges and 0.5in from the binding edge.
        top     0.625in  = 0.5in from the trim
        bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
-                          sit in this band)
+                          sit at the top of this band)
        outside 0.625in  = 0.5in from the trim
        binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
   --page-margin:   0.625in;
@@ -153,20 +162,21 @@
      The 4th creaturepunk register: spore-light, lichen-glow, UV-reactive
      bio-organic green family. Distinct from the gutter pillar (rust/blood)
      and the neon pillar (brand-magenta/cyan/yellow) — this is "alive and
-     glowing" rather than "signal" or "decay". CMYK-safe:
-       fungi-glow  ≈ C30/M0/Y90/K0  = 120%
-       fungi-rot   ≈ C50/M30/Y100/K60 = 240% (large fills only) */
-  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: .dc-outcome-row.hit, --gutterdruid-accent) */
-  --fungi-rot:   #2a4015;  /* deep moldering green — rot in dark places (consumed: .dc-outcome-row.fail; large-fill only — TAC 176%) */
+     glowing" rather than "signal" or "decay". Measured TAC (see the Ink &
+     Text note above): fungi-glow 116%, fungi-rot 268% (large fills only; was
+     #2a4015 at 274%). */
+  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: .dc-outcome-row.hit, --gutterdruid-accent) · TAC 116% (C26 M0 Y91 K0) */
+  --fungi-rot:   #30461e;  /* deep moldering green — rot in dark places (consumed: .dc-outcome-row.fail (large fills only)) · TAC 268% (C72 M47 Y97 K51) */
 
   /* ── Ancient Crystal Pillar (creaturepunk: faceted mineral refraction) ───
      The mineral-magic register: amethyst and aquamarine — geometric and
      refractive. Distinct from brand-violet (signal-saturated) and the warm
-     gold of brand-yellow (electric). CMYK-safe:
-       crystal-amethyst ≈ C50/M65/Y0/K35 = 150%
-       crystal-aqua     ≈ C70/M28/Y28/K20 = 146% */
-  --crystal-amethyst: #6a3a8a;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) */
-  --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) */
+     gold of brand-yellow (electric). Measured TAC (see the Ink & Text note
+     above): crystal-amethyst 173%, crystal-aqua 127%, crystal-slate 185%
+     (cool stone: the generalist). */
+  --crystal-amethyst: #6a3a8a;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) · TAC 173% (C71 M92 Y9 K1) */
+  --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 127% (C71 M26 Y30 K0) */
+  --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 5.4:1 · TAC 185% (C70 M54 Y43 K18) */
 
 }
 

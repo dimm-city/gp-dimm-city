@@ -178,10 +178,18 @@
   --frontmatter-accent: var(--brand-magenta-deep);
   --frontmatter-lede-bg: var(--concrete-pale);
   --dc-intro-accent: var(--frontmatter-accent);
+  --dc-intro-ink: var(--frontmatter-accent);  /* deep magenta: 5.8:1 on the concrete lede */
   --dc-intro-bg: var(--frontmatter-lede-bg);
   /* The lede stacks flush on the box below it (see "Lede flush-attaches"). */
   --dc-intro-gap: 0;
   --dc-intro-pad-bottom: 0;
+  --dc-intro-rule: 0px;     /* flush stack: no foot rule, it would show as a seam */
+}
+/* Credits and contents ledes are thanks and dedications, not an opening
+   statement: body size, regular weight. */
+.page:is(.dc-page-contents, .dc-page-credits) {
+  --dc-intro-size: var(--fs-body-sm);
+  --dc-intro-weight: 400;
 }
 
 /* Masthead — full-bleed dark band that escapes the page's 0.625in side
@@ -258,7 +266,7 @@
 /* The colophon's type: set on what the flat section holds, so it reaches the
    `@columns` run and the paragraphs and nothing else on the page. */
 .page.dc-page-credits .dc-section-flat > * {
-  font-size: 9.5pt;
+  font-size: var(--fs-floor);
   line-height: 1.35;
 }
 
@@ -271,9 +279,9 @@
    "**Designers:**") becomes a chrome label with an accent underline. */
 .page.dc-page-credits .dc-section-flat p strong:first-child {
   font-family: var(--font-mono);
-  font-size: 9pt;
+  font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   /* Ink, not the accent: the label reads as a label, only its underline
      carries the accent. */
@@ -344,37 +352,230 @@
   object-fit: cover;
 }
 
-/* Chapter-start page: the h1 drops core's rule and gets headroom below the
-   page top. The title is never fragmented across sheets and stays with the
-   first block after it (a title wraps to several lines in the display face,
-   so an opener that runs past its first page could leave one line of it at
-   the foot of a sheet and the rest on the next). */
+/* Chapter-start page: the title keeps headroom below the page top, is never
+   fragmented across sheets and stays with the first block after it (a title
+   wraps to several lines in the display face, so an opener that runs past its
+   first page could leave one line of it at the foot of a sheet and the rest on
+   the next). Its look, a banner, is "FREE-STANDING PAGE TEXT" below. */
 .page.dc-page-chapter-start > h1 {
-  border: 0;
   margin-top: 24pt;
   break-inside: avoid;
   break-after: avoid;
 }
 
-/* A chapter-start page with no fiction excerpt still opens like a chapter: the
-   title is a band in the chapter's accent (`--dc-section-accent`, which a
-   chapter word sets), and the paragraph straight under it is the lede (an
-   `@lede` there keeps its own look). A page that has a fiction excerpt keeps
-   the plain opener above; the excerpt supplies its shape. Only the page's own
-   h1 and paragraph are styled, never a component. */
-.page.dc-page-chapter-start:not(:has(.dc-fiction-excerpt)) > h1 {
+/* ── FREE-STANDING PAGE TEXT: nothing sits on the brick ──────────────────────
+   The wall is the page, not a reading surface. Text that is a direct child of
+   a page (or a chapter) with no component around it gets a substrate by
+   default, with no author markup:
+
+     # title            a BANNER: the chapter's accent, cream type, the
+                        banner's diagonal tail (`--clip-banner`)
+     ## heading         a paper SLIP pasted to the wall: cream, an accent rail
+                        on the left, a heavy dashed ink foot (the stencil
+                        line), a hard shadow, a strip of masking tape over
+                        the foot
+     ### heading        a plain slip: the same, no tape, a thinner rail
+     #### ##### ######  a label slip that shrinks to its words, ink frame
+     loose text         a paper SHEET: one run of paragraphs, lists and
+                        quotes is ONE sheet, cut off by whatever is not prose
+
+   Scope. Only a DIRECT child of `.page` or `.chapter` is free-standing; a
+   heading or paragraph inside a section, callout, card or any other component
+   is that component's, and its owner draws it. The design guide's explainer
+   pages (`@page .dg-doc`) print plain on white and are left alone; the
+   contents and credits pages draw their own masthead and colophon. A
+   `{.dc-chevron}` or `{.dc-spray}` heading already carries its own substrate.
+   A `@columns` run with nothing but prose in it is one sheet.
+
+   Safety. Nothing here is clipped except the title banner, whose own padding
+   (0.3in at its cut end) clears its diagonal; the slips are plain boxes, so no
+   glyph, rule or marker is cut. The tape hangs below the slip, never past a
+   page edge (a box past the content box makes the engine shrink the whole
+   document). Opaque, vector, no gradients. */
+
+/* THE GUARD. Every rule below is scoped to a direct child of a wall page or a
+   chapter, written once as `:where(...)` (zero specificity, so a rule that
+   styles the same element more specifically, the chapter-start lede, wins),
+   and to an element a component has NOT claimed: `[class*="dc-"]` means
+   "a component emitted this" (`ol.dc-steps` from `@procedure`, `div.dc-intro`,
+   `div.dc-toc`, `p.dc-img-wrapper`, `h2.dc-chevron`), and the look classes
+   `.dc-h3`-`.dc-h6`, `.dc-snug` and `.dc-avoid-split` are the only `dc-`
+   classes that still leave a plain element plain. This sheet's layer
+   (`dc.templates`) outranks `dc.components`, so without the guard these rules
+   would repaint a component's own bare element.
+   test/conventions.test.js ("free-standing page text") keeps it that way. */
+
+/* TITLE BANNER. A chapter-start title was already a banner when no fiction
+   excerpt followed it; now it always is, and so is any page's `#`. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h1:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   background: var(--dc-section-accent);
-  color: var(--paper-cream);
+  color: var(--dc-page-title-ink);
+  border: 0;
   padding: 0.2in 0.3in 0.16in 0.22in;
   margin-bottom: var(--space-lg);
   clip-path: var(--clip-banner);
 }
-.page.dc-page-chapter-start:not(:has(.dc-fiction-excerpt)) > h1 + p {
+
+/* LEDE under a chapter-start title: the paragraph straight below it is the
+   page's lede, on the prose sheet below, with the chapter's accent as its
+   rail. An `@lede` there keeps its own look. */
+.page.dc-page-chapter-start:not(.dg-doc) > h1 + p {
   font-size: var(--fs-h4);
+  font-weight: 600;
   line-height: var(--lh-normal);
-  padding-left: var(--space-lg);
-  margin-bottom: var(--space-lg);
   border-left: 5px solid var(--dc-section-accent);
+  padding-left: var(--space-lg);
+  break-after: avoid;
+}
+
+/* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
+   jams against the box above it. A heading never ends a page (`break-after`,
+   which the tape pseudo-element does not disturb: it is out of flow). */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  position: relative;
+  background: var(--dc-page-slip-bg);
+  color: var(--dc-page-slip-ink);
+  border: 0;
+  border-bottom: 3pt dashed var(--dc-page-slip-edge);
+  box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+  padding: 0.075in 0.14in 0.07in 0.24in;
+  margin: var(--dc-page-slip-gap) 0 var(--space-md);
+  break-after: avoid;
+  break-inside: avoid;
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
+  margin-top: 0;
+}
+
+/* `##`: the poster slip. Masking tape taped over the dashed foot, a few
+   degrees off square. It hangs below the slip, into the gap that follows every
+   heading (a heading never ends a page), never over the page's top edge, and
+   its top ends inside the slip's foot padding, so it never touches a glyph. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  right: 0.5in;
+  width: 0.42in;
+  height: 11px;
+  background: var(--dc-page-slip-tape);
+  border: 1px solid var(--dc-page-slip-edge);
+  border-width: 1px 0;
+  rotate: -2.5deg;
+}
+
+/* `###`: a hung tag: it shrinks to its words, a thinner rail and foot, and
+   hangs in a little from the left; every second one hangs further, so a wall
+   page reads as posters put up by hand, not one column of cards. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  width: fit-content;
+  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
+  margin-left: var(--dc-page-slip-offset);
+  border-bottom-width: 2pt;
+  box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+  padding: 0.06in 0.12in 0.05in 0.2in;
+}
+
+/* `####` and below: a label slip that shrinks to its words, framed in ink. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  width: fit-content;
+  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
+  margin: var(--dc-page-slip-gap) 0 var(--space-sm) var(--dc-page-slip-offset);
+  border: 1.5pt solid var(--dc-page-slip-edge);
+  box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+  padding: 0.05in 0.12in 0.04in 0.2in;
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):nth-of-type(even) {
+  margin-left: calc(2.5 * var(--dc-page-slip-offset));
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
+  margin-top: 0;
+}
+
+/* LOOSE TEXT: one paper sheet per run. A paragraph, list or quote that is a
+   direct child of a page is on the sheet; consecutive ones join (no gap, the
+   same face and shadow, so the shadow reads as one) and the sheet ends where
+   the run ends. A picture paragraph (an image on its own line) is not text
+   and is left to the image rules. Three orphans and three widows keep a split
+   sheet from leaving a one- or two-line scrap of paper on the next page. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)) {
+  background: var(--dc-page-slip-bg);
+  box-shadow: var(--dc-page-slip-shadow);
+  padding: 0.05in var(--dc-page-sheet-pad);
+  margin: 0;
+  orphans: 3;
+  widows: 3;
+}
+/* the run's first block takes the sheet's top edge, its last the sheet's foot and the gap to what follows */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child), :is(p, ul, ol, blockquote) + :is(p, ul, ol, blockquote)) {
+  padding-top: 0.1in;
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)):is(:last-child, :has(+ :not(p, ul, ol, blockquote), + .dc-img-wrapper)) {
+  padding-bottom: 0.1in;
+  margin-bottom: var(--space-md);
+}
+/* a list in the sheet keeps its markers inside the sheet's padding */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul, ol):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  padding-left: calc(var(--dc-page-sheet-pad) + 0.25in);
+}
+
+/* A `@columns` run with nothing but prose in it is one sheet, whole. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > .gp-columns:not(:has(> :not(p, ul, ol, blockquote, hr, h2, h3, h4, h5, h6, [aria-hidden]))) {
+  background: var(--dc-page-slip-bg);
+  box-shadow: var(--dc-page-slip-shadow);
+  padding: 0.1in var(--dc-page-sheet-pad);
+  margin-bottom: var(--space-md);
+}
+
+/* HEADING AFTER A BOX. A box (an outcome ladder, a stat grid, a callout, a
+   table) spaces itself with a bottom margin of its own or none, so a heading
+   straight after one could sit hard against it ("Distance Tags" under the
+   ladder). The heading takes `--dc-heading-gap` above it. Plain headings only:
+   a component's own heading (`.dc-chevron`, `.dc-spray`, a card title) is its
+   owner's. */
+:is(.dc-outcomes, .dc-stat, .dc-alert, .dc-roll-table, table) + :is(h2, h3, h4):not([class*="dc-"]) {
+  margin-top: var(--dc-heading-gap);
+}
+
+/* ── PAGE WORD: `@page specialty-catalog` — the catalog as a two-page spread ──
+   The ten specialty cards as a designed spread, not a column run that happens
+   to cross a page. It opens on a LEFT page, so its two pages face each other:
+   the title, the lede and the first four cards on the left, the other six on
+   the right, in aligned rows of equal height (wrapped flex rows, so the cards of a row
+   share one height and every row is at least as tall as the rest). Each card is a
+   poster: the portrait on top, then the name, the tagline, the pitch, and an
+   index chip on the portrait. A location: it sets tokens and break rules, and
+   nothing else. Whatever follows the grid begins a page of its own (write a
+   plain `@page` after `@end-card-grid`). The Variant Gallery's @card-grid is on
+   no such page and stays the dense card with a floated thumbnail. */
+.page.dc-page-specialty-catalog {
+  break-before: left;
+  --dc-card-grid-display: flex;
+  --dc-card-grid-item-display: flex;
+  --dc-card-grid-row: 3.05in;
+  --dc-card-grid-gap: 0.12in;
+  --dc-intro-size: var(--fs-body-sm);  /* the lede at body size, so the left page holds two rows of cards */
+}
+
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty-card {
+  --dc-specialty-card-display: flex;
+  --dc-specialty-card-media-order: -1;
+  --dc-specialty-card-media-float: none;
+  --dc-specialty-card-media-float-even: none;
+  --dc-specialty-card-media-margin: 0 0 0.14in;
+  --dc-specialty-card-media-margin-even: 0 0 0.14in;
+  --dc-specialty-card-media-width: 100%;
+  --dc-specialty-card-media-height: 1in;
+  --dc-specialty-card-media-mat: 2px;
+  --dc-specialty-card-media-shape: var(--spec-media-shape);
+  --dc-specialty-card-name-size: 1em;
+  --dc-specialty-card-index: counter(dc-specialty, decimal-leading-zero);
+  --dc-specialty-card-title-align: left;
+}
+
+/* A tape divider (`.dc-tape`: the MASTERS strip between creature blocks, a
+   section break) never ends a page: it travels with what follows it. */
+.dc-tape {
   break-after: avoid;
 }
 
@@ -444,9 +645,11 @@
 .page.dc-page-intro {
   --intro-accent: var(--brand-magenta-deep);
   --dc-intro-accent: var(--intro-accent);
+  --dc-intro-ink: var(--intro-accent);
   --dc-chevron-bg: var(--brand-magenta-deep);
   --dc-intro-gap: 0;           /* the lede attaches flush to the chevron above and the section below */
   --dc-intro-pad-bottom: 0;
+  --dc-intro-rule: 0px;
 }
 
 /* The chevron on the standalone intro page is the standard .dc-chevron at
@@ -465,11 +668,11 @@
 }
 
 /* ── CHAPTER-START PAGE: fiction excerpt edge ───────────────────────────────
-   A fiction excerpt on a chapter-start page takes the heavier opener edge
-   (2px ink top and bottom) over the recess every excerpt has. Tokens only;
-   the excerpt's own look is in components/section.css. */
+   A fiction excerpt on a chapter-start page sinks deeper into the wall: the
+   hole casts a 10px shadow on the page instead of 6px. Tokens only; the
+   excerpt's own look is in components/section.css. */
 .page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-rule: 2px;
+  --dc-fiction-depth: 10px;
 }
 
 /* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───

@@ -6,7 +6,7 @@
 
 @fiction-excerpt
 
-![01-street-sign](https://placehold.co/600x800/png?text=Street+Sign){.fg-art-street-sign}
+![01-street-sign](img/placeholder-street-sign.png){.fg-art-street-sign}
 
 Hologram haze cuts the gloom you're stumbling through. Flickering ads claw the air above blades of neon that contrast the scents of burnt oil and hot garbage. On the littered pavement around you, other pedestrians in the murk shuffle past, lit by glitchy devices and glowing bodymods.
 
@@ -41,14 +41,17 @@ Learn the core loop first. Everything else builds on it.
 @end-section
 
 
+@page
+
 @section panel
+
 ## Dreams {#c1-dreams}
 
 In Dimm City RPG, you're not "pretending to be someone else." You're fighting for a pulse in a city that chews nobodies into mulch. You and your crew aren't telling a story—you're tagging the city with it. One of you hijacks the world as Dream Master (DM). The rest strap in as the degenerates desperate enough to survive it.
 
 @end-section
 
-@section panel
+@section lore
 
 ## The City
 
@@ -112,7 +115,7 @@ Some abilities shift your odds.
 
 @columns 2
 
-@definition
+@definition lucid
 
 #### Lucid
 
@@ -122,7 +125,7 @@ Roll 2d20, take the higher. You're sharp, aligned, in control. When you roll a 2
 
 @column-break
 
-@definition
+@definition surreal
 
 #### Surreal
 
@@ -134,7 +137,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 @end-section
 
-@section panel
+@section reference
 
 ### Augment Points
 
@@ -147,7 +150,7 @@ If an ability lists an AP cost, you spend it and the effect happens. No charge-u
 
 @end-section
 
-@section panel
+@section reference
 
 ### Status Conditions
 
