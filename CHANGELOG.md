@@ -7,6 +7,18 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-10-15
+
+### Fixed
+
+- **A long table of choices splits between rows.** A table of 12 rows or more
+  in a `choose` section (`@flaws`, `@ideals`, `@section choose`) may now break
+  between rows; each row is a whole option and the header repeats. At the 10pt
+  floor the Field Guide's 19-row Flaw table no longer fit under its heading,
+  so the whole table jumped to the next page, left the opening page empty and
+  pushed the section's last two lines onto a third page. Shorter tables, and
+  tables outside `choose` sections, still stay whole.
+
 ## [1.7.0] - 2026-10-15
 
 A redesign pass by component family. A reader should know what kind of box they
