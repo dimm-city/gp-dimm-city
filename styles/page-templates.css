@@ -585,9 +585,10 @@
    follows it (a @lede, or the next card) opens the right page, and Generalist
    closes that page. The cards keep the book's order (no `order`): the
    preview places a page break by document order, so a reordered card would
-   land on the wrong page there. */
+   land on the wrong page there. The break is a literal `page`, not a token:
+   the preview honours only a literal forced break. */
 .dc-page-specialty-catalog .dc-card-grid .dc-specialty.dualist + * {
-  --dc-card-grid-item-break: page;
+  break-before: page;
 }
 .dc-page-specialty-catalog .dc-card-grid .dc-specialty:is(.dualist, .generalist) {
   --dc-card-grid-item-span: 2;

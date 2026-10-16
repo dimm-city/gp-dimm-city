@@ -380,22 +380,18 @@
   gap: var(--dc-card-grid-gap) var(--gp-column-gap);
 }
 
-/* A card spans one column or both (--dc-card-grid-item-span, 1 or 2), is at
-   least --dc-card-grid-row tall, and a page may break before one
-   (--dc-card-grid-item-break). */
+/* A card spans one column or both (--dc-card-grid-item-span, 1 or 2) and is
+   at least --dc-card-grid-row tall. */
 .dc-card-grid .dc-specialty {
   display: var(--dc-card-grid-item-display);
   flex-direction: column;
   grid-column: span var(--dc-card-grid-item-span);
   min-height: var(--dc-card-grid-row);
-  break-before: var(--dc-card-grid-item-break);
 }
 
-/* Anything else in the grid (a @lede between the cards) takes a whole row,
-   and a page may break before it too. */
+/* Anything else in the grid (a @lede between the cards) takes a whole row. */
 .dc-card-grid > .gp-columns > :not(.dc-specialty) {
   grid-column: 1 / -1;
-  break-before: var(--dc-card-grid-item-break);
 }
 
 .dc-card-grid .dc-specialty-card {
