@@ -7,6 +7,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The page clip guard is scoped in one selector.** `.page` clips its
+  horizontal overflow (a guard against Chromium's whole-document
+  shrink-to-fit) except on a page holding pinned or bleed art. That exception
+  was a second rule resetting `overflow-x: visible`, which Gutterpress's
+  `printsafe/page-containment` check cannot see, so every build warned. The
+  guard is now `.page:not(:has(.gp-bleed, .gp-pin, .gp-behind,
+  .dc-specialty-art, .dc-full-page))`: the same pages clip, and the warning is
+  gone.
+
 ## [1.8.0] - 2026-10-16
 
 ### Changed
