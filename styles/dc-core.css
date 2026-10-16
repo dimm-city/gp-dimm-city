@@ -77,6 +77,10 @@ body {
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
+  font-weight: 400;
+  /* `**bold**` in a heading asks for a bolder Lixdu, which has none: print it
+     in Lixdu's own stroke rather than a synthetic (Type 3) bold. */
+  font-synthesis-weight: none;
   letter-spacing: var(--ls-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
@@ -90,7 +94,6 @@ h1, h2, h3, h4, h5, h6,
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
 h1 {
   font-size: var(--fs-h1);
-  font-weight: var(--fw-bold);
   letter-spacing: 0.2em;
   margin-bottom: 0.75em;
   color: var(--hud-magenta);
@@ -116,7 +119,6 @@ h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink-dust); let
 /* What h1/h2 add that no lower look has: clear it when a look class is on
    one of those tags. */
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
-  font-weight: var(--fw-bold);
   margin-bottom: 0.5em;
   border-bottom: 0;
   padding-bottom: 0;

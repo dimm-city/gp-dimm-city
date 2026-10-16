@@ -113,6 +113,13 @@
  * (@end-learning-path, a new @learning-path, @end-specialty, @page, EOF).
  */
 
+// The "continued" mark on a continuation card's tab: a drawn triangle, not a
+// ▸ character. No Dimm City font has that glyph, so Chromium borrowed one
+// from a system font and printed it as a Type 3 font, which Gutterpress's
+// PDF/X preserve-text split cannot keep. It takes the tab title's colour.
+const CONTINUED_MARK =
+  '<svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg>';
+
 function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
           .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -952,7 +959,7 @@ function dcSkillCards(state) {
         emit(
           cardOpen(true) +
           '  <div class="dc-card-tab dc-card-tab-cont">\n' +
-          '    <span class="dc-tab-title">' + esc(title.name) + ' ▸</span>\n' +
+          '    <span class="dc-tab-title">' + esc(title.name) + ' ' + CONTINUED_MARK + '</span>\n' +
           (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
           '  </div>\n' +
           '  <div class="dc-card-body">\n' +

@@ -38,8 +38,10 @@
   padding-right: 0;
   position: relative;
   /* Both pseudos sit at negative z-index; this is the stacking context that
-     keeps them behind THIS shell's content instead of behind the page. */
+     keeps them behind THIS shell's content instead of behind the page. It
+     paints its own soft lift first, under both. */
   isolation: isolate;
+  box-shadow: var(--shadow-lift);
 }
 
 /* Background + clip-path on ::before — the element itself stays unclipped so
@@ -109,7 +111,7 @@
    redrawn here. */
 .dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
-  background: var(--dc-path-title-bg);
+  background: var(--light-gloss), var(--dc-path-title-bg);
   clip-path: var(--dc-path-title-shape);
   /* the slanted rule (::after) overhangs the band by --dc-band-rule-bleed; the
      clip-path trims it on paper, this keeps it out of the page's scroll width
@@ -385,8 +387,8 @@
       var(--row-color, var(--ink)) 50%,
       color-mix(in srgb, var(--row-color, var(--ink)) 96%, var(--ink) 4%) 100%); /* PDF/X-1a: pre-composite to ~96% row colour + 4% ink; on the default --ink (#1e1d1c) */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, var(--row-color, var(--ink))),
-    inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, var(--row-color, var(--ink)));
+    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, transparent);
   /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
      to --ink because the fungi-glow fill is too light for cream text: 1.24:1)
      propagates to the chip element itself, not just to its children. Default
@@ -419,7 +421,7 @@
 .dc-outcome-key .dc-outcome-roll {
   font-family: var(--font-display);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.03em;
   color: var(--dc-outcome-key-color);
   display: block;
@@ -529,6 +531,7 @@
 
 .dc-roll-table-name {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: var(--fs-h5);
   letter-spacing: var(--ls-heading);
   text-transform: uppercase;
@@ -586,6 +589,7 @@
   top: -6px;
   left: 10px;
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 48px;
   color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));
   line-height: 1;
@@ -724,6 +728,7 @@
    heading and a divider. A bold lead (`**Term** — gloss`) needs nothing. */
 .dc-definition-block > h4 {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: var(--fs-h5);
   font-style: normal;
   letter-spacing: var(--ls-heading);
@@ -825,6 +830,7 @@
 
 .dc-stat-cell-val {
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 26px;
   letter-spacing: 0.04em;
   color: var(--orange);
@@ -1053,6 +1059,7 @@ p.dc-img-wrapper {
   margin: 0;
   padding: 0 8px;
   font-family: var(--font-display);
+  font-weight: 400;
   font-size: 24px;
   letter-spacing: 0.04em;
   line-height: 1.1;

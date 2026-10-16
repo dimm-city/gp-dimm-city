@@ -63,6 +63,14 @@ page:
   height: 810
   tolerance: 0.5
 
+# PDF/X keeps text live on pages that use transparency (soft shadows,
+# translucent tape): Gutterpress flattens only their artwork, at 300 DPI.
+# Needs Gutterpress 0.11.20 or later. This book is the package's print
+# qualification (docs/print-qualification.md), so it builds in the mode the
+# styles are written for.
+pdfx:
+  transparency: preserve-text
+
 validate:
   source:
     markdownlint: ../.markdownlint.jsonc

@@ -45,7 +45,8 @@
    the RGBA source (source-art/brick-bg-01.png in the repository; it is not
    published) and, with Pillow: Image.composite(ImageChops.multiply(bg,
    src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
-   of the new --bg. */
+   of the new --bg, then resize it to 900px wide (Lanczos): the tile prints
+   1.5in wide, so 900px is 600 DPI, twice the 300 DPI print bar. */
 @page {
   background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
@@ -134,7 +135,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px calc(8px - 0.06em) 0 8px;
@@ -157,7 +158,7 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px calc(8px - 0.06em) 0 8px;
@@ -196,7 +197,10 @@
    margin (0.875in); the tab hangs from 0.625in below the sheet top
    (DriveThruRPG's 0.5in text minimum, trim being 0.125in in), 17pt tall, so it
    ends at the top of the text block. The top margin boxes anchor at the sheet edge, so
-   the offset is a margin. */
+   the offset is a margin. Across, the tab runs to the sheet's outer edge
+   (Chromium 148 places the corner box there), so the padding on that side is
+   the outer margin: the words stop at the text block's edge, 0.5in inside
+   the trim, as DriveThruRPG requires, and only the amber face bleeds. */
 @page citizen-file:right {
   @top-right {
     width: fit-content;
@@ -207,10 +211,10 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px calc(9px - 0.1em) 0 9px;
+    padding: 2px calc(var(--outer-margin) - 0.1em) 0 9px;
     color: var(--paper-cream);
     background: var(--amber);
     border: 1px solid var(--ink-dark);
@@ -227,10 +231,10 @@
     line-height: 1;
     font-family: var(--font-display);
     font-size: var(--fs-floor);
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px calc(9px - 0.1em) 0 9px;
+    padding: 2px calc(9px - 0.1em) 0 var(--outer-margin);
     color: var(--paper-cream);
     background: var(--amber);
     border: 1px solid var(--ink-dark);
@@ -258,7 +262,7 @@
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so
    suppression is just clearing the chip's content, which makes
-   page-rules.css's own `@page chapter-start` / `@page full` `content: none`
+   page-rules.css's own `@page front-matter` / `@page full` `content: none`
    blocks sufficient on their own; only `:blank` has no counterpart there, so
    only `:blank` is restated here. */
 @page :blank {

@@ -123,25 +123,62 @@ describe("stylesheets", () => {
     }
   });
 
-  // PDF/X-1a (DriveThruRPG) carries no transparency: Ghostscript flattens any
-  // page that uses it to a raster image — no live text, and black text stays
-  // four-colour. Every colour is opaque; see docs/print-transparency-inventory.md.
-  test("paint nothing transparent (PDF/X-1a)", () => {
-    const ALPHA = [
-      [/rgba\(|hsla\(/, "an rgba()/hsla() colour"],
-      [/(^|[^-\w])opacity\s*:\s*0?\.\d/, "opacity below 1"],
-      [/#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])/, "a hex colour with alpha"],
-      [/mix-blend-mode\s*:\s*(?!normal)|background-blend-mode\s*:\s*(?!normal)/, "a blend mode"],
-      [/gradient\([^;]*\btransparent\b/, "a transparent gradient stop"],
-      // PDF/X drops a repeating gradient outright (the tape's dashes vanished)
-      // and a preserve-text build flattens its page (#41): tile an ordinary one
-      [/repeating-(linear|radial|conic)-gradient\(/, "a repeating gradient"],
-      [/(box|text)-shadow\s*:[^;]*?-?\d[\d.]*(px|pt)\s+-?\d[\d.]*(px|pt)\s+[1-9][\d.]*(px|pt)\s/, "a blurred shadow"],
-    ];
+  // PDF/X drops a repeating gradient outright (the tape's dashes vanished),
+  // and a preserve-text build flattens its whole page, text included (#41):
+  // tile an ordinary gradient instead.
+  test("use no repeating gradient (PDF/X)", () => {
+    const found = [];
+    for (const rel of sheets) {
+      if (/repeating-(linear|radial|conic)-gradient\(/.test(stripComments(read(rel)))) found.push(rel);
+    }
+    expect(found).toEqual([]);
+  });
+
+  // PDF/X-1a (DriveThruRPG) carries no transparency. Gutterpress flattens the
+  // artwork of a page that uses it and keeps the text live on top (#385), so
+  // shadows and tints may be translucent, but text itself must stay opaque:
+  // translucent glyphs print fully opaque there. Pre-mix text colours with
+  // color-mix() onto their surface; see docs/print-transparency-inventory.md.
+  // Lixdu ships one face (regular). A bold weight makes Chromium synthesize a
+  // bold, which prints as a Type 3 font that PDF/X preserve-text cannot keep.
+  test("set the display font at its own weight (no synthetic bold)", () => {
+    const found = [];
+    for (const rel of [...sheets, "design-guide/styles/guide.css"]) {
+      const css = stripComments(read(rel));
+      for (const [block] of css.matchAll(/\{[^{}]*font-family:\s*var\(--font-display\)[^{}]*\}/g)) {
+        if (!/font-weight:\s*400\s*;/.test(block)) found.push(`${rel}: ${block.slice(0, 80)}`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
+  // A `filter` on an element that holds text makes Chromium print that text
+  // as a picture, in the plain PDF as well as the PDF/X. Shadows are
+  // box-shadow (which keeps text live); a filter may sit only on a
+  // text-free ::before/::after layer.
+  test("put a filter only on a ::before or ::after layer", () => {
     const found = [];
     for (const rel of sheets) {
       const css = stripComments(read(rel));
-      for (const [re, what] of ALPHA) if (re.test(css)) found.push(`${rel}: ${what}`);
+      for (const [, selectors] of css.matchAll(/([^{}]*)\{[^{}]*(?:^|[;{\s])(?:-webkit-)?filter\s*:[^;}]*/g)) {
+        for (const sel of selectors.split(",")) {
+          if (!/::?(before|after)\s*$/.test(sel.trim())) found.push(`${rel}: ${sel.trim()}`);
+        }
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
+  test("keep text opaque (PDF/X-1a)", () => {
+    const TEXT_PAINT = /(?:^|[;{\s])(color|-webkit-text-fill-color|-webkit-text-stroke-color|text-decoration-color|text-shadow)\s*:([^;}]*)/g;
+    const ALPHA = /rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|color-mix\([^;]*\btransparent\b/;
+    const found = [];
+    for (const rel of sheets) {
+      const css = stripComments(read(rel));
+      for (const [, prop, value] of css.matchAll(TEXT_PAINT)) {
+        if (ALPHA.test(value)) found.push(`${rel}: ${prop}: ${value.trim()}`);
+      }
+      if (/(^|[^-\w])opacity\s*:\s*0?\.\d/.test(css)) found.push(`${rel}: opacity below 1`);
     }
     expect(found).toEqual([]);
   });

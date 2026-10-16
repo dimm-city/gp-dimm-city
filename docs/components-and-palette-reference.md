@@ -250,8 +250,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Shadows & Utility
 | Token | Value | Role |
 |---|---|---|
-| `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard, opaque offset (PDF/X-1a safe) |
-| `--shadow-ink` | `color-mix(in srgb, #000 28%, var(--wall-tone))` | Opaque ink-on-wall shadow colour (the source of `--shadow-poster`) |
+| `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard offset |
+| `--shadow-ink` | `color-mix(in srgb, var(--ink) 28%, transparent)` | Translucent shadow colour, so the wall darkens under it (the source of `--shadow-poster`) |
 | `--tint-magenta-rose` | `#e6007a` | Pullquote accent / paper-stain rule mix source |
 | `--tint-hud-teal` | `#2a6a8a` | Inset-sidebar callout mix source |
 
@@ -361,13 +361,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-specialty-card-bg` | `--paper-cream` | Card background |
-| `--dc-specialty-card-border` | `--hud-blue` | Card border color |
 | `--dc-specialty-card-accent` | `--crimson` | Card accent |
 | `--dc-specialty-card-fg` | `--ink` | Card text |
 | `--dc-specialty-card-media-height` | `0.85in` | Portrait image height |
 | `--dc-specialty-card-media-width` | `0.75in` | Portrait image width |
 | `--dc-specialty-card-title-align` | `right` | Name heading alignment |
-| `--dc-specialty-card-band-height` | `16pt` | Accent band height |
+| `--dc-specialty-card-band-bg` | the accent | Name band fill (in a specialty: its banner colour) |
+| `--dc-specialty-card-band-fg` | `--paper-cream` | Type on the name band |
+| `--dc-specialty-card-band-shape` | `none` | Name band clip (in a specialty: its banner cut) |
+| `--dc-specialty-card-shell-shape` | a chamfer | The sheet's silhouette (in a specialty: its banner's) |
+| `--dc-specialty-card-pad-x` | `0.18in` | The sheet's side padding (the band bleeds out over it) |
 
 ### Block (`.dc-block`)
 | Token | Default | Role |

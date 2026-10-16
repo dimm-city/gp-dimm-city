@@ -47,6 +47,8 @@
   --dc-section-recess-shade: var(--ink-dark);
   --dc-section-recess-lip:   var(--paper-cream);
   --dc-section-recess-foot:  0px;                 /* how far the sheet's hanging edge stops short of the lip */
+  --dc-section-lift:         var(--shadow-soft);  /* the soft lift's colour; transparent on a recessed kind */
+  --dc-section-hard-shadow:  color-mix(in srgb, var(--ink-dark) 82%, transparent);  /* the hard offset copy; translucent, so the brick reads through */
   --dc-section-top:          0px;                 /* extra padding on top inside the box: a kind that draws a tab (dm) reserves its height here */
   --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
   --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
@@ -186,13 +188,14 @@
 
   /* .dc-specialty-card public API */
   --dc-specialty-card-bg:          var(--paper-cream);
-  --dc-specialty-card-border:      var(--hud-blue);
   --dc-specialty-card-accent:      var(--crimson);
   --dc-specialty-card-fg:          var(--ink);
   --dc-specialty-card-media-height: 0.85in;
   --dc-specialty-card-media-width:  0.75in;
   --dc-specialty-card-title-align: right;
-  --dc-specialty-card-band-height: 16pt;
+  --dc-specialty-card-band-bg:     var(--dc-specialty-card-accent);
+  --dc-specialty-card-band-fg:     var(--paper-cream);
+  --dc-specialty-card-pad-x:       0.18in;      /* side padding; the name band reaches out through it */
   /* The card's layout. Defaults are the dense catalog card (a small portrait
      floated beside the text, the grid in columns); the specialty-catalog page
      sets them for the tall poster card in a grid of equal rows. */
@@ -205,10 +208,12 @@
   --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
   --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
   --dc-specialty-card-name-size:    1.15em;
-  --dc-specialty-card-index:        none;        /* a counter() draws the number chip on the portrait */
-  --dc-card-grid-display:           block;       /* flex: aligned rows, two cards across */
+  --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
-  --dc-card-grid-row:               0;           /* the least height of a row */
+  --dc-card-grid-row:               0;           /* the least height of a card in the grid */
+  --dc-card-grid-item-span:         1;           /* 2: the card spans both columns */
+  --dc-card-grid-row-wide:          0;           /* the least height of a card spanning both columns */
+  --dc-card-grid-media-wide:        1in;         /* the portrait of a card spanning both columns */
   --dc-card-grid-gap:               0.16in;
 
   /* .dc-block public API */
@@ -414,7 +419,7 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, var(--dc-pullquote-bg));
+  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, transparent);
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* The text-safe ink of whatever component the prose sits in: ROLL THE DIE!
@@ -427,8 +432,9 @@
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
   --dc-skill-tab-shape:      polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
 
-  /* .dc-specialty-card extra public API (shadow + shape + title) */
-  --dc-specialty-card-shadow:      none;
+  /* .dc-specialty-card extra public API (shapes + title). Inside a
+     .dc-specialty both shapes are the specialty's path-banner cuts. */
+  --dc-specialty-card-band-shape:  none;
   --dc-specialty-card-shell-shape: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 18px), calc(100% - 24px) 100%, 0 100%);
   --dc-specialty-card-title-color: var(--dc-specialty-card-accent);
 

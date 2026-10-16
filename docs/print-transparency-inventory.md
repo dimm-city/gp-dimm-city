@@ -1,10 +1,24 @@
 # Print transparency inventory
 
+> **Update (Gutterpress #385).** Gutterpress's `pdfx.transparency:
+> preserve-text` flattens a page's artwork and keeps its text live, so the
+> poster shadow (`--shadow-ink`), the sticker and path-chip shadows, the rule
+> divider, the spray smudge, the pull-quote accent and the AP-chip and
+> outcome-key bevels are translucent again (see CHANGELOG, Unreleased).
+> Text colours stay pre-mixed: a translucent glyph prints opaque on a split
+> page. The wall tile stays opaque and `--wall-tone` is gone. 1.8.0 adds
+> more translucent artwork on top: soft lifts (`--shadow-lift`, the section's
+> `--dc-section-lift`), soft insets (`--shadow-press`), a translucent section
+> hard shadow and tape, and the band and tab gloss (`--light-gloss`). No `filter` sits on an element
+> that holds text (a convention test enforces it). The table records the
+> opaque values from the 1.7 series; some of those components have since been
+> redesigned.
+
 **Why this exists.** PDF/X-1a, the format DriveThruRPG accepts for print, has no transparency. Ghostscript flattens any page that uses it into a single raster image. That page loses its live text and embedded fonts, and gutterpress's `pdfx.blackText: k-only` rewrite (black text on the black plate only) can't reach its text. This package used transparency in 26 places: an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`. On the Field Guide, **185 of 232 pages** came out image-only.
 
 Every one of those uses is now opaque. Each colour is **pre-composited** with `color-mix()`: it is the colour the transparency produced on the surface it sits on. The brick wall is an opaque tile baked the same way. This document lists every change, so the books can be checked visually against it.
 
-A test enforces it: `test/conventions.test.js` → *paint nothing transparent (PDF/X-1a)* fails on any `rgba()`/`hsla()`, `opacity` below 1, 8-digit hex, blend mode, transparent gradient stop or blurred shadow in the package's stylesheets.
+Tests enforce what still matters: `test/conventions.test.js` → *keep text opaque (PDF/X-1a)* fails on a translucent text colour or `opacity` below 1, and *use no repeating gradient (PDF/X)* on any repeating gradient.
 
 ## How to verify a book
 
@@ -143,5 +157,5 @@ There are two fixes, and both belong to the book:
 
 - [ ] Design guide: Variant Gallery, chapter openers, ch.5 components: shadows read as shadows, tints unchanged.
 - [ ] Field Guide: a skill-tree spread (cards, AP chips, path stickers), a pull quote, a tape divider, the credits page.
-- [ ] `bun test`: *paint nothing transparent (PDF/X-1a)* passes.
+- [ ] `bun test`: *keep text opaque (PDF/X-1a)* and *use no repeating gradient (PDF/X)* pass.
 - [ ] PDF/X build: pages without alpha art keep live text (`pdftotext`).

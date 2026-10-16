@@ -12,15 +12,30 @@
   --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels · TAC 32% (C10 M9 Y13 K0) */
   --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
-  /* Poster-wall shadow — hard offset, no blur. Pins paper-register
-     components to the wall as physical objects, "stuck on the wall"
-     rather than "embedded in the page." */
-  /* The wall's average colour (mean of images/brick-wall.png). Shadows and
-     tints that land on the wall pre-composite against it: PDF/X-1a carries
-     no transparency (see docs/print-transparency-inventory.md). */
-  --wall-tone: #c1beb8;  /* TAC 70% (C24 M21 Y25 K0) */
-  --shadow-ink: color-mix(in srgb, var(--ink) 28%, var(--wall-tone));  /* opaque ink-on-wall shadow colour */
-  --shadow-poster: 2pt 3pt 0 var(--shadow-ink);
+  /* Poster-wall shadow — a hard offset that pins paper-register components to
+     the wall as physical objects ("stuck on the wall", not "embedded in the
+     page"), over a soft lift (below).
+     Translucent, so the wall's texture darkens under it. A PDF/X build
+     flattens the pages that use transparency and keeps their text live
+     (Gutterpress #385; see docs/print-transparency-inventory.md). */
+  --shadow-ink: color-mix(in srgb, var(--ink) 28%, transparent);
+  /* Depth (PDF/X preserve-text keeps text live over soft effects; see
+     docs/constitution.md §II "Depth"). Anything hung on the wall casts two
+     shadows: the hard contact edge (--shadow-ink, offset, no blur) that pins it
+     like a poster, and a soft ambient lift under it. The lift is pulled in
+     (negative spread), so it never shows past a clipped corner and only its
+     falloff reaches the wall. Blur comes only from box-shadow or a blurred
+     empty layer, never from `filter` on anything that holds text: Chromium
+     prints a filtered subtree, text included, as a picture. */
+  --shadow-soft: color-mix(in srgb, var(--ink) 34%, transparent);
+  --shadow-lift: 3pt 7pt 12pt -5pt var(--shadow-soft);
+  --shadow-poster: 2pt 3pt 0 var(--shadow-ink), var(--shadow-lift);
+  /* Recess: the soft falloff under a hard cast-shadow band, for anything sunk
+     into the wall (the fiction cavity, the lore/dm/choose sheets). */
+  --shadow-press: color-mix(in srgb, var(--ink-dark) 42%, transparent);
+  /* Light: a soft highlight across the top of a digital-display fill (a band,
+     a tab, a chip): the LED panel's sheen, layered over its colour. */
+  --light-gloss: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, transparent), transparent 62%);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────
      TAC figures in this file are MEASURED, not estimated: a swatch PDF
@@ -82,6 +97,10 @@
   --tint-hud-teal:     #2a6a8a;/* TAC 175% (C85 M52 Y31 K8) */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
+  /* Lixdu has one face, regular. Every rule that sets --font-display sets
+     font-weight: 400 (a test enforces it): a bold weight makes Chromium
+     synthesize a bold, which prints as a Type 3 font that Gutterpress's
+     PDF/X preserve-text split cannot keep (gutterpress#385). */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
   --font-tab:     'Tomorrow', 'lixdu', sans-serif;
   --font-body:    'Titillium Web', Georgia, sans-serif;

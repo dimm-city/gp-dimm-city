@@ -8,7 +8,7 @@
    - @page margin box CONTENT (the folio and chapter chips)
    - Named-page wiring (`.page.dc-page-contents { page:
      front-matter }`, etc.). The page words (`@page contents`, `credits`,
-     `intro`, `chapter-start`, `citizen-file`) are wired here.
+     `intro`, `citizen-file`) are wired here.
 
    MUST NOT CONTAIN:
    - Content layout rules (.page.* geometry and breaks) — EXCLUSIVELY in
@@ -89,7 +89,7 @@
    cream type at >= 4.5:1; the default is magenta-deep). The chapter words wire
    their pages here (`citizen-file` is the default magenta, so it needs none);
    a book wires its own chapters the same way, with the same low-specificity
-   selector so a page's own template name (chapter-start, citizen-file, full)
+   selector so a page's own template name (citizen-file, full)
    still wins:
      :where(#ch-xyz) > .page { page: dc-chip-rust; }
    Hues: blue (hud-blue-dark), rust, violet, amethyst, amber (amber-dark).
@@ -126,30 +126,6 @@
 
 .page.dc-page-intro {
   page: front-matter-intro;
-}
-
-/* ---------------------------------------------------------------------------
-   Chapter start — footers suppressed; the chevron banner IS the visual
-   identity. dc-native.css refills the two bottom boxes with the brick
-   band so the margin band stays continuous.
-
-   The name applies to EVERY page `.dc-page-chapter-start` spans, so an opener that
-   runs past its first page prints its continuation pages without folios too;
-   end the opener with `@page` to get them back. MEASURED in Chromium's own
-   print (printToPDF) why this cannot be narrowed to the first page:
-     - `@page chapter-start:first` matches only the document's first page,
-       not the first page of a page group;
-     - naming just the `h1`, or a zero-height first child, forces a page
-       break at the name change (a title alone on a page, or a blank page).
-   --------------------------------------------------------------------------- */
-
-@page chapter-start {
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
-}
-
-.dc-page-chapter-start {
-  page: chapter-start;
 }
 
 /* ---------------------------------------------------------------------------

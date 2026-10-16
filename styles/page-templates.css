@@ -217,7 +217,7 @@
   border-bottom: 4px solid var(--frontmatter-accent);
   font-size: 26pt;
   letter-spacing: 0.32em;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Lede flush-attaches to the masthead and passes straight into the next
@@ -458,7 +458,7 @@
   right: 0.5in;
   width: 0.42in;
   height: 11px;
-  background: var(--dc-page-slip-tape);
+  background: color-mix(in srgb, var(--dc-page-slip-tape) 78%, transparent);
   border: 1px solid var(--dc-page-slip-edge);
   border-width: 1px 0;
   rotate: -2.5deg;
@@ -540,19 +540,26 @@
 /* ── PAGE WORD: `@page specialty-catalog` — the catalog as a two-page spread ──
    The ten specialty cards as a designed spread, not a column run that happens
    to cross a page. It opens on a LEFT page, so its two pages face each other:
-   the title, the lede and the first four cards on the left, the other six on
-   the right, in aligned rows of equal height (wrapped flex rows, so the cards of a row
-   share one height and every row is at least as tall as the rest). Each card is a
-   poster: the portrait on top, then the name, the tagline, the pitch, and an
-   index chip on the portrait. A location: it sets tokens and break rules, and
+   the title, four cards and Dualist on the left; a short @lede (placed after
+   Dualist), the other four cards and Generalist on the right; in aligned
+   rows (a two-column grid). Every one-column card is one size and both
+   full-width cards another. A lede of more than a few lines pushes
+   Generalist onto a third page. Each card is a poster: the portrait on
+   top, then the name, the tagline and the pitch. A location: it sets tokens and break rules, and
    nothing else. Whatever follows the grid begins a page of its own (write a
    plain `@page` after `@end-card-grid`). The Variant Gallery's @card-grid is on
    no such page and stays the dense card with a floated thumbnail. */
 .page.dc-page-specialty-catalog {
   break-before: left;
-  --dc-card-grid-display: flex;
+  --dc-card-grid-display: grid;
   --dc-card-grid-item-display: flex;
-  --dc-card-grid-row: 3.05in;
+  /* Every one-column card is one size and both full-width cards another,
+     each at least the tallest of its kind. The text block is 9.75in tall
+     (11.25in sheet, 0.625in top and 0.875in bottom margins), and the right
+     page holds a lede, two rows of cards and Generalist. */
+  --dc-card-grid-row: 3.15in;
+  --dc-card-grid-row-wide: 1.7in;
+  --dc-card-grid-media-wide: 0.75in;   /* the portrait of a card that spans both columns */
   --dc-card-grid-gap: 0.12in;
   --dc-intro-size: var(--fs-body-sm);  /* the lede at body size, so the left page holds two rows of cards */
 }
@@ -565,12 +572,39 @@
   --dc-specialty-card-media-margin: 0 0 0.14in;
   --dc-specialty-card-media-margin-even: 0 0 0.14in;
   --dc-specialty-card-media-width: 100%;
-  --dc-specialty-card-media-height: 1in;
+  --dc-specialty-card-media-height: 0.7in;
   --dc-specialty-card-media-mat: 2px;
   --dc-specialty-card-media-shape: var(--spec-media-shape);
   --dc-specialty-card-name-size: 1em;
-  --dc-specialty-card-index: counter(dc-specialty, decimal-leading-zero);
   --dc-specialty-card-title-align: left;
+}
+
+/* Dualist and Generalist, the two specialties built from the others, close the
+   spread: each spans both columns as the last row of its page. List them
+   fifth and last: Dualist closes the left page under four cards, whatever
+   follows it (a @lede, or the next card) opens the right page, and Generalist
+   closes that page. The cards keep the book's order (no `order`): the
+   preview places a page break by document order, so a reordered card would
+   land on the wrong page there. The break is a literal `page`, not a token:
+   the preview honours only a literal forced break. */
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty.dualist + * {
+  break-before: page;
+}
+.dc-page-specialty-catalog .dc-card-grid .dc-specialty:is(.dualist, .generalist) {
+  --dc-card-grid-item-span: 2;
+  --dc-card-grid-row: var(--dc-card-grid-row-wide);
+}
+/* A full-width card is the dense card again: the band on top, the portrait
+   floated left of the tagline and pitch. */
+.dc-page-specialty-catalog .dc-card-grid :is(.dualist, .generalist) > .dc-specialty-card {
+  --dc-specialty-card-display: flow-root;
+  --dc-specialty-card-media-order: 0;
+  --dc-specialty-card-media-float: left;
+  --dc-specialty-card-media-float-even: left;
+  --dc-specialty-card-media-margin: 0 0.18in 0.06in 0;
+  --dc-specialty-card-media-margin-even: 0 0.18in 0.06in 0;
+  --dc-specialty-card-media-width: 1.2in;
+  --dc-specialty-card-media-height: var(--dc-card-grid-media-wide);
 }
 
 /* A tape divider (`.dc-tape`: the MASTERS strip between creature blocks, a

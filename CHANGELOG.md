@@ -7,6 +7,104 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-10-16
+
+### Changed
+
+- **The specialty catalog is a two-page spread of equal cards.** On
+  `@page specialty-catalog` the cards are a two-column grid (it was wrapped
+  flex rows, which the preview paginated differently from print). The left
+  page holds the title, four cards and Dualist; the right page a `@lede`,
+  four cards and Generalist. Dualist and Generalist span both columns as
+  dense cards (portrait beside the text). Every one-column card is one size
+  (3.15in, with a 0.7in portrait) and both full-width cards another (1.7in,
+  with a 1.2in-wide portrait). **List Dualist fifth and Generalist last, and
+  put the right page's `@lede` right after Dualist**: the cards keep the
+  book's order, and whatever follows Dualist opens the right page (a literal
+  `break-before: page`, which the preview honours too). Measured in the
+  preview at the sheet's own size: the Field Guide's catalog ends 0.46in and
+  0.41in above the foot of its two pages, the design guide's 0.29in and
+  0.41in. The `--dc-card-grid-row` minimum now holds every one-column card
+  to one height; new tokens: `--dc-card-grid-row-wide`,
+  `--dc-card-grid-item-span`, `--dc-card-grid-media-wide`.
+- **No number chip on a specialty card's portrait.** The `01`–`10` index chip
+  and `--dc-specialty-card-index` are removed.
+
+- **A chapter opener's pages carry the folio and chapter chip** (#12).
+  `@page chapter-start` dropped both footers, and because a named page covers
+  every page its box spans, an opener that ran onto a second page printed
+  that page unnumbered too, so authors ended openers with `@page` to get the
+  numbers back. Chromium cannot drop the folio on the opener's first page
+  alone, so the suppression is removed: every opener page is numbered, the
+  first included, with its chip in the chapter's colour like any page. The
+  `chapter-start` named page is gone; the page word and its styling stay.
+- **The brick wall tile is 900px wide instead of 2550px** (#1), which is
+  600 DPI at its 1.5in repeat, twice the 300 DPI print bar. The package's
+  unpacked size falls by 1.6 MB, and the wall looks the same in print.
+- **Print qualification for `preserve-text` PDF/X** (#43). The design guide
+  now builds its PDF/X with `pdfx.transparency: preserve-text`, and
+  `docs/print-qualification.md` records the measured result: the pinned
+  versions, a component table with crops, and the limits authors need to
+  know (opaque text, no `filter` on text, text above artwork, 300 DPI
+  artwork, `pdfx.flattenPages`).
+
+- **Depth, recess and light, now that translucency prints.** Components get
+  a soft, translucent lift off the wall (`--shadow-lift`) under their hard
+  contact shadow: section panels (`--dc-section-lift`), path banners, skill
+  cards and specialty cards. The section's hard shadow and the skill-card and
+  `##` slip tape are translucent, so the brick reads through them. Recessed
+  things sink: the fiction excerpt's cavity and the `lore`/`dm`/`choose`
+  panels and title bars take a soft inset (`--shadow-press`). Title bands and
+  skill-card tabs carry a top gloss (`--light-gloss`). All of it is `box-shadow` and
+  gradients; a PDF/X build needs `pdfx.transparency: preserve-text`. A new
+  convention test allows `filter` only on a `::before`/`::after` layer:
+  Chromium prints the text of a filtered element as a picture.
+- **A specialty card looks like its specialty's skill cards.** The card is
+  now that specialty's path banner as a sheet: the name on the specialty's
+  band colour, cut in the banner's title shape with its gloss and rule, and
+  a paper sheet with an ink outline in the banner's silhouette. The thick
+  top and left borders, the per-specialty card cut and the Augmerc override
+  are gone. Removed tokens: `--dc-specialty-card-border`,
+  `--dc-specialty-card-band-height`, `--dc-specialty-card-shadow`. New:
+  `--dc-specialty-card-band-bg`, `--dc-specialty-card-band-fg`,
+  `--dc-specialty-card-band-shape`, `--dc-specialty-card-pad-x`. A card's
+  portrait floats on its frame (the image wrapper) rather than on the image.
+
+- **Needs Gutterpress 0.11.20-alpha.3 or later**, the first with PDF/X
+  `preserve-text`, which the translucent styles below print with. The
+  requirement is in `package.json`'s `engines.gutterpress`: a Gutterpress
+  that checks it (gutterpress#402) refuses to load this package and names the
+  version to update to. Older Gutterpress versions ignore the field.
+- **Shadows and tints are translucent again, for books that opt in to
+  Gutterpress's `pdfx.transparency: preserve-text`** (Gutterpress #385). The
+  poster shadow (`--shadow-ink`, so the skill-card body shadow and the section
+  drop), the sticker and path-chip shadows, the rule divider, the spray smudge,
+  the pull-quote accent, and the AP-chip and outcome-key bevels are
+  `color-mix(…, transparent)` again instead of being pre-mixed onto one
+  surface, so a shadow on the brick wall darkens the brick instead of painting
+  a flat tone. The AP chip's soft `3px 3px 6px` shadow is back. Text colours
+  stay opaque: a translucent glyph prints fully opaque on a split page. The
+  wall tile stays opaque. `--wall-tone` is removed (nothing uses it). The
+  convention test *paint nothing transparent* becomes *keep text opaque*, and
+  its repeating-gradient check is kept as its own test.
+  - A book that keeps Gutterpress's default (`flatten-page`) and builds
+    PDF/X-1a gets more pages flattened to an image than with 1.7.2: set
+    `pdfx.transparency: preserve-text` in the book's manifest. Requires the
+    Gutterpress release that ships that option.
+- **Lixdu is never faked bold.** Lixdu has one face, regular, but chapter
+  chips, folio chips, outcome rolls, block and card titles and headings asked
+  for a bold weight, so Chromium synthesized one, which prints as a Type 3
+  font that Gutterpress's PDF/X `preserve-text` split cannot keep. Every rule
+  that sets `--font-display` now sets `font-weight: 400` (a convention test
+  enforces it), and headings set `font-synthesis-weight: none` so `**bold**`
+  inside a heading prints in Lixdu's own stroke. That text is slightly thinner
+  than the synthetic bold.
+- **A continuation card's tab draws its "continued" triangle** as a small
+  inline SVG in the title's colour, instead of a `▸` character. No Dimm City
+  font has that glyph, so Chromium borrowed one from a system font and printed
+  it as a Type 3 font; on the Field Guide that was the last one, and it made
+  its page fall back to whole-page flattening under `preserve-text`.
+
 ## [1.7.4] - 2026-10-15
 
 ### Changed

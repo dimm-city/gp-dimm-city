@@ -25,7 +25,7 @@ The silhouette says what kind of specialty it is, on the card, its tab, the path
 @end-specialty
 ```
 
-Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--spec-band` and `--spec-on-band` (the title-band fill and its type), `--spec-chip-bg`, `--spec-chip-fg` and `--spec-chip-edge` (the tier pill), `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-card-shell-shape`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
+Opening a new `@specialty` closes the previous one, along with every path and skill inside it. `@end-specialty` does the same, and so does the next `@chapter`, `@page` or `@section`: a specialty cannot straddle a page, so put a page break inside one with `@page-break`. A specialty is written one of two ways, `@specialty augmerc` or `@specialty .augmerc`, and both give the same wrapper. A skill belongs inside a learning path inside a specialty; the Problems panel flags a skill sitting directly in the specialty. Tokens the wrapper sets for its children: `--spec-accent`, `--spec-mid`, `--spec-dark`, `--spec-band` and `--spec-on-band` (the title-band fill and its type), `--spec-chip-bg`, `--spec-chip-fg` and `--spec-chip-edge` (the tier pill), `--dc-skill-tab-shape`, `--dc-skill-body-shape`, `--dc-path-title-shape`, `--dc-path-shell-clip`, `--dc-specialty-intro-title-shape`, `--dc-specialty-intro-clip`.
 
 ## Specialty intro
 
@@ -102,7 +102,7 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book t
 
 ## Specialty card
 
-The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color, its silhouette and its own portrait cut. On a [`@page specialty-catalog`](#ch-templates) the ten cards become a two-page spread of tall poster cards (portrait on top, then name, tagline and pitch, an index chip on the portrait); anywhere else they are the dense card, a small thumbnail beside the text. The card's layout is tokens: `--dc-specialty-card-display`, `-media-order`, `-media-float`, `-media-margin`, `-media-shape`, `-media-mat`, `-name-size` and `-index`, and the grid's `--dc-card-grid-display`, `-item-display`, `-row` and `-gap`.
+The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color, its silhouette and its own portrait cut. On a [`@page specialty-catalog`](#ch-templates) the ten cards become a two-page spread of tall poster cards (portrait on top, then name, tagline and pitch); anywhere else they are the dense card, a small thumbnail beside the text. The card's layout is tokens: `--dc-specialty-card-display`, `-media-order`, `-media-float`, `-media-margin`, `-media-shape`, `-media-mat`, `-name-size` and `-index`, and the grid's `--dc-card-grid-display`, `-item-display`, `-row` and `-gap`.
 
 ```markdown {.dg-split}
 @card-grid
@@ -192,7 +192,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 
 </div>
 
-The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview). Tokens: `--dc-specialty-card-bg`, `--dc-specialty-card-border`, `--dc-specialty-card-accent`, `--dc-specialty-card-media-height`, `--dc-specialty-card-title-color`, `--dc-specialty-card-shadow`.
+The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview). Tokens: `--dc-specialty-card-bg`, `--dc-specialty-card-accent`, `--dc-specialty-card-band-bg`, `--dc-specialty-card-band-fg`, `--dc-specialty-card-media-height`, `--dc-specialty-card-title-color`.
 
 
 ## Learning path
@@ -405,7 +405,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ## Continuing a long card
 
-When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a `▸` on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
+When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
 
 ```markdown {.dg-split}
 @specialty .augmerc
