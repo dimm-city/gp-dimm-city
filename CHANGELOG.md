@@ -11,6 +11,26 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **The specialty catalog fits its two pages in the preview as well as in
+  print.** On `@page specialty-catalog` the cards are now a two-column grid
+  instead of wrapped flex rows: in the preview, which lays pages out as
+  columns, Chromium pushed the second card of a flex row to the next page
+  even where it fit, and the right page's 4.45in rows plus Generalist needed
+  about 10.4in of a 9.75in text block, so the Field Guide's catalog ran onto
+  a third page. Every one-column card is now one size (3.15in, with a 0.7in
+  portrait) and both full-width cards another (1.7in, with a 1.2in-wide
+  portrait); `--dc-card-grid-row-tall`, `--dc-card-grid-media-tall` and
+  `--dc-card-grid-item-order` are removed, and `--dc-card-grid-row-wide` is
+  new. **List Dualist fifth and Generalist last**: the cards keep the book's
+  order, and whatever follows Dualist opens the right page. A `@lede` placed
+  right after Dualist sits at the top of the right page, across both
+  columns. Measured in the preview at the sheet's own size, with that lede:
+  the Field Guide's catalog ends 0.46in and 0.41in above the foot of its two
+  pages, the design guide's 0.29in and 0.41in. The design guide's catalog
+  lede moves to the right page and takes the Field Guide's two sentences.
+- **No number chip on a specialty card's portrait.** The `01`–`10` index chip
+  and `--dc-specialty-card-index` are removed.
+
 - **A chapter opener's pages carry the folio and chapter chip** (#12).
   `@page chapter-start` dropped both footers, and because a named page covers
   every page its box spans, an opener that ran onto a second page printed

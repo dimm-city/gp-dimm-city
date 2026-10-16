@@ -29,16 +29,6 @@ Five shadows moved as one, already inside, already gone.
 
 ## Choose Your Specialty {.dc-chevron}
 
-@lede
-
-A specialty is your primary ability set — the collection of learned techniques, augments, and practices that defines what you bring to the crew. Every specialty has three learning paths, each containing five abilities. You don't pick a path at character creation. You grow into it.
-
-Each specialty produces a different kind of operative. The Augmerc hits hard in close range. The Wirephreak slides through systems undetected. The Proxy bends probability and conviction into force. What you choose here shapes how the Dream plays.
-
-Every dreamer's got a sharp edge — your specialty is where it starts.
-
-@end-lede
-
 @card-grid
 
 @columns 2
@@ -107,6 +97,29 @@ They walk the alleys like sacred ground—feeding the hungry, tending weeds, rai
 
 @end-specialty
 
+@specialty .dualist
+
+@specialty-card #specialty-dualist
+
+### Dualist
+
+![Dualist](img/specialty-dualist-card.png)
+
+> Two-Path Walker
+
+Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.
+
+@end-specialty-card
+
+@end-specialty
+
+@lede
+
+Every dreamer’s got a sharp edge—your specialty is where it starts.
+It’s the skillset that sets you apart, defines what you bring to the crew, and shapes the wild ways you survive the Dream. Here's a quick hit on the first eight specialties, each broken down in full in this chapter.
+
+@end-lede
+
 @specialty .cybersurgeon
 
 @specialty-card #specialty-cybersurgeon
@@ -166,22 +179,6 @@ Technosorcerers walk on the razor's edge between magic and technology. They beli
 > Manifold Magus
 
 Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.
-
-@end-specialty-card
-
-@end-specialty
-
-@specialty .dualist
-
-@specialty-card #specialty-dualist
-
-### Dualist
-
-![Dualist](img/specialty-dualist-card.png)
-
-> Two-Path Walker
-
-Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.
 
 @end-specialty-card
 

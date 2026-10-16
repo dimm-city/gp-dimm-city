@@ -226,7 +226,9 @@ describe("file contracts", () => {
   // layout. `@columns N` is core's, and so are the count, the gap, the rule and the
   // fill. The package sets the two author hooks (`--gp-column-gap`, `--gp-column-rule`)
   // once at :root. The grids inside one component (`.dc-stat-grid`, `.dc-steps`,
-  // `.dc-outcome-row`) are `grid-template-columns`, which is not column layout.
+  // `.dc-outcome-row`) are `grid-template-columns`, which is not column layout,
+  // and so is the specialty catalog's card grid: aligned rows of cards, as a
+  // grid because wrapped flex rows paginated differently in the preview.
   test("no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`, `column-fill` or `column-rule`", () => {
     const bad = [];
     for (const s of PKG) {
@@ -237,8 +239,8 @@ describe("file contracts", () => {
     expect(bad, "columns are core's `@columns N`; set `--gp-column-gap` / `--gp-column-rule` at :root instead").toEqual([]);
   });
 
-  test("the only component-internal grids are the three approved ones", () => {
-    const APPROVED = new Set([".dc-stat-grid", ".dc-steps>li", ".dc-outcome-row"]);
+  test("the only component-internal grids are the four approved ones", () => {
+    const APPROVED = new Set([".dc-stat-grid", ".dc-steps>li", ".dc-outcome-row", ".dc-card-grid>.gp-columns"]);
     const found = new Set();
     for (const s of PKG) {
       s.root.walkDecls("grid-template-columns", (d) => {

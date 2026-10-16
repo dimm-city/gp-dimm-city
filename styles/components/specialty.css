@@ -268,26 +268,6 @@
   color: var(--ink);
 }
 
-/* The number chip on the portrait (01 to 10, from the grid's counter): off
-   (`none`) unless the page turns it on with --dc-specialty-card-index. It sits
-   at the portrait's bottom centre, clear of every corner cut and of the
-   top-left where the alt text of a picture that has not loaded begins. */
-.dc-specialty-card .dc-img-wrapper::after {
-  content: var(--dc-specialty-card-index);
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  padding: 3px 8px;
-  background: var(--ink-dark);
-  color: var(--paper-cream);
-  font-family: var(--font-mono);
-  font-size: var(--fs-floor);  /* every glyph on the spread is 10pt or more */
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1;
-}
-
 /* Specialty name heading — colored in the specialty's accent (the "ink"
    on the paper-poster substrate). Each specialty's identity color shows
    here, in the border, and in the body-accent rule — NOT in the card
@@ -387,35 +367,38 @@
 }
 
 /* The card grid: columns by default (core's @columns 2); a page sets
-   --dc-card-grid-display to flex for aligned ROWS, two cards across, the cards
-   of a row stretching to its tallest and every row at least
-   --dc-card-grid-row tall. (Wrapped flex rows, not `grid-template-columns`: a
-   grid is not how this package lays out columns of content, and the catalog
-   needs only what a row of equal cards needs.) A column gap is core's
-   (--gp-column-gap); only the row gap is ours. A multicol ignores the flex
-   properties, and the dense card keeps its columns. */
+   --dc-card-grid-display to grid for aligned ROWS, two cards across, the cards
+   of a row stretching to its tallest. A grid, not wrapped flex rows: in the preview,
+   which lays pages out as columns, Chromium pushed the second card of a flex
+   row to the next page even where it fit, so the Field Guide's catalog ran
+   onto a third page; a grid row fragments the same in the preview and in
+   print. The column gap is core's (--gp-column-gap); the row gap is ours. A
+   multicol ignores the grid properties, and the dense card keeps its columns. */
 .dc-card-grid > .gp-columns {
   display: var(--dc-card-grid-display);
-  flex-wrap: wrap;
-  align-items: stretch;
-  row-gap: var(--dc-card-grid-gap);
-  counter-reset: dc-specialty;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--dc-card-grid-gap) var(--gp-column-gap);
 }
 
-/* A card spans one column or both (--dc-card-grid-item-span, 1 or 2); a page
-   may reorder the cards (--dc-card-grid-item-order) and break before one
+/* A card spans one column or both (--dc-card-grid-item-span, 1 or 2), is at
+   least --dc-card-grid-row tall, and a page may break before one
    (--dc-card-grid-item-break). */
 .dc-card-grid .dc-specialty {
   display: var(--dc-card-grid-item-display);
   flex-direction: column;
-  flex: 0 0 calc(50% * var(--dc-card-grid-item-span) + (var(--dc-card-grid-item-span) - 2) * var(--gp-column-gap) / 2);
+  grid-column: span var(--dc-card-grid-item-span);
   min-height: var(--dc-card-grid-row);
-  order: var(--dc-card-grid-item-order);
+  break-before: var(--dc-card-grid-item-break);
+}
+
+/* Anything else in the grid (a @lede between the cards) takes a whole row,
+   and a page may break before it too. */
+.dc-card-grid > .gp-columns > :not(.dc-specialty) {
+  grid-column: 1 / -1;
   break-before: var(--dc-card-grid-item-break);
 }
 
 .dc-card-grid .dc-specialty-card {
-  counter-increment: dc-specialty;
   flex: 1 1 auto;
 }
 
