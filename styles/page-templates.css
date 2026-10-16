@@ -59,37 +59,34 @@
    content sections. */
 .page {
   break-before: page;
-  /* Native-print shrink-to-fit guard. Chromium's print path scales the
-     ENTIRE document down when any box or text ink extends past the page
-     content box — and full-bleed components (masthead, art utilities) plus
-     stray text overflow do exactly that. Native print clips *painting* at
-     the content box anyway, so clipping scrollable overflow at the .page
-     wrapper (same edge, no padding) is visually identical there while
-     removing the shrink trigger entirely.
-
-     Core hard-errors on real shrink triggers (engine.width.overflow), but
-     not on every one: dropping `overflow-x: clip` shrinks the whole document
-     by 0.44% on a 33-page probe and lifts a flush pin off the paper edge.
-     Re-measure before removing it.
-
-     The guard clips OUT-OF-FLOW descendants too, so on a page carrying
-     pinned or bleed art it would cut exactly the thing that art exists to
-     do — reach the page edge. It is scoped away from those pages below, as
-     core's printsafe rule prescribes. Ordinary text pages keep it. */
-  overflow-x: clip;
 }
 
-/* The exception the guard above is scoped around: a page holding pinned or
-   bleed art must not clip it. `.gp-behind` is included because it is pinned
-   art by another name (a `.gp-pin` that paints under the text). The two
-   full-sheet plates are bleed art too: `.dc-specialty-art` and
-   `.dc-full-page` are sheet-wide on their zero-margin full-bleed page while the
-   `.page` around them keeps the body column's width, so the guard would cut
-   them off at the column edge, leaving a strip of bare wall down the outside
-   of the plate. */
-.page:is(:has(.gp-bleed), :has(.gp-pin), :has(.gp-behind),
-         :has(.dc-specialty-art), :has(.dc-full-page)) {
-  overflow-x: visible;
+/* Native-print shrink-to-fit guard. Chromium's print path scales the
+   ENTIRE document down when any box or text ink extends past the page
+   content box — and full-bleed components (masthead, art utilities) plus
+   stray text overflow do exactly that. Native print clips *painting* at
+   the content box anyway, so clipping scrollable overflow at the .page
+   wrapper (same edge, no padding) is visually identical there while
+   removing the shrink trigger entirely.
+
+   Core hard-errors on real shrink triggers (engine.width.overflow), but
+   not on every one: dropping `overflow-x: clip` shrinks the whole document
+   by 0.44% on a 33-page probe and lifts a flush pin off the paper edge.
+   Re-measure before removing it.
+
+   The guard clips OUT-OF-FLOW descendants too, so on a page carrying
+   pinned or bleed art it would cut exactly the thing that art exists to
+   do — reach the page edge. So it applies only to a page with none: the
+   scope is in this one selector, the form core's printsafe rule reads
+   (an override in a second rule hid the scope from it). `.gp-behind` is
+   pinned art by another name (a `.gp-pin` that paints under the text).
+   The two full-sheet plates are bleed art too: `.dc-specialty-art` and
+   `.dc-full-page` are sheet-wide on their zero-margin full-bleed page while
+   the `.page` around them keeps the body column's width, so the guard
+   would cut them off at the column edge, leaving a strip of bare wall down
+   the outside of the plate. */
+.page:not(:has(.gp-bleed, .gp-pin, .gp-behind, .dc-specialty-art, .dc-full-page)) {
+  overflow-x: clip;
 }
 
 /* ── FULL-PAGE GEOMETRY ────────────────────────────────────────────────────── */
