@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-10-16
+
 ### Fixed
 
 - **The page clip guard is scoped in one selector.** `.page` clips its
