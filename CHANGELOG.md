@@ -7,27 +7,26 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
-## [1.8.0] - 2026-10-15
+## [1.8.0] - 2026-10-16
 
 ### Changed
 
-- **The specialty catalog fits its two pages in the preview as well as in
-  print.** On `@page specialty-catalog` the cards are now a two-column grid
-  instead of wrapped flex rows: in the preview, which lays pages out as
-  columns, Chromium pushed the second card of a flex row to the next page
-  even where it fit, and the right page's 4.45in rows plus Generalist needed
-  about 10.4in of a 9.75in text block, so the Field Guide's catalog ran onto
-  a third page. Every one-column card is now one size (3.15in, with a 0.7in
-  portrait) and both full-width cards another (1.7in, with a 1.2in-wide
-  portrait); `--dc-card-grid-row-tall`, `--dc-card-grid-media-tall` and
-  `--dc-card-grid-item-order` are removed, and `--dc-card-grid-row-wide` is
-  new. **List Dualist fifth and Generalist last**: the cards keep the book's
-  order, and whatever follows Dualist opens the right page. A `@lede` placed
-  right after Dualist sits at the top of the right page, across both
-  columns. Measured in the preview at the sheet's own size, with that lede:
-  the Field Guide's catalog ends 0.46in and 0.41in above the foot of its two
-  pages, the design guide's 0.29in and 0.41in. The design guide's catalog
-  lede moves to the right page and takes the Field Guide's two sentences.
+- **The specialty catalog is a two-page spread of equal cards.** On
+  `@page specialty-catalog` the cards are a two-column grid (it was wrapped
+  flex rows, which the preview paginated differently from print). The left
+  page holds the title, four cards and Dualist; the right page a `@lede`,
+  four cards and Generalist. Dualist and Generalist span both columns as
+  dense cards (portrait beside the text). Every one-column card is one size
+  (3.15in, with a 0.7in portrait) and both full-width cards another (1.7in,
+  with a 1.2in-wide portrait). **List Dualist fifth and Generalist last, and
+  put the right page's `@lede` right after Dualist**: the cards keep the
+  book's order, and whatever follows Dualist opens the right page (a literal
+  `break-before: page`, which the preview honours too). Measured in the
+  preview at the sheet's own size: the Field Guide's catalog ends 0.46in and
+  0.41in above the foot of its two pages, the design guide's 0.29in and
+  0.41in. The `--dc-card-grid-row` minimum now holds every one-column card
+  to one height; new tokens: `--dc-card-grid-row-wide`,
+  `--dc-card-grid-item-span`, `--dc-card-grid-media-wide`.
 - **No number chip on a specialty card's portrait.** The `01`–`10` index chip
   and `--dc-specialty-card-index` are removed.
 
@@ -70,14 +69,6 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-band-bg`, `--dc-specialty-card-band-fg`,
   `--dc-specialty-card-band-shape`, `--dc-specialty-card-pad-x`. A card's
   portrait floats on its frame (the image wrapper) rather than on the image.
-- **The specialty catalog spread closes each page with a full-width card.**
-  On `@page specialty-catalog`, Dualist spans both columns as the last row of
-  the left page and Generalist as the last row of the right page, whatever
-  order the book lists them in; the right page's other four cards are taller
-  with taller portraits. New tokens: `--dc-card-grid-item-span`,
-  `--dc-card-grid-item-order`, `--dc-card-grid-item-break`,
-  `--dc-card-grid-row-tall`, `--dc-card-grid-media-tall`,
-  `--dc-card-grid-media-wide`.
 
 - **Needs Gutterpress 0.11.20-alpha.3 or later**, the first with PDF/X
   `preserve-text`, which the translucent styles below print with. The

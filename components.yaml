@@ -648,11 +648,10 @@ components:
       - --dc-card-grid-item-display
       - --dc-card-grid-gap
       - --dc-card-grid-item-span
-      - --dc-card-grid-item-break
       - --dc-card-grid-row
       - --dc-card-grid-row-wide
       - --dc-card-grid-media-wide
-    breaks: "break-before: left (the spread opens on a left page, so its two pages face each other); whatever follows Dualist (a @lede, or the next card) opens the right page (--dc-card-grid-item-break: page)"
+    breaks: "break-before: left (the spread opens on a left page, so its two pages face each other); whatever follows Dualist (a @lede, or the next card) opens the right page (break-before: page)"
     notes: "The specialty catalog as a designed two-page spread: title, four cards and Dualist on the left, a @lede (optional, placed after Dualist), four cards and Generalist on the right, in aligned rows (a two-column grid, not columns), each card a poster with its portrait on top; every one-column card is one size and both full-width cards another. Dualist and Generalist span both columns as the last row of the left and right page, as dense cards: list Dualist fifth and Generalist last. A location: it only sets tokens (the grid layout, and the card's portrait and name size) and the page break. Whatever follows the grid starts on the next page: write a plain @page after @end-card-grid. The Variant Gallery's @card-grid, which sits on no such page, keeps the dense floated-thumbnail cards."
 
   - name: fiction-excerpt
