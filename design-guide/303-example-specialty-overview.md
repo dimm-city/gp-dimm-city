@@ -113,6 +113,13 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 @end-specialty
 
+@lede
+
+Every dreamer’s got a sharp edge—your specialty is where it starts.
+It’s the skillset that sets you apart, defines what you bring to the crew, and shapes the wild ways you survive the Dream. Here's a quick hit on the first eight specialties, each broken down in full in this chapter.
+
+@end-lede
+
 @specialty .cybersurgeon
 
 @specialty-card #specialty-cybersurgeon

@@ -210,9 +210,10 @@
   --dc-specialty-card-name-size:    1.15em;
   --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
+  --dc-card-grid-row:               0;           /* the least height of a card in the grid */
   --dc-card-grid-item-span:         1;           /* 2: the card spans both columns */
   --dc-card-grid-item-break:        auto;        /* page: the card opens a page */
-  --dc-card-grid-media-tall:        1in;         /* their portraits */
+  --dc-card-grid-row-wide:          0;           /* the least height of a card spanning both columns */
   --dc-card-grid-media-wide:        1in;         /* the portrait of a card spanning both columns */
   --dc-card-grid-gap:               0.16in;
 

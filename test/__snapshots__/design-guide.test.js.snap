@@ -3712,7 +3712,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="131:132">
 <td>Specialty card</td>
-<td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-bg</code> <code>--dc-specialty-card-band-fg</code> <code>--dc-specialty-card-band-shape</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-card-title-color</code> <code>--dc-specialty-card-display</code> <code>--dc-specialty-card-media-order</code> <code>--dc-specialty-card-media-float</code> <code>--dc-specialty-card-media-margin</code> <code>--dc-specialty-card-media-shape</code> <code>--dc-specialty-card-media-mat</code> <code>--dc-specialty-card-name-size</code> <code>--dc-card-grid-display</code> <code>--dc-card-grid-item-display</code> <code>--dc-card-grid-gap</code></td>
+<td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-bg</code> <code>--dc-specialty-card-band-fg</code> <code>--dc-specialty-card-band-shape</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-card-title-color</code> <code>--dc-specialty-card-display</code> <code>--dc-specialty-card-media-order</code> <code>--dc-specialty-card-media-float</code> <code>--dc-specialty-card-media-margin</code> <code>--dc-specialty-card-media-shape</code> <code>--dc-specialty-card-media-mat</code> <code>--dc-specialty-card-name-size</code> <code>--dc-card-grid-display</code> <code>--dc-card-grid-item-display</code> <code>--dc-card-grid-row</code> <code>--dc-card-grid-gap</code></td>
 </tr>
 <tr data-source-range="132:133">
 <td>Learning path</td>
@@ -4769,44 +4769,46 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 <p data-source-range="107:108">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div></div><div class="dc-specialty cybersurgeon" data-source-range="115:116"><div class="dc-specialty-card" id="specialty-cybersurgeon" data-name="cybersurgeon" data-position="even" data-source-range="117:118"><h3 data-name="cybersurgeon">Cybersurgeon</h3>
+</div></div><div class="dc-intro" data-source-range="115:116"><p>Every dreamer’s got a sharp edge—your specialty is where it starts.
+It’s the skillset that sets you apart, defines what you bring to the crew, and shapes the wild ways you survive the Dream. Here’s a quick hit on the first eight specialties, each broken down in full in this chapter.</p>
+</div><div class="dc-specialty cybersurgeon" data-source-range="122:123"><div class="dc-specialty-card" id="specialty-cybersurgeon" data-name="cybersurgeon" data-position="even" data-source-range="124:125"><h3 data-name="cybersurgeon">Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-cybersurgeon-card.png" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](img/specialty-cybersurgeon-card.png)" data-gp-source-occurrence="0" data-name="specialty-cybersurgeon-card"></p>
 <blockquote>
-<p data-source-range="123:124">Mech Medic</p>
+<p data-source-range="130:131">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div></div><div class="dc-specialty wirephreak" data-source-range="131:132"><div class="dc-specialty-card" id="specialty-wirephreak" data-name="wirephreak" data-position="odd" data-source-range="133:134"><h3 data-name="wirephreak">Wirephreak</h3>
+</div></div><div class="dc-specialty wirephreak" data-source-range="138:139"><div class="dc-specialty-card" id="specialty-wirephreak" data-name="wirephreak" data-position="odd" data-source-range="140:141"><h3 data-name="wirephreak">Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-wirephreak-card.png" alt="Wirephreak" data-gp-source-token="![Wirephreak](img/specialty-wirephreak-card.png)" data-gp-source-occurrence="0" data-name="specialty-wirephreak-card"></p>
 <blockquote>
-<p data-source-range="139:140">Ping Predator</p>
+<p data-source-range="146:147">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div></div><div class="dc-specialty technosorcerer" data-source-range="147:148"><div class="dc-specialty-card" id="specialty-technosorcerer" data-name="technosorcerer" data-position="even" data-source-range="149:150"><h3 data-name="technosorcerer">Technosorcerer</h3>
+</div></div><div class="dc-specialty technosorcerer" data-source-range="154:155"><div class="dc-specialty-card" id="specialty-technosorcerer" data-name="technosorcerer" data-position="even" data-source-range="156:157"><h3 data-name="technosorcerer">Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-technosorcerer-card.png" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](img/specialty-technosorcerer-card.png)" data-gp-source-occurrence="0" data-name="specialty-technosorcerer-card"></p>
 <blockquote>
-<p data-source-range="155:156">Modular Magician</p>
+<p data-source-range="162:163">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div></div><div class="dc-specialty etherlock" data-source-range="163:164"><div class="dc-specialty-card" id="specialty-etherlock" data-name="etherlock" data-position="odd" data-source-range="165:166"><h3 data-name="etherlock">Etherlock</h3>
+</div></div><div class="dc-specialty etherlock" data-source-range="170:171"><div class="dc-specialty-card" id="specialty-etherlock" data-name="etherlock" data-position="odd" data-source-range="172:173"><h3 data-name="etherlock">Etherlock</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-etherlock-card.png" alt="Etherlock" data-gp-source-token="![Etherlock](img/specialty-etherlock-card.png)" data-gp-source-occurrence="0" data-name="specialty-etherlock-card"></p>
 <blockquote>
-<p data-source-range="171:172">Manifold Magus</p>
+<p data-source-range="178:179">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div></div><div class="dc-specialty generalist" data-source-range="179:180"><div class="dc-specialty-card" id="specialty-generalist" data-name="generalist" data-position="even" data-source-range="181:182"><h3 data-name="generalist">Generalist</h3>
+</div></div><div class="dc-specialty generalist" data-source-range="186:187"><div class="dc-specialty-card" id="specialty-generalist" data-name="generalist" data-position="even" data-source-range="188:189"><h3 data-name="generalist">Generalist</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-generalist-card.png" alt="Generalist" data-gp-source-token="![Generalist](img/specialty-generalist-card.png)" data-gp-source-occurrence="0" data-name="specialty-generalist-card"></p>
 <blockquote>
-<p data-source-range="187:188">Sprawl Survivor</p>
+<p data-source-range="194:195">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
-</div></div></div></div></div><div class="page chapter-2" data-name="how-abilities-work" data-source-range="199:200"><div class="section dc-section-panel" data-section="panel" data-name="choosing-by-playstyle" data-source-range="201:202"><h3 data-name="choosing-by-playstyle">Choosing by Playstyle</h3>
+</div></div></div></div></div><div class="page chapter-2" data-name="how-abilities-work" data-source-range="206:207"><div class="section dc-section-panel" data-section="panel" data-name="choosing-by-playstyle" data-source-range="208:209"><h3 data-name="choosing-by-playstyle">Choosing by Playstyle</h3>
 <p><strong>Want to hit things hard?</strong> Augmerc. <strong>Want to control the battlefield?</strong> Streetwarden or Proxy. <strong>Want to slide through systems undetected?</strong> Wirephreak. <strong>Want raw arcane force?</strong> Technosorcerer, Gutterdruid, or Etherlock. <strong>Want to rebuild your body as your toolkit?</strong> Cybersurgeon. <strong>Want two paths at once?</strong> Dualist. <strong>Want a scrap of everything?</strong> Generalist.</p>
 <p>Every specialty excels at one thing and has a path toward a second. Your first specialty is your identity. What you pick up later is your legend.</p>
 <p>Don’t agonize over the choice. Most Dreamers don’t know their specialty until the city forces it out of them — under fire, under stress, or under the kind of debt that doesn’t go away. Pick the one that sounds like the way you’d bleed if you had to. You’ll grow into the rest whether you want to or not.</p>
 </div><h2 class="dc-spray" data-name="how-abilities-work">How Abilities Work</h2>
-<div class="dc-intro" data-source-range="215:216"><p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
+<div class="dc-intro" data-source-range="222:223"><p>How that pack works wasn’t luck. It was abilities firing in sequence. Each move opened space. Each ability set up the next.</p>
 <p>In Dimm City, abilities aren’t just what you can do. They’re learned techniques, invasive augments, practiced rituals, and raw instinct working as one.</p>
-</div><div class="section dc-section-panel" data-section="panel" data-name="the-core-loop-of-a-dream" data-source-range="223:224"><h3 data-name="the-core-loop-of-a-dream">The Core Loop of a Dream</h3>
+</div><div class="section dc-section-panel" data-section="panel" data-name="the-core-loop-of-a-dream" data-source-range="230:231"><h3 data-name="the-core-loop-of-a-dream">The Core Loop of a Dream</h3>
 <ol class="dc-steps">
   <li><span class="dc-step-no">01</span><span>The Dream Master describes the situation.</span></li>
   <li><span class="dc-step-no">02</span><span>A Dreamer declares an action.</span></li>
@@ -4816,7 +4818,7 @@ exports[`rendered output 303-example-specialty-overview.md matches its snapshot 
 </ol>
 
 <p>Everything in this chapter exists to support that loop. Abilities bend it. Dice decide it. Dreamers drive it. The Monoverse responds.</p>
-</div><div class="section dc-section-panel" data-section="panel" data-name="what-comes-next" data-source-range="241:242"><h3 data-name="what-comes-next">What Comes Next</h3>
+</div><div class="section dc-section-panel" data-section="panel" data-name="what-comes-next" data-source-range="248:249"><h3 data-name="what-comes-next">What Comes Next</h3>
 <p>The next chapter walks through what each specialty actually does at the table — the abilities, the augmentations, the rituals, the way each one breaks the laws of a city that wants you breaking them anyway. Read your pick first. Then read the others. Specialties don’t stand alone in Dimm City; the crews that survive are the ones whose specialties chew off each other’s edges.</p>
 <p>If you’re still on the fence, that’s fine. The Dream Master will give you a few sessions to feel which way the city pushes you. The character you bring in is a draft. The character that walks out of the first heist is the one that’s yours.</p>
 </div></div></div>"
