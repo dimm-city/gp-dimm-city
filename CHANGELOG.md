@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.8.2] - 2026-10-25
+
 ### Changed
 
 - **The binding margin is DriveThruRPG's 0.5in, no longer 0.75in.**
