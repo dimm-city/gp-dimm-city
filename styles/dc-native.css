@@ -61,7 +61,7 @@
    THE BOX. Both axes are fixed, not slot-sized. A margin box defaults to the
    size of its SLOT, and the slot is big: per marginBoxRectPt (gutterpress
    engine/shared/margin-box-support.ts) `@bottom-left` is a third of the
-   content width by the whole bottom margin (174 x 54pt on this page).
+   content width by the whole bottom margin (180 x 54pt on this page).
    `width: fit-content` tightens the inline axis; the block axis is the
    sticker's own height (0.225in) rather than `fit-content`, so
    the box is the same height on every page, for every page word, and the

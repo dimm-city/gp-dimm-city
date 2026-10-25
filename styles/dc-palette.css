@@ -161,7 +161,10 @@
        bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
                           sit at the top of this band)
        outside 0.625in  = 0.5in from the trim
-       binding 0.75in   = 0.75in from the spine (no bleed on that edge) */
+       binding 0.5in    = 0.5in from the spine (no bleed on that edge):
+                          DriveThruRPG's minimum for text and non-bleeding
+                          art, the same as the dtrpg preset's page.gutter.
+                          It was 0.75in until 1.8.2 with no rule behind it. */
   --page-margin:   0.625in;
   --bottom-margin: 0.875in;
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
@@ -170,7 +173,7 @@
   /* ── Page Geometry ────────────────────────────────────────────────────── */
   --page-width:     8.625in;
   --page-height:    11.25in;
-  --binding-margin: 0.75in;
+  --binding-margin: 0.5in;
 
   /* ── Shapes ───────────────────────────────────────────────────────────── */
   /* Chevron banner right-edge inset, used by --clip-banner. */

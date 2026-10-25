@@ -23,7 +23,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
 | Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips sit at the top of the band and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
-| Binding margin | 0.75 in | 0.75 in | 0.5 in |
+| Binding margin | 0.5 in | 0.5 in | 0.5 in |
 
 A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
