@@ -323,8 +323,8 @@ into the token name, not scattered across heading rules.
 /* Page geometry — must match @page size declaration exactly */
 --page-width:     8.625in;
 --page-height:    11.25in;
---page-margin:    0.5in;
---binding-margin: 0.75in;  /* spine-side in @page :left/:right */
+--page-margin:    0.625in;
+--binding-margin: 0.5in;   /* spine-side in @page :left/:right */
 ```
 
 ### Page Background and the Viewer
@@ -398,12 +398,12 @@ a CSS class to that named page in the same file:
 }
 
 @page chapter-start:left {
-  margin-right: var(--binding-margin, 0.75in);
+  margin-right: var(--binding-margin, 0.5in);
   margin-left:  var(--page-margin);
 }
 
 @page chapter-start:right {
-  margin-left:  var(--binding-margin, 0.75in);
+  margin-left:  var(--binding-margin, 0.5in);
   margin-right: var(--page-margin);
 }
 

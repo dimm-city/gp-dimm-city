@@ -2740,8 +2740,8 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="25:26">
 <td>Binding margin</td>
-<td>0.75 in</td>
-<td>0.75 in</td>
+<td>0.5 in</td>
+<td>0.5 in</td>
 <td>0.5 in</td>
 </tr>
 </tbody>

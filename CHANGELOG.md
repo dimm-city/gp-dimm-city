@@ -7,6 +7,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **The binding margin is DriveThruRPG's 0.5in, no longer 0.75in.**
+  `--binding-margin` (`styles/dc-palette.css`) and so the spine-side margin of
+  `@page :left`/`:right` is 0.5in on the sheet, which has no bleed at the
+  spine, so 0.5in from the trim: the minimum DriveThruRPG states for text and
+  non-bleeding art at the binding edge, and the value the gutterpress `dtrpg`
+  preset's `page.gutter` carries. The 0.75in dated from the Field Guide's first
+  layout (February 2026), where it arrived with a generic "gutter at least
+  0.75in" review heuristic under a comment that itself said 0.625in; no
+  DriveThruRPG rule asked for it. The text column grows from 7.25in to 7.5in,
+  so every book reflows. A book that set `page.gutter: 54` to match the old
+  margin should drop it and inherit the preset's 36pt: with the margin at
+  0.5in, a 54pt gutter fails `pdf.print.safe-margins` on every binding edge.
+  The design guide's page-geometry table, `docs/css-architecture.md` (which
+  also showed a stale `--page-margin: 0.5in`; it is 0.625in) and the
+  `dc-native.css` margin-box arithmetic (180 x 54pt) say the same.
+
 ## [1.8.1] - 2026-10-16
 
 ### Fixed
