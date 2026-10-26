@@ -436,7 +436,7 @@ components:
     recipe: "@specialty-intro … @end-specialty-intro"
     emits: div.dc-specialty-intro
     css: [styles/components/specialty.css, styles/components/specialty-identity.css]
-    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim, --dc-band-reg]
+    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-specialty-intro-h3-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim, --dc-band-reg]
     breaks: "break-inside: avoid; first h2 break-after: avoid"
     notes: "The title band is the specialty's own bright signal colour (--spec-band) with a register: tech = LED rim and a rule of LED dots (a dotted border), magic = a facet plane, streetwarden = a hazard-tape rule, landfill = a torn bottom edge and no rule."
 
@@ -717,7 +717,7 @@ components:
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
     css: styles/page-templates.css
-    tokens: [--dc-fiction-depth, --dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-slip-gap, --dc-page-slip-offset, --dc-page-sheet-pad, --dc-heading-gap]
+    tokens: [--dc-fiction-depth, --dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-slip-gap, --dc-page-sheet-pad, --dc-heading-gap]
     notes: "A chapter opener: the h1 gets headroom, is kept with the block after it and is a banner in the chapter's accent (any page's free-standing `#` is), the paragraph straight under it is a lede on a paper sheet, and a fiction excerpt takes the deeper hole (10px) by tokens. Free-standing text on any wall page prints on a substrate with no markup: `##` a paper slip with an accent rail, dashed foot and tape, `###` a plain slip, `####`+ a label slip, loose paragraphs, lists and quotes one paper sheet per run (page-templates.css, FREE-STANDING PAGE TEXT; the guide's @page .dg-doc pages are exempt)."
 
   - name: page-credits

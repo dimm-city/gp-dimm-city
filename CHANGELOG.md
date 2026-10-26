@@ -7,6 +7,61 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-26
+
+### Changed
+
+- **A specialty opens as a spread, and every learning path opens a page.**
+  `.dc-specialty-intro` takes `break-before: left` and `.dc-specialty-art`
+  `break-before: page`, so with the intro written first the plate faces it on
+  the right (an intro longer than a page pushes the plate to the next left
+  page). Every `.dc-learning-path` in a specialty takes `break-before: page`,
+  and its banner sits flush with the page top. The plate's break moved from
+  `chrome.css` to `page-templates.css` with the other specialty break rules.
+  A book that wrote the plate before the intro should swap them. Until
+  dimm-city/gutterpress#421 is fixed the live preview can put an intro on a
+  right-hand page; the PDF places it correctly.
+- **Design guide:** specialty specimens on doc pages (`.page.dg-doc`) keep
+  their place in the flow (`guide.css` §8).
+- **A panel's sub-headings sit one step below its title bar.** Under a 16pt
+  `##` bar an `###` is 13pt; under a 13pt bar (`###`, or `##` with
+  `{.dc-h3}`) an `###` is 11pt, and an `####` is 11pt in any panel. They
+  were the bar's size or larger and read as a second title; books had stepped
+  them down by hand with `{.dc-h4}`/`{.dc-h5}`, which still win. Panels with
+  no bar, lore's captions and creature names keep their own. Sub-headings in a
+  panel take `--space-lg` above, and an `###` in a column run takes the rail
+  too (`section.css`; documented in design-guide ch. 6, Sub-headings in a
+  panel). Books reflow: the Field Guide is four pages shorter.
+- **Every column of an `@columns` run starts on one hang line.** The box
+  that opens a column takes no top margin; Chromium kept it in the first
+  column and after a forced break but dropped it at an unforced one
+  (`page-templates.css`, COLUMN TOPS).
+- **A definition of three paragraphs or more is set upright.** Italic stays
+  for a short gloss; surreal keeps its italic (`data.css`).
+- **A flavor line that leads into more text stays with it** (`break-after:
+  avoid`), never alone at a page foot (`chrome.css`).
+- **A wall heading sits on its text.** A `##`/`###`/`####` written straight
+  on a page now lines up with the left edge of the paper sheet below it and
+  sits on it with no gap, its dashed foot the sheet's top seam. Tags used to
+  hang in 0.12in (every second one 0.3in) with a gap under them, so they
+  looked misaligned and detached from their text (`page-templates.css`).
+- **A run of prose in `@columns` is one sheet that does not split** across a
+  page, and a `####`/`#####` inside it takes more room above than below and
+  never ends a column (`page-templates.css`).
+
+### Removed
+
+- **`--dc-page-slip-offset`**, the hang-in of wall tags, which no longer hang
+  in. A book that set it can drop it.
+
+### Added
+
+- **`--dc-specialty-intro-h3-color`**: the intro's `###` headings (and their
+  underline) in each specialty's own colour. It defaults to `--blood`, and
+  every `.dc-specialty.<name>` sets it to its `--spec-ink`, the text-safe ink
+  (5.6:1 to 10.3:1 on the heading's cream band across the Field Guide's eight
+  specialties).
+
 ## [1.8.2] - 2026-10-25
 
 ### Changed

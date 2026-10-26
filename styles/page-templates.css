@@ -426,7 +426,8 @@
 }
 
 /* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
-   jams against the box above it. A heading never ends a page (`break-after`,
+   jams against the box above it; below, it sits straight on its own sheet,
+   its dashed foot the sheet's top seam. A heading never ends a page (`break-after`,
    which the tape pseudo-element does not disturb: it is out of flow). */
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   position: relative;
@@ -436,7 +437,7 @@
   border-bottom: 3pt dashed var(--dc-page-slip-edge);
   box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.075in 0.14in 0.07in 0.24in;
-  margin: var(--dc-page-slip-gap) 0 var(--space-md);
+  margin: var(--dc-page-slip-gap) 0 0;
   break-after: avoid;
   break-inside: avoid;
 }
@@ -461,13 +462,14 @@
   rotate: -2.5deg;
 }
 
-/* `###`: a hung tag: it shrinks to its words, a thinner rail and foot, and
-   hangs in a little from the left; every second one hangs further, so a wall
-   page reads as posters put up by hand, not one column of cards. */
+/* `###`: a tag: it shrinks to its words, with a thinner rail and foot. It
+   sits on the left edge of the sheet below it, with no gap, so the tag and
+   its text read as one piece (a tag hung in from the edge, every second one
+   further, looked misaligned and floated free of its text). */
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   width: fit-content;
-  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
-  margin-left: var(--dc-page-slip-offset);
+  max-width: 100%;
+  margin-left: 0;
   border-bottom-width: 2pt;
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.06in 0.12in 0.05in 0.2in;
@@ -476,14 +478,11 @@
 /* `####` and below: a label slip that shrinks to its words, framed in ink. */
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   width: fit-content;
-  max-width: calc(100% - 2.5 * var(--dc-page-slip-offset));
-  margin: var(--dc-page-slip-gap) 0 var(--space-sm) var(--dc-page-slip-offset);
+  max-width: 100%;
+  margin: var(--dc-page-slip-gap) 0 0;
   border: 1.5pt solid var(--dc-page-slip-edge);
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.05in 0.12in 0.04in 0.2in;
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):nth-of-type(even) {
-  margin-left: calc(2.5 * var(--dc-page-slip-offset));
 }
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
   margin-top: 0;
@@ -522,6 +521,14 @@
   box-shadow: var(--dc-page-slip-shadow);
   padding: 0.1in var(--dc-page-sheet-pad);
   margin-bottom: var(--space-md);
+  break-inside: avoid;
+}
+
+/* A sub-head inside a prose sheet: more room above than below (proximity),
+   and it never ends a column. The head that opens a column keeps the hang line. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > .gp-columns > :is(h4, h5):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):not(:first-child, .gp-column-break + *) {
+  margin-top: var(--space-lg);
+  break-after: avoid;
 }
 
 /* HEADING AFTER A BOX. A box (an outcome ladder, a stat grid, a callout, a
@@ -611,10 +618,28 @@
 }
 
 /* ── SPECIALTY BREAK CONTROL ───────────────────────────────────────────────
-   A learning path is NOT forced onto a new page; the path-shell rule below
-   keeps its banner with its first card. This file owns .dc-specialty break
-   rules, and dc.templates outranks every components sheet. */
+   A specialty opens as a spread: the intro on a left page, the art plate
+   facing it on the right. Write them in that order, intro first. Only the
+   intro asks for a side; the plate just takes the next page, which faces
+   the intro as long as the intro fits on one page (a longer intro pushes the
+   plate to the next left page). A `right` on the plate as well made the PDF
+   misplace intros (dimm-city/gutterpress#421).
+   Every learning path then opens a new page. The first path's break falls
+   where the plate's page ends, and the two combine into one break, so it
+   adds no blank page.
+   The breaks are literal values: the preview honours only a literal forced
+   break. This file owns .dc-specialty break rules, and dc.templates
+   outranks every components sheet. */
+.dc-specialty-intro {
+  break-before: left;
+}
+
+.dc-specialty-art {
+  break-before: page;
+}
+
 .dc-specialty .dc-learning-path {
+  break-before: page;
   break-inside: auto;
   break-after: auto;
 }
@@ -629,11 +654,21 @@
   break-after: avoid;
 }
 
-/* A banner that opens a page sits flush with its top. Chromium drops the
-   shell's 8px top margin at every unforced break but keeps it after the
-   forced break that ends a specialty's art page — and those 8px were all
-   that kept the first card off its banner's page. */
-.dc-specialty > .dc-learning-path:first-child > .dc-path-shell {
+/* A banner opens its page, so it sits flush with the top. Chromium drops the
+   shell's top margin at an unforced break but keeps it after a forced one,
+   which every path now starts with, and that margin alone can push the
+   first card off its banner's page. */
+.dc-specialty > .dc-learning-path > .dc-path-shell {
+  margin-top: 0;
+}
+
+/* ── COLUMN TOPS ───────────────────────────────────────────────────────────
+   Every column of an `@columns` run starts on one hang line. Chromium keeps
+   the top margin of the first box in the first column and of a box after a
+   forced `@column-break`, but drops it at an unforced column break, so two
+   neighbours (a definition beside a definition) started 0.12in apart. The box
+   that opens a column takes no top margin. */
+:is(.gp-columns, [class*="gp-columns-"]) > :is(:first-child, .gp-column-break + *) {
   margin-top: 0;
 }
 

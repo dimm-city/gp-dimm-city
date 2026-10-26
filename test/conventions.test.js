@@ -29,6 +29,7 @@ const CORE_HOOKS_READ_BY_CSS = [
   ".gp-bleed",
   ".gp-behind",
   ".gp-page-break",
+  ".gp-column-break", // what `@column-break` emits: the box after one opens a column, so it takes the column's hang line
   ".gp-page-full-bleed", // core's `@page full-bleed`, which shares the plate geometry and named page of `.dc-full-page`
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
   "--gp-column-rule", //   and to reset on a component that wants none

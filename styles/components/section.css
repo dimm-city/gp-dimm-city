@@ -306,9 +306,44 @@ div[class="section"] {
 /* Sub-heading H3 — H3s inside a panel that are NOT the first child (i.e. NOT
    the header bar) get a left-accent border matching the section accent. This
    visually distinguishes subsection headings from the title bar. */
-.dc-section-panel > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child) {
+.dc-section-panel > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child),
+.dc-section-panel > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)) {
   border-left: 3px solid var(--dc-section-accent);
   padding-left: var(--space-sm);
+}
+
+/* Sub-heading H3/H4/H5 inside a panel — more room above than below, so it
+   reads as the head of the text after it, not a caption on the text before
+   it (proximity). In a column run too; the heading that opens a column keeps
+   the column's hang line (page-templates.css, COLUMN TOPS). */
+.dc-section-panel > :is(h3, h4, h5):not(:first-child),
+.dc-section-panel > :is(.gp-columns, [class*="gp-columns-"]) > :is(h3, h4, h5):not(:first-child, .gp-column-break + *) {
+  margin-top: var(--space-lg);
+}
+
+/* A sub-heading is one step below the panel's title bar. The bar is set a
+   size down from its tag (an `##` bar at the h3 size, an `##` bar with the h3
+   look or a `###` bar at the h4 size), so an `###` under an `##` bar was the
+   bar's own size, an `###` under a `{.dc-h3}` bar was bigger than it, and an
+   `####` anywhere in a panel was the size of a `###` bar: each read as a
+   second title. Books stepped them down by hand (`{.dc-h4}`, `{.dc-h5}`);
+   this does it for every panel: under a 16pt bar an `###` is 13pt, and every
+   other sub-heading is 11pt. A panel with no bar (its first child is not an
+   `##` or `###`) is left alone: there the first heading is the title.
+   A heading with a look class (`{.dc-h4}`) keeps the look it asks for.
+   `:where()` keeps the specificity low, so a kind with its own sub-head
+   (lore's italic caption, a creature's name) keeps it. Use one sub-level per
+   panel: under a 13pt bar an `###` and an `####` are both 11pt, told apart
+   only by the `###`'s rail and colour. */
+:where(.dc-section-panel:has(> h2:not(.dc-h3):first-child)) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)):not(:first-child),
+:where(.dc-section-panel:has(> h2:not(.dc-h3):first-child)) > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)) {
+  font-size: var(--fs-h4);
+}
+:where(.dc-section-panel:has(> :is(h2.dc-h3, h3):first-child)) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)):not(:first-child),
+:where(.dc-section-panel:has(> :is(h2.dc-h3, h3):first-child)) > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)),
+:where(.dc-section-panel:has(> :is(h2, h3):first-child)) > h4:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)),
+:where(.dc-section-panel:has(> :is(h2, h3):first-child)) > :is(.gp-columns, [class*="gp-columns-"]) > h4:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)) {
+  font-size: var(--fs-h5);
 }
 
 /* ── Free-standing heading, or a callout, directly before a panel — extra

@@ -71,11 +71,11 @@ Augmerc learning paths assume combat-grade augmentations. Without the implants, 
 
 </div>
 
-Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`, `--dc-band-reg` (a second ink printed 2px off, tech bands).
+Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specialty-intro-title-color`, `--dc-specialty-intro-h3-color` (the `###` heading; inside a specialty its `--spec-ink`), and for the band's register `--dc-band-rule`, `--dc-band-rule-h`, `--dc-band-tick`, `--dc-band-tick-style`, `--dc-band-tick-w`, `--dc-band-rule-skew`, `--dc-band-rule-bleed`, `--dc-band-facet`, `--dc-band-facet-width`, `--dc-band-facet-clip`, `--dc-band-rim`, `--dc-band-reg` (a second ink printed 2px off, tech bands).
 
 ## Specialty art
 
-A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page. The placeholders here are local PNGs in `design-guide/img/`, one per specialty.
+A full-page art plate. It takes its own page and bleeds to the edge; in a book it follows the intro, on the right-hand page facing it. The rendered plate is the next page. The placeholders here are local PNGs in `design-guide/img/`, one per specialty.
 
 ```markdown
 @specialty .augmerc

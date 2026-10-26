@@ -143,6 +143,7 @@
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
   --dc-specialty-intro-title-color: var(--bg);
   --dc-specialty-intro-bg:          var(--hud-panel);
+  --dc-specialty-intro-h3-color:    var(--blood);      /* overridden by .dc-specialty.<name> context */
 
   /* Title band chrome, shared by the learning-path banner (h3.dc-spray, data.css)
      and the specialty-intro title (h2, specialty.css). A specialty sets these in
@@ -470,7 +471,6 @@
        slip-shadow its hard shadow (opaque, no blur)
        slip-tape   the masking tape across a `##` slip (default: the tape's colour)
        slip-gap    the space above a slip, so it never jams against the box above
-       slip-offset how far a `###` / `####` slip hangs in from the left; every second one hangs further
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
@@ -479,7 +479,6 @@
   --dc-page-slip-shadow:     var(--shadow-poster);
   --dc-page-slip-tape:       var(--dc-tape-bg);
   --dc-page-slip-gap:        var(--space-xl);
-  --dc-page-slip-offset:     0.12in;
   --dc-page-sheet-pad:       0.18in;
   --dc-page-title-ink:       var(--paper-cream);
 

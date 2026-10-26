@@ -59,11 +59,11 @@ Nothing is ever printed straight on the brick. Anything you write directly on a 
 |---|---|
 | `# Title` | A banner in the chapter's accent colour with cream type |
 | `## Heading` | A paper slip: an accent rail on the left, a dashed ink foot, a hard shadow and a strip of masking tape |
-| `### Heading` | A tag that shrinks to its words, hung in from the left (every second one hangs further), no tape |
-| `#### Heading` and smaller | A label slip that shrinks to its words |
-| Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does |
+| `### Heading` | A tag that shrinks to its words, on the left edge of its sheet, no tape |
+| `#### Heading` and smaller | A label slip that shrinks to its words, on the left edge of its sheet |
+| Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does. A heading sits straight on the sheet below it. A run of prose in `@columns` is one sheet and does not split across a page |
 
-Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-slip-gap` (the space above a slip), `--dc-page-slip-offset`, `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
+Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-slip-gap` (the space above a slip), `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
 
 
 ## Where the content sits
@@ -284,7 +284,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 ## Specialty profile
 
-Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. The art plate takes its own page.
+Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own.
 
 ```markdown {.dg-split}
 @specialty .augmerc
