@@ -257,6 +257,12 @@ h1.dc-chevron {
   padding: 2px 8px 4px;
 }
 
+/* A flavor line that leads into more text is its lead-in: it stays with what
+   follows, never alone at a page foot. */
+.dc-flavor:has(+ *) {
+  break-after: avoid;
+}
+
 /* ── Sub-header ───────────────────────────────────────────────────────── */
 .dc-sub-header {
   font-family: var(--font-mono);

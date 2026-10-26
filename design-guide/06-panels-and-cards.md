@@ -69,6 +69,17 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 
 The components below that are sections have a marker of their own and a word on `@section`: `@npc-stat` (`npc`), `@fiction-excerpt` (`fiction`), `@citizen-walkthrough` (`walkthrough`), `@card-grid` (`cards`), `@flaws`, `@ideals` and `@dreams`.
 
+## Sub-headings in a panel {#panel-subheads}
+
+A panel's first `##` or `###` is its title bar; a heading after it is a sub-heading, set one step below the bar so it never reads as a second title. Under a `##` bar (16pt) an `###` is 13pt; under an `###` bar (13pt), or an `##` with the h3 look, an `###` is 11pt; an `####` is 11pt in any panel. Each takes more room above than below, so it reads as the head of the text after it. A look class (`{.dc-h4}`) still wins, and a panel with no bar is left alone. Use one sub-level per panel: under an `###` bar, an `###` and an `####` are both 11pt and differ only by the `###`'s rail and colour.
+
+| Kind | `###` sub-heading | `####` sub-heading |
+|---|---|---|
+| panel, reference, dm | 13pt under an `##` bar, 11pt under an `###` bar; accent colour and rail | 11pt ink, no rail |
+| lore | italic violet caption | italic violet caption |
+| definition | — | the headword |
+| choose | none: the form has no sub-headings | none |
+
 ## Kinds of text {#kinds-of-text}
 
 `reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter, in colour and in grayscale. Each cuts its own corners, as the skill cards do per specialty (a panel one larger chamfer, a reference four small even ones, lore long asymmetric slashes, dm a file-folder tab, choose ticket notches), and each has its own bar and sheet: a panel's bar is solid accent on cream, a reference's is a pale band, lore is deep violet, dm is ink with a cyan rule, and choose has no bar at all. The shape, the bar and the sheet say which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.

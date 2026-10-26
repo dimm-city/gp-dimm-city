@@ -667,6 +667,13 @@
   margin-top: 6pt;
 }
 
+/* Italic carries a short gloss, not running rules: a definition of three
+   paragraphs or more sets its body upright. Surreal keeps its italic, which
+   is the variant's voice (lucid is upright already). */
+.dc-definition-block:not(.dc-definition-surreal):has(> p:nth-of-type(3)) {
+  --dc-definition-block-style: normal;
+}
+
 /* LUCID — sharp, aligned, in control. Machined chamfers (all four, 9px), a
    2px inset frame in HUD blue with a cyan hairline inside it, upright body,
    the headword ruled off in blue. */

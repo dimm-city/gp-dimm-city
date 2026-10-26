@@ -21,6 +21,36 @@ cut a version that has no `## [X.Y.Z]` heading below.
   right-hand page; the PDF places it correctly.
 - **Design guide:** specialty specimens on doc pages (`.page.dg-doc`) keep
   their place in the flow (`guide.css` §8).
+- **A panel's sub-headings sit one step below its title bar.** Under a 16pt
+  `##` bar an `###` is 13pt; under a 13pt bar (`###`, or `##` with
+  `{.dc-h3}`) an `###` is 11pt, and an `####` is 11pt in any panel. They
+  were the bar's size or larger and read as a second title; books had stepped
+  them down by hand with `{.dc-h4}`/`{.dc-h5}`, which still win. Panels with
+  no bar, lore's captions and creature names keep their own. Sub-headings in a
+  panel take `--space-lg` above, and an `###` in a column run takes the rail
+  too (`section.css`; documented in design-guide ch. 6, Sub-headings in a
+  panel). Books reflow: the Field Guide is four pages shorter.
+- **Every column of an `@columns` run starts on one hang line.** The box
+  that opens a column takes no top margin; Chromium kept it in the first
+  column and after a forced break but dropped it at an unforced one
+  (`page-templates.css`, COLUMN TOPS).
+- **A definition of three paragraphs or more is set upright.** Italic stays
+  for a short gloss; surreal keeps its italic (`data.css`).
+- **A flavor line that leads into more text stays with it** (`break-after:
+  avoid`), never alone at a page foot (`chrome.css`).
+- **A wall heading sits on its text.** A `##`/`###`/`####` written straight
+  on a page now lines up with the left edge of the paper sheet below it and
+  sits on it with no gap, its dashed foot the sheet's top seam. Tags used to
+  hang in 0.12in (every second one 0.3in) with a gap under them, so they
+  looked misaligned and detached from their text (`page-templates.css`).
+- **A run of prose in `@columns` is one sheet that does not split** across a
+  page, and a `####`/`#####` inside it takes more room above than below and
+  never ends a column (`page-templates.css`).
+
+### Removed
+
+- **`--dc-page-slip-offset`**, the hang-in of wall tags, which no longer hang
+  in. A book that set it can drop it.
 
 ### Added
 
