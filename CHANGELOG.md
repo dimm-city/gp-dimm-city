@@ -22,6 +22,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
 - **Design guide:** specialty specimens on doc pages (`.page.dg-doc`) keep
   their place in the flow (`guide.css` §8).
 
+### Added
+
+- **`--dc-specialty-intro-h3-color`**: the intro's `###` headings (and their
+  underline) in each specialty's own colour. It defaults to `--blood`, and
+  every `.dc-specialty.<name>` sets it to its `--spec-ink`, the text-safe ink
+  (5.6:1 to 10.3:1 on the heading's cream band across the Field Guide's eight
+  specialties).
+
 ## [1.8.2] - 2026-10-25
 
 ### Changed

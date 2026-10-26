@@ -143,6 +143,7 @@
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
   --dc-specialty-intro-title-color: var(--bg);
   --dc-specialty-intro-bg:          var(--hud-panel);
+  --dc-specialty-intro-h3-color:    var(--blood);      /* overridden by .dc-specialty.<name> context */
 
   /* Title band chrome, shared by the learning-path banner (h3.dc-spray, data.css)
      and the specialty-intro title (h2, specialty.css). A specialty sets these in

@@ -6,6 +6,7 @@
      --dc-specialty-intro-title-bg     → title-tab background (default --hud-magenta)
      --dc-specialty-intro-title-color  → title-tab text color (default --bg)
      --dc-specialty-intro-bg           → body panel surface (default --paper-cream)
+     --dc-specialty-intro-h3-color     → ### heading text and its underline (default --blood)
      --dc-specialty-intro-title-shape  → title-tab clip-path polygon
      --dc-specialty-intro-clip         → body shell clip-path polygon
    Specialty themes override via .dc-specialty.<name> .dc-specialty-intro { }. */
@@ -126,17 +127,19 @@
 }
 
 .dc-specialty-intro>h3 {
-  /* --crimson on paper-cream = 4.03 (fails AA). --blood = 7.73:1.
+  /* Default --blood: 7.73:1 on paper-cream (--crimson is 4.03, fails AA).
+     Inside a specialty it is the specialty's --spec-ink, its text-safe ink
+     (>= 4.5:1 on cream), so the heading carries that specialty's colour.
      The band is design: it reads as a hard-edged "wall object" and keeps
      the h3 legible independent of the ::before pseudo-panel behind it. */
-  color: var(--blood);
+  color: var(--dc-specialty-intro-h3-color);
   background: var(--paper-cream);
   letter-spacing: 0.05em;
   font-size: 1rem;
   margin-top: 0.6rem;
   margin-bottom: 0.2rem;
   padding: 0.15rem 0.4rem 0.25rem;
-  border-bottom: 2px solid var(--blood);
+  border-bottom: 2px solid var(--dc-specialty-intro-h3-color);
 }
 
 .dc-specialty-intro>p {

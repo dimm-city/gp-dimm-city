@@ -104,6 +104,7 @@
   --dc-specialty-intro-title-shape: polygon(var(--spec-edge-top), var(--spec-edge-title));
   --dc-specialty-intro-title-bg: var(--spec-band);
   --dc-specialty-intro-title-color: var(--spec-on-band);
+  --dc-specialty-intro-h3-color: var(--spec-ink);
   --dc-specialty-intro-bg: var(--paper-light);
 }
 

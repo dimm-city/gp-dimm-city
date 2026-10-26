@@ -342,6 +342,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-specialty-intro-title-bg` | `--hud-magenta` | Title bar background |
 | `--dc-specialty-intro-title-color` | `--bg` | Title bar text |
 | `--dc-specialty-intro-bg` | `--hud-panel` | Panel background |
+| `--dc-specialty-intro-h3-color` | `--blood` | `###` heading text and its underline; each specialty sets its `--spec-ink` |
 | `--dc-band-rule` / `-rule-h` / `-rule-art` | `--hud-magenta` / `3px` / `none` | The rule under the band: colour, height, hard-edged pattern |
 | `--dc-band-facet` / `-facet-width` / `-facet-clip` | `transparent` / `32%` / polygon | A flat plane at the band's right (magic facet, landfill patch) |
 | `--dc-band-rim` | `none` | An inset top highlight (tech bands only) |

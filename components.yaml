@@ -436,7 +436,7 @@ components:
     recipe: "@specialty-intro … @end-specialty-intro"
     emits: div.dc-specialty-intro
     css: [styles/components/specialty.css, styles/components/specialty-identity.css]
-    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim, --dc-band-reg]
+    tokens: [--dc-specialty-intro-bg, --dc-specialty-intro-title-bg, --dc-specialty-intro-title-color, --dc-specialty-intro-h3-color, --dc-band-rule, --dc-band-rule-h, --dc-band-tick, --dc-band-tick-style, --dc-band-tick-w, --dc-band-rule-skew, --dc-band-rule-bleed, --dc-band-facet, --dc-band-facet-width, --dc-band-facet-clip, --dc-band-rim, --dc-band-reg]
     breaks: "break-inside: avoid; first h2 break-after: avoid"
     notes: "The title band is the specialty's own bright signal colour (--spec-band) with a register: tech = LED rim and a rule of LED dots (a dotted border), magic = a facet plane, streetwarden = a hazard-tape rule, landfill = a torn bottom edge and no rule."
 
