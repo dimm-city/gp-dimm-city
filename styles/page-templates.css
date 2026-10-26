@@ -611,10 +611,28 @@
 }
 
 /* ── SPECIALTY BREAK CONTROL ───────────────────────────────────────────────
-   A learning path is NOT forced onto a new page; the path-shell rule below
-   keeps its banner with its first card. This file owns .dc-specialty break
-   rules, and dc.templates outranks every components sheet. */
+   A specialty opens as a spread: the intro on a left page, the art plate
+   facing it on the right. Write them in that order, intro first. Only the
+   intro asks for a side; the plate just takes the next page, which faces
+   the intro as long as the intro fits on one page (a longer intro pushes the
+   plate to the next left page). A `right` on the plate as well made the PDF
+   misplace intros (dimm-city/gutterpress#421).
+   Every learning path then opens a new page. The first path's break falls
+   where the plate's page ends, and the two combine into one break, so it
+   adds no blank page.
+   The breaks are literal values: the preview honours only a literal forced
+   break. This file owns .dc-specialty break rules, and dc.templates
+   outranks every components sheet. */
+.dc-specialty-intro {
+  break-before: left;
+}
+
+.dc-specialty-art {
+  break-before: page;
+}
+
 .dc-specialty .dc-learning-path {
+  break-before: page;
   break-inside: auto;
   break-after: auto;
 }
@@ -629,11 +647,11 @@
   break-after: avoid;
 }
 
-/* A banner that opens a page sits flush with its top. Chromium drops the
-   shell's 8px top margin at every unforced break but keeps it after the
-   forced break that ends a specialty's art page — and those 8px were all
-   that kept the first card off its banner's page. */
-.dc-specialty > .dc-learning-path:first-child > .dc-path-shell {
+/* A banner opens its page, so it sits flush with the top. Chromium drops the
+   shell's top margin at an unforced break but keeps it after a forced one,
+   which every path now starts with, and that margin alone can push the
+   first card off its banner's page. */
+.dc-specialty > .dc-learning-path > .dc-path-shell {
   margin-top: 0;
 }
 

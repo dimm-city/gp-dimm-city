@@ -7,6 +7,21 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **A specialty opens as a spread, and every learning path opens a page.**
+  `.dc-specialty-intro` takes `break-before: left` and `.dc-specialty-art`
+  `break-before: page`, so with the intro written first the plate faces it on
+  the right (an intro longer than a page pushes the plate to the next left
+  page). Every `.dc-learning-path` in a specialty takes `break-before: page`,
+  and its banner sits flush with the page top. The plate's break moved from
+  `chrome.css` to `page-templates.css` with the other specialty break rules.
+  A book that wrote the plate before the intro should swap them. Until
+  dimm-city/gutterpress#421 is fixed the live preview can put an intro on a
+  right-hand page; the PDF places it correctly.
+- **Design guide:** specialty specimens on doc pages (`.page.dg-doc`) keep
+  their place in the flow (`guide.css` §8).
+
 ## [1.8.2] - 2026-10-25
 
 ### Changed

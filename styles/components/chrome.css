@@ -426,7 +426,7 @@ hr {
 .dc-specialty-art {
   width: var(--page-width);
   height: var(--page-height);
-  break-before: page;
+  /* Its break is in page-templates.css (SPECIALTY BREAK CONTROL). */
   margin: 0;
   overflow: hidden;
   background: var(--ink-dark); /* dark fallback so a missing image reads as intentional art plate */

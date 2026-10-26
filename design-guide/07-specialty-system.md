@@ -75,7 +75,7 @@ Tokens: `--dc-specialty-intro-bg`, `--dc-specialty-intro-title-bg`, `--dc-specia
 
 ## Specialty art
 
-A full-page art plate. It takes its own page and bleeds to the edge; in a book this follows the intro. The rendered plate is the next page. The placeholders here are local PNGs in `design-guide/img/`, one per specialty.
+A full-page art plate. It takes its own page and bleeds to the edge; in a book it follows the intro, on the right-hand page facing it. The rendered plate is the next page. The placeholders here are local PNGs in `design-guide/img/`, one per specialty.
 
 ```markdown
 @specialty .augmerc

@@ -284,7 +284,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 ## Specialty profile
 
-Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. The art plate takes its own page.
+Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own.
 
 ```markdown {.dg-split}
 @specialty .augmerc

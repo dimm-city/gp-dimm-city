@@ -24,6 +24,7 @@
         changes an .fg-art-* rule, decide separately whether the specimen
         should follow.
      §7 where the guide's panels may break (a book's call, not the package's)
+     §8 specialty specimens on doc pages keep their place in the flow
 
    The rules every Dimm City book needs — contents rows, credits labels and
    layout, chapter-start heading, specialty break control — moved into the
@@ -802,4 +803,16 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 }
 .dc-section-panel:has(> :nth-child(5)) > :last-child:not(h2, h3, h4) {
   break-before: avoid;
+}
+
+/* ── §8 Specialty specimens on doc pages ────────────────────────────────────
+   In a book a specialty opens as a spread (intro on a left page, art plate
+   facing it) and each learning path opens a page (page-templates.css,
+   SPECIALTY BREAK CONTROL). A specimen on a doc page shows one component
+   under the text that explains it, so it keeps its place in the flow: the
+   intro and the paths take no forced break (the plate keeps its own page).
+   The Part 2 example pages (304) are not doc pages and keep the book's
+   breaks. */
+.page.dg-doc :is(.dc-specialty-intro, .dc-learning-path) {
+  break-before: auto;
 }
