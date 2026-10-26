@@ -7,6 +7,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-26
+
 ### Changed
 
 - **A specialty opens as a spread, and every learning path opens a page.**
