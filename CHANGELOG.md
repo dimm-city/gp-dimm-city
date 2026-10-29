@@ -11,8 +11,8 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 - **Docs follow Gutterpress 0.11.23.** Vendored copies live under
   `extensions/npm/` (a book vendored earlier keeps `plugins/npm/` until its
-  next `ext add` or `ext update`), the app adds an npm extension under Book
-  setup → Advanced, and the README and `package.json` give the same minimum
+  next `ext add` or `ext update`), the app adds an npm extension on Book
+  setup's Extensions tab, and the README and `package.json` give the same minimum
   Gutterpress version, 0.11.20-alpha.3. The README's `ext list` sample shows
   1.9.0 with the badges in the order Gutterpress prints them.
 

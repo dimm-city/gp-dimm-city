@@ -8,9 +8,10 @@ the package renders them and prints them.
 
 ## Install
 
-**In the Gutterpress app:** open the book, then Book setup → Advanced, type
-`gp-dimm-city` as the npm package and click Add. The package joins the
-extension list, and its sheets and snippets are live in the preview. The
+**In the Gutterpress app:** open the book, then Book setup → Extensions, search
+npm for `gp-dimm-city` and click Add (or add it by exact name under *Other ways
+to add*). The package joins Your extensions, and its sheets and snippets are
+live in the preview. The
 [desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) has the rest.
 
 **From the command line**, in the folder that holds the book:
