@@ -3140,7 +3140,7 @@ exports[`rendered output 09-publishing.md matches its snapshot 1`] = `
 <th>What it does</th>
 </tr>
 </thead>
-<tbody data-source-range="15:21">
+<tbody data-source-range="15:20">
 <tr data-source-range="15:16">
 <td><code>gutterpress preview &lt;book&gt;</code></td>
 <td>Live preview with hot reload for markdown, CSS, and assets</td>
@@ -3161,14 +3161,10 @@ exports[`rendered output 09-publishing.md matches its snapshot 1`] = `
 <td><code>gutterpress validate &lt;book&gt; --pdf &lt;file&gt;</code></td>
 <td>Source checks plus validation of a built PDF</td>
 </tr>
-<tr data-source-range="20:21">
-<td><code>gutterpress lint &lt;book&gt;</code></td>
-<td>Print-safety lint over the book’s stylesheets</td>
-</tr>
 </tbody>
 </table>
-<p><code>build --format pdf</code> and <code>pdfx</code> lint and validate before and after rendering unless you pass <code>--skip-lint</code>, <code>--skip-pre-validate</code>, or <code>--skip-post-validate</code>.</p>
-<pre><code data-source-range="24:37" class="language-sh"># Preview a book
+<p><code>build --format pdf</code> and <code>pdfx</code> lint and validate before and after rendering unless you pass <code>--skip-lint</code>, <code>--skip-pre-validate</code>, or <code>--skip-post-validate</code>. The print-safety lint over the stylesheets also runs inside <code>validate</code>; <code>gutterpress validate &lt;book&gt; --category source</code> runs just the source checks.</p>
+<pre><code data-source-range="23:36" class="language-sh"># Preview a book
 gutterpress preview my-book
 
 # Print-ready PDF
@@ -3183,18 +3179,18 @@ gutterpress build my-book --format html --out ./dist/site
 <h2 data-name="drivethrurpg">DriveThruRPG</h2>
 <p>The package’s page geometry follows DriveThruRPG’s print specification: 0.125 in bleed on the three outside edges, all text 0.5 in inside the trim (<a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a>). With gutterpress 0.11.15 or later, <code>preset: dtrpg</code> covers the rest:</p>
 <table>
-<thead data-source-range="42:43">
-<tr data-source-range="42:43">
+<thead data-source-range="41:42">
+<tr data-source-range="41:42">
 <th>Setting (preset default)</th>
 <th>What it does</th>
 </tr>
 </thead>
-<tbody data-source-range="44:46">
-<tr data-source-range="44:45">
+<tbody data-source-range="43:45">
+<tr data-source-range="43:44">
 <td><code>print: { signature: 4, reserveLastPage: true }</code></td>
 <td>Pads the interior to DriveThruRPG’s 4-page signature and always ends on a completely blank page — the page reserved for printer information. The build log’s page count is the number to enter in the cover Template Generator.</td>
 </tr>
-<tr data-source-range="45:46">
+<tr data-source-range="44:45">
 <td><code>pdfx.blackText: k-only</code></td>
 <td>In a <code>--format pdfx</code> build, near-black text (the book’s ink included) prints on the black plate only, as DriveThruRPG asks for text at 24 pt and below. Black rules and panels keep their rich black.</td>
 </tr>
@@ -3203,45 +3199,45 @@ gutterpress build my-book --format html --out ./dist/site
 <p>Don’t set <code>print.signature</code> yourself, and don’t end the book with a blank page of your own: the preset does both. (<code>@page .dc-printer-page</code>, the package’s stand-in from before gutterpress 0.11.15, was removed in 1.1.2.)</p>
 <h2 data-name="flags">Flags</h2>
 <table>
-<thead data-source-range="51:52">
-<tr data-source-range="51:52">
+<thead data-source-range="50:51">
+<tr data-source-range="50:51">
 <th>Flag</th>
 <th>Commands</th>
 <th>Purpose</th>
 </tr>
 </thead>
-<tbody data-source-range="53:60">
-<tr data-source-range="53:54">
+<tbody data-source-range="52:59">
+<tr data-source-range="52:53">
 <td><code>--port N</code></td>
 <td>preview</td>
 <td>Port to listen on (default 3579)</td>
 </tr>
-<tr data-source-range="54:55">
+<tr data-source-range="53:54">
 <td><code>--open</code></td>
 <td>preview</td>
 <td>Open the browser</td>
 </tr>
-<tr data-source-range="55:56">
+<tr data-source-range="54:55">
 <td><code>--format</code></td>
 <td>build</td>
 <td><code>html</code>, <code>pdf</code> (default), or <code>pdfx</code></td>
 </tr>
-<tr data-source-range="56:57">
+<tr data-source-range="55:56">
 <td><code>--out</code></td>
 <td>build</td>
 <td>Output directory, or a <code>.pdf</code> path for <code>pdf</code> / <code>pdfx</code></td>
 </tr>
-<tr data-source-range="57:58">
+<tr data-source-range="56:57">
 <td><code>--pdfx-flavor</code></td>
 <td>build</td>
 <td><code>x1a</code> or <code>x3</code>, with <code>--format pdfx</code></td>
 </tr>
-<tr data-source-range="58:59">
+<tr data-source-range="57:58">
 <td><code>--icc</code></td>
 <td>build</td>
 <td>ICC profile; falls back to the manifest’s <code>pdfx.icc</code>, then the embedded profile</td>
 </tr>
-<tr data-source-range="59:60">
+<tr data-source-range="58:59">
 <td><code>--category</code></td>
 <td>validate</td>
 <td><code>source</code>, <code>pdf</code>, <code>asset</code>, or <code>heuristic</code></td>
@@ -3250,7 +3246,7 @@ gutterpress build my-book --format html --out ./dist/site
 </table>
 <h2 data-name="keeping-the-package-current">Keeping the package current</h2>
 <p>A book pins an exact package version and builds from the copy vendored under <code>plugins/npm/</code>. To see whether a newer version exists and move to it:</p>
-<pre><code data-source-range="65:69" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
+<pre><code data-source-range="64:68" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
 <p>Commit the manifest; <code>plugins/npm/</code> is in the book’s <code>.gitignore</code>, and a fresh clone downloads the pinned version on its first build or <code>gutterpress validate</code>. The Gutterpress app does the same under Project settings → Features.</p>

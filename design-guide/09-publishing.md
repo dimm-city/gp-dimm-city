@@ -18,9 +18,8 @@ Three commands cover the whole lifecycle: preview while you write, build for out
 | `gutterpress build <book> --format pdfx` | Render a PDF/X for a print service |
 | `gutterpress build <book> --format html` | A static site of the book for the web |
 | `gutterpress validate <book> --pdf <file>` | Source checks plus validation of a built PDF |
-| `gutterpress lint <book>` | Print-safety lint over the book's stylesheets |
 
-`build --format pdf` and `pdfx` lint and validate before and after rendering unless you pass `--skip-lint`, `--skip-pre-validate`, or `--skip-post-validate`.
+`build --format pdf` and `pdfx` lint and validate before and after rendering unless you pass `--skip-lint`, `--skip-pre-validate`, or `--skip-post-validate`. The print-safety lint over the stylesheets also runs inside `validate`; `gutterpress validate <book> --category source` runs just the source checks.
 
 ```sh
 # Preview a book
