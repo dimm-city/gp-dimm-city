@@ -386,9 +386,9 @@ const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'M
 // Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
 
-// "11 – 19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
+// "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
-  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]/g, '-');
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]|-{2,3}/g, '-');
   const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
   if (!m) return null;
   const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
@@ -423,7 +423,7 @@ function outcomeRowsHtml(rows, md, head = []) {
     : '  <div class="dc-outcomes-label">Outcomes</div>\n';
   rows.forEach(({ tier, name, roll, text }) => {
     html += '  <div class="dc-outcome-row ' + tier + '">\n';
-    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll) + '</span></span>\n';
+    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll.replace(/(\d)\s*--\s*(\d)/g, '$1\u2013$2')) + '</span></span>\n';
     html += '    <span class="dc-outcome-text">' + md.renderInline(text) + '</span>\n';
     html += '  </div>\n';
   });
