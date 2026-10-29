@@ -63,7 +63,6 @@
     "dev": "gutterpress preview design-guide --open",
     "build": "gutterpress build design-guide --format pdf --out .build/design-guide.pdf",
     "build:html": "gutterpress build design-guide --format html --out .build/design-guide-site",
-    "lint": "gutterpress lint design-guide",
     "test": "bun test",
     "test:update-snapshot": "bun test --update-snapshots",
     "book-diff": "bun scripts/book-diff.mjs",

@@ -7,6 +7,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Removed
+
+- **The `lint` npm script and the `gutterpress lint` row in the design guide.**
+  The command does not exist; the print-safety lint runs inside
+  `gutterpress build` and `gutterpress validate`, and
+  `gutterpress validate <book> --category source` runs the source checks
+  alone.
+
 ## [1.9.0] - 2026-10-26
 
 ### Changed
