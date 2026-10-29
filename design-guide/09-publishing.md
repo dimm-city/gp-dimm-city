@@ -60,14 +60,14 @@ Don't set `print.signature` yourself, and don't end the book with a blank page o
 
 ## Keeping the package current
 
-A book pins an exact package version and builds from the copy vendored under `plugins/npm/`. To see whether a newer version exists and move to it:
+A book pins an exact package version and builds from the copy vendored under `extensions/npm/`. To see whether a newer version exists and move to it:
 
 ```sh
 gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 ```
 
-Commit the manifest; `plugins/npm/` is in the book's `.gitignore`, and a fresh clone downloads the pinned version on its first build or `gutterpress validate`. The Gutterpress app does the same under Project settings → Features.
+Commit the manifest; `extensions/npm/` is in the book's `.gitignore`, and a fresh clone downloads the pinned version on its first build or `gutterpress validate`. The Gutterpress app does the same; its [desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) shows where.
 
 ## This guide
 

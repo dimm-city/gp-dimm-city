@@ -180,7 +180,7 @@ This is what you type.
 gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 </code></pre>
-<p>Or, in the Gutterpress app: open the book, then Project settings → Features → <em>Install from npm</em> → <code>gp-dimm-city</code>. The package’s macros appear in the snippet picker.</p>
+<p>Or add <code>gp-dimm-city</code> in the Gutterpress app, as its <a href="https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md" data-gp-source-token="[desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md)" data-gp-source-occurrence="0">desktop guide</a> describes. The package’s macros appear in the snippet picker.</p>
 <p>Working on the package itself? This guide loads it from the repository it lives in (<code>extensions: - ../</code> in <code>manifest.yaml</code>), so <code>npm run dev</code> at the repository root previews every change to <code>plugin.js</code> or a stylesheet here, live. The developer loop is in the repository’s <code>docs/developing.md</code>.</p>
 </div></div>"
 `;
@@ -3245,11 +3245,11 @@ gutterpress build my-book --format html --out ./dist/site
 </tbody>
 </table>
 <h2 data-name="keeping-the-package-current">Keeping the package current</h2>
-<p>A book pins an exact package version and builds from the copy vendored under <code>plugins/npm/</code>. To see whether a newer version exists and move to it:</p>
+<p>A book pins an exact package version and builds from the copy vendored under <code>extensions/npm/</code>. To see whether a newer version exists and move to it:</p>
 <pre><code data-source-range="64:68" class="language-sh">gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 </code></pre>
-<p>Commit the manifest; <code>plugins/npm/</code> is in the book’s <code>.gitignore</code>, and a fresh clone downloads the pinned version on its first build or <code>gutterpress validate</code>. The Gutterpress app does the same under Project settings → Features.</p>
+<p>Commit the manifest; <code>extensions/npm/</code> is in the book’s <code>.gitignore</code>, and a fresh clone downloads the pinned version on its first build or <code>gutterpress validate</code>. The Gutterpress app does the same; its <a href="https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md" data-gp-source-token="[desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md)" data-gp-source-occurrence="0">desktop guide</a> shows where.</p>
 <h2 data-name="this-guide">This guide</h2>
 <p>From the package repository, <code>npm run dev</code> previews this guide against the working copy, <code>npm run build</code> renders it to <code>.build/design-guide.pdf</code>, and <code>npm run build:html</code> builds the static site. The developer workflow is in the repository’s <code>docs/developing.md</code>.</p>
 </div></div>"
