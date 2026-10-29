@@ -117,6 +117,6 @@ gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 ```
 
-Or, in the Gutterpress app: open the book, then Project settings → Features → *Install from npm* → `gp-dimm-city`. The package's macros appear in the snippet picker.
+Or add `gp-dimm-city` in the Gutterpress app, as its [desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) describes. The package's macros appear in the snippet picker.
 
 Working on the package itself? This guide loads it from the repository it lives in (`extensions: - ../` in `manifest.yaml`), so `npm run dev` at the repository root previews every change to `plugin.js` or a stylesheet here, live. The developer loop is in the repository's `docs/developing.md`.
