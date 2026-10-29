@@ -828,6 +828,12 @@ describe("declared card, outcome and procedure", () => {
       expect(warnings).toEqual([]);
     });
 
+    test("a roll typed 11--19 prints as 11\u201319; the \u2013 spelling still does", () => {
+      const rollsOf = (...typed) => [...renderGp(doc("@outcome", "", ...typed.map((r) => `${r} | Name | Text`), "", "@end-outcome")).html.matchAll(/dc-outcome-roll">([^<]*)</g)].map((m) => m[1]);
+      expect(rollsOf("20", "11--19", "6 -- 10", "2--5", "1")).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
+      expect(rollsOf("11\u201319")).toEqual(["11\u201319"]);
+    });
+
     test("a sixth row is a plain hit; rows in separate paragraphs and the compact form read the same", () => {
       const six = renderGp(doc("@outcome", "", ...rows, "0 | Extra | More.", "", "@end-outcome")).html;
       expect([...six.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1]).at(-1)).toBe("hit");
@@ -921,6 +927,14 @@ describe("declared card, outcome and procedure", () => {
       const out = ladder(...bandTable(["Roll", "Result"], ["**20**", "11 \u2013 19", "6\u201410", "2 - 5", "1"]));
       expect(rolls(out)).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
       expect(tiers(out)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+    });
+
+    test("a band typed 11--19 is read like 11\u201319: the same ladder, the same HTML", () => {
+      const dashes = ladder(...bandTable(["Roll", "Result"], ["20", "11--19", "6 -- 10", "2---5", "1"]));
+      const en = ladder(...bandTable(["Roll", "Result"], ["20", "11\u201319", "6\u201310", "2\u20135", "1"]));
+      expect(isLadder(en)).toBe(true);
+      expect(rolls(en)).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
+      expect(dashes).toBe(en);
     });
 
     test("the bands in ascending order are the ladder; each row keeps its own tier and text", () => {

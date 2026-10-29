@@ -7,6 +7,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- **`@outcome` rolls and ladder bands accept `--`.** `11--19` prints as
+  11–19 and a ladder table typed that way is recognised; the `–` spelling
+  still works. The character check asks for `--`, and Gutterpress 0.11.23's
+  example books type it.
+
 ## [1.9.0] - 2026-10-26
 
 ### Changed
