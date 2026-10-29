@@ -46,7 +46,8 @@ page re-renders:
 - any chapter under `design-guide/`
 
 **Desktop app:** open the `design-guide/` folder as a book. Same preview, same
-watching. The *Features* tab shows the package as a path extension.
+watching. The app lists the package as a path extension (see its
+[desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md)).
 
 Where to look while you work:
 
@@ -171,5 +172,4 @@ public API and are listed as not exercised.
    rename `[Unreleased]` first.
 5. In a book: `gutterpress ext outdated` shows the new version,
    `gutterpress ext update gp-dimm-city` re-pins to it (Gutterpress 0.11.14+;
-   `ext add gp-dimm-city@X.Y.Z` on older versions). Commit the manifest and
-   `plugins/npm/` together.
+   `ext add gp-dimm-city@X.Y.Z` on older versions). Commit the manifest.

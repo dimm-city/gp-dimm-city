@@ -18,9 +18,8 @@ Three commands cover the whole lifecycle: preview while you write, build for out
 | `gutterpress build <book> --format pdfx` | Render a PDF/X for a print service |
 | `gutterpress build <book> --format html` | A static site of the book for the web |
 | `gutterpress validate <book> --pdf <file>` | Source checks plus validation of a built PDF |
-| `gutterpress lint <book>` | Print-safety lint over the book's stylesheets |
 
-`build --format pdf` and `pdfx` lint and validate before and after rendering unless you pass `--skip-lint`, `--skip-pre-validate`, or `--skip-post-validate`.
+`build --format pdf` and `pdfx` lint and validate before and after rendering unless you pass `--skip-lint`, `--skip-pre-validate`, or `--skip-post-validate`. The print-safety lint over the stylesheets also runs inside `validate`; `gutterpress validate <book> --category source` runs just the source checks.
 
 ```sh
 # Preview a book
@@ -61,14 +60,14 @@ Don't set `print.signature` yourself, and don't end the book with a blank page o
 
 ## Keeping the package current
 
-A book pins an exact package version and builds from the copy vendored under `plugins/npm/`. To see whether a newer version exists and move to it:
+A book pins an exact package version and builds from the copy vendored under `extensions/npm/`. To see whether a newer version exists and move to it:
 
 ```sh
 gutterpress ext outdated my-book            # each pinned package against npm's latest
 gutterpress ext update gp-dimm-city my-book # re-pin to the latest; the old copy is removed
 ```
 
-Commit the manifest; `plugins/npm/` is in the book's `.gitignore`, and a fresh clone downloads the pinned version on its first build or `gutterpress validate`. The Gutterpress app does the same under Project settings → Features.
+Commit the manifest; `extensions/npm/` is in the book's `.gitignore`, and a fresh clone downloads the pinned version on its first build or `gutterpress validate`. The Gutterpress app does the same; its [desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) shows where.
 
 ## This guide
 

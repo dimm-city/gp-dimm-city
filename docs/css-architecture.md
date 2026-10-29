@@ -33,8 +33,9 @@ manifest array is the only place the order is written down.
 
 **Package boundary.** This whole repository is the Gutterpress extension
 package `gp-dimm-city`. A book installs it with `gutterpress ext add
-gp-dimm-city` (or from the app's Features panel), which pins the exact
-version and vendors a copy under the book's `plugins/npm/`. Gutterpress
+gp-dimm-city` (or from the app; see the [README](../README.md#install)),
+which pins the exact version and vendors a copy under the book's
+`extensions/npm/`. Gutterpress
 ≥0.11.0 wraps every extension's CSS in its own cascade layer, `@layer
 ext.<name>` (this package is `ext.gp-dimm-city`), in `extensions:` list
 order — so the cascade a consuming book gets is core (layered) → each
