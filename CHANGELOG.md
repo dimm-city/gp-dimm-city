@@ -9,9 +9,15 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Needs Gutterpress 0.11.22 or later** (was 0.11.20-alpha.3), in
+  `engines.gutterpress` and the README. With `size` gone from
+  `styles/page-rules.css` (below), the page size comes from the book's
+  manifest, which Gutterpress writes from 0.11.22 on. On 0.11.21 a book would
+  fall back to Letter (the design guide's full-bleed plates fail its build);
+  now Gutterpress refuses to load the extension there and says to update.
 - **Tests and the guide build run on Gutterpress 0.11.23-alpha.6.** The dev
   dependency moves from 0.11.20-alpha.3, three releases behind, to the 0.11.23
-  line the 1.10 release targets; `engines.gutterpress` is unchanged. The design
+  line the 1.10 release targets. The design
   guide's manifest uses 0.11.23's flat shape: `chapters:` (was
   `source.files`), no `page.tolerance` (the preset's), and no
   `validate.source.markdownlint` (the repo's `.markdownlint.jsonc` is found by
@@ -20,7 +26,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `extensions/npm/` (a book vendored earlier keeps `plugins/npm/` until its
   next `ext add` or `ext update`), the app adds an npm extension on Book
   setup's Extensions tab, and the README and `package.json` give the same minimum
-  Gutterpress version, 0.11.20-alpha.3. The README's `ext list` sample shows
+  Gutterpress version. The README's `ext list` sample shows
   1.9.0 with the badges in the order Gutterpress prints them.
 - **The design guide and the snippets type the plain spellings** (`---`, `--`,
   `...`, `-`, `'`). `source.characters` findings on the guide drop from 367 to

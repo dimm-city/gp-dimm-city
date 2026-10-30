@@ -140,9 +140,10 @@ bun run book-diff -- --base main --head ./plugin.js \
 ```
 
 `scripts/book-diff.mjs` renders every chapter of each `--book` (its
-`source.files`, else every `.md` sorted) through `gutterpress/render` twice,
-once with the `--base` plugin (a git ref, read with `git show <ref>:plugin.js`,
-or a path) and once with `--head` (default `./plugin.js`), passing the
+`chapters` or the older `source.files`, else every `.md` sorted) through
+`gutterpress/render` twice, once with the `--base` plugin (a git ref, read
+with `git show <ref>:plugin.js`, or a path) and once with `--head` (default
+`./plugin.js`), passing the
 plugin's `markers` export as well. It diffs the normalised HTML and the
 per-chapter `env.layoutWarnings`, prints a summary, and writes a unified diff
 per differing chapter under `--out`. Exit 0 means identical, 1 means diffs.
