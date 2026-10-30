@@ -128,8 +128,10 @@ gutterpress preview my-book
 
 Then insert the *Toc Page*, *Credits Page* and *Chapter Start Page* snippets
 to lay down the front matter, and reach for *Skill*, *Learning Path* and
-*Specialty* as you write. `page-rules.css` sets a Letter page with bleed; keep
-the manifest's `page:` in step with it.
+*Specialty* as you write. The `dtrpg` preset sets the sheet, Letter with
+bleed. The look's page margins are a starting point: from Gutterpress
+0.11.23, Book setup > Book > Margins (`page.margin` in the manifest) sets
+the book's own, and the full-bleed plates and named pages keep theirs.
 
 ## Author overrides
 
