@@ -6,7 +6,7 @@ Chapter 8 {.dg-kicker}
 
 # Page Templates
 
-A word on `@page` chooses a page's geometry — margins, footers, running headers — and `@section` variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
+A word on `@page` chooses a page's geometry --- margins, footers, running headers --- and `@section` variants build the recurring pages of a Dimm City book. Each template below is a skeleton to copy; the finished page is in Part 2. {.dg-lede}
 
 
 ## Page geometry
@@ -17,11 +17,11 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 
 | Dimension | On the sheet | From the trim | DriveThruRPG minimum for text |
 |---|---|---|---|
-| Sheet (trim + bleed) | 8.625 × 11.25 in | — | — |
-| Trim | — | 8.5 × 11 in | — |
-| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | — | — |
+| Sheet (trim + bleed) | 8.625 × 11.25 in | --- | --- |
+| Trim | --- | 8.5 × 11 in | --- |
+| Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | --- | --- |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in — the chips sit at the top of the band and end 0.5 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in --- the chips sit at the top of the band and end 0.5 in from the trim |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.5 in | 0.5 in | 0.5 in |
 
@@ -41,7 +41,7 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
 | `@page blank` | none | A deliberately blank page (core's word) |
 
-The `c.N` footer is the chapter number from `@chapter … ch="N"`. A chapter split across files repeats its `@chapter` line in each.
+The `c.N` footer is the chapter number from `@chapter ... ch="N"`. A chapter split across files repeats its `@chapter` line in each.
 
 ### The page chips
 
@@ -115,9 +115,9 @@ Twelve chapters of dreams, dirt, and what bites back.
 
 @toc
 
-1. [Who Do You Dream to Be?](#ch-citizen) — Citizen file, vibe, origins.
-2. [What Do You Dream of Doing?](#ch-specialties) — How abilities work.
-3. [The Augmerc](#ch-augmerc) — Muscle for hire.
+1. [Who Do You Dream to Be?](#ch-citizen) --- Citizen file, vibe, origins.
+2. [What Do You Dream of Doing?](#ch-specialties) --- How abilities work.
+3. [The Augmerc](#ch-augmerc) --- Muscle for hire.
 
 @end-toc
 ```
@@ -242,7 +242,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 ## Specialty catalog page
 
-`@page specialty-catalog` plus a `@card-grid` of specialty cards, each in its own `@specialty`. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other (the word forces no blank page when the chapter opener before it is on the facing right page, as it is meant to be; an opener that lands on a left page makes the engine insert one, so keep the opener on a right page); the title, four cards and Dualist fill the left page and the other four cards and Generalist the right (list Dualist fifth and Generalist last, and put a short `@lede` right after Dualist to open the right page; Dualist and Generalist span both columns; every one-column card is one size and both full-width cards another), in aligned rows, each card a poster with its portrait on top, its name, its tagline and its pitch. Whatever follows starts the next page: write a plain `@page` after `@end-card-grid`. Keep the cards uniform — identical chrome is what makes the choices comparable. The same `@card-grid` on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.
+`@page specialty-catalog` plus a `@card-grid` of specialty cards, each in its own `@specialty`. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other (the word forces no blank page when the chapter opener before it is on the facing right page, as it is meant to be; an opener that lands on a left page makes the engine insert one, so keep the opener on a right page); the title, four cards and Dualist fill the left page and the other four cards and Generalist the right (list Dualist fifth and Generalist last, and put a short `@lede` right after Dualist to open the right page; Dualist and Generalist span both columns; every one-column card is one size and both full-width cards another), in aligned rows, each card a poster with its portrait on top, its name, its tagline and its pitch. Whatever follows starts the next page: write a plain `@page` after `@end-card-grid`. Keep the cards uniform --- identical chrome is what makes the choices comparable. The same `@card-grid` on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.
 
 ```markdown {.dg-split}
 @page specialty-catalog
@@ -251,7 +251,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 @lede
 
-Every dreamer's got a sharp edge — your specialty is where it starts.
+Every dreamer's got a sharp edge --- your specialty is where it starts.
 
 @end-lede
 
@@ -293,7 +293,7 @@ Intro, art plate, then learning paths with their skill cards, all inside one `@s
 
 ## Augmerc
 
-…
+...
 
 @end-specialty-intro
 
@@ -316,7 +316,7 @@ Intro, art plate, then learning paths with their skill cards, all inside one `@s
 
 #### Punishing Counter
 
-…
+...
 
 @end-skill
 
@@ -353,4 +353,4 @@ You believe in a code, and it's your duty to uphold it.
 
 ## Running headers and footers
 
-Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter … ch="N"`: write it at the top of every chapter file and nothing else is needed.
+Body pages print `p.N` (the page number) and `c.N` (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. `c.N` comes from `@chapter ... ch="N"`: write it at the top of every chapter file and nothing else is needed.

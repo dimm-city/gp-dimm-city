@@ -6,28 +6,28 @@ exports[`rendered output 00-start-here.md matches its snapshot 1`] = `
 <div class="dg-toc">
 <h2 data-name="part-1-using-the-system">Part 1 — Using the system</h2>
 <ol>
-<li><a href="#ch-writing">Writing a Page</a> — markers, attributes, the markdown the system styles</li>
-<li><a href="#ch-typography">Typography</a> — the three faces, the type scale, heading chrome</li>
-<li><a href="#ch-palette">Color</a> — paper, fire and HUD tokens, and how to retheme</li>
-<li><a href="#ch-layout">Layout</a> — columns, panels, floated callouts, floats, break control</li>
-<li><a href="#ch-text">Text &amp; Callouts</a> — ledes, flavor, pull quotes, the alert family, tape, tags</li>
-<li><a href="#ch-panels">Panels, Cards &amp; Data</a> — blocks, definitions, procedures, outcomes and roll tables, cards, gear, factions, tables, stat blocks</li>
-<li><a href="#ch-specialty">The Specialty System</a> — specialties, learning paths, skill cards</li>
-<li><a href="#ch-templates">Page Templates</a> — chapter openers, contents, credits, catalog and profile pages</li>
-<li><a href="#ch-publishing">Publishing</a> — preview, build, validate</li>
-<li><a href="#ch-reference">Reference</a> — every marker on one page; options, classes, tokens</li>
-<li><a href="#ch-variants">Variant Gallery</a> — every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
+<li><a href="#ch-writing">Writing a Page</a> &mdash; markers, attributes, the markdown the system styles</li>
+<li><a href="#ch-typography">Typography</a> &mdash; the three faces, the type scale, heading chrome</li>
+<li><a href="#ch-palette">Color</a> &mdash; paper, fire and HUD tokens, and how to retheme</li>
+<li><a href="#ch-layout">Layout</a> &mdash; columns, panels, floated callouts, floats, break control</li>
+<li><a href="#ch-text">Text &amp; Callouts</a> &mdash; ledes, flavor, pull quotes, the alert family, tape, tags</li>
+<li><a href="#ch-panels">Panels, Cards &amp; Data</a> &mdash; blocks, definitions, procedures, outcomes and roll tables, cards, gear, factions, tables, stat blocks</li>
+<li><a href="#ch-specialty">The Specialty System</a> &mdash; specialties, learning paths, skill cards</li>
+<li><a href="#ch-templates">Page Templates</a> &mdash; chapter openers, contents, credits, catalog and profile pages</li>
+<li><a href="#ch-publishing">Publishing</a> &mdash; preview, build, validate</li>
+<li><a href="#ch-reference">Reference</a> &mdash; every marker on one page; options, classes, tokens</li>
+<li><a href="#ch-variants">Variant Gallery</a> &mdash; every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
 </ol>
 <h2 data-name="part-2-a-book-page-by-page">Part 2 — A book, page by page</h2>
 <ol>
 <li><a href="#ch-examples">About the examples</a></li>
-<li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, introduction</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — chapter-start page, fiction excerpt, citizen file walkthrough</li>
-<li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the specialty card grid</li>
-<li><a href="#ch-example-specialty-profile">Specialty Profile</a> — intro, art, a learning path with skill cards</li>
-<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> — sections, definitions, conditions, the outcome ladder</li>
-<li><a href="#ch-example-dm-npcs">Dream Master Pages</a> — DM notes, NPC stat blocks</li>
-<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> — gear entries, callouts, an ego-point ladder</li>
+<li><a href="#ch-example-front-matter">Front Matter</a> &mdash; contents, credits, introduction</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> &mdash; chapter-start page, fiction excerpt, citizen file walkthrough</li>
+<li><a href="#ch-example-specialty-overview">Specialty Overview</a> &mdash; the specialty card grid</li>
+<li><a href="#ch-example-specialty-profile">Specialty Profile</a> &mdash; intro, art, a learning path with skill cards</li>
+<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> &mdash; sections, definitions, conditions, the outcome ladder</li>
+<li><a href="#ch-example-dm-npcs">Dream Master Pages</a> &mdash; DM notes, NPC stat blocks</li>
+<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> &mdash; gear entries, callouts, an ego-point ladder</li>
 </ol>
 </div>
 <hr data-source-range="40:41">
@@ -89,7 +89,7 @@ This is what you type.
 </tr>
 <tr data-source-range="85:86">
 <td>A boxed note, warning, DM note, vibe, origin or visit</td>
-<td><code>@callout …</code> (<code>@dm-note</code>)</td>
+<td><code>@callout ...</code> (<code>@dm-note</code>)</td>
 </tr>
 <tr data-source-range="86:87">
 <td>A worked example</td>
@@ -97,7 +97,7 @@ This is what you type.
 </tr>
 <tr data-source-range="87:88">
 <td>A box in one of three registers: panel, slate, shard</td>
-<td><code>@block …</code></td>
+<td><code>@block ...</code></td>
 </tr>
 <tr data-source-range="88:89">
 <td>Fiction, a chapter-opener story</td>
@@ -341,7 +341,7 @@ Pick a Spec. Spend 6 Spec Points.
 <p>A plain <code>&gt;</code> quote is an epigraph: accent rail, italic body. Inside a skill card the first <code>&gt;</code> line is the card’s flavor.</p>
 <pre><code data-source-range="167:172" class="language-markdown">&gt; Every city has a language.
 &gt;
-&gt; — Hollis Vance
+&gt; --- Hollis Vance
 </code></pre>
 <div class="dg-stage">
 <blockquote>
@@ -385,8 +385,8 @@ Reach
 
 @column-break
 
-- **0 AP** — Free to use. Not always safe.
-- **1–X AP** — You choose how hard you push.
+- **0 AP** --- Free to use. Not always safe.
+- **1--X AP** --- You choose how hard you push.
 
 @end-columns
 
@@ -490,19 +490,19 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </table>
 <h2 data-name="the-three-faces">The three faces</h2>
 <div class="dg-face">
-<p class="dg-face-meta"><strong>lixdu</strong> — display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
+<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
 <p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
 <p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Titillium Web</strong> — body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
+<p class="dg-face-meta"><strong>Titillium Web</strong> &mdash; body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
 <p class="dg-face-body">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &amp;?!</p>
 <p class="dg-face-body dg-face-set">Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. <em>Italic carries the in-world voice,</em> and <strong>bold marks a rule.</strong></p>
 </div>
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 10pt (the floor), uppercase, tracking 0.08em or wider</p>
+<p class="dg-face-meta"><strong>Tomorrow</strong> &mdash; labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 10pt (the floor), uppercase, tracking 0.08em or wider</p>
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
-<p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
+<p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9&ndash;13</p>
 </div>
 <h2 data-name="heading-hierarchy">Heading hierarchy</h2>
 <p>Each level rendered at its print size:</p>
@@ -885,7 +885,7 @@ exports[`rendered output 05-text-and-callouts.md matches its snapshot 1`] = `
 <p>The opening paragraph of a chapter or major section, set larger on its own light panel: upright semibold ink type, a heavy accent rail and an ink foot rule.</p>
 <pre><code data-source-range="15:22" class="language-markdown">@lede
 
-The city didn't go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
+The city didn't go quiet --- it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
 
 @end-lede
 </code></pre>
@@ -1090,7 +1090,7 @@ You: &quot;I flip the noodle cart into the doorway.&quot; That is risky, so you 
 <p><code>@dm-note</code> is shorthand for <code>@callout dm</code>, for the longer GM asides — scene setups, adjudication, design notes.</p>
 <pre><code data-source-range="223:232" class="language-markdown">@dm-note label=&quot;Running the Setup&quot;
 
-The fixer offering this job doesn't know it's bait — they're a cut-out, paid to pass the contract along and ask no questions.
+The fixer offering this job doesn't know it's bait --- they're a cut-out, paid to pass the contract along and ask no questions.
 
 If the players investigate before accepting, they can smell the trap with a Streetwise roll, DC 14.
 
@@ -1410,7 +1410,7 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 </div></div>
 <p>Tokens: <code>--dc-block-bg</code>, <code>--dc-block-fg</code>, <code>--dc-block-accent</code>, <code>--dc-block-title-bg</code>, <code>--dc-block-title-fg</code>, <code>--dc-block-title-rule</code> (a whole <code>border-bottom</code> under the band), <code>--dc-block-tag</code> (a quoted word stamped on the band) and <code>--dc-block-tag-edge</code> (its border).</p>
 <h2 data-name="definition">Definition</h2>
-<p>A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an <code>@columns 2</code> run for a glossary of entries, or put a run of <code>#### Term</code> entries in one <code>@definition</code> and it reads as a glossary: each term is a display-caps headword in blue, with a rule between entries. A <code>---</code> inside is the same rule, and a bold lead (<code>**Term** — gloss</code>) needs nothing.</p>
+<p>A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an <code>@columns 2</code> run for a glossary of entries, or put a run of <code>#### Term</code> entries in one <code>@definition</code> and it reads as a glossary: each term is a display-caps headword in blue, with a rule between entries. A <code>---</code> inside is the same rule, and a bold lead (<code>**Term** --- gloss</code>) needs nothing.</p>
 <pre><code data-source-range="274:281" class="language-markdown">@definition
 
 **Tick / Tic:** A heartbeat. The space between deciding and doing. Used in ability text to mean *immediate*.
@@ -1434,7 +1434,7 @@ The running tally of attention you've drawn.
 
 #### Hard Choice
 
-A roll of 6–10. The fiction advances, but it costs you.
+A roll of 6--10. The fiction advances, but it costs you.
 
 #### Twitch
 
@@ -1515,9 +1515,9 @@ Roll 2d20, take the lower. Reality pushes back.
 <pre><code data-source-range="462:473" class="language-markdown">@outcome
 
 20 | Triumph | Best-case outcome. You do it, and the moment breaks your way.
-11–19 | Success | You do it. Clean.
-6–10 | Hard Choice | You succeed, but it costs you.
-2–5 | Failure | You don't get what you wanted.
+11--19 | Success | You do it. Clean.
+6--10 | Hard Choice | You succeed, but it costs you.
+2--5 | Failure | You don't get what you wanted.
 1 | Catastrophe | It goes bad, and then worse.
 
 @end-outcome
@@ -1549,13 +1549,13 @@ Roll 2d20, take the lower. Reality pushes back.
 <p>The chip column is a quarter of the ladder wide (never under 130px), so a long band name wraps on two or three lines instead of cramping; band names are 10pt semibold, centred.</p>
 <p>Tokens: <code>--dc-outcomes-surface</code>, <code>--dc-outcomes-border</code>, <code>--dc-outcomes-label-bg</code>, <code>--dc-outcomes-label-color</code>, <code>--dc-outcome-key-color</code>, <code>--dc-outcome-name-color</code>, <code>--dc-outcome-key-col</code> (the chip column’s width).</p>
 <h3 data-name="a-table-of-the-five-bands-is-the-ladder">A table of the five bands is the ladder</h3>
-<p>Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (<code>20</code>, <code>11-19</code>, <code>6-10</code>, <code>2-5</code>, <code>1</code>, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (<code>Roll | Result</code>, <code>Result | Effect</code>, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads “Outcomes”. A band is read however it is typed: <code>11-19</code>, <code>11 – 19</code>, <code>**20**</code>. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use <code>@roll-table</code> below.</p>
+<p>Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (<code>20</code>, <code>11-19</code>, <code>6-10</code>, <code>2-5</code>, <code>1</code>, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (<code>Roll | Result</code>, <code>Result | Effect</code>, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads “Outcomes”. A band is read however it is typed: <code>11-19</code>, <code>11 -- 19</code>, <code>**20**</code>. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use <code>@roll-table</code> below.</p>
 <pre><code data-source-range="498:507" class="language-markdown">| Roll | Result |
 | --- | --- |
 | 20 | The jammed door gives. Something comes with it. |
-| 11–19 | The door opens. |
-| 6–10 | It opens, loudly. |
-| 2–5 | It holds. |
+| 11--19 | The door opens. |
+| 6--10 | It opens, loudly. |
+| 2--5 | It holds. |
 | 1 | The handle comes off in your hand. |
 </code></pre>
 <p class="dg-result">Result</p>
@@ -1775,7 +1775,7 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 </div></div>
 <p>Tokens: <code>--dc-entry-accent</code> (rail), <code>--dc-entry-ink</code> (name), <code>--dc-entry-surface</code>, <code>--dc-entry-rail</code>, <code>--dc-entry-rule</code>, <code>--dc-entry-kind</code> (the badge word, a quoted string or <code>none</code>), <code>--dc-entry-shape</code> (the silhouette), <code>--dc-entry-radius</code>, <code>--dc-entry-ornament</code> with <code>--dc-entry-orn-inset</code>, <code>-orn-bg</code>, <code>-orn-border</code>, <code>-orn-clip</code> and <code>-orn-z</code> (the kind’s solid-fill ornament layer: a treasure’s facet, a vehicle’s rivets), <code>--dc-entry-frame</code>, <code>--dc-entry-badge-bg</code>, <code>--dc-entry-badge-fg</code>, <code>--dc-entry-badge-shape</code>, <code>--dc-entry-badge-radius</code>.</p>
 <h3 data-name="fields">Fields</h3>
-<p>A field is a labelled line of an entry: its rules, its traits, what a drug does and costs, what a power needs. Write <code>@field</code> with a variant word, and the variant’s name is the label; <code>label=&quot;…&quot;</code> replaces it, as with <code>@callout</code>.</p>
+<p>A field is a labelled line of an entry: its rules, its traits, what a drug does and costs, what a power needs. Write <code>@field</code> with a variant word, and the variant’s name is the label; <code>label=&quot;...&quot;</code> replaces it, as with <code>@callout</code>.</p>
 <table>
 <thead data-source-range="768:769">
 <tr data-source-range="768:769">
@@ -1896,7 +1896,7 @@ A voice that is never quite yours.
 </div>
 </div></div></div></div>
 <h2 data-name="faction">Faction</h2>
-<p>An organization’s profile: a card with a kind badge. The kind is the bare word: <code>megacorp</code>, <code>cabal</code>, <code>cult</code> or <code>enforcer</code>, and each has its own silhouette, top band, name colour and badge: megacorp a machined blue rectangle (an L-shaped step out of two corners) with a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. <code>label=&quot;…&quot;</code> names a badge of your own; with no word there is no badge. Write the name as a <code>####</code> heading, then the fields and prose as you would anyway.</p>
+<p>An organization’s profile: a card with a kind badge. The kind is the bare word: <code>megacorp</code>, <code>cabal</code>, <code>cult</code> or <code>enforcer</code>, and each has its own silhouette, top band, name colour and badge: megacorp a machined blue rectangle (an L-shaped step out of two corners) with a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. <code>label=&quot;...&quot;</code> names a badge of your own; with no word there is no badge. Write the name as a <code>####</code> heading, then the fields and prose as you would anyway.</p>
 <pre><code class="dg-split language-markdown" data-source-range="899:918">@faction megacorp
 
 #### Halcyon Reach Holdings
@@ -2003,15 +2003,15 @@ Sing the signal and the signal sings back.
 </table>
 </div>
 <h2 data-name="npc-stat-block">NPC stat block</h2>
-<p>The narrative form a Dream Master reads aloud: <code>@npc-stat</code> with a <code>####</code> name, a <code>&gt;</code> flavor line, the stat lines, and <code>#####</code> sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block’s rule colour), not a box. The stat lines are picked by position: the first paragraph after the <code>&gt;</code> is the primary line, set as a chip (its first line 12pt bold, cream on the block’s colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (10pt); no markup is needed, <code>2 HP — 1 Damage</code> over <code>Fodder — Medium</code> is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.</p>
+<p>The narrative form a Dream Master reads aloud: <code>@npc-stat</code> with a <code>####</code> name, a <code>&gt;</code> flavor line, the stat lines, and <code>#####</code> sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block’s rule colour), not a box. The stat lines are picked by position: the first paragraph after the <code>&gt;</code> is the primary line, set as a chip (its first line 12pt bold, cream on the block’s colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (10pt); no markup is needed, <code>2 HP --- 1 Damage</code> over <code>Fodder --- Medium</code> is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.</p>
 <pre><code data-source-range="1002:1022" class="language-markdown">@npc-stat
 
 #### Patchhead
 
 &gt; See a Patchhead comin' at you, you best move. Ain't no reasoning with 'em.
 
-2 HP — 1 Damage
-Fodder — Usually Small to Medium
+2 HP --- 1 Damage
+Fodder --- Usually Small to Medium
 
 ##### Traits
 
@@ -2050,8 +2050,8 @@ Two crews that work the same block.
 
 &gt; See a Patchhead comin' at you, you best move.
 
-2 HP — 1 Damage
-Fodder — Small to Medium
+2 HP --- 1 Damage
+Fodder --- Small to Medium
 
 ##### Traits
 
@@ -2061,8 +2061,8 @@ Fodder — Small to Medium
 
 &gt; Hold still, this'll only sting a lot.
 
-3 HP — 1 Damage
-Fodder — Medium
+3 HP --- 1 Damage
+Fodder --- Medium
 
 ##### Traits
 
@@ -2102,9 +2102,9 @@ Fodder — Medium</p>
 
 &gt; A thumb-sized surveillance drone made of living glass.
 
-1 HP — 1 Damage
+1 HP --- 1 Damage
 
-Fodder — Tiny
+Fodder --- Tiny
 
 ##### Traits
 
@@ -2174,13 +2174,13 @@ Fodder — Tiny
 <pre><code data-source-range="1204:1227" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
-    &lt;div class=&quot;dc-stat-class&quot;&gt;— Contact · Ripperdoc —&lt;/div&gt;
+    &lt;div class=&quot;dc-stat-class&quot;&gt;&amp;mdash; Contact · Ripperdoc &amp;mdash;&lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;dc-stat-grid&quot;&gt;
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;REP&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;4&lt;/div&gt;&lt;/div&gt;
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;HEAT&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;2&lt;/div&gt;&lt;/div&gt;
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;FEE&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;×1.5&lt;/div&gt;&lt;/div&gt;
-    &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;TURN&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;−1&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;TURN&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;-1&lt;/div&gt;&lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;dc-stat-line&quot;&gt;&lt;strong&gt;Patch Job:&lt;/strong&gt; treats wounds between scenes for FEE × severity.&lt;/div&gt;
 &lt;/div&gt;
@@ -2198,13 +2198,13 @@ Fodder — Tiny
 <div class="dc-stat dc-flush">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
@@ -2215,7 +2215,7 @@ Fodder — Tiny
 <h2 data-name="npc-sidebar">NPC sidebar</h2>
 <p>A contact card floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>. It has a blue ID header band reading <em>Contact</em>, an ink border, a hard shadow and a solid ink strip foot.</p>
 <pre><code data-source-range="1260:1266" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
-&lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; — Fixer&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; &amp;mdash; Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
 </code></pre>
@@ -2223,7 +2223,7 @@ Fodder — Tiny
 <div class="dg-stage dg-on-paper">
 <p>The Dreamers are low on credits and lower on luck when the noodle-stall door swings open. A figure slides into the booth across from them, drops a battered data chip on the table, and waits.</p>
 <div class="dc-sidebar"><div class="dc-human-callout">
-<p><strong>Vance "Static" Oyelaran</strong> — Fixer</p>
+<p><strong>Vance "Static" Oyelaran</strong> &mdash; Fixer</p>
 <p>Two cybernetic eyes, owes everyone. <strong>Hook:</strong> the chip is real; the access tunnel on it is bait.</p>
 </div></div>
 <p>Read the room before you read the chip. A fixer who makes it back out the door clean is a fixer who knew the drone was coming. Either way, the job’s already in motion the moment Static sat down.</p>
@@ -2241,7 +2241,7 @@ exports[`rendered output 07-specialty-system.md matches its snapshot 1`] = `
 <p>The silhouette says what kind of specialty it is, on the card, its tab, the path banner and the intro alike: tech ones are crisp stair-steps and square bites (Augmerc, Wirephreak, Cybersurgeon), magic ones are facets and lozenges (Etherlock, Dualist, Generalist, and the Proxy’s gate), the Technosorcerer is torn, the Gutterdruid wobbly, the Streetwarden a sign-plate octagon. The title band spans its frame exactly and every cut stays clear of the type.</p>
 <pre><code data-source-range="19:26" class="language-markdown">@specialty .augmerc
 
-… intro, art, learning paths, skills …
+... intro, art, learning paths, skills ...
 
 @end-specialty
 </code></pre>
@@ -2254,7 +2254,7 @@ exports[`rendered output 07-specialty-system.md matches its snapshot 1`] = `
 
 ## Augmerc
 
-An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.
+An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers --- the difference is gear, grafts, and how much of them is still original.
 
 ### Spec Tweak: **Wired to Kill**
 
@@ -2638,9 +2638,9 @@ Once per round, outside your turn, you exploit a target in reach:
 | Roll | Outcome |
 |---|---|
 | 20 | Quadruple damage. |
-| 11–19 | Double damage. |
-| 6–10 | Double damage, but the target counters. |
-| 2–5 | You miss. The target counters Lucid. |
+| 11--19 | Double damage. |
+| 6--10 | Double damage, but the target counters. |
+| 2--5 | You miss. The target counters Lucid. |
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill
@@ -2837,7 +2837,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 </tbody>
 </table>
-<p>The <code>c.N</code> footer is the chapter number from <code>@chapter … ch=&quot;N&quot;</code>. A chapter split across files repeats its <code>@chapter</code> line in each.</p>
+<p>The <code>c.N</code> footer is the chapter number from <code>@chapter ... ch=&quot;N&quot;</code>. A chapter split across files repeats its <code>@chapter</code> line in each.</p>
 <h3 data-name="the-page-chips">The page chips</h3>
 <p>The folio and the chapter number print as stickers, never as bare type. The folio (<code>P.121</code>) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (<code>C.N</code>, which a book can restate as <code>E.N</code> as this guide does for Part 2) is a stamped coupon: a solid face with cream type and the same edge and shadow. Both are 17 pt tall with 10 pt type centred in the face, and both sit 0.125 in below the text block, inside DriveThruRPG’s 0.5 in text minimum, so a box that runs to the foot never touches them, on recto and verso, for every page word that prints them. The coupon is magenta by default; to colour it with a chapter, put the chapter’s pages on a named page, <code>:where(#ch-rules) &gt; .page { page: dc-chip-rust; }</code> (blue, rust, violet, amethyst or amber; the <code>specialty</code>, <code>rules</code> and <code>lore</code> chapter words do it for you). Name the page with the low-specificity <code>:where()</code> so a page’s own template name still wins. A <code>citizen-file</code> page’s running head is the same sticker in amber at the top.</p>
 <h3 data-name="where-pages-break">Where pages break</h3>
@@ -2935,9 +2935,9 @@ Twelve chapters of dreams, dirt, and what bites back.
 
 @toc
 
-1. [Who Do You Dream to Be?](#ch-citizen) — Citizen file, vibe, origins.
-2. [What Do You Dream of Doing?](#ch-specialties) — How abilities work.
-3. [The Augmerc](#ch-augmerc) — Muscle for hire.
+1. [Who Do You Dream to Be?](#ch-citizen) --- Citizen file, vibe, origins.
+2. [What Do You Dream of Doing?](#ch-specialties) --- How abilities work.
+3. [The Augmerc](#ch-augmerc) --- Muscle for hire.
 
 @end-toc
 </code></pre>
@@ -3034,7 +3034,7 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 
 @lede
 
-Every dreamer's got a sharp edge — your specialty is where it starts.
+Every dreamer's got a sharp edge --- your specialty is where it starts.
 
 @end-lede
 
@@ -3071,7 +3071,7 @@ Heavily armed and wired for war.
 
 ## Augmerc
 
-…
+...
 
 @end-specialty-intro
 
@@ -3094,7 +3094,7 @@ Heavily armed and wired for war.
 
 #### Punishing Counter
 
-…
+...
 
 @end-skill
 
@@ -3124,7 +3124,7 @@ You believe in a code, and it's your duty to uphold it.
 @end-ideals
 </code></pre>
 <h2 data-name="running-headers-and-footers">Running headers and footers</h2>
-<p>Body pages print <code>p.N</code> (the page number) and <code>c.N</code> (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. <code>c.N</code> comes from <code>@chapter … ch=&quot;N&quot;</code>: write it at the top of every chapter file and nothing else is needed.</p>
+<p>Body pages print <code>p.N</code> (the page number) and <code>c.N</code> (the chapter number) in opposing bottom corners, swapping on verso. Front matter, chapter starts, and full-bleed pages print none. <code>c.N</code> comes from <code>@chapter ... ch=&quot;N&quot;</code>: write it at the top of every chapter file and nothing else is needed.</p>
 </div></div>"
 `;
 
@@ -3275,7 +3275,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td><code>ch</code> prints the footer. Words: <code>rules</code> <code>lore</code> <code>citizen-file</code> <code>specialty</code> set the chapter’s section colour; any other word is the label</td>
 </tr>
 <tr data-source-range="16:17">
-<td><code>@page [word] [.class…]</code></td>
+<td><code>@page [word] [.class...]</code></td>
 <td>next <code>@page</code></td>
 <td>Words: <code>chapter-start</code> <code>intro</code> <code>credits</code> <code>contents</code> <code>citizen-file</code> <code>specialty-catalog</code>, plus core’s <code>blank</code> and <code>full-bleed</code>: <a href="#ch-templates" data-gp-source-token="[Page Templates](#ch-templates)" data-gp-source-occurrence="0">Page Templates</a></td>
 </tr>
@@ -3285,7 +3285,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>Two facing pages</td>
 </tr>
 <tr data-source-range="18:19">
-<td><code>@section [word] [.class…]</code></td>
+<td><code>@section [word] [.class...]</code></td>
 <td><code>@end-section</code></td>
 <td>A region; bare = core’s plain box. Words: <code>panel</code> <code>flat</code> <code>catalog</code>, the kinds of text (<code>reference</code> <code>lore</code> <code>dm</code> <code>choose</code>) and the component words (<code>npc</code> <code>fiction</code> <code>walkthrough</code> <code>cards</code> <code>flaws</code> <code>ideals</code> <code>dreams</code>)</td>
 </tr>
@@ -3324,17 +3324,17 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="28:29">
 <td><code>@callout</code></td>
 <td><code>@end-callout</code></td>
-<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code> (<code>@callout vibe</code>); <code>label=&quot;…&quot;</code>; <code>.dc-sidebar</code> floats it</td>
+<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code> (<code>@callout vibe</code>); <code>label=&quot;...&quot;</code>; <code>.dc-sidebar</code> floats it</td>
 </tr>
 <tr data-source-range="29:30">
 <td><code>@dm-note</code></td>
 <td><code>@end-dm-note</code></td>
-<td><code>label=&quot;…&quot;</code> (it is <code>@callout dm</code>)</td>
+<td><code>label=&quot;...&quot;</code> (it is <code>@callout dm</code>)</td>
 </tr>
 <tr data-source-range="30:31">
 <td><code>@block</code></td>
 <td><code>@end-block</code></td>
-<td><code>.dc-panel</code> <code>.dc-slate</code> <code>.dc-shard</code>, <code>label=&quot;…&quot;</code></td>
+<td><code>.dc-panel</code> <code>.dc-slate</code> <code>.dc-shard</code>, <code>label=&quot;...&quot;</code></td>
 </tr>
 <tr data-source-range="31:32">
 <td><code>@definition [lucid|surreal]</code></td>
@@ -3344,12 +3344,12 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="32:33">
 <td><code>@faction</code></td>
 <td><code>@end-faction</code></td>
-<td>a kind word: <code>megacorp</code> <code>cabal</code> <code>cult</code> <code>enforcer</code>; <code>label=&quot;…&quot;</code></td>
+<td>a kind word: <code>megacorp</code> <code>cabal</code> <code>cult</code> <code>enforcer</code>; <code>label=&quot;...&quot;</code></td>
 </tr>
 <tr data-source-range="33:34">
 <td><code>@roll-table</code></td>
 <td><code>@end-roll-table</code></td>
-<td><code>die=d20</code>, <code>label=&quot;…&quot;</code>; a pipe table inside</td>
+<td><code>die=d20</code>, <code>label=&quot;...&quot;</code>; a pipe table inside</td>
 </tr>
 <tr data-source-range="34:35">
 <td><code>@procedure</code></td>
@@ -3399,12 +3399,12 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="43:44">
 <td><code>@field</code></td>
 <td><code>@end-field</code></td>
-<td>a variant word (<code>specs</code> <code>traits</code> <code>equipment</code> <code>effects</code> <code>side-effects</code> <code>requires</code>); <code>label=&quot;…&quot;</code></td>
+<td>a variant word (<code>specs</code> <code>traits</code> <code>equipment</code> <code>effects</code> <code>side-effects</code> <code>requires</code>); <code>label=&quot;...&quot;</code></td>
 </tr>
 <tr data-source-range="44:45">
 <td><code>@toc</code></td>
 <td><code>@end-toc</code></td>
-<td>an ordered list of <code>[title](#id) — blurb</code></td>
+<td>an ordered list of <code>[title](#id) --- blurb</code></td>
 </tr>
 <tr data-source-range="45:46">
 <td><code>@specialty</code></td>
@@ -3434,7 +3434,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="50:51">
 <td><code>@skill</code></td>
 <td><code>@end-skill</code> / next <code>@skill</code> / end of its path</td>
-<td><code>id=&quot;…&quot;</code>, <code>{.dc-avoid-split}</code>; <code>#### Name | Tier</code>; <code>@columns 2</code> around part of the body</td>
+<td><code>id=&quot;...&quot;</code>, <code>{.dc-avoid-split}</code>; <code>#### Name | Tier</code>; <code>@columns 2</code> around part of the body</td>
 </tr>
 <tr data-source-range="51:52">
 <td><code>@continue</code></td>
@@ -3596,21 +3596,21 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>tape, edge to edge</td>
 </tr>
 <tr data-source-range="90:91">
-<td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;…&lt;/div&gt;</code></td>
+<td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;...&lt;/div&gt;</code></td>
 <td>four-cell stat grid (<a href="#ch-panels" data-gp-source-token="[Panels, Cards &amp; Data](#ch-panels)" data-gp-source-occurrence="0">Panels, Cards &amp; Data</a>)</td>
 </tr>
 <tr data-source-range="91:92">
-<td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;…&lt;/div&gt;</code> in <code>@columns 3</code></td>
+<td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;...&lt;/div&gt;</code> in <code>@columns 3</code></td>
 <td>label band over a value, as a tile</td>
 </tr>
 <tr data-source-range="92:93">
-<td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;…</code></td>
+<td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;...</code></td>
 <td>floated contact card</td>
 </tr>
 </tbody>
 </table>
 <h2 data-name="tokens-by-component">Tokens by component</h2>
-<p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(…)</code> clip-paths.</p>
+<p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(...)</code> clip-paths.</p>
 <table>
 <thead data-source-range="99:100">
 <tr data-source-range="99:100">
@@ -4383,7 +4383,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p>Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.</p>
 </div></div></div>
 <h2 data-name="tape">Tape</h2>
-<p><code>&lt;div class=&quot;dc-tape&quot;&gt;…&lt;/div&gt;</code> is a strip of masking tape: tan, torn ends, ink edges. Then the form with <code>.dc-flush</code>, which removes the tape’s outer margin.</p>
+<p><code>&lt;div class=&quot;dc-tape&quot;&gt;...&lt;/div&gt;</code> is a strip of masking tape: tan, torn ends, ink edges. Then the form with <code>.dc-flush</code>, which removes the tape’s outer margin.</p>
 <div class="dg-stage">
 <div class="dc-tape">Operators</div>
 <div class="dc-tape dc-flush">Operators</div>
@@ -4394,25 +4394,25 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-stat">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
   </div>
 </div>
 <div class="dc-stat dc-flush">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
   </div>
 </div>
 </div>
@@ -4522,13 +4522,13 @@ exports[`rendered output 300-example-overview.md matches its snapshot 1`] = `
 <h2 data-name="part-2-contents">Part 2 contents</h2>
 <div class="dg-toc">
 <ol>
-<li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, and introduction pages</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — a chapter-start page with a fiction excerpt, then the Citizen File walkthrough</li>
-<li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the opener fiction and the ten-card specialty catalog</li>
-<li><a href="#ch-example-specialty-profile">Specialty Profile</a> — the Augmerc: intro, art plate, a learning path with skill cards, DM notes</li>
-<li><a href="#ch-example-rules">Rules Pages</a> — sections, column runs, definitions, conditions, the outcome ladder</li>
-<li><a href="#ch-example-dm-npcs">DM &amp; NPC Pages</a> — DM notes, tape dividers, narrative NPC stat blocks, a procedure</li>
-<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> — gear and note callouts, an ego-point ladder, gear entries in columns</li>
+<li><a href="#ch-example-front-matter">Front Matter</a> &mdash; contents, credits, and introduction pages</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> &mdash; a chapter-start page with a fiction excerpt, then the Citizen File walkthrough</li>
+<li><a href="#ch-example-specialty-overview">Specialty Overview</a> &mdash; the opener fiction and the ten-card specialty catalog</li>
+<li><a href="#ch-example-specialty-profile">Specialty Profile</a> &mdash; the Augmerc: intro, art plate, a learning path with skill cards, DM notes</li>
+<li><a href="#ch-example-rules">Rules Pages</a> &mdash; sections, column runs, definitions, conditions, the outcome ladder</li>
+<li><a href="#ch-example-dm-npcs">DM &amp; NPC Pages</a> &mdash; DM notes, tape dividers, narrative NPC stat blocks, a procedure</li>
+<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> &mdash; gear and note callouts, an ego-point ladder, gear entries in columns</li>
 </ol>
 </div>
 <h2 data-name="what-each-chapter-exercises">What each chapter exercises</h2>
@@ -4996,7 +4996,7 @@ Never fight clean. Fight to finish.</p>
 <p>You lock down a target in reach, exploiting pain and leverage over raw force. The target must spend an action to break free or accept the consequence.</p>
 <div class="dc-ability">
   <span class="dc-ap">1 AP</span>
-  <p class="dc-ability-text"><em>Joint Lock:</em> Grab a limb and apply pressure. The target is <strong>Immobilized</strong> until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a <strong>−1 penalty</strong> to rolls using it until treated.</p>
+  <p class="dc-ability-text"><em>Joint Lock:</em> Grab a limb and apply pressure. The target is <strong>Immobilized</strong> until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a <strong>-1 penalty</strong> to rolls using it until treated.</p>
 </div>
 <div class="dc-ability" data-ability-penultimate="true">
   <span class="dc-ap">2 AP</span>
@@ -5304,7 +5304,7 @@ Master — Medium</p>
 <tbody data-source-range="181:186">
 <tr data-source-range="181:182">
 <td><strong>Tiny</strong></td>
-<td>−1 HP</td>
+<td>-1 HP</td>
 <td>None</td>
 <td>Small or frail creatures</td>
 </tr>

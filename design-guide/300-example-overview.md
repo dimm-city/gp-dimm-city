@@ -10,11 +10,11 @@ Part 2 {.dg-kicker}
 
 # Field Guide in Action
 
-Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content — actual book text, real specialties, verbatim rules — built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (`design-guide/img/specialty-*.png`, `placeholder-*.png`) stands in at the correct size. This is the project's proofing approach — the layout is final, the images are proxies. {.dg-lede}
+Real pages from the Dimm City Field Guide rendered through the DC print system. Every spread in Part 2 uses real game content --- actual book text, real specialties, verbatim rules --- built from the same markdown and CSS as the published book. Artwork is the one deliberate exception: where final art has not yet been commissioned, a local placeholder image (`design-guide/img/specialty-*.png`, `placeholder-*.png`) stands in at the correct size. This is the project's proofing approach --- the layout is final, the images are proxies. {.dg-lede}
 
 ## What Part 2 is
 
-Part 1 shows each component on its own. Part 2 is the payoff: whole pages of the Dimm City Field Guide, rendered live from the same markdown and CSS as the published book, so you can see how the components combine under real conditions — how a chapter opens, how a specialty profile flows across pages, how a Dream Master's reference pages read.
+Part 1 shows each component on its own. Part 2 is the payoff: whole pages of the Dimm City Field Guide, rendered live from the same markdown and CSS as the published book, so you can see how the components combine under real conditions --- how a chapter opens, how a specialty profile flows across pages, how a Dream Master's reference pages read.
 
 Each chapter is the book's own markdown, verbatim. Artwork is the one substitution: where final art has not been commissioned, a local placeholder stands in at the correct size. If something looks wrong on these pages, it is a real bug in the package, not a specimen issue.
 
@@ -22,13 +22,13 @@ Each chapter is the book's own markdown, verbatim. Artwork is the one substituti
 
 <div class="dg-toc">
 <ol>
-<li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, and introduction pages</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — a chapter-start page with a fiction excerpt, then the Citizen File walkthrough</li>
-<li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the opener fiction and the ten-card specialty catalog</li>
-<li><a href="#ch-example-specialty-profile">Specialty Profile</a> — the Augmerc: intro, art plate, a learning path with skill cards, DM notes</li>
-<li><a href="#ch-example-rules">Rules Pages</a> — sections, column runs, definitions, conditions, the outcome ladder</li>
-<li><a href="#ch-example-dm-npcs">DM &amp; NPC Pages</a> — DM notes, tape dividers, narrative NPC stat blocks, a procedure</li>
-<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> — gear and note callouts, an ego-point ladder, gear entries in columns</li>
+<li><a href="#ch-example-front-matter">Front Matter</a> &mdash; contents, credits, and introduction pages</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> &mdash; a chapter-start page with a fiction excerpt, then the Citizen File walkthrough</li>
+<li><a href="#ch-example-specialty-overview">Specialty Overview</a> &mdash; the opener fiction and the ten-card specialty catalog</li>
+<li><a href="#ch-example-specialty-profile">Specialty Profile</a> &mdash; the Augmerc: intro, art plate, a learning path with skill cards, DM notes</li>
+<li><a href="#ch-example-rules">Rules Pages</a> &mdash; sections, column runs, definitions, conditions, the outcome ladder</li>
+<li><a href="#ch-example-dm-npcs">DM &amp; NPC Pages</a> &mdash; DM notes, tape dividers, narrative NPC stat blocks, a procedure</li>
+<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> &mdash; gear and note callouts, an ego-point ladder, gear entries in columns</li>
 </ol>
 </div>
 

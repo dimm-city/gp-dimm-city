@@ -10,6 +10,6 @@
 
 @toc
 
-1. [{{chapter}}](#{{id}}) — {{blurb}}
+1. [{{chapter}}](#{{id}}) --- {{blurb}}
 
 @end-toc

@@ -115,7 +115,7 @@ Three bands, no grid. **In Reach** is one swing away. **Nearby** is a burned Mov
 
 @end-callout
 
-Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there — let them, and let it cost.
+Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they're willing to spend everything to get there --- let them, and let it cost.
 
 </div>
 
@@ -137,13 +137,13 @@ Result {.dg-result}
 
 ![Scavenger](img/scavenger.png){.dc-img-float-right}
 
-Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. Neon signs cracked. Alleyways bled smoke. Debris rained in bursts. This wasn't about glory — it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
+Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. Neon signs cracked. Alleyways bled smoke. Debris rained in bursts. This wasn't about glory --- it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
 
 DimmCitz scattered, vanished into bolted dens and reinforced rooftops. The air stank of scorched fur, ozone, and cordite.
 
 </div>
 
-A `@fiction-excerpt` places its first image for you — see [Page Templates](#ch-templates).
+A `@fiction-excerpt` places its first image for you --- see [Page Templates](#ch-templates).
 
 ## Break control
 
@@ -157,7 +157,7 @@ Callouts keep themselves whole by default: they move to the next page rather tha
 | `## Heading {.gp-break-before}` | Start a new page before this element |
 | `@page-break` | Start a new page here |
 
-Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first — `@continue` for a long skill card.
+Reach for `.dc-avoid-split` on a short section that would read badly in two halves; a section kept whole leaves a dead zone at the foot of the page before it. On a skill card the same class costs more: a card is a third to half a page, so keeping one whole leaves a page mostly empty. Prefer splitting content at a logical boundary first --- `@continue` for a long skill card.
 
 The class is a setter of one token per component, which a book can set from its own sheet instead: `--dc-section-break-inside`, `--dc-skill-card-break-inside`, `--dc-faction-break-inside` and `--dc-npc-stat-break-inside` (`avoid` keeps the box whole, `auto` lets it split). A section kept whole also keeps its padding inside its box, so a book writes `--dc-section-edge: 0px` beside the first. A catalog splits by default and reads `--dc-catalog-break-inside`: `.dc-avoid-split`, or that token set to `avoid`, keeps one whole.
 

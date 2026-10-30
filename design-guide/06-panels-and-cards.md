@@ -77,7 +77,7 @@ A panel's first `##` or `###` is its title bar; a heading after it is a sub-head
 |---|---|---|
 | panel, reference, dm | 13pt under an `##` bar, 11pt under an `###` bar; accent colour and rail | 11pt ink, no rail |
 | lore | italic violet caption | italic violet caption |
-| definition | — | the headword |
+| definition | --- | the headword |
 | choose | none: the form has no sub-headings | none |
 
 ## Kinds of text {#kinds-of-text}
@@ -253,7 +253,7 @@ The fourth register, `.dc-codex` (look-ups and glossaries), is retired: write a 
 
 1. The **Dream Master** presents a situation.
 2. The **Dreamers** declare intent.
-3. The **fiction resolves** — sometimes on a die, sometimes on a word.
+3. The **fiction resolves** --- sometimes on a die, sometimes on a word.
 
 @end-block
 
@@ -270,7 +270,7 @@ Tokens: `--dc-block-bg`, `--dc-block-fg`, `--dc-block-accent`, `--dc-block-title
 
 ## Definition
 
-A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an `@columns 2` run for a glossary of entries, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a display-caps headword in blue, with a rule between entries. A `---` inside is the same rule, and a bold lead (`**Term** — gloss`) needs nothing.
+A short dictionary-style entry for a term: in-world vocabulary, an NPC type, an item category. It is a cream page with a heavy rule over it and a hairline under it, the term set first as a blue headword, and the body in italic. Stack several in an `@columns 2` run for a glossary of entries, or put a run of `#### Term` entries in one `@definition` and it reads as a glossary: each term is a display-caps headword in blue, with a rule between entries. A `---` inside is the same rule, and a bold lead (`**Term** --- gloss`) needs nothing.
 
 ```markdown
 @definition
@@ -327,7 +327,7 @@ The running tally of attention you've drawn.
 
 #### Hard Choice
 
-A roll of 6–10. The fiction advances, but it costs you.
+A roll of 6--10. The fiction advances, but it costs you.
 
 #### Twitch
 
@@ -348,7 +348,7 @@ The running tally of attention you've drawn.
 
 #### Hard Choice
 
-A roll of 6–10. The fiction advances, but it costs you.
+A roll of 6--10. The fiction advances, but it costs you.
 
 #### Twitch
 
@@ -422,7 +422,7 @@ Roll 2d20, take the lower. Reality pushes back.
 
 </div>
 
-Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rules), `--dc-definition-block-term` (the headword), `--dc-definition-block-accent-width` and `--dc-definition-block-rule-bottom` (the rules' weights; 0 for lucid and surreal), `--dc-definition-block-shape` (the silhouette; none by default), `--dc-definition-block-fg`, `--dc-definition-block-style`, `--dc-definition-block-frame` (the hard shadow, or an inset frame) and `--dc-definition-block-pad`. For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro — see [Writing a Page](#ch-writing).
+Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rules), `--dc-definition-block-term` (the headword), `--dc-definition-block-accent-width` and `--dc-definition-block-rule-bottom` (the rules' weights; 0 for lucid and surreal), `--dc-definition-block-shape` (the silhouette; none by default), `--dc-definition-block-fg`, `--dc-definition-block-style`, `--dc-definition-block-frame` (the hard shadow, or an inset frame) and `--dc-definition-block-pad`. For a plain term list, a markdown definition list (`Term` / `: meaning`) needs no macro --- see [Writing a Page](#ch-writing).
 
 ## Procedure
 
@@ -464,9 +464,9 @@ The d20 result table every roll resolves against. One row per line: `roll | name
 @outcome
 
 20 | Triumph | Best-case outcome. You do it, and the moment breaks your way.
-11–19 | Success | You do it. Clean.
-6–10 | Hard Choice | You succeed, but it costs you.
-2–5 | Failure | You don't get what you wanted.
+11--19 | Success | You do it. Clean.
+6--10 | Hard Choice | You succeed, but it costs you.
+2--5 | Failure | You don't get what you wanted.
 1 | Catastrophe | It goes bad, and then worse.
 
 @end-outcome
@@ -479,9 +479,9 @@ Result {.dg-result}
 @outcome
 
 20 | Triumph | Best-case outcome. You do it, and the moment breaks your way.
-11–19 | Success | You do it. Clean.
-6–10 | Hard Choice | You succeed, but it costs you.
-2–5 | Failure | You don't get what you wanted.
+11--19 | Success | You do it. Clean.
+6--10 | Hard Choice | You succeed, but it costs you.
+2--5 | Failure | You don't get what you wanted.
 1 | Catastrophe | It goes bad, and then worse.
 
 @end-outcome
@@ -494,15 +494,15 @@ Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg
 
 ### A table of the five bands is the ladder
 
-Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (`Roll | Result`, `Result | Effect`, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads "Outcomes". A band is read however it is typed: `11-19`, `11 – 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
+Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (`Roll | Result`, `Result | Effect`, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads "Outcomes". A band is read however it is typed: `11-19`, `11 -- 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
 
 ```markdown
 | Roll | Result |
 | --- | --- |
 | 20 | The jammed door gives. Something comes with it. |
-| 11–19 | The door opens. |
-| 6–10 | It opens, loudly. |
-| 2–5 | It holds. |
+| 11--19 | The door opens. |
+| 6--10 | It opens, loudly. |
+| 2--5 | It holds. |
 | 1 | The handle comes off in your hand. |
 ```
 
@@ -513,9 +513,9 @@ Result {.dg-result}
 | Roll | Result |
 | --- | --- |
 | 20 | The jammed door gives. Something comes with it. |
-| 11–19 | The door opens. |
-| 6–10 | It opens, loudly. |
-| 2–5 | It holds. |
+| 11--19 | The door opens. |
+| 6--10 | It opens, loudly. |
+| 2--5 | It holds. |
 | 1 | The handle comes off in your hand. |
 
 </div>
@@ -764,7 +764,7 @@ Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface
 
 ### Fields
 
-A field is a labelled line of an entry: its rules, its traits, what a drug does and costs, what a power needs. Write `@field` with a variant word, and the variant's name is the label; `label="…"` replaces it, as with `@callout`.
+A field is a labelled line of an entry: its rules, its traits, what a drug does and costs, what a power needs. Write `@field` with a variant word, and the variant's name is the label; `label="..."` replaces it, as with `@callout`.
 
 | Variant | Default label | Look |
 |---|---|---|
@@ -772,7 +772,7 @@ A field is a labelled line of an entry: its rules, its traits, what a drug does 
 | `traits` | Traits | a plain line under a chip |
 | `equipment` | Equipment | the same, in grey |
 | `effects` | Effects | a solid teal frame on a pale teal ground, a + on the chip: the benefit; sits over side effects |
-| `side-effects` | Side Effects | a dashed blood frame on a pale blood ground, a – on the chip: the cost |
+| `side-effects` | Side Effects | a dashed blood frame on a pale blood ground, a -- on the chip: the cost |
 | `requires` | Requires | a grey requirement bar |
 
 ```markdown {.dg-split}
@@ -895,7 +895,7 @@ A voice that is never quite yours.
 
 ## Faction
 
-An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined blue rectangle (an L-shaped step out of two corners) with a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="…"` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
+An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined blue rectangle (an L-shaped step out of two corners) with a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
 
 ```markdown {.dg-split}
 @faction megacorp
@@ -989,16 +989,16 @@ A roll table is the same thing with a `Roll` column:
 
 | Roll | Encounter |
 |---|---|
-| 1–4 | A patchhead swarm picks a fight over nothing |
-| 5–8 | A fixer slides into the booth with a dirty envelope |
-| 9–12 | A SercDog patrol sweeps the block; lie low or run |
-| 13–20 | You find a sealed crate the corps forgot to log |
+| 1--4 | A patchhead swarm picks a fight over nothing |
+| 5--8 | A fixer slides into the booth with a dirty envelope |
+| 9--12 | A SercDog patrol sweeps the block; lie low or run |
+| 13--20 | You find a sealed crate the corps forgot to log |
 
 </div>
 
 ## NPC stat block
 
-The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block's rule colour), not a box. The stat lines are picked by position: the first paragraph after the `>` is the primary line, set as a chip (its first line 12pt bold, cream on the block's colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (10pt); no markup is needed, `2 HP — 1 Damage` over `Fodder — Medium` is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.
+The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a `>` flavor line, the stat lines, and `#####` sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block's rule colour), not a box. The stat lines are picked by position: the first paragraph after the `>` is the primary line, set as a chip (its first line 12pt bold, cream on the block's colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (10pt); no markup is needed, `2 HP --- 1 Damage` over `Fodder --- Medium` is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.
 
 ```markdown
 @npc-stat
@@ -1007,8 +1007,8 @@ The narrative form a Dream Master reads aloud: `@npc-stat` with a `####` name, a
 
 > See a Patchhead comin' at you, you best move. Ain't no reasoning with 'em.
 
-2 HP — 1 Damage
-Fodder — Usually Small to Medium
+2 HP --- 1 Damage
+Fodder --- Usually Small to Medium
 
 ##### Traits
 
@@ -1031,8 +1031,8 @@ Result {.dg-result}
 
 > See a Patchhead comin' at you, you best move. Ain't no reasoning with 'em.
 
-2 HP — 1 Damage
-Fodder — Usually Small to Medium
+2 HP --- 1 Damage
+Fodder --- Usually Small to Medium
 
 ##### Traits
 
@@ -1063,8 +1063,8 @@ Two crews that work the same block.
 
 > See a Patchhead comin' at you, you best move.
 
-2 HP — 1 Damage
-Fodder — Small to Medium
+2 HP --- 1 Damage
+Fodder --- Small to Medium
 
 ##### Traits
 
@@ -1074,8 +1074,8 @@ Fodder — Small to Medium
 
 > Hold still, this'll only sting a lot.
 
-3 HP — 1 Damage
-Fodder — Medium
+3 HP --- 1 Damage
+Fodder --- Medium
 
 ##### Traits
 
@@ -1102,8 +1102,8 @@ Two crews that work the same block.
 
 > See a Patchhead comin' at you, you best move.
 
-2 HP — 1 Damage
-Fodder — Small to Medium
+2 HP --- 1 Damage
+Fodder --- Small to Medium
 
 ##### Traits
 
@@ -1113,8 +1113,8 @@ Fodder — Small to Medium
 
 > Hold still, this'll only sting a lot.
 
-3 HP — 1 Damage
-Fodder — Medium
+3 HP --- 1 Damage
+Fodder --- Medium
 
 ##### Traits
 
@@ -1139,9 +1139,9 @@ Tokens: `--dc-npc-stat-label-color`, `--dc-npc-stat-primary`, `--dc-npc-stat-sec
 
 > A thumb-sized surveillance drone made of living glass.
 
-1 HP — 1 Damage
+1 HP --- 1 Damage
 
-Fodder — Tiny
+Fodder --- Tiny
 
 ##### Traits
 
@@ -1160,9 +1160,9 @@ Result {.dg-result}
 
 > A thumb-sized surveillance drone made of living glass.
 
-1 HP — 1 Damage
+1 HP --- 1 Damage
 
-Fodder — Tiny
+Fodder --- Tiny
 
 ##### Traits
 
@@ -1206,13 +1206,13 @@ Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat
 <div class="dc-stat dc-flush">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
@@ -1233,13 +1233,13 @@ Result {.dg-result}
 <div class="dc-stat dc-flush">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
@@ -1260,7 +1260,7 @@ A contact card floated beside prose: a `.dc-human-callout` inside a raw `.dc-sid
 
 ```markdown
 <div class="dc-sidebar"><div class="dc-human-callout">
-<p><strong>Vance "Static" Oyelaran</strong> — Fixer</p>
+<p><strong>Vance "Static" Oyelaran</strong> &mdash; Fixer</p>
 <p>Two cybernetic eyes, owes everyone. <strong>Hook:</strong> the chip is real; the access tunnel on it is bait.</p>
 </div></div>
 ```
@@ -1272,7 +1272,7 @@ Result {.dg-result}
 The Dreamers are low on credits and lower on luck when the noodle-stall door swings open. A figure slides into the booth across from them, drops a battered data chip on the table, and waits.
 
 <div class="dc-sidebar"><div class="dc-human-callout">
-<p><strong>Vance "Static" Oyelaran</strong> — Fixer</p>
+<p><strong>Vance "Static" Oyelaran</strong> &mdash; Fixer</p>
 <p>Two cybernetic eyes, owes everyone. <strong>Hook:</strong> the chip is real; the access tunnel on it is bait.</p>
 </div></div>
 

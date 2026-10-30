@@ -6,7 +6,7 @@ Chapter 3 {.dg-kicker}
 
 # Color
 
-Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crimson, orange, rust, amber — for printed lore, ability text, and danger. **HUD digital** — blue and cyan — for rules, look-ups, cybernetics and system chrome, with magenta kept for display punch. The page is never black, and fire and HUD never share one element. {.dg-lede}
+Cream paper, dark ink, and two accent registers. Creaturepunk **fire** --- crimson, orange, rust, amber --- for printed lore, ability text, and danger. **HUD digital** --- blue and cyan --- for rules, look-ups, cybernetics and system chrome, with magenta kept for display punch. The page is never black, and fire and HUD never share one element. {.dg-lede}
 
 
 ## Paper & ink
@@ -22,7 +22,7 @@ Cream paper, dark ink, and two accent registers. Creaturepunk **fire** — crims
   <div class="dc-palette-swatch bg-ink-dust on-dark"><strong>Ink Dust</strong><code>#665b4e</code><code>--ink-dust</code><code>53/54/64/29<br>200%</code></div>
 </div>
 
-The page background (`--bg`) is the wall; a brick texture is painted over it by the package's `@page` rule. Paper surfaces are what sits on the wall — cards, callouts, panels. Components are posters and displays hung on the wall: hard edges, decisive separation, never a soft tint that lets the texture through.
+The page background (`--bg`) is the wall; a brick texture is painted over it by the package's `@page` rule. Paper surfaces are what sits on the wall --- cards, callouts, panels. Components are posters and displays hung on the wall: hard edges, decisive separation, never a soft tint that lets the texture through.
 
 ## Creaturepunk fire
 
@@ -72,10 +72,10 @@ Colour is a job, not a mood. A reader flipping pages should know what kind of co
 
 ## Usage rules
 
-- Crimson is the dominant accent — one crimson element per composition. Stack further emphasis with orange.
+- Crimson is the dominant accent --- one crimson element per composition. Stack further emphasis with orange.
 - HUD blue means a rule or a look-up; magenta is display punch, not a category. Never mix fire and HUD on the same element.
 - Paper is for raised elements. The wall is the canvas; cream is the surface.
-- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot — proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a `pdfx` build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate.
+- Keep CMYK coverage under 280% on coated stock and 240% on uncoated. The fire palette runs hot --- proof on paper before a print run. The CMYK and percentage printed on each swatch above is the measured coverage in a `pdfx` build (Ghostscript with the CGATS21_CRPC1 profile), not an estimate.
 
 Running text goes on a paper surface, never straight on the wall: the brick texture under body type cuts its contrast and breaks up the letterforms.
 
@@ -116,10 +116,10 @@ Every component exposes its colors and shapes as `--dc-*` custom properties, wit
 }
 ```
 
-The brand tokens themselves — `--crimson`, `--hud-blue`, `--paper-cream`, the fonts — live in `styles/dc-palette.css` and reset the same way. The full token-to-component map is in [Reference](#ch-reference).
+The brand tokens themselves --- `--crimson`, `--hud-blue`, `--paper-cream`, the fonts --- live in `styles/dc-palette.css` and reset the same way. The full token-to-component map is in [Reference](#ch-reference).
 
 Do not write bare `.dc-*` rules in a book to change a component; that fights the package on every update. Reset the component's tokens on a context selector instead.
 
 ## CMYK
 
-Each swatch's third line is its CMYK build (C/M/Y/K, percent), converted from the hex through CGATS21_CRPC1 — the coated press profile gutterpress embeds in a PDF/X build — with relative colorimetric intent. Treat them as starting points: RGB to CMYK is not one-to-one for saturated colors, so request a physical proof before the full print run.
+Each swatch's third line is its CMYK build (C/M/Y/K, percent), converted from the hex through CGATS21_CRPC1 --- the coated press profile gutterpress embeds in a PDF/X build --- with relative colorimetric intent. Treat them as starting points: RGB to CMYK is not one-to-one for saturated colors, so request a physical proof before the full print run.

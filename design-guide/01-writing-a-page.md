@@ -6,7 +6,7 @@ Chapter 1 {.dg-kicker}
 
 # Writing a Page
 
-A Dimm City book is plain markdown with a small vocabulary of `@` markers. Markdown carries the text; markers draw the structure — chapters, pages, sections, and the components the rest of this guide catalogs. This chapter is the grammar. {.dg-lede}
+A Dimm City book is plain markdown with a small vocabulary of `@` markers. Markdown carries the text; markers draw the structure --- chapters, pages, sections, and the components the rest of this guide catalogs. This chapter is the grammar. {.dg-lede}
 
 ## The structure markers
 
@@ -19,8 +19,8 @@ Gutterpress itself provides the structural markers. They wrap everything that fo
 | `@spread` | next `@spread` / `@page` | Two facing pages kept together |
 | `@section [word] [.class]` | `@end-section` | A region on the page. Bare, it is a plain box; `@section panel` is the card |
 | `@columns 2` | `@end-columns` | Set what is between in 2 to 5 columns |
-| `@page-break` | — | Force a new page here |
-| `@column-break` | — | Force the next column, inside `@columns` |
+| `@page-break` | --- | Force a new page here |
+| `@column-break` | --- | Force the next column, inside `@columns` |
 
 A chapter is one file. A `@chapter` line opens each file, and the chapter ends where the file ends.
 
@@ -105,7 +105,7 @@ Nothing below needs a class or a marker. The package styles the standard element
 #### Item heading
 ```
 
-`#` opens a chapter or a specialty. `##` is a section with an accent rule. `###` labels a column or a sub-topic. `####` is an item: a skill, a gear entry, a stat-block name. In a two-column layout, `###` and `####` are the workhorses — `#` and `##` are too wide for a 3.5-inch column.
+`#` opens a chapter or a specialty. `##` is a section with an accent rule. `###` labels a column or a sub-topic. `####` is an item: a skill, a gear entry, a stat-block name. In a two-column layout, `###` and `####` are the workhorses --- `#` and `##` are too wide for a 3.5-inch column.
 
 ### Emphasis and inline code
 
@@ -168,14 +168,14 @@ A plain `>` quote is an epigraph: accent rail, italic body. Inside a skill card 
 ```markdown
 > Every city has a language.
 >
-> — Hollis Vance
+> --- Hollis Vance
 ```
 
 <div class="dg-stage">
 
 > Every city has a language.
 >
-> — Hollis Vance
+> --- Hollis Vance
 
 </div>
 
@@ -215,7 +215,7 @@ An image on its own line is a figure. Place it in the flow where it should sit; 
 
 ## A complete page
 
-Putting the pieces together — the shape of an ordinary body page in a Dimm City book:
+Putting the pieces together --- the shape of an ordinary body page in a Dimm City book:
 
 ```markdown
 @chapter #ch-rules ch="4"
@@ -230,8 +230,8 @@ Putting the pieces together — the shape of an ordinary body page in a Dimm Cit
 
 @column-break
 
-- **0 AP** — Free to use. Not always safe.
-- **1–X AP** — You choose how hard you push.
+- **0 AP** --- Free to use. Not always safe.
+- **1--X AP** --- You choose how hard you push.
 
 @end-columns
 
@@ -255,8 +255,8 @@ Result {.dg-result}
 
 @column-break
 
-- **0 AP** — Free to use. Not always safe.
-- **1–X AP** — You choose how hard you push.
+- **0 AP** --- Free to use. Not always safe.
+- **1--X AP** --- You choose how hard you push.
 
 @end-columns
 

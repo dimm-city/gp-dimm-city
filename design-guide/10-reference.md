@@ -14,24 +14,24 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Notes |
 |---|---|---|
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
-| `@page [word] [.class…]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
+| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
-| `@section [word] [.class…]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
+| `@section [word] [.class...]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
-| `@page-break` · `@column-break` | — | Forced breaks |
+| `@page-break` · `@column-break` | --- | Forced breaks |
 
 ## Components (this package)
 
 | Marker | Closes | Options |
 |---|---|---|
-| `@lede` | `@end-lede` | — |
+| `@lede` | `@end-lede` | --- |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `LOCATION` `VISIT` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` (`@callout vibe`); `label="…"`; `.dc-sidebar` floats it |
-| `@dm-note` | `@end-dm-note` | `label="…"` (it is `@callout dm`) |
-| `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="…"` |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` (`@callout vibe`); `label="..."`; `.dc-sidebar` floats it |
+| `@dm-note` | `@end-dm-note` | `label="..."` (it is `@callout dm`) |
+| `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="..."` |
 | `@definition [lucid\|surreal]` | `@end-definition` | a term, a run of `#### Term` entries (a glossary), or `####` + `---` + body; `lucid` and `surreal` are the two roll states, set as opposites |
-| `@faction` | `@end-faction` | a kind word: `megacorp` `cabal` `cult` `enforcer`; `label="…"` |
-| `@roll-table` | `@end-roll-table` | `die=d20`, `label="…"`; a pipe table inside |
+| `@faction` | `@end-faction` | a kind word: `megacorp` `cabal` `cult` `enforcer`; `label="..."` |
+| `@roll-table` | `@end-roll-table` | `die=d20`, `label="..."`; a pipe table inside |
 | `@procedure` | `@end-procedure` | an ordered list |
 | `@outcome` | `@end-outcome` | `flush`; rows `roll \| name \| text` |
 | `@card` | `@end-card` | inside `@flaws` / `@ideals` / `@dreams` |
@@ -41,15 +41,15 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `@npc-stat` | `@end-npc-stat` | `####` name, `>` flavor, stat lines, `#####` labels; `@columns 2` inside sets the entries in columns |
 | `@flaws` · `@ideals` · `@dreams` | `@end-flaws` · `@end-ideals` · `@end-dreams` | a run of `@card` blocks |
 | `@gear` | `@end-gear` | a kind word (`augment` `treasure` `vehicle` `drug`; none is general gear); `####` name, `>` tagline, body, field lines; the next `@gear` closes it |
-| `@field` | `@end-field` | a variant word (`specs` `traits` `equipment` `effects` `side-effects` `requires`); `label="…"` |
-| `@toc` | `@end-toc` | an ordered list of `[title](#id) — blurb` |
-| `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` … `generalist`, as a word or a `.class` |
+| `@field` | `@end-field` | a variant word (`specs` `traits` `equipment` `effects` `side-effects` `requires`); `label="..."` |
+| `@toc` | `@end-toc` | an ordered list of `[title](#id) --- blurb` |
+| `@specialty` | `@end-specialty` / next `@specialty` / `@page` / `@section` / `@chapter` | `augmerc` ... `generalist`, as a word or a `.class` |
 | `@specialty-intro` | `@end-specialty-intro` | `##` name, `###` spec tweak |
 | `@specialty-art` | `@end-specialty-art` | one image |
 | `@specialty-card` | `@end-specialty-card` | `#id`; `###` name, image, `>` tagline, pitch |
 | `@learning-path` | `@end-learning-path` / next `@learning-path` / end of its specialty | `###` title, `>` subtitle, `- skills`, `**Augment:**` |
-| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="…"`, `{.dc-avoid-split}`; `#### Name \| Tier`; `@columns 2` around part of the body |
-| `@continue` | — | inside a skill: continuation card |
+| `@skill` | `@end-skill` / next `@skill` / end of its path | `id="..."`, `{.dc-avoid-split}`; `#### Name \| Tier`; `@columns 2` around part of the body |
+| `@continue` | --- | inside a skill: continuation card |
 
 
 ## Classes you can add
@@ -88,14 +88,14 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `<span class="dc-classtag augmerc">Augmerc</span>` | specialty identity pill |
 | `<span class="dc-ap">2 AP</span>` · `.free` · `.var` | AP chip in prose |
 | `<div class="dc-tape dc-flush">Label</div>` | tape, edge to edge |
-| `<div class="dc-stat [dc-flush]">…</div>` | four-cell stat grid ([Panels, Cards & Data](#ch-panels)) |
-| `<div class="dc-at-a-glance-card">…</div>` in `@columns 3` | label band over a value, as a tile |
-| `<div class="dc-sidebar"><div class="dc-human-callout">…` | floated contact card |
+| `<div class="dc-stat [dc-flush]">...</div>` | four-cell stat grid ([Panels, Cards & Data](#ch-panels)) |
+| `<div class="dc-at-a-glance-card">...</div>` in `@columns 3` | label band over a value, as a tile |
+| `<div class="dc-sidebar"><div class="dc-human-callout">...` | floated contact card |
 
 
 ## Tokens by component
 
-Reset any of these in a book's own sheet, at `:root` or at a chapter id. Defaults live in the package's `styles/dc-component-defaults.css`; shapes are `polygon(…)` clip-paths.
+Reset any of these in a book's own sheet, at `:root` or at a chapter id. Defaults live in the package's `styles/dc-component-defaults.css`; shapes are `polygon(...)` clip-paths.
 
 | Component | Tokens |
 |---|---|
@@ -134,4 +134,4 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-body-mark` `--dc-card-gap` `--dc-card-tab-shadow` `--dc-tier-bg` `--dc-tier-fg` `--dc-tier-edge` |
 | AP chip | `--dc-ap-bg` `--dc-ap-fg` `--dc-ap-border` |
 
-The brand tokens — `--crimson`, `--orange`, `--rust`, `--amber`, `--blood`, `--hud-blue`, `--hud-magenta`, `--paper-cream`, `--paper-aged`, `--ink`, `--ink-smoke`, `--bg`, and the `--font-*` family — are in [Color](#ch-palette) and [Typography](#ch-typography). The machine-readable catalog of every component, with the DOM it emits and the sheet that owns it, is the package's `components.yaml`.
+The brand tokens --- `--crimson`, `--orange`, `--rust`, `--amber`, `--blood`, `--hud-blue`, `--hud-magenta`, `--paper-cream`, `--paper-aged`, `--ink`, `--ink-smoke`, `--bg`, and the `--font-*` family --- are in [Color](#ch-palette) and [Typography](#ch-typography). The machine-readable catalog of every component, with the DOM it emits and the sheet that owns it, is the package's `components.yaml`.

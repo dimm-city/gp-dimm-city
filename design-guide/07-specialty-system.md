@@ -6,7 +6,7 @@ Chapter 7 {.dg-kicker}
 
 # The Specialty System
 
-The richest family in the book. A specialty wrapper sets the shape and color; inside it, an intro panel, an art plate, a catalog card, learning paths, and skill cards all inherit that identity. Authors never set a variant on a card — the parent decides. {.dg-lede}
+The richest family in the book. A specialty wrapper sets the shape and color; inside it, an intro panel, an art plate, a catalog card, learning paths, and skill cards all inherit that identity. Authors never set a variant on a card --- the parent decides. {.dg-lede}
 
 
 ## Specialty
@@ -20,7 +20,7 @@ The silhouette says what kind of specialty it is, on the card, its tab, the path
 ```markdown
 @specialty .augmerc
 
-… intro, art, learning paths, skills …
+... intro, art, learning paths, skills ...
 
 @end-specialty
 ```
@@ -38,7 +38,7 @@ The title-banded panel on a specialty's first page: the `##` name, the pitch, an
 
 ## Augmerc
 
-An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.
+An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers --- the difference is gear, grafts, and how much of them is still original.
 
 ### Spec Tweak: **Wired to Kill**
 
@@ -59,7 +59,7 @@ Result {.dg-result}
 
 ## Augmerc
 
-An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.
+An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers --- the difference is gear, grafts, and how much of them is still original.
 
 ### Spec Tweak: **Wired to Kill**
 
@@ -197,7 +197,7 @@ The full ten-card grid is in [Specialty Overview](#ch-example-specialty-overview
 
 ## Learning path
 
-A named path: a `###` title (rendered as a title band in the specialty's signal colour, with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, …) are computed from position.
+A named path: a `###` title (rendered as a title band in the specialty's signal colour, with the path's code), a `>` subtitle, and a bullet list of its skills, which becomes the sticker chain. A bold paragraph after the list is the path's signature augment. Skill cards follow inside the path. The code (`AUG1`) and each card's tier (`AUG1.1`, `AUG1.2`, ...) are computed from position.
 
 ```markdown {.dg-split}
 @specialty .augmerc
@@ -294,7 +294,7 @@ A path with no subtitle and no sticker chain is the band alone. Tokens: `--dc-pa
 
 ## Skill card
 
-The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` — rendered as a cost chip — and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. A skill sits in a learning path. `@skill` opens a skill, and opening the next one closes it; `@end-skill` closes just that skill, never the path around it. A `####` heading starts a card, so one `@skill` with two `####` headings makes two cards.
+The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` --- rendered as a cost chip --- and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. A skill sits in a learning path. `@skill` opens a skill, and opening the next one closes it; `@end-skill` closes just that skill, never the path around it. A `####` heading starts a card, so one `@skill` with two `####` headings makes two cards.
 
 ```markdown
 @specialty .augmerc
@@ -360,7 +360,7 @@ Once per round, outside your turn, you exploit a target in reach:
 |---|---|---|
 | Tier | `#### Name \| AUG1.3` | Override the computed tier on the tab |
 | Anchor | `@skill id="dirty-work"` | A link target for the card |
-| Two columns | `@columns 2` … `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
+| Two columns | `@columns 2` ... `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
 | Avoid split | `@skill {.dc-avoid-split}` | Keep a card whole instead of letting it break across pages |
 
 The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
@@ -491,9 +491,9 @@ A `| Roll | Outcome |` table inside a skill card renders as that card's outcome 
 | Roll | Outcome |
 |---|---|
 | 20 | Quadruple damage. |
-| 11–19 | Double damage. |
-| 6–10 | Double damage, but the target counters. |
-| 2–5 | You miss. The target counters Lucid. |
+| 11--19 | Double damage. |
+| 6--10 | Double damage, but the target counters. |
+| 2--5 | You miss. The target counters Lucid. |
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill
@@ -524,9 +524,9 @@ Result {.dg-result}
 | Roll | Outcome |
 |---|---|
 | 20 | Quadruple damage. |
-| 11–19 | Double damage. |
-| 6–10 | Double damage, but the target counters. |
-| 2–5 | You miss. The target counters Lucid. |
+| 11--19 | Double damage. |
+| 6--10 | Double damage, but the target counters. |
+| 2--5 | You miss. The target counters Lucid. |
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill

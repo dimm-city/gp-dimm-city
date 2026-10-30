@@ -4,8 +4,8 @@
 
 > {{flavor}}
 
-{{hp}} HP — {{damage}} Damage
-{{role}} — {{size}}
+{{hp}} HP --- {{damage}} Damage
+{{role}} --- {{size}}
 
 ##### Traits
 

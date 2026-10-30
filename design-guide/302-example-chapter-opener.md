@@ -102,9 +102,9 @@ Names and pronouns matter when life itself is constantly trying to strip both aw
 
 #### Species
 
-In Dimm City, you're not human—you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.
+In Dimm City, you're not human---you never were. Every Dreamer is an anthropomorphic creature: a splice of animal instinct, street survival, and whatever the corps, gods, or bad luck bolted on afterward.
 
-Choose a species that fits your vibe. Species carries no mechanical weight — it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.
+Choose a species that fits your vibe. Species carries no mechanical weight --- it shapes your look, your voice, and how Dimm City reads you. The city has seen it all: cats and rabbits, rats and ravens, wolves and worse things with no clean name left.
 
 @end-citizen-walkthrough
 
@@ -151,8 +151,8 @@ Size carries no mechanical advantage. It's a narrative choice that shapes how yo
 | |  |
 |-------|-------|
 |  |**Tiny:** Under 1 meter tall. You move through Dimm City like a rumor.|
-|  |**Small:** About 1–1.5 meters tall. You fit where the city pinches.|
-|  |**Medium:** About 1.6–2.5 meters tall. The city is built for bodies like yours.|
+|  |**Small:** About 1--1.5 meters tall. You fit where the city pinches.|
+|  |**Medium:** About 1.6--2.5 meters tall. The city is built for bodies like yours.|
 |  |**Big:** Over 2.5 to 4 meters tall. Your presence fills rooms and draws eyes.|
 
 @end-citizen-walkthrough
