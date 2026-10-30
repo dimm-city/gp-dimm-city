@@ -47,6 +47,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
   11–19 and a ladder table typed that way is recognised; the `–` spelling
   still works. The character check asks for `--`, and Gutterpress 0.11.23's
   example books type it.
+- **An alert's first paragraph is typeset like any other.** `---`, `--`, `...`
+  and straight quotes inside `> [!NOTE]`, `> [!VIBE]` and the other alert
+  blocks printed as typed, and `&mdash;` printed as `<>`, in the paragraph
+  that followed the marker; later paragraphs were fine. The marker is now cut
+  from the text markdown-it had already typeset rather than re-parsed. The six
+  em dashes the guide had to leave typed for this (chapters 5 and 11) type
+  `---` now.
+- **The guide keeps its six minus signs.** The `−1` (U+2212) in chapters 6,
+  11, 304 and 306 print as typed; a minus is not a hyphen and is not converted
+  to one. The character check flags them until Gutterpress 0.11.23 stops
+  asking for `-`.
 
 ## [1.9.0] - 2026-10-26
 

@@ -179,7 +179,7 @@ Size affects both hit points and damage output, scaling up or down based on how 
 
 | Size | HP Modifier | Damage Modifier | Notes |
 |------|-------------|-----------------|-------|
-| **Tiny** | -1 HP | None | Small or frail creatures |
+| **Tiny** | −1 HP | None | Small or frail creatures |
 | **Small/Medium** | None | None | Default for most humanoids |
 | **Big** | +10 HP | +1 Damage | Large beasts or imposing foes |
 | **Huge** | +20 HP | +2 Damage | Truly massive creatures |
