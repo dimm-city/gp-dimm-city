@@ -49,14 +49,11 @@
    Default page template — Letter+bleed for DTRPG (8.625 x 11.25)
    --------------------------------------------------------------------------- */
 
-/* `size` stays a literal on purpose. Chromium resolves var() in @page margins
-   — measured: `@page :left { margin-left: var(--om) }` put text at exactly
-   0.625in on a verso page — so the margins below name their tokens. The trim
-   SIZE is the one value where a var() that failed to resolve would silently
-   produce a differently-sized book, and it is duplicated by --page-width /
-   --page-height in dc-palette.css: change both together. */
+/* The sheet size comes from the book's manifest: Gutterpress 0.11.23 writes
+   `@page { size }` after every stylesheet, so a `size` here is ignored and
+   reported. --page-width / --page-height in dc-palette.css record the sheet the
+   look is designed for. */
 @page {
-  size: 8.625in 11.25in;
   margin: var(--page-margin) var(--outer-margin) var(--bottom-margin);
   background-color: var(--bg);
 }

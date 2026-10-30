@@ -55,7 +55,6 @@
       "styles/page-rules.css",
       "styles/dc-native.css"
     ],
-    "tokensFile": "styles/dc-palette.css",
     "components": "components.yaml",
     "snippets": "snippets"
   },
@@ -69,7 +68,7 @@
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
-    "gutterpress": "0.11.20-alpha.3",
+    "gutterpress": "0.11.23-alpha.6",
     "markdown-it": "^14.1.0"
   },
   "engines": {

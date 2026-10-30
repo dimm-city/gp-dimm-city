@@ -9,6 +9,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
+- **Tests and the guide build run on Gutterpress 0.11.23-alpha.6.** The dev
+  dependency moves from 0.11.20-alpha.3, three releases behind, to the 0.11.23
+  line the 1.10 release targets; `engines.gutterpress` is unchanged. The design
+  guide's manifest uses 0.11.23's flat shape: `chapters:` (was
+  `source.files`), no `page.tolerance` (the preset's), and no
+  `validate.source.markdownlint` (the repo's `.markdownlint.jsonc` is found by
+  walking up to the repository root).
 - **Docs follow Gutterpress 0.11.23.** Vendored copies live under
   `extensions/npm/` (a book vendored earlier keeps `plugins/npm/` until its
   next `ext add` or `ext update`), the app adds an npm extension on Book
@@ -18,6 +25,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Removed
 
+- **`size` from `styles/page-rules.css`'s `@page`.** Gutterpress 0.11.23
+  writes the manifest's page size after every stylesheet and reports a `size`
+  in a look as `printsafe/page-size-in-stylesheet` on every build. The sheet is
+  the same 8.625 × 11.25 in; `--page-width` / `--page-height` stay as the
+  look's record of it.
+- **`gutterpress.tokensFile` from `package.json`.** Gutterpress 0.11.23 reads
+  every enabled look's `:root` tokens and no longer reads the field.
 - **The `lint` npm script and the `gutterpress lint` row in the design guide.**
   The command does not exist; the print-safety lint runs inside
   `gutterpress build` and `gutterpress validate`, and
