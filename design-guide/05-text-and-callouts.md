@@ -16,7 +16,7 @@ The opening paragraph of a chapter or major section, set larger on its own light
 ```markdown
 @lede
 
-The city didn't go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
+The city didn't go quiet --- it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
 
 @end-lede
 ```
@@ -27,7 +27,7 @@ Result {.dg-result}
 
 @lede
 
-The city didn't go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
+The city didn't go quiet --- it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.
 
 @end-lede
 
@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert — a blockquote whose first line is `[!TYPE]`, for the first seven — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert --- a blockquote whose first line is `[!TYPE]`, for the first seven --- and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -219,12 +219,12 @@ A callout can also float beside the text: add `.dc-sidebar` (see [Layout](#ch-la
 
 ## Dream Master note
 
-`@dm-note` is shorthand for `@callout dm`, for the longer GM asides — scene setups, adjudication, design notes.
+`@dm-note` is shorthand for `@callout dm`, for the longer GM asides --- scene setups, adjudication, design notes.
 
 ```markdown
 @dm-note label="Running the Setup"
 
-The fixer offering this job doesn't know it's bait — they're a cut-out, paid to pass the contract along and ask no questions.
+The fixer offering this job doesn't know it's bait --- they're a cut-out, paid to pass the contract along and ask no questions.
 
 If the players investigate before accepting, they can smell the trap with a Streetwise roll, DC 14.
 
@@ -237,7 +237,7 @@ Result {.dg-result}
 
 @dm-note label="Running the Setup"
 
-The fixer offering this job doesn't know it's bait — they're a cut-out, paid to pass the contract along and ask no questions.
+The fixer offering this job doesn't know it's bait --- they're a cut-out, paid to pass the contract along and ask no questions.
 
 If the players investigate before accepting, they can smell the trap with a Streetwise roll, DC 14.
 
@@ -248,7 +248,7 @@ If the players investigate before accepting, they can smell the trap with a Stre
 
 ## Tape
 
-A strip of masking tape for a section break or a label between groups — tiers of NPCs, parts of a list: tan, torn at both ends, ink edges top and bottom, an ink label.
+A strip of masking tape for a section break or a label between groups --- tiers of NPCs, parts of a list: tan, torn at both ends, ink edges top and bottom, an ink label.
 
 ```markdown
 <div class="dc-tape">Operators</div>
@@ -266,7 +266,7 @@ Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`
 
 ## Rule
 
-A plain `---` between entries is a thin red rule — the separator for gear lists and NPC entries.
+A plain `---` between entries is a thin red rule --- the separator for gear lists and NPC entries.
 
 ```markdown
 Trauma Kit × 2
@@ -290,7 +290,7 @@ Signal Jammer (single-use)
 
 ## Tags and class tags
 
-Inline chips. `.dc-tag` is a keyword or cost label: a hard-edged chip with an ink hairline, in mono caps (tokens `--dc-tag-bg`, `--dc-tag-fg`, `--dc-tag-border`); `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans — the one place the system asks for it inline.
+Inline chips. `.dc-tag` is a keyword or cost label: a hard-edged chip with an ink hairline, in mono caps (tokens `--dc-tag-bg`, `--dc-tag-fg`, `--dc-tag-border`); `.dc-classtag.<specialty>` is a specialty identity with that specialty's dot. These are raw HTML spans --- the one place the system asks for it inline.
 
 ```markdown
 <span class="dc-tag">Melee</span> <span class="dc-tag">Reach 2</span> <span class="dc-tag">Loud</span>

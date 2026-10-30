@@ -6,25 +6,25 @@
 
 @lede
 
-Thirteen chapters of dreams, dirt, and what bites back. Read them in any order — the city doesn't care where you start.
+Thirteen chapters of dreams, dirt, and what bites back. Read them in any order --- the city doesn't care where you start.
 
 @end-lede
 
 @toc
 
-1. [Who Do You Dream to Be?](#ch-example-chapter-opener) — Citizen file, vibe, origins, ideals, flaws.
-2. [What Do You Dream of Doing?](#ch-example-specialty-overview) — How abilities work. Choose a specialty.
-3. [The Augmerc](#ch-example-specialty-profile) — Muscle for hire. Backbiters and worse.
-4. The Proxy — Bodies for hire. Divine force as a weapon.
-5. The Streetwarden — The closest thing to law in the alleys.
-6. The Gutterdruid — Sacred ground in broken pavement.
-7. The Cybersurgeon — Cutting, splicing, upgrading flesh.
-8. The Wirephreak — Killers, thieves, forgers — clean or loud.
-9. The Technosorcerer — Code that bites. Magic with root access.
-10. The Etherlock — Secrets as currency. Power has a price.
-11. [Are You Lucid Yet?](#ch-example-rules) — Core rules, scenes, distances, rolling the die.
-12. [Dream Mastery & Cosmology](#ch-example-dm-npcs) — NPCs, traits, time, districts.
-13. [Cybernetics, Weapons, and Gear](#ch-example-gear-tech) — Useful items, tech, blasters, blades.
+1. [Who Do You Dream to Be?](#ch-example-chapter-opener) --- Citizen file, vibe, origins, ideals, flaws.
+2. [What Do You Dream of Doing?](#ch-example-specialty-overview) --- How abilities work. Choose a specialty.
+3. [The Augmerc](#ch-example-specialty-profile) --- Muscle for hire. Backbiters and worse.
+4. The Proxy --- Bodies for hire. Divine force as a weapon.
+5. The Streetwarden --- The closest thing to law in the alleys.
+6. The Gutterdruid --- Sacred ground in broken pavement.
+7. The Cybersurgeon --- Cutting, splicing, upgrading flesh.
+8. The Wirephreak --- Killers, thieves, forgers --- clean or loud.
+9. The Technosorcerer --- Code that bites. Magic with root access.
+10. The Etherlock --- Secrets as currency. Power has a price.
+11. [Are You Lucid Yet?](#ch-example-rules) --- Core rules, scenes, distances, rolling the die.
+12. [Dream Mastery & Cosmology](#ch-example-dm-npcs) --- NPCs, traits, time, districts.
+13. [Cybernetics, Weapons, and Gear](#ch-example-gear-tech) --- Useful items, tech, blasters, blades.
 
 @end-toc
 
@@ -78,7 +78,7 @@ Thirteen chapters of dreams, dirt, and what bites back. Read them in any order �
 
 @fiction-excerpt
 
-The city didn't go quiet—it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats—sleek fur, feral eyes, lenses pulsing with kill-code—came screaming down the block, pulse cannons humming an evil dirge.
+The city didn't go quiet---it got loud. That feline snarl tore through the alley speakers, chased hard by the thundercrack of gunfire. A crew of geared-up cats---sleek fur, feral eyes, lenses pulsing with kill-code---came screaming down the block, pulse cannons humming an evil dirge.
 
 > [!PULLQUOTE]
 > "How bright's it ay?!"
@@ -87,7 +87,7 @@ They wore glossy slab-armor that flexed like chitin and burned like synthlight. 
 
 ![Scavenger holding a recovered field-detonator](img/scavenger.png){.fg-art-intro-image}
 
-Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. Neon signs cracked. Alleyways bled smoke. Debris rained in bursts. This wasn't about glory—it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
+Blasts lit the dusk like glitchfire. Bolts and teeth and claws tangled mid-air. Neon signs cracked. Alleyways bled smoke. Debris rained in bursts. This wasn't about glory---it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
 
 DimmCitz scattered, vanished into bolted dens and reinforced rooftops. Some just slinked into a corner, shut their eyes, and hoped the riot passed them by. The air stank of scorched fur, ozone, and cordite. Concrete buckled under pulsefire and the ground groaned like it wanted no part of any of it.
 
@@ -110,7 +110,7 @@ These dreams you share will last in your consciousness for life. The joys you fo
 
 It ain't chrome. It ain't clean. It's coagulated blood in the wire, hairballs in the circuitry, a roar tearing through static.
 
-Creaturepunk is what happens when evolution takes a sledgehammer to the face and the survivors crawl out growling. You're spliced-up, hex-stained, glitch-ridden—a freakshow stitched with spite, magic, and tech from dead wars. You're anything but human. Your kind's been running the monoverse since before humanity finger-painted on cave walls.
+Creaturepunk is what happens when evolution takes a sledgehammer to the face and the survivors crawl out growling. You're spliced-up, hex-stained, glitch-ridden---a freakshow stitched with spite, magic, and tech from dead wars. You're anything but human. Your kind's been running the monoverse since before humanity finger-painted on cave walls.
 
 The city don't love you. The corps don't see you. The gods don't pick up.
 Good. That makes you dangerous.

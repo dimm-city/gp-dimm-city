@@ -26,21 +26,21 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 ## The three faces
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>lixdu</strong> — display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
+<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
 <p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
 <p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Titillium Web</strong> — body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
+<p class="dg-face-meta"><strong>Titillium Web</strong> &mdash; body · <code>--font-body</code> · 12pt, leading 1.5 (18pt), tracking 0.005em</p>
 <p class="dg-face-body">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &amp;?!</p>
 <p class="dg-face-body dg-face-set">Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. <em>Italic carries the in-world voice,</em> and <strong>bold marks a rule.</strong></p>
 </div>
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>Tomorrow</strong> — labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 10pt (the floor), uppercase, tracking 0.08em or wider</p>
+<p class="dg-face-meta"><strong>Tomorrow</strong> &mdash; labels · <code>--font-mono</code>, <code>--font-tab</code> · tabs, chips and counters at 10pt (the floor), uppercase, tracking 0.08em or wider</p>
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
-<p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9–13</p>
+<p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9&ndash;13</p>
 </div>
 
 ## Heading hierarchy
@@ -126,7 +126,7 @@ Twelve-point Titillium Web carries all running narrative. Corporate enforcers ea
 
 </div>
 
-Flavor is 11pt italic in `--ink-dark`, with a rail and no box. Never set flavor in bold italic — it reads as urgency, not voice.
+Flavor is 11pt italic in `--ink-dark`, with a rail and no box. Never set flavor in bold italic --- it reads as urgency, not voice.
 
 Don't {.dg-dont-label}
 
@@ -155,7 +155,7 @@ The renderer converts ASCII shortcuts as you type: `--` is an en dash --, `---` 
 
 | Token | Face | Used for |
 |---|---|---|
-| `--font-display` | lixdu | H1–H3, banners |
+| `--font-display` | lixdu | H1--H3, banners |
 | `--font-body` | Titillium Web | Body prose, flavor, quotes |
 | `--font-mono` | Tomorrow | Code, counters, tabular data |
 | `--font-tab` | Tomorrow | Short label text: card tabs, stat labels |

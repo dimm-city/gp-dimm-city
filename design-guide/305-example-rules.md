@@ -10,7 +10,7 @@
 
 Hologram haze cuts the gloom you're stumbling through. Flickering ads claw the air above blades of neon that contrast the scents of burnt oil and hot garbage. On the littered pavement around you, other pedestrians in the murk shuffle past, lit by glitchy devices and glowing bodymods.
 
-A shadow peels off the wall—an ape a meter taller than you, leather flashing with LED stitches. The beast blocks your path with its corroded grin glinting under the signage.
+A shadow peels off the wall---an ape a meter taller than you, leather flashing with LED stitches. The beast blocks your path with its corroded grin glinting under the signage.
 
 "Where yeahs going, strutter?"
 
@@ -32,9 +32,9 @@ In Dimm City, stakes is high and the death rate is higher. The scenario, like th
 @section panel
 ## How to Play
 
-Each player takes on the role of a Dreamer — a character living and scraping through Dimm City. One player takes on the role of Dream Master and runs the world, its inhabitants, and its consequences.
+Each player takes on the role of a Dreamer --- a character living and scraping through Dimm City. One player takes on the role of Dream Master and runs the world, its inhabitants, and its consequences.
 
-The rules in this chapter govern how the Dream plays out: when you roll dice, how outcomes are interpreted, what it costs to push harder, and what conditions your character can suffer. These aren't restrictions — they're the physics of the Dream.
+The rules in this chapter govern how the Dream plays out: when you roll dice, how outcomes are interpreted, what it costs to push harder, and what conditions your character can suffer. These aren't restrictions --- they're the physics of the Dream.
 
 Learn the core loop first. Everything else builds on it.
 
@@ -47,7 +47,7 @@ Learn the core loop first. Everything else builds on it.
 
 ## Dreams {#c1-dreams}
 
-In Dimm City RPG, you're not "pretending to be someone else." You're fighting for a pulse in a city that chews nobodies into mulch. You and your crew aren't telling a story—you're tagging the city with it. One of you hijacks the world as Dream Master (DM). The rest strap in as the degenerates desperate enough to survive it.
+In Dimm City RPG, you're not "pretending to be someone else." You're fighting for a pulse in a city that chews nobodies into mulch. You and your crew aren't telling a story---you're tagging the city with it. One of you hijacks the world as Dream Master (DM). The rest strap in as the degenerates desperate enough to survive it.
 
 @end-section
 
@@ -57,7 +57,7 @@ In Dimm City RPG, you're not "pretending to be someone else." You're fighting fo
 
 Dimm City twitches like a clamped nerve at the edge of existence.
 It leaks ferocity, spits day-glo venom, and remembers every screw-up you tried to bury under cheap lies and even cheaper concrete.
-The streets look solid, but they shift like a glitch in a hallucination—half alive, half listening, all hungry.
+The streets look solid, but they shift like a glitch in a hallucination---half alive, half listening, all hungry.
 
 @columns 2
 
@@ -101,7 +101,7 @@ They don't stop you. They don't protect you. They just make sure the pain fits t
 
 ### ROLL A DIE! {#c1-rolling-the-die}
 
-When something matters—really matters—the DM might call for a roll. One toss of a d20 decides if you rocket through a window like a legend… or face-plant into the curb with a mouthful of glass and regrets.
+When something matters---really matters---the DM might call for a roll. One toss of a d20 decides if you rocket through a window like a legend... or face-plant into the curb with a mouthful of glass and regrets.
 
 No dead rolls. No vanilla outcomes. If the dice show you teeth, you better bite back.
 
@@ -145,8 +145,8 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 If an ability lists an AP cost, you spend it and the effect happens. No charge-up. No waiting.
 
-- **0 AP** — Free to use. Not always safe.
-- **1–X AP** — You choose how hard you push. More AP usually means more distance, power, or targets.
+- **0 AP** --- Free to use. Not always safe.
+- **1--X AP** --- You choose how hard you push. More AP usually means more distance, power, or targets.
 
 @end-section
 
@@ -179,19 +179,19 @@ On a success, the condition ends. Conditions usually end when the encounter ends
 
 @section panel
 
-### Rolling the Die — Full Outcome Ladder
+### Rolling the Die --- Full Outcome Ladder
 
 @outcome
 20 | Triumph | Best-case outcome, extra impact
-11–19 | Success | You do it
-6–10 | Hard Choice | You succeed, but it costs you
-2–5 | Failure | You don't get what you wanted
+11--19 | Success | You do it
+6--10 | Hard Choice | You succeed, but it costs you
+2--5 | Failure | You don't get what you wanted
 1 | Catastrophe | It goes bad, and then worse
 @end-outcome
 
 ### Distance Tags
 
-Most abilities specify which distances they work at. **Reach** means adjacent — close enough to touch. **Near** means the same room or line of sight. **Far** means across a street or a different room. When in doubt, ask if you could throw something at it and hit — that's Near.
+Most abilities specify which distances they work at. **Reach** means adjacent --- close enough to touch. **Near** means the same room or line of sight. **Far** means across a street or a different room. When in doubt, ask if you could throw something at it and hit --- that's Near.
 
 @end-section
 

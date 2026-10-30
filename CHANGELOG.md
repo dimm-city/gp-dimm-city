@@ -22,6 +22,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
   setup's Extensions tab, and the README and `package.json` give the same minimum
   Gutterpress version, 0.11.20-alpha.3. The README's `ext list` sample shows
   1.9.0 with the badges in the order Gutterpress prints them.
+- **The design guide and the snippets type the plain spellings** (`---`, `--`,
+  `...`, `-`, `'`). `source.characters` findings on the guide drop from 367 to
+  6, and the five snippets paste into a book with none.
 
 ### Removed
 

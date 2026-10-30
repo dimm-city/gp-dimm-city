@@ -59,7 +59,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad. They
 
 > Militant Monolith
 
-Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.
+Marked by something higher---god, ghost, code, or conviction---Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.
 
 @end-specialty-card
 
@@ -75,7 +75,7 @@ Marked by something higher—god, ghost, code, or conviction—Proxies walk the 
 
 > Sprawl Sentinel
 
-They don't wear badges—they are the law when no one else shows. Streetwardens guard the city's broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.
+They don't wear badges---they are the law when no one else shows. Streetwardens guard the city's broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.
 
 @end-specialty-card
 
@@ -91,7 +91,7 @@ They don't wear badges—they are the law when no one else shows. Streetwardens 
 
 > Wold Witch
 
-They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.
+They walk the alleys like sacred ground---feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.
 
 @end-specialty-card
 
@@ -107,7 +107,7 @@ They walk the alleys like sacred ground—feeding the hungry, tending weeds, rai
 
 > Two-Path Walker
 
-Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.
+Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two --- equally at home picking locks and pulling triggers, casting circuits and reading rooms.
 
 @end-specialty-card
 
@@ -115,8 +115,8 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 @lede
 
-Every dreamer’s got a sharp edge—your specialty is where it starts.
-It’s the skillset that sets you apart, defines what you bring to the crew, and shapes the wild ways you survive the Dream. Here's a quick hit on the first eight specialties, each broken down in full in this chapter.
+Every dreamer's got a sharp edge---your specialty is where it starts.
+It's the skillset that sets you apart, defines what you bring to the crew, and shapes the wild ways you survive the Dream. Here's a quick hit on the first eight specialties, each broken down in full in this chapter.
 
 @end-lede
 
@@ -130,7 +130,7 @@ It’s the skillset that sets you apart, defines what you bring to the crew, and
 
 > Mech Medic
 
-Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they're back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.
+Life is flexible. Cybersurgeons prove it daily---cutting, splicing, upgrading flesh into something more. Whether they're back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.
 
 @end-specialty-card
 
@@ -146,7 +146,7 @@ Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading fl
 
 > Ping Predator
 
-Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.
+Killers, thieves, forgers---Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.
 
 @end-specialty-card
 
@@ -178,7 +178,7 @@ Technosorcerers walk on the razor's edge between magic and technology. They beli
 
 > Manifold Magus
 
-Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.
+Secrets are currency---and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.
 
 @end-specialty-card
 
@@ -194,7 +194,7 @@ Secrets are currency—and Etherlocks are rich in them. Tapping into elemental f
 
 > Sprawl Survivor
 
-Generalists don't specialize — they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.
+Generalists don't specialize --- they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.
 
 @end-specialty-card
 
@@ -214,7 +214,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 Every specialty excels at one thing and has a path toward a second. Your first specialty is your identity. What you pick up later is your legend.
 
-Don't agonize over the choice. Most Dreamers don't know their specialty until the city forces it out of them — under fire, under stress, or under the kind of debt that doesn't go away. Pick the one that sounds like the way you'd bleed if you had to. You'll grow into the rest whether you want to or not.
+Don't agonize over the choice. Most Dreamers don't know their specialty until the city forces it out of them --- under fire, under stress, or under the kind of debt that doesn't go away. Pick the one that sounds like the way you'd bleed if you had to. You'll grow into the rest whether you want to or not.
 
 @end-section
 
@@ -250,7 +250,7 @@ Everything in this chapter exists to support that loop. Abilities bend it. Dice 
 
 ### What Comes Next
 
-The next chapter walks through what each specialty actually does at the table — the abilities, the augmentations, the rituals, the way each one breaks the laws of a city that wants you breaking them anyway. Read your pick first. Then read the others. Specialties don't stand alone in Dimm City; the crews that survive are the ones whose specialties chew off each other's edges.
+The next chapter walks through what each specialty actually does at the table --- the abilities, the augmentations, the rituals, the way each one breaks the laws of a city that wants you breaking them anyway. Read your pick first. Then read the others. Specialties don't stand alone in Dimm City; the crews that survive are the ones whose specialties chew off each other's edges.
 
 If you're still on the fence, that's fine. The Dream Master will give you a few sessions to feel which way the city pushes you. The character you bring in is a draft. The character that walks out of the first heist is the one that's yours.
 
