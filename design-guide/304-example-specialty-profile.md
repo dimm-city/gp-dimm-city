@@ -114,7 +114,7 @@ You don't need an opening. You make one.
 
 You lock down a target in reach, exploiting pain and leverage over raw force. The target must spend an action to break free or accept the consequence.
 
-1. **1 AP** *Joint Lock:* Grab a limb and apply pressure. The target is **Immobilized** until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged --- they take a **-1 penalty** to rolls using it until treated.
+1. **1 AP** *Joint Lock:* Grab a limb and apply pressure. The target is **Immobilized** until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged --- they take a **−1 penalty** to rolls using it until treated.
 2. **2 AP** *Nerve Strike:* Hit a pressure point. **ROLL THE DIE!** On a 6 or better, the target drops whatever they're holding and loses their next action. On a 10 or better, they also stumble prone.
 3. **2 AP** *Throat Control:* Get a grip on throat or collar. The target is **Silenced** and **Slowed** until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.
 

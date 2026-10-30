@@ -2180,7 +2180,7 @@ Fodder --- Tiny
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;REP&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;4&lt;/div&gt;&lt;/div&gt;
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;HEAT&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;2&lt;/div&gt;&lt;/div&gt;
     &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;FEE&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;×1.5&lt;/div&gt;&lt;/div&gt;
-    &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;TURN&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;-1&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;dc-stat-cell&quot;&gt;&lt;div class=&quot;dc-stat-cell-key&quot;&gt;TURN&lt;/div&gt;&lt;div class=&quot;dc-stat-cell-val&quot;&gt;−1&lt;/div&gt;&lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;dc-stat-line&quot;&gt;&lt;strong&gt;Patch Job:&lt;/strong&gt; treats wounds between scenes for FEE × severity.&lt;/div&gt;
 &lt;/div&gt;
@@ -2204,7 +2204,7 @@ Fodder --- Tiny
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
@@ -4400,7 +4400,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
   </div>
 </div>
 <div class="dc-stat dc-flush">
@@ -4412,7 +4412,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">HEAT</div><div class="dc-stat-cell-val">2</div></div>
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">FEE</div><div class="dc-stat-cell-val">×1.5</div></div>
-    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">-1</div></div>
+    <div class="dc-stat-cell"><div class="dc-stat-cell-key">TURN</div><div class="dc-stat-cell-val">−1</div></div>
   </div>
 </div>
 </div>
@@ -4996,7 +4996,7 @@ Never fight clean. Fight to finish.</p>
 <p>You lock down a target in reach, exploiting pain and leverage over raw force. The target must spend an action to break free or accept the consequence.</p>
 <div class="dc-ability">
   <span class="dc-ap">1 AP</span>
-  <p class="dc-ability-text"><em>Joint Lock:</em> Grab a limb and apply pressure. The target is <strong>Immobilized</strong> until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a <strong>-1 penalty</strong> to rolls using it until treated.</p>
+  <p class="dc-ability-text"><em>Joint Lock:</em> Grab a limb and apply pressure. The target is <strong>Immobilized</strong> until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a <strong>−1 penalty</strong> to rolls using it until treated.</p>
 </div>
 <div class="dc-ability" data-ability-penultimate="true">
   <span class="dc-ap">2 AP</span>
@@ -5304,7 +5304,7 @@ Master — Medium</p>
 <tbody data-source-range="181:186">
 <tr data-source-range="181:182">
 <td><strong>Tiny</strong></td>
-<td>-1 HP</td>
+<td>−1 HP</td>
 <td>None</td>
 <td>Small or frail creatures</td>
 </tr>

@@ -54,6 +54,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   from the text markdown-it had already typeset rather than re-parsed. The six
   em dashes the guide had to leave typed for this (chapters 5 and 11) type
   `---` now.
+- **The guide keeps its six minus signs.** The `−1` (U+2212) in chapters 6,
+  11, 304 and 306 print as typed; a minus is not a hyphen and is not converted
+  to one. The character check flags them until Gutterpress 0.11.23 stops
+  asking for `-`.
 
 ## [1.9.0] - 2026-10-26
 
