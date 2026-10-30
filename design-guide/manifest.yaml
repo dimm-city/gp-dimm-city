@@ -55,8 +55,8 @@ chapters:
 # The PDF's page size, which gutterpress validate/preflight check against:
 # US Letter trim (8.5 × 11 in) plus DriveThruRPG's 0.125 in bleed on the
 # outside, top and bottom edges = 8.625 × 11.25 in = 621 × 810 pt, the
-# @page size in page-rules.css. (It said 612 × 792, the bare trim, and
-# preflight failed every build on page size.)
+# `dtrpg` preset's sheet. (It said 612 × 792, the bare trim, and preflight
+# failed every build on page size.)
 page:
   width: 621
   height: 810

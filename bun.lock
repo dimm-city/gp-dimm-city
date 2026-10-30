@@ -5,7 +5,7 @@
     "": {
       "name": "gp-dimm-city",
       "devDependencies": {
-        "gutterpress": "0.11.23-alpha.6",
+        "gutterpress": "0.11.23-beta.2",
         "markdown-it": "^14.1.0",
       },
       "peerDependencies": {
@@ -137,7 +137,7 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
-    "gutterpress": ["gutterpress@0.11.23-alpha.6", "", { "dependencies": { "chokidar": "^5.0.0", "citty": "^0.2.0", "diff3": "0.0.3", "fflate": "0.8.3", "glob": "^13.0.0", "htmlhint": "^1.9.2", "ignore": "^5.3.2", "isomorphic-git": "^1.38.4", "markdown-it": "^14.3.2", "markdown-it-abbr": "^2.0.0", "markdown-it-attrs": "^4.3.0", "markdown-it-deflist": "^3.0.1", "markdown-it-footnote": "^4.0.0", "markdown-it-mark": "^4.0.0", "markdown-it-source-map": "^0.1.1", "markdown-it-sub": "^2.0.0", "markdown-it-sup": "^2.0.0", "markdownlint": "^0.40.0", "mathjax-full": "^3.2.2", "pdf-lib": "^1.17.1", "postcss": "^8.5.18", "resolve.exports": "2.0.3", "semver": "7.8.0", "tar": "7.5.22", "unpdf": "^1.6.2", "ws": "^8.21.0", "yaml": "^2.8.2" }, "bin": { "gutterpress": "dist/cli.js" } }, "sha512-H/K8ABckeVwnQPihSeROyisy+KNhL0xT8d9L8rv9kIED/TWkr79Qm2JCy42NJ9JXwVw9fx6ctPUz5pq3KiOkzA=="],
+    "gutterpress": ["gutterpress@0.11.23-beta.2", "", { "dependencies": { "chokidar": "^5.0.0", "citty": "^0.2.0", "diff3": "0.0.3", "fflate": "0.8.3", "glob": "^13.0.0", "htmlhint": "^1.9.2", "ignore": "^5.3.2", "isomorphic-git": "^1.38.4", "markdown-it": "^14.3.2", "markdown-it-abbr": "^2.0.0", "markdown-it-attrs": "^4.3.0", "markdown-it-deflist": "^3.0.1", "markdown-it-footnote": "^4.0.0", "markdown-it-mark": "^4.0.0", "markdown-it-source-map": "^0.1.1", "markdown-it-sub": "^2.0.0", "markdown-it-sup": "^2.0.0", "markdownlint": "^0.40.0", "mathjax-full": "^3.2.2", "pdf-lib": "^1.17.1", "postcss": "^8.5.18", "resolve.exports": "2.0.3", "semver": "7.8.0", "tar": "7.5.22", "unpdf": "^1.6.2", "ws": "^8.21.0", "yaml": "^2.8.2" }, "bin": { "gutterpress": "dist/cli.js" } }, "sha512-PE4iP0E6YnxYuud/CzlbgU1z0/nHNhKpQIhryre7RH4e4R2Fe9ZTtOQJwoFB+iUcBU3FuCuihwy+IcQyVpj7QQ=="],
 
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
 

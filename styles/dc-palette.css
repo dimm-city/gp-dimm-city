@@ -170,9 +170,9 @@
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 
-  /* ── Page Geometry ────────────────────────────────────────────────────── */
-  --page-width:     8.625in;
-  --page-height:    11.25in;
+  /* ── Page Geometry ──────────────────────────────────────────────────────
+     The sheet is the book's (its manifest's preset or page size); a rule that
+     needs its size reads Gutterpress's --gp-page-width / --gp-page-height. */
   --binding-margin: 0.5in;
 
   /* ── Shapes ───────────────────────────────────────────────────────────── */

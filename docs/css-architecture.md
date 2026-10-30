@@ -321,9 +321,7 @@ into the token name, not scattered across heading rules.
 --gutter:    0.15in;    /* column gap, structural section margins */
 --space-2xl: 0.25in;    /* spacing-scale step; do not substitute for --gutter */
 
-/* Page geometry — must match @page size declaration exactly */
---page-width:     8.625in;
---page-height:    11.25in;
+/* Page margins (the sheet's size is the book's: read --gp-page-width / --gp-page-height) */
 --page-margin:    0.625in;
 --binding-margin: 0.5in;   /* spine-side in @page :left/:right */
 ```
@@ -435,8 +433,8 @@ in `page-templates.css`; a guide-only specimen's live in the design guide's own 
 
 /* Full-bleed art pages */
 .page.dc-full-page {
-  width:  var(--page-width, 8.625in);
-  height: var(--page-height, 11.25in);
+  width:  var(--gp-page-width);
+  height: var(--gp-page-height);
   break-before: page;
   page-break-before: always;
 }

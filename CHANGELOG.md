@@ -9,15 +9,27 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Changed
 
-- **Needs Gutterpress 0.11.22 or later** (was 0.11.20-alpha.3), in
+- **Needs Gutterpress 0.11.23-beta.1 or later** (was 0.11.20-alpha.3), in
   `engines.gutterpress` and the README. With `size` gone from
-  `styles/page-rules.css` (below), the page size comes from the book's
-  manifest, which Gutterpress writes from 0.11.22 on. On 0.11.21 a book would
-  fall back to Letter (the design guide's full-bleed plates fail its build);
-  now Gutterpress refuses to load the extension there and says to update.
-- **Tests and the guide build run on Gutterpress 0.11.23-alpha.6.** The dev
+  `styles/page-rules.css` (below) the page size is the book's manifest's,
+  which Gutterpress writes from 0.11.22 on (on 0.11.21 a book falls back to
+  Letter); the full-page plates read `--gp-page-width` and
+  `--gp-page-height`, published from 0.11.23-beta.1; and from the same
+  release a book's own margins (Book setup > Book > Margins, or
+  `page.margin`) no longer override the look's named pages, so the plates
+  still print edge to edge (dimm-city/gutterpress#454). On an older
+  Gutterpress the extension is refused with a message to update.
+- **Full-page art plates are the sheet the book prints.** `.dc-specialty-art`
+  and `.dc-full-page` / `@page full-bleed` take their size from
+  `--gp-page-width` / `--gp-page-height`, so they follow the book's page size
+  instead of a copy of the `dtrpg` sheet. At that sheet the PDF is identical.
+- **Tests and the guide build run on Gutterpress 0.11.23-beta.2.** The dev
   dependency moves from 0.11.20-alpha.3, three releases behind, to the 0.11.23
-  line the 1.10 release targets. The design
+  line the 1.10 release targets. The guide is 172 pages, four fewer than on
+  0.11.23-alpha.6: Gutterpress now keeps the guide's own `break-before: auto`
+  on specialty specimens in doc pages (dimm-city/gutterpress#476), so the
+  blank pages it put before them are gone; the Part 2 example still opens its
+  spread on a left page. The design
   guide's manifest uses 0.11.23's flat shape: `chapters:` (was
   `source.files`), no `page.tolerance` (the preset's), and no
   `validate.source.markdownlint` (the repo's `.markdownlint.jsonc` is found by
@@ -30,15 +42,19 @@ cut a version that has no `## [X.Y.Z]` heading below.
   1.9.0 with the badges in the order Gutterpress prints them.
 - **The design guide and the snippets type the plain spellings** (`---`, `--`,
   `...`, `-`, `'`). `source.characters` findings on the guide drop from 367 to
-  6, and the five snippets paste into a book with none.
+  0 (its six minus signs are typed on purpose, and Gutterpress no longer
+  flags them from 0.11.23-beta.1), and the five snippets paste into a book
+  with none.
 
 ### Removed
 
 - **`size` from `styles/page-rules.css`'s `@page`.** Gutterpress 0.11.23
   writes the manifest's page size after every stylesheet and reports a `size`
   in a look as `printsafe/page-size-in-stylesheet` on every build. The sheet is
-  the same 8.625 × 11.25 in; `--page-width` / `--page-height` stay as the
-  look's record of it.
+  the same 8.625 × 11.25 in.
+- **`--page-width` and `--page-height` from `dc-palette.css`.** They copied
+  the `dtrpg` sheet and did not follow a book's page size; read
+  `--gp-page-width` / `--gp-page-height` instead.
 - **`gutterpress.tokensFile` from `package.json`.** Gutterpress 0.11.23 reads
   every enabled look's `:root` tokens and no longer reads the field.
 - **The `lint` npm script and the `gutterpress lint` row in the design guide.**

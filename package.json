@@ -68,11 +68,11 @@
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
-    "gutterpress": "0.11.23-alpha.6",
+    "gutterpress": "0.11.23-beta.2",
     "markdown-it": "^14.1.0"
   },
   "engines": {
-    "gutterpress": ">=0.11.22"
+    "gutterpress": ">=0.11.23-beta.1"
   },
   "peerDependencies": {
     "markdown-it": ">=14"

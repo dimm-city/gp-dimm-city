@@ -430,8 +430,8 @@ hr {
 
 /* ── Specialty art full-page plate ─────────────────────────────────────────── */
 .dc-specialty-art {
-  width: var(--page-width);
-  height: var(--page-height);
+  width: var(--gp-page-width);
+  height: var(--gp-page-height);
   /* Its break is in page-templates.css (SPECIALTY BREAK CONTROL). */
   margin: 0;
   overflow: hidden;
