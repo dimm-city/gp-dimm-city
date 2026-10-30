@@ -115,9 +115,10 @@ Also in the box:
 
 ## Quick start
 
-Requires Gutterpress **0.11.20-alpha.3** or later. Since 0.11.0 it wraps every
-extension's CSS in its own cascade layer, so a book no longer needs a starter
-look removed before this package can win the cascade.
+Requires Gutterpress **0.11.22** or later, the first that prints the book at
+its manifest's page size (this look no longer sets one). Since 0.11.0 it
+wraps every extension's CSS in its own cascade layer, so a book no longer
+needs a starter look removed before this package can win the cascade.
 
 ```sh
 gutterpress new "My Book" --preset dtrpg

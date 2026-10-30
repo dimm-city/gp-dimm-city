@@ -143,7 +143,7 @@ async function readYaml(file) {
   }
 }
 
-/** Fallback reader: only `extensions:` and `source.files` lists, which is all this script needs. */
+/** Fallback reader: only the `extensions:` and `chapters:` (or older `source.files`) lists, which is all this script needs. */
 function parseManifestMinimal(text) {
   const lines = text.replace(/^[ \t]*#.*$/gm, "").split("\n");
   const unquote = (s) => s.trim().replace(/^(["'])(.*)\1$/, "$2");
@@ -159,6 +159,7 @@ function parseManifestMinimal(text) {
   const out = {};
   lines.forEach((line, i) => {
     if (/^extensions:\s*$/.test(line)) out.extensions = list(i + 1, 0);
+    if (/^chapters:\s*$/.test(line)) out.chapters = list(i + 1, 0);
     if (/^source:\s*$/.test(line)) {
       for (let j = i + 1; j < lines.length && (/^\s/.test(lines[j]) || !lines[j].trim()); j++) {
         if (/^\s+files:\s*$/.test(lines[j])) out.source = { files: list(j + 1, 0) };
@@ -168,9 +169,9 @@ function parseManifestMinimal(text) {
   return out;
 }
 
-/** The chapters Gutterpress would render: `source.files` in order, else every `.md` sorted (minus `.online.md` siblings). */
+/** The chapters Gutterpress would render: `chapters` (or the older `source.files`) in order, else every `.md` sorted (minus `.online.md` siblings). */
 function chapterList(dir, manifest) {
-  const configured = manifest?.source?.files;
+  const configured = manifest?.chapters ?? manifest?.source?.files;
   if (Array.isArray(configured) && configured.length) return configured.map(String);
   return readdirSync(dir)
     .filter((f) => f.endsWith(".md") && !f.endsWith(".online.md"))
