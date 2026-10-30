@@ -72,7 +72,7 @@
     "markdown-it": "^14.1.0"
   },
   "engines": {
-    "gutterpress": ">=0.11.23-beta.1"
+    "gutterpress": ">=0.11.22"
   },
   "peerDependencies": {
     "markdown-it": ">=14"

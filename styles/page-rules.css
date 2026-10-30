@@ -52,7 +52,8 @@
 /* The sheet size comes from the book's manifest: Gutterpress 0.11.23 writes
    `@page { size }` after every stylesheet, so a `size` here is ignored and
    reported. A rule that needs the sheet's size reads --gp-page-width /
-   --gp-page-height, which Gutterpress publishes from what it prints. */
+   --gp-page-height, which Gutterpress publishes from what it prints (0.11.23
+   on; the rules fall back to the dtrpg sheet on 0.11.22). */
 @page {
   margin: var(--page-margin) var(--outer-margin) var(--bottom-margin);
   background-color: var(--bg);

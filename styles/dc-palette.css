@@ -172,7 +172,8 @@
 
   /* ── Page Geometry ──────────────────────────────────────────────────────
      The sheet is the book's (its manifest's preset or page size); a rule that
-     needs its size reads Gutterpress's --gp-page-width / --gp-page-height. */
+     needs its size reads Gutterpress's --gp-page-width / --gp-page-height
+     (0.11.23 on), with the dtrpg sheet as the fallback for 0.11.22. */
   --binding-margin: 0.5in;
 
   /* ── Shapes ───────────────────────────────────────────────────────────── */

@@ -7,22 +7,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-10-30
+
 ### Changed
 
-- **Needs Gutterpress 0.11.23-beta.1 or later** (was 0.11.20-alpha.3), in
+- **Needs Gutterpress 0.11.22 or later** (was 0.11.20-alpha.3), in
   `engines.gutterpress` and the README. With `size` gone from
-  `styles/page-rules.css` (below) the page size is the book's manifest's,
-  which Gutterpress writes from 0.11.22 on (on 0.11.21 a book falls back to
-  Letter); the full-page plates read `--gp-page-width` and
-  `--gp-page-height`, published from 0.11.23-beta.1; and from the same
-  release a book's own margins (Book setup > Book > Margins, or
-  `page.margin`) no longer override the look's named pages, so the plates
-  still print edge to edge (dimm-city/gutterpress#454). On an older
-  Gutterpress the extension is refused with a message to update.
+  `styles/page-rules.css` (below), the page size comes from the book's
+  manifest, which Gutterpress writes from 0.11.22 on. On 0.11.21 a book would
+  fall back to Letter (the design guide's full-bleed plates fail its build);
+  now Gutterpress refuses to load the extension there and says to update.
+  Margins set in Book setup > Book > Margins (`page.margin`, new in
+  Gutterpress 0.11.23) leave the full-bleed plates and named pages theirs
+  from 0.11.23-beta.1 (dimm-city/gutterpress#454).
 - **Full-page art plates are the sheet the book prints.** `.dc-specialty-art`
   and `.dc-full-page` / `@page full-bleed` take their size from
-  `--gp-page-width` / `--gp-page-height`, so they follow the book's page size
-  instead of a copy of the `dtrpg` sheet. At that sheet the PDF is identical.
+  `--gp-page-width` / `--gp-page-height` (Gutterpress 0.11.23-beta.1 on), so
+  they follow the book's page size instead of a copy of the `dtrpg` sheet; on
+  0.11.22 they fall back to that sheet. At that sheet the PDF is identical.
 - **Tests and the guide build run on Gutterpress 0.11.23-beta.2.** The dev
   dependency moves from 0.11.20-alpha.3, three releases behind, to the 0.11.23
   line the 1.10 release targets. The guide is 172 pages, four fewer than on

@@ -35,7 +35,7 @@ const CORE_HOOKS_READ_BY_CSS = [
   "--gp-column-rule", //   and to reset on a component that wants none
   "--gp-content-h", // read only
   "--gp-page-width", // read only: the sheet the book prints, for the full-page plates
-  "--gp-page-height", //   (Gutterpress 0.11.23-beta.1+)
+  "--gp-page-height", //   (Gutterpress 0.11.23-beta.1+; each read has a fallback for 0.11.22)
   ".gp-alert", // the gutterpress-gfm-alerts extension's `> [!NOTE]` box, drawn as a callout so it never sits on the wall
   ".gp-alert-", //   its type classes (-note, -warning, -caution, ...) and its .gp-alert-title
 ];

@@ -433,8 +433,8 @@ in `page-templates.css`; a guide-only specimen's live in the design guide's own 
 
 /* Full-bleed art pages */
 .page.dc-full-page {
-  width:  var(--gp-page-width);
-  height: var(--gp-page-height);
+  width:  var(--gp-page-width, 8.625in);   /* Gutterpress 0.11.23+; the dtrpg sheet on 0.11.22 */
+  height: var(--gp-page-height, 11.25in);
   break-before: page;
   page-break-before: always;
 }
