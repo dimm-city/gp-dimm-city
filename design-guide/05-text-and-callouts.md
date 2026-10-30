@@ -95,10 +95,10 @@ One shell, eight registers (note, warning, dm, vibe, origin, location, visit, ex
 > If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack and move on.
 
 > [!VIBE]
-> The rain in Dimm City never quite stops — it just changes color under the signage.
+> The rain in Dimm City never quite stops --- it just changes color under the signage.
 
 > [!ORIGIN]
-> You didn't choose the street — the street chose you.
+> You didn't choose the street --- the street chose you.
 
 > [!LOCATION]
 > The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.
@@ -122,10 +122,10 @@ Result {.dg-result}
 > If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack and move on.
 
 > [!VIBE]
-> The rain in Dimm City never quite stops — it just changes color under the signage.
+> The rain in Dimm City never quite stops --- it just changes color under the signage.
 
 > [!ORIGIN]
-> You didn't choose the street — the street chose you.
+> You didn't choose the street --- the street chose you.
 
 > [!LOCATION]
 > The Undercroft: three levels of flooded parking under the old ArkD tower, lit by whatever the squatters can wire.

@@ -663,7 +663,8 @@ function dcAlertsTransform(state) {
     if (closeIdx === -1 || firstInlineIdx === -1) { newTokens.push(tok); continue; }
 
     const inlineTok = tokens[firstInlineIdx];
-    const match = inlineTok && inlineTok.content.match(DC_ALERT_PATTERN);
+    const lead = inlineTok && inlineTok.children && inlineTok.children[0];
+    const match = lead && lead.type === 'text' && inlineTok.content.match(DC_ALERT_PATTERN);
     if (!match) { newTokens.push(tok); continue; }
 
     const alertType = match[1].toUpperCase();
@@ -680,7 +681,8 @@ function dcAlertsTransform(state) {
     newTokens.push(openTok);
 
     // Strip [!TYPE] prefix from first inline; suppress its paragraph wrapper if empty.
-    const prefixMatch = inlineTok.content.match(/^\[![A-Z_]+\][ \t]*/i);
+    const markerPrefix = /^\[![A-Z_]+\][ \t]*/i;
+    const prefixMatch = inlineTok.content.match(markerPrefix);
     const stripped = prefixMatch
       ? inlineTok.content.slice(prefixMatch[0].length).trim()
       : inlineTok.content;
@@ -697,11 +699,18 @@ function dcAlertsTransform(state) {
       if (!t) continue;
       if (j === firstInlineIdx) {
         if (stripped === '') continue;
-        const strippedTok = new state.Token('inline', '', 0);
-        strippedTok.content = stripped;
-        strippedTok.children = [];
-        state.md.inline.parse(stripped, state.md, state.env, strippedTok.children);
-        newTokens.push(strippedTok);
+        // The core rules have already typeset the children, so take the marker
+        // off the lead text (and the line break it leaves at the front) and
+        // keep the rest; re-parsing would skip replacements, smartquotes and
+        // text_join.
+        lead.content = lead.content.replace(markerPrefix, '');
+        if (lead.content === '') {
+          inlineTok.children.shift();
+          const next = inlineTok.children[0];
+          if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
+        }
+        inlineTok.content = stripped;
+        newTokens.push(inlineTok);
         continue;
       }
       if (stripped === '' && wrapsInParagraph) {

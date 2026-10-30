@@ -19,8 +19,8 @@ import dimmCityPlugin, { markers, metadata } from "../plugin.js";
 
 const ROLL_HTML = '<span class="dc-roll-the-die">ROLL THE DIE!</span>';
 
-function createMarkdown() {
-  return new MarkdownIt({ html: true }).use(dimmCityPlugin);
+function createMarkdown(options = {}) {
+  return new MarkdownIt({ html: true, ...options }).use(dimmCityPlugin);
 }
 
 function createGutterpressMarkdown() {
@@ -264,6 +264,47 @@ describe("behaviour carried from the book repo", () => {
     expect(twoHtml).toMatch(/<blockquote>\s*<p>Not the footer<\/p>\s*<\/blockquote>/);
     expect(twoHtml).toMatch(/<blockquote class="dc-card-footer">\s*<p>The real footer<\/p>/);
     expect((twoHtml.match(/dc-card-footer/g) ?? []).length).toBe(1);
+  });
+});
+
+// The `[!TYPE]` marker comes off the text the core rules already typeset, so
+// the first paragraph of an alert reads like any other paragraph.
+describe("alert bodies keep the typographer", () => {
+  const md = createMarkdown({ typographer: true });
+  const alert = (classes, label, body) => `<div class="${classes}"><span class="dc-alert-label">${label}</span>\n${body}</div>\n`;
+  const NOTE = ["dc-alert dc-note", "Note"];
+
+  test("the first paragraph gets dashes, an ellipsis, curly quotes and entities", () => {
+    const html = md.render(["> [!VIBE]", '> Rain --- it "stops" -- 11 ... &mdash; done.'].join("\n"));
+    expect(html).toBe(alert("dc-alert dc-vibe-callout", "Vibe", "<p>Rain \u2014 it \u201Cstops\u201D \u2013 11 \u2026 \u2014 done.</p>\n"));
+    expect(html).not.toContain("<>");
+  });
+
+  test("a marker on the same line as the text works too", () => {
+    expect(md.render("> [!NOTE] Title --- here")).toBe(alert(...NOTE, "<p>Title \u2014 here</p>\n"));
+  });
+
+  test("later paragraphs and inline markup after the marker are untouched", () => {
+    const html = md.render(["> [!NOTE]**Bold** --- first.", ">", '> Second --- "ok" &mdash; done.'].join("\n"));
+    expect(html).toBe(alert(...NOTE, "<p><strong>Bold</strong> \u2014 first.</p>\n<p>Second \u2014 \u201Cok\u201D \u2014 done.</p>\n"));
+  });
+
+  test("a marker alone on its line leaves no empty paragraph and no leading break", () => {
+    for (const marker of ["[!NOTE]", "[!NOTE]  ", "[!NOTE]\\"]) {
+      const html = md.render([`> ${marker}`, "> Body --- next."].join("\n"));
+      expect(html, JSON.stringify(marker)).toBe(alert(...NOTE, "<p>Body \u2014 next.</p>\n"));
+    }
+  });
+
+  test("a paragraph that is only the marker renders no paragraph", () => {
+    expect(md.render("> [!NOTE]")).toBe(alert(...NOTE, ""));
+    expect(md.render(["> [!NOTE]", ">", "> Next --- one."].join("\n"))).toBe(alert(...NOTE, "<p>Next \u2014 one.</p>\n"));
+  });
+
+  test("a marker that parses as a link is an ordinary blockquote", () => {
+    expect(md.render("> [!NOTE](https://example.com) Link --- text")).toBe(
+      '<blockquote>\n<p><a href="https://example.com">!NOTE</a> Link \u2014 text</p>\n</blockquote>\n',
+    );
   });
 });
 

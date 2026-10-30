@@ -833,10 +833,10 @@ Generalists don't specialize --- they scavenge. Picking up scraps of every art t
 > If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack.
 
 > [!VIBE]
-> The rain in Dimm City never quite stops — it just changes color under the signage.
+> The rain in Dimm City never quite stops --- it just changes color under the signage.
 
 > [!ORIGIN]
-> You didn't choose the street — the street chose you.
+> You didn't choose the street --- the street chose you.
 
 > [!LOCATION]
 > The Undercroft: three flooded levels under the old ArkD tower.
