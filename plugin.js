@@ -386,9 +386,9 @@ const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'M
 // Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
 
-// "11 – 19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
+// "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
-  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]/g, '-');
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]|-{2,3}/g, '-');
   const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
   if (!m) return null;
   const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
@@ -423,7 +423,7 @@ function outcomeRowsHtml(rows, md, head = []) {
     : '  <div class="dc-outcomes-label">Outcomes</div>\n';
   rows.forEach(({ tier, name, roll, text }) => {
     html += '  <div class="dc-outcome-row ' + tier + '">\n';
-    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll) + '</span></span>\n';
+    html += '    <span class="dc-outcome-key tier-' + tier + '"><span class="dc-outcome-name">' + esc(name) + '</span><span class="dc-outcome-roll">' + esc(roll.replace(/(\d)\s*--\s*(\d)/g, '$1\u2013$2')) + '</span></span>\n';
     html += '    <span class="dc-outcome-text">' + md.renderInline(text) + '</span>\n';
     html += '  </div>\n';
   });
@@ -663,7 +663,8 @@ function dcAlertsTransform(state) {
     if (closeIdx === -1 || firstInlineIdx === -1) { newTokens.push(tok); continue; }
 
     const inlineTok = tokens[firstInlineIdx];
-    const match = inlineTok && inlineTok.content.match(DC_ALERT_PATTERN);
+    const lead = inlineTok && inlineTok.children && inlineTok.children[0];
+    const match = lead && lead.type === 'text' && inlineTok.content.match(DC_ALERT_PATTERN);
     if (!match) { newTokens.push(tok); continue; }
 
     const alertType = match[1].toUpperCase();
@@ -680,7 +681,8 @@ function dcAlertsTransform(state) {
     newTokens.push(openTok);
 
     // Strip [!TYPE] prefix from first inline; suppress its paragraph wrapper if empty.
-    const prefixMatch = inlineTok.content.match(/^\[![A-Z_]+\][ \t]*/i);
+    const markerPrefix = /^\[![A-Z_]+\][ \t]*/i;
+    const prefixMatch = inlineTok.content.match(markerPrefix);
     const stripped = prefixMatch
       ? inlineTok.content.slice(prefixMatch[0].length).trim()
       : inlineTok.content;
@@ -697,11 +699,18 @@ function dcAlertsTransform(state) {
       if (!t) continue;
       if (j === firstInlineIdx) {
         if (stripped === '') continue;
-        const strippedTok = new state.Token('inline', '', 0);
-        strippedTok.content = stripped;
-        strippedTok.children = [];
-        state.md.inline.parse(stripped, state.md, state.env, strippedTok.children);
-        newTokens.push(strippedTok);
+        // The core rules have already typeset the children, so take the marker
+        // off the lead text (and the line break it leaves at the front) and
+        // keep the rest; re-parsing would skip replacements, smartquotes and
+        // text_join.
+        lead.content = lead.content.replace(markerPrefix, '');
+        if (lead.content === '') {
+          inlineTok.children.shift();
+          const next = inlineTok.children[0];
+          if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
+        }
+        inlineTok.content = stripped;
+        newTokens.push(inlineTok);
         continue;
       }
       if (stripped === '' && wrapsInParagraph) {

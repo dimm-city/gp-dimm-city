@@ -28,49 +28,44 @@ extensions:
 styles:
   - styles/guide.css
 
-source:
-  files:
-    # Part 1 — Using the system
-    - 00-start-here.md
-    - 01-writing-a-page.md
-    - 02-typography.md
-    - 03-palette.md
-    - 04-layout.md
-    - 05-text-and-callouts.md
-    - 06-panels-and-cards.md
-    - 07-specialty-system.md
-    - 08-page-templates.md
-    - 09-publishing.md
-    - 10-reference.md
-    - 11-variants.md
-    # Part 2 — A book, page by page (Field Guide pages, verbatim)
-    - 300-example-overview.md
-    - 301-example-front-matter.md
-    - 302-example-chapter-opener.md
-    - 303-example-specialty-overview.md
-    - 304-example-specialty-profile.md
-    - 305-example-rules.md
-    - 306-example-dm-npcs.md
-    - 307-example-gear-tech.md
+chapters:
+  # Part 1 — Using the system
+  - 00-start-here.md
+  - 01-writing-a-page.md
+  - 02-typography.md
+  - 03-palette.md
+  - 04-layout.md
+  - 05-text-and-callouts.md
+  - 06-panels-and-cards.md
+  - 07-specialty-system.md
+  - 08-page-templates.md
+  - 09-publishing.md
+  - 10-reference.md
+  - 11-variants.md
+  # Part 2 — A book, page by page (Field Guide pages, verbatim)
+  - 300-example-overview.md
+  - 301-example-front-matter.md
+  - 302-example-chapter-opener.md
+  - 303-example-specialty-overview.md
+  - 304-example-specialty-profile.md
+  - 305-example-rules.md
+  - 306-example-dm-npcs.md
+  - 307-example-gear-tech.md
 
 # The PDF's page size, which gutterpress validate/preflight check against:
 # US Letter trim (8.5 × 11 in) plus DriveThruRPG's 0.125 in bleed on the
 # outside, top and bottom edges = 8.625 × 11.25 in = 621 × 810 pt, the
-# @page size in page-rules.css. (It said 612 × 792, the bare trim, and
-# preflight failed every build on page size.)
+# `dtrpg` preset's sheet. (It said 612 × 792, the bare trim, and preflight
+# failed every build on page size.)
 page:
   width: 621
   height: 810
-  tolerance: 0.5
 
 # PDF/X keeps text live on pages that use transparency (soft shadows,
 # translucent tape): Gutterpress flattens only their artwork, at 300 DPI.
-# Needs Gutterpress 0.11.20 or later. This book is the package's print
+# Needs Gutterpress 0.11.23 or later. This book is the package's print
 # qualification (docs/print-qualification.md), so it builds in the mode the
 # styles are written for.
 pdfx:
   transparency: preserve-text
 
-validate:
-  source:
-    markdownlint: ../.markdownlint.jsonc

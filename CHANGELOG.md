@@ -7,6 +7,82 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-10-31
+
+### Changed
+
+- **Needs Gutterpress 0.11.22 or later** (was 0.11.20-alpha.3), in
+  `engines.gutterpress` and the README. With `size` gone from
+  `styles/page-rules.css` (below), the page size comes from the book's
+  manifest, which Gutterpress writes from 0.11.22 on. On 0.11.21 a book would
+  fall back to Letter (the design guide's full-bleed plates fail its build);
+  now Gutterpress refuses to load the extension there and says to update.
+  Margins set in Book setup > Book > Margins (`page.margin`, new in
+  Gutterpress 0.11.23) leave the full-bleed plates and named pages theirs
+  from 0.11.23-beta.1 (dimm-city/gutterpress#454).
+- **Full-page art plates are the sheet the book prints.** `.dc-specialty-art`
+  and `.dc-full-page` / `@page full-bleed` take their size from
+  `--gp-page-width` / `--gp-page-height` (Gutterpress 0.11.23-beta.1 on), so
+  they follow the book's page size instead of a copy of the `dtrpg` sheet; on
+  0.11.22 they fall back to that sheet. At that sheet the PDF is identical.
+- **Tests and the guide build run on Gutterpress 0.11.23.** The dev
+  dependency moves from 0.11.20-alpha.3, three releases behind, to the 0.11.23
+  line the 1.10 release targets. The guide is 172 pages, four fewer than on
+  0.11.23-alpha.6: Gutterpress now keeps the guide's own `break-before: auto`
+  on specialty specimens in doc pages (dimm-city/gutterpress#476), so the
+  blank pages it put before them are gone; the Part 2 example still opens its
+  spread on a left page. The design
+  guide's manifest uses 0.11.23's flat shape: `chapters:` (was
+  `source.files`), no `page.tolerance` (the preset's), and no
+  `validate.source.markdownlint` (the repo's `.markdownlint.jsonc` is found by
+  walking up to the repository root).
+- **Docs follow Gutterpress 0.11.23.** Vendored copies live under
+  `extensions/npm/` (a book vendored earlier keeps `plugins/npm/` until its
+  next `ext add` or `ext update`), the app adds an npm extension on Book
+  setup's Extensions tab, and the README and `package.json` give the same minimum
+  Gutterpress version. The README's `ext list` sample shows
+  1.9.0 with the badges in the order Gutterpress prints them.
+- **The design guide and the snippets type the plain spellings** (`---`, `--`,
+  `...`, `-`, `'`). `source.characters` findings on the guide drop from 367 to
+  0 (its six minus signs are typed on purpose, and Gutterpress no longer
+  flags them from 0.11.23-beta.1), and the five snippets paste into a book
+  with none.
+
+### Removed
+
+- **`size` from `styles/page-rules.css`'s `@page`.** Gutterpress 0.11.23
+  writes the manifest's page size after every stylesheet and reports a `size`
+  in a look as `printsafe/page-size-in-stylesheet` on every build. The sheet is
+  the same 8.625 × 11.25 in.
+- **`--page-width` and `--page-height` from `dc-palette.css`.** They copied
+  the `dtrpg` sheet and did not follow a book's page size; read
+  `--gp-page-width` / `--gp-page-height` instead.
+- **`gutterpress.tokensFile` from `package.json`.** Gutterpress 0.11.23 reads
+  every enabled look's `:root` tokens and no longer reads the field.
+- **The `lint` npm script and the `gutterpress lint` row in the design guide.**
+  The command does not exist; the print-safety lint runs inside
+  `gutterpress build` and `gutterpress validate`, and
+  `gutterpress validate <book> --category source` runs the source checks
+  alone.
+
+### Fixed
+
+- **`@outcome` rolls and ladder bands accept `--`.** `11--19` prints as
+  11–19 and a ladder table typed that way is recognised; the `–` spelling
+  still works. The character check asks for `--`, and Gutterpress 0.11.23's
+  example books type it.
+- **An alert's first paragraph is typeset like any other.** `---`, `--`, `...`
+  and straight quotes inside `> [!NOTE]`, `> [!VIBE]` and the other alert
+  blocks printed as typed, and `&mdash;` printed as `<>`, in the paragraph
+  that followed the marker; later paragraphs were fine. The marker is now cut
+  from the text markdown-it had already typeset rather than re-parsed. The six
+  em dashes the guide had to leave typed for this (chapters 5 and 11) type
+  `---` now.
+- **The guide keeps its six minus signs.** The `−1` (U+2212) in chapters 6,
+  11, 304 and 306 print as typed; a minus is not a hyphen and is not converted
+  to one. The character check flags them until Gutterpress 0.11.23 stops
+  asking for `-`.
+
 ## [1.9.0] - 2026-10-26
 
 ### Changed

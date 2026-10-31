@@ -8,10 +8,11 @@ the package renders them and prints them.
 
 ## Install
 
-**In the Gutterpress app:** open the book, then Project settings → Features →
-*Find more on npm* (search "dimm city") or *Install from npm* and enter
-`gp-dimm-city`. Confirm the install prompt. The package appears under Features
-with a "+ look" badge, and its sheets and snippets are live in the preview.
+**In the Gutterpress app:** open the book, then Book setup → Extensions, search
+npm for `gp-dimm-city` and click Add (or add it by exact name under *Other ways
+to add*). The package joins Your extensions, and its sheets and snippets are
+live in the preview. The
+[desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) has the rest.
 
 **From the command line**, in the folder that holds the book:
 
@@ -20,22 +21,22 @@ gutterpress ext add gp-dimm-city my-book
 ```
 
 Either way Gutterpress downloads the package from npm, verifies the registry
-hash, writes a copy under `my-book/plugins/npm/`, and pins the exact version
+hash, writes a copy under `my-book/extensions/npm/`, and pins the exact version
 in the manifest:
 
 ```yaml
 extensions:
-  - gp-dimm-city@1.5.0
+  - gp-dimm-city@1.9.0
 ```
 
-**Commit the manifest, not `plugins/npm/`.** The downloaded copy is not part of
-the book's history: Gutterpress adds `plugins/npm/` to the book's `.gitignore`.
-The pin in the manifest is what you commit. On a fresh clone, the first build,
-export or `gutterpress validate` downloads exactly the pinned version through
-the same verified path (this needs the network once); after that the book works
-offline.
+**Commit the manifest, not `extensions/npm/`.** The downloaded copy is not part
+of the book's history: Gutterpress adds `extensions/npm/` to the book's
+`.gitignore`. The pin in the manifest is what you commit. On a fresh clone, the
+first build, export or `gutterpress validate` downloads exactly the pinned
+version through the same verified path (this needs the network once); after that
+the book works offline.
 
-`gutterpress ext list my-book` shows `gp-dimm-city@1.5.0 [npm; markdown, styles, components, snippets]`.
+`gutterpress ext list my-book` shows `gp-dimm-city@1.9.0 [npm; markdown, styles, snippets, components]`.
 
 ## What you get
 
@@ -114,9 +115,10 @@ Also in the box:
 
 ## Quick start
 
-Requires Gutterpress **0.11.0** or later — it wraps every extension's CSS in
-its own cascade layer, so a book no longer needs a starter look removed
-before this package can win the cascade.
+Requires Gutterpress **0.11.22** or later, the first that prints the book at
+its manifest's page size (this look no longer sets one). Since 0.11.0 it
+wraps every extension's CSS in its own cascade layer, so a book no longer
+needs a starter look removed before this package can win the cascade.
 
 ```sh
 gutterpress new "My Book" --preset dtrpg
@@ -126,8 +128,10 @@ gutterpress preview my-book
 
 Then insert the *Toc Page*, *Credits Page* and *Chapter Start Page* snippets
 to lay down the front matter, and reach for *Skill*, *Learning Path* and
-*Specialty* as you write. `page-rules.css` sets a Letter page with bleed; keep
-the manifest's `page:` in step with it.
+*Specialty* as you write. The `dtrpg` preset sets the sheet, Letter with
+bleed. The look's page margins are a starting point: from Gutterpress
+0.11.23, Book setup > Book > Margins (`page.margin` in the manifest) sets
+the book's own, and the full-bleed plates and named pages keep theirs.
 
 ## Author overrides
 
@@ -229,7 +233,11 @@ gutterpress ext add gp-dimm-city@1.5.0 my-book
 ```
 
 Installing a version removes the book's copies of other versions of this
-package, so there is nothing to clean up by hand. Commit the manifest change.
+package, so there is nothing to clean up by hand. A book vendored before
+Gutterpress 0.11.23 keeps working from its `plugins/npm/` copy until its next
+`ext add` or `ext update`, which moves the package to `extensions/npm/`, removes
+the old copies and the empty `plugins/` folder, and replaces the `.gitignore`
+line. Commit the manifest change.
 
 Rebuild and compare before you commit — the Dimm City books gate every bump
 with a render-parity run (text runs, image placement, and a pixel comparison

@@ -8,11 +8,11 @@ Chapter 11 {.dg-kicker}
 
 Every element that ships more than one variant, with all of its variants on one stage so they can be compared directly. Each section names the switch that picks the variant; the chapter that documents the element has the full syntax and tokens. Specialty content is the Field Guide's own, excerpted to one ability per card (an ellipsis marks a cut). {.dg-lede}
 
-## Skill trees — one per specialty
+## Skill trees --- one per specialty
 
-A learning path is a skill tree: the title band, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class — and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
+A learning path is a skill tree: the title band, the subtitle, the skill stickers, and the skill cards. The `@specialty` wrapper sets every color and shape, so each tree below is the same markdown under a different class --- and its skill card is that specialty's card. The Dualist and Generalist have no trees of their own: they take their skills from the other eight.
 
-### Augmerc — `.augmerc`
+### Augmerc --- `.augmerc`
 
 <div class="dg-stage">
 
@@ -34,7 +34,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > See an opening, ya take it. Best time to hit 'em is when they think it's over.
 
-1. **0 AP** *Steel Says No:* When an enemy in reach makes a basic attack and rolls a **Hard Choice** or worse, your Backbiters knock the strike off line. They miss. …
+1. **0 AP** *Steel Says No:* When an enemy in reach makes a basic attack and rolls a **Hard Choice** or worse, your Backbiters knock the strike off line. They miss. ...
 
 @end-skill
 
@@ -44,7 +44,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Proxy — `.proxy`
+### Proxy --- `.proxy`
 
 <div class="dg-stage">
 
@@ -76,7 +76,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Streetwarden — `.streetwarden`
+### Streetwarden --- `.streetwarden`
 
 <div class="dg-stage">
 
@@ -98,7 +98,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > The alley stinks wrong. The silence is too wide. Something's gonna drop.
 
-1. **0 AP** When you enter a new location—building, block, train car, street—you may ask the Dream Master one question. … The DM gives you one true insight about the area.
+1. **0 AP** When you enter a new location---building, block, train car, street---you may ask the Dream Master one question. ... The DM gives you one true insight about the area.
 
 @end-skill
 
@@ -108,7 +108,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Gutterdruid — `.gutterdruid`
+### Gutterdruid --- `.gutterdruid`
 
 <div class="dg-stage">
 
@@ -130,7 +130,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > You drop into a shape that hides in cracks or hunts the street.
 
-1. **2 AP** Your body rewrites into a natural form, flesh, bone, and instinct taking over. …
+1. **2 AP** Your body rewrites into a natural form, flesh, bone, and instinct taking over. ...
 
 @end-skill
 
@@ -140,7 +140,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Cybersurgeon — `.cybersurgeon`
+### Cybersurgeon --- `.cybersurgeon`
 
 <div class="dg-stage">
 
@@ -172,7 +172,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Wirephreak — `.wirephreak`
+### Wirephreak --- `.wirephreak`
 
 <div class="dg-stage">
 
@@ -194,7 +194,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > Every alley talks. Every fixer owes somebody. Every bounty leaves a trail. You just know where to start looking.
 
-1. **0 AP** You check darksites, contact fixers, browse bounty boards, and quietly ask around the city's underworld. After a byte or two, you know which bounties are worth chasing, who's offering them, and roughly how dangerous the marks are. …
+1. **0 AP** You check darksites, contact fixers, browse bounty boards, and quietly ask around the city's underworld. After a byte or two, you know which bounties are worth chasing, who's offering them, and roughly how dangerous the marks are. ...
 
 @end-skill
 
@@ -204,7 +204,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Technosorcerer — `.technosorcerer`
+### Technosorcerer --- `.technosorcerer`
 
 <div class="dg-stage">
 
@@ -226,7 +226,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > Surprise, amuse, or baffle those around you with a touch of digital magic.
 
-1. **0 AP** You conjure harmless sensory or environmental effects by manipulating cybernetics, technology, or reality itself. Using an Action, you can maintain up to **6 ongoing effects** at once. …
+1. **0 AP** You conjure harmless sensory or environmental effects by manipulating cybernetics, technology, or reality itself. Using an Action, you can maintain up to **6 ongoing effects** at once. ...
 
 @end-skill
 
@@ -236,7 +236,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 </div>
 
-### Etherlock — `.etherlock`
+### Etherlock --- `.etherlock`
 
 <div class="dg-stage">
 
@@ -258,7 +258,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 > Everything bends. Everything bounces. You just gotta convince it.
 
-1. **2 AP** As your Action, you radically increase the elasticity of yourself, one willing packmate, or one surface or object **In Range** until the end of the encounter. …
+1. **2 AP** As your Action, you radically increase the elasticity of yourself, one willing packmate, or one surface or object **In Range** until the end of the encounter. ...
 
 @end-skill
 
@@ -272,7 +272,7 @@ A learning path is a skill tree: the title band, the subtitle, the skill sticker
 
 Every switch on one card, each under the same Augmerc wrapper. `@continue`, which splits a long card across pages, is shown in [The Specialty System](#ch-specialty).
 
-### Default — `@skill`
+### Default --- `@skill`
 
 Inside a learning path the tier on a card's tab is computed from its position (the skill trees above), unless the heading names one.
 
@@ -300,7 +300,7 @@ Inside a learning path the tier on a card's tab is computed from its position (t
 
 </div>
 
-### Tier override — `#### Name | AUG1.3`
+### Tier override --- `#### Name | AUG1.3`
 
 The tier is written on the heading and printed on the tab.
 
@@ -328,9 +328,9 @@ The tier is written on the heading and printed on the tab.
 
 </div>
 
-### Two columns — `@columns 2` inside a `@skill`
+### Two columns --- `@columns 2` inside a `@skill`
 
-A long ability list packed into two columns. The columns are core's `@columns 2` … `@end-columns` around just that part of the body; the flavor line and the lead paragraph stay full width.
+A long ability list packed into two columns. The columns are core's `@columns 2` ... `@end-columns` around just that part of the body; the flavor line and the lead paragraph stay full width.
 
 <div class="dg-stage">
 
@@ -365,7 +365,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 </div>
 
-### Outcome table — a `| Roll | Outcome |` table inside the card
+### Outcome table --- a `| Roll | Outcome |` table inside the card
 
 The table becomes the card's outcome ladder.
 
@@ -388,9 +388,9 @@ The table becomes the card's outcome ladder.
 | Roll | Outcome |
 |---|---|
 | 20 | Quadruple damage. |
-| 11–19 | Double damage. |
-| 6–10 | Double damage, but the target counters. |
-| 2–5 | You miss. The target counters Lucid. |
+| 11--19 | Double damage. |
+| 6--10 | Double damage, but the target counters. |
+| 2--5 | You miss. The target counters Lucid. |
 | 1 | You fall prone and lose your next turn. |
 
 @end-skill
@@ -479,7 +479,7 @@ Once per round, outside your turn, you exploit a target in reach:
 
 ## Augmerc
 
-An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.
+An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers --- the difference is gear, grafts, and how much of them is still original.
 
 @end-specialty-intro
 
@@ -511,7 +511,7 @@ Belief burns bright in Dimm City, and Proxies carry the sparks others cannot hol
 
 ## Streetwarden
 
-Dimm City may look like a concrete jungle, but its sentient population is far outnumbered by the insects, animals, fungi, protista, and monera that thrive throughout its shadowed sprawl. …
+Dimm City may look like a concrete jungle, but its sentient population is far outnumbered by the insects, animals, fungi, protista, and monera that thrive throughout its shadowed sprawl. ...
 
 @end-specialty-intro
 
@@ -527,7 +527,7 @@ Dimm City may look like a concrete jungle, but its sentient population is far ou
 
 ## Gutterdruid
 
-Nature thrives in Dimm City, but it grows meaner here. It roots in drains, nests in vents, blooms on corpses, cracks through concrete, and feeds on carrion, heat, rust, blood, and whatever the city throws on the curb. …
+Nature thrives in Dimm City, but it grows meaner here. It roots in drains, nests in vents, blooms on corpses, cracks through concrete, and feeds on carrion, heat, rust, blood, and whatever the city throws on the curb. ...
 
 @end-specialty-intro
 
@@ -575,7 +575,7 @@ The invisible professionals of Dimm City. Corporations, syndicates, governments,
 
 ## Technosorcerer
 
-Technosorcerers see the world as one enormous operating system. Magic, cybernetics, matter, even the laws of existence are simply different layers of the same source code waiting to be understood—and rewritten.
+Technosorcerers see the world as one enormous operating system. Magic, cybernetics, matter, even the laws of existence are simply different layers of the same source code waiting to be understood---and rewritten.
 
 @end-specialty-intro
 
@@ -623,7 +623,7 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 ## Generalist
 
-Generalists don't specialize — they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects.
+Generalists don't specialize --- they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects.
 
 @end-specialty-intro
 
@@ -667,7 +667,7 @@ Heavily armed and wired for war, Augmercs are the blunt force of any squad. They
 
 > Militant Monolith
 
-Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.
+Marked by something higher---god, ghost, code, or conviction---Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.
 
 @end-specialty-card
 
@@ -683,7 +683,7 @@ Marked by something higher—god, ghost, code, or conviction—Proxies walk the 
 
 > Sprawl Sentinel
 
-They don't wear badges—they are the law when no one else shows. Streetwardens guard the city's broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.
+They don't wear badges---they are the law when no one else shows. Streetwardens guard the city's broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.
 
 @end-specialty-card
 
@@ -699,7 +699,7 @@ They don't wear badges—they are the law when no one else shows. Streetwardens 
 
 > Wold Witch
 
-They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.
+They walk the alleys like sacred ground---feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.
 
 @end-specialty-card
 
@@ -715,7 +715,7 @@ They walk the alleys like sacred ground—feeding the hungry, tending weeds, rai
 
 > Mech Medic
 
-Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they're back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.
+Life is flexible. Cybersurgeons prove it daily---cutting, splicing, upgrading flesh into something more. Whether they're back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.
 
 @end-specialty-card
 
@@ -731,7 +731,7 @@ Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading fl
 
 > Ping Predator
 
-Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.
+Killers, thieves, forgers---Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.
 
 @end-specialty-card
 
@@ -763,7 +763,7 @@ Technosorcerers walk on the razor's edge between magic and technology. They beli
 
 > Manifold Magus
 
-Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.
+Secrets are currency---and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.
 
 @end-specialty-card
 
@@ -779,7 +779,7 @@ Secrets are currency—and Etherlocks are rich in them. Tapping into elemental f
 
 > Two-Path Walker
 
-Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.
+Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two --- equally at home picking locks and pulling triggers, casting circuits and reading rooms.
 
 @end-specialty-card
 
@@ -795,7 +795,7 @@ Dualists refuse to choose. They walk two specialty paths at once, drawing skills
 
 > Sprawl Survivor
 
-Generalists don't specialize — they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.
+Generalists don't specialize --- they scavenge. Picking up scraps of every art the city offers, they're the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.
 
 @end-specialty-card
 
@@ -819,7 +819,7 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more — both emit the same seven registers, and `@callout example` makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more --- both emit the same seven registers, and `@callout example` makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -833,10 +833,10 @@ Generalists don't specialize — they scavenge. Picking up scraps of every art t
 > If a player hasn't chosen starting gear by the end of session zero, hand them a Scavenger Pack.
 
 > [!VIBE]
-> The rain in Dimm City never quite stops — it just changes color under the signage.
+> The rain in Dimm City never quite stops --- it just changes color under the signage.
 
 > [!ORIGIN]
-> You didn't choose the street — the street chose you.
+> You didn't choose the street --- the street chose you.
 
 > [!LOCATION]
 > The Undercroft: three flooded levels under the old ArkD tower.
@@ -938,9 +938,9 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 @outcome
 
 20 | Triumph | Best-case outcome.
-11–19 | Success | You do it. Clean.
-6–10 | Hard Choice | You succeed, but it costs you.
-2–5 | Failure | You don't get what you wanted.
+11--19 | Success | You do it. Clean.
+6--10 | Hard Choice | You succeed, but it costs you.
+2--5 | Failure | You don't get what you wanted.
 1 | Catastrophe | It goes bad, and then worse.
 
 @end-outcome
@@ -948,9 +948,9 @@ Settle a score from my past. Your Drive should pull you toward trouble, hard cho
 @outcome flush
 
 20 | Triumph | Best-case outcome.
-11–19 | Success | You do it. Clean.
-6–10 | Hard Choice | You succeed, but it costs you.
-2–5 | Failure | You don't get what you wanted.
+11--19 | Success | You do it. Clean.
+6--10 | Hard Choice | You succeed, but it costs you.
+2--5 | Failure | You don't get what you wanted.
 1 | Catastrophe | It goes bad, and then worse.
 
 @end-outcome
@@ -989,7 +989,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 
 ## Tape
 
-`<div class="dc-tape">…</div>` is a strip of masking tape: tan, torn ends, ink edges. Then the form with `.dc-flush`, which removes the tape's outer margin.
+`<div class="dc-tape">...</div>` is a strip of masking tape: tan, torn ends, ink edges. Then the form with `.dc-flush`, which removes the tape's outer margin.
 
 <div class="dg-stage">
 
@@ -1008,7 +1008,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 <div class="dc-stat">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
@@ -1021,7 +1021,7 @@ Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, 
 <div class="dc-stat dc-flush">
   <div class="dc-stat-head">
     <div class="dc-stat-name">Doc Solenn</div>
-    <div class="dc-stat-class">— Contact · Ripperdoc —</div>
+    <div class="dc-stat-class">&mdash; Contact · Ripperdoc &mdash;</div>
   </div>
   <div class="dc-stat-grid">
     <div class="dc-stat-cell"><div class="dc-stat-cell-key">REP</div><div class="dc-stat-cell-val">4</div></div>
@@ -1157,7 +1157,7 @@ No variant word, no look of its own: the text sits on a plain sheet of paper.
 
 ## Floated callouts
 
-`@callout note .dc-sidebar` floats beside the text — see [Layout](#ch-layout).
+`@callout note .dc-sidebar` floats beside the text --- see [Layout](#ch-layout).
 
 <div class="dg-stage dg-on-paper">
 
@@ -1229,7 +1229,7 @@ DimmCitz scattered, vanished into bolted dens and reinforced rooftops.
 
 ![Scavenger](img/scavenger.png){.dc-img-float-right}
 
-This wasn't about glory — it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
+This wasn't about glory --- it was turf. It was pride. It was blood memory, raw and ugly, of family torn away by their rival.
 
 The air stank of scorched fur, ozone, and cordite.
 

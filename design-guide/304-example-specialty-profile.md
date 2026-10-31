@@ -8,7 +8,7 @@
 
 ## Augmerc
 
-An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original. Some run with packs, some lone-wolf it. Either way, most don't get paid until the job is done.
+An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers --- the difference is gear, grafts, and how much of them is still original. Some run with packs, some lone-wolf it. Either way, most don't get paid until the job is done.
 
 This heavy fights with skill, weapons, and tuned augmentation. The best are trained-up, tooled-up, and rebuilt with chrome, grafts, and salvaged tech. How much meat, metal, or monster your Augmerc carries is up to you.
 
@@ -20,7 +20,7 @@ Augmerc techniques are partly natural.
 
 Their learning paths assume the presence of combat-grade augmentations installed in the body: reinforced bones, reflex accelerators, adrenal regulators, neural predictors, and battlefield processors. These implants are rugged, brutal, and often salvaged from military or industrial hardware.
 
-Each Augmerc learning path lists a Signature Augment—a common piece of cyberware that enables the techniques within that path.
+Each Augmerc learning path lists a Signature Augment---a common piece of cyberware that enables the techniques within that path.
 
 You do not need to track these implants as separate equipment unless the Dream Master decides damage, upgrades, or removal become part of the story. Without the implants, the Augmerc spends 1 extra AP to activate the paths abilities.
 
@@ -114,7 +114,7 @@ You don't need an opening. You make one.
 
 You lock down a target in reach, exploiting pain and leverage over raw force. The target must spend an action to break free or accept the consequence.
 
-1. **1 AP** *Joint Lock:* Grab a limb and apply pressure. The target is **Immobilized** until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a **−1 penalty** to rolls using it until treated.
+1. **1 AP** *Joint Lock:* Grab a limb and apply pressure. The target is **Immobilized** until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged --- they take a **−1 penalty** to rolls using it until treated.
 2. **2 AP** *Nerve Strike:* Hit a pressure point. **ROLL THE DIE!** On a 6 or better, the target drops whatever they're holding and loses their next action. On a 10 or better, they also stumble prone.
 3. **2 AP** *Throat Control:* Get a grip on throat or collar. The target is **Silenced** and **Slowed** until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.
 
@@ -142,7 +142,7 @@ Some jobs are work. Some jobs are justice.
 
 ## Combining Specialties
 
-The Field Guide allows Dreamers to expand beyond a single specialty over the course of a campaign. After a significant story milestone — completing a major job, surviving an encounter that changes your character, or finding a mentor — the Dream Master may allow you to begin learning from a second specialty.
+The Field Guide allows Dreamers to expand beyond a single specialty over the course of a campaign. After a significant story milestone --- completing a major job, surviving an encounter that changes your character, or finding a mentor --- the Dream Master may allow you to begin learning from a second specialty.
 
 Combining specialties is not multi-classing. You don't split your focus at character creation. You begin as a pure specialist and add breadth through experience. A Wirephreak who survives three jobs with a Cybersurgeon crew might start picking up the basics of how to keep a body functional under pressure. That's how specialties bleed into each other in Dimm City.
 
@@ -158,7 +158,7 @@ When you add a second specialty, choose one of its learning paths. You gain acce
 - Have access to a mentor or relevant environment
 - Meet the AP requirement for the next tier
 
-You cannot access Spec Tweaks from a second specialty. Those abilities are hard-wired to years of dedicated augmentation. What you gain is range, not depth — a taste of another crew's toolkit.
+You cannot access Spec Tweaks from a second specialty. Those abilities are hard-wired to years of dedicated augmentation. What you gain is range, not depth --- a taste of another crew's toolkit.
 
 @end-section
 
@@ -187,9 +187,9 @@ This is the DC cross-specialty model. You stay rooted. You grow edges.
 The DM should look for three conditions before granting cross-specialty access:
 
 @procedure
-1. **Exposure** — the Dreamer has spent meaningful time around operatives who use those techniques
-2. **Need** — the Dreamer attempted something outside their specialty and succeeded by improvising
-3. **Commitment** — the Dreamer actively seeks out the knowledge (spends downtime, finds a teacher, risks something to learn it)
+1. **Exposure** --- the Dreamer has spent meaningful time around operatives who use those techniques
+2. **Need** --- the Dreamer attempted something outside their specialty and succeeded by improvising
+3. **Commitment** --- the Dreamer actively seeks out the knowledge (spends downtime, finds a teacher, risks something to learn it)
 @end-procedure
 
 All three should be present. One alone is a coincidence. Three is a turning point.
@@ -202,12 +202,12 @@ A Dreamer who trains with an Augmerc but never fights should not gain Augmerc ab
 
 **Don't grant it early.** Cross-specialty access is a milestone, not a reward. If a Dreamer asks for it at Session 2, the answer is almost always *not yet.*
 
-**Make them earn the fiction first.** Before they can access even one ability from a second specialty, they should have spent at least two sessions doing things that specialty would do — not just being near someone who does them.
+**Make them earn the fiction first.** Before they can access even one ability from a second specialty, they should have spent at least two sessions doing things that specialty would do --- not just being near someone who does them.
 
 **Tier 1 only, to start.** A Dreamer's first cross-specialty unlock should always be a Tier 1 ability. Jumping to Tier 2 or 3 short-circuits the learning arc and collapses what should be a multi-session evolution into a single handout.
 
 **One path, not a buffet.** Cross-specialty learning opens a single learning path, not the entire specialty catalog. The Dreamer chooses *one* path in the cross-specialty and can only progress linearly through it. They are building a bridge between identities, not copying a second identity wholesale.
 
-**The city decides.** In Dimm City, who you become is shaped by what the Monoverse throws at you. A forced narrative justification — *I spent downtime reading Wirephreak manuals* — is weaker than an earned one. *Last session you jacked into a live system to save someone and it worked* — that's the city talking.
+**The city decides.** In Dimm City, who you become is shaped by what the Monoverse throws at you. A forced narrative justification --- *I spent downtime reading Wirephreak manuals* --- is weaker than an earned one. *Last session you jacked into a live system to save someone and it worked* --- that's the city talking.
 
 @end-dm-note

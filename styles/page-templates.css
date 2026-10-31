@@ -93,10 +93,10 @@
 /* Empty full-bleed pages need explicit geometry so the engine allocates a page.
    The height is core's published content box for THIS page's context
    (core's `gp-page-full-bleed` is margin: 0, so its content box IS the sheet)
-   rather than `var(--page-height)`: a non-zero margin on that page would
+   rather than the sheet's height: a non-zero margin on that page would
    push the plate past the page box with nothing to catch it. */
 :is(.dc-full-page, .gp-page-full-bleed) {
-  width: var(--page-width);
+  width: var(--gp-page-width, 8.625in);
   height: var(--gp-content-h, 11.25in);
   background-color: var(--bg);
   break-before: page;

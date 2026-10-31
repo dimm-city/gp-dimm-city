@@ -33,8 +33,9 @@ manifest array is the only place the order is written down.
 
 **Package boundary.** This whole repository is the Gutterpress extension
 package `gp-dimm-city`. A book installs it with `gutterpress ext add
-gp-dimm-city` (or from the app's Features panel), which pins the exact
-version and vendors a copy under the book's `plugins/npm/`. Gutterpress
+gp-dimm-city` (or from the app; see the [README](../README.md#install)),
+which pins the exact version and vendors a copy under the book's
+`extensions/npm/`. Gutterpress
 ≥0.11.0 wraps every extension's CSS in its own cascade layer, `@layer
 ext.<name>` (this package is `ext.gp-dimm-city`), in `extensions:` list
 order — so the cascade a consuming book gets is core (layered) → each
@@ -320,9 +321,7 @@ into the token name, not scattered across heading rules.
 --gutter:    0.15in;    /* column gap, structural section margins */
 --space-2xl: 0.25in;    /* spacing-scale step; do not substitute for --gutter */
 
-/* Page geometry — must match @page size declaration exactly */
---page-width:     8.625in;
---page-height:    11.25in;
+/* Page margins (the sheet's size is the book's: read --gp-page-width / --gp-page-height) */
 --page-margin:    0.625in;
 --binding-margin: 0.5in;   /* spine-side in @page :left/:right */
 ```
@@ -434,8 +433,8 @@ in `page-templates.css`; a guide-only specimen's live in the design guide's own 
 
 /* Full-bleed art pages */
 .page.dc-full-page {
-  width:  var(--page-width, 8.625in);
-  height: var(--page-height, 11.25in);
+  width:  var(--gp-page-width, 8.625in);   /* Gutterpress 0.11.23+; the dtrpg sheet on 0.11.22 */
+  height: var(--gp-page-height, 11.25in);
   break-before: page;
   page-break-before: always;
 }

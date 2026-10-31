@@ -4,7 +4,7 @@
 
 # Dream Mastery
 
-Every Dream needs someone to light the fuse. That's you—the Dream Master.
+Every Dream needs someone to light the fuse. That's you---the Dream Master.
 
 @section dm
 
@@ -22,7 +22,7 @@ You play every lowlife, every beast, every storm creeping in off the skyline. Yo
 
 Most of all? You make every dreamer's choices matter.
 
-Crank up the tension—then let it breathe. When they win, make 'em feel it. When they fall, make 'em remember.
+Crank up the tension---then let it breathe. When they win, make 'em feel it. When they fall, make 'em remember.
 
 You're not here to run a game. You're here to make the Dream burn bright.
 
@@ -36,15 +36,15 @@ You're not here to run a game. You're here to make the Dream burn bright.
 
 @dm-note
 
-Dream Mastery ain't just running the game. It's breathing life into the Dream—then handing the knife to your players.
+Dream Mastery ain't just running the game. It's breathing life into the Dream---then handing the knife to your players.
 
 Your job? Guide, don't control. Shape the chaos without strangling it. Keep the world alive, twitching, and ready to bite back.
 
-* Talk loud, listen harder: Speak with confidence when you're narrating—but really listen when your players talk. Their ideas, fears, and chaos fuel the Dream.
+* Talk loud, listen harder: Speak with confidence when you're narrating---but really listen when your players talk. Their ideas, fears, and chaos fuel the Dream.
 
 + Flex your weird: Dimm City runs on strangeness. Lean into the bizarre. If it feels too odd, you're probably close to gold.
 
-- Keep your dreamers safe—but never too safe: Protect your players, not their characters. Let the city be lethal. Let them bleed. Just make sure the players always feel supported at the table, even when their PCs get wrecked.
+- Keep your dreamers safe---but never too safe: Protect your players, not their characters. Let the city be lethal. Let them bleed. Just make sure the players always feel supported at the table, even when their PCs get wrecked.
 
 @end-dm-note
 
@@ -56,7 +56,7 @@ Create immersion by turning game mechanics into vivid fiction. Avoid blunt mecha
 
 * Instead of saying "You rolled an 11, you dodge the blast," you could say, "You dive behind a cracked ferrocrete pillar as the plasma spray explodes over your head, searing the wall black."
 
-+ When a player scores a critical hit, don't just say "double damage"—say, "Your blade sinks deep into the enforcer's side, the force of the blow dropping him to one knee with a wet grunt."
++ When a player scores a critical hit, don't just say "double damage"---say, "Your blade sinks deep into the enforcer's side, the force of the blow dropping him to one knee with a wet grunt."
 
 - If a dreamer fails a Surreal roll while climbing, describe it as, "Your hands slip on the rain-slick metal rungs. Your foot scrapes for a hold, heart hammering, as you dangle above the alley's neon smear a 100 meters below!"
 
@@ -74,18 +74,18 @@ Bury the math inside the moment and build scenes that hit harder than the dice e
 
 > Everyday creatures, not usually a combat threat but can become dangerous in mobs or with special roles.
 >
-> Fodder are common, fringe threats—barely worth noticing on their own. But with the right numbers, traits, or upgrades, they can turn lethal fast. Fodder can be desperate civilians, low-tier gang members, kamikaze drones, or even mutated vermin. They're not tough or deadly solo—the danger comes from quantity or context.
+> Fodder are common, fringe threats---barely worth noticing on their own. But with the right numbers, traits, or upgrades, they can turn lethal fast. Fodder can be desperate civilians, low-tier gang members, kamikaze drones, or even mutated vermin. They're not tough or deadly solo---the danger comes from quantity or context.
 
-HP 2 — Damage 1
+HP 2 --- Damage 1
 
 ---
 
 #### Patchhead
 
-> See a Patchhead comin' at you, you best move. Ain't no reasoning with 'em — minds melted and muscles twitchin' like they're about to burst. You can smell the burnt plastic and sweat long before they get close.
+> See a Patchhead comin' at you, you best move. Ain't no reasoning with 'em --- minds melted and muscles twitchin' like they're about to burst. You can smell the burnt plastic and sweat long before they get close.
 
-2 HP — 1 Damage
-Fodder — Usually Small to Medium
+2 HP --- 1 Damage
+Fodder --- Usually Small to Medium
 
 ##### Traits
 
@@ -111,7 +111,7 @@ UniArm 100 / Redi-Mobile Cyberleg / RedEye Optical Prosthetic (could be just one
 
 *Tougher opponents that serve as grunts or support for their Master. Deadly in small groups or with traits that allow for tactical positioning.*
 
-HP 4 — Damage 2
+HP 4 --- Damage 2
 
 ---
 
@@ -119,8 +119,8 @@ HP 4 — Damage 2
 
 > You need something fixed, hacked, or turned into a weapon? Find a Grease Monkey. You need a battlefield rigged with enough traps to make a squad of cyborg mercs cry? Definitely find a Grease Monkey.
 
-HP 4 — Damage: 2
-Operator — Medium
+HP 4 --- Damage: 2
+Operator --- Medium
 
 ##### Traits
 
@@ -146,16 +146,16 @@ UniArm 100 Cyberarm w/Optalanges TechMech kit and Smuggler's Stash Level 1, Ligh
 
 > Major characters with significant influence. These NPCs often require strategy and teamwork to defeat and may have additional special abilities or resistances.
 
-HP 10 — Damage 4
+HP 10 --- Damage 4
 
 ---
 
 #### Undertow
 
-> Ain't no one sees Undertow comin'. One minute, you're walking the flooded alleys, thinkin' you're safe. Next thing you know, the water's draggin' you under, and you hear that low, rumbling laugh from somewhere in the dark. Undertow don't kill quick — they likes to watch you struggle before you sink!
+> Ain't no one sees Undertow comin'. One minute, you're walking the flooded alleys, thinkin' you're safe. Next thing you know, the water's draggin' you under, and you hear that low, rumbling laugh from somewhere in the dark. Undertow don't kill quick --- they likes to watch you struggle before you sink!
 
-HP 10 — Damage 4
-Master — Medium
+HP 10 --- Damage 4
+Master --- Medium
 
 ##### Traits
 
@@ -185,7 +185,7 @@ Size affects both hit points and damage output, scaling up or down based on how 
 | **Huge** | +20 HP | +2 Damage | Truly massive creatures |
 | **Colossal** | +40 HP | +4 Damage | Titanic creatures that dominate the battlefield |
 
-Size is a narrative choice as much as a mechanical one. A Colossal creature changes the encounter architecture — the DM should treat them like a location, not just a big target.
+Size is a narrative choice as much as a mechanical one. A Colossal creature changes the encounter architecture --- the DM should treat them like a location, not just a big target.
 
 @end-section
 
@@ -201,9 +201,9 @@ A good Trait does one of three things:
 
 @procedure
 
-1. **Creates positioning pressure** — forces Dreamers to fight at a disadvantage unless they account for it (see: Stranglehold, Bloodlust)
-2. **Changes the environment** — Undertow in a flood district isn't just dangerous, they're regenerating while you're slowing down
-3. **Rewards specific counters** — a Patchhead mob with Bloodlust rewards hitting hard fast; a Grease Monkey rewards disrupting their tech before they rig the battlefield
+1. **Creates positioning pressure** --- forces Dreamers to fight at a disadvantage unless they account for it (see: Stranglehold, Bloodlust)
+2. **Changes the environment** --- Undertow in a flood district isn't just dangerous, they're regenerating while you're slowing down
+3. **Rewards specific counters** --- a Patchhead mob with Bloodlust rewards hitting hard fast; a Grease Monkey rewards disrupting their tech before they rig the battlefield
 
 @end-procedure
 
@@ -217,13 +217,13 @@ Equipment and Cybernetics add texture and loot. They don't need to be tracked un
 
 ### Quick NPC Builder
 
-When you need an NPC fast, answer these four questions. That's it. That's an NPC — stat it if combat is likely, leave it sketched if it's just atmosphere.
+When you need an NPC fast, answer these four questions. That's it. That's an NPC --- stat it if combat is likely, leave it sketched if it's just atmosphere.
 
 | Question | Example Answer |
 |----------|---------------|
 | **Who are they?** | A junked-out Patchhead mob guard with nothing to lose. |
 | **What do they want?** | Drive the Dreamers out of the warehouse or die trying. |
-| **What Trait makes them dangerous?** | Bloodlust — the more the Dreamers hurt, the more the mob escalates. |
+| **What Trait makes them dangerous?** | Bloodlust --- the more the Dreamers hurt, the more the mob escalates. |
 | **What if they're handled cleverly?** | Offer the Patchheads something worth more than the job. They scatter. |
 
 @end-section
@@ -244,9 +244,9 @@ You: "I kick the cargo door shut on the first one." That is risky, so you **ROLL
 
 > A thumb-sized surveillance drone made of living glass.
 
-1 HP — 1 Damage
+1 HP --- 1 Damage
 
-Fodder — Tiny
+Fodder --- Tiny
 
 ##### Traits
 

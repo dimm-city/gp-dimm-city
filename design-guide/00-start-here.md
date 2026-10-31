@@ -4,37 +4,37 @@
 
 # Dimm City Design Guide
 
-The Dimm City design system for Gutterpress: how to write a Dimm City book in markdown, and what every macro, component, and page template looks like when it prints. Every example in this guide is live — the markdown shown is rendered by the same package the Field Guide uses, so what you see is what a book gets. {.dg-lede}
+The Dimm City design system for Gutterpress: how to write a Dimm City book in markdown, and what every macro, component, and page template looks like when it prints. Every example in this guide is live --- the markdown shown is rendered by the same package the Field Guide uses, so what you see is what a book gets. {.dg-lede}
 
 <div class="dg-toc">
 
-## Part 1 — Using the system
+## Part 1 --- Using the system
 
 <ol>
-<li><a href="#ch-writing">Writing a Page</a> — markers, attributes, the markdown the system styles</li>
-<li><a href="#ch-typography">Typography</a> — the three faces, the type scale, heading chrome</li>
-<li><a href="#ch-palette">Color</a> — paper, fire and HUD tokens, and how to retheme</li>
-<li><a href="#ch-layout">Layout</a> — columns, panels, floated callouts, floats, break control</li>
-<li><a href="#ch-text">Text &amp; Callouts</a> — ledes, flavor, pull quotes, the alert family, tape, tags</li>
-<li><a href="#ch-panels">Panels, Cards &amp; Data</a> — blocks, definitions, procedures, outcomes and roll tables, cards, gear, factions, tables, stat blocks</li>
-<li><a href="#ch-specialty">The Specialty System</a> — specialties, learning paths, skill cards</li>
-<li><a href="#ch-templates">Page Templates</a> — chapter openers, contents, credits, catalog and profile pages</li>
-<li><a href="#ch-publishing">Publishing</a> — preview, build, validate</li>
-<li><a href="#ch-reference">Reference</a> — every marker on one page; options, classes, tokens</li>
-<li><a href="#ch-variants">Variant Gallery</a> — every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
+<li><a href="#ch-writing">Writing a Page</a> &mdash; markers, attributes, the markdown the system styles</li>
+<li><a href="#ch-typography">Typography</a> &mdash; the three faces, the type scale, heading chrome</li>
+<li><a href="#ch-palette">Color</a> &mdash; paper, fire and HUD tokens, and how to retheme</li>
+<li><a href="#ch-layout">Layout</a> &mdash; columns, panels, floated callouts, floats, break control</li>
+<li><a href="#ch-text">Text &amp; Callouts</a> &mdash; ledes, flavor, pull quotes, the alert family, tape, tags</li>
+<li><a href="#ch-panels">Panels, Cards &amp; Data</a> &mdash; blocks, definitions, procedures, outcomes and roll tables, cards, gear, factions, tables, stat blocks</li>
+<li><a href="#ch-specialty">The Specialty System</a> &mdash; specialties, learning paths, skill cards</li>
+<li><a href="#ch-templates">Page Templates</a> &mdash; chapter openers, contents, credits, catalog and profile pages</li>
+<li><a href="#ch-publishing">Publishing</a> &mdash; preview, build, validate</li>
+<li><a href="#ch-reference">Reference</a> &mdash; every marker on one page; options, classes, tokens</li>
+<li><a href="#ch-variants">Variant Gallery</a> &mdash; every element with more than one variant, side by side: all ten skill trees, skill cards, intros, cards</li>
 </ol>
 
-## Part 2 — A book, page by page
+## Part 2 --- A book, page by page
 
 <ol>
 <li><a href="#ch-examples">About the examples</a></li>
-<li><a href="#ch-example-front-matter">Front Matter</a> — contents, credits, introduction</li>
-<li><a href="#ch-example-chapter-opener">Chapter Opener</a> — chapter-start page, fiction excerpt, citizen file walkthrough</li>
-<li><a href="#ch-example-specialty-overview">Specialty Overview</a> — the specialty card grid</li>
-<li><a href="#ch-example-specialty-profile">Specialty Profile</a> — intro, art, a learning path with skill cards</li>
-<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> — sections, definitions, conditions, the outcome ladder</li>
-<li><a href="#ch-example-dm-npcs">Dream Master Pages</a> — DM notes, NPC stat blocks</li>
-<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> — gear entries, callouts, an ego-point ladder</li>
+<li><a href="#ch-example-front-matter">Front Matter</a> &mdash; contents, credits, introduction</li>
+<li><a href="#ch-example-chapter-opener">Chapter Opener</a> &mdash; chapter-start page, fiction excerpt, citizen file walkthrough</li>
+<li><a href="#ch-example-specialty-overview">Specialty Overview</a> &mdash; the specialty card grid</li>
+<li><a href="#ch-example-specialty-profile">Specialty Profile</a> &mdash; intro, art, a learning path with skill cards</li>
+<li><a href="#ch-example-rules">Rules &amp; Mechanics</a> &mdash; sections, definitions, conditions, the outcome ladder</li>
+<li><a href="#ch-example-dm-npcs">Dream Master Pages</a> &mdash; DM notes, NPC stat blocks</li>
+<li><a href="#ch-example-gear-tech">Gear &amp; Tech</a> &mdash; gear entries, callouts, an ego-point ladder</li>
 </ol>
 </div>
 
@@ -67,14 +67,14 @@ This is what you type.
 Three rules carry through the whole system, and they are worth knowing before anything else:
 
 1. **A marker is a line that starts with `@`.** `@lede` opens a block, `@end-lede` closes it. Leave a blank line on each side of every marker.
-2. **Markers take attributes** — `#id`, `.class`, and `key="value"` — in any order after the name: `@section panel #rules .dc-snug`.
+2. **Markers take attributes** --- `#id`, `.class`, and `key="value"` --- in any order after the name: `@section panel #rules .dc-snug`.
 3. **Classes on a parent change everything inside it.** `@specialty .augmerc` gives every card, path, and intro within it the Augmerc shape and color; nothing is set card by card.
 
 ## Pick a section
 
 Start from what you are writing, not from a class name: find it on the left and write what is on the right. The same table is in the package's README.
 
-| I am writing… | Use |
+| I am writing... | Use |
 |---|---|
 | Rules or reference text under a heading | `@section panel` |
 | Unboxed text that carries the accent rail | `@section flat` |
@@ -83,9 +83,9 @@ Start from what you are writing, not from a class name: find it on the left and 
 | Advice for the Dream Master, behind the screen | `@section dm` (a short one: `@callout dm`) |
 | A choice the player writes on the Citizen File | `@section choose` |
 | A term and its definition, or a glossary of terms | `@definition` |
-| A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| A boxed note, warning, DM note, vibe, origin or visit | `@callout ...` (`@dm-note`) |
 | A worked example | `@callout example` |
-| A box in one of three registers: panel, slate, shard | `@block …` |
+| A box in one of three registers: panel, slate, shard | `@block ...` |
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
 | An organization: megacorp, cabal, cult, enforcers | `@faction megacorp`, `cabal`, `cult`, `enforcer` |
@@ -94,10 +94,10 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A magic item or relic | `@gear treasure` |
 | A vehicle | `@gear vehicle` |
 | A drug, elixir or consumable | `@gear drug` |
-| A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`) |
+| A labelled line in an entry: SPECS, Traits, Effects... | `**SPECS:**` (or `@field specs`) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
-| A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
+| A random table with equal bands (1-4, 5-8, ...) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
 | The Citizen File field list | `@citizen-walkthrough` |
 | The specialty catalog | `@card-grid` |
@@ -117,6 +117,6 @@ gutterpress ext add gp-dimm-city my-book
 gutterpress preview my-book
 ```
 
-Or, in the Gutterpress app: open the book, then Project settings → Features → *Install from npm* → `gp-dimm-city`. The package's macros appear in the snippet picker.
+Or add `gp-dimm-city` in the Gutterpress app, as its [desktop guide](https://github.com/dimm-city/gutterpress/blob/main/docs/desktop-guide/06-plugins.md) describes. The package's macros appear in the snippet picker.
 
 Working on the package itself? This guide loads it from the repository it lives in (`extensions: - ../` in `manifest.yaml`), so `npm run dev` at the repository root previews every change to `plugin.js` or a stylesheet here, live. The developer loop is in the repository's `docs/developing.md`.

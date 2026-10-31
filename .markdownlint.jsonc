@@ -3,7 +3,8 @@
 // gutterpress runs these through `source.markdownlint` during
 // `gutterpress validate`. That check reports nothing at all unless a config is
 // found, so this file is what makes markdown linting exist for these books.
-// Each project's manifest points here via `validate.source.markdownlint`.
+// Gutterpress finds it by walking up from each book's folder to the
+// repository root, so no manifest names it.
 //
 // Everything below starts from markdownlint's defaults. The disabled rules are
 // house-style preferences that produced ~14,000 findings across the three

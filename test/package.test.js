@@ -30,7 +30,7 @@ const FONT_EXTS = [".woff", ".woff2", ".otf", ".ttf", ".eot"];
 const EXPECTED_LAYER_STATEMENT = "@layer dc.tokens, dc.base, dc.components, dc.templates, dc.pages;";
 
 function declaredPaths() {
-  const out = [pkg.main, ...(gp.styles ?? []), gp.tokensFile, gp.components, gp.snippets].filter(Boolean);
+  const out = [pkg.main, ...(gp.styles ?? []), gp.components, gp.snippets].filter(Boolean);
   return [...new Set(out)];
 }
 
