@@ -12,7 +12,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
 - **Six stone walls a page can take instead of the brick:** `@page wall-1` …
   `wall-6` (coursed rubble, ashlar, random rubble, running bond, flagstone,
   square setts), or `.dc-page-wall-N` beside another page word (`@page
-  chapter-start .dc-page-wall-3`). Each paints the whole sheet, margin band
+  chapter-start .dc-page-wall-3`), or on a specialty, which has no page of its
+  own (`@specialty .augmerc .dc-page-wall-3`: the class only names the page,
+  so nothing on it moves). Flagstone is bedded into flat courses and the setts
+  are half-lapped, so neither reads as paving. Each paints the whole sheet, margin band
   included, from a tile about 4.5in square regrown from its panel (patches of
   the stone quilted along the mortar; the setts laid one by one), so it shows
   no join and no grid of the same stones, and keeps the chapter
@@ -23,6 +26,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   at 240 DPI; `scripts/wall-tiles.py` bakes them and their CSS from
   `source-art/wall-sheet.png`. Page words with chrome of their own
   (`contents`, `credits`, `intro`, `citizen-file`) keep the brick.
+- **The wall stands on the ground:** every page, brick or stone, has a 0.6in
+  strip of pavement in perspective along the foot of the sheet
+  (`images/ground.png`, from the sett panel), just under the footer chips. It
+  sits right in print and in the app's viewer; a full-bleed plate has none.
 
 ### Changed
 

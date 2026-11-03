@@ -1,6 +1,7 @@
 """Bake the six stone-wall page tiles (`@page wall-1` ... `wall-6`) and their CSS.
 
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
+    python3 scripts/wall-tiles.py --css     # rewrite the CSS only, from images/
 
 Python 3 with Pillow; the six walls bake in parallel, in a couple of minutes.
 Reads the sheet (six square-ish stone panels on a transparent ground, two
@@ -51,25 +52,37 @@ import sys
 from multiprocessing import Pool
 from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 
-SHEET = sys.argv[1] if len(sys.argv) > 1 else "source-art/wall-sheet.png"
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+SHEET = ARGS[0] if ARGS else "source-art/wall-sheet.png"
 BG = (0xC8, 0xC5, 0xBF)             # --bg (ash concrete), the brick's colour
 BRICK = "images/brick-wall.png"     # the tones to match: --bg times the brick's line drawing
 OVERLAP = range(28, 110)            # how much of each end the seam may use, px
 FEATHER = 2                         # px blended either side of a cut
 DPI = 240                           # print resolution, so printed size = px / DPI
 GROW = 3                            # a regrown tile is this many panels each way
+TALL = 1000                         # px: a tile at least about this tall (4in), however short its panel
 PATCH, PATCH_OVERLAP = 200, 56      # quilting patch and its overlap with each neighbour, px
 COARSE = 4                          # the patch search's first pass runs at 1/COARSE size
 NEAR = 20                           # px: a patch this close to one laid nearby is the same patch
 SETT_WALLS = {6}                    # regular grids: laid sett by sett instead of quilted
 SETT, SETTS = 136, 8                # the sett cell, px, and cells a side
 JOINT = 6                           # half-width of the drawn joint, px
+BEDDED = {5: 0.62}                  # walls squashed into beds first: flagstones laid flat read as a wall
+GROUND = "images/ground.png"        # the pavement at the foot of every walled page
+GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
+GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
+GROUND_W = 2400                     # px across (10in): drawn once, in perspective, centred on the sheet
+EYE = 5.5                           # in from the wall's foot up to the eye: where the ground's joints meet
+GROUND_DEPTH = 2.4                  # setts of pavement the strip shows, wall to sheet edge
+GROUND_SHADE = 0.9                  # the ground's tone against the wall's
 # A wall page keeps its chapter's chip colour: one named page per wall and hue.
 # The hue faces and the chapter words that wire them are page-rules.css's and
 # dc-native.css's (2c); a book wires its own chapters the same way.
 HUES = {"blue": "--hud-blue-dark", "rust": "--rust", "violet": "--brand-violet",
         "amethyst": "--crystal-amethyst", "amber": "--amber-dark"}
 CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet"}
+# pages that keep their own named page (and so the brick) whatever wall they name
+KEEPS = ".gp-page-full-bleed, .dc-full-page, .dc-page-contents, .dc-page-credits, .dc-page-intro, .dc-page-citizen-file"
 
 
 def lum(c):
@@ -202,10 +215,11 @@ def wrap_paste(im, patch, mask, x, y):
 
 
 def quilt(src, seed):
-    """src (a tile that wraps) regrown at GROW times the size, with no repeat inside."""
+    """src (a tile that wraps) regrown at GROW times the size, with no repeat inside
+    (a short panel, such as a bedded one, as many times down as reach TALL px)."""
     rnd = random.Random(seed)
     w, h = src.size
-    W, H, B, F = GROW * w, GROW * h, PATCH, COARSE
+    W, H, B, F = GROW * w, max(GROW, round(TALL / h)) * h, PATCH, COARSE
     step = PATCH - PATCH_OVERLAP
     nx, ny = round(W / step), round(H / step)
     xs = [round(i * W / nx) for i in range(nx)]
@@ -320,8 +334,9 @@ def joints(profile):
     return out
 
 
-def lay_setts(panel, seed):
-    """A sett grid laid from the panel's whole setts, each in one of its eight turns and flips."""
+def lay_setts(panel, seed, bond=False):
+    """The panel's whole setts relaid, each in one of its eight turns and flips: in a
+    grid, or with every other row half a sett along (bond), which reads as a wall."""
     rnd = random.Random(seed)
     w, h = panel.size
     px = panel.load()
@@ -347,7 +362,9 @@ def lay_setts(panel, seed):
                 if all(n is None or setts[n][0] != setts[q][0] for n in near) or rnd.random() < 0.05:
                     break
             grid[(i, j)] = q
-            out.paste(setts[q][1], (i * SETT, j * SETT))
+            lap = SETT // 2 if bond and j % 2 else 0
+            for x in (i * SETT + lap, i * SETT + lap - S):
+                out.paste(setts[q][1], (x, j * SETT))
     # the joint: the panel's mean cross-section of one, drawn along every cell
     # edge where it is lighter, so a sett's own rim still shows
     cut = [cols[round(c) + d] for c in xs for d in range(-JOINT, JOINT + 1)] + \
@@ -357,11 +374,39 @@ def lay_setts(panel, seed):
     o = out.load()
     for k in range(SETTS):
         for t in range(S):
+            lap = SETT // 2 if bond and (t // SETT) % 2 else 0
             for d in range(-JOINT, JOINT + 1):
-                e = (k * SETT + d) % S
-                o[e, t] = max(o[e, t], joint[d + JOINT])
+                e = (k * SETT + d) % S                      # bed joint, row k's top
                 o[t, e] = max(o[t, e], joint[d + JOINT])
+                e = (k * SETT + lap + d) % S                # head joint, in row t // SETT
+                o[e, t] = max(o[e, t], joint[d + JOINT])
     return out
+
+
+def ground(panel, tones):
+    """The pavement at the wall's foot: the panel's setts in a grid, seen in perspective
+    from EYE above it (one point, at the middle of the sheet, so its joints run to it),
+    GROUND_SHADE darker than the wall, with the wall's shadow along its top edge."""
+    grid = lay_setts(panel, seed=60)
+    src = Image.new("L", (grid.width * 3, grid.height))
+    for k in range(3):
+        src.paste(grid, (k * grid.width, 0))
+    U = 2                                                   # drawn at U times, then reduced
+    W, G, Hh = GROUND_W * U, round(GROUND_IN * DPI) * U, EYE * DPI * U
+    depth = GROUND_DEPTH * SETT                             # source px from the wall's foot to the sheet edge
+    K = depth / (1 / Hh - 1 / (Hh + G))
+    x0, z0, s0 = src.width / 2, SETT * 0.3, 1 / U
+    # output (x, y) -> source ((s0 (x - W/2)) / (1 + y/Hh) + x0, z0 + (K / Hh) y / (Hh + y))
+    coeffs = (s0, x0 / Hh, x0 - s0 * W / 2, 0, K / Hh ** 2 + z0 / Hh, z0, 0, 1 / Hh)
+    strip = src.transform((W, G), Image.PERSPECTIVE, coeffs, Image.BICUBIC).reduce(U)
+    rgb = tint(strip, tones).convert("RGB")
+    px = rgb.load()
+    line = tuple(round(c * 0.55) for c in BG)               # the wall's foot
+    for y in range(rgb.height):
+        k = GROUND_SHADE * (0.8 + 0.2 * min(1, y / 14))     # its shadow, fading over 14px
+        for x in range(rgb.width):
+            px[x, y] = line if y < 3 else tuple(round(v * k) for v in px[x, y])
+    return rgb                                              # RGB: the shadow makes too many tones for a palette
 
 
 def brick_tones():
@@ -401,22 +446,44 @@ def replace_block(path, name, body):
         fh.write(new)
 
 
+def ground_layer(deeper=""):
+    """The ground's background layer, as dc-native.css §1 writes it for the brick.
+    Print measures an @page background from the top of the text area, and
+    gutterpress publishes that area's height (--gp-content-h) to print only, so
+    the strip sits at content height + bottom margin - its own depth there. The
+    app's viewer paints it on the sheet instead, where --gp-content-h is not set:
+    the fallback makes the sum 100%, the sheet's foot. `deeper` is a page's top
+    margin past the default, which print alone must take back."""
+    take = f" + {deeper}" if deeper else ""
+    back = f" - {deeper}" if deeper else ""
+    y = (f"calc(var(--gp-content-h, 100% - var(--bottom-margin) + {GROUND_IN}in{take}) "
+         f"+ var(--bottom-margin) - {GROUND_IN}in{back})")
+    return f'url("../{GROUND}") 50% {y} / {GROUND_W / DPI:g}in {GROUND_IN}in no-repeat'
+
+
 def write_css(walls):
     pages, wiring = [], []
     for n, (w, h) in walls.items():
-        size = f"{w / DPI:.2f}in"
-        bg = f'var(--bg) url("../images/wall-{n}.png") repeat'
+        # the ground over the foot of the sheet, then the wall: both opaque
+        bg = f'{ground_layer()}, url("../images/wall-{n}.png") 0 0 / {w / DPI:.2f}in auto repeat var(--bg)'
+
         for name in [f"dc-wall-{n}"] + [f"dc-wall-{n}-{hue}" for hue in HUES]:
-            pages.append(f"@page {name} {{ background: {bg}; background-size: {size} auto; }}")
+            pages.append(f"@page {name} {{ background: {bg}; }}")
         for hue, token in HUES.items():
             pages.append(f"@page dc-wall-{n}-{hue}:left  {{ @bottom-right {{ background: var({token}); }} }}")
             pages.append(f"@page dc-wall-{n}-{hue}:right {{ @bottom-left  {{ background: var({token}); }} }}")
-        # never on a full-bleed plate (its page is `full`, wired below at lower
-        # specificity); :where keeps these rules at the templates' specificity
-        page = f".page.dc-page-wall-{n}:where(:not(.gp-page-full-bleed, .dc-full-page))"
-        wiring.append(f"{page} {{ page: dc-wall-{n}; }}")
+        # each chapter's twin, then the plain wall, then a block that is not a
+        # .page: the app's viewer takes the first rule that matches, print the
+        # cascade (the twin outranks the plain rule), and both get the same page
+        page = f".page.dc-page-wall-{n}:where(:not({KEEPS}))"
         for chapter, hue in CHAPTER_HUES.items():
-            wiring.append(f":where(.chapter.dc-chapter-{chapter}) > {page} {{ page: dc-wall-{n}-{hue}; }}")
+            wiring.append(f".chapter.dc-chapter-{chapter} > {page} {{ page: dc-wall-{n}-{hue}; }}")
+        wiring.append(f"{page} {{ page: dc-wall-{n}; }}")
+        # a block that stands for its pages with no .page of its own (a
+        # specialty: `@specialty .augmerc .dc-page-wall-3`) names them itself;
+        # nothing is wrapped round it, so nothing on it moves, and its chip is
+        # what it was (the hue wiring is a .page's)
+        wiring.append(f".dc-page-wall-{n}:not(.page, {KEEPS}) {{ page: dc-wall-{n}; }}")
     replace_block("styles/dc-native.css", "page-walls", "\n".join(pages))
     replace_block("styles/page-rules.css", "page-walls", "\n".join(wiring))
 
@@ -424,14 +491,18 @@ def write_css(walls):
 def bake(job):
     n, box = job
     panel = Image.open(SHEET).convert("RGBA").crop(box).convert("RGB")
+    if n in BEDDED:
+        panel = panel.resize((panel.width, round(panel.height * BEDDED[n])), Image.LANCZOS)
     if n in SETT_WALLS:
-        tile = lay_setts(panel.convert("L"), seed=n)
+        tile = lay_setts(panel.convert("L"), seed=n, bond=True)
     else:
         rows = wrap_x(rows_of(panel), cyclic=False)             # left-right
         rows = transpose(wrap_x(transpose(rows), cyclic=True))  # top-bottom, closing round the first
         seamless = Image.new("RGB", (len(rows[0]), len(rows)))
         seamless.putdata([c for r in rows for c in r])
         tile = quilt(seamless.convert("L"), seed=n)
+    if n == GROUND_FROM:
+        ground(panel.convert("L"), brick_tones()).save(GROUND, optimize=True)
     out = tint(tile, brick_tones())
     out.save(f"images/wall-{n}.png", optimize=True)
     avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
@@ -441,6 +512,9 @@ def bake(job):
 
 
 def main():
+    if "--css" in sys.argv:                 # the CSS alone, from the tiles already baked
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
+        return
     boxes = opaque_boxes(Image.open(SHEET).convert("RGBA"))
     with Pool(len(boxes)) as pool:
         walls = dict(pool.map(bake, enumerate(boxes, 1)))
