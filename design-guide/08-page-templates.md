@@ -25,7 +25,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.5 in | 0.5 in | 0.5 in |
 
-A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
+A `citizen-file` page has a 0.875 in top margin. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page words
 
@@ -36,8 +36,9 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page credits` | none | The credits page |
 | `@page intro` | none | The introduction (a `@lede`, then a `@section flat`) |
 | `@page chapter-start` | none | A chapter opener |
-| `@page citizen-file` | `p.N`, `c.N` | Running header "Citizen File" |
+| `@page citizen-file` | `p.N`, `c.N` | A Citizen File walkthrough page, 0.875 in from the top |
 | `@page specialty-catalog` | `p.N`, `c.N` | The specialty catalog: a two-page spread that opens on a left page |
+| `@page wall-1` … `wall-6` | `p.N`, `c.N` | A stone wall instead of the brick (below) |
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
 | `@page blank` | none | A deliberately blank page (core's word) |
 
@@ -46,6 +47,29 @@ The `c.N` footer is the chapter number from `@chapter ... ch="N"`. A chapter spl
 ### The page chips
 
 The folio and the chapter number print as stickers, never as bare type. The folio (`P.121`) is a paper-cream sticker with an ink edge and a hard shadow; the chapter chip (`C.N`, which a book can restate as `E.N` as this guide does for Part 2) is a stamped coupon: a solid face with cream type and the same edge and shadow. Both are 17 pt tall with 10 pt type centred in the face, and both sit 0.125 in below the text block, inside DriveThruRPG's 0.5 in text minimum, so a box that runs to the foot never touches them, on recto and verso, for every page word that prints them. The coupon is magenta by default; to colour it with a chapter, put the chapter's pages on a named page, `:where(#ch-rules) > .page { page: dc-chip-rust; }` (blue, rust, violet, amethyst or amber; the `specialty`, `rules` and `lore` chapter words do it for you). Name the page with the low-specificity `:where()` so a page's own template name still wins. A `citizen-file` page's running head is the same sticker in amber at the top.
+
+### Stone walls
+
+Six walls can stand in for the brick on any page, over the whole sheet: write the word on the page, or add its class beside another page word.
+
+```markdown
+@page wall-3
+
+@page chapter-start .dc-page-wall-3
+
+@specialty .augmerc .dc-page-wall-3
+```
+
+| Word | Wall |
+|---|---|
+| `wall-1` | Coursed rubble: rough stones in rough courses |
+| `wall-2` | Ashlar: big dressed blocks, some double height |
+| `wall-3` | Random rubble: big rounded stones, no courses |
+| `wall-4` | Running bond: small bricks, half-lapped |
+| `wall-5` | Flagstone: flat slabs bedded in rough courses |
+| `wall-6` | Square setts: square blocks, half-lapped |
+
+All six are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
 
 ### Where pages break
 
@@ -91,7 +115,7 @@ Any other word after `@chapter` is the chapter's label, as before. A book adjust
 
 ```css
 .chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
-.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: 12px; }
+.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-art-width: 2.5in; }
 ```
 
 A panel's edge has tokens of its own, `--dc-section-clip` (the top-right cut, 18px), `--dc-section-cut-tl`, `--dc-section-cut-br` and `--dc-section-cut-bl` (the other three corners, 0) and `--dc-section-rail` (the rail, 5px), so a template changes the silhouette without touching the panel's layers.
@@ -189,7 +213,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 @end-section
 ```
 
-Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-depth`, `--dc-fiction-depth-bg`, `--dc-fiction-cavity`, `--dc-fiction-art-float`, `--dc-fiction-art-width`. On a chapter-start page the hole is deeper (a 10px cast shadow) by itself; nothing to add.
+Rendered: [Chapter Opener](#ch-example-chapter-opener). Tokens for the excerpt: `--dc-fiction-bg`, `--dc-fiction-cavity`, `--dc-fiction-line-height`, `--dc-fiction-art-float`, `--dc-fiction-art-width`.
 
 The snippet picker's *Chapter Start Page* inserts this opener.
 
@@ -284,7 +308,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 ## Specialty profile
 
-Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own.
+Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own. The plate keeps no fill behind its picture, so transparent art stands on the page's brick, or on the specialty's wall when it names one.
 
 ```markdown {.dg-split}
 @specialty .augmerc

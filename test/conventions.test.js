@@ -433,7 +433,9 @@ describe("a location adjusts components by tokens only", () => {
     let seen = 0;
     for (const rel of ["styles/page-templates.css", "styles/page-rules.css", "styles/dc-native.css"]) {
       postcss.parse(read(rel)).walkRules((rule) => {
-        const chrome = rule.nodes.filter((n) => n.type === "decl" && !n.prop.startsWith("--")).map((n) => n.prop);
+        // the named page a component sits on (a specialty's art plate on its
+        // wall's page) is page wiring, which page-rules.css owns, not chrome
+        const chrome = rule.nodes.filter((n) => n.type === "decl" && !n.prop.startsWith("--") && n.prop !== "page").map((n) => n.prop);
         for (const selector of rule.selectors) {
           const compounds = compoundsOf(selector);
           if (!compounds.some((c) => elementClassSets(c).some((cls) => cls.some((x) => LOCATION.test(x))))) continue;

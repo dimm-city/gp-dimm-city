@@ -73,7 +73,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling

@@ -47,9 +47,25 @@
    src.convert("RGB")), bg, src.getchannel("A")), where bg is a solid image
    of the new --bg, then resize it to 900px wide (Lanczos): the tile prints
    1.5in wide, so 900px is 600 DPI, twice the 300 DPI print bar. */
+/* The wall stands on the ground: a strip of pavement (images/ground.png, drawn
+   by scripts/wall-tiles.py, 10in by 0.6in, centred: its rows recede and its
+   joints all lean one way, so a spread shows one view) over the foot of the
+   sheet, ending just under the footer chips, which stay on the wall. Both
+   layers are opaque. §2d's stone walls stand on the same ground.
+   Where it sits: print measures an @page background from the top of the TEXT
+   AREA (a `bottom` position paints nothing there, measured), and gutterpress
+   publishes that area's height, --gp-content-h, to print only; the strip
+   starts at content height + bottom margin - 0.6in. The app's viewer paints
+   the page background on its sheet instead and has no --gp-content-h, so the
+   fallback makes the sum 100%: the sheet's foot. A page with a deeper top
+   margin (citizen-file, page-rules.css) takes the difference back in print
+   only; a full-bleed page has no margins, so its ground sits 0.6in above the
+   sheet's foot in both (page-rules.css). scripts/wall-tiles.py writes the same
+   layer for each wall (ground_layer). */
 @page {
-  background: var(--bg) url("../images/brick-wall.png") repeat;
-  background-size: 1.5in auto;
+  background:
+    url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat,
+    url("../images/brick-wall.png") 0 0 / 1.5in auto repeat var(--bg);
 }
 
 /* ── 2. FOLIO + CHAPTER STICKERS ────────────────────────────────────────────
@@ -189,59 +205,6 @@
   }
 }
 
-/* ── 2b. CITIZEN FILE RUNNING HEAD ──────────────────────────────────────────
-   The amber head in the outer top corner of a `citizen-file` page is text, so
-   it sits on a tab, never on the brick: a solid amber face (cream type 5.3:1,
-   display face 10pt bold, reversed) in the same ink edge and hard shadow as
-   the footer stickers. page-rules.css gives it its content and its page
-   margin (0.875in); the tab hangs from 0.625in below the sheet top
-   (DriveThruRPG's 0.5in text minimum, trim being 0.125in in), 17pt tall, so it
-   ends at the top of the text block. The top margin boxes anchor at the sheet edge, so
-   the offset is a margin. Across, the tab runs to the sheet's outer edge
-   (Chromium 148 places the corner box there), so the padding on that side is
-   the outer margin: the words stop at the text block's edge, 0.5in inside
-   the trim, as DriveThruRPG requires, and only the amber face bleeds. */
-@page citizen-file:right {
-  @top-right {
-    width: fit-content;
-    height: 17pt;
-    box-sizing: border-box;
-    margin-top: calc(0.625in + 1pt);
-    vertical-align: middle;
-    line-height: 1;
-    font-family: var(--font-display);
-    font-size: var(--fs-floor);
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 2px calc(var(--outer-margin) - 0.1em) 0 9px;
-    color: var(--paper-cream);
-    background: var(--amber);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
-  }
-}
-@page citizen-file:left {
-  @top-left {
-    width: fit-content;
-    height: 17pt;
-    box-sizing: border-box;
-    margin-top: calc(0.625in + 1pt);
-    vertical-align: middle;
-    line-height: 1;
-    font-family: var(--font-display);
-    font-size: var(--fs-floor);
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 2px calc(9px - 0.1em) 0 var(--outer-margin);
-    color: var(--paper-cream);
-    background: var(--amber);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
-  }
-}
-
 /* ── 2c. CHAPTER CHIP COLOUR (named pages) ─────────────────────────────────
    page-rules.css puts a chapter's pages on a named page, `dc-chip-<hue>`; this
    repaints that page's coupon. The coupon is @bottom-right on a verso page and
@@ -258,6 +221,122 @@
 @page dc-chip-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
 @page dc-chip-amber:left     { @bottom-right { background: var(--amber-dark); } }
 @page dc-chip-amber:right    { @bottom-left  { background: var(--amber-dark); } }
+
+/* ── 2d. STONE WALLS: `@page wall-1` ... `wall-6` ──────────────────────────
+   Six walls a page can take instead of the brick: page-rules.css puts a
+   `.dc-page-wall-N` page on the named page `dc-wall-N`, and this repaints that
+   page's whole sheet with the tile, as §1 does the brick (a name outranks the
+   plain `@page`). A chapter's chip colour rides on a named page too (§2c), and
+   a page has one name, so each wall has a twin per hue, `dc-wall-N-<hue>`, with
+   the same tile and that hue's chip face. Chromium drops an `@page` selector
+   list, hence one block per name. The tiles are in the brick's colours: the
+   stone's tones inverted and matched to the brick tile's, so each is --bg with
+   grey joints and has the brick's average, over a --bg fill as in §1 (and, like
+   the brick, a book that retints --bg does not retint them). Each tile is
+   about 4.5in of wall regrown from its panel with no repeat inside it (the
+   panel alone is 1.5in, a grid of the same stones down the page), so a page
+   holds barely two of it. They are opaque PNGs (PDF/X carries no
+   transparency) printed at 240 DPI. All of it is
+   generated, tiles included, by scripts/wall-tiles.py from
+   source-art/wall-sheet.png. */
+/* page-walls:begin — generated by scripts/wall-tiles.py; edit that, not this */
+@page dc-wall-1 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-1.png") 0 0 / 4.58in auto repeat var(--bg); }
+@page dc-wall-1-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-1-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-1-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-1-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-1-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-1-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-1-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-1-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-1-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-1-amber:right { @bottom-left  { background: var(--amber-dark); } }
+@page dc-wall-2 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-2.png") 0 0 / 4.78in auto repeat var(--bg); }
+@page dc-wall-2-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-2-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-2-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-2-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-2-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-2-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-2-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-2-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-2-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-2-amber:right { @bottom-left  { background: var(--amber-dark); } }
+@page dc-wall-3 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-3.png") 0 0 / 4.70in auto repeat var(--bg); }
+@page dc-wall-3-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-3-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-3-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-3-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-3-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-3-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-3-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-3-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-3-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-3-amber:right { @bottom-left  { background: var(--amber-dark); } }
+@page dc-wall-4 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-4.png") 0 0 / 4.80in auto repeat var(--bg); }
+@page dc-wall-4-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-4-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-4-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-4-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-4-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-4-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-4-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-4-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-4-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-4-amber:right { @bottom-left  { background: var(--amber-dark); } }
+@page dc-wall-5 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-5.png") 0 0 / 4.79in auto repeat var(--bg); }
+@page dc-wall-5-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-5-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-5-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-5-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-5-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-5-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-5-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-5-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-5-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-5-amber:right { @bottom-left  { background: var(--amber-dark); } }
+@page dc-wall-6 { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-blue { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-rust { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-violet { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-amethyst { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-amber { background: url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in) + var(--bottom-margin) - 0.6in) / 10in 0.6in no-repeat, url("../images/wall-6.png") 0 0 / 4.53in auto repeat var(--bg); }
+@page dc-wall-6-blue:left  { @bottom-right { background: var(--hud-blue-dark); } }
+@page dc-wall-6-blue:right { @bottom-left  { background: var(--hud-blue-dark); } }
+@page dc-wall-6-rust:left  { @bottom-right { background: var(--rust); } }
+@page dc-wall-6-rust:right { @bottom-left  { background: var(--rust); } }
+@page dc-wall-6-violet:left  { @bottom-right { background: var(--brand-violet); } }
+@page dc-wall-6-violet:right { @bottom-left  { background: var(--brand-violet); } }
+@page dc-wall-6-amethyst:left  { @bottom-right { background: var(--crystal-amethyst); } }
+@page dc-wall-6-amethyst:right { @bottom-left  { background: var(--crystal-amethyst); } }
+@page dc-wall-6-amber:left  { @bottom-right { background: var(--amber-dark); } }
+@page dc-wall-6-amber:right { @bottom-left  { background: var(--amber-dark); } }
+/* page-walls:end */
 
 /* ── 3. STICKER SUPPRESSION on chrome-free named pages ──────────────────────
    §1's `@page` background paints through a box that generates nothing, so

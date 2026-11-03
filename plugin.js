@@ -1671,6 +1671,13 @@ export const markers = {
       contents: 'dc-page-contents',
       'citizen-file': 'dc-page-citizen-file',
       'specialty-catalog': 'dc-page-specialty-catalog',
+      // Stone walls instead of the brick (page-rules.css, dc-native.css §2d).
+      'wall-1': 'dc-page-wall-1',
+      'wall-2': 'dc-page-wall-2',
+      'wall-3': 'dc-page-wall-3',
+      'wall-4': 'dc-page-wall-4',
+      'wall-5': 'dc-page-wall-5',
+      'wall-6': 'dc-page-wall-6',
     },
   },
   chapter: {

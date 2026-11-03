@@ -322,9 +322,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | The rules; the rule over the block; page; clip |
 | `--dc-definition-block-term` / `-fg` / `-style` / `-frame` / `-rule-bottom` / `-pad` | `--hud-blue-dark` / `--ink` / `italic` / `--shadow-poster` / `1pt` / `8pt 12pt 9pt` | Headword colour; body colour; body style; box-shadow (the hard shadow, or an inset frame); the rule under; padding. `lucid` and `surreal` set them |
 | `--dc-outcome-key-col` | `max(130px, 26%)` | Outcome ladder chip column |
-| `--dc-fiction-bg` / `-depth` / `-depth-bg` | `--paper-zine` / `6px` / `--ink-dark` | The fiction excerpt's page; the hole's cast shadow depth (10px on a chapter opener) and colour |
-| `--dc-fiction-cavity` / `-lip` / `-rim` | `--ink-smoke` / `--paper-cream` / `8px` | The hole's rim, the lit lip at its bottom and right, how far it reaches past the page |
-| `--dc-fiction-rule` / `-shadow` | `0px` / zero-size shadow | An ink edge weight on the page; an extra box-shadow value on the page |
+| `--dc-fiction-bg` / `-cavity` | `--paper-zine` / `--ink-smoke` | The fiction excerpt's page; the broken wall's face round the hole |
+| `--dc-fiction-hole` / `-shape` | generated polygons | The hole and the page (the hole shrunk by the face), from `scripts/fiction-break.py` |
+| `--dc-fiction-line-height` | `1.45` | The fiction excerpt's leading |
 
 ### Skill Card (`.dc-skill-card`)
 | Token | Default | Role |

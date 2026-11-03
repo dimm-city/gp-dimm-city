@@ -222,6 +222,35 @@ describe("file contracts", () => {
     expect(bad, "page/chapter scaffolding belongs in page-templates.css / page-rules.css / the book's sheet").toEqual([]);
   });
 
+  // The app's viewer lays a block that has a page name as ONE run on that page
+  // and never looks inside it, so a block that is not a .page (a specialty:
+  // `@specialty .augmerc .dc-page-wall-3`) names its wall on its children, and
+  // never on the art plate among them: named on the block, the plate was set
+  // inside the wall's margins in the app (print was right). The plate takes
+  // the wall's own margin-free page, dc-wall-N-full.
+  test("a wall a block names goes on its children, and its art plate takes the wall's full page", () => {
+    const bad = [];
+    const walls = new Set();
+    const plates = new Set();
+    css(path.join(ROOT, "styles/page-rules.css")).walkDecls("page", (d) => {
+      if (!/^dc-wall-\d/.test(d.value)) return;
+      for (const selector of d.parent.selectors) {
+        if (/(^|> )\.page\.dc-page-wall-\d/.test(selector)) continue;
+        const plate = selector.match(/^\.dc-page-wall-(\d):not\(\.page, [^)]*\) > \.dc-specialty-art$/);
+        if (plate && d.value === `dc-wall-${plate[1]}-full`) {
+          plates.add(plate[1]);
+          continue;
+        }
+        const kids = selector.match(/^:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
+        if (kids && kids[2].split(/,\s*/).includes(".dc-specialty-art")) walls.add(kids[1]);
+        else bad.push(selector);
+      }
+    });
+    expect(bad).toEqual([]);
+    expect([...walls].sort()).toEqual(["1", "2", "3", "4", "5", "6"]);
+    expect([...plates].sort()).toEqual(["1", "2", "3", "4", "5", "6"]);
+  });
+
   // Columns (css-architecture.md, "Column ownership"): this package owns NO column
   // layout. `@columns N` is core's, and so are the count, the gap, the rule and the
   // fill. The package sets the two author hooks (`--gp-column-gap`, `--gp-column-rule`)
