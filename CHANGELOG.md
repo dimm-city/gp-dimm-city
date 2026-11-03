@@ -13,7 +13,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `wall-6` (coursed rubble, ashlar, random rubble, running bond, flagstone,
   square setts), or `.dc-page-wall-N` beside another page word (`@page
   chapter-start .dc-page-wall-3`). Each paints the whole sheet, margin band
-  included, from a tile that repeats without a join, and keeps the chapter
+  included, from a tile about 4.5in square regrown from its panel (patches of
+  the stone quilted along the mortar; the setts laid one by one), so it shows
+  no join and no grid of the same stones, and keeps the chapter
   chip's colour (one named page per wall and hue; the `specialty`, `rules` and
   `lore` chapters are wired, a book wires its own chapters the same way). The
   stone is in the brick's colours: ash (`--bg`) faces, grey joints and the

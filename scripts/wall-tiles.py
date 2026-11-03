@@ -2,12 +2,13 @@
 
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
 
-Python 3 with Pillow. Reads the sheet (six square-ish stone panels on a
-transparent ground, two columns by three rows), writes images/wall-1.png ...
-wall-6.png, each an opaque tile in the brick's colours that repeats without a
-visible join, and rewrites the generated `page-walls` blocks in styles/dc-native.css (each wall's
-named pages: the background, and the chapter chip's face per hue) and
-styles/page-rules.css (the wiring from page word to named page).
+Python 3 with Pillow; the six walls bake in parallel, in a couple of minutes.
+Reads the sheet (six square-ish stone panels on a transparent ground, two
+columns by three rows), writes images/wall-1.png ... wall-6.png, each an opaque
+tile in the brick's colours that repeats without a visible join or a visible
+grid, and rewrites the generated `page-walls` blocks in styles/dc-native.css
+(each wall's named pages: the background, and the chapter chip's face per hue)
+and styles/page-rules.css (the wiring from page word to named page).
 
 For each panel:
 1. Crop to the part that is fully opaque (the panels' edges are ragged).
@@ -16,21 +17,39 @@ For each panel:
    locks a regular bond onto its period), then cut through that overlap along
    the path where the two ends differ least, which runs mostly down the mortar.
    The second cut wraps round the first axis, so the corners close too.
-3. Tint it to the brick: the sheet is dark stone with light mortar, the brick
+3. Grow it. A panel is only 1.3-1.6in of wall, so on its own it repeats six
+   or seven times across a page, the same stones in a grid. Walls 1-5 are
+   regrown at GROW times the size each way by image quilting on a torus:
+   PATCH-px patches of the tile (as is, mirrored, flipped or both) are laid in
+   rows, each the one whose overlap with the patches already laid matches best
+   (every offset tried at 1/COARSE size, the best few refined at full size),
+   then cut in along the path where the two differ least, which runs down the
+   mortar. A patch may not repeat one laid nearby, continue one (that would copy
+   the panel back in) or mirror its neighbour across their seam. GROW whole
+   panels each way, so a course or a bond meets itself at the wrap. Wall 6 is
+   a regular grid, which quilting cannot keep straight: its whole setts (a joint
+   on every side) are cut out, resized to one SETT-px cell and laid SETTS by
+   SETTS in random turns and flips, no sett beside itself, with the panel's
+   mean joint drawn along every cell edge so each joint reads the same.
+4. Tint it to the brick: the sheet is dark stone with light mortar, the brick
    is light ash (--bg) with grey joints, so the tones are inverted (the stone
    faces go light, the mortar and the pits grey) and matched, level by level,
    to the brick tile's own (images/brick-wall.png: --bg times a grey line
    drawing). Each tile then has the brick's average and its darkest grey, and
    the CSS puts --bg under it, as the brick's rule does.
-4. Save as PNG, opaque: lossless, so the joints keep their edges (a JPEG rings
-   round them), and PDF/X carries an opaque tile as is.
+5. Save as PNG, opaque, with an exact palette (one colour per tone, about a
+   hundred): lossless, so the joints keep their edges (a JPEG rings round
+   them), a third the size of RGB, and PDF/X carries an opaque tile as is.
 
-The tiles keep the source's pixels (about 300-390px a side) and print at DPI
-dots per inch, which sets their printed size (1.3-1.6in): the bricks come out
-close to the default wall's. A sharper source would let them print at 300.
+The tiles keep the source's pixel scale and print at DPI dots per inch, so
+the stones come out the size they are on the sheet, close to the default
+wall's bricks, and a tile is about 3.6-4.8in. A sharper source would let them
+print at 300.
 """
+import random
 import sys
-from PIL import Image
+from multiprocessing import Pool
+from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 
 SHEET = sys.argv[1] if len(sys.argv) > 1 else "source-art/wall-sheet.png"
 BG = (0xC8, 0xC5, 0xBF)             # --bg (ash concrete), the brick's colour
@@ -38,6 +57,13 @@ BRICK = "images/brick-wall.png"     # the tones to match: --bg times the brick's
 OVERLAP = range(28, 110)            # how much of each end the seam may use, px
 FEATHER = 2                         # px blended either side of a cut
 DPI = 240                           # print resolution, so printed size = px / DPI
+GROW = 3                            # a regrown tile is this many panels each way
+PATCH, PATCH_OVERLAP = 200, 56      # quilting patch and its overlap with each neighbour, px
+COARSE = 4                          # the patch search's first pass runs at 1/COARSE size
+NEAR = 20                           # px: a patch this close to one laid nearby is the same patch
+SETT_WALLS = {6}                    # regular grids: laid sett by sett instead of quilted
+SETT, SETTS = 136, 8                # the sett cell, px, and cells a side
+JOINT = 6                           # half-width of the drawn joint, px
 # A wall page keeps its chapter's chip colour: one named page per wall and hue.
 # The hue faces and the chapter words that wire them are page-rules.css's and
 # dc-native.css's (2c); a book wires its own chapters the same way.
@@ -155,25 +181,212 @@ def transpose(rows):
     return [list(col) for col in zip(*rows)]
 
 
+def tor(d, n):
+    """d as the shortest signed step round a loop of n."""
+    d %= n
+    return d - n if d > n / 2 else d
+
+
+def wrap_crop(im, x, y, w, h):
+    out = Image.new("L", (w, h))
+    for ox in (0, im.width):
+        for oy in (0, im.height):
+            out.paste(im, (ox - x, oy - y))
+    return out
+
+
+def wrap_paste(im, patch, mask, x, y):
+    for ox in (0, -im.width):
+        for oy in (0, -im.height):
+            im.paste(patch, (x + ox, y + oy), mask)
+
+
+def quilt(src, seed):
+    """src (a tile that wraps) regrown at GROW times the size, with no repeat inside."""
+    rnd = random.Random(seed)
+    w, h = src.size
+    W, H, B, F = GROW * w, GROW * h, PATCH, COARSE
+    step = PATCH - PATCH_OVERLAP
+    nx, ny = round(W / step), round(H / step)
+    xs = [round(i * W / nx) for i in range(nx)]
+    ys = [round(j * H / ny) for j in range(ny)]
+    # the four faces of the tile, each tiled out by a patch so any offset crops
+    # whole: v ^ 1 is v mirrored, v ^ 2 is v flipped
+    faces = []
+    for face in (src, ImageOps.mirror(src), ImageOps.flip(src), ImageOps.flip(ImageOps.mirror(src))):
+        big = Image.new("L", (w + B, h + B))
+        for ox in (0, w):
+            for oy in (0, h):
+                big.paste(face, (ox, oy))
+        faces.append(big)
+    small = [f.reduce(F) for f in faces]
+    out = Image.new("L", (W, H))
+    laid = {}
+    for j in range(ny):
+        for i in range(nx):
+            x0, y0 = xs[i], ys[j]
+            ov = {}                                   # overlap with each side already laid, px
+            if i > 0: ov["l"] = xs[i - 1] + B - x0
+            if j > 0: ov["t"] = ys[j - 1] + B - y0
+            if i == nx - 1: ov["r"] = x0 + B - W
+            if j == ny - 1: ov["b"] = y0 + B - H
+            target = wrap_crop(out, x0, y0, B, B)
+            seen = Image.new("L", (B, B), 0)
+            for side, o in ov.items():
+                seen.paste(255, {"l": (0, 0, o, B), "t": (0, 0, B, o), "r": (B - o, 0, B, B), "b": (0, B - o, B, B)}[side])
+            bans = []
+            for (ii, jj), (lv, lx, ly) in laid.items():
+                ox, oy = tor(x0 - xs[ii], W), tor(y0 - ys[jj], H)
+                if abs(ox) <= 2.5 * step and abs(oy) <= 2.5 * step:
+                    bans += [(lv, lx, ly), (lv, (lx + ox) % w, (ly + oy) % h)]
+            mirrors = {laid[k][0] ^ flip for k, flip in [((i - 1, j), 1), ((0, j) if i == nx - 1 else None, 1),
+                                                         ((i, j - 1), 2), ((i, 0) if j == ny - 1 else None, 2)] if k in laid}
+            banned_coarse = set()
+            for bv, bx, by in bans:
+                cx = [x for x in ((bx + d) % w for d in range(-NEAR + 1, NEAR)) if x % F == 0]
+                cy = [y for y in ((by + d) % h for d in range(-NEAR + 1, NEAR)) if y % F == 0]
+                banned_coarse.update((bv, x, y) for x in cx for y in cy)
+
+            def banned(v, x, y):
+                return v in mirrors or any(bv == v and abs(tor(bx - x, w)) < NEAR and abs(tor(by - y, h)) < NEAR for bv, bx, by in bans)
+
+            if not ov:
+                while True:
+                    pick = (rnd.randrange(4), rnd.randrange(w), rnd.randrange(h))
+                    if not banned(*pick):
+                        break
+            else:
+                ts, ms, bs = target.reduce(F), seen.reduce(F), B // F
+                coarse = {}
+                for v in range(4):
+                    if v in mirrors:
+                        continue
+                    for y in range(0, h, F):
+                        for x in range(0, w, F):
+                            if (v, x, y) not in banned_coarse:
+                                crop = small[v].crop((x // F, y // F, x // F + bs, y // F + bs))
+                                coarse[(v, x, y)] = ImageStat.Stat(ImageChops.difference(crop, ts), ms).sum2[0]
+                fine = {}
+                for v, x, y in sorted(coarse, key=coarse.get)[:10]:
+                    for dx in range(-F, F + 1):
+                        for dy in range(-F, F + 1):
+                            c = (v, (x + dx) % w, (y + dy) % h)
+                            if c not in fine and not banned(*c):
+                                crop = faces[c[0]].crop((c[1], c[2], c[1] + B, c[2] + B))
+                                fine[c] = ImageStat.Stat(ImageChops.difference(crop, target), seen).sum2[0]
+                best = min(fine.values())
+                pick = rnd.choice([c for c, e in fine.items() if e <= best * 1.08 + 1])
+            v, x, y = pick
+            patch = faces[v].crop((x, y, x + B, y + B))
+            keep = [[255] * B for _ in range(B)]       # 0 where the pixels laid already stay
+            pp, tp = patch.tobytes(), target.tobytes()
+
+            def cost(px, py):
+                return (pp[py * B + px] - tp[py * B + px]) ** 2
+
+            if "l" in ov:
+                o = ov["l"]
+                for py, c in enumerate(min_cut([[cost(q, py) for q in range(o)] for py in range(B)], False)):
+                    for px in range(c): keep[py][px] = 0
+            if "r" in ov:
+                o = ov["r"]
+                for py, c in enumerate(min_cut([[cost(B - o + q, py) for q in range(o)] for py in range(B)], False)):
+                    for px in range(B - o + c + 1, B): keep[py][px] = 0
+            if "t" in ov:
+                o = ov["t"]
+                for px, c in enumerate(min_cut([[cost(px, q) for q in range(o)] for px in range(B)], False)):
+                    for py in range(c): keep[py][px] = 0
+            if "b" in ov:
+                o = ov["b"]
+                for px, c in enumerate(min_cut([[cost(px, B - o + q) for q in range(o)] for px in range(B)], False)):
+                    for py in range(B - o + c + 1, B): keep[py][px] = 0
+            mask = Image.frombytes("L", (B, B), bytes(v for r in keep for v in r))
+            wrap_paste(out, patch, mask.filter(ImageFilter.BoxBlur(1)) if ov else mask, x0, y0)
+            laid[(i, j)] = pick
+    return out
+
+
+def joints(profile):
+    """Centres of the joints a light-mortar profile crosses whole (not cut by its ends)."""
+    m = sorted(profile)[len(profile) // 2]
+    out = []
+    for i, v in enumerate(profile):
+        if v > m + 20 and v == max(profile[max(0, i - 10):i + 11]):
+            lo = hi = i
+            while lo > 0 and profile[lo - 1] > m + 10: lo -= 1
+            while hi < len(profile) - 1 and profile[hi + 1] > m + 10: hi += 1
+            if 0 < lo and hi < len(profile) - 1:
+                out.append(sum(k * (profile[k] - m) for k in range(lo, hi + 1)) / sum(profile[k] - m for k in range(lo, hi + 1)))
+    return out
+
+
+def lay_setts(panel, seed):
+    """A sett grid laid from the panel's whole setts, each in one of its eight turns and flips."""
+    rnd = random.Random(seed)
+    w, h = panel.size
+    px = panel.load()
+    cols = [sum(px[x, y] for y in range(h)) / h for x in range(w)]
+    rows = [sum(px[x, y] for x in range(w)) / w for y in range(h)]
+    xs, ys = joints(cols), joints(rows)
+    setts = []
+    for x0, x1 in zip(xs, xs[1:]):
+        for y0, y1 in zip(ys, ys[1:]):
+            s = panel.resize((SETT, SETT), Image.LANCZOS, box=(x0, y0, x1, y1))
+            for k in range(8):
+                t = s.transpose(Image.Transpose.ROTATE_90) if k & 4 else s
+                t = t.transpose(Image.Transpose.FLIP_LEFT_RIGHT) if k & 1 else t
+                setts.append(((x0, y0), t.transpose(Image.Transpose.FLIP_TOP_BOTTOM) if k & 2 else t))
+    S = SETT * SETTS
+    out = Image.new("L", (S, S))
+    grid = {}
+    for j in range(SETTS):
+        for i in range(SETTS):
+            near = [grid.get(((i + di) % SETTS, (j + dj) % SETTS)) for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1))]
+            while True:
+                q = rnd.randrange(len(setts))
+                if all(n is None or setts[n][0] != setts[q][0] for n in near) or rnd.random() < 0.05:
+                    break
+            grid[(i, j)] = q
+            out.paste(setts[q][1], (i * SETT, j * SETT))
+    # the joint: the panel's mean cross-section of one, drawn along every cell
+    # edge where it is lighter, so a sett's own rim still shows
+    cut = [cols[round(c) + d] for c in xs for d in range(-JOINT, JOINT + 1)] + \
+          [rows[round(c) + d] for c in ys for d in range(-JOINT, JOINT + 1)]
+    n = len(xs) + len(ys)
+    joint = [round(sum(cut[k * (2 * JOINT + 1) + d] for k in range(n)) / n) for d in range(2 * JOINT + 1)]
+    o = out.load()
+    for k in range(SETTS):
+        for t in range(S):
+            for d in range(-JOINT, JOINT + 1):
+                e = (k * SETT + d) % S
+                o[e, t] = max(o[e, t], joint[d + JOINT])
+                o[t, e] = max(o[t, e], joint[d + JOINT])
+    return out
+
+
 def brick_tones():
     """The brick tile's pixels as multiples of --bg, darkest first."""
     bg = lum(BG)
     return sorted(lum(c) / bg for c in Image.open(BRICK).convert("RGB").get_flattened_data())
 
 
-def tint(rows, tones):
-    """Invert the tile's tones and match them to the brick's, then paint --bg times each."""
-    vals = [255 - round(lum(c)) for r in rows for c in r]
-    count = [0] * 256
-    for v in vals:
-        count[v] += 1
-    level, seen = [0.0] * 256, 0
+def tint(tile, tones):
+    """Invert the tile's tones and match them to the brick's, as a palette image of
+    --bg times each brick tone (levels that land on one colour share its index)."""
+    inv = ImageOps.invert(tile)
+    count = inv.histogram()
+    colours, index, seen = [], [], 0
     for v in range(256):
-        if count[v]:
-            # the brick tone at the middle of this level's share of the tile
-            level[v] = tones[min(len(tones) - 1, int((seen + count[v] / 2) / len(vals) * len(tones)))]
+        # the brick tone at the middle of this level's share of the tile
+        level = tones[min(len(tones) - 1, int((seen + count[v] / 2) / sum(count) * len(tones)))]
+        c = tuple(min(255, round(BG[i] * level)) for i in range(3))
+        if c not in colours:
+            colours.append(c)
+        index.append(colours.index(c))
         seen += count[v]
-    return [tuple(min(255, round(BG[i] * level[v])) for i in range(3)) for v in vals]
+    out = Image.frombytes("P", inv.size, inv.point(index).tobytes())
+    out.putpalette([v for c in colours for v in c])
+    return out
 
 
 def replace_block(path, name, body):
@@ -208,21 +421,29 @@ def write_css(walls):
     replace_block("styles/page-rules.css", "page-walls", "\n".join(wiring))
 
 
-def main():
-    sheet = Image.open(SHEET).convert("RGBA")
-    tones = brick_tones()
-    walls = {}
-    for n, box in enumerate(opaque_boxes(sheet), 1):
-        rows = rows_of(sheet.crop(box).convert("RGB"))
-        rows = wrap_x(rows, cyclic=False)                       # left-right
+def bake(job):
+    n, box = job
+    panel = Image.open(SHEET).convert("RGBA").crop(box).convert("RGB")
+    if n in SETT_WALLS:
+        tile = lay_setts(panel.convert("L"), seed=n)
+    else:
+        rows = wrap_x(rows_of(panel), cyclic=False)             # left-right
         rows = transpose(wrap_x(transpose(rows), cyclic=True))  # top-bottom, closing round the first
-        h, w = len(rows), len(rows[0])
-        tile = Image.new("RGB", (w, h))
-        tile.putdata(tint(rows, tones))
-        tile.save(f"images/wall-{n}.png", optimize=True)
-        walls[n] = (w, h)
-        avg = tile.resize((1, 1), Image.BOX).getpixel((0, 0))
-        print(f"images/wall-{n}.png  {w}x{h}  {w / DPI:.2f}in wide  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}  from {box}")
+        seamless = Image.new("RGB", (len(rows[0]), len(rows)))
+        seamless.putdata([c for r in rows for c in r])
+        tile = quilt(seamless.convert("L"), seed=n)
+    out = tint(tile, brick_tones())
+    out.save(f"images/wall-{n}.png", optimize=True)
+    avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
+    print(f"images/wall-{n}.png  {out.width}x{out.height}  {out.width / DPI:.2f}in wide  "
+          f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}  from {box}", flush=True)
+    return n, out.size
+
+
+def main():
+    boxes = opaque_boxes(Image.open(SHEET).convert("RGBA"))
+    with Pool(len(boxes)) as pool:
+        walls = dict(pool.map(bake, enumerate(boxes, 1)))
     write_css(walls)
 
 
