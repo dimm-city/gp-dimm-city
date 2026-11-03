@@ -25,7 +25,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.5 in | 0.5 in | 0.5 in |
 
-A page carrying the "Citizen File" running head has a 0.875 in top margin, so the head itself sits 0.5 in inside the trim. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
+A `citizen-file` page has a 0.875 in top margin. Margins swap per recto and verso: the binding margin is on the spine side. Extend any full-bleed image 0.125 in past the trim.
 
 ## Page words
 
@@ -36,7 +36,7 @@ A page carrying the "Citizen File" running head has a 0.875 in top margin, so th
 | `@page credits` | none | The credits page |
 | `@page intro` | none | The introduction (a `@lede`, then a `@section flat`) |
 | `@page chapter-start` | none | A chapter opener |
-| `@page citizen-file` | `p.N`, `c.N` | Running header "Citizen File" |
+| `@page citizen-file` | `p.N`, `c.N` | A Citizen File walkthrough page, 0.875 in from the top |
 | `@page specialty-catalog` | `p.N`, `c.N` | The specialty catalog: a two-page spread that opens on a left page |
 | `@page wall-1` … `wall-6` | `p.N`, `c.N` | A stone wall instead of the brick (below) |
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
@@ -69,7 +69,7 @@ Six walls can stand in for the brick on any page, over the whole sheet: write th
 | `wall-5` | Flagstone: flat slabs bedded in rough courses |
 | `wall-6` | Square setts: square blocks, half-lapped |
 
-All six are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names the page, so nothing on it moves. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
+All six are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
 
 ### Where pages break
 
@@ -308,7 +308,7 @@ Rendered with all ten cards: [Specialty Overview](#ch-example-specialty-overview
 
 ## Specialty profile
 
-Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own.
+Intro, art plate, then learning paths with their skill cards, all inside one `@specialty`. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own. The plate keeps no fill behind its picture, so transparent art stands on the page's brick, or on the specialty's wall when it names one.
 
 ```markdown {.dg-split}
 @specialty .augmerc

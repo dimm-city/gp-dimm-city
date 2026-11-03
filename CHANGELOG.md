@@ -7,14 +7,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.1] - 2026-11-03
+
 ### Added
 
 - **Six stone walls a page can take instead of the brick:** `@page wall-1` …
   `wall-6` (coursed rubble, ashlar, random rubble, running bond, flagstone,
   square setts), or `.dc-page-wall-N` beside another page word (`@page
   chapter-start .dc-page-wall-3`), or on a specialty, which has no page of its
-  own (`@specialty .augmerc .dc-page-wall-3`: the class only names the page,
-  so nothing on it moves). Flagstone is bedded into flat courses and the setts
+  own (`@specialty .augmerc .dc-page-wall-3`: the class only names its pages,
+  so nothing on them moves, and its art plate keeps its full-bleed page). Flagstone is bedded into flat courses and the setts
   are half-lapped, so neither reads as paving. Each paints the whole sheet, margin band
   included, from a tile about 4.5in square regrown from its panel (patches of
   the stone quilted along the mortar; the setts laid one by one), so it shows
@@ -27,9 +29,19 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `source-art/wall-sheet.png`. Page words with chrome of their own
   (`contents`, `credits`, `intro`, `citizen-file`) keep the brick.
 - **The wall stands on the ground:** every page, brick or stone, has a 0.6in
-  strip of pavement in perspective along the foot of the sheet
-  (`images/ground.png`, from the sett panel), just under the footer chips. It
-  sits right in print and in the app's viewer; a full-bleed plate has none.
+  strip of pavement along the foot of the sheet (`images/ground.png`, from the
+  sett panel), just under the footer chips: its rows recede toward the wall and
+  its joints all lean the same way, so the two pages of a spread show one view,
+  not two mirrored ones. It sits right in print and in the app's viewer, on a
+  full-bleed plate too.
+- **A specialty's art plate shows its page through.** The specialty art is
+  transparent, and the plate no longer fills in behind it (the dark fill stays
+  for a plate with no picture). On a specialty that names a wall the plate takes
+  that wall and its ground (`dc-wall-N-full`, margin-free like `@page full`),
+  so it stands in the section with the pages around it; elsewhere it shows the
+  brick. In the app's viewer the plate now fills its sheet: the wall's page
+  name used to sit on the specialty block, which the viewer laid as one run in
+  the wall's margins (print was right).
 
 ### Changed
 
@@ -50,6 +62,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Removed
 
+- **The "Citizen File" running head:** a `citizen-file` page no longer prints
+  the amber tab in its outer top corner. It keeps its 0.875in top margin, so
+  its pages break where they did, and its footers.
 - **The fiction excerpt's old edge tokens:** `--dc-fiction-rule`,
   `--dc-fiction-shadow`, `--dc-fiction-depth`, `--dc-fiction-depth-bg`,
   `--dc-fiction-lip` and `--dc-fiction-rim`. A book that set one keeps the

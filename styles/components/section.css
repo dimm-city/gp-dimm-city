@@ -1216,7 +1216,7 @@ h3 + .dc-section-panel {
    filled-form artifact).
 
    Applied via:
-     @page citizen-file                                  ← topic page (running header)
+     @page citizen-file                                  ← topic page
      @citizen-walkthrough (or @section walkthrough)      ← a panel
 
    This component carries minimal bespoke CSS. Styling comes primarily from

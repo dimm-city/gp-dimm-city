@@ -452,7 +452,7 @@ selectors.
 ### Page chips: the folio and the chapter coupon
 
 The chip **content** is `page-rules.css` (`@page :left` / `:right`); the chip
-**chrome** is `dc-native.css` §2 and §2b, unlayered and last. A margin box takes
+**chrome** is `dc-native.css` §2, unlayered and last. A margin box takes
 `background`, `border`, `padding`, `margin`, `height` and `vertical-align`, but no
 `transform` and no `box-shadow`, so a chip's hard shadow is a thicker bottom and
 right border. Three rules keep the type centred:
@@ -478,9 +478,6 @@ a book does the same for its own chapters with
 repaints the coupon for that name and side (blue, rust, violet, amethyst,
 amber; the default is magenta-deep). Unlayered, because layered `@page` rules
 lose to `dc-native.css`.
-
-The Citizen File running head is the same chip in the top band (`@top-left` /
-`@top-right` on `citizen-file`), hung 0.625in below the sheet top with `margin-top: calc(0.625in + 1pt)` in a 0.875in top margin.
 
 ### Free-standing page text
 
