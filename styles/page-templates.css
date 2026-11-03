@@ -733,14 +733,6 @@
   --dc-section-drop: var(--shadow-poster);
 }
 
-/* ── CHAPTER-START PAGE: fiction excerpt edge ───────────────────────────────
-   A fiction excerpt on a chapter-start page sinks deeper into the wall: the
-   hole casts a 10px shadow on the page instead of 6px. Tokens only; the
-   excerpt's own look is in components/section.css. */
-.page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-depth: 10px;
-}
-
 /* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───
    A chapter word sets the tokens the sections in that chapter read, so every
    panel in it takes the chapter's colour without a rule per book. A book's

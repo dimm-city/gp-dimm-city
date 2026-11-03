@@ -142,13 +142,14 @@ Two rules keep the split honest, and a test enforces each:
 - **Location rules set tokens only.** A rule keyed on a page or chapter class may style its own element (the page's margins, its `h1`) and plain elements (`p`, `li`, `strong`), but on a component it declares custom properties and nothing else: never `background`, `box-shadow`, `padding`, `clip-path` or a pseudo-element. The component's own rule reads the token. Enforced by `test/conventions.test.js`: *a location adjusts components by tokens only > a rule keyed on a page or chapter class declares only custom properties on a component*.
 
 ```css
-/* page-templates.css — the chapter-start page re-tunes the excerpt; it does not draw it */
-.page.dc-page-chapter-start .dc-fiction-excerpt {
-  --dc-fiction-depth: 10px;
+/* page-templates.css — the intro page re-tunes its flat sections; it does not draw them */
+.page.dc-page-intro > .dc-section-flat {
+  --dc-section-accent: var(--intro-accent);
+  --dc-section-drop: var(--shadow-poster);
 }
 ```
 
-A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-depth: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
+A book overrides a location the same way, with the same selector shape in its own sheet (`.page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-art-width: … }`). It never invents a page class of its own. Which words exist, and which entry in `components.yaml` and which snippet covers each, is checked by `test/integrity.test.js` (*component catalog*).
 
 ### Column Ownership Rule
 

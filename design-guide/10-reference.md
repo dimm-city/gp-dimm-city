@@ -14,7 +14,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Notes |
 |---|---|---|
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
-| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
+| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog` `wall-1` … `wall-6`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [word] [.class...]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
@@ -60,7 +60,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-snug` | `@section`, `@page` | Tighten the space under paragraphs and list items; it sets `--dc-flow-gap` to 0.04in |
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
-| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
+| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-6` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
 | `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
 | `.dc-section-panel` · `.dc-section-flat` | `@section` | What `@section panel` and `flat` write |
 | `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |
@@ -70,7 +70,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` and its kind words | The entry card family; the kind class sets its tokens |
 | `.dc-field` · `.dc-field-<variant>` · `.dc-field-label` | `@field` | What `@field` and a `**Label:**` paragraph in a card write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
-| `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: an aged page sunk into a torn hole in the wall, narrative typography, auto art float |
+| `.dc-fiction-excerpt` | `@section` | What `@fiction-excerpt` and `@section fiction` write: a hole smashed in the wall with the page behind it, narrative typography, auto art float |
 | `.dc-citizen-walkthrough` | `@section` | What `@citizen-walkthrough` writes (with `.dc-section-panel`) |
 | `.dc-card-grid` | `@section` | Density for a run of specialty cards (set in `@columns 2`); no chrome |
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | The kind of choice (flaw, ideal, dream): colour, silhouette and chip per step |
@@ -125,7 +125,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Definition | `--dc-definition-block-surface` `--dc-definition-block-accent` `--dc-definition-block-term` `--dc-definition-block-accent-width` `--dc-definition-block-rule-bottom` `--dc-definition-block-shape` `--dc-definition-block-fg` `--dc-definition-block-style` `--dc-definition-block-frame` `--dc-definition-block-pad` |
 | Outcome ladder | `--dc-outcomes-surface` `--dc-outcomes-border` `--dc-outcomes-inner-border` `--dc-outcomes-label-bg` `--dc-outcomes-label-color` `--dc-outcome-key-color` `--dc-outcome-name-color` `--dc-outcome-name-opacity` `--dc-outcome-key-col` |
 | NPC stat block | `--dc-npc-stat-primary` `--dc-npc-stat-secondary` `--dc-npc-stat-label-color` `--dc-npc-stat-rule` `--dc-npc-stat-rule-width` |
-| Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-depth` `--dc-fiction-depth-bg` `--dc-fiction-cavity` `--dc-fiction-lip` `--dc-fiction-rim` `--dc-fiction-rule` `--dc-fiction-shadow` `--dc-fiction-shape` `--dc-fiction-hole` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
+| Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-cavity` `--dc-fiction-hole` `--dc-fiction-shape` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
 | Specialty wrapper | `--spec-accent` `--spec-mid` `--spec-dark` `--spec-band` `--spec-on-band` `--spec-chip-bg` `--spec-chip-fg` `--spec-chip-edge` `--dc-skill-tab-shape` `--dc-skill-body-shape` `--dc-path-title-shape` `--dc-path-shell-clip` `--dc-specialty-intro-title-shape` `--dc-specialty-intro-clip` |
 | Specialty intro | `--dc-specialty-intro-bg` `--dc-specialty-intro-title-bg` `--dc-specialty-intro-title-color` `--dc-specialty-intro-h3-color` |
 | Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` `--dc-band-reg` |
