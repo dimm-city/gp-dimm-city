@@ -124,10 +124,9 @@ PAIRS = [
     ('white on --signal-indigo (wirephreak band, chip)', W, '--signal-indigo'), ('--signal-indigo on white (classtag)', '--signal-indigo', W),
     ('--wirephreak-mid on white (spec ink)', '--wirephreak-mid', W), ('white on --wirephreak-mid (tab)', W, '--wirephreak-mid'),
     ('white on --wirephreak-dark', W, '--wirephreak-dark'),
-    ('--bg on --brand-magenta (old intro title default)', '--bg', '--brand-magenta'),
     ('white on --hud-blue-dark (AP chip, block title)', W, '--hud-blue-dark'), ('--hud-blue-dark on white', '--hud-blue-dark', W),
     ('white on --rust (chapter chip)', W, '--rust'), ('white on --crimson (card band default)', W, '--crimson'),
-    ('--orange on white (old classtag)', '--orange', W), ('--orange-deep on white (classtag)', '--orange-deep', W),
+    ('--orange dot on white (classtag; non-text, needs 3:1)', '--orange', W), ('--orange-deep on white (lede ink)', '--orange-deep', W),
     ('white on --orange-deep (mixed row)', W, '--orange-deep'), ('white on --blood (miss row)', W, '--blood'),
     ('white on --fungi-rot (fail row)', W, '--fungi-rot'), ('white on --amber-dark', W, '--amber-dark'),
     ('--fungi-glow on visit bg (accent ink)', '--fungi-glow', ('srgb', '--fungi-rot', 85, '--fungi-glow')),
@@ -135,6 +134,25 @@ PAIRS = [
     ('--brand-cyan on --ink-dark (dm accent)', '--brand-cyan', '--ink-dark'),
     ('--ink-dust on the wall', '--ink-dust', '--bg'),
 ]
+# Specialties (specialty-identity.css): band / on-band, tier chip bg / fg, text ink.
+# Cream type also sits on every --*-mid (card tab) and --*-dark (path chip).
+SPECIALTIES = {
+    'augmerc': ('--augmerc-accent', '--ink', '--augmerc-accent', '--ink', '--augmerc-mid'),
+    'technosorcerer': (('srgb', '--orange', 87, '--paper-cream'), '--ink', W, '--technosorcerer-dark', '--technosorcerer-mid'),
+    'streetwarden': ('--streetwarden-accent', '--ink', '--streetwarden-accent', '--ink', '--streetwarden-dark'),
+    'gutterdruid': ('--gutterdruid-accent', '--ink', '--gutterdruid-accent', '--ink', '--gutterdruid-dark'),
+    'cybersurgeon': ('--cybersurgeon-accent', '--ink', '--cybersurgeon-accent', '--ink', '--cybersurgeon-dark'),
+    'wirephreak': ('--wirephreak-accent', W, '--wirephreak-accent', W, '--wirephreak-mid'),
+    'proxy': ('--brand-magenta-deep', W, W, '--proxy-dark', '--brand-magenta-deep'),
+    'etherlock': ('--etherlock-accent', '--ink', '--etherlock-accent', '--ink', '--etherlock-dark'),
+    'dualist': ('--dualist-accent', '--ink', '--dualist-accent', '--ink', '--dualist-mid'),
+    'generalist': ('--generalist-accent', W, '--generalist-accent', W, '--generalist-mid'),
+}
+for n, (band, on, chip, chip_fg, ink) in SPECIALTIES.items():
+    PAIRS += [(f'{n}: on-band type on band', on, band), (f'{n}: tier chip', chip_fg, chip),
+              (f'{n}: text ink on paper', ink, W), (f'{n}: cream on --{n}-mid (tab)', W, f'--{n}-mid'), (f'{n}: cream on --{n}-dark (chip)', W, f'--{n}-dark')]
+    if n in ('technosorcerer', 'gutterdruid', 'etherlock'):  # their cards sit on --paper-aged
+        PAIRS.append((f'{n}: text ink on --paper-aged', ink, '--paper-aged'))
 def colour(c):
     if isinstance(c, tuple) and isinstance(c[0], str): return mix(c[0], colour(c[1]), c[2], colour(c[3]))
     if isinstance(c, str): return hex2rgb(c) if c.startswith('#') else tok(c)
@@ -159,7 +177,7 @@ FAMILIES = {
 def report_converge():
     for fam, names in FAMILIES.items():
         print(f"\n== {fam}: OKLab distance on screen -> printed (CRPC1 round trip); pairs printing < 10 apart ==")
-        names = [n for n in names if tok(n)]
+        names = [n for n in names if n in tokens]
         for i, a in enumerate(names):
             for b in names[i + 1:]:
                 d0, d1 = dE(tok(a), tok(b)), dE(printed(tok(a)), printed(tok(b)))

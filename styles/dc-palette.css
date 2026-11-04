@@ -67,12 +67,12 @@
      Values are SWOP/substrate-corrected from the website's pure-RGB tokens
      (#d946ef / #00ffff / #ffd700) so they survive POD press without muddying.
      HUD + signal tokens below alias these — touch the brand layer first. */
-  --brand-magenta: #c026d3;  /* dimm.city cyber-magenta, SWOP-corrected from web #d946ef · TAC 126% (C41 M85 Y0 K0) */
-  --brand-magenta-deep: #8a0a9a;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) · TAC 156% (C56 M100 Y0 K0) */
+  --brand-magenta: #bf308f;  /* dimm.city cyber-magenta, SWOP-corrected from web #d946ef · TAC 126% (C41 M85 Y0 K0) */
+  --brand-magenta-deep: #76115e;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) · TAC 156% (C56 M100 Y0 K0) */
   --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 87% (C70 M1 Y16 K0) */
   --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 114% (C1 M13 Y100 K0) */
-  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
-  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the wirephreak's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
+  --brand-violet:  #5d3b88;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
+  --signal-indigo: #4b65ab;  /* electric indigo, a blue-violet clear of --brand-violet: the wirephreak's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 167% (C87 M50 Y26 K4) */
@@ -93,8 +93,8 @@
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
-  --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source · TAC 120% (C3 M100 Y17 K0) */
-  --tint-hud-teal:     #2a6a8a;/* TAC 175% (C85 M52 Y31 K8) */
+  --tint-magenta-rose: var(--brand-magenta);  /* pullquote accent / paper-stain rule mix source · TAC 120% (C3 M100 Y17 K0) */
+  --tint-hud-teal:     var(--hud-blue);/* TAC 175% (C85 M52 Y31 K8) */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
   /* Lixdu has one face, regular. Every rule that sets --font-display sets
@@ -197,7 +197,7 @@
      gold of brand-yellow (electric). Measured TAC (see the Ink & Text note
      above): crystal-amethyst 173%, crystal-aqua 127%, crystal-slate 185%
      (cool stone: the generalist). */
-  --crystal-amethyst: #6a3a8a;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) · TAC 173% (C71 M92 Y9 K1) */
+  --crystal-amethyst: #835198;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) · TAC 173% (C71 M92 Y9 K1) */
   --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 127% (C71 M26 Y30 K0) */
   --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 5.4:1 · TAC 185% (C70 M54 Y43 K18) */
 

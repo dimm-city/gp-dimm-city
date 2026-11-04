@@ -32,12 +32,12 @@
      etherlock #3d3000 (272%), generalist #1c252d (272%). The hue and the
      light-type contrast (cream on any of them is >= 8:1) are unchanged. */
   --augmerc-dark:          #003a40;  /* deep teal-black — cold chrome under the skin · TAC 260% (C92 M59 Y58 K50) */
-  --proxy-dark:            #8a1a90;  /* deep magenta-violet · TAC 156% (C55 M100 Y1 K0) */
+  --proxy-dark:            var(--brand-magenta-deep);  /* deep magenta-violet · TAC 156% (C55 M100 Y1 K0) */
   --cybersurgeon-dark:     #303840;  /* cold clinical near-black · TAC 246% (C76 M65 Y55 K50) */
   --wirephreak-dark:       #1e0f50;  /* deep indigo-black · TAC 268% (C99 M100 Y30 K39) */
-  --streetwarden-dark:     #294c1f;  /* rot-soaked forest dark · TAC 268% (C77 M44 Y100 K46) */
+  --streetwarden-dark:     var(--fungi-rot);  /* rot-soaked forest dark · TAC 268% (C77 M44 Y100 K46) */
   --technosorcerer-dark:   #4c290f;  /* near-black scorch · TAC 268% (C44 M73 Y89 K62) */
-  --gutterdruid-dark:      #394017;  /* swamp-rot dark — greenish, not brown · TAC 268% (C65 M52 Y97 K54) */
+  --gutterdruid-dark:      var(--fungi-rot);  /* swamp-rot dark — greenish, not brown · TAC 268% (C65 M52 Y97 K54) */
   --etherlock-dark:        #46360c;  /* deep tarnished gold · TAC 267% (C53 M61 Y95 K58) */
   --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark · TAC 252% (C91 M67 Y51 K44) */
   --generalist-dark:       #212a32;  /* slate-black · TAC 265% (C78 M68 Y57 K62) */
@@ -47,14 +47,14 @@
      dark, slightly shifted toward the dark hue. Used wherever a specialty
      needs a chrome/structural tone that isn't accent-glare or dark-mass. */
   --augmerc-mid:           #006878;  /* drowned signal teal · TAC 193% (C89 M46 Y43 K15) */
-  --proxy-mid:             #9a1896;  /* between brand-magenta and proxy-dark · TAC 146% (C46 M100 Y0 K0) */
-  --cybersurgeon-mid:      #606870;  /* cool steel mid · TAC 176% (C64 M52 Y45 K16) */
+  --proxy-mid:             #9a227d;  /* between brand-magenta and proxy-dark · TAC 146% (C46 M100 Y0 K0) */
+  --cybersurgeon-mid:      var(--crystal-slate);  /* cool steel mid · TAC 176% (C64 M52 Y45 K16) */
   --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse · TAC 227% (C80 M30 Y100 K17) */
   --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen · TAC 240% (C66 M42 Y100 K32) */
-  --wirephreak-mid:        #2f2290;  /* signal indigo midpoint · TAC 202% (C97 M100 Y4 K1) */
+  --wirephreak-mid:        #1c327d;  /* signal indigo midpoint · TAC 202% (C97 M100 Y4 K1) */
   --technosorcerer-mid:    #7a3008;  /* burnt umber, between scorch-orange and dark · TAC 253% (C31 M84 Y100 K38) */
   --etherlock-mid:         #8a6a00;  /* tarnished antique gold · TAC 211% (C40 M51 Y100 K20) */
-  --dualist-mid:           #2a6878;  /* drowned mineral aqua — between crystal-aqua and sapphire-trench · TAC 188% (C84 M48 Y42 K15) */
+  --dualist-mid:           var(--augmerc-mid);  /* drowned mineral aqua — between crystal-aqua and sapphire-trench · TAC 188% (C84 M48 Y42 K15) */
   --generalist-mid:        #3a4854;  /* mid slate — between crystal-slate and generalist-dark · TAC 223% (C76 M62 Y49 K35) */
 
 }
