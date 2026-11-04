@@ -178,3 +178,32 @@ not lift the darks further (the ICC already puts K at 45-69%).
 8. Finding 3: alias the duplicates; document the lightness bands.
 9. Update `design-guide/03-palette.md` swatches, `docs/components-and-palette-reference.md`,
    `docs/css-architecture.md`; refresh snapshots; CHANGELOG entry under 1.10.2.
+
+## Resolution (1.10.2)
+
+The fix PR implements the work list. The before/after figures are in the
+CHANGELOG and the PR. `docs/print-colour-audit-measurements.md` is regenerated
+from the fixed palette. The figures above are the audit as it was found.
+Where the PR departs from the audit:
+
+- **2E, classtag.** Not a text failure. The `--orange` in `.dc-classtag` is the
+  10px dot (`::before`), and the tag's text is `--ink`. A non-text mark needs
+  3:1, and the dot has 4.24:1, so nothing changed.
+- **2E, `--ink-dust` on the wall.** Moot. After 2D, `--ink-dust` is no longer a
+  text colour anywhere.
+- **2C, `--paper-aged`.** It is an alias of `--concrete-pale` rather than
+  `#d6d1c8`. The suggested value is dE 2.7 from `--concrete-pale`, so it would
+  have been a near-duplicate of it, not a fourth substrate.
+- **2C, `--surface-tint-3`.** It stays a token, marked design-guide-only.
+- **2B.** Only the tints into paper switched to `in oklch`. The text pre-mixes,
+  the ink shades and the band facets and rims stay `in srgb`. They were never
+  faint, and changing them would have shifted colours that pass their
+  contrast checks.
+- **2F.** Light rules (`--hud-blue-dim`, which is nearly cyan alone, and
+  `--paper-aged`) keep their colour at 1pt. Light neutrals cannot print in one
+  ink: CRPC1 builds greys from C, M and Y.
+- **3, lightness bands.** Documented in `dc-identity.css` and constitution §V,
+  but not applied: normalising them would repaint all ten specialties.
+- **3, near-duplicates.** The five pairs listed above are aliased. So is
+  `--tint-magenta-rose`, which printed dE 5.4 from the new magenta.
+  `--augmerc-dark` ~ `--dualist-dark` (2.4) remain separate.
