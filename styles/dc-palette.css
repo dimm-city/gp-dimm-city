@@ -7,10 +7,10 @@
   --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) · TAC 61% (C21 M18 Y22 K0) */
   --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 35% (C12 M10 Y13 K0) */
   --paper-cream:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
-  --paper-form:   #f5f3ee;  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen · TAC 10% (C2 M2 Y5 K0) */
-  --paper-zine:   #e9e6e0;  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream · TAC 24% (C7 M7 Y10 K0) */
-  --paper-light:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
-  --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
+  --paper-form:   var(--paper-cream);  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen · TAC 10% (C2 M2 Y5 K0) */
+  --paper-zine:   var(--concrete-pale);  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream · TAC 24% (C7 M7 Y10 K0) */
+  --paper-light:  var(--paper-cream);  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
+  --paper-aged:   var(--concrete-pale);  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
   /* Poster-wall shadow — a hard offset that pins paper-register components to
      the wall as physical objects ("stuck on the wall", not "embedded in the
@@ -80,7 +80,7 @@
   --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent */
   --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint · TAC 76% (C50 M13 Y12 K0) */
   --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta */
-  --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars · TAC 16% (C5 M5 Y7 K0) */
+  --hud-panel:       var(--concrete-pale);  /* neutral light cream — callouts, note bars · TAC 16% (C5 M5 Y7 K0) */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
   --surface-tint-3:      #f2f0ec;  /* public token: consumed by the Dimm City design guide's own sheet (palette swatches), not by this package · TAC 12% (C3 M4 Y6 K0) */
