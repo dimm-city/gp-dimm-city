@@ -446,7 +446,7 @@
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
    Creaturepunk pillar gradient across the 5-band outcome ladder:
-     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 6.21:1)
+     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 10.4:1)
      hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 12.24:1)
      mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 5.25:1)
      miss  → rust                (GUTTER deep — paper-cream 4.59:1)
@@ -565,7 +565,7 @@
 
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
-  --dc-accent-ink: var(--brand-magenta-deep);  /* 5.8:1 on the concrete sheet */
+  --dc-accent-ink: var(--brand-magenta-deep);  /* 7.5:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
   border-right: 2px solid var(--dc-pullquote-accent-soft);

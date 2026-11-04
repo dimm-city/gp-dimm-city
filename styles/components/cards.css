@@ -142,8 +142,8 @@
   /* Default to paper-cream so reverse-out text on the saturated tab fill
      always passes WCAG. Specialty contexts re-affirm the same color via
      their --dc-card-tab-title-color token. Without it the title would take
-     the default near-black body color over a saturated magenta fill: 2.95:1,
-     failing WCAG at all sizes. */
+     the default near-black body color over a saturated magenta fill: 3.2:1,
+     failing WCAG at this size. */
   color: var(--dc-card-tab-title-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -424,8 +424,8 @@
    (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
    its cards), with a dotted underline in that colour. It is plain inline text,
    so the line keeps its height. Each component sets --dc-accent-ink to a shade
-   that holds 4.5:1 on its own surface; the deep magenta default holds 7.0:1 on
-   --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
+   that holds 4.5:1 on its own surface; the deep magenta default holds 10.4:1 on
+   --paper-cream, 7.5:1 on --concrete-pale, 6.1:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
   color: var(--dc-accent-ink);
@@ -480,7 +480,7 @@
    authored spelling. */
 .dc-ap:is(.var, .variable) {
   /* --brand-magenta-deep, not the bright --hud-magenta: cream type on the
-     bright one is 4.06:1. */
+     deep one is 10.4:1 (5.2:1 on the bright one, before the gloss). */
   --dc-ap-bg: var(--brand-magenta-deep);
 }
 

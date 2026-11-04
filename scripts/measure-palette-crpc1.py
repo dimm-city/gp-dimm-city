@@ -85,7 +85,7 @@ def report_tokens():
     for n, rgb in tokens.items():
         p = pct(rgb); L, C, h = oklch(rgb)
         print(f"{n:24} {tohex(rgb):8} {cmyk_str(p):20} {sum(p):4d} {tohex(printed(rgb)):8} {dE(rgb, printed(rgb)):5.1f}  {L:5.2f} {C:5.3f} {h:4.0f}")
-    print('aliases: ' + ', '.join(f'{a} -> {b}' for a, b in aliases.items()))
+    print('aliases: ' + ', '.join(f'{a} -> {b}' for a, b in aliases.items() if tok(a)))
 
 def report_mixes():
     """Every color-mix() of two palette tokens in styles/ (mixes with transparent,
