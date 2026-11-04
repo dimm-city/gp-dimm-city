@@ -130,8 +130,8 @@ PAIRS = [
     ('--orange on white (old classtag)', '--orange', W), ('--orange-deep on white (classtag)', '--orange-deep', W),
     ('white on --orange-deep (mixed row)', W, '--orange-deep'), ('white on --blood (miss row)', W, '--blood'),
     ('white on --fungi-rot (fail row)', W, '--fungi-rot'), ('white on --amber-dark', W, '--amber-dark'),
-    ('--fungi-glow on visit bg (old accent ink)', '--fungi-glow', ('srgb', '--fungi-rot', 80, '--fungi-glow')),
-    ('white on visit bg (accent ink)', W, ('srgb', '--fungi-rot', 80, '--fungi-glow')),
+    ('--fungi-glow on visit bg (accent ink)', '--fungi-glow', ('srgb', '--fungi-rot', 85, '--fungi-glow')),
+    ('white on visit bg (body)', W, ('srgb', '--fungi-rot', 85, '--fungi-glow')),
     ('--brand-cyan on --ink-dark (dm accent)', '--brand-cyan', '--ink-dark'),
     ('--ink-dust on the wall', '--ink-dust', '--bg'),
 ]

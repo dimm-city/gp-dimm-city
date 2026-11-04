@@ -135,7 +135,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
     border: 1px solid var(--ink-dark);
     border-width: 1px 3px 3px 1px;
@@ -198,7 +198,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
     border: 1px solid var(--ink-dark);
     border-width: 1px 3px 3px 1px;

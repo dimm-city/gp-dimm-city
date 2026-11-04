@@ -423,7 +423,7 @@ h3 + .dc-section-panel {
 .dc-section-reference {
   --dc-section-bar-mix: 0%;
   --dc-section-bar-tone: var(--hud-blue-dim);
-  --dc-section-bar-fg: var(--ink-dark);
+  --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--ink-dark);
   --dc-section-bar-rule-sub: 3pt double var(--ink-dark);
 }
@@ -441,7 +441,7 @@ h3 + .dc-section-panel {
 }
 .dc-section-reference th {
   background: var(--hud-blue-dim);
-  color: var(--ink-dark);
+  color: var(--ink);
   padding: 3px 8px;
 }
 .dc-section-reference td {
@@ -875,7 +875,7 @@ h3 + .dc-section-panel {
   --dc-block-title-bg:  var(--paper-stain);
   --dc-block-title-fg:  var(--ink);
   --dc-block-title-rule: 2pt solid var(--ink-smoke);
-  --dc-accent-ink: var(--ink-smoke);
+  --dc-accent-ink: var(--ink);
   background: var(--paper-zine);
   padding-bottom: calc(var(--space-lg) + 4px);
   box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
@@ -921,12 +921,12 @@ h3 + .dc-section-panel {
   text-transform: uppercase;
   letter-spacing: var(--ls-heading);
   margin-bottom: var(--space-xs);
-  color: var(--ink-dark);
+  color: var(--ink);
 }
 
 .dc-card-pull {
   font-style: italic;
-  color: var(--ink-mid);
+  color: var(--ink);
   margin-bottom: var(--space-xs);
   font-size: var(--fs-sm);
 }
@@ -948,7 +948,7 @@ h3 + .dc-section-panel {
   padding-left: 0;
   margin-top: var(--space-xs);
   font-size: var(--fs-sm);
-  color: var(--ink-mid);
+  color: var(--ink);
   font-style: italic;
 }
 
@@ -1268,7 +1268,7 @@ h3 + .dc-section-panel {
      --dc-npc-stat-rule-width   → name top-rule weight (default 2pt)
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
-     --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
+     --dc-npc-stat-secondary    → secondary stat-line color (default --ink)
      --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Its shape: both right corners cut, a dossier's edge. */
@@ -1352,7 +1352,7 @@ h3 + .dc-section-panel {
   border-color: var(--dc-npc-stat-rule);
   padding: 2pt 0 2pt 10pt;
   margin: 0.06in 0;
-  color: var(--ink-smoke);
+  color: var(--ink);
 }
 
 .dc-npc-stat h5 {

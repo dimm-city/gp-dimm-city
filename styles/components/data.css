@@ -183,7 +183,7 @@
 .dc-path-shell {
   --dc-intro-bg: transparent;
   --dc-intro-accent: var(--dc-path-note-rail);
-  --dc-intro-color: var(--ink-dark);
+  --dc-intro-color: var(--ink);
   --dc-intro-size: var(--fs-body-sm);
   --dc-intro-weight: 400;
   --dc-intro-style: italic;
@@ -543,7 +543,7 @@
 
 .dc-roll-table th {
   background: var(--dc-roll-table-head-bg);
-  color: var(--ink-dark);
+  color: var(--ink);
 }
 
 /* Range column: mono, centred, ruled off from the results. */
@@ -928,7 +928,7 @@ table.dc-stat-strip {
   counter-increment: dc-toc;
   font-size: var(--fs-body-sm);
   line-height: 1.4;
-  color: var(--ink-smoke);
+  color: var(--ink);
   font-style: italic;
   list-style: none;
   break-inside: avoid;

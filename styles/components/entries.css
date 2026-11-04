@@ -109,7 +109,7 @@
 /* The tagline: a blockquote straight after the name is a line, not a box. */
 .dc-entry > :is(h3, h4):first-child + blockquote {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   background: none;
   border: 0;
   padding: 0;
@@ -208,7 +208,7 @@
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
-  --dc-entry-ink: var(--ink-dark);
+  --dc-entry-ink: var(--ink);
   --dc-entry-surface: var(--concrete-pale);
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
@@ -243,7 +243,7 @@
    price tag (a raised rust-edged box). */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   margin: 0 0 6px;
 }
 .dc-gear > p:has(> strong:only-child) {

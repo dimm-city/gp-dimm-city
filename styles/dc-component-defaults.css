@@ -111,7 +111,7 @@
   --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
   --dc-alert-border:         var(--hud-blue-dark);  /* left rail */
   --dc-alert-fg:             var(--ink);
-  --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
+  --dc-alert-label-color:    var(--ink);
   --dc-alert-body-size:      var(--fs-body-sm);
   --dc-alert-border-width:   4px;
   --dc-alert-label-size:     var(--fs-floor);
@@ -141,7 +141,7 @@
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
-  --dc-specialty-intro-title-color: var(--bg);
+  --dc-specialty-intro-title-color: var(--paper-cream);
   --dc-specialty-intro-bg:          var(--hud-panel);
   --dc-specialty-intro-h3-color:    var(--blood);      /* overridden by .dc-specialty.<name> context */
 
@@ -283,13 +283,13 @@
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
-  --dc-flavor-color:         var(--ink-dark);
+  --dc-flavor-color:         var(--ink);
   --dc-flavor-bg:            var(--paper-cream);   /* a flavor line is never set straight on the wall */
 
   /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
   --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
-  --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
+  --dc-entry-ink:            var(--ink);            /* name and field-label colour */
   --dc-entry-surface:        var(--paper-light);
   --dc-entry-rail:           3px;                   /* a catalog sets 0 */
   --dc-entry-rule:           0px;                   /* a catalog sets it */
@@ -345,7 +345,7 @@
   --dc-npc-stat-primary:     var(--hud-blue-dark);
   --dc-npc-stat-rule:        var(--rust);
   --dc-npc-stat-rule-width:  2pt;
-  --dc-npc-stat-secondary:   var(--ink-smoke);
+  --dc-npc-stat-secondary:   var(--ink);
 
   /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
   --dc-outcome-key-col:      max(130px, 26%);   /* chip column: wider on a full-width ladder so long band names wrap in three lines at most */
@@ -447,7 +447,7 @@
 
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);
-  --dc-tag-fg:               var(--ink-dark);
+  --dc-tag-fg:               var(--ink);
   --dc-tag-border:           var(--ink-dark);
 
   /* .dc-tape public API */
@@ -471,7 +471,7 @@
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
-  --dc-page-slip-ink:        var(--ink-dark);
+  --dc-page-slip-ink:        var(--ink);
   --dc-page-slip-edge:       var(--ink-dark);
   --dc-page-slip-shadow:     var(--shadow-poster);
   --dc-page-slip-tape:       var(--dc-tape-bg);
