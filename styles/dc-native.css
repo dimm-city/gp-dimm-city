@@ -135,10 +135,10 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
   @bottom-right {
     /* chapter coupon */
@@ -157,8 +157,8 @@
     padding: 2px calc(8px - 0.06em) 0 8px;
     color: var(--paper-cream);
     background: var(--brand-magenta-deep);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
 }
 
@@ -180,8 +180,8 @@
     padding: 2px calc(8px - 0.06em) 0 8px;
     color: var(--paper-cream);
     background: var(--brand-magenta-deep);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
   @bottom-right {
     /* folio sticker: civic register */
@@ -198,10 +198,10 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
 }
 

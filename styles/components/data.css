@@ -183,7 +183,7 @@
 .dc-path-shell {
   --dc-intro-bg: transparent;
   --dc-intro-accent: var(--dc-path-note-rail);
-  --dc-intro-color: var(--ink-dark);
+  --dc-intro-color: var(--ink);
   --dc-intro-size: var(--fs-body-sm);
   --dc-intro-weight: 400;
   --dc-intro-style: italic;
@@ -242,7 +242,7 @@
   width: 20px;
   height: 4px;
   background: var(--ink-smoke);
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1pt solid var(--ink);
   transform: rotate(-4deg);
   pointer-events: none;
 }
@@ -252,7 +252,7 @@
   grid-template-columns: 40px 1fr;
   gap: 0;
   padding: 0;
-  border-top: 1px solid var(--ink-dust);
+  border-top: 1pt solid var(--ink);
   font-family: var(--font-body);
   font-size: var(--fs-floor);
   line-height: 1.45;
@@ -281,7 +281,7 @@
   letter-spacing: 0.06em;
   line-height: 1;
   /* A hairline of plate between neighbouring numbers keeps each step its own cell. */
-  border-top: 1px solid var(--paper-cream);
+  border-top: 1pt solid var(--paper-cream);
 }
 .dc-steps>li:first-child .dc-step-no {
   border-top: 0;
@@ -367,7 +367,7 @@
      lines at most; in a half column it stays 130px. */
   grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
-  border-bottom: 1px solid var(--dc-outcomes-divider);
+  border-bottom: 1pt solid var(--dc-outcomes-divider);
   position: relative;
   z-index: 1;
 }
@@ -446,7 +446,7 @@
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
    Creaturepunk pillar gradient across the 5-band outcome ladder:
-     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 6.21:1)
+     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 10.4:1)
      hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 12.24:1)
      mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 5.25:1)
      miss  → rust                (GUTTER deep — paper-cream 4.59:1)
@@ -543,7 +543,7 @@
 
 .dc-roll-table th {
   background: var(--dc-roll-table-head-bg);
-  color: var(--ink-dark);
+  color: var(--ink);
 }
 
 /* Range column: mono, centred, ruled off from the results. */
@@ -565,7 +565,7 @@
 
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
-  --dc-accent-ink: var(--brand-magenta-deep);  /* 5.8:1 on the concrete sheet */
+  --dc-accent-ink: var(--brand-magenta-deep);  /* 7.5:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
   border-right: 2px solid var(--dc-pullquote-accent-soft);
@@ -746,14 +746,14 @@
 .dc-definition-block > h4:not(:first-child) {
   margin-top: 8pt;
   padding-top: 7pt;
-  border-top: 1px solid var(--dc-definition-block-accent);
+  border-top: 1pt solid var(--dc-definition-block-accent);
 }
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
 }
 .dc-definition-block hr {
   border: none;
-  border-top: 1px solid var(--dc-definition-block-accent);
+  border-top: 1pt solid var(--dc-definition-block-accent);
   margin: 7.5pt 0;
 }
 
@@ -771,7 +771,7 @@
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid var(--paper-aged);
+  border: 1pt solid var(--paper-aged);
   pointer-events: none;
 }
 
@@ -812,7 +812,7 @@
 }
 
 .dc-stat-cell {
-  border-right: 1px solid var(--paper-aged);
+  border-right: 1pt solid var(--paper-aged);
   padding: 4px 8px 6px;
   text-align: center;
   display: flex;
@@ -924,11 +924,11 @@ table.dc-stat-strip {
 .dc-toc ol>li {
   position: relative;
   padding: 10px 4px 10px 56px;
-  border-bottom: 1px solid var(--hud-blue-dim);
+  border-bottom: 1pt solid var(--hud-blue-dim);
   counter-increment: dc-toc;
   font-size: var(--fs-body-sm);
   line-height: 1.4;
-  color: var(--ink-smoke);
+  color: var(--ink);
   font-style: italic;
   list-style: none;
   break-inside: avoid;

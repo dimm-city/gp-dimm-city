@@ -180,27 +180,27 @@ Note: there are no `.dc-accent-X` utility classes. Retheme a chapter by setting 
 
 ## Color Palette Pillars
 
-Tokens are organized in layers. New projects override the pillar layer only where brand identity differs; everything else inherits automatically.
+Tokens are organized in layers. New projects override the pillar layer only where brand identity differs; everything else inherits automatically. Each colour's CMYK and total ink through the CGATS21_CRPC1 press profile is in its comment in `styles/dc-palette.css` / `dc-identity.css` and in [constitution §V](./constitution.md); `scripts/measure-palette-crpc1.py` measures them.
 
 ### Surface / Paper
 | Token | Value | Role |
 |---|---|---|
 | `--bg` | `#c8c5bf` | Ash-concrete page background |
 | `--concrete-pale` | `#dcdad5` | Pale concrete — cold-grey panels |
-| `--paper-form` | `#f5f3ee` | The `choose` form's sheet, a hair lighter than cream |
+| `--paper-form` | `→ --paper-cream` | The `choose` form's sheet: white |
 | `--paper-cream` | `#ffffff` | White, no ink — primary text surface |
-| `--paper-zine` | `#e9e6e0` | Printed-page neutral — fiction excerpt, shard block |
-| `--paper-light` | `#ffffff` | White, no ink — secondary layered panel surface; the lede |
-| `--paper-aged` | `#c8c2b8` | Weathered grey — decay register; label and rule grounds |
+| `--paper-zine` | `→ --concrete-pale` | The grey printed page — fiction excerpt, shard block |
+| `--paper-light` | `→ --paper-cream` | White, no ink — secondary layered panel surface; the lede |
+| `--paper-aged` | `→ --concrete-pale` | Label and chip grounds (field chips, `code`, outcome rows) |
 | `--paper-stain` | `#b0a89c` | Deep stain — dark inset wells and label strips; never body text |
 
 ### Ink / Text
 | Token | Value | Role |
 |---|---|---|
-| `--ink` | `#1e1d1c` | Near-black with red bias |
-| `--ink-dark` | `#2f2622` | Secondary heading weight |
-| `--ink-smoke` | `#4d4339` | Body emphasis mid-tone |
-| `--ink-dust` | `#665b4e` | Muted body/captions |
+| `--ink` | `#1e1d1c` | Near-black with red bias — body and all small text, hairlines |
+| `--ink-dark` | `#2f2622` | Fills and heavy rules (not small text: four plates) |
+| `--ink-smoke` | `#4d4339` | Mid-tone fills and rails |
+| `--ink-dust` | `#665b4e` | Fallback rail; not a text colour |
 
 ### Industrial Warm (reds, oranges)
 | Token | Value | Role |
@@ -217,12 +217,12 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Brand Cyber
 | Token | Value | Role |
 |---|---|---|
-| `--brand-magenta` | `#c026d3` | Dimm.city signature cyber-magenta |
-| `--brand-magenta-deep` | `#8a0a9a` | Small-text-on-fill safe version |
+| `--brand-magenta` | `#bf308f` | Dimm.city signature magenta, pink and inside the press gamut |
+| `--brand-magenta-deep` | `#76115e` | Small-text-on-fill safe version |
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
-| `--brand-violet` | `#7030b8` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
-| `--signal-indigo` | `#4430e0` | Electric indigo — wirephreak accent |
+| `--brand-violet` | `#5d3b88` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
+| `--signal-indigo` | `#4b65ab` | Indigo — wirephreak accent |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -232,7 +232,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--hud-blue-bright` | `→ --brand-cyan` | Neon accent alias (5 consumers) |
 | `--hud-blue-dim` | `#7ab8d0` | Visible cream panel tint |
 | `--hud-magenta` | `→ --brand-magenta` | Brand-magenta alias (29 consumers) |
-| `--hud-panel` | `#eeece8` | Neutral cream — callouts, note bars |
+| `--hud-panel` | `→ --concrete-pale` | The default specialty-intro panel |
 
 ### Ecological / Organic
 | Token | Value | Role |
@@ -243,7 +243,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Crystal / Mineral
 | Token | Value | Role |
 |---|---|---|
-| `--crystal-amethyst` | `#6a3a8a` | Deep mineral violet (treasure tint) |
+| `--crystal-amethyst` | `#835198` | Mineral violet (treasure tint) |
 | `--crystal-slate` | `#52626f` | Cool slate stone — generalist accent |
 | `--crystal-aqua` | `#4a98a8` | Pale crystalline aquamarine |
 
@@ -252,8 +252,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 |---|---|---|
 | `--shadow-poster` | `2pt 3pt 0 var(--shadow-ink)` | Card drop shadow: a hard offset |
 | `--shadow-ink` | `color-mix(in srgb, var(--ink) 28%, transparent)` | Translucent shadow colour, so the wall darkens under it (the source of `--shadow-poster`) |
-| `--tint-magenta-rose` | `#e6007a` | Pullquote accent / paper-stain rule mix source |
-| `--tint-hud-teal` | `#2a6a8a` | Inset-sidebar callout mix source |
+| `--tint-magenta-rose` | `→ --brand-magenta` | Pullquote accent mix source |
+| `--tint-hud-teal` | `→ --hud-blue` | Former mix source (alias) |
 
 ---
 
@@ -279,7 +279,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-alert-bg` | `--hud-blue-dim` | Panel background |
 | `--dc-alert-border` | `--hud-blue-dark` | Left-rail border color |
 | `--dc-alert-fg` | `--ink` | Body text color |
-| `--dc-alert-label-color` | `--ink-dark` | Label chip text |
+| `--dc-alert-label-color` | `--ink` | Label chip text |
 | `--dc-alert-border-width` | `4px` | Left-rail width |
 | `--dc-alert-label-size` | `10pt` (`--fs-floor`) | Label chip font size |
 | `--dc-alert-frame` | `none` | An inset ring (the warning's ink frame) |
@@ -298,16 +298,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 ### Inline chips and tape (`.dc-tag`, `.dc-tape`, `.dc-spray`)
 | Token | Default | Role |
 |---|---|---|
-| `--dc-tag-bg` / `-fg` / `-border` | `--paper-cream` / `--ink-dark` / `--ink-dark` | The keyword chip |
+| `--dc-tag-bg` / `-fg` / `-border` | `--paper-cream` / `--ink` / `--ink` | The keyword chip |
 | `--dc-tape-bg` | 30% `--brand-yellow` in `--paper-aged` | Masking-tape fill |
-| `--dc-tape-border` / `-color` | `--ink-dark` / `--ink` | Tape edges and label |
+| `--dc-tape-border` / `-color` | `--ink` / `--ink` | Tape edges and label |
 | `--dc-tape-shape` | torn-end polygon | Tape clip-path |
 | `--dc-spray-stencil` | `--ink-dark` | The dashed stencil line along a spray tag's foot |
 
 ### Choice Card, Faction, Entry (`.dc-card`, `.dc-faction`, `.dc-entry`)
 | Token | Default | Role |
 |---|---|---|
-| `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink 8% in cream / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
+| `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink-dark 18% in cream (oklch) / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
 | `--dc-choice-edge` / `-band` / `-rail` | `1.5pt solid --ink-dark` / `5px` / `6px` | The card's border and the weight of its top band and left rail (flaw: 2pt solid, 9px; dream: a 4pt double edge, 3px band) |
 | `--dc-faction-surface` / `-band` / `-band-height` / `-title` | `--paper-cream` / HUD-blue band image / `8pt` / `--hud-blue-dark` | A faction's sheet, top band (an image: `linear-gradient(c, c)` for solid) and name colour; each kind sets all of them |
 | `--dc-entry-radius` / `-mark` / `-mark-size` / `-frame` | `0` / `none` / `auto` / `none` | An entry kind's corner radius, background mark (eyelet, facet, hazard head) and inset keyline |
@@ -340,7 +340,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-specialty-intro-title-bg` | `--hud-magenta` | Title bar background |
-| `--dc-specialty-intro-title-color` | `--bg` | Title bar text |
+| `--dc-specialty-intro-title-color` | `--paper-cream` | Title bar text |
 | `--dc-specialty-intro-bg` | `--hud-panel` | Panel background |
 | `--dc-specialty-intro-h3-color` | `--blood` | `###` heading text and its underline; each specialty sets its `--spec-ink` |
 | `--dc-band-rule` / `-rule-h` / `-rule-art` | `--hud-magenta` / `3px` / `none` | The rule under the band: colour, height, hard-edged pattern |
@@ -398,12 +398,12 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 |---|---|---|---|
 | Augmerc | `--brand-cyan` (`#00bcd4`) | `#006878` | `#003a40` |
 | Technosorcerer | `--orange` (`#d4500a`) | `#7a3008` | `#4c290f` |
-| Streetwarden | `#4db840` | `#347828` | `#294c1f` |
-| Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `#394017` |
-| Cybersurgeon | `#a8b4b8` | `#606870` | `#303840` |
-| Wirephreak | `--signal-indigo` (`#4430e0`) | `#2f2290` | `#1e0f50` |
-| Proxy | `--brand-magenta` (`#c026d3`) | `#9a1896` | `#8a1a90` |
+| Streetwarden | `#4db840` | `#347828` | `→ --fungi-rot` (`#30461e`) |
+| Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `→ --fungi-rot` (`#30461e`) |
+| Cybersurgeon | `#a8b4b8` | `→ --crystal-slate` (`#52626f`) | `#303840` |
+| Wirephreak | `--signal-indigo` (`#4b65ab`) | `#1c327d` | `#1e0f50` |
+| Proxy | `--brand-magenta` (`#bf308f`) | `#9a227d` | `→ --brand-magenta-deep` (`#76115e`) |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
-| Dualist | `--crystal-aqua` (`#4a98a8`) | `#2a6878` | `#143a4a` |
+| Dualist | `--crystal-aqua` (`#4a98a8`) | `→ --augmerc-mid` (`#006878`) | `#143a4a` |
 | Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |
 

@@ -259,30 +259,35 @@ hierarchy: color → typography → spacing → geometry.
 
 ```css
 /* Semantic brand colors — names carry meaning, not just hex values */
---crimson:        #e1261c;  /* PMS Red 032 — CMYK 0 95 90 0; survives POD */
+--crimson:        #e1261c;  /* PMS Red 032; survives POD */
 --blood:          #901a12;  /* oxidised arterial — heading color */
 --orange:         #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone */
 --rust:           #b23a12;  /* burnt rebar edge */
 --amber:          #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth */
---hud-blue:       #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
+--hud-blue:       #1f6f94;  /* teal-cyan mid HUD */
 
-/* Print substrate — neutral-cool greys, not warm cream */
+/* Print substrate — three: white paper, one light grey, the wall */
 --bg:             #c8c5bf;  /* ash-concrete — the brick wall (page background) */
+--concrete-pale:  #dcdad5;  /* the one light grey */
 --paper-cream:    #ffffff;  /* white, no ink — primary card surface */
---paper-light:    #ffffff;  /* white, no ink — alternate surface */
---paper-aged:     #c8c2b8;  /* weathered grey — decay register */
+--paper-light:    var(--paper-cream);    /* alias */
+--paper-aged:     var(--concrete-pale);  /* alias — chip and label grounds */
 
 /* Ink scale — warm sepia drift, not neutral gray */
---ink:            #1e1d1c;  /* near-black with red bias — riso warm black */
---ink-dark:       #2f2622;  /* warmer secondary heading weight */
---ink-smoke:      #4d4339;  /* sepia mid-tone — body emphasis */
---ink-dust:       #665b4e;  /* muted labels, subtitles */
+--ink:            #1e1d1c;  /* near-black with red bias — body, all small text, hairlines */
+--ink-dark:       #2f2622;  /* fills and heavy rules (prints on four plates) */
+--ink-smoke:      #4d4339;  /* sepia mid-tone — fills and rails */
+--ink-dust:       #665b4e;  /* fallback rail */
 ```
 
 These are the live values in `dc-palette.css` — that file, not this document, is the
 source of truth for token values. `dc-palette.css` also carries tokens omitted above
-(`--concrete-pale`, `--paper-stain`, `--orange-deep`, `--ink-mid`, `--deep-rust`,
-`--amber-dark`, the `--brand-*` signature layer); consult it before adding a color.
+(`--paper-stain`, `--orange-deep`, `--ink-mid`, `--deep-rust`, `--amber-dark`, the
+`--brand-*` signature layer); consult it before adding a color. Each hex token's
+comment carries its CMYK and total ink through the CGATS21_CRPC1 press profile; a
+new or retuned colour is measured with `scripts/measure-palette-crpc1.py` and must
+pass the print rules in [constitution §V](./constitution.md) (gamut, separation
+after conversion, tints `in oklch`, hairlines >= 1pt in ink, small text in `--ink`).
 
 Color token names are semantic — `--blood` is not "dark red", it is the specific
 heading-level red chosen because `--crimson` fails WCAG AA contrast (2.71:1) against
@@ -601,7 +606,7 @@ an h3:
 /* components/entries.css — general gear's italic tagline */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   margin: 0 0 6px;
 }
 ```

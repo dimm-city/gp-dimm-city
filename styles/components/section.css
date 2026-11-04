@@ -408,7 +408,7 @@ h3 + .dc-section-panel {
 /* ── reference — a look-up ────────────────────────────────────────────────── */
 .dc-section-reference {
   --dc-section-accent: var(--hud-blue-dark);
-  --dc-section-bg: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
+  --dc-section-bg: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-section-clip: 7px;
   --dc-section-cut-tl: 7px;
   --dc-section-cut-br: 7px;
@@ -423,7 +423,7 @@ h3 + .dc-section-panel {
 .dc-section-reference {
   --dc-section-bar-mix: 0%;
   --dc-section-bar-tone: var(--hud-blue-dim);
-  --dc-section-bar-fg: var(--ink-dark);
+  --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--ink-dark);
   --dc-section-bar-rule-sub: 3pt double var(--ink-dark);
 }
@@ -441,7 +441,7 @@ h3 + .dc-section-panel {
 }
 .dc-section-reference th {
   background: var(--hud-blue-dim);
-  color: var(--ink-dark);
+  color: var(--ink);
   padding: 3px 8px;
 }
 .dc-section-reference td {
@@ -501,7 +501,7 @@ h3 + .dc-section-panel {
    slash eats at text height) and the right padding clears the steep one. */
 .dc-section-lore {
   --dc-section-accent: var(--brand-violet);
-  --dc-section-bg: color-mix(in srgb, var(--brand-violet) 7%, var(--paper-cream));
+  --dc-section-bg: color-mix(in oklch, var(--brand-violet) 22%, var(--paper-cream));
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 30px;
   --dc-section-cut-br: 16px;
@@ -689,14 +689,14 @@ h3 + .dc-section-panel {
   transform: rotate(-2deg);
 }
 .dc-section-choose td {
-  border-bottom: 1pt dotted var(--ink-dust);
+  border-bottom: 1pt dotted var(--ink);
 }
 .dc-section-choose tr:nth-child(odd) td,
 .dc-section-choose tr:nth-child(even) td {
   background: var(--dc-section-bg);
 }
 .dc-section-choose li {
-  border-bottom: 1pt dotted var(--ink-dust);
+  border-bottom: 1pt dotted var(--ink);
   padding-bottom: 0.02in;
 }
 .dc-section-choose li::before,
@@ -875,7 +875,7 @@ h3 + .dc-section-panel {
   --dc-block-title-bg:  var(--paper-stain);
   --dc-block-title-fg:  var(--ink);
   --dc-block-title-rule: 2pt solid var(--ink-smoke);
-  --dc-accent-ink: var(--ink-smoke);
+  --dc-accent-ink: var(--ink);
   background: var(--paper-zine);
   padding-bottom: calc(var(--space-lg) + 4px);
   box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
@@ -921,12 +921,12 @@ h3 + .dc-section-panel {
   text-transform: uppercase;
   letter-spacing: var(--ls-heading);
   margin-bottom: var(--space-xs);
-  color: var(--ink-dark);
+  color: var(--ink);
 }
 
 .dc-card-pull {
   font-style: italic;
-  color: var(--ink-mid);
+  color: var(--ink);
   margin-bottom: var(--space-xs);
   font-size: var(--fs-sm);
 }
@@ -948,7 +948,7 @@ h3 + .dc-section-panel {
   padding-left: 0;
   margin-top: var(--space-xs);
   font-size: var(--fs-sm);
-  color: var(--ink-mid);
+  color: var(--ink);
   font-style: italic;
 }
 
@@ -1028,7 +1028,7 @@ h3 + .dc-section-panel {
   --dc-choice-edge: 2pt solid var(--ink-dark);
   --dc-choice-band: 9px;
   --dc-choice-rail: 9px;
-  --dc-choice-tint: color-mix(in srgb, var(--blood) 13%, var(--paper-light));
+  --dc-choice-tint: color-mix(in oklch, var(--blood) 18%, var(--paper-light));
   --dc-choice-kind: "Flaw";
   --dc-accent-ink: var(--blood);
   --dc-card-shape: polygon(0 0, calc(100% - 40px) 0, 100% 26px, 100% calc(100% - 9px), 94% 100%, 88% calc(100% - 13px), 80% calc(100% - 2px), 71% calc(100% - 12px), 63% calc(100% - 3px), 52% calc(100% - 13px), 41% calc(100% - 1px), 33% calc(100% - 11px), 22% calc(100% - 2px), 12% calc(100% - 12px), 5% calc(100% - 1px), 0 calc(100% - 8px));
@@ -1043,7 +1043,7 @@ h3 + .dc-section-panel {
 .section.dc-ideals {
   --dc-choice-accent: var(--hud-blue-dark);
   --dc-choice-surface: var(--paper-cream);
-  --dc-choice-tint: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
+  --dc-choice-tint: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-choice-kind: "Ideal";
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 14px), calc(100% - 14px) 50%, 100% calc(50% + 14px), 100% 100%, 0 100%, 0 calc(50% + 14px), 14px 50%, 0 calc(50% - 14px));
@@ -1060,7 +1060,7 @@ h3 + .dc-section-panel {
   --dc-choice-surface: var(--paper-form);
   --dc-choice-edge: 4pt double var(--ink-dark);
   --dc-choice-band: 3px;
-  --dc-choice-tint: color-mix(in srgb, var(--brand-violet) 10%, var(--paper-form));
+  --dc-choice-tint: color-mix(in oklch, var(--brand-violet) 25%, var(--paper-form));
   --dc-choice-kind: "Dream";
   --dc-accent-ink: var(--brand-violet);
   --dc-card-shape: polygon(0 30px, 100% 0, 100% 100%, 72% 100%, calc(72% - 9px) calc(100% - 9px), calc(72% - 18px) 100%, 32% 100%, calc(32% - 9px) calc(100% - 9px), calc(32% - 18px) 100%, 0 100%);
@@ -1141,7 +1141,7 @@ h3 + .dc-section-panel {
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-faction-shape: polygon(0 0, calc(100% - 16px) 0, calc(100% - 16px) 8px, 100% 8px, 100% 100%, 16px 100%, 16px calc(100% - 8px), 0 calc(100% - 8px));
   --dc-faction-badge-shape: none;
-  --dc-faction-surface: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
+  --dc-faction-surface: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-faction-band: inset 0 6pt 0 0 var(--hud-blue-dark), inset 0 8pt 0 0 var(--brand-cyan);
   --dc-faction-title: var(--hud-blue-dark);
 }
@@ -1154,7 +1154,7 @@ h3 + .dc-section-panel {
   --dc-faction-accent: var(--brand-violet);
   --dc-accent-ink: var(--brand-violet);
   --dc-faction-shape: polygon(0 0, calc(100% - 60px) 0, 100% 18px, 100% 100%, 16px 100%, 0 calc(100% - 50px));
-  --dc-faction-surface: color-mix(in srgb, var(--brand-violet) 9%, var(--paper-cream));
+  --dc-faction-surface: color-mix(in oklch, var(--brand-violet) 25%, var(--paper-cream));
   --dc-faction-band: inset 0 10pt 0 0 color-mix(in srgb, var(--brand-violet) 72%, var(--ink)), inset 0 -5px 0 0 var(--brand-violet);
   --dc-faction-band-height: 10pt;
   --dc-faction-pad-bottom: calc(10pt + 5px);
@@ -1167,7 +1167,7 @@ h3 + .dc-section-panel {
   --dc-faction-accent: var(--blood);
   --dc-accent-ink: var(--blood);
   --dc-faction-shape: polygon(0% 0px, 7.14% 4px, 14.29% 0px, 21.43% 7px, 28.57% 0px, 35.71% 7px, 42.86% 0px, 50% 4px, 57.14% 0px, 64.29% 5px, 71.43% 0px, 78.57% 7px, 85.71% 0px, 92.86% 6px, 100% 0px, 100% 100%, 92.86% calc(100% - 7px), 85.71% 100%, 78.57% calc(100% - 3px), 71.43% 100%, 64.29% calc(100% - 7px), 57.14% 100%, 50% calc(100% - 3px), 42.86% 100%, 35.71% calc(100% - 6px), 28.57% 100%, 21.43% calc(100% - 5px), 14.29% 100%, 7.14% calc(100% - 7px), 0% 100%);
-  --dc-faction-surface: color-mix(in srgb, var(--blood) 9%, var(--paper-cream));
+  --dc-faction-surface: color-mix(in oklch, var(--blood) 18%, var(--paper-cream));
   --dc-faction-band: inset 0 12pt 0 0 var(--blood);
   --dc-faction-band-height: 12pt;
   --dc-faction-pad-bottom: 14pt;
@@ -1268,7 +1268,7 @@ h3 + .dc-section-panel {
      --dc-npc-stat-rule-width   → name top-rule weight (default 2pt)
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
-     --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
+     --dc-npc-stat-secondary    → secondary stat-line color (default --ink)
      --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Its shape: both right corners cut, a dossier's edge. */
@@ -1352,7 +1352,7 @@ h3 + .dc-section-panel {
   border-color: var(--dc-npc-stat-rule);
   padding: 2pt 0 2pt 10pt;
   margin: 0.06in 0;
-  color: var(--ink-smoke);
+  color: var(--ink);
 }
 
 .dc-npc-stat h5 {
@@ -1412,7 +1412,7 @@ h3 + .dc-section-panel {
   color: var(--dc-npc-stat-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-bottom: 0.75pt solid var(--ink-dust);
+  border-bottom: 1pt solid var(--ink);
   padding-bottom: 0.05in;
   margin-bottom: 0.06in;
 }

@@ -16,7 +16,7 @@
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
-  border: 1px solid var(--dc-tag-border);
+  border: 1pt solid var(--dc-tag-border);
   padding: 1px 7px 0;
   margin: 0 2px;
   vertical-align: baseline;
@@ -240,7 +240,7 @@ h1.dc-chevron {
 
 /* ── Flavor (italic flavor text) ──────────────────────────────────────────
    Token contract:
-     --dc-flavor-color         → text color (default --ink-dark)
+     --dc-flavor-color         → text color (default --ink)
      --dc-flavor-accent        → left-rail color (default --orange)
      --dc-flavor-accent-width  → left-rail weight (default 3px)
 */
@@ -272,7 +272,7 @@ h1.dc-chevron {
   color: var(--hud-blue);
   margin: 6px 0 3px;
   padding-top: 4px;
-  border-top: 1px solid var(--hud-blue-dim);
+  border-top: 1pt solid var(--hud-blue-dim);
 }
 
 
@@ -326,11 +326,11 @@ h1.dc-chevron {
   font-size: 15px;
   letter-spacing: 0.05em;
   line-height: 1.3;
-  /* Neutral --ink-dark for text + bottom-rule (--blood would read as
+  /* Neutral --ink for text + bottom-rule (--blood would read as
      "warning/wound", too strong for a structural section label), with
      --brand-magenta as the left-rail accent so the brand color anchors the
      element without taking the text color hostage. */
-  color: var(--ink-dark);
+  color: var(--ink);
   /* A paper strip behind the title: a spec-tweak is never set straight on the
      wall (inside a panel it is paper on paper). */
   background: var(--paper-cream);

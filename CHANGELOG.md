@@ -7,6 +7,67 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.2] - 2026-11-04
+
+A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
+([docs/print-colour-audit.md](docs/print-colour-audit.md)). Colour, tokens and
+documentation only: no component's markup or structure changes, and every old
+token name still works.
+
+### Changed
+
+- **The paper is white.** `--paper-cream` and `--paper-light` are `#ffffff`, the
+  unprinted stock with no ink (was `#f0eee9` and `#e2ded7`).
+- **Three substrates.** White paper, `--concrete-pale` and the wall. `--paper-light`
+  and `--paper-form` are aliases of `--paper-cream`. `--paper-zine`, `--hud-panel` and
+  `--paper-aged` are aliases of `--concrete-pale`. `--paper-form` had become
+  darker than the paper it was meant to sit just under, and `--paper-aged` was
+  dE 1.0 from the wall; it is now 6.4 off it, so field chips, `code` and outcome
+  rows stand off the wall.
+- **The purples are re-spaced inside the press gamut.** In print, magenta-deep,
+  violet, amethyst and Proxy's dark all came out as one plum (within dE 1.4-3.8).
+  New values: `--brand-magenta` `#bf308f` (pink), `--brand-magenta-deep`
+  `#76115e`, `--proxy-mid` `#9a227d`, `--crystal-amethyst` `#835198`,
+  `--brand-violet` `#5d3b88`, `--signal-indigo` `#4b65ab` (lighter, bluer),
+  `--wirephreak-mid` `#1c327d`. Each prints within dE 3.4 of the screen and
+  stays at least 8.3 from the others after conversion. Every text pairing on
+  them still holds 4.5:1 or more.
+- **Near-duplicate colours are aliases:** `--proxy-dark` is `--brand-magenta-deep`,
+  `--streetwarden-dark` and `--gutterdruid-dark` are `--fungi-rot`, `--dualist-mid`
+  is `--augmerc-mid`, `--cybersurgeon-mid` is `--crystal-slate`,
+  `--tint-magenta-rose` is `--brand-magenta` and `--tint-hud-teal` is `--hud-blue`.
+- **Paper tints hold a printable dot.** On white paper the `color-mix()` callout,
+  section, faction, choice and entry surfaces had a dominant ink of 2-4%,
+  which does not hold on Indigo or inkjet presses. Each now mixes `in oklch` at
+  a share that gives 9-12%. Examples: vibe and lore violet go from 6-7% to 22%,
+  the HUD-blue surfaces from 12-22% to 30%, and warning yellow from 14% to 25%.
+- **Small text is `--ink`.** Labels, heading slips, tags, flavour lines, entry
+  names, h4-h6, `em`, the contents list and NPC secondary lines used `--ink-dark`,
+  `--ink-smoke`, `--ink-mid` or `--ink-dust`, which print on four plates. They now
+  use `--ink`, which Gutterpress's k-only pass prints in black alone.
+  `--ink-dark` stays on fills and rules.
+- **Hairlines are at least 1pt.** Every 1px or 0.75pt rule is now 1pt. The dark
+  ones are `--ink`. `--border-hairline`, which draws the column rule and the
+  table rule, is an alias of `--ink`, and the AP chip, tag, tape and heading-slip
+  edges default to `--ink`.
+- **Every CMYK and TAC figure is re-measured through CGATS21_CRPC1.** This covers
+  the token comments, constitution §V and the palette chapter's swatches. The
+  old figures came from Ghostscript's default profile (`#000` = 295%), which
+  Ghostscript 10.02.1 (Ubuntu 24.04's package) uses even when the CRPC1
+  profile is given; 10.06.0 honours the profile and produces the new figures,
+  and gutterpress (#495) warns when a build's Ghostscript did not. The
+  production rule is now "TAC 240%, enforced by the CGATS21_CRPC1 profile"; no
+  token exceeds 214%. The SWOP/GRACoL target is gone.
+  `scripts/measure-palette-crpc1.py` (Python 3 + Pillow) produces the figures,
+  and constitution §V says how they are measured.
+
+### Fixed
+
+- The specialty-intro title's default type is cream. The old default, `--bg` on
+  magenta, was 2.73:1.
+- The visit callout's green is 85% rot, so its fungi-glow accent ink holds 5.0:1
+  (was 4.42:1).
+
 ## [1.10.1] - 2026-11-03
 
 ### Added

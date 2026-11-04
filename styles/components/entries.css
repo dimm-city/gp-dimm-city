@@ -109,7 +109,7 @@
 /* The tagline: a blockquote straight after the name is a line, not a box. */
 .dc-entry > :is(h3, h4):first-child + blockquote {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   background: none;
   border: 0;
   padding: 0;
@@ -173,7 +173,7 @@
 .dc-augment {
   --dc-entry-accent: var(--brand-cyan);
   --dc-entry-ink: var(--hud-blue-dark);
-  --dc-entry-surface: color-mix(in srgb, var(--hud-blue-dim) 12%, var(--paper-cream));
+  --dc-entry-surface: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-entry-kind: "Augment";
   --dc-entry-rule: 3px;
   --dc-entry-rail: 3px;
@@ -183,19 +183,19 @@
   --dc-entry-badge-shape: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* TREASURE — a gem: violet (6.5:1 on cream), an eight-sided cut, one hard
+/* TREASURE — a gem: violet (8.6:1 on cream), an eight-sided cut, one hard
    facet across the face (a flat-tone polygon layer behind the text), a
    hexagonal badge. */
 .dc-treasure {
   --dc-entry-accent: var(--brand-violet);
   --dc-entry-ink: var(--brand-violet);
-  --dc-entry-surface: color-mix(in srgb, var(--crystal-amethyst) 10%, var(--paper-cream));
+  --dc-entry-surface: color-mix(in oklch, var(--crystal-amethyst) 25%, var(--paper-cream));
   --dc-entry-kind: "Treasure";
   --dc-entry-rail: 5px;
   --dc-entry-shape: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
   --dc-entry-ornament: "";
   --dc-entry-orn-inset: 0;
-  --dc-entry-orn-bg: color-mix(in srgb, var(--crystal-amethyst) 17%, var(--paper-cream));
+  --dc-entry-orn-bg: color-mix(in oklch, var(--crystal-amethyst) 40%, var(--paper-cream));
   --dc-entry-orn-clip: polygon(62% 0, 100% 0, 100% 100%, 38% 100%);
   --dc-entry-orn-z: -1;
   --dc-entry-badge-bg: var(--brand-violet);
@@ -208,7 +208,7 @@
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
-  --dc-entry-ink: var(--ink-dark);
+  --dc-entry-ink: var(--ink);
   --dc-entry-surface: var(--concrete-pale);
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
@@ -229,7 +229,7 @@
 .dc-drug {
   --dc-entry-accent: var(--fungi-rot);
   --dc-entry-ink: var(--fungi-rot);
-  --dc-entry-surface: color-mix(in srgb, var(--fungi-glow) 24%, var(--paper-cream));
+  --dc-entry-surface: color-mix(in oklch, var(--fungi-glow) 24%, var(--paper-cream));
   --dc-entry-kind: "Rx \00B7  Drug";
   --dc-entry-rail: 6px;
   --dc-entry-rule: 7px;
@@ -243,7 +243,7 @@
    price tag (a raised rust-edged box). */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   margin: 0 0 6px;
 }
 .dc-gear > p:has(> strong:only-child) {
@@ -431,12 +431,12 @@
    blood frame on a pale blood ground with a – on its chip. */
 .dc-field-effects {
   --dc-field-accent: var(--hud-blue-dark);
-  --dc-field-surface: color-mix(in srgb, var(--hud-blue-dim) 38%, var(--paper-cream));
+  --dc-field-surface: color-mix(in oklch, var(--hud-blue-dim) 38%, var(--paper-cream));
   --dc-field-edge-width: 1pt;
 }
 .dc-field-side-effects {
   --dc-field-accent: var(--blood);
-  --dc-field-surface: color-mix(in srgb, var(--crimson) 14%, var(--paper-cream));
+  --dc-field-surface: color-mix(in oklch, var(--crimson) 22%, var(--paper-cream));
   --dc-field-edge-width: 1pt;
   --dc-field-edge-style: dashed;
 }

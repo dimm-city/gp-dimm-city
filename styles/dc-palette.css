@@ -3,15 +3,18 @@
 /* ── DESIGN TOKENS ────────────────────────────────────────────────────────── */
 :root {
 
-  /* ── Page & Paper — neutral-cool greys, "industrial flyer paper / printer stock" ── */
-  --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) · TAC 61% (C21 M18 Y22 K0) */
-  --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 35% (C12 M10 Y13 K0) */
+  /* ── Page & Paper — three substrates: white paper, one light grey, the wall ──
+     White paper (--paper-cream), --concrete-pale, and the wall (--bg). The
+     other paper names are aliases of those three, kept because components
+     and books read them (print colour audit, finding 2C). */
+  --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) · TAC 38% (C14 M11 Y13 K0) */
+  --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 25% (C9 M7 Y9 K0) */
   --paper-cream:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
-  --paper-form:   #f5f3ee;  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen · TAC 10% (C2 M2 Y5 K0) */
-  --paper-zine:   #e9e6e0;  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream · TAC 24% (C7 M7 Y10 K0) */
-  --paper-light:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
-  --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
-  --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
+  --paper-form:   var(--paper-cream);  /* alias: the choose form and definition sheets print on the white stock */
+  --paper-zine:   var(--concrete-pale);  /* alias: the fiction excerpt and shard sheets, the grey printed page */
+  --paper-light:  var(--paper-cream);  /* alias: white, the unprinted stock */
+  --paper-aged:   var(--concrete-pale);  /* alias: label and chip grounds (field chips, code, outcome rows); dE 6.4 off the wall, where #c8c2b8 was 1.0 */
+  --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 61% (C19 M16 Y22 K4) */
   /* Poster-wall shadow — a hard offset that pins paper-register components to
      the wall as physical objects ("stuck on the wall", not "embedded in the
      page"), over a soft lift (below).
@@ -38,63 +41,70 @@
   --light-gloss: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, transparent), transparent 62%);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────
-     TAC figures in this file are MEASURED, not estimated: a swatch PDF
-     converted with the build's own Ghostscript arguments and CGATS21_CRPC1
-     profile (gutterpress convertToPdfxCmyk), then the CMYK fill operator read
-     back. That conversion builds dark RGB as a heavy four-colour black: raw
-     #000 comes out C72 M68 Y67 K88 = 295%, so a "black" token is over the 280%
-     ceiling unless it is lifted off black. House target: every token <= 270%.
-
+     CMYK and TAC in this file are the token converted through the press
+     profile the build uses, CGATS21_CRPC1 (DriveThruRPG's), with LittleCMS,
+     perceptual intent: scripts/measure-palette-crpc1.py. Ghostscript, which
+     the build converts with, was not run; this method agrees with
+     gutterpress #331's measured build to within ~10% TAC (#000: build
+     C47 M42 Y40 K100 = 229%, this method C50 M46 Y44 K100 = 240%). They
+     need a Ghostscript that honours the profile: 10.06.0 does; 10.02.1
+     (Ubuntu 24.04's) ignores it and separates through its default CMYK
+     profile (#000 = 295%, the figures here before 1.10.2); gutterpress
+     #495 warns when a build did that. The profile caps TAC at 240%, the
+     vendors' limit; no token exceeds 214%.
+     Small text takes --ink: the k-only pass prints it in black alone.
      -------------------------------------------------------------------- */
-  --ink:        #1e1d1c;  /* near-black with red bias — riso warm black · TAC 278% (C69 M66 Y67 K76) */
-  --ink-dark:   #2f2622;  /* warmer secondary heading weight · TAC 266% (C61 M66 Y69 K69) */
-  --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis · TAC 231% (C57 M60 Y68 K47) */
-  --ink-mid:    #594f43;  /* between smoke and dust — secondary card text · TAC 217% (C55 M56 Y67 K38) */
-  --ink-dust:   #665b4e;  /* 6.62:1 on paper-cream #ffffff · TAC 200% (C53 M54 Y64 K29) */
+  --ink:        #1e1d1c;  /* near-black with red bias — riso warm black; all small text · TAC 196% (C42 M36 Y33 K85) */
+  --ink-dark:   #2f2622;  /* fills and rules, not small text (prints on four plates) · TAC 181% (C36 M36 Y33 K76) */
+  --ink-smoke:  #4d4339;  /* sepia mid-tone — fills (fiction cavity, block accents) · TAC 157% (C32 M33 Y37 K55) */
+  --ink-mid:    #594f43;  /* between smoke and dust; no package rule reads it · TAC 147% (C31 M31 Y38 K47) */
+  --ink-dust:   #665b4e;  /* the outcome row's fallback rail; no longer a text colour · TAC 134% (C30 M29 Y37 K38) */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
-  --crimson:    #e1261c;  /* PMS Red 032; survives POD · TAC 203% (C5 M98 Y100 K0) */
-  --blood:      #901a12;  /* oxidised arterial — 5.2:1 on paper-cream · TAC 254% (C27 M99 Y100 K28) */
-  --orange:     #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone · TAC 195% (C11 M82 Y100 K2) */
-  --orange-deep: #a03808; /* burnt fire-deep — paper-cream 5.25:1 (deeper variant for small-text-on-fill contexts) · TAC 233% (C25 M88 Y100 K20) */
-  --rust:       #b23a12;  /* burnt rebar edge · TAC 222% (C21 M89 Y100 K12) */
-  --amber:      #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth · TAC 227% (C41 M57 Y100 K29) */
-  --deep-rust:  #70200e;  /* shadow rust — deepest warm dark · TAC 268% (C32 M91 Y100 K45) */
-  --amber-dark: #5c3c10;  /* charred amber — follows amber down · TAC 258% (C44 M66 Y100 K49) */
+  --crimson:    #e1261c;  /* PMS Red 032; survives POD · TAC 187% (C0 M93 Y93 K1) */
+  --blood:      #901a12;  /* oxidised arterial — 9.0:1 on paper · TAC 190% (C0 M88 Y65 K37) */
+  --orange:     #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone · TAC 173% (C0 M71 Y98 K4) */
+  --orange-deep: #a03808; /* burnt fire-deep — 6.9:1 on paper (deeper variant for small-text-on-fill contexts) · TAC 192% (C0 M76 Y89 K27) */
+  --rust:       #b23a12;  /* burnt rebar edge · TAC 190% (C0 M82 Y91 K17) */
+  --amber:      #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth · TAC 159% (C13 M28 Y77 K41) */
+  --deep-rust:  #70200e;  /* shadow rust — deepest warm dark · TAC 185% (C4 M71 Y56 K54) */
+  --amber-dark: #5c3c10;  /* charred amber — follows amber down · TAC 182% (C15 M36 Y71 K60) */
 
   /* ── Brand Signature Layer — print-safe analogs of dimm.city web palette
-     These three are the source of truth for "the dimm.city signature in print."
-     Values are SWOP/substrate-corrected from the website's pure-RGB tokens
-     (#d946ef / #00ffff / #ffd700) so they survive POD press without muddying.
-     HUD + signal tokens below alias these — touch the brand layer first. */
-  --brand-magenta: #c026d3;  /* dimm.city cyber-magenta, SWOP-corrected from web #d946ef · TAC 126% (C41 M85 Y0 K0) */
-  --brand-magenta-deep: #8a0a9a;  /* jewel-deep cyber-magenta — paper-cream 6.21:1 (small-text-on-fill safe) · TAC 156% (C56 M100 Y0 K0) */
-  --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 87% (C70 M1 Y16 K0) */
-  --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 114% (C1 M13 Y100 K0) */
-  --brand-violet:  #7030b8;  /* dimm.city cyber-violet, SWOP-corrected from web #a020f0 — "the world" (lore, vibe, cabal, treasure); no specialty uses it · TAC 156% (C69 M87 Y0 K0) */
-  --signal-indigo: #4430e0;  /* electric indigo, a blue-violet clear of --brand-violet: the wirephreak's own hue. cream on it 6.5:1 · TAC 159% (C81 M78 Y0 K0) */
+     These are the source of truth for "the dimm.city signature in print."
+     The purples sit inside the CRPC1 gamut (printed colour within dE 3.4 of
+     the screen) and stay >= 8 apart once printed: magenta h345 (pink), the
+     deep magenta h340, amethyst h315, violet h302, indigo h267 (print colour
+     audit, finding 2A). HUD + signal tokens below alias these — touch the
+     brand layer first. */
+  --brand-magenta: #bf308f;  /* dimm.city cyber-magenta (web #d946ef), pulled pink into the press gamut; cream on it 5.2:1 · TAC 108% (C10 M92 Y0 K6) */
+  --brand-magenta-deep: #76115e;  /* jewel-deep magenta — 10.4:1 with paper either way (small-text-on-fill safe) · TAC 156% (C28 M97 Y2 K29) */
+  --brand-cyan:    #00bcd4;  /* dimm.city neon-cyan, paper-contrast-tuned from web #00ffff · TAC 55% (C48 M0 Y7 K0) */
+  --brand-yellow:  #ffd700;  /* dimm.city brand-yellow — survives press unchanged · TAC 96% (C1 M4 Y91 K0) */
+  --brand-violet:  #5d3b88;  /* dimm.city cyber-violet (web #a020f0), in the press gamut — "the world" (lore, vibe, cabal, treasure); no specialty uses it; 8.6:1 with paper · TAC 156% (C66 M86 Y0 K4) */
+  --signal-indigo: #4b65ab;  /* indigo, bluer and lighter than --brand-violet: the wirephreak's own hue. cream on it 5.6:1 · TAC 116% (C69 M44 Y0 K3) */
 
   /* ── HUD Colors — digital neon chrome ────────────────────────────────── */
-  --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 167% (C87 M50 Y26 K4) */
-  --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text · TAC 214% (C93 M64 Y38 K20) */
+  --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 114% (C73 M24 Y4 K13) */
+  --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text · TAC 145% (C75 M32 Y8 K30) */
   --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent */
-  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint · TAC 76% (C50 M13 Y12 K0) */
+  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint · TAC 47% (C37 M4 Y5 K1) */
   --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta */
-  --hud-panel:       #eeece8;  /* neutral light cream — callouts, note bars · TAC 16% (C5 M5 Y7 K0) */
+  --hud-panel:       var(--concrete-pale);  /* alias: the default specialty-intro panel */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
-  --surface-tint-3:      #f2f0ec;  /* public token: consumed by the Dimm City design guide's own sheet (palette swatches), not by this package · TAC 12% (C3 M4 Y6 K0) */
-  --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 59% (C14 M14 Y30 K0) */
+  --surface-tint-3:      #f2f0ec;  /* design-guide only: its palette swatch reads it, no package rule does · TAC 11% (C4 M3 Y4 K0) */
+  --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 40% (C10 M9 Y21 K0) */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  --border-hairline: #c8b898;  /* warmer/darker hairline on aged paper · TAC 88% (C22 M24 Y42 K0) */
+  --border-hairline: var(--ink);  /* the column and table rule: hairlines are >= 1pt in --ink or a one-ink tint (was tan #c8b898, three inks) */
   --bw-thin:         1px;
   --callout-border-width-small: 2px;
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
-  --tint-magenta-rose: #e6007a;  /* pullquote accent / paper-stain rule mix source · TAC 120% (C3 M100 Y17 K0) */
-  --tint-hud-teal:     #2a6a8a;/* TAC 175% (C85 M52 Y31 K8) */
+  --tint-magenta-rose: var(--brand-magenta);  /* alias: the pullquote's soft accent mix source (#e6007a printed within dE 5.4 of the magenta) */
+  --tint-hud-teal:     var(--hud-blue);  /* alias (#2a6a8a was dE 1.9 from --hud-blue) */
 
   /* ── Type Families ────────────────────────────────────────────────────── */
   /* Lixdu has one face, regular. Every rule that sets --font-display sets
@@ -185,21 +195,17 @@
      The 4th creaturepunk register: spore-light, lichen-glow, UV-reactive
      bio-organic green family. Distinct from the gutter pillar (rust/blood)
      and the neon pillar (brand-magenta/cyan/yellow) — this is "alive and
-     glowing" rather than "signal" or "decay". Measured TAC (see the Ink &
-     Text note above): fungi-glow 116%, fungi-rot 268% (large fills only; was
-     #2a4015 at 274%). */
-  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: .dc-outcome-row.hit, --gutterdruid-accent) · TAC 116% (C26 M0 Y91 K0) */
-  --fungi-rot:   #30461e;  /* deep moldering green — rot in dark places (consumed: .dc-outcome-row.fail (large fills only)) · TAC 268% (C72 M47 Y97 K51) */
+     glowing" rather than "signal" or "decay". */
+  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: .dc-outcome-row.hit, --gutterdruid-accent) · TAC 92% (C17 M0 Y75 K0) */
+  --fungi-rot:   #30461e;  /* deep moldering green — rot in dark places (consumed: .dc-outcome-row.fail, and the streetwarden and gutterdruid darks) · TAC 182% (C39 M17 Y64 K62) */
 
   /* ── Ancient Crystal Pillar (creaturepunk: faceted mineral refraction) ───
      The mineral-magic register: amethyst and aquamarine — geometric and
      refractive. Distinct from brand-violet (signal-saturated) and the warm
-     gold of brand-yellow (electric). Measured TAC (see the Ink & Text note
-     above): crystal-amethyst 173%, crystal-aqua 127%, crystal-slate 185%
-     (cool stone: the generalist). */
-  --crystal-amethyst: #6a3a8a;  /* deep mineral violet — refractive arcane (consumed: --generalist-accent) · TAC 173% (C71 M92 Y9 K1) */
-  --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 127% (C71 M26 Y30 K0) */
-  --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 5.4:1 · TAC 185% (C70 M54 Y43 K18) */
+     gold of brand-yellow (electric). */
+  --crystal-amethyst: #835198;  /* mineral violet, lighter and redder than --brand-violet — the treasure tint and chapter chip; cream on it 5.8:1 · TAC 116% (C41 M71 Y0 K4) */
+  --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 82% (C53 M9 Y14 K6) */
+  --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 6.3:1 · TAC 121% (C48 M28 Y18 K27) */
 
 }
 

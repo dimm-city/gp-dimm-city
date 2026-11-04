@@ -32,7 +32,7 @@
      a `###` bar. A kind of section sets them (dm, lore, choose, reference, the
      catalog). `flag` is one more box-shadow in the panel surface layer's stack,
      zero-size unless a kind sets it. */
-  --dc-section-bar-mix:      90%;                 /* 90% accent over ink: cream on the default magenta bar is 4.7:1 (100% is 4.06:1) */
+  --dc-section-bar-mix:      90%;                 /* 90% accent over ink: cream on the default magenta bar is 5.9:1 (100% is 5.2:1) */
   --dc-section-bar-tone:     var(--ink);
   --dc-section-bar-fg:       var(--paper-cream);
   --dc-section-bar-rule:     3pt solid var(--orange);
@@ -111,7 +111,7 @@
   --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
   --dc-alert-border:         var(--hud-blue-dark);  /* left rail */
   --dc-alert-fg:             var(--ink);
-  --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
+  --dc-alert-label-color:    var(--ink);
   --dc-alert-body-size:      var(--fs-body-sm);
   --dc-alert-border-width:   4px;
   --dc-alert-label-size:     var(--fs-floor);
@@ -141,7 +141,7 @@
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
-  --dc-specialty-intro-title-color: var(--bg);
+  --dc-specialty-intro-title-color: var(--paper-cream);
   --dc-specialty-intro-bg:          var(--hud-panel);
   --dc-specialty-intro-h3-color:    var(--blood);      /* overridden by .dc-specialty.<name> context */
 
@@ -236,7 +236,7 @@
   --dc-arrow-color:          var(--blood);
   --dc-ap-bg:                var(--hud-blue-dark);
   --dc-ap-fg:                var(--paper-cream);
-  --dc-ap-border:            var(--ink-dark);
+  --dc-ap-border:            var(--ink);
 
   /* .dc-fiction-excerpt public API: a hole smashed in the wall, the story on the
      page behind it. The two colours are tokens; the hole's shape is generated
@@ -283,13 +283,13 @@
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
-  --dc-flavor-color:         var(--ink-dark);
+  --dc-flavor-color:         var(--ink);
   --dc-flavor-bg:            var(--paper-cream);   /* a flavor line is never set straight on the wall */
 
   /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
   --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
-  --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
+  --dc-entry-ink:            var(--ink);            /* name and field-label colour */
   --dc-entry-surface:        var(--paper-light);
   --dc-entry-rail:           3px;                   /* a catalog sets 0 */
   --dc-entry-rule:           0px;                   /* a catalog sets it */
@@ -345,7 +345,7 @@
   --dc-npc-stat-primary:     var(--hud-blue-dark);
   --dc-npc-stat-rule:        var(--rust);
   --dc-npc-stat-rule-width:  2pt;
-  --dc-npc-stat-secondary:   var(--ink-smoke);
+  --dc-npc-stat-secondary:   var(--ink);
 
   /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
   --dc-outcome-key-col:      max(130px, 26%);   /* chip column: wider on a full-width ladder so long band names wrap in three lines at most */
@@ -384,7 +384,7 @@
   --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
   --dc-choice-surface:       var(--paper-cream);
-  --dc-choice-tint:          color-mix(in srgb, var(--ink-dark) 8%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-tint:          color-mix(in oklch, var(--ink-dark) 18%, var(--paper-cream));  /* the closing quote's well */
   --dc-choice-edge:          1.5pt solid var(--ink-dark);  /* the card's border */
   --dc-choice-band:          5px;                   /* the top band in the kind colour */
   --dc-choice-rail:          6px;                   /* the left rail in the kind colour */
@@ -447,12 +447,12 @@
 
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);
-  --dc-tag-fg:               var(--ink-dark);
-  --dc-tag-border:           var(--ink-dark);
+  --dc-tag-fg:               var(--ink);
+  --dc-tag-border:           var(--ink);
 
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
-  --dc-tape-border:          var(--ink-dark);
+  --dc-tape-border:          var(--ink);
   --dc-tape-color:           var(--ink);
   --dc-tape-shape:           polygon(0 0, 100% 0, calc(100% - 6px) 25%, 100% 50%, calc(100% - 6px) 75%, 100% 100%, 0 100%, 6px 75%, 0 50%, 6px 25%);  /* torn ends */
 
@@ -471,8 +471,8 @@
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
-  --dc-page-slip-ink:        var(--ink-dark);
-  --dc-page-slip-edge:       var(--ink-dark);
+  --dc-page-slip-ink:        var(--ink);
+  --dc-page-slip-edge:       var(--ink);
   --dc-page-slip-shadow:     var(--shadow-poster);
   --dc-page-slip-tape:       var(--dc-tape-bg);
   --dc-page-slip-gap:        var(--space-xl);

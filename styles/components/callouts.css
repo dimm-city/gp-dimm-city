@@ -157,7 +157,7 @@
 
 /* Inline emphasis + paragraphs inside callouts must inherit the alert's
    --dc-alert-fg color. The global p/em/strong rules in dc-core.css set
-   dark text colors (color: --ink / --ink-smoke). Inside dark-fill callout
+   dark text colors (color: --ink). Inside dark-fill callout
    variants (.dc-dm-note etc.), dark-on-dark measured 1.17:1 — invisible.
    Inherit makes p/em/strong adopt the alert's own foreground. */
 :is(.dc-alert, .gp-alert) :is(p, em, strong) {
@@ -214,7 +214,7 @@
    are the "danger / you must choose" pair across the system. */
 .dc-note.warning,
 .gp-alert:is(.gp-alert-warning, .gp-alert-caution) {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--brand-yellow) 25%, var(--paper-cream));
   --dc-alert-border: var(--ink);
   --dc-alert-border-width: 14px;
   /* a heavy ink frame, and a crimson second pass a hair out of register along the
@@ -289,7 +289,7 @@
    an all-round edge with no rail separate
    it from the blue note, the ink DM slab and the pull quote's magenta bar. */
 .dc-vibe-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-violet) 6%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--brand-violet) 22%, var(--paper-cream));
   --dc-alert-fg: var(--ink);
   --dc-alert-border: var(--brand-violet);
   --dc-alert-border-width: 2px;
@@ -312,7 +312,7 @@
   width: 54px;
   height: 11px;
   background: var(--dc-tape-bg);
-  border-block: 1px solid color-mix(in srgb, var(--dc-tape-bg) 70%, var(--ink));
+  border-block: 1pt solid var(--dc-tape-border);
   transform: rotate(-3deg);
 }
 .dc-vibe-callout .dc-alert-label {
@@ -323,7 +323,7 @@
    Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp.
    Location (below) is the same document in the map's teal ink. */
 .dc-origin-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--surface-orange-tint) 55%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--surface-orange-tint) 55%, var(--paper-cream));
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
   --dc-alert-border-width: 3px;
   /* a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
@@ -339,7 +339,7 @@
    backstory in colour and in value, and from visit's green signpost by
    silhouette. */
 .dc-location-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-alert-border: var(--hud-blue);
   --dc-alert-border-width: 3px;
   /* the origin's document: a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
@@ -367,7 +367,7 @@
 :is(.dc-origin-callout, .dc-location-callout) .dc-alert-label {
   padding: 1px 9px;
   border: 2px solid currentColor;
-  outline: 1px dashed currentColor;  /* a worn, broken outer ring */
+  outline: 1pt dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
   margin-left: 3px;
   transform: rotate(-2deg);
@@ -377,13 +377,13 @@
    Fungi-green placard with a pointed (finger-post) end and a map-pin label:
    the living city's own colour, set apart from the cyan/ink Dream Master slab. */
 .dc-visit-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--fungi-rot) 80%, var(--fungi-glow));
+  --dc-alert-bg: color-mix(in srgb, var(--fungi-rot) 85%, var(--fungi-glow));
   --dc-alert-fg: var(--paper-cream);
   --dc-alert-border: var(--fungi-glow);
   --dc-alert-border-width: 0px;
   /* organic: a wobbly polygon with no long straight edge, ending in a signpost point */
   --dc-alert-shape: polygon(0 3px, 12% 0, 31% 3px, 52% 0, 74% 3px, calc(100% - 22px) 0, 100% 50%, calc(100% - 20px) 100%, 76% calc(100% - 3px), 55% 100%, 30% calc(100% - 4px), 9% 100%, 0 calc(100% - 3px), 1px 50%);
-  --dc-accent-ink: var(--fungi-glow);  /* 4.8:1 on the green */
+  --dc-accent-ink: var(--fungi-glow);  /* 5.0:1 on the green (4.4:1 at 80% rot) */
   --dc-alert-body-size: var(--fs-body);
   --dc-alert-label-color: var(--paper-cream);
   --dc-alert-label-bg: var(--fungi-rot);
@@ -425,7 +425,7 @@
   display: inline-block;
   padding: 1px 7px;
   background: var(--dc-tape-bg);
-  border: 1px solid var(--dc-tape-border);
+  border: 1pt solid var(--dc-tape-border);
   color: var(--dc-tape-color);
 }
 
