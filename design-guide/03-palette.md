@@ -13,8 +13,8 @@ Cream paper, dark ink, and two accent registers. Creaturepunk **fire** --- crims
 
 <div class="dc-palette-grid">
   <div class="dc-palette-swatch border on-light"><strong>BG</strong><code>#c8c5bf</code><code>--bg</code><code>21/18/22/0<br>61%</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Cream</strong><code>#f0eee9</code><code>--paper-cream</code><code>4/4/7/0<br>14%</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Light</strong><code>#e2ded7</code><code>--paper-light</code><code>10/9/13/0<br>32%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Cream</strong><code>#ffffff</code><code>--paper-cream</code><code>0/0/0/0<br>0%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Light</strong><code>#ffffff</code><code>--paper-light</code><code>0/0/0/0<br>0%</code></div>
   <div class="dc-palette-swatch border on-light"><strong>Paper Aged</strong><code>#c8c2b8</code><code>--paper-aged</code><code>21/20/26/0<br>66%</code></div>
   <div class="dc-palette-swatch bg-ink on-dark"><strong>Ink</strong><code>#1e1d1c</code><code>--ink</code><code>69/66/67/76<br>278%</code></div>
   <div class="dc-palette-swatch bg-ink-dark on-dark"><strong>Ink Dark</strong><code>#2f2622</code><code>--ink-dark</code><code>61/66/69/69<br>266%</code></div>

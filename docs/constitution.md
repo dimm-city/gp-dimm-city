@@ -197,9 +197,9 @@ Every TAC figure in this section is **measured**, not estimated: a swatch PDF co
 |---|---|---|---|
 | `--bg` | `#c8c5bf` | C21 M18 Y22 K0 = 61% | The wall. Ash-concrete page background — gritty, urban, structural. |
 | `--paper-form` | `#f5f3ee` | C2 M2 Y5 K0 = 10% | The `choose` form's sheet: barely lighter than cream, printed stock not a screen. |
-| `--paper-cream` | `#f0eee9` | C4 M4 Y7 K0 = 14% | Paper-poster substrate — flyers, callouts, cards on the cream register. Brighter than the wall. |
+| `--paper-cream` | `#ffffff` | C0 M0 Y0 K0 = 0% | Paper-poster substrate — flyers, callouts, cards on the cream register. White: the unprinted stock, no ink. |
 | `--paper-zine` | `#e9e6e0` | C7 M7 Y10 K0 = 24% | Printed-page neutral between cream and light — the fiction excerpt and the shard block. A neutral, not parchment. |
-| `--paper-light` | `#e2ded7` | C10 M9 Y13 K0 = 32% | Lighter-than-the-wall grey paper — the lede, specialty intros, alternate panel fills. |
+| `--paper-light` | `#ffffff` | C0 M0 Y0 K0 = 0% | White paper — the lede, specialty intros, alternate panel fills. |
 | `--paper-aged` | `#c8c2b8` | C21 M20 Y26 K0 = 66% | Weathered grey, about the wall's own value — the outcomes ladder rows, field chips, catalog ledger band. Label and rule grounds, not a reading surface. |
 | `--paper-stain` | `#b0a89c` | C32 M30 Y37 K0 = 99% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
 | `--ink` | `#1e1d1c` | C69 M66 Y67 K76 = 278% | Body text, key rules, heavy borders. |

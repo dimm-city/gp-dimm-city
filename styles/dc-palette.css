@@ -6,10 +6,10 @@
   /* ── Page & Paper — neutral-cool greys, "industrial flyer paper / printer stock" ── */
   --bg:           #c8c5bf;  /* ash-concrete — the brick wall (page background, L*~70) · TAC 61% (C21 M18 Y22 K0) */
   --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 35% (C12 M10 Y13 K0) */
-  --paper-cream:  #f0eee9;  /* light industrial flyer-stock — brighter than wall, more poster-vs-wall delta (L*~93) · TAC 14% (C4 M4 Y7 K0) */
+  --paper-cream:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
   --paper-form:   #f5f3ee;  /* the choose section's form sheet: barely lighter than paper-cream, so the form reads as printed stock, not a screen · TAC 10% (C2 M2 Y5 K0) */
   --paper-zine:   #e9e6e0;  /* printed-page neutral between paper-cream and paper-light: the fiction excerpt and shard sheets, lighter than the wall yet not the panel's cream · TAC 24% (C7 M7 Y10 K0) */
-  --paper-light:  #e2ded7;  /* slightly darker grey alternate surface — for layered paper / secondary panels · TAC 32% (C10 M9 Y13 K0) */
+  --paper-light:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
   --paper-aged:   #c8c2b8;  /* weathered grey — decay register, dust + age · TAC 66% (C21 M20 Y26 K0) */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 99% (C32 M30 Y37 K0) */
   /* Poster-wall shadow — a hard offset that pins paper-register components to
@@ -50,7 +50,7 @@
   --ink-dark:   #2f2622;  /* warmer secondary heading weight · TAC 266% (C61 M66 Y69 K69) */
   --ink-smoke:  #4d4339;  /* sepia mid-tone — body emphasis · TAC 231% (C57 M60 Y68 K47) */
   --ink-mid:    #594f43;  /* between smoke and dust — secondary card text · TAC 217% (C55 M56 Y67 K38) */
-  --ink-dust:   #665b4e;  /* 4.58:1 on paper-cream #f0eee9 · TAC 200% (C53 M54 Y64 K29) */
+  --ink-dust:   #665b4e;  /* 6.62:1 on paper-cream #ffffff · TAC 200% (C53 M54 Y64 K29) */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
   --crimson:    #e1261c;  /* PMS Red 032; survives POD · TAC 203% (C5 M98 Y100 K0) */

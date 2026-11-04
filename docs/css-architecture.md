@@ -268,8 +268,8 @@ hierarchy: color → typography → spacing → geometry.
 
 /* Print substrate — neutral-cool greys, not warm cream */
 --bg:             #c8c5bf;  /* ash-concrete — the brick wall (page background) */
---paper-cream:    #f0eee9;  /* light industrial flyer-stock — primary card surface */
---paper-light:    #e2ded7;  /* slightly darker grey alternate surface */
+--paper-cream:    #ffffff;  /* white, no ink — primary card surface */
+--paper-light:    #ffffff;  /* white, no ink — alternate surface */
 --paper-aged:     #c8c2b8;  /* weathered grey — decay register */
 
 /* Ink scale — warm sepia drift, not neutral gray */

@@ -188,9 +188,9 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--bg` | `#c8c5bf` | Ash-concrete page background |
 | `--concrete-pale` | `#dcdad5` | Pale concrete — cold-grey panels |
 | `--paper-form` | `#f5f3ee` | The `choose` form's sheet, a hair lighter than cream |
-| `--paper-cream` | `#f0eee9` | Light flyer-stock — primary text surface |
+| `--paper-cream` | `#ffffff` | White, no ink — primary text surface |
 | `--paper-zine` | `#e9e6e0` | Printed-page neutral — fiction excerpt, shard block |
-| `--paper-light` | `#e2ded7` | Secondary layered panel surface; the lede |
+| `--paper-light` | `#ffffff` | White, no ink — secondary layered panel surface; the lede |
 | `--paper-aged` | `#c8c2b8` | Weathered grey — decay register; label and rule grounds |
 | `--paper-stain` | `#b0a89c` | Deep stain — dark inset wells and label strips; never body text |
 
