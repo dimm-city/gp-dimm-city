@@ -136,7 +136,7 @@ em  { color: var(--ink); font-style: italic; }
    --blood #901a12 on paper-cream = 7.73:1 (passes AA + AAA). Crimson is
    reserved for FILLS / decorative rails; text colour on light backgrounds
    uses --blood. */
-a   { color: var(--blood); text-decoration: none; border-bottom: 1px dotted var(--blood); }
+a   { color: var(--blood); text-decoration: none; border-bottom: 1pt dotted var(--blood); }
 
 code, kbd, samp {
   font-family: var(--font-mono);
@@ -147,7 +147,7 @@ code, kbd, samp {
   background: var(--paper-aged);
   padding: 1pt 4pt;
   border-radius: 2pt;
-  border: 1px solid var(--paper-aged);
+  border: 1pt solid var(--paper-aged);
 }
 
 /* Code blocks: wrap instead of spilling. An unwrapped long line inside a

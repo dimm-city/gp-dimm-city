@@ -242,7 +242,7 @@
   width: 20px;
   height: 4px;
   background: var(--ink-smoke);
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1pt solid var(--ink);
   transform: rotate(-4deg);
   pointer-events: none;
 }
@@ -252,7 +252,7 @@
   grid-template-columns: 40px 1fr;
   gap: 0;
   padding: 0;
-  border-top: 1px solid var(--ink-dust);
+  border-top: 1pt solid var(--ink);
   font-family: var(--font-body);
   font-size: var(--fs-floor);
   line-height: 1.45;
@@ -281,7 +281,7 @@
   letter-spacing: 0.06em;
   line-height: 1;
   /* A hairline of plate between neighbouring numbers keeps each step its own cell. */
-  border-top: 1px solid var(--paper-cream);
+  border-top: 1pt solid var(--paper-cream);
 }
 .dc-steps>li:first-child .dc-step-no {
   border-top: 0;
@@ -367,7 +367,7 @@
      lines at most; in a half column it stays 130px. */
   grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
-  border-bottom: 1px solid var(--dc-outcomes-divider);
+  border-bottom: 1pt solid var(--dc-outcomes-divider);
   position: relative;
   z-index: 1;
 }
@@ -746,14 +746,14 @@
 .dc-definition-block > h4:not(:first-child) {
   margin-top: 8pt;
   padding-top: 7pt;
-  border-top: 1px solid var(--dc-definition-block-accent);
+  border-top: 1pt solid var(--dc-definition-block-accent);
 }
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
 }
 .dc-definition-block hr {
   border: none;
-  border-top: 1px solid var(--dc-definition-block-accent);
+  border-top: 1pt solid var(--dc-definition-block-accent);
   margin: 7.5pt 0;
 }
 
@@ -771,7 +771,7 @@
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid var(--paper-aged);
+  border: 1pt solid var(--paper-aged);
   pointer-events: none;
 }
 
@@ -812,7 +812,7 @@
 }
 
 .dc-stat-cell {
-  border-right: 1px solid var(--paper-aged);
+  border-right: 1pt solid var(--paper-aged);
   padding: 4px 8px 6px;
   text-align: center;
   display: flex;
@@ -924,7 +924,7 @@ table.dc-stat-strip {
 .dc-toc ol>li {
   position: relative;
   padding: 10px 4px 10px 56px;
-  border-bottom: 1px solid var(--hud-blue-dim);
+  border-bottom: 1pt solid var(--hud-blue-dim);
   counter-increment: dc-toc;
   font-size: var(--fs-body-sm);
   line-height: 1.4;

@@ -326,7 +326,7 @@
 .dc-specialty-card blockquote {
   background: none;
   border: none;
-  border-bottom: 0.75pt solid var(--dc-specialty-card-accent);
+  border-bottom: 1pt solid var(--dc-specialty-card-accent);
   padding: 0 0.06in 0.03in;
   /* In the poster card (a flex column) the slack of a row's shorter card goes
      above the tagline, between the portrait and the text, so the type block

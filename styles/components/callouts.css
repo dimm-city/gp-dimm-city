@@ -312,7 +312,7 @@
   width: 54px;
   height: 11px;
   background: var(--dc-tape-bg);
-  border-block: 1px solid color-mix(in srgb, var(--dc-tape-bg) 70%, var(--ink));
+  border-block: 1pt solid var(--dc-tape-border);
   transform: rotate(-3deg);
 }
 .dc-vibe-callout .dc-alert-label {
@@ -367,7 +367,7 @@
 :is(.dc-origin-callout, .dc-location-callout) .dc-alert-label {
   padding: 1px 9px;
   border: 2px solid currentColor;
-  outline: 1px dashed currentColor;  /* a worn, broken outer ring */
+  outline: 1pt dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
   margin-left: 3px;
   transform: rotate(-2deg);
@@ -425,7 +425,7 @@
   display: inline-block;
   padding: 1px 7px;
   background: var(--dc-tape-bg);
-  border: 1px solid var(--dc-tape-border);
+  border: 1pt solid var(--dc-tape-border);
   color: var(--dc-tape-color);
 }
 

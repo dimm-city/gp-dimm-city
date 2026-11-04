@@ -16,7 +16,7 @@
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
-  border: 1px solid var(--dc-tag-border);
+  border: 1pt solid var(--dc-tag-border);
   padding: 1px 7px 0;
   margin: 0 2px;
   vertical-align: baseline;
@@ -272,7 +272,7 @@ h1.dc-chevron {
   color: var(--hud-blue);
   margin: 6px 0 3px;
   padding-top: 4px;
-  border-top: 1px solid var(--hud-blue-dim);
+  border-top: 1pt solid var(--hud-blue-dim);
 }
 
 

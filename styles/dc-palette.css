@@ -87,7 +87,7 @@
   --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 59% (C14 M14 Y30 K0) */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  --border-hairline: #c8b898;  /* warmer/darker hairline on aged paper · TAC 88% (C22 M24 Y42 K0) */
+  --border-hairline: var(--ink);  /* warmer/darker hairline on aged paper · TAC 88% (C22 M24 Y42 K0) */
   --bw-thin:         1px;
   --callout-border-width-small: 2px;
 
