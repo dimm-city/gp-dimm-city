@@ -46,8 +46,12 @@
      perceptual intent: scripts/measure-palette-crpc1.py. Ghostscript, which
      the build converts with, was not run; this method agrees with
      gutterpress #331's measured build to within ~10% TAC (#000: build
-     C47 M42 Y40 K100 = 229%, this method C50 M46 Y44 K100 = 240%). The
-     profile caps TAC at 240%, the vendors' limit; no token exceeds 214%.
+     C47 M42 Y40 K100 = 229%, this method C50 M46 Y44 K100 = 240%). They
+     need a Ghostscript that honours the profile: 10.06.0 does; 10.02.1
+     (Ubuntu 24.04's) ignores it and separates through its default CMYK
+     profile (#000 = 295%, the figures here before 1.10.2); gutterpress
+     #495 warns when a build did that. The profile caps TAC at 240%, the
+     vendors' limit; no token exceeds 214%.
      Small text takes --ink: the k-only pass prints it in black alone.
      -------------------------------------------------------------------- */
   --ink:        #1e1d1c;  /* near-black with red bias — riso warm black; all small text · TAC 196% (C42 M36 Y33 K85) */

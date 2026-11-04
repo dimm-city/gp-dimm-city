@@ -33,6 +33,9 @@ is in `docs/print-colour-audit-measurements.md`.
 
 ## Finding 1 — the measured TAC figures in this repo are wrong for the pipeline
 
+*Corrected in the Resolution below: the old figures were right for Ghostscript
+10.02.1, which ignores the output profile; the new ones are right for 10.06.*
+
 Every token comment, `docs/constitution.md` §V and the "TAC ceiling 280% /
 house target <= 270%" rule rest on figures such as `#000 -> C72 M68 Y67 K88 =
 295%` and `--ink -> 278%`. Those are the signature of Ghostscript's
@@ -186,6 +189,16 @@ CHANGELOG and the PR. `docs/print-colour-audit-measurements.md` is regenerated
 from the fixed palette. The figures above are the audit as it was found.
 Where the PR departs from the audit:
 
+- **Finding 1, corrected.** The old figures were not fiction. CI for gutterpress
+  #495 showed that Ghostscript 10.02.1 (Ubuntu 24.04's package) ignores the
+  output profile for pdfwrite's vector colour and separates through its own
+  default CMYK profile: exactly `#000 = C72 M68 Y67 K88 = 295%` and
+  `--brand-magenta = C41 M85`, the figures this repo carried. They were right
+  for the Ghostscript the author had. 10.06.0 honours the profile (gutterpress
+  #331) and produces the CRPC1 figures this PR writes; gutterpress #495 now
+  measures which happened on every PDF/X build and warns, and its CI and
+  Docker image run 10.06.0. The darks "lifted off black" were lifted for a
+  real reason on that Ghostscript; nothing about them is reverted here.
 - **2E, classtag.** Not a text failure. The `--orange` in `.dc-classtag` is the
   10px dot (`::before`), and the tag's text is `--ink`. A non-text mark needs
   3:1, and the dot has 4.24:1, so nothing changed.

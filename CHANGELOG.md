@@ -52,7 +52,10 @@ token name still works.
   edges default to `--ink`.
 - **Every CMYK and TAC figure is re-measured through CGATS21_CRPC1.** This covers
   the token comments, constitution §V and the palette chapter's swatches. The
-  old figures came from Ghostscript's default profile (`#000` = 295%). The
+  old figures came from Ghostscript's default profile (`#000` = 295%), which
+  Ghostscript 10.02.1 (Ubuntu 24.04's package) uses even when the CRPC1
+  profile is given; 10.06.0 honours the profile and produces the new figures,
+  and gutterpress (#495) warns when a build's Ghostscript did not. The
   production rule is now "TAC 240%, enforced by the CGATS21_CRPC1 profile"; no
   token exceeds 214%. The SWOP/GRACoL target is gone.
   `scripts/measure-palette-crpc1.py` (Python 3 + Pillow) produces the figures,
