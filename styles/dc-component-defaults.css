@@ -384,7 +384,7 @@
   --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
   --dc-choice-surface:       var(--paper-cream);
-  --dc-choice-tint:          color-mix(in srgb, var(--ink-dark) 8%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-tint:          color-mix(in oklch, var(--ink-dark) 18%, var(--paper-cream));  /* the closing quote's well */
   --dc-choice-edge:          1.5pt solid var(--ink-dark);  /* the card's border */
   --dc-choice-band:          5px;                   /* the top band in the kind colour */
   --dc-choice-rail:          6px;                   /* the left rail in the kind colour */

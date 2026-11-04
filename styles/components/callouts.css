@@ -214,7 +214,7 @@
    are the "danger / you must choose" pair across the system. */
 .dc-note.warning,
 .gp-alert:is(.gp-alert-warning, .gp-alert-caution) {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--brand-yellow) 25%, var(--paper-cream));
   --dc-alert-border: var(--ink);
   --dc-alert-border-width: 14px;
   /* a heavy ink frame, and a crimson second pass a hair out of register along the
@@ -289,7 +289,7 @@
    an all-round edge with no rail separate
    it from the blue note, the ink DM slab and the pull quote's magenta bar. */
 .dc-vibe-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-violet) 6%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--brand-violet) 22%, var(--paper-cream));
   --dc-alert-fg: var(--ink);
   --dc-alert-border: var(--brand-violet);
   --dc-alert-border-width: 2px;
@@ -323,7 +323,7 @@
    Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp.
    Location (below) is the same document in the map's teal ink. */
 .dc-origin-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--surface-orange-tint) 55%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--surface-orange-tint) 55%, var(--paper-cream));
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
   --dc-alert-border-width: 3px;
   /* a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
@@ -339,7 +339,7 @@
    backstory in colour and in value, and from visit's green signpost by
    silhouette. */
 .dc-location-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
+  --dc-alert-bg: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-alert-border: var(--hud-blue);
   --dc-alert-border-width: 3px;
   /* the origin's document: a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
