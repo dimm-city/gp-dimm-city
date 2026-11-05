@@ -80,9 +80,9 @@ aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
-components/data.css:716                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
-components/section.css:849             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
-components/section.css:1150            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
+components/data.css:745                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
+components/section.css:905             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
+components/section.css:1206            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
 components/specialty-identity.css:157  srgb --paper-cream 34% --augmerc-accent          #57d3e3  C50 M0 Y9 K0         59   50    9
 components/specialty-identity.css:185  srgb --paper-cream 45% --cybersurgeon-accent     #cfd6d8  C17 M9 Y10 K0        36   17    9
 components/specialty-identity.css:205  srgb --technosorcerer-accent 87% --paper-cream   #da672a  C0 M60 Y100 K11     171  100   11
@@ -93,7 +93,7 @@ components/specialty-identity.css:325  srgb --gutterdruid-mid 38% --gutterdruid-
 components/specialty-identity.css:355  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
 components/specialty-identity.css:384  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
 components/specialty-identity.css:409  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
-dc-component-defaults.css:456          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
+dc-component-defaults.css:460          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast

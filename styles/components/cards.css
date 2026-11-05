@@ -224,7 +224,14 @@
 }
 
 .dc-skill-card > .dc-card-body > .dc-card-inner {
-  padding: 8px 12px 16px;
+  /* The padding is cloned onto every fragment: a card that continues keeps
+     12pt (16px) under its last line, and a continuation opens --space-md
+     below the page edge's top, where a sliced box dropped both and set the
+     text against the edge. Only the box is cloned: the surface, outline and
+     shadow are the pseudos below, which stay one slice, so the foot cut is
+     drawn once, at the card's real foot. */
+  box-decoration-break: clone;
+  padding: var(--space-md) 12px 12pt;
   /* Not a stacking context here (the unscoped rule below lifts it to 1): the
      surface and shadow are this element's pseudos and must paint behind the
      outline, which is the body's pseudo — that order only exists while all
@@ -255,7 +262,23 @@
    fragmentation overflow. */
 .dc-specialty > .dc-learning-path:last-child {
   overflow-y: clip;
-  overflow-clip-margin: 8px;
+  overflow-clip-margin: 0;
+}
+/* ...but a card that ends a page there left its hanging foot (the 2px outline
+   and 3pt shadow, 6px past the box) on a page of its own, printed alone. On the
+   specialty's last card the foot is drawn INSIDE the box instead: the surface
+   ends 3pt + 2px early, the outline 3pt early, the shadow at the box's edge,
+   and the clip above takes nothing away. The box is exactly as tall as before;
+   the gap from the last line to the foot's cut is 6px less (16px to 10px) on
+   that one card. */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-inner::before {
+  bottom: 0;
+}
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body::after {
+  bottom: 3pt;
+}
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-inner::after {
+  bottom: calc(3pt + 2px);
 }
 
 /* 2px ink outline: the surface shape on a box 2px larger on every side,
@@ -298,6 +321,13 @@
    card that is kept whole, where they change nothing until it is taller than
    a page. */
 
+/* A `---` in a skill card is the seam between sub-abilities: 1.5pt in the
+   specialty's mid (--dc-card-tab-bg is the colour the card's tab is filled with). */
+.dc-skill-card hr {
+  --dc-rule: var(--dc-card-tab-bg);
+  border-top-width: 1.5pt;
+}
+
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
@@ -306,10 +336,28 @@
   break-after: avoid;
 }
 
-/* Text in a card never leaves one line alone at a page edge. Orphans are 3,
-   not the body's 2: Chromium keeps the orphans and drops the widows when a
+/* The first three blocks never split. Measured in Chromium: when the block at
+   a page foot is the end of a `break-after: avoid` chain and does not fit, it
+   splits a paragraph there, one line and one line, ignoring orphans and
+   widows, rather than back up to the break ahead of the card. A card whose
+   head was a quote and a two-line paragraph opened with a tab, the quote and
+   one line. A head that cannot split leaves it two breaks only, between the
+   blocks (kept together above) or before the card, and it takes the second. */
+/* A table, list, ladder, roll plate or columns run is left out: those split on
+   purpose (below), and this rule's specificity would beat theirs. */
+.dc-skill-card .dc-card-inner > :nth-child(-n+3):not(table, ul, ol, .dc-outcomes, .dc-roll-table, .gp-columns) {
+  break-inside: avoid;
+}
+
+
+/* Text in a card asks not to leave one line alone at a page edge. Orphans are
+   3, not the body's 2: Chromium keeps the orphans and drops the widows when a
    paragraph is too short to satisfy both, so at 2 a three-line paragraph still
-   split 2 + 1. At 3 it moves whole. */
+   split 2 + 1. At 3 it moves whole. What this cannot do: a two-line paragraph
+   (fewer lines than the orphans) and a four-line one (3 + 1) still split, and
+   in a `break-after: avoid` chain Chromium ignores both. Those are kept whole
+   where it matters, not by line count: the first three blocks of a card and
+   every lead-in never split (above and below), and a list breaks by item. */
 .dc-skill-card :is(.dc-ability-text, p, li) {
   orphans: 3;
   widows: 2;
@@ -326,27 +374,138 @@
   break-inside: avoid;
 }
 
-/* A lead-in stays with what it introduces: a bold-only pseudo-heading with the
-   paragraph under it, a paragraph with the list or table it opens. CSS cannot
-   see text nodes, so `strong:only-child` also takes a paragraph whose only
-   markup is one bold run. A last child is left out: its break-after would pass
-   up to the card and glue the next path banner to it.
+/* A lead-in stays with what it introduces. A bold-only paragraph (the plugin
+   marks it `.dc-card-subhead`: CSS cannot see text nodes, and
+   `p:has(> strong:only-child)` also took a run-in `**Label:** text`, which
+   chained four blocks into one run and left a 2in hole) stays with the
+   paragraph under it; a paragraph stays with the list, table, outcome ladder
+   or roll table it opens; an ability row stays with the list that follows it
+   (the row is its title: "3 AP Butcher Roach" over its bullets). A last child
+   is left out: its break-after would pass up to the card and glue the next
+   path banner to it. The ladder and the roll plate cannot split, so the
+   lead-in and the plate move together; a list or a table CAN split (below), so
+   the lead-in only needs its first rows.
 
-   An ability row is NOT a lead-in. It used to be glued to the block after it, so
-   a card of N rows had no place to split at all, and a card that reached a
-   page foot split inside its one breakable paragraph instead (a row or two on
-   one page, a hand's breadth of empty cream under them, the rest on the next).
-   Rows now split between rows; only the last block stays with the one above it
-   (below). */
-.dc-skill-card .dc-card-inner > p:has(> strong:only-child):not(:last-child),
-.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table)) {
+   An ability row is otherwise NOT a lead-in. It used to be glued to the block
+   after it, so a card of N rows had no place to split at all, and a card that
+   reached a page foot split inside its one breakable paragraph instead (a row
+   or two on one page, a hand's breadth of empty cream under them, the rest on
+   the next). Rows split between rows; only the last block stays with the one
+   above it (below). */
+.dc-skill-card .dc-card-inner > p.dc-card-subhead:not(:last-child),
+.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table, .dc-outcomes, .dc-roll-table)),
+.dc-skill-card .dc-card-inner > .dc-ability:has(+ :is(ul, ol)) {
+  break-after: avoid;
+}
+/* A lead-in is a short line that introduces something and never splits:
+   inside a keep-with-next chain Chromium would rather cut it one line and one
+   line than back up to a better break (see the first three blocks, above). */
+.dc-skill-card .dc-card-inner > p.dc-card-subhead,
+.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table, .dc-outcomes, .dc-roll-table)) {
+  break-inside: avoid;
+}
+
+/* An ability row that is only a name (the plugin marks it `.dc-ability-title`:
+   `**3 AP — Butcher Roach**`, its text in the paragraphs after it) is the
+   title of what follows. */
+.dc-skill-card .dc-card-inner > .dc-ability-title:not(:last-child) {
   break-after: avoid;
 }
 
-/* The closing line of a card (a one-line sign-off, a trailing note) stays
-   with the block above it, so a continuation never opens with it alone. */
-.dc-skill-card .dc-card-inner > :last-child:not(:first-child) {
+/* A list in a card breaks only where two items stay on each side: no bullet is
+   carried to the next page alone, and none is left alone at a foot. (Orphans
+   and widows count lines, and a list item is one short line, so they do
+   nothing for a list of one-line items.)
+   Changing the bullet character (`*`, `+`, `-`) in the source starts a new
+   list in markdown, so a run of one-item lists is common: Gutterdruid's
+   "Choose one" options are five `<ul>`s of one `<li>`. The two rules after the
+   first count the run as one list: its first single item stays with the next
+   list, and the last single item stays with the list before it. */
+.dc-skill-card :is(ul, ol) > li:first-child:not(:only-child),
+.dc-skill-card :is(ul, ol) > li:nth-last-child(2) {
+  break-after: avoid;
+}
+.dc-skill-card .dc-card-inner > ul:not(:has(> li + li)):not(ul + ul):has(+ ul) {
+  break-after: avoid;
+}
+.dc-skill-card .dc-card-inner > ul + ul:not(:has(> li + li)):not(:has(+ ul)) {
   break-before: avoid;
+}
+/* The run's pitch is one list's: --space-xs between items, not --space-sm. */
+.dc-skill-card .dc-card-inner > ul:has(+ ul) {
+  margin-bottom: var(--space-xs);
+}
+
+/* A sub-header (a ##### line) and the card's tab stay with what follows them. */
+.dc-skill-card .dc-sub-header,
+.dc-skill-card > .dc-card-tab {
+  break-after: avoid;
+}
+
+/* A plain table in a card (a stat table, a scale) may split between rows,
+   never inside one: kept whole, a table that did not fit moved with its
+   lead-in and left 2 to 4in of empty card above it. At least two body rows
+   stay on each side of the break; Chromium repeats the header row (thead) at
+   the top of the next page. The outcome ladder and the roll plate stay whole
+   (data.css). Core's `table` is `break-inside: avoid`; this wins on
+   specificity. */
+.dc-skill-card table {
+  break-inside: auto;
+}
+.dc-skill-card tr {
+  break-inside: avoid;
+}
+.dc-skill-card thead,
+.dc-skill-card tbody > tr:first-child:not(:last-child),
+.dc-skill-card tbody > tr:nth-last-child(2) {
+  break-after: avoid;
+}
+
+/* The outcome ladder may split too, between tiers only: a ladder is 2 to 3.4in,
+   and one that did not fit moved whole with its lead-in and left that much
+   empty card. The head and tier 1 stay together, and so do the last two
+   tiers, so a five-tier ladder breaks only after tier 2 or tier 3. Its frame,
+   ground and cuts are drawn by the head and the rows (data.css), so a first
+   part ends flush under its last tier and the continuation starts straight. */
+.dc-skill-card .dc-outcomes {
+  break-inside: auto;
+}
+/* The roll plate stays whole: it is one framed, clipped box (a die-faced plate
+   with two cuts) whose frame, ground and cuts cannot be moved onto its rows as
+   the ladder's were (data.css), so a split plate would repeat its top cut, show
+   an empty framed foot and lose its bottom cut. */
+.dc-skill-card .dc-roll-table {
+  break-inside: avoid;
+}
+.dc-skill-card .dc-outcome-row {
+  break-inside: avoid;
+}
+.dc-skill-card .dc-outcomes-label,
+.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-child(2),
+.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-last-child(2) {
+  break-after: avoid;
+}
+
+/* A closing line stays with the block above it, so a continuation never opens
+   with it alone: an ability row or any block but a paragraph always, a
+   paragraph only when it is a sign-off (the plugin marks a card's last
+   paragraph `.dc-card-signoff` when it is under 90 characters). A longer
+   closing paragraph, or the one after a table, carries over on its own: glued,
+   it dragged the table and the row before it to the next page with it. */
+.dc-skill-card .dc-card-inner > :last-child:not(:first-child):not(p:not(.dc-card-signoff)) {
+  break-before: avoid;
+}
+
+/* A lead-in (a paragraph, or a cost row, that ends in a colon: the plugin marks
+   it) stays with the block after it, whatever that is. */
+.dc-skill-card .dc-card-inner > :is(p, .dc-ability).dc-lead-in:not(:last-child) {
+  break-after: avoid;
+}
+/* It does not split either, unless it is a cost row holding its own body (a
+   nested list or paragraphs): that row is as long as its list, and the plain
+   ability-row rule above already keeps it whole. */
+.dc-skill-card .dc-card-inner > :is(p, .dc-ability:not(:has(> .dc-ability-body))).dc-lead-in:not(:last-child) {
+  break-inside: avoid;
 }
 
 /* Scoped to the skill card on purpose. This mark is an absolutely positioned
@@ -397,10 +556,14 @@
 
 /* ── Ability row + ability text ───────────────────────────────────────── */
 .dc-ability {
-  display: flex;
-  gap: 12px;
+  /* Two columns: the chip's, and the text's. The text starts at one x in every
+     row: 4.77 chips (the free chip's width, the narrowest) and the 12px gap.
+     A chip wider than that (a range, "+1 AP") eats into its own gap, never
+     less than 4pt, and only then does its row's text move. */
+  display: grid;
+  grid-template-columns: minmax(calc(4.77 * var(--fs-floor) + 12px), auto) minmax(0, 1fr);
   margin-bottom: 6px;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .dc-ability:last-child {
@@ -415,9 +578,20 @@
 }
 
 .dc-ability-text strong {
-  /* --crimson on paper-cream = 4.03 (fails AA); --blood = 7.73:1 */
-  color: var(--blood);
-  font-weight: 600;
+  /* A game term is a word to notice, not a harm: the ink of the text around it. */
+  color: inherit;
+  font-weight: 700;
+}
+
+/* An ability row whose item also holds a nested list or more paragraphs: the
+   text and what follows it share the column to the right of the chip. */
+.dc-ability-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dc-ability-body > :is(ul, ol) {
+  margin: var(--space-xs) 0 0;
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
@@ -475,6 +649,16 @@
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 1px;
+}
+
+/* In an ability row every chip is at least as wide as the free chip (lamp and
+   "0 AP": 47.7pt at the 10pt floor, measured from a render), so free and
+   standard rows share one text column; a range or "+1 AP" may be wider. */
+.dc-ability > .dc-ap {
+  box-sizing: border-box;
+  min-width: 4.77em;
+  margin-right: 4pt;
+  justify-self: start;
 }
 
 /* .dc-ap.free is in specialty-identity.css with the other cost variants. */

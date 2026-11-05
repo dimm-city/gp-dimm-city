@@ -180,15 +180,20 @@
      0.5in inside the page (trim) edge; non-bleeding art 0.25in from the
      outside three edges and 0.5in from the binding edge.
        top     0.625in  = 0.5in from the trim
-       bottom  0.875in  = 0.75in from the trim (the folio and chapter chips
-                          sit at the top of this band)
+       bottom  0.95in = 0.825in from the trim. The folio and chapter
+                          chips stay where they were, 0.625in from the sheet
+                          edge (0.5in text minimum + 0.125in bleed), at the top
+                          of this band; the band is --space-md deeper than them
+                          so a sheet that fills a page ends --space-md above the
+                          chips' tops (its 3pt hard shadow reaches into that gap) (they are 0.225in tall: top at 0.85in)
        outside 0.625in  = 0.5in from the trim
        binding 0.5in    = 0.5in from the spine (no bleed on that edge):
                           DriveThruRPG's minimum for text and non-bleeding
                           art, the same as the dtrpg preset's page.gutter.
                           It was 0.75in until 1.8.2 with no rule behind it. */
   --page-margin:   0.625in;
-  --bottom-margin: 0.875in;
+  --bottom-margin: 0.95in;  /* a plain length: the engine reads no calc() in @page margins (0.85in + 0.10in). Not deeper: at 0.97in the Field Guide runs two pages longer and the preset then pads it by a whole signature */
+  --chip-gap:      0.10in;  /* the chips' tops below the text block: --bottom-margin - 0.85in */
   --outer-margin:  0.625in; /* outer (non-binding) page margin */
   --sidebar-width: 3.05in;
 

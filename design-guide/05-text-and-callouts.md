@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert --- a blockquote whose first line is `[!TYPE]`, for the first seven --- and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert --- a blockquote whose first line is `[!TYPE]`, for the first seven --- and the label, colour, edge and shape come with the type. To give one its own title, write it after the marker with the body on the lines below (`> [!NOTE] Escaping A Grapple`): the title replaces the default label and the alert keeps its register. Text after the marker in a one-line alert is body text. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -266,7 +266,7 @@ Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`
 
 ## Rule
 
-A plain `---` between entries is a thin red rule --- the separator for gear lists and NPC entries.
+A plain `---` is a 1pt ink hairline, a pause between topics; in a skill card it is a 1.5pt seam in the specialty's colour between sub-abilities. It is not drawn first or last in its box, before a heading, table or component, or straight on the bare wall, and it never ends a page.
 
 ```markdown
 Trauma Kit × 2

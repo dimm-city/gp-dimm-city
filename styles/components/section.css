@@ -100,7 +100,7 @@ div[class="section"] {
      the accent, deepened. Derived here, not at :root, so a chapter that sets only
      the accent still recolours it. A kind may set its own. */
   --dc-accent-ink: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-ink-mix), var(--dc-section-ink-tone));
-  padding: calc(var(--dc-section-pad-top) + var(--dc-section-top)) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
+  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
@@ -113,6 +113,11 @@ div[class="section"] {
   margin: 0 3px calc(var(--dc-section-gap) + var(--dc-section-edge)) 0;
   position: relative;
   flex-grow: var(--dc-section-grow);
+  /* A fragment that continues keeps the box's own padding: a continuation
+     opens --dc-section-pad-top under its edge. The foot's padding is the
+     hanging edge (paint), so a fragment that goes on ends flush at the page
+     foot: nothing is added, so an unbroken section is as tall as ever. */
+  box-decoration-break: clone;
 }
 
 /* ── panel ───────────────────────────────────────────────────────────────── */
@@ -455,9 +460,6 @@ h3 + .dc-section-panel {
 .dc-section-reference :is(ul, ol) {
   margin-block: 0.04in;
 }
-.dc-section-reference li {
-  margin-bottom: 0.02in;
-}
 
 /* ── Recessed kinds: lore, dm, choose ─────────────────────────────────────────
    These sit sunk into the wall instead of hung on it: no drop-shadow layer, the
@@ -576,6 +578,19 @@ h3 + .dc-section-panel {
 .dc-section-dm :is(.dc-section-panel, .dc-section-flat) {
   --dc-section-top: 0px; /* the tab band is the folder's, not its nested sections' */
 }
+/* The tab band is the first block's margin, not padding: the padding is cloned
+   onto a continuation (`box-decoration-break: clone`), the margin is not, so a
+   continuation opens --dc-section-pad-top under its edge and no tab band. The
+   heading bar's own negative margin gives the pad back. */
+.dc-section-dm > :first-child {
+  margin-top: var(--dc-section-top);
+}
+.dc-section-dm > :is(h4, .dc-h4):first-child {
+  margin-top: calc(var(--dc-section-top) + 0.05in); /* the heading's own 0.05in */
+}
+.dc-section-dm > :is(h2, h3):first-child {
+  margin-top: calc(var(--dc-section-top) - var(--dc-section-pad-top));
+}
 /* The surface starts below the tab band and keeps only the bottom-right cut. */
 .dc-section-dm::before {
   top: var(--dc-section-top);
@@ -621,10 +636,15 @@ h3 + .dc-section-panel {
    dotted write-in rule under every row and a heavy ink tick box in front of
    every option. The accent stays the chapter's: it colours the rule only. */
 .dc-section-choose {
-  --dc-section-surface: none;
+  /* The sheet is the panel's own surface layer (::before), not the box: a
+     clip-path on the box would clip the stamp that hangs over its top edge. The
+     layer is the paper, the ink edge (a ring in the flag slot) and the sunk
+     shade; it has no rail, no hanging edge and no drop shadow. */
   --dc-section-shadow: none;
   --dc-section-edge: 0px;
+  --dc-section-rail: 0px;
   --dc-section-bg: var(--paper-form);
+  --dc-section-flag: inset 0 0 0 2pt var(--ink-dark);
   --dc-section-tab: "Choose";
   --dc-section-tab-bg: var(--brand-yellow);
   --dc-section-tab-fg: var(--ink);
@@ -633,11 +653,19 @@ h3 + .dc-section-panel {
   --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--dc-section-accent);
   --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
-  background: var(--dc-section-bg);
-  border: 2pt solid var(--ink-dark);
-  box-shadow: var(--dc-section-recess);
-  /* A ticket: a V punched out of the middle of each side and a perforated
-     (square-notched) foot, as if it tears off. Padding clears the notches. */
+  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
+  /* The form's edge used to be a 2pt border (snapped by the engine to 2px,
+     1.5pt) outside the padding; the ring is paint now, so its 1.5pt is added to
+     the padding, whatever the padding tokens are: a form is as tall and as wide
+     as it was. The top is then half the stamp's height (9.1pt) plus 1.5pt. */
+  padding: calc(var(--dc-section-pad-top) + 1.5pt) calc(var(--dc-section-pad-right) + 1.5pt) calc(var(--dc-section-pad-bottom) + 1.5pt) calc(var(--dc-section-pad-left) + 1.5pt);
+  background: none;
+  box-shadow: none;
+}
+/* A ticket: a V punched out of the middle of each side and a perforated
+   (square-notched) foot, as if it tears off. Padding clears the notches. */
+.dc-section-choose::before {
+  --dc-section-recess-foot: 0px;
   clip-path: polygon(
     0 0, 100% 0,
     100% calc(50% - 8px), calc(100% - 8px) 50%, 100% calc(50% + 8px),
@@ -650,7 +678,6 @@ h3 + .dc-section-panel {
     0 100%,
     0 calc(50% + 8px), 8px 50%, 0 calc(50% - 8px)
   );
-  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
 }
 .dc-section-choose.dc-section-panel > :is(h2, h3):first-child {
   margin: 0 0 var(--space-md);
@@ -658,20 +685,39 @@ h3 + .dc-section-panel {
   font-size: var(--fs-h4);
   clip-path: none;
 }
-.dc-section-choose > :is(h2, h3):first-child::after {
-  border: 1pt solid var(--ink);
-  font-size: var(--fs-floor);
-  transform: rotate(-2deg);
-}
-/* No heading: the sheet carries the stamp itself, floated to its right corner. */
-.dc-section-choose:not(:has(> :is(h2, h3):first-child))::before {
-  content: "Choose";
-  position: static;
+/* Where the stamp sits inside the form's top edge (a form that opens a page,
+   page-templates.css), the first block's first lines stop short of it: a float
+   of the stamp's size, zero wide everywhere else. */
+.dc-section-choose > :is(h2, h3, p):first-child::before {
+  content: "";
   float: right;
+  width: var(--dc-choose-stamp-room);
+  height: 11pt;
+}
+/* A form straight under another sheet, slip, panel or callout (or the top row
+   of a column run that is) has little wall above it, so its stamp hangs less far
+   over the edge and stays clear of the foot of what is above. A token only: the
+   form does not move or grow. */
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + .dc-section-choose,
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + :is(.gp-columns, [class*="gp-columns-"]) > .dc-section-choose:is(:first-child, .gp-column-break + *) {
+  --dc-choose-stamp-lift: calc(-50% + 6pt);
+}
+/* The stamp: out of the flow, across the form's top edge at the top right, half
+   above the sheet, tilted. A heading's own ::after is the stamp (a section
+   with no heading draws it on the section's ::after, below). */
+.dc-section-choose > :is(h2, h3):first-child::after,
+.dc-section-choose:not(:has(> :is(h2, h3):first-child))::after {
+  content: "Choose";
+  position: absolute;
   inset: auto;
-  z-index: auto;
+  top: var(--dc-choose-stamp-top);
+  right: calc(var(--dc-section-pad-right) + 1.5pt);
+  float: none;
+  margin: 0;
+  width: auto;
+  height: auto;
   clip-path: none;
-  margin: 0 0 var(--space-sm) var(--space-md);
+  z-index: 2;
   padding: 2px 8px 1px;
   background: var(--brand-yellow);
   border: 1pt solid var(--ink);
@@ -683,7 +729,8 @@ h3 + .dc-section-panel {
   letter-spacing: 0.1em;
   line-height: 1.4;
   text-transform: uppercase;
-  transform: rotate(-2deg);
+  transform: translateY(var(--dc-choose-stamp-lift)) rotate(-2deg);
+  pointer-events: none;
 }
 .dc-section-choose td {
   border-bottom: 1pt dotted var(--ink);
@@ -692,20 +739,28 @@ h3 + .dc-section-panel {
 .dc-section-choose tr:nth-child(even) td {
   background: var(--dc-section-bg);
 }
+.dc-section-choose :is(ul, ol) {
+  padding-left: 0;
+}
 .dc-section-choose li {
   border-bottom: 1pt dotted var(--ink);
   padding-bottom: 0.02in;
+  /* the box (0.75em + its 2.25pt frame twice) and 0.5em before the text */
+  padding-left: calc(1.25em + 4.5pt);
 }
-.dc-section-choose li::before,
-.dc-section-choose li > p:first-child::before {
+/* The tick box takes the list's own marker slot (core draws every marker as
+   `li::before`, absolutely positioned in the hang), so a loose item, whose
+   text sits in a <p>, still draws exactly one box. */
+.dc-section-choose li::before {
   content: "";
-  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0.22em;
   width: 0.75em;
   height: 0.75em;
-  margin-right: 0.5em;
+  margin: 0;
   border: 2.25pt solid var(--ink);
   background: var(--paper-form);
-  vertical-align: -0.1em;
 }
 /* A run of choice cards (`@flaws`, `@ideals`, `@dreams`) with no heading and
    nothing in it but the cards is just the cards: each carries its own kind, so
@@ -720,7 +775,8 @@ h3 + .dc-section-panel {
   border: 0;
   box-shadow: none;
 }
-.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::before {
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::before,
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::after {
   content: none;
 }
 /* A choice inside it keeps one card, never half of one. */
@@ -1591,6 +1647,17 @@ h3 + .dc-section-panel {
   margin: 0 var(--space-md) var(--space-sm) 0;
   outline: var(--dc-fiction-art-outline);
   box-shadow: var(--dc-fiction-art-shadow);
+}
+
+/* A section's closing bold line (the plugin marks it `.dc-kicker`) stays with
+   the paragraph above it, so it never opens a page alone. */
+.dc-kicker {
+  break-before: avoid;
+}
+/* ...and the paragraph above it holds it: the pair moves together, taking at
+   least the last two lines (a long paragraph still splits inside). */
+p:has(+ .dc-kicker) {
+  break-after: avoid;
 }
 
 }

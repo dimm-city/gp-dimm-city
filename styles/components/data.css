@@ -235,20 +235,9 @@
   --dc-accent-ink: var(--dc-steps-accent);
 }
 
-/* Grit: a staple holding the plate to the wall, a solid bar a few degrees off
-   square, on the top edge where no text is. */
-.dc-steps::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 14px;
-  width: 20px;
-  height: 4px;
-  background: var(--ink-smoke);
-  border-bottom: 1pt solid var(--ink);
-  transform: rotate(-4deg);
-  pointer-events: none;
-}
+/* No staple on the top edge: a bar a few degrees off square, 5px above the
+   plate, read as a stray dark sliver over its top-left corner (and prints
+   wrong when the plate opens a page). The frame and shadow are the plate's grit. */
 
 .dc-steps>li {
   display: grid;
@@ -311,23 +300,23 @@
 */
 .dc-outcomes {
   margin: 8px 0;
-  border: 2px solid var(--dc-outcomes-border);
-  background: var(--dc-outcomes-surface);
   position: relative;
   break-inside: avoid;
-  /* A machined HUD plate: four even 45-degree chamfers (6px), and one tiny
-     chip out of the foot, the only grit. Text cells keep 12px padding. */
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 62% 100%, calc(62% - 3px) calc(100% - 3px), calc(62% - 7px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
   --dc-accent-ink: var(--dc-outcomes-border);
-  /* Inset hairline, 4px in from the frame: a 4px ring of the surface over a
-     5px ring of the hairline colour leaves a 1px line between them. It is a
-     shadow, not an absolutely positioned `::after` box: an absolutely
-     positioned box inside a multicol run stops Chromium balancing the run's
-     last fragment (it stretches to the full page height), which a
-     column run (`@columns 2`) ending in an `@outcome` showed. */
-  box-shadow:
-    inset 0 0 0 4px var(--dc-outcomes-surface),
-    inset 0 0 0 5px var(--dc-outcomes-inner-border);
+  /* The ladder draws nothing itself. Its frame, ground, hairline and cuts are
+     drawn by the parts that stay together, so a ladder that splits across a
+     page ends flush under its last tier (a framed box would stretch to the
+     page foot) and only its real head and real foot are cut:
+       .dc-outcomes-label     the head: the frame's top, with its two top chamfers (6px)
+       .dc-outcome-row        the ground, the frame's sides, the hairline's right side
+       .dc-outcome-row:last-child   the frame's foot, the bottom chamfers and the
+                              one tiny chip out of the foot, the only grit.
+     Unsplit, the parts add up to the box this used to be: a 2px frame, a 4px
+     ring of ground over a 5px ring of the hairline colour (1px line, 4px in),
+     four even 45-degree chamfers. The ring is a shadow, not an absolutely
+     positioned `::after` box: such a box inside a multicol run stops Chromium
+     balancing the run's last fragment, which an `@outcome` ending a column
+     run showed. */
 }
 
 .dc-outcomes-label {
@@ -340,8 +329,15 @@
   text-transform: uppercase;
   color: var(--dc-outcomes-label-color);
   background: var(--dc-outcomes-label-bg);
-  padding: 6px 14px 5px;
-  border-bottom: 2pt solid var(--dc-outcomes-divider);
+  /* The underline is an inset shadow, not a border: a bottom border meets the
+     frame's side borders in a diagonal mitre, which cut the light divider into
+     the frame. The shadow stops at the frame's inner edge. The padding takes
+     the border's place (a 2pt border lays out as 2px). */
+  padding: 6px 14px calc(5px + 2px);
+  border: 2px solid var(--dc-outcomes-border);
+  border-bottom: 0;
+  box-shadow: inset 0 -2pt 0 0 var(--dc-outcomes-divider);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%, 0 6px);
   position: relative;
   z-index: 1;
 }
@@ -370,15 +366,46 @@
      lines at most; in a half column it stays 130px. */
   grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
-  border-bottom: 1pt solid var(--dc-outcomes-divider);
+  /* The divider is an inset shadow (the last in the list, so it paints under
+     the ring), not a bottom border: see .dc-outcomes-label. 1px of padding
+     takes the border's place (a 1pt border lays out as 1px). */
+  padding-bottom: 1px;
+  border-inline: 2px solid var(--dc-outcomes-border);
+  background: var(--dc-outcomes-surface);
+  box-shadow:
+    inset -4px 0 0 0 var(--dc-outcomes-surface),
+    inset -5px 0 0 0 var(--dc-outcomes-inner-border),
+    inset 0 -1pt 0 0 var(--dc-outcomes-divider);
   position: relative;
   z-index: 1;
 }
 
-.dc-outcome-row:last-child {
-  border-bottom: 0;
+/* The band's edge: a 2px bar in the row colour, drawn by the ROW so it runs the
+   row's full height. (On the text cell, which centres itself, the border was only
+   as tall as the text and left a short stub beside the key's colour band.) */
+.dc-outcome-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--dc-outcome-key-col);
+  width: 2px;
+  background: var(--row-color, var(--ink-dust));
+  pointer-events: none;
 }
 
+/* The foot: the frame's bottom, the ring's bottom, the two bottom chamfers and the
+   chip, once, where the ladder really ends. */
+.dc-outcome-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 2px solid var(--dc-outcomes-border);
+  box-shadow:
+    inset -4px 0 0 0 var(--dc-outcomes-surface),
+    inset 0 -4px 0 0 var(--dc-outcomes-surface),
+    inset -5px 0 0 0 var(--dc-outcomes-inner-border),
+    inset 0 -5px 0 0 var(--dc-outcomes-inner-border);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 62% 100%, calc(62% - 3px) calc(100% - 3px), calc(62% - 7px) 100%, 6px 100%, 0 calc(100% - 6px));
+}
 .dc-outcome-key {
   /* Inner top-highlight + bottom-shadow simulates ink density — the chip reads
      as a "pressed-in" element rather than a flat color sticker. The 1px white
@@ -444,7 +471,9 @@
      right-column text floats on plain paper-cream with no visual tie back to
      the row band, reading as untethered prose next to a designed table.
      Reads `--row-color` which is set per-variant on .dc-outcome-row.X. */
-  border-left: 2px solid var(--row-color, var(--ink-dust));
+  /* Its 2px left edge is the row's ::after bar; the padding keeps the text
+     where the border put it. */
+  padding-left: 16px;
 }
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
@@ -1077,6 +1106,13 @@ p.dc-img-wrapper {
   line-height: 1.1;
   color: var(--dc-at-a-glance-value);
   overflow-wrap: anywhere;
+}
+
+/* A table whose header cells are all empty (markdown requires a header row for a
+   boxed option list) draws no header row at all: not even the blank strip the
+   collapsed cells leave. */
+thead:not(:has(> tr > th:not(:empty))) {
+  display: none;
 }
 
 }

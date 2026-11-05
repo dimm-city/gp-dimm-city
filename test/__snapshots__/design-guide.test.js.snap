@@ -516,6 +516,8 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
 <p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9&ndash;13</p>
 </div>
+<p>Lixdu covers only plain ASCII, so a heading’s curly quotes, en and em dashes and ellipsis come from a second <code>lixdu</code> face cut from the Tomorrow Bold file: they print in a matching weight, not in thin Tomorrow Regular. A heading breaks only between words; a single word wider than its column is not split, it overflows (widen the column, or place a soft hyphen). Running text has one ink, <code>--ink</code>: paragraphs, list items and table cells all print it.</p>
+<p>Lists hang their <code>»</code> (or numeral) in the left padding, 1.1em (1.6em for numbers, one more hang per nesting level), so wrapped lines align under the first word; items sit one small step apart whether the list is tight or loose, and a list adds no space above itself.</p>
 <h2 data-name="heading-hierarchy">Heading hierarchy</h2>
 <p>Each level rendered at its print size:</p>
 <div class="dg-stage dg-on-paper">
@@ -526,7 +528,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </div>
 <h2 data-name="level-and-look">Level and look</h2>
 <p>A heading’s level is its place in the outline, and the outline never skips a level: <code>#</code> is followed by <code>##</code>, never <code>###</code>. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with <code>.dc-h3</code>, <code>.dc-h4</code>, <code>.dc-h5</code> or <code>.dc-h6</code>:</p>
-<pre><code data-source-range="67:76" class="language-markdown"># Cybernetics, Weapons, and Gear
+<pre><code data-source-range="71:80" class="language-markdown"># Cybernetics, Weapons, and Gear
 
 ## Useful Items {.dc-h3}
 
@@ -543,7 +545,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The look follows the class everywhere: an <code>##</code> with <code>.dc-h3</code> that opens a section takes the subordinate section bar, and a <code>###</code> with <code>.dc-h4</code> inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.</p>
 <h2 data-name="heading-chrome">Heading chrome</h2>
 <p>Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; <code>.dc-no-top</code> pulls it tight against whatever is above it.</p>
-<pre><code data-source-range="95:102" class="language-markdown"># Augmerc {.dc-chevron}
+<pre><code data-source-range="99:106" class="language-markdown"># Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
 
@@ -551,7 +553,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="107:108"><h1 class="dc-chevron" data-name="augmerc">Augmerc</h1>
+<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="111:112"><h1 class="dc-chevron" data-name="augmerc">Augmerc</h1>
 <h2 class="dc-spray" data-name="biting-distance">Biting Distance</h2>
 <h3 class="dc-spec-tweak dc-no-top" data-name="spec-tweak-wired-to-kill">Spec Tweak: Wired to Kill</h3>
 </div></div>
@@ -559,28 +561,28 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
 <div class="dc-flavor">
-<p data-source-range="125:127">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
+<p data-source-range="129:131">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
 </div>
 </div>
 <p>Flavor is 11pt italic in <code>--ink-dark</code>, with a rail and no box. Never set flavor in bold italic — it reads as urgency, not voice.</p>
 <p class="dg-dont-label">Don’t</p>
 <div class="dg-stage dg-dont">
 <div class="dc-flavor">
-<p data-source-range="136:138"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
+<p data-source-range="140:142"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
 </div>
 </div>
 <p><strong>Column-safe headings:</strong> in a two-column layout use <code>###</code> and <code>####</code>. <code>#</code> and <code>##</code> at full print size exceed a 3.5-inch column.</p>
 <h2 data-name="size-floors">Size floors</h2>
 <p>There is one floor, <code>--fs-floor</code> (10pt), and nothing prints smaller: not a chip, a tab, a tier pill, an AP chip, a folio or a stamp. It is a minimum, not a target; text that already meets it stays as it is.</p>
 <table>
-<thead data-source-range="147:148">
-<tr data-source-range="147:148">
+<thead data-source-range="151:152">
+<tr data-source-range="151:152">
 <th>Text</th>
 <th>Floor</th>
 </tr>
 </thead>
-<tbody data-source-range="149:150">
-<tr data-source-range="149:150">
+<tbody data-source-range="153:154">
+<tr data-source-range="153:154">
 <td>All text: body, rules, tables, captions, labels, chips, tabs and badges</td>
 <td>10pt (the book sets running body at 12pt)</td>
 </tr>
@@ -590,35 +592,35 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The renderer converts ASCII shortcuts as you type: <code>--</code> is an en dash --, <code>---</code> an em dash —, <code>...</code> an ellipsis …, and “straight quotes” curl. No special syntax, no Unicode entry.</p>
 <h2 data-name="font-tokens">Font tokens</h2>
 <table>
-<thead data-source-range="157:158">
-<tr data-source-range="157:158">
+<thead data-source-range="161:162">
+<tr data-source-range="161:162">
 <th>Token</th>
 <th>Face</th>
 <th>Used for</th>
 </tr>
 </thead>
-<tbody data-source-range="159:164">
-<tr data-source-range="159:160">
+<tbody data-source-range="163:168">
+<tr data-source-range="163:164">
 <td><code>--font-display</code></td>
 <td>lixdu</td>
 <td>H1–H3, banners</td>
 </tr>
-<tr data-source-range="160:161">
+<tr data-source-range="164:165">
 <td><code>--font-body</code></td>
 <td>Titillium Web</td>
 <td>Body prose, flavor, quotes</td>
 </tr>
-<tr data-source-range="161:162">
+<tr data-source-range="165:166">
 <td><code>--font-mono</code></td>
 <td>Tomorrow</td>
 <td>Code, counters, tabular data</td>
 </tr>
-<tr data-source-range="162:163">
+<tr data-source-range="166:167">
 <td><code>--font-tab</code></td>
 <td>Tomorrow</td>
 <td>Short label text: card tabs, stat labels</td>
 </tr>
-<tr data-source-range="163:164">
+<tr data-source-range="167:168">
 <td><code>--font-quote</code></td>
 <td>Titillium Web</td>
 <td>Italic quotes and attributions</td>
@@ -934,7 +936,7 @@ The city didn't go quiet --- it got loud. You came to Dimm City to disappear, an
 </div>
 <p>Tokens: <code>--dc-pullquote-accent</code>, <code>--dc-pullquote-accent-soft</code>, <code>--dc-pullquote-bg</code>.</p>
 <h2 data-name="alerts">Alerts</h2>
-<p>One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert — a blockquote whose first line is <code>[!TYPE]</code>, for the first seven — and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the <code>@callout</code> block below.</p>
+<p>One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert — a blockquote whose first line is <code>[!TYPE]</code>, for the first seven — and the label, colour, edge and shape come with the type. To give one its own title, write it after the marker with the body on the lines below (<code>&gt; [!NOTE] Escaping A Grapple</code>): the title replaces the default label and the alert keeps its register. Text after the marker in a one-line alert is body text. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the <code>@callout</code> block below.</p>
 <pre><code class="dg-split language-markdown" data-source-range="86:109">&gt; [!NOTE]
 &gt; A character may hold no more than one Signature Augment at a time.
 
@@ -1124,7 +1126,7 @@ If the players investigate before accepting, they can smell the trap with a Stre
 </div>
 <p>Tokens: <code>--dc-tape-bg</code>, <code>--dc-tape-border</code>, <code>--dc-tape-color</code>, <code>--dc-tape-shape</code>. Add <code>dc-flush</code> (<code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code>) to run it edge to edge.</p>
 <h2 data-name="rule">Rule</h2>
-<p>A plain <code>---</code> between entries is a thin red rule — the separator for gear lists and NPC entries.</p>
+<p>A plain <code>---</code> is a 1pt ink hairline, a pause between topics; in a skill card it is a 1.5pt seam in the specialty’s colour between sub-abilities. It is not drawn first or last in its box, before a heading, table or component, or straight on the bare wall, and it never ends a page.</p>
 <pre><code data-source-range="270:277" class="language-markdown">Trauma Kit × 2
 
 ---
@@ -1502,7 +1504,7 @@ Roll 2d20, take the lower. Reality pushes back.
 </div></div></div>
 <p>Tokens: <code>--dc-definition-block-surface</code>, <code>--dc-definition-block-accent</code> (the rules), <code>--dc-definition-block-term</code> (the headword), <code>--dc-definition-block-accent-width</code> and <code>--dc-definition-block-rule-bottom</code> (the rules’ weights; 0 for lucid and surreal), <code>--dc-definition-block-shape</code> (the silhouette; none by default), <code>--dc-definition-block-fg</code>, <code>--dc-definition-block-style</code>, <code>--dc-definition-block-frame</code> (the hard shadow, or an inset frame) and <code>--dc-definition-block-pad</code>. For a plain term list, a markdown definition list (<code>Term</code> / <code>: meaning</code>) needs no macro — see <a href="#ch-writing" data-gp-source-token="[Writing a Page](#ch-writing)" data-gp-source-occurrence="0">Writing a Page</a>.</p>
 <h2 data-name="procedure">Procedure</h2>
-<p>A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, ruled dividers, and a staple holding the plate to the wall. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.</p>
+<p>A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, and ruled dividers. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.</p>
 <p>Tokens: <code>--dc-steps-accent</code> (the number strip), <code>--dc-steps-surface</code> (the plate).</p>
 <pre><code data-source-range="432:442" class="language-markdown">@procedure
 
@@ -2485,7 +2487,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.</p>
-<p>Once per round, outside your turn, you exploit a target in reach:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
@@ -2532,7 +2534,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </tr>
 </tbody>
 </table>
-<p>The AP chip reads the number: <code>0 AP</code> is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), <code>VAR</code> or a range is variable (deep magenta). Two more come from a raw span: <code>.reduced</code> is pale blue with a down-triangle and <code>.increased</code> is blood with an up-triangle, so they differ in grayscale too. A raw <code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> makes a chip in prose.</p>
+<p>The AP chip reads the number: <code>0 AP</code> is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), <code>VAR</code> or a range is variable (deep magenta). Two more come from a raw span: <code>.reduced</code> is pale blue with a down-triangle and <code>.increased</code> is blood with an up-triangle, so they differ in grayscale too. A raw <code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> makes a chip in prose. Only a real cost makes a chip, and the chip holds only the readout (<code>3 AP</code>): a name after the cost (<code>**3 AP --- Butcher Roach**</code>) or a qualifier moves into the row text as an italic run-in. A list whose items all lead with a bold die result (<code>**20**</code>, <code>**11-19**</code>) is the outcome ladder (five standard bands) or a roll table, and any other bold lead (an option’s name) is a bulleted option with its name in bold. A list nested under a cost item stays a list under the row.</p>
 <h3 data-name="two-columns">Two columns</h3>
 <div class="dg-stage">
 <div class="dc-specialty augmerc" data-source-range="371:372"><div class="dc-learning-path dc-path-block" data-name="example-path-2" data-path-ref="AUG1" data-source-range="373:374"><div class="dc-path-shell">
@@ -2567,7 +2569,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 </div></div></div>
 <h2 data-name="continuing-a-long-card">Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose.</p>
+<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab or tape. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -2773,9 +2775,9 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="23:24">
 <td>Bottom margin (the folio and chapter chips sit in it)</td>
-<td>0.875 in</td>
-<td>0.75 in</td>
-<td>0.5 in — the chips sit at the top of the band and end 0.5 in from the trim</td>
+<td>0.95 in</td>
+<td>0.825 in</td>
+<td>0.5 in — the chips sit at the top of the band and end 0.5 in from the trim; a sheet that fills a page ends 0.10 in above them</td>
 </tr>
 <tr data-source-range="24:25">
 <td>Outside margin</td>
@@ -2930,7 +2932,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="87:88">
 <td>Paragraphs, lists, quotes</td>
-<td>One paper sheet per run; the sheet ends where the run does. A bulleted list starts at the text edge (its marker is the indent); a numbered one keeps room for its numbers. A run of prose in <code>@columns</code> is one sheet and does not split across a page</td>
+<td>One paper sheet per run; the sheet ends where the run does. A list hangs its marker in a 1.1em indent (1.6em for numerals) inside the padding of the sheet, so wrapped lines align under the first word. A run of prose in <code>@columns</code> is one sheet and does not split across a page</td>
 </tr>
 </tbody>
 </table>
@@ -4131,7 +4133,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.</p>
-<p>Once per round, outside your turn, you exploit a target in reach:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
@@ -4161,7 +4163,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <p class="dc-ability-text">You invoke your devotion: whether to a deity, an ideal, or a personal creed. Project sustaining force into the fray. You and all nearby allies immediately heal 2 HP.</p>
 </div>
 <div class="dc-ability" data-ability-last="true">
-  <span class="dc-ap variable">3-X AP</span>
+  <span class="dc-ap variable">3–X AP</span>
   <p class="dc-ability-text">You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.</p>
 </div>
 </div></div></div>
@@ -4175,10 +4177,10 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <th>Class</th>
 </tr>
 </thead>
-<tbody data-source-range="460:468">
+<tbody data-source-range="460:470">
 <tr data-source-range="460:461">
 <td>Free</td>
-<td><code>**0 AP**</code></td>
+<td><code>**0 AP**</code>, <code>**0 AP.**</code></td>
 <td><code>.dc-ap.free</code></td>
 </tr>
 <tr data-source-range="461:462">
@@ -4193,25 +4195,35 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="463:464">
 <td>Variable</td>
-<td><code>**3-X AP**</code>, any range or <code>X</code></td>
+<td><code>**3-X AP**</code>, <code>**1--3 AP**</code>, any range (hyphen or dash) or <code>X</code></td>
 <td><code>.dc-ap.variable</code></td>
 </tr>
 <tr data-source-range="464:465">
+<td>Standard, with a name</td>
+<td><code>**3 AP --- Butcher Roach**</code></td>
+<td>chip <code>.dc-ap</code> reads <code>3 AP</code>; <em>Butcher Roach:</em> leads the row text</td>
+</tr>
+<tr data-source-range="465:466">
+<td>Not a chip</td>
+<td><code>**20**</code>, <code>**11-19**</code> (all items)</td>
+<td>outcome ladder or roll table; any other bold lead (<code>**Prefrontal Chaos**</code>) is a bulleted option</td>
+</tr>
+<tr data-source-range="466:467">
 <td>Standard, explicit</td>
 <td><code>&lt;span class=&quot;dc-ap standard&quot;&gt;</code></td>
 <td><code>.dc-ap.standard</code></td>
 </tr>
-<tr data-source-range="465:466">
+<tr data-source-range="467:468">
 <td>Reduced</td>
 <td><code>&lt;span class=&quot;dc-ap reduced&quot;&gt;</code></td>
 <td><code>.dc-ap.reduced</code></td>
 </tr>
-<tr data-source-range="466:467">
+<tr data-source-range="468:469">
 <td>Increased</td>
 <td><code>&lt;span class=&quot;dc-ap increased&quot;&gt;</code></td>
 <td><code>.dc-ap.increased</code></td>
 </tr>
-<tr data-source-range="467:468">
+<tr data-source-range="469:470">
 <td>Special</td>
 <td><code>&lt;span class=&quot;dc-ap special&quot;&gt;</code></td>
 <td><code>.dc-ap.special</code></td>
@@ -4221,106 +4233,106 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2 data-name="specialty-intros">Specialty intros</h2>
 <p><code>@specialty-intro</code> inside each <code>@specialty</code>: the same panel, ten title bands. Each band is the specialty’s own signal colour with its own register: an LED rim and a rule of LED dots on the tech ones, a faceted plane on the magic ones, a hazard-tape rule on Streetwarden, a torn bottom edge and no rule on Technosorcerer and Gutterdruid. Intro text is the opening of each Field Guide profile.</p>
 <div class="dg-stage">
-<div class="dc-specialty augmerc" data-source-range="475:476"><div class="dc-specialty-intro" data-name="augmerc" data-source-range="477:478"><h2 data-name="augmerc">Augmerc</h2>
+<div class="dc-specialty augmerc" data-source-range="477:478"><div class="dc-specialty-intro" data-name="augmerc" data-source-range="479:480"><h2 data-name="augmerc">Augmerc</h2>
 <p>An Augmerc is muscle for hire. Street thugs, corporate bodyguards, deniable enforcers — the difference is gear, grafts, and how much of them is still original.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty proxy" data-source-range="491:492"><div class="dc-specialty-intro" data-name="proxy" data-source-range="493:494"><h2 data-name="proxy">Proxy</h2>
+<div class="dc-specialty proxy" data-source-range="493:494"><div class="dc-specialty-intro" data-name="proxy" data-source-range="495:496"><h2 data-name="proxy">Proxy</h2>
 <p>Belief burns bright in Dimm City, and Proxies carry the sparks others cannot hold. A word that stops a heart, a prayer that drags a soul back to its feet.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty streetwarden" data-source-range="507:508"><div class="dc-specialty-intro" data-name="streetwarden" data-source-range="509:510"><h2 data-name="streetwarden">Streetwarden</h2>
+<div class="dc-specialty streetwarden" data-source-range="509:510"><div class="dc-specialty-intro" data-name="streetwarden" data-source-range="511:512"><h2 data-name="streetwarden">Streetwarden</h2>
 <p>Dimm City may look like a concrete jungle, but its sentient population is far outnumbered by the insects, animals, fungi, protista, and monera that thrive throughout its shadowed sprawl. …</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty gutterdruid" data-source-range="523:524"><div class="dc-specialty-intro" data-name="gutterdruid" data-source-range="525:526"><h2 data-name="gutterdruid">Gutterdruid</h2>
+<div class="dc-specialty gutterdruid" data-source-range="525:526"><div class="dc-specialty-intro" data-name="gutterdruid" data-source-range="527:528"><h2 data-name="gutterdruid">Gutterdruid</h2>
 <p>Nature thrives in Dimm City, but it grows meaner here. It roots in drains, nests in vents, blooms on corpses, cracks through concrete, and feeds on carrion, heat, rust, blood, and whatever the city throws on the curb. …</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty cybersurgeon" data-source-range="539:540"><div class="dc-specialty-intro" data-name="cybersurgeon" data-source-range="541:542"><h2 data-name="cybersurgeon">Cybersurgeon</h2>
+<div class="dc-specialty cybersurgeon" data-source-range="541:542"><div class="dc-specialty-intro" data-name="cybersurgeon" data-source-range="543:544"><h2 data-name="cybersurgeon">Cybersurgeon</h2>
 <p>Need a new arm? Sit down. Need a neuroimplant wired so the Datasphere crawls behind your eyes? That’s extra.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty wirephreak" data-source-range="555:556"><div class="dc-specialty-intro" data-name="wirephreak" data-source-range="557:558"><h2 data-name="wirephreak">Wirephreak</h2>
+<div class="dc-specialty wirephreak" data-source-range="557:558"><div class="dc-specialty-intro" data-name="wirephreak" data-source-range="559:560"><h2 data-name="wirephreak">Wirephreak</h2>
 <p>The invisible professionals of Dimm City. Corporations, syndicates, governments, and private clients alike rely on Wirephreaks when information must be acquired, facilities infiltrated, witnesses eliminated, or valuable assets extracted without leaving a trace.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty technosorcerer" data-source-range="571:572"><div class="dc-specialty-intro" data-name="technosorcerer" data-source-range="573:574"><h2 data-name="technosorcerer">Technosorcerer</h2>
+<div class="dc-specialty technosorcerer" data-source-range="573:574"><div class="dc-specialty-intro" data-name="technosorcerer" data-source-range="575:576"><h2 data-name="technosorcerer">Technosorcerer</h2>
 <p>Technosorcerers see the world as one enormous operating system. Magic, cybernetics, matter, even the laws of existence are simply different layers of the same source code waiting to be understood—and rewritten.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty etherlock" data-source-range="587:588"><div class="dc-specialty-intro" data-name="etherlock" data-source-range="589:590"><h2 data-name="etherlock">Etherlock</h2>
+<div class="dc-specialty etherlock" data-source-range="589:590"><div class="dc-specialty-intro" data-name="etherlock" data-source-range="591:592"><h2 data-name="etherlock">Etherlock</h2>
 <p>Dimm City leaks magic. Raw ether and elements seep through fractures between substantialities, saturating matter and space, feeding the strange ecology of Dimm City itself.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty dualist" data-source-range="603:604"><div class="dc-specialty-intro" data-name="dualist" data-source-range="605:606"><h2 data-name="dualist">Dualist</h2>
+<div class="dc-specialty dualist" data-source-range="605:606"><div class="dc-specialty-intro" data-name="dualist" data-source-range="607:608"><h2 data-name="dualist">Dualist</h2>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either.</p>
 </div></div></div>
 <div class="dg-stage">
-<div class="dc-specialty generalist" data-source-range="619:620"><div class="dc-specialty-intro" data-name="generalist" data-source-range="621:622"><h2 data-name="generalist">Generalist</h2>
+<div class="dc-specialty generalist" data-source-range="621:622"><div class="dc-specialty-intro" data-name="generalist" data-source-range="623:624"><h2 data-name="generalist">Generalist</h2>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects.</p>
 </div></div></div>
 <h2 data-name="specialty-cards">Specialty cards</h2>
 <p><code>@specialty-card</code> inside each <code>@specialty</code>, in a <code>@card-grid</code>. Cards alternate <code>data-position=&quot;odd|even&quot;</code> down the grid.</p>
 <div class="dg-stage dg-tall">
-<div class="section dc-card-grid" data-source-range="639:640"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="641:642"><div class="dc-specialty augmerc" data-source-range="643:644"><div class="dc-specialty-card" data-name="augmerc-2" data-position="odd" data-source-range="645:646"><h3 data-name="augmerc-2">Augmerc</h3>
+<div class="section dc-card-grid" data-source-range="641:642"><div class="gp-columns gp-columns-2" data-columns="2" data-source-range="643:644"><div class="dc-specialty augmerc" data-source-range="645:646"><div class="dc-specialty-card" data-name="augmerc-2" data-position="odd" data-source-range="647:648"><h3 data-name="augmerc-2">Augmerc</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-augmerc-card.png" alt="Augmerc" data-gp-source-token="![Augmerc](img/specialty-augmerc-card.png)" data-gp-source-occurrence="0" data-name="specialty-augmerc-card"></p>
 <blockquote>
-<p data-source-range="651:652">Cybernetic Commando</p>
+<p data-source-range="653:654">Cybernetic Commando</p>
 </blockquote>
 <p>Heavily armed and wired for war, Augmercs are the blunt force of any squad. They charge the front, soak the pain, and unload hell using brute strength and brutal tech. Combat-born, augged to kill, and never outgunned.</p>
-</div></div><div class="dc-specialty proxy" data-source-range="659:660"><div class="dc-specialty-card" data-name="proxy-2" data-position="even" data-source-range="661:662"><h3 data-name="proxy-2">Proxy</h3>
+</div></div><div class="dc-specialty proxy" data-source-range="661:662"><div class="dc-specialty-card" data-name="proxy-2" data-position="even" data-source-range="663:664"><h3 data-name="proxy-2">Proxy</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-proxy-card.png" alt="Proxy" data-gp-source-token="![Proxy](img/specialty-proxy-card.png)" data-gp-source-occurrence="0" data-name="specialty-proxy-card"></p>
 <blockquote>
-<p data-source-range="667:668">Militant Monolith</p>
+<p data-source-range="669:670">Militant Monolith</p>
 </blockquote>
 <p>Marked by something higher—god, ghost, code, or conviction—Proxies walk the line between zealot and judge. They wield divine force like a weapon, bending battles and conversations alike with power that burns louder than faith.</p>
-</div></div><div class="dc-specialty streetwarden" data-source-range="675:676"><div class="dc-specialty-card" data-name="streetwarden-2" data-position="odd" data-source-range="677:678"><h3 data-name="streetwarden-2">Streetwarden</h3>
+</div></div><div class="dc-specialty streetwarden" data-source-range="677:678"><div class="dc-specialty-card" data-name="streetwarden-2" data-position="odd" data-source-range="679:680"><h3 data-name="streetwarden-2">Streetwarden</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-streetwarden-card.png" alt="Streetwarden" data-gp-source-token="![Streetwarden](img/specialty-streetwarden-card.png)" data-gp-source-occurrence="0" data-name="specialty-streetwarden-card"></p>
 <blockquote>
-<p data-source-range="683:684">Sprawl Sentinel</p>
+<p data-source-range="685:686">Sprawl Sentinel</p>
 </blockquote>
 <p>They don’t wear badges—they are the law when no one else shows. Streetwardens guard the city’s broken places with fists, grit, and a code all their own. They know the alleys like arteries and protect the forgotten.</p>
-</div></div><div class="dc-specialty gutterdruid" data-source-range="691:692"><div class="dc-specialty-card" data-name="gutterdruid-2" data-position="even" data-source-range="693:694"><h3 data-name="gutterdruid-2">Gutterdruid</h3>
+</div></div><div class="dc-specialty gutterdruid" data-source-range="693:694"><div class="dc-specialty-card" data-name="gutterdruid-2" data-position="even" data-source-range="695:696"><h3 data-name="gutterdruid-2">Gutterdruid</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-gutterdruid-card.png" alt="Gutterdruid" data-gp-source-token="![Gutterdruid](img/specialty-gutterdruid-card.png)" data-gp-source-occurrence="0" data-name="specialty-gutterdruid-card"></p>
 <blockquote>
-<p data-source-range="699:700">Wold Witch</p>
+<p data-source-range="701:702">Wold Witch</p>
 </blockquote>
 <p>They walk the alleys like sacred ground—feeding the hungry, tending weeds, raising the forgotten. Gutterdruids draw power from the pulse beneath the pavement, shaping the raw, primal force that keeps the city alive even as it rots.</p>
-</div></div><div class="dc-specialty cybersurgeon" data-source-range="707:708"><div class="dc-specialty-card" data-name="cybersurgeon-2" data-position="odd" data-source-range="709:710"><h3 data-name="cybersurgeon-2">Cybersurgeon</h3>
+</div></div><div class="dc-specialty cybersurgeon" data-source-range="709:710"><div class="dc-specialty-card" data-name="cybersurgeon-2" data-position="odd" data-source-range="711:712"><h3 data-name="cybersurgeon-2">Cybersurgeon</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-cybersurgeon-card.png" alt="Cybersurgeon" data-gp-source-token="![Cybersurgeon](img/specialty-cybersurgeon-card.png)" data-gp-source-occurrence="0" data-name="specialty-cybersurgeon-card"></p>
 <blockquote>
-<p data-source-range="715:716">Mech Medic</p>
+<p data-source-range="717:718">Mech Medic</p>
 </blockquote>
 <p>Life is flexible. Cybersurgeons prove it daily—cutting, splicing, upgrading flesh into something more. Whether they’re back-alley butchers or elite biomech specialists, these med-techs push the edge of evolution, one implant at a time.</p>
-</div></div><div class="dc-specialty wirephreak" data-source-range="723:724"><div class="dc-specialty-card" data-name="wirephreak-2" data-position="even" data-source-range="725:726"><h3 data-name="wirephreak-2">Wirephreak</h3>
+</div></div><div class="dc-specialty wirephreak" data-source-range="725:726"><div class="dc-specialty-card" data-name="wirephreak-2" data-position="even" data-source-range="727:728"><h3 data-name="wirephreak-2">Wirephreak</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-wirephreak-card.png" alt="Wirephreak" data-gp-source-token="![Wirephreak](img/specialty-wirephreak-card.png)" data-gp-source-occurrence="0" data-name="specialty-wirephreak-card"></p>
 <blockquote>
-<p data-source-range="731:732">Ping Predator</p>
+<p data-source-range="733:734">Ping Predator</p>
 </blockquote>
 <p>Killers, thieves, forgers—Wirephreaks specialize in slipping past locks, firewalls, and people. Some work clean, some loud, all lethal. Whether the job calls for stealth, sabotage, or sleight-of-hand, a Wirephreak on the crew means the job gets done.</p>
-</div></div><div class="dc-specialty technosorcerer" data-source-range="739:740"><div class="dc-specialty-card" data-name="technosorcerer-2" data-position="odd" data-source-range="741:742"><h3 data-name="technosorcerer-2">Technosorcerer</h3>
+</div></div><div class="dc-specialty technosorcerer" data-source-range="741:742"><div class="dc-specialty-card" data-name="technosorcerer-2" data-position="odd" data-source-range="743:744"><h3 data-name="technosorcerer-2">Technosorcerer</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-technosorcerer-card.png" alt="Technosorcerer" data-gp-source-token="![Technosorcerer](img/specialty-technosorcerer-card.png)" data-gp-source-occurrence="0" data-name="specialty-technosorcerer-card"></p>
 <blockquote>
-<p data-source-range="747:748">Modular Magician</p>
+<p data-source-range="749:750">Modular Magician</p>
 </blockquote>
 <p>Technosorcerers walk on the razor’s edge between magic and technology. They believe one to be no different than the other and use the strengths of each to help nullify the other’s weaknesses.</p>
-</div></div><div class="dc-specialty etherlock" data-source-range="755:756"><div class="dc-specialty-card" data-name="etherlock-2" data-position="even" data-source-range="757:758"><h3 data-name="etherlock-2">Etherlock</h3>
+</div></div><div class="dc-specialty etherlock" data-source-range="757:758"><div class="dc-specialty-card" data-name="etherlock-2" data-position="even" data-source-range="759:760"><h3 data-name="etherlock-2">Etherlock</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-etherlock-card.png" alt="Etherlock" data-gp-source-token="![Etherlock](img/specialty-etherlock-card.png)" data-gp-source-occurrence="0" data-name="specialty-etherlock-card"></p>
 <blockquote>
-<p data-source-range="763:764">Manifold Magus</p>
+<p data-source-range="765:766">Manifold Magus</p>
 </blockquote>
 <p>Secrets are currency—and Etherlocks are rich in them. Tapping into elemental forces, spirit echoes, and the buried laws of the monoverse, they wield magic that slips through cracks in reality.</p>
-</div></div><div class="dc-specialty dualist" data-source-range="771:772"><div class="dc-specialty-card" data-name="dualist-2" data-position="odd" data-source-range="773:774"><h3 data-name="dualist-2">Dualist</h3>
+</div></div><div class="dc-specialty dualist" data-source-range="773:774"><div class="dc-specialty-card" data-name="dualist-2" data-position="odd" data-source-range="775:776"><h3 data-name="dualist-2">Dualist</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-dualist-card.png" alt="Dualist" data-gp-source-token="![Dualist](img/specialty-dualist-card.png)" data-gp-source-occurrence="0" data-name="specialty-dualist-card"></p>
 <blockquote>
-<p data-source-range="779:780">Two-Path Walker</p>
+<p data-source-range="781:782">Two-Path Walker</p>
 </blockquote>
 <p>Dualists refuse to choose. They walk two specialty paths at once, drawing skills from both at the cost of mastery in either. Where others sharpen one edge, the Dualist carries two — equally at home picking locks and pulling triggers, casting circuits and reading rooms.</p>
-</div></div><div class="dc-specialty generalist" data-source-range="787:788"><div class="dc-specialty-card" data-name="generalist-2" data-position="even" data-source-range="789:790"><h3 data-name="generalist-2">Generalist</h3>
+</div></div><div class="dc-specialty generalist" data-source-range="789:790"><div class="dc-specialty-card" data-name="generalist-2" data-position="even" data-source-range="791:792"><h3 data-name="generalist-2">Generalist</h3>
 <p class="dc-img-wrapper"><img src="img/specialty-generalist-card.png" alt="Generalist" data-gp-source-token="![Generalist](img/specialty-generalist-card.png)" data-gp-source-occurrence="0" data-name="specialty-generalist-card"></p>
 <blockquote>
-<p data-source-range="795:796">Sprawl Survivor</p>
+<p data-source-range="797:798">Sprawl Survivor</p>
 </blockquote>
 <p>Generalists don’t specialize — they scavenge. Picking up scraps of every art the city offers, they’re the operative no one expects: a passable hacker who can shoot, a mediocre fighter who can sneak, a half-druid who knows a guy. Master of none. Useful to everyone.</p>
 </div></div></div></div></div>
@@ -4333,68 +4345,68 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same seven registers, and <code>@callout example</code> makes an eighth. Each register is a white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet with a strip of tape, a torn, dog-eared origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.</p>
 <div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
-<p data-source-range="825:827">A character may hold no more than one Signature Augment at a time.</p>
+<p data-source-range="827:829">A character may hold no more than one Signature Augment at a time.</p>
 </div>
 <div class="dc-alert dc-note warning"><span class="dc-alert-label">Warning</span>
-<p data-source-range="828:830">Trauma Patches stabilize a dying character but do not restore HP.</p>
+<p data-source-range="830:832">Trauma Patches stabilize a dying character but do not restore HP.</p>
 </div>
 <div class="dc-alert dc-dm-note"><span class="dc-alert-label">Dream Master Note</span>
-<p data-source-range="831:833">If a player hasn’t chosen starting gear by the end of session zero, hand them a Scavenger Pack.</p>
+<p data-source-range="833:835">If a player hasn’t chosen starting gear by the end of session zero, hand them a Scavenger Pack.</p>
 </div>
 <div class="dc-alert dc-vibe-callout"><span class="dc-alert-label">Vibe</span>
-<p data-source-range="834:836">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
+<p data-source-range="836:838">The rain in Dimm City never quite stops — it just changes color under the signage.</p>
 </div>
 <div class="dc-alert dc-origin-callout"><span class="dc-alert-label">Origin</span>
-<p data-source-range="837:839">You didn’t choose the street — the street chose you.</p>
+<p data-source-range="839:841">You didn’t choose the street — the street chose you.</p>
 </div>
 <div class="dc-alert dc-location-callout"><span class="dc-alert-label">Location</span>
-<p data-source-range="840:842">The Undercroft: three flooded levels under the old ArkD tower.</p>
+<p data-source-range="842:844">The Undercroft: three flooded levels under the old ArkD tower.</p>
 </div>
 <div class="dc-alert dc-visit-callout"><span class="dc-alert-label">Visit</span>
-<p data-source-range="843:845">The Neon Bazaar doesn’t close.</p>
+<p data-source-range="845:847">The Neon Bazaar doesn’t close.</p>
 </div>
-<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="847:848"><span class="dc-alert-label">Example</span>
+<div class="dc-alert dc-example-callout" data-callout="example" data-source-range="849:850"><span class="dc-alert-label">Example</span>
 <p>A worked example (<code>@callout example</code>, which has no blockquote form): a cyan rail and a taped-on label.</p>
 </div></div>
 <h2 data-name="blocks">Blocks</h2>
 <p><code>@block .dc-panel | .dc-slate | .dc-shard</code>: a HUD-blue band, an ink body under a blood band stamped <em>Binding</em>, and white paper with a torn foot and no accent hue.</p>
 <div class="dg-stage">
-<div class="dc-block dc-panel" data-label="Panel" data-name="panel" data-source-range="861:862"><div class="dc-block-title">Panel</div>
+<div class="dc-block dc-panel" data-label="Panel" data-name="panel" data-source-range="863:864"><div class="dc-block-title">Panel</div>
 <p>Player-facing rules summaries and structured data.</p>
-</div><div class="dc-block dc-slate" data-label="Slate" data-name="slate" data-source-range="867:868"><div class="dc-block-title">Slate</div>
+</div><div class="dc-block dc-slate" data-label="Slate" data-name="slate" data-source-range="869:870"><div class="dc-block-title">Slate</div>
 <p>Binding rulings and Dream Master directives.</p>
-</div><div class="dc-block dc-shard" data-label="Shard" data-name="shard" data-source-range="873:874"><div class="dc-block-title">Shard</div>
+</div><div class="dc-block dc-shard" data-label="Shard" data-name="shard" data-source-range="875:876"><div class="dc-block-title">Shard</div>
 <p>Fiction, atmosphere, and setting asides.</p>
 </div></div>
 <h2 data-name="choice-cards">Choice cards</h2>
 <p><code>@card</code> inside <code>@flaws</code>, <code>@ideals</code> or <code>@dreams</code>. Each kind has its own colour, silhouette and one-word chip: a Flaw is blood with a cracked edge, an Ideal is HUD blue with a steady tablet shape, a Dream is violet with a rising edge. The card name is the first <code>####</code>.</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-section-choose dc-flaws" data-source-range="887:888"><div class="dc-card" data-name="addictive-personality" data-source-range="889:890"><div class="dc-card-heading">Addictive Personality</div>
+<div class="section dc-section-panel dc-section-choose dc-flaws" data-source-range="889:890"><div class="dc-card" data-name="addictive-personality" data-source-range="891:892"><div class="dc-card-heading">Addictive Personality</div>
 <div class="dc-card-body">
 <p>You chase instant gratification without weighing the consequences.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="895:896">“Just one more, and then I’ll quit.”</p>
+<p data-source-range="897:898">“Just one more, and then I’ll quit.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-section-panel dc-section-choose dc-ideals" data-source-range="901:902"><div class="dc-card" data-name="honor" data-source-range="903:904"><div class="dc-card-heading">Honor</div>
+</div></div><div class="section dc-section-panel dc-section-choose dc-ideals" data-source-range="903:904"><div class="dc-card" data-name="honor" data-source-range="905:906"><div class="dc-card-heading">Honor</div>
 <div class="dc-card-body">
 <p>You believe in a code, and upholding it is your duty no matter the cost.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="909:910">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
+<p data-source-range="911:912">“I made a promise to help those in need, and I’ll keep it at all costs.”</p>
 </blockquote>
 </div>
-</div></div><div class="section dc-section-panel dc-section-choose dc-dreams" data-source-range="915:916"><div class="dc-card" data-name="settle-a-score" data-source-range="917:918"><div class="dc-card-heading">Settle a Score</div>
+</div></div><div class="section dc-section-panel dc-section-choose dc-dreams" data-source-range="917:918"><div class="dc-card" data-name="settle-a-score" data-source-range="919:920"><div class="dc-card-heading">Settle a Score</div>
 <div class="dc-card-body">
 <p>Settle a score from my past. Your Drive should pull you toward trouble, hard choices, and things worth risking your hide for.</p>
 <blockquote class="dc-card-footer">
-<p data-source-range="923:924">If chasing it can’t change you, it ain’t big enough.</p>
+<p data-source-range="925:926">If chasing it can’t change you, it ain’t big enough.</p>
 </blockquote>
 </div>
 </div></div></div>
 <h2 data-name="outcome-ladder">Outcome ladder</h2>
 <p><code>@outcome</code>, then <code>@outcome flush</code>. <code>flush</code> removes the ladder’s outer margin, so the difference is the spacing around it, not the ladder itself.</p>
 <div class="dg-stage">
-<div class="dc-outcomes" data-source-range="937:938">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-source-range="939:940">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4415,7 +4427,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="947:948">  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="949:950">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4440,10 +4452,10 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2 data-name="definition-lucid-and-surreal">Definition: lucid and surreal</h2>
 <p><code>@definition lucid</code> and <code>@definition surreal</code>, side by side: the two states of a roll, drawn as opposites. Lucid is the light, machined, upright one; surreal is the dark, skewed, off-register one.</p>
 <div class="dg-stage">
-<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="965:966"><div class="dc-prose-panel dc-definition-block dc-definition-lucid" data-definition="lucid" data-name="lucid" data-source-range="967:968"><h4 data-name="lucid">Lucid</h4>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="967:968"><div class="dc-prose-panel dc-definition-block dc-definition-lucid" data-definition="lucid" data-name="lucid" data-source-range="969:970"><h4 data-name="lucid">Lucid</h4>
 <p>Roll 2d20, take the higher. You’re sharp, aligned, in control. When you roll a 20 in the dream, your next roll is Lucid!</p>
-</div><div class="gp-column-break" aria-hidden="true" data-source-range="975:976"></div>
-<div class="dc-prose-panel dc-definition-block dc-definition-surreal" data-definition="surreal" data-name="surreal" data-source-range="977:978"><h4 data-name="surreal">Surreal</h4>
+</div><div class="gp-column-break" aria-hidden="true" data-source-range="977:978"></div>
+<div class="dc-prose-panel dc-definition-block dc-definition-surreal" data-definition="surreal" data-name="surreal" data-source-range="979:980"><h4 data-name="surreal">Surreal</h4>
 <p>Roll 2d20, take the lower. Reality pushes back. When you roll a 1 in the dream, your next roll is Surreal.</p>
 </div></div></div>
 <h2 data-name="tape">Tape</h2>
@@ -4483,7 +4495,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2 data-name="heading-chrome">Heading chrome</h2>
 <p><code>{.dc-chevron}</code> is a deep-magenta banner with one diagonal. <code>{.dc-spray}</code> is a stencil tag: a stepped overspray edge and a dashed stencil line along its foot. <code>{.dc-spec-tweak}</code> is sized to one line, and <code>{.dc-spec-tweak .dc-no-top}</code> pulls it tight against what is above.</p>
 <div class="dg-stage">
-<div class="section dc-section-panel" data-section="panel" data-name="augmerc-3" data-source-range="1041:1042"><h1 class="dc-chevron" data-name="augmerc-3">Augmerc</h1>
+<div class="section dc-section-panel" data-section="panel" data-name="augmerc-3" data-source-range="1043:1044"><h1 class="dc-chevron" data-name="augmerc-3">Augmerc</h1>
 <h2 class="dc-spray" data-name="biting-distance-2">Biting Distance</h2>
 <h3 class="dc-spec-tweak" data-name="spec-tweak-wired-to-kill">Spec Tweak: Wired to Kill</h3>
 <p>Augmerc learning paths assume combat-grade augmentations.</p>
@@ -4492,76 +4504,76 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2 data-name="section-variants">Section variants</h2>
 <p><code>@section panel</code>, <code>@section flat</code>, the four kinds of text (<code>reference</code>, <code>lore</code>, <code>dm</code>, <code>choose</code>), a bare <code>@section</code>, and a panel with its body in <code>@columns 2</code>. Each kind has its own bar over a white sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.</p>
 <div class="dg-stage dg-tall">
-<div class="section dc-section-panel" data-section="panel" data-name="panel-section" data-source-range="1063:1064"><h3 data-name="panel-section">Panel section</h3>
+<div class="section dc-section-panel" data-section="panel" data-name="panel-section" data-source-range="1065:1066"><h3 data-name="panel-section">Panel section</h3>
 <p>The panel chrome: a cream substrate, an accent rule, a cut top-right corner, and the first heading as a solid accent bar.</p>
-</div><div class="section dc-section-flat" data-section="flat" data-name="flat-section" data-source-range="1071:1072"><h3 data-name="flat-section">Flat section</h3>
+</div><div class="section dc-section-flat" data-section="flat" data-name="flat-section" data-source-range="1073:1074"><h3 data-name="flat-section">Flat section</h3>
 <p>The accent rail on a plain host: no clipped corner, no shadow. A heading prints as a heading, not a bar.</p>
-</div><div class="section dc-section-panel dc-section-reference" data-section="reference" data-name="reference-section" data-source-range="1079:1080"><h3 data-name="reference-section">Reference section</h3>
+</div><div class="section dc-section-panel dc-section-reference" data-section="reference" data-name="reference-section" data-source-range="1081:1082"><h3 data-name="reference-section">Reference section</h3>
 <p>A look-up: HUD blue, a pale title band, tight rows.</p>
 <table>
-<thead data-source-range="1085:1086">
-<tr data-source-range="1085:1086">
+<thead data-source-range="1087:1088">
+<tr data-source-range="1087:1088">
 <th>Item</th>
 <th>Cost</th>
 </tr>
 </thead>
-<tbody data-source-range="1087:1089">
-<tr data-source-range="1087:1088">
+<tbody data-source-range="1089:1091">
+<tr data-source-range="1089:1090">
 <td>Noodle voucher</td>
 <td>2 DC</td>
 </tr>
-<tr data-source-range="1088:1089">
+<tr data-source-range="1090:1091">
 <td>Signal flare</td>
 <td>15 DC</td>
 </tr>
 </tbody>
 </table>
-</div><div class="section dc-section-panel dc-section-lore" data-section="lore" data-name="lore-section" data-source-range="1092:1093"><h3 data-name="lore-section">Lore section</h3>
+</div><div class="section dc-section-panel dc-section-lore" data-section="lore" data-name="lore-section" data-source-range="1094:1095"><h3 data-name="lore-section">Lore section</h3>
 <p>The world, not the rules: a deep violet bar over a white sheet, with long cuts off two opposite corners.</p>
-</div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-name="dream-master-section" data-source-range="1100:1101"><h3 data-name="dream-master-section">Dream Master section</h3>
+</div><div class="section dc-section-panel dc-section-dm" data-section="dm" data-name="dream-master-section" data-source-range="1102:1103"><h3 data-name="dream-master-section">Dream Master section</h3>
 <p>Behind the screen: a file-folder tab that says Dream Master over an ink bar with a cyan rule, a cold body, a cyan rail and the bottom-right corner cut.</p>
-</div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-name="choose-section" data-source-range="1108:1109"><h3 data-name="choose-section">Choose section</h3>
+</div><div class="section dc-section-panel dc-section-choose" data-section="choose" data-name="choose-section" data-source-range="1110:1111"><h3 data-name="choose-section">Choose section</h3>
 <p>A pick-one choice for the Citizen File, set as a form: a white sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow <em>Choose</em> stamp:</p>
 <ul>
-<li data-source-range="1114:1115">A first option.</li>
-<li data-source-range="1115:1117">A second option.</li>
+<li data-source-range="1116:1117">A first option.</li>
+<li data-source-range="1117:1119">A second option.</li>
 </ul>
-</div><div class="section dc-section-panel dc-avoid-split" data-section="panel" data-name="panel-kept-whole" data-source-range="1119:1120"><h3 data-name="panel-kept-whole">Panel kept whole</h3>
+</div><div class="section dc-section-panel dc-avoid-split" data-section="panel" data-name="panel-kept-whole" data-source-range="1121:1122"><h3 data-name="panel-kept-whole">Panel kept whole</h3>
 <p><code>.dc-avoid-split</code> moves the whole section to the next page rather than splitting it.</p>
-</div><div class="section dc-section-panel" data-section="panel" data-name="section-with-columns" data-source-range="1127:1128"><h3 data-name="section-with-columns">Section with columns</h3>
-<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="1131:1132"><p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
-<div class="gp-column-break" aria-hidden="true" data-source-range="1135:1136"></div>
+</div><div class="section dc-section-panel" data-section="panel" data-name="section-with-columns" data-source-range="1129:1130"><h3 data-name="section-with-columns">Section with columns</h3>
+<div class="gp-columns gp-columns-2" data-columns="2" data-source-range="1133:1134"><p>Dimm City twitches like a clamped nerve at the edge of existence.</p>
+<div class="gp-column-break" aria-hidden="true" data-source-range="1137:1138"></div>
 <p>Nothing here is safe. Nothing here is free.</p>
 </div></div></div>
 <div class="dg-stage dg-on-paper">
-<div class="section" data-name="bare-section" data-source-range="1147:1148"><h3 data-name="bare-section">Bare section</h3>
+<div class="section" data-name="bare-section" data-source-range="1149:1150"><h3 data-name="bare-section">Bare section</h3>
 <p>No variant word, no look of its own: the text sits on a plain sheet of paper.</p>
 </div></div>
 <h2 data-name="floated-callouts">Floated callouts</h2>
 <p><code>@callout note .dc-sidebar</code> floats beside the text — see <a href="#ch-layout" data-gp-source-token="[Layout](#ch-layout)" data-gp-source-occurrence="0">Layout</a>.</p>
 <div class="dg-stage dg-on-paper">
 <p>When the Dreamers push past Too Far, the table starts asking how movement works.</p>
-<div class="dc-alert dc-note dc-sidebar" data-callout="note" data-label="Distance, Fast" data-name="distance-fast" data-source-range="1165:1166"><span class="dc-alert-label">Distance, Fast</span>
+<div class="dc-alert dc-note dc-sidebar" data-callout="note" data-label="Distance, Fast" data-name="distance-fast" data-source-range="1167:1168"><span class="dc-alert-label">Distance, Fast</span>
 <p>Three bands, no grid. <strong>In Reach</strong> is one swing away. <strong>Nearby</strong> is a burned Move.</p>
 </div><p>Keep the bands fictional, not metric. The Dream Master sets the band; the dice decide whether you close it. A Dreamer who wants to cross two bands in one turn is telling you they’re willing to spend everything to get there.</p>
 </div>
 <h2 data-name="factions">Factions</h2>
 <p><code>@faction megacorp | cabal | cult | enforcer</code>.</p>
 <div class="dg-stage">
-<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-name="megacorp" data-source-range="1181:1182"><span class="dc-faction-kind">Megacorp</span>
+<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-name="megacorp" data-source-range="1183:1184"><span class="dc-faction-kind">Megacorp</span>
 <h4 data-name="megacorp">Megacorp</h4>
 <p>A hard blue rectangle with a cyan edge: the lights, the water and the lawyers.</p>
-</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-name="cabal" data-source-range="1189:1190"><span class="dc-faction-kind">Cabal</span>
+</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-name="cabal" data-source-range="1191:1192"><span class="dc-faction-kind">Cabal</span>
 <h4 data-name="cabal">Cabal</h4>
 <p>Violet, with long corner cuts: a back booth and a very long memory.</p>
-</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-name="cult" data-source-range="1197:1198"><span class="dc-faction-kind">Cult</span>
+</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-name="cult" data-source-range="1199:1200"><span class="dc-faction-kind">Cult</span>
 <h4 data-name="cult">Cult</h4>
 <p>Blood red, torn along the top and foot: sing the signal and it sings back.</p>
-</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-name="enforcer" data-source-range="1205:1206"><span class="dc-faction-kind">Enforcer</span>
+</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-name="enforcer" data-source-range="1207:1208"><span class="dc-faction-kind">Enforcer</span>
 <h4 data-name="enforcer">Enforcer</h4>
 <p>An octagon with a hazard-tape band and a yellow name label: they keep the peace, for a fee.</p>
 </div></div>
-<div class="gp-page-break" aria-hidden="true" data-source-range="1215:1216"></div>
+<div class="gp-page-break" aria-hidden="true" data-source-range="1217:1218"></div>
 <h2 data-name="image-floats">Image floats</h2>
 <p><code>{.dc-img-float-left}</code> and <code>{.dc-img-float-right}</code>.</p>
 <div class="dg-stage dg-on-paper">
@@ -4944,7 +4956,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
-<p>When an enemy falters, you may trigger one of the following counters:</p>
+<p class="dc-lead-in">When an enemy falters, you may trigger one of the following counters:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach makes a basic attack and rolls a hard choice or worse, your Backbiters knock the strike off line. No damage. On a Failure or worse, try to drive steel into their liver. <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> and make a basic attack. Free counter once per round.</p>
@@ -4957,7 +4969,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Bad Timing:</em> When an enemy in reach rolls a Hard Choice or worse on a basic attack against you, your Backbiters snap out and steal the moment. No damage and you have their weapon. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack using your weapon or theirs. On a Catastrophe, your hit deals double damage, and against a Master you can take their weapon. Free counter once per round.</p>
 </div>
-<p>Openings are invitations to take a chunk out 'em.</p>
+<p class="dc-card-signoff">Openings are invitations to take a chunk out 'em.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="rage-hit-aug1-2" name="rage-hit">
   <div class="dc-card-tab">
@@ -4973,7 +4985,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <div class="dc-ability" data-ability-last="true">
   <span class="dc-ap">2 AP</span>
-  <p class="dc-ability-text"><strong>ROLL THE DIE TWICE!</strong> <em>All Gas, No Brakes:</em> Make two basic attacks against one target. If either roll is a 1, both attacks catastrophically fail as your movement snags on gear, armor, or the environment at the worst possible moment. DM’s call on how bad it gets.</p>
+  <p class="dc-ability-text"><strong><span class="dc-roll-the-die">ROLL THE DIE TWICE!</span></strong> <em>All Gas, No Brakes:</em> Make two basic attacks against one target. If either roll is a 1, both attacks catastrophically fail as your movement snags on gear, armor, or the environment at the worst possible moment. DM’s call on how bad it gets.</p>
 </div>
 <div class="dc-outcomes">
   <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
@@ -4999,7 +5011,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   </div>
 </div>
 <p>Until the start of your next turn, any enemy that starts their turn in reach of you takes 1 damage as your Backbiters stick anything that moves too close.</p>
-<p>Full send or full regret.</p>
+<p class="dc-card-signoff">Full send or full regret.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
   <div class="dc-card-tab">
@@ -5010,7 +5022,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.
 Never fight clean. Fight to finish.</p>
-<p>Once per round, outside your turn, you exploit a target in reach. Choose one technique:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach. Choose one technique:</p>
 <table>
 <thead data-source-range="98:99">
 <tr data-source-range="98:99">
@@ -5047,7 +5059,7 @@ Never fight clean. Fight to finish.</p>
 </tr>
 </tbody>
 </table>
-<p>You don’t need an opening. You make one.</p>
+<p class="dc-card-signoff">You don’t need an opening. You make one.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
   <div class="dc-card-tab">
@@ -5070,7 +5082,7 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Throat Control:</em> Get a grip on throat or collar. The target is <strong>Silenced</strong> and <strong>Slowed</strong> until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.</p>
 </div>
-<p>Pain is a language everyone understands.</p>
+<p class="dc-card-signoff">Pain is a language everyone understands.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="its-personal-aug1-5" name="it-s-personal">
   <div class="dc-card-tab">
@@ -5093,7 +5105,7 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>End It:</em> Make a basic attack against your Fixated target. If it hits, deal <strong>double damage</strong>. If it downs them, you immediately clear any negative conditions affecting you and regain 2 AP on your next turn.</p>
 </div>
-<p>Some jobs are work. Some jobs are justice.</p>
+<p class="dc-card-signoff">Some jobs are work. Some jobs are justice.</p>
 </div></div></div>
 </div></div><div class="gp-page-break" aria-hidden="true" data-source-range="138:139"></div>
 <div class="section dc-section-panel" data-section="panel" data-name="combining-specialties" data-source-range="140:141"><h2 data-name="combining-specialties">Combining Specialties</h2>

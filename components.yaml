@@ -64,7 +64,7 @@ components:
     status: live
     origin: plugin
     snippet: alert
-    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically)"
+    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically). A title: text after the marker on its own line, with a body under it (> [!NOTE] Escaping A Grapple / > body...), REPLACES the default label in span.dc-alert-label and keeps the variant class. Text after the marker in a one-line alert stays body text."
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning > span.dc-alert-label
@@ -325,7 +325,7 @@ components:
       - div.dc-field.dc-field-requires
     css: styles/components/entries.css
     tokens: [--dc-field-accent, --dc-field-surface, --dc-field-fg, --dc-field-label-fg, --dc-field-edge-width, --dc-field-edge-style]
-    breaks: "break-inside: avoid; a label with no text keeps with the paragraph after it"
+    breaks: "splits between lines (two orphans and two widows) except `requires`, a prerequisite band, which never splits and never ends a page alone (break-inside and break-after: avoid); a label with no text keeps with the paragraph after it"
     usage:
       - "**SPECS:**"
       - "**Traits:**"
@@ -536,7 +536,13 @@ components:
     emits:
       - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
-      - div.dc-ability > span.dc-ap + p.dc-ability-text
+      - p.dc-card-subhead (a paragraph in a card whose whole content is one bold run: its pseudo-heading; a run-in `**Label:** text` is not one)
+      - p.dc-lead-in, div.dc-ability.dc-lead-in (a paragraph or cost row in a card whose text ends in a colon: it stays with the block after it)
+      - p.dc-card-signoff (the card's last paragraph when it is short, under 90 characters: it stays with the block above it)
+      - div.dc-ability > span.dc-ap + p.dc-ability-text (div.dc-ability-body wraps the text and a nested list when the item has one)
+      - div.dc-ability.dc-ability-title (a cost row that is only a name, `**3 AP — Butcher Roach**`: the title of the paragraphs after it)
+      - div.dc-outcomes or div.dc-roll-table (a numbered list whose items all lead with a bold die result)
+      - ul > li (a numbered item led by a bold name is an option: bulleted, name in bold with a colon)
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
     tokens:
       - --dc-card-accent
@@ -550,7 +556,7 @@ components:
       - --dc-tier-fg
       - --dc-tier-edge
       - --dc-skill-card-break-inside
-    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces (a bold sub-head with its paragraph; a paragraph or a cost-row title with the list, table or ladder after it), a sub-header stays with what follows, a list breaks only with two items each side, a plain table splits between rows (two body rows each side, header row repeated), and so do the outcome ladder and roll plate, between tiers only (head and tier 1 together, last two tiers together), a line ending in a colon stays with the next block, a short closing line (.dc-card-signoff) stays with the block above, and the last block stays with the one above it. A fragment that continues keeps 12pt under its last line and a continuation 0.12in above its first (box-decoration-break: clone on the padding box); only the real top and foot carry the cut and the shadow. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). The tier pill on the tab is the specialty's own chip (--dc-tier-*), not a position colour. There is no featured-card variant. Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-card-continuation
@@ -565,7 +571,7 @@ components:
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">)"
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, a single number → standard, a range, X, VAR or N+ → .variable; also authored as raw <span class=\"dc-ap\">). Only a real cost is a chip, and the chip holds only the readout (\"3 AP\", no name, no stop): number, range (hyphen or dash), X or VAR, then AP; bare **3-X** is accepted. What follows the cost moves into the row text as an italic run-in with a colon: **3 AP — Butcher Roach** → chip 3 AP + \"Butcher Roach:\"; **+1 AP per passenger.** → chip +1 AP + \"Per passenger:\"; **1 AP/100 DC Per Ego Point:** → chip 1 AP + \"1 AP/100 DC Per Ego Point:\". Variable is decided by the cost token only, plus a per-unit rate in the qualifier (per passenger, /100 DC Per …); every range prints with an en dash. Rows share one text column: a chip is at least the free chip's width. A list whose items ALL lead with a bold die result (**20**, **11-19**, **16–19: Name**) is a roll list: the five standard bands are the outcome ladder, any other set a .dc-roll-table plate. Any other bold lead (**Prefrontal Chaos**) is an option: a bulleted item with the name in bold and a colon; a run that does not start at 1 or sits among cost rows is bulleted too, and only a plain list from 1 stays numbered."
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
@@ -956,7 +962,9 @@ components:
     markers: ["@section panel"]
     snippet: section-panel
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
-    emits: div.section.dc-section-panel
+    emits:
+      - div.section.dc-section-panel
+      - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"

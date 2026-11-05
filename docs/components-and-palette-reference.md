@@ -96,6 +96,7 @@ Every one is a white sheet: the brackets name the rail, frame and label that tel
 - `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar over a white sheet: a pale HUD band, a deep violet bar, an ink bar with a cyan rule, and for `choose` a form with no bar (`--paper-form`)
 - `.dc-npc-stat`, `.dc-citizen-walkthrough` — panels that carry their own class
 - `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — `choose` sections of choice cards: blood with a cracked edge, HUD blue with a steady tablet, violet with a rising edge (the card reads `--dc-choice-*`)
+- `.dc-kicker` — a section's last paragraph when it is only a bold run: it never opens a page alone
 - `.dc-fiction-excerpt`, `.dc-card-grid` — section components that are not panels
 - `.dc-avoid-split`, `.dc-snug` — modifiers
 
@@ -114,6 +115,11 @@ A location sets tokens on the components inside it and draws nothing of its own.
 - `.dc-skill-card`
 - `.dc-skill-card-cont` — card container
 - `.dc-ability` / `.dc-ability-text`
+- `.dc-ability-body` — wraps an ability's text and a nested list when the item has one
+- `.dc-ability-title` — a cost row that is only a name (`**3 AP — Butcher Roach**`): the title of the paragraphs after it
+- `.dc-card-subhead` — a paragraph whose whole content is one bold run: the card's pseudo-heading (a run-in `**Label:** text` is not one)
+- `.dc-lead-in` — a paragraph or cost row whose text ends in a colon: it stays with the block after it
+- `.dc-card-signoff` — the card's last paragraph when it is short (under 90 characters): it stays with the block above it
 - `.dc-ap` — action point cost (`.free`, `.reduced`, `.increased`, `.var`, `.standard`, `.special`)
 - `.dc-outcome-row` (`.hit`, `.miss`, `.crit`, `.fail`, `.mixed`)
 - `.dc-outcomes` / `.dc-outcomes-label` / `.dc-outcome-key` / `.dc-outcome-text`
@@ -399,6 +405,17 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-page-slip-foot` | `6pt` | The space below a slip, the same whatever follows it |
 | `--dc-page-sheet-pad` | `0.18in` | The side padding of the prose sheet |
 | `--dc-page-title-ink` | `--paper-cream` | Type on the page-title banner |
+
+
+### Rules, page foot and the choose form
+| Token | Default | Role |
+|---|---|---|
+| `--dc-rule` | `--ink` | The colour of the `---` hairline; a skill card sets it to the specialty's mid (the seam between sub-abilities) |
+| `--chip-gap` | `0.10in` | The chips' tops below the text block: a full page ends this far above the folio chip |
+| `--lh-display` | `1.35` | Heading leading. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart |
+| `--dc-choose-stamp-room` | `0px` | The CHOOSE stamp's width reserved on the first block's first lines (a form that opens a page) |
+| `--dc-choose-stamp-top` | `0px` | Where the stamp's top edge sits: 0 is on the form's top edge |
+| `--dc-choose-stamp-lift` | `-50%` | How far the stamp is lifted over that edge: half its height |
 
 ---
 

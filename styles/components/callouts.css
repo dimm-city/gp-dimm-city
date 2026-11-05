@@ -138,6 +138,10 @@
   padding: var(--space-lg) var(--space-xl);
   margin-top: var(--dc-alert-margin-top);
   break-inside: var(--dc-alert-break-inside);
+  /* A callout that splits (in a column run) keeps its padding on each fragment:
+     a continuation opens --space-lg under its edge and a fragment that goes on
+     ends --space-lg above its foot. */
+  box-decoration-break: clone;
   /* Alerts are full-width callouts that interrupt the reading flow; they
      should NEVER overlap a preceding right-floated image. Block elements
      don't wrap floats by default — clear: right ensures any alert after a
@@ -165,21 +169,15 @@
   color: inherit;
 }
 
-:is(.dc-alert, .gp-alert) :is(ul, ol) {
-  margin: 6pt 0 0;
-}
-
-:is(.dc-alert, .gp-alert) li {
-  margin-bottom: 0.04in;
-}
-
-:is(.dc-alert, .gp-alert) li::before,
-:is(.dc-alert, .gp-alert) li > p:first-child::before {
+:is(.dc-alert, .gp-alert) ul li::before,
+:is(.dc-alert, .gp-alert) ol li::before {
   color: var(--dc-alert-border);
 }
-/* Cyan is a rail colour: on white a marker in it would not read. */
-:is(.dc-dm-note, .dc-example-callout) li::before,
-:is(.dc-dm-note, .dc-example-callout) li > p:first-child::before {
+/* A dm-note or example callout sits on white: its rail colour (cyan) is not
+   text-safe there, so its marker takes the callout's own ink. Bullets and
+   numerals alike. The list spacing is the global one (em-based, so it scales
+   with the callout's type size). */
+:is(.dc-dm-note, .dc-example-callout) :is(ul, ol) > li::before {
   color: var(--dc-accent-ink);
 }
 

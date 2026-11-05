@@ -363,7 +363,7 @@ Once per round, outside your turn, you exploit a target in reach:
 | Two columns | `@columns 2` ... `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
 | Avoid split | `@skill {.dc-avoid-split}` | Keep a card whole instead of letting it break across pages |
 
-The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
+The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose. Only a real cost makes a chip, and the chip holds only the readout (`3 AP`): a name after the cost (`**3 AP --- Butcher Roach**`) or a qualifier moves into the row text as an italic run-in. A list whose items all lead with a bold die result (`**20**`, `**11-19**`) is the outcome ladder (five standard bands) or a roll table, and any other bold lead (an option's name) is a bulleted option with its name in bold. A list nested under a cost item stays a list under the row.
 
 ### Two columns
 
@@ -405,7 +405,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ## Continuing a long card
 
-When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
+When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a `#####` sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card's last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, `--space-md` under the page top, with no tab or tape. Only the real top and the real foot carry the specialty's silhouette. A `**Requires:**` band never splits and never ends a page alone.
 
 ```markdown {.dg-split}
 @specialty .augmerc

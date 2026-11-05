@@ -267,6 +267,38 @@ describe("behaviour carried from the book repo", () => {
   });
 });
 
+describe("titled alerts", () => {
+  const md = () => createGutterpressMarkdown();
+  const render = (src) => stripSource(md().render(src, {}));
+
+  test("text after the marker, with a body under it, is the label", () => {
+    expect(render("> [!NOTE] Escaping A Grapple\n> If you want to.")).toBe(
+      '<div class="dc-alert dc-note"><span class="dc-alert-label">Escaping A Grapple</span>\n<p>If you want to.</p>\n</div>\n');
+    expect(render("> [!VIBE] Neon *rain*\n> Wet streets.")).toBe(
+      '<div class="dc-alert dc-vibe-callout"><span class="dc-alert-label">Neon <em>rain</em></span>\n<p>Wet streets.</p>\n</div>\n');
+  });
+
+  test("a one-line first paragraph is body text whatever follows it", () => {
+    const html = render("> [!WARNING] Never split the party, it always ends badly.\n>\n> - one\n> - two");
+    expect(html).toContain('<span class="dc-alert-label">Warning</span>');
+    expect(html).toContain("<p>Never split the party, it always ends badly.</p>");
+    expect(render("> [!NOTE] Title\n>\n> Body.")).toContain('<span class="dc-alert-label">Note</span>\n<p>Title</p>');
+  });
+
+  test("a bold title over a body is the label, as plain text", () => {
+    const html = render("> [!NOTE] **Escaping A Grapple**\n> Body.");
+    expect(html).toContain('<span class="dc-alert-label">Escaping A Grapple</span>\n<p>Body.</p>');
+    expect(html).not.toContain("<strong>");
+  });
+
+  test("an untitled alert keeps the default label, and a lone line stays body text", () => {
+    expect(render("> [!NOTE]\n> Body.")).toContain('<span class="dc-alert-label">Note</span>\n<p>Body.</p>');
+    expect(render("> [!WARNING]\n> Body.")).toContain('<span class="dc-alert-label">Warning</span>');
+    expect(render("> [!NOTE] Just one line")).toContain('<span class="dc-alert-label">Note</span>\n<p>Just one line</p>');
+  });
+});
+
+
 // The `[!TYPE]` marker comes off the text the core rules already typeset, so
 // the first paragraph of an alert reads like any other paragraph.
 describe("alert bodies keep the typographer", () => {
@@ -594,8 +626,10 @@ describe("declared specialty, learning path and skill", () => {
       const src = doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", "@skill", "", card("A"), "", "@skill", "", card("B | AUG9.9"), "", card("C"), "", "@end-learning-path");
       const tiers = [...renderGp(src).html.matchAll(/<span class="dc-tab-tier">([^<]*)<\/span>/g)].map((m) => m[1]);
       expect(tiers).toEqual(["AUG1.1", "AUG9.9", "AUG1.3"]);
-      // outside a path there is nothing to compute
-      expect(renderGp(doc("@skill", "", card("A"))).html).toContain('<span class="dc-tab-tier"></span>');
+      // outside a path there is nothing to compute, and no empty pill
+      const bare = renderGp(doc("@skill", "", card("A"))).html;
+      expect(bare).not.toContain("dc-tab-tier");
+      expect(bare).toContain('<h4 class="dc-tab-title">A</h4>');
     });
 
     test("the card body: flavor, abilities, sub-headers, outcome tables", () => {
@@ -611,12 +645,227 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<p class="dc-flavor">Flavor.</p>');
       expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
       expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
-      expect(html).toContain('<span class="dc-ap variable">2-X AP</span>');
+      expect(html).toContain('<span class="dc-ap variable">2–X AP</span>');
       expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
       expect(count(html, />Outcomes</g)).toBe(0); // the "##### Outcomes" sub-header is swallowed: the table carries its own header
       expect(html).not.toContain("<h5");
       expect(html).toContain('<div class="dc-sub-header">A real sub-header</div>');
+    });
+
+    test("a paragraph that is only a bold run is the card's sub-head; a run-in label is not", () => {
+      const src = doc(
+        "Outside.", "", "**Outside bold**", "",
+        "@skill", "", card("Merge"), "",
+        "**Full Merge**", "",
+        "**Shared Senses:** You feel it.", "",
+        "Plain text.", "",
+        "**Bold** then text.",
+      );
+      const { html } = renderGp(src);
+      expect(html).toContain('<p class="dc-card-subhead"><strong>Full Merge</strong></p>');
+      expect(html).toContain("<p><strong>Shared Senses:</strong> You feel it.</p>");
+      expect(html).toContain("<p><strong>Outside bold</strong></p>");
+      expect(count(html, /dc-card-subhead/g)).toBe(1);
+    });
+
+    test("a paragraph or cost row that ends in a colon is a lead-in", () => {
+      const { html } = renderGp(doc(
+        "Outside:", "", "@skill", "", card("Lead"), "",
+        "This act may:", "", "1. **4 AP** *Absolution:* Cure it.", "",
+        "2. **3 AP** *Restore:* Do the restoration:", "", "Plain sentence.", "", "**Heading:**", "",
+        "- item:", "- other",
+      ));
+      expect(html).toContain('<p class="dc-lead-in">This act may:</p>');
+      expect(html).toContain('<p class="dc-card-subhead dc-lead-in"><strong>Heading:</strong></p>');
+      expect(html).toContain('<div class="dc-ability dc-lead-in"');
+      expect(html).toContain("<p>Outside:</p>");
+      expect(html).toContain("<p>Plain sentence.</p>");
+      expect(html).not.toContain("<li class");
+      expect(count(html, /dc-lead-in/g)).toBe(3);
+    });
+
+    test("a card's short closing paragraph is a sign-off; a long one or a paragraph that is not last is not", () => {
+      const short = renderGp(doc("@skill", "", card("Close"), "", "Body text here.", "", "The leash is gone.")).html;
+      expect(short).toContain('<p class="dc-card-signoff">The leash is gone.</p>');
+      expect(count(short, /dc-card-signoff/g)).toBe(1);
+      const long = renderGp(doc("@skill", "", card("Close"), "", "Body.", "", "A closing paragraph that runs well past one hundred and twenty characters of text, so it is not a sign-off line at all, really, and never will be one.")).html;
+      expect(long).not.toContain("dc-card-signoff");
+      const notLast = renderGp(doc("@skill", "", card("Close"), "", "Short.", "", "- a", "- b")).html;
+      expect(notLast).not.toContain("dc-card-signoff");
+    });
+
+    test("card marks stay on the card's own paragraphs, not those inside a callout or columns", () => {
+      const callout = renderGp(doc("@skill", "", card("Mix"), "", "@callout note", "", "**Heading**", "", "Intro:", "", "@end-callout")).html;
+      expect(callout).toContain("<p><strong>Heading</strong></p>\n<p>Intro:</p>");
+      expect(count(callout, /dc-card-subhead|dc-lead-in/g)).toBe(0);
+      const after = renderGp(doc("@skill", "", card("Mix"), "", "@callout note", "", "Inside:", "", "@end-callout", "", "Outside:", "", "More.")).html;
+      expect(after).toContain("<p>Inside:</p>");
+      expect(after).toContain('<p class="dc-lead-in">Outside:</p>');
+      const columns = renderGp(doc("@skill", "", card("Mix"), "", "@columns 2", "", "**Heading**", "", "Intro:", "", "@end-columns")).html;
+      expect(count(columns, /dc-card-subhead|dc-lead-in/g)).toBe(0);
+    });
+
+    test("a sign-off is not marked on a mid-ability split, nor on a card's first paragraph", () => {
+      const split = renderGp(doc("@skill", "", card("Cut"), "", "Short bit.", "", "@continue", "", "Tail opens.", "", "Short tail.")).html;
+      expect(count(split, /dc-card-signoff/g)).toBe(1);
+      expect(split).toContain('<p class="dc-card-signoff">Short tail.</p>');
+      expect(split).not.toContain('<p class="dc-card-signoff">Tail opens.</p>');
+      expect(split).not.toContain('<p class="dc-card-signoff">Short bit.</p>');
+      const first = renderGp(doc("@skill", "", "#### Bare", "", "Only paragraph.")).html;
+      expect(first).not.toContain("dc-card-signoff");
+    });
+
+    test("a bold-only paragraph before a heading in a section is a kicker; before ordinary text it is not", () => {
+      const before = renderGp(doc("@section lore", "", "## Title", "", "Body.", "", "**Not a good time.**", "", "### Next", "", "More.", "@end-section")).html;
+      expect(before).toContain('<p class="dc-kicker"><strong>Not a good time.</strong></p>');
+      const runIn = renderGp(doc("@section lore", "", "## Title", "", "**Sub-heading**", "", "Text follows.", "@end-section")).html;
+      expect(runIn).not.toContain("dc-kicker");
+    });
+
+    test("a card's closing paragraph of up to 120 characters is a sign-off", () => {
+      const at = (n) => "x".repeat(n - 1) + ".";
+      expect(renderGp(doc("@skill", "", card("Close"), "", "Body.", "", at(120))).html).toContain("dc-card-signoff");
+      expect(renderGp(doc("@skill", "", card("Close"), "", "Body.", "", at(121))).html).not.toContain("dc-card-signoff");
+    });
+
+    test("a section's closing bold-only paragraph is its kicker", () => {
+      const { html } = renderGp(doc("@section lore", "", "## Title", "", "Body.", "", "**Just a kicker.**", "@end-section", "", "**Outside bold.**"));
+      expect(html).toContain('<p class="dc-kicker"><strong>Just a kicker.</strong></p>');
+      expect(html).toContain("<p><strong>Outside bold.</strong></p>");
+      const run = renderGp(doc("@section lore", "", "## Title", "", "**Lead:** text.", "@end-section")).html;
+      expect(run).not.toContain("dc-kicker");
+    });
+
+    describe("cost rows", () => {
+      const skill = (...lines) => renderGp(["@skill", "", "#### S | T1", "", ...lines, "", "@end-skill"].join("\n")).html;
+      const chip = (html) => [...html.matchAll(/<span class="(dc-ap[^"]*)">([^<]*)<\/span>/g)].map((m) => [m[1], m[2]]);
+
+      test("a fixed cost is a plain chip", () => {
+        expect(chip(skill("1. **2 AP** *Go:* x"))).toEqual([["dc-ap", "2 AP"]]);
+      });
+
+      test("0 AP is free, with a full stop or a double space", () => {
+        expect(chip(skill("1. **0 AP** x", "2. **0 AP.** x", "3. **0  AP** x", "4. **0 AP:** x"))).toEqual([
+          ["dc-ap free", "0 AP"], ["dc-ap free", "0 AP"], ["dc-ap free", "0 AP"], ["dc-ap free", "0 AP"],
+        ]);
+        expect(chip(skill("1. **2  AP.** x"))).toEqual([["dc-ap", "2 AP"]]);
+      });
+
+      test("a range or X is variable: hyphen, en dash, X", () => {
+        expect(chip(skill("1. **1-3 AP** a", "2. **1–3 AP.** a", "3. **1–X AP** a", "4. **2-X AP** a", "5. **VAR AP** a", "6. **3-X** a"))).toEqual([
+          ["dc-ap variable", "1–3 AP"], ["dc-ap variable", "1–3 AP"], ["dc-ap variable", "1–X AP"],
+          ["dc-ap variable", "2–X AP"], ["dc-ap variable", "VAR AP"], ["dc-ap variable", "3–X AP"],
+        ]);
+      });
+
+      test("a name after the cost leaves the chip and leads the text; an x in it is not variable", () => {
+        const html = skill("1. **3 AP - The Toxin That Binds:** x", "2. **3 AP — Butcher Roach** y");
+        expect(chip(html)).toEqual([["dc-ap", "3 AP"], ["dc-ap", "3 AP"]]);
+        expect(html).toContain('<p class="dc-ability-text"><em>The Toxin That Binds:</em> x</p>');
+        expect(html).toContain('<p class="dc-ability-text"><em>Butcher Roach:</em> y</p>');
+      });
+
+      test("qualifiers lead the text; a chip never carries a stop", () => {
+        const html = skill("1. **1 AP/100 DC Per Ego Point or Mod Slot:** x", "2. **+1 AP per passenger.** y", "3. **3 AP — Corpse Pilot.** z", "4. **3+ AP** w");
+        expect(chip(html)).toEqual([["dc-ap variable", "1 AP"], ["dc-ap variable", "+1 AP"], ["dc-ap", "3 AP"], ["dc-ap variable", "3+ AP"]]);
+        expect(html).toContain("<em>1 AP/100 DC Per Ego Point or Mod Slot:</em> x");
+        expect(html).toContain("<em>Per passenger:</em> y");
+        expect(html).toContain("<em>Corpse Pilot:</em> z");
+      });
+
+      test("every range in a chip prints with an en dash", () => {
+        expect(chip(skill("1. **1-3 AP** a", "2. **1-X AP** b", "3. **3-X** c", "4. **2 \u2013 4 AP** d")).map((c) => c[1])).toEqual(["1\u20133 AP", "1\u2013X AP", "3\u2013X AP", "2\u20134 AP"]);
+      });
+
+      test("a run that does not start at 1, or sits among cost rows, bullets; a plain list from 1 stays numbered", () => {
+        expect(skill("1. **1 AP** a", "2. Plain.", "3. **Name: X** t")).toContain("<ul>\n<li>Plain.</li>");
+        expect(skill("1. **1 AP** a", "2. **Forced Expulsion: X** t")).toContain("<ul>\n<li><strong>Forced Expulsion: X</strong> t</li>");
+        expect(skill("1. one", "2. two")).toContain("<ol>\n<li>one</li>\n<li>two</li>\n</ol>");
+      });
+
+      test("a list of the five bands is the outcome ladder", () => {
+        const html = skill("**ROLL THE DIE!**", "", "1. **20** Crit text.", "2. **11-19** Hit text.", "3. **6-10** Mixed.", "4. **2-5** Miss.", "5. **1** Fail.");
+        expect(chip(html)).toEqual([]);
+        expect(html).toContain('<div class="dc-outcomes">');
+        expect(html).toContain("<span>Roll</span><span>Outcome</span>");
+        expect(html).toContain('<span class="dc-outcome-roll">11–19</span>');
+        expect(html).toContain('<span class="dc-outcome-text">Hit text.</span>');
+        expect(html).not.toContain(" AP");
+      });
+
+      test("any other set of die results is a roll table; a name stays bold in the cell", () => {
+        const html = skill("1. **1-10** Low.", "2. **11–15: Mid** Middle.", "3. **16–19** High.", "4. **20** Top.");
+        expect(chip(html)).toEqual([]);
+        expect(html).toContain('<div class="dc-roll-table">');
+        expect(html).toContain("<td>11–15</td><td><strong>Mid</strong> Middle.</td>");
+        expect(html).not.toContain("dc-outcomes");
+      });
+
+      test("a name lead is a bulleted option with its colon in the bold", () => {
+        const html = skill("1. **Prefrontal Chaos** The creature acts.", "2. **Forced Expulsion: X** Out.");
+        expect(chip(html)).toEqual([]);
+        expect(html).toContain("<ul>\n<li><strong>Prefrontal Chaos:</strong> The creature acts.</li>\n<li><strong>Forced Expulsion: X</strong> Out.</li>\n</ul>");
+      });
+
+      test("an unbolded item between cost rows becomes a bullet, not an orphaned number", () => {
+        const html = skill("1. **1 AP** a", "2. Plain.", "3. **2 AP** b");
+        expect(html).toContain("<ul>\n<li>Plain.</li>\n</ul>");
+        expect(chip(html)).toHaveLength(2);
+      });
+
+      test("ROLL THE DIE TWICE! and ROLL TWO DICE! take the roll hook", () => {
+        const html = skill("1. **0 AP** **ROLL TWO DICE!** a", "2. **2 AP** ROLL THE DIE TWICE! b", "3. **1 AP** ROLL A DIE! c");
+        expect(count(html, /class="dc-roll-the-die"/g)).toBe(3);
+        expect(html).toContain('<span class="dc-roll-the-die">ROLL TWO DICE!</span>');
+        expect(html).toContain('<span class="dc-roll-the-die">ROLL THE DIE TWICE!</span>');
+      });
+
+      test("a name after a colon or comma loses the separator; a parenthetical is plain lead text", () => {
+        const html = skill("1. **3 AP: Butcher Roach** Do it.", "2. **2 AP, Wirefly** Go.", "3. **2 AP (once per scene)** Again.", "4. **1 AP (per target)** Hit.");
+        expect(html).toContain("<em>Butcher Roach:</em> Do it.");
+        expect(html).toContain("<em>Wirefly:</em> Go.");
+        expect(html).toContain('<p class="dc-ability-text">(once per scene) Again.</p>');
+        expect(html).not.toContain("<em>(");
+        expect(chip(html)).toEqual([["dc-ap", "3 AP"], ["dc-ap", "2 AP"], ["dc-ap", "2 AP"], ["dc-ap", "1 AP"]]);
+      });
+
+      test("an option's colon is never doubled", () => {
+        for (const lead of ["**Grapple** hold them.", "**Grapple**: hold them.", "**Grapple:** hold them."]) {
+          expect(skill("1. " + lead)).toContain("<li><strong>Grapple:</strong> hold them.</li>");
+        }
+      });
+
+      test("an item that opens with a nested list is well-formed", () => {
+        const html = skill("1.", "    - nested", "2. **1 AP** after");
+        const tags = (re) => (html.match(re) ?? []).length;
+        expect(tags(/<ul>/g)).toBe(tags(/<\/ul>/g));
+        expect(tags(/<li>/g)).toBe(tags(/<\/li>/g));
+        expect(tags(/<div[ >]/g)).toBe(tags(/<\/div>/g));
+        expect(html).toContain("<li>nested</li>");
+      });
+
+      test("die results must tile a die: d6 set captioned d6, scrap and gaps and overlaps stay lists", () => {
+        const six = skill("1. **1-2:** a", "2. **3-4:** b", "3. **5-6:** c");
+        expect(six).toContain('<span class="dc-roll-table-die">d6</span>');
+        expect(six).toContain("<td>5–6</td>");
+        const planewalk = skill("1. **20** a", "2. **11-19** b", "3. **6-10** c", "4. **2-5** d", "5. **1** e");
+        expect(planewalk).toContain('<div class="dc-outcomes">');
+        for (const bad of [["1. **5** scrap", "2. **10** scrap"], ["1. **1-2** a", "2. **4-6** b"], ["1. **1-4** a", "2. **3-6** b"]]) {
+          const html = skill(...bad);
+          expect(html).not.toContain("dc-roll-table");
+          expect(html).not.toContain("dc-outcomes");
+          expect(html).toContain("<ul>");
+        }
+      });
+
+      test("a nested list under a cost item stays a list", () => {
+        const html = skill("1. **2 AP** Choose one:", "    * Disable Limb", "    * Headshot");
+        expect(html).toContain('<div class="dc-ability-body">');
+        expect(html).toContain('<p class="dc-ability-text">Choose one:</p>');
+        expect(html).toMatch(/<ul>\s*<li>Disable Limb<\/li>\s*<li>Headshot<\/li>\s*<\/ul>/);
+        expect(chip(html)).toEqual([["dc-ap", "2 AP"]]);
+      });
     });
 
     test("content before the first #### stays outside the card", () => {
@@ -640,7 +889,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(count(html, /class="dc-skill-card"/g)).toBe(2);
       // the run sits inside the first card's .dc-card-inner, before the card closes
       expect(html).toMatch(
-        /<div class="dc-card-inner">[\s\S]*<div class="gp-columns gp-columns-2"[^>]*>[\s\S]*<li>two<\/li>[\s\S]*<div class="gp-column-break"[^>]*><\/div>[\s\S]*<li>three<\/li>[\s\S]*<\/div>\s*<p>Closing line\.<\/p>\s*<\/div><\/div><\/div>/,
+        /<div class="dc-card-inner">[\s\S]*<div class="gp-columns gp-columns-2"[^>]*>[\s\S]*<li>two<\/li>[\s\S]*<div class="gp-column-break"[^>]*><\/div>[\s\S]*<li>three<\/li>[\s\S]*<\/div>\s*<p[^>]*>Closing line\.<\/p>\s*<\/div><\/div><\/div>/,
       );
       // the first card holds the whole run and the closing line: nothing leaks out between the cards
       const firstCard = html.slice(html.indexOf('name="split"'), html.indexOf('name="next"'));
@@ -1055,7 +1304,7 @@ describe("declared card, outcome and procedure", () => {
     test("it stays in a skill's card", () => {
       const { html } = renderGp(skill("@roll-table", "", ...table, "", "@end-roll-table", "", "After the table."));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
-      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
+      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p[^>]*>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
     });
 
     test("an @roll-table with no table in it says so", () => {
@@ -1199,7 +1448,7 @@ describe("a creature's table is a stat strip", () => {
     const inSkill = strip("@skill", "", "#### Wirefly", "", "| Name | HP | Damage |", "| --- | --- | --- |", "| Fly | 1 | 1 |", "", "After the table.", "", "@end-skill");
     expect(inSkill).toContain('<table class="dc-stat-strip">');
     expect(inSkill.match(/class="dc-skill-card/g)).toHaveLength(1);
-    expect(inSkill).toMatch(/<table class="dc-stat-strip">[\s\S]*<p>After the table\.<\/p>/);
+    expect(inSkill).toMatch(/<table class="dc-stat-strip">[\s\S]*<p[^>]*>After the table\.<\/p>/);
   });
 
   test("a table with only one of the two columns, or neither, is an ordinary table", () => {
@@ -1450,7 +1699,7 @@ describe("@field and the bold labels that mean it", () => {
 
   test("a label alone on its line is a bare chip; the next paragraph stays a paragraph", () => {
     const { html } = renderGp("@skill\n\n#### S\n\n**TECHNOENHANCEMENT:**\n\nInstall it.\n\n@end-skill");
-    expect(html).toMatch(/<span class="dc-field-label">TECHNOENHANCEMENT<\/span>\n?<\/div>\s*<p>Install it\.<\/p>/);
+    expect(html).toMatch(/<span class="dc-field-label">TECHNOENHANCEMENT<\/span>\n?<\/div>\s*<p[^>]*>Install it\.<\/p>/);
   });
 
   test("recognised only inside an entry card, @npc-stat (or @section npc) and @skill", () => {
@@ -1482,7 +1731,7 @@ describe("@field and the bold labels that mean it", () => {
   test("a @field inside a skill stays in the skill's card", () => {
     const { html } = renderGp("@skill\n\n#### S\n\n@field effects\n\nBody.\n\n@end-field\n\nAfter.\n\n@end-skill");
     expect(html.match(/dc-skill-card/g)).toHaveLength(1);
-    expect(html).toMatch(/dc-field-effects[\s\S]*<p>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
+    expect(html).toMatch(/dc-field-effects[\s\S]*<p[^>]*>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
   });
 });
 

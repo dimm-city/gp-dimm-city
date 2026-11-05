@@ -108,3 +108,14 @@
   src: url("../fonts/lixdu/lixdu.woff") format('woff');
   font-weight: normal; font-style: normal; font-display: swap;
 }
+/* Lixdu covers only U+0020-007E. These punctuation marks fall back to the thin
+   Tomorrow Regular in a heading; a second face for the SAME family, taken from
+   the Tomorrow Bold file and limited to those code points, makes them print in
+   a weight that matches. Same weight and style as the face above, so no
+   synthetic bold is involved. */
+@font-face {
+  font-family: 'lixdu';
+  src: url("../fonts/tomorrow/tomorrow-700.ttf") format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+  unicode-range: U+2018-2019, U+201C-201D, U+2013-2014, U+2026;
+}

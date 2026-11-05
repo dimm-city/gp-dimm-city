@@ -94,15 +94,17 @@
    - `letter-spacing` leaves its tracking after the last glyph, so the
      inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.875in)
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.95in)
    is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
    TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
    print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
-   at the top of the band, 0.025in below the text block, so its foot is at
-   exactly 0.625in: on DriveThruRPG's 0.5in text minimum.
+   at the top of the band, `--chip-gap` (0.10in) below the text block, so its foot is at exactly 0.625in:
+   on DriveThruRPG's 0.5in text minimum, where it always was. A sheet that fills
+   the page therefore ends --chip-gap (0.10in) above the chip (its 3pt hard shadow reaches
+   into that gap).
 
    A shrunk margin box stays anchored at its slot's START edge on the block
-   axis, which is why the offset is a margin (`margin-top: 0.025in`). Shrinking the box leaves no hole
+   axis, which is why the offset is a margin (`margin-top: var(--chip-gap)`). Shrinking the box leaves no hole
    in the band: §1's `@page` background paints underneath, so the wall shows
    through the rest of the slot on its own.
 
@@ -111,7 +113,7 @@
    pin frees, gutterpress re-homes these chips into a flex slot the size of
    the margin box, centred vertically (gutterpress-agent setFlushFurniture,
    `align-items: center`), and copies these declarations onto the chip;
-   anchored at the slot's top, it sits 0.025in below the text block there too. The declaration does nothing to a native margin box, which
+   anchored at the slot's top, it sits --chip-gap below the text block there too. The declaration does nothing to a native margin box, which
    is not a flex item.
 
    THE TWO CHIPS.
@@ -128,7 +130,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -148,7 +150,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -171,7 +173,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -191,7 +193,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
