@@ -37,12 +37,15 @@ white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
   fiction excerpt, the shard block, a faction card, a gear entry, an effect
   field and a choice card's quote no longer tint or darken their body. The
   colour that named them is in the edge: a callout's rail is twice as heavy
-  (`--dc-alert-border-width` 8px, 6px on the variants), it gains a ring in its
-  accent (`--dc-alert-frame`) and its label is a filled chip
-  (`--dc-alert-label-bg` is the accent, with paper type). The Dream Master
-  note is a white sheet in an ink ring under an ink folder tab, and the visit
-  callout a white placard with a fungi-green rail. Title bars, tabs, badges,
-  the slate block and the Surreal definition keep their fills.
+  (`--dc-alert-border-width` 8px), the note, tip and example gain a 2pt ring
+  in their accent (`--dc-alert-frame`) and the label is a filled chip
+  (`--dc-alert-label-bg` is the accent, with paper type). The vibe, origin,
+  location and visit callouts are framed in their accent along their whole
+  outline, diagonals, torn foot and signpost point included
+  (`--dc-alert-frame-width`, 3pt). The Dream Master note carries its label in
+  cyan on an ink bar across its top, as a `dm` section does, over a white
+  sheet in an ink ring. Title bars, tabs, badges, the slate block and the
+  Surreal definition keep their fills.
 - **A `###` slip runs the full width of its column**, as the `##` slip does.
   `####` and smaller still shrink to their words.
 - **One gap under a heading.** `--dc-page-slip-foot` (6pt) is the space below a
