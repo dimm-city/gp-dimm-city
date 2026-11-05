@@ -261,32 +261,33 @@
 }
 
 /* ── Variant: DM Note (Dream Master only) — a classified file ─────────────
-   A white sheet in an ink ring under an ink folder tab, with the Dream
-   Master's cyan as its rail and its chip. */
+   The `dm` section's colours and parts, at a callout's size: an INK bar across
+   the top carries the label in cyan over a cyan rule, its left end rising as a
+   folder tab; under it a white sheet in an ink ring with the cyan rail. Cyan
+   on ink is the Dream Master's pair, used nowhere else. */
 .dc-dm-note {
   --dc-alert-border: var(--hud-blue-bright);
   --dc-alert-border-width: 6px;
-  /* the folder's tab keeps its ink (a 12px band, which the shape cuts down to
-     the tab), over an ink ring */
-  --dc-alert-frame: inset 0 12px 0 0 var(--ink-dark), inset 0 0 0 2pt var(--ink-dark);
-  /* a file folder: a 12px tab rising over the left 42%, one cut corner opposite */
-  --dc-alert-shape: polygon(0 0, calc(42% - 6px) 0, 42% 12px, 100% 12px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  --dc-alert-frame: inset 0 0 0 2pt var(--ink-dark);
+  /* a file folder: a tab rising 9px over the left 42%, one cut corner opposite */
+  --dc-alert-shape: polygon(0 0, calc(42% - 6px) 0, 42% 9px, 100% 9px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
   --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet (cyan itself is a rail colour, not a text one) */
-  --dc-alert-label-color: var(--ink);
-  --dc-alert-label-bg: var(--hud-blue-bright);
-  --dc-alert-label-shadow: 2px 2px 0 0 var(--ink);
-  --dc-alert-label-pad: 2px 9px;
+  --dc-alert-label-color: var(--hud-blue-bright);  /* 6.7:1 on the ink bar */
+  --dc-alert-label-bg: var(--ink-dark);
+  --dc-alert-label-shadow: none;
+  --dc-alert-label-pad: 13px var(--space-xl) 4px;  /* the top clears the 9px tab rise */
+  --dc-alert-label-margin: var(--space-md);
   --dc-alert-body-size: var(--fs-floor);   /* insider small print, at the reading-text floor */
   --dc-alert-label-weight: 700;
   --dc-alert-label-spacing: 0.1em;
   --dc-alert-margin-top: 9pt;
+  padding-top: 0;  /* the bar is the callout's top */
 }
-/* The cyan chip sits top right, as the Dream Master chip does on a `dm` section. */
+/* The label is the bar: it spans the callout, edge to edge inside the rail. */
 .dc-dm-note .dc-alert-label {
-  margin-left: auto;
-}
-.dc-dm-note {
-  padding-top: calc(var(--space-lg) + 12px);  /* clears the folder tab */
+  width: auto;
+  margin-inline: calc(-1 * var(--space-xl));
+  border-bottom: 3pt solid var(--hud-blue-bright);
 }
 
 /* ── Variant: Vibe Callout — atmosphere, the narrator's voice ─────────────
