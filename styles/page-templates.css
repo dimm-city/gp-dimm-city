@@ -442,7 +442,7 @@
   break-after: avoid;
   break-inside: avoid;
 }
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
   margin-top: 0;
 }
 
@@ -494,7 +494,7 @@
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.05in 0.12in 0.04in 0.2in;
 }
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):first-child {
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
   margin-top: 0;
 }
 
@@ -555,7 +555,7 @@
    over (the engine clips it at the page's top margin): its stamp sits just inside
    the top edge, and the first block's first lines stop short of it (tokens that
    components/section.css reads; the form is as tall as it ever was). */
-:where(.page, .chapter) > .dc-section-choose:first-child {
+:where(.page, .chapter) > .dc-section-choose:is(:first-child, :where(gp-anchor:first-child) + *) {
   --dc-choose-stamp-room: 72pt;
   --dc-choose-stamp-top: 3pt;
   --dc-choose-stamp-lift: 0%;

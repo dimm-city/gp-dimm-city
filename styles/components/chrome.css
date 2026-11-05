@@ -387,7 +387,7 @@ hr {
   margin: var(--space-md) 0;
   break-after: avoid;
 }
-hr:is(:first-child, :last-child),
+hr:is(:first-child, :where(gp-anchor:first-child) + *, :last-child),
 hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
     .dc-outcomes,
     .dc-roll-table,
