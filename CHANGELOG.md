@@ -21,6 +21,20 @@ blank pages at the end where there were four.
 
 ### Added
 
+- **A skill card that splits across pages is marked.** The part that goes on
+  ends in a dashed seam in the specialty's tab colour with a small ▸, and the
+  part that continues starts with a matching one. CSS only (a stretched SVG
+  border image on the cloned `.dc-card-inner`, vector in the PDF, one colour
+  per specialty in `cards.css`) plus two zero-height markers the plugin adds
+  to every card (`.dc-card-start`, `.dc-card-end`) that hide the seam at the
+  card's real top and foot. No height is added and no text moves: an unbroken
+  card prints as before.
+- **`@continue` is a polished continuation.** The part before it closes with a
+  straight ink foot, its hard shadow, the bottom-left bolt and a ▸ flag
+  (`.dc-skill-card-cut`); the continuation card has the full tab with the
+  card's ID, written or automatic (it lost the automatic one), and the
+  top-right bolt. The hud-blue rule on the continuation tab is gone. A
+  `@continue` card takes about 0.3in more than before.
 - **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
   measures every token as the build separates it and fails when a figure
   written in a token comment, a constitution §V row, a palette-chapter swatch

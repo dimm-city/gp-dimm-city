@@ -2425,7 +2425,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <p class="dc-ability-text"><em>Bullet to Blood:</em> Slip a ranged shot as it screams past, surge forward, and <span class="dc-roll-the-die">ROLL THE DIE!</span> to make a basic attack.</p>
 </div>
 <div class="dc-sub-header">Openings are invitations to take a chunk outta 'em.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card" data-name="rage-hit" name="rage-hit">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Rage Hit</h4>
@@ -2443,7 +2443,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <p class="dc-ability-text"><em>All Gas, No Brakes:</em> Two basic attacks against one target. If either roll is a 1, both fail.</p>
 </div>
 <div class="dc-sub-header">Full send or full regret.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <p>A path with no subtitle and no sticker chain is the band alone. Tokens: <code>--dc-path-title-bg</code>, <code>--dc-path-title-color</code>, <code>--dc-path-code-bg</code>, <code>--dc-path-code-fg</code>, <code>--dc-path-chip-bg</code>, <code>--dc-path-chip-fg</code>, <code>--dc-path-chip-edge</code>, <code>--dc-path-note-rail</code>, <code>--dc-path-accent</code>, <code>--dc-arrow-color</code>, and the band tokens above.</p>
 <h2 data-name="skill-card">Skill card</h2>
@@ -2501,7 +2501,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
 <div class="dc-sub-header">You don't need an opening. You make one.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <table>
 <thead data-source-range="358:359">
@@ -2566,10 +2566,10 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
 </div><div class="dc-sub-header">Courage spreads. So does panic.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h2 data-name="continuing-a-long-card">Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab and no top-right bolt. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
+<p>A card that runs past a page splits by default, and the browser marks the break itself: the part that goes on ends in a dashed seam in the specialty’s tab colour with a small triangle, and the part that continues starts with a matching dashed seam. Nothing to write; an unbroken card is untouched. Where you want a named continuation, write <code>@continue</code> inside the card: it closes the part before with a straight ink foot, its hard shadow, the bottom-left bolt and a small triangle flag, and opens a continuation card with the full tab (the name and a small triangle, the same ID, the top-right bolt). That one is for a break at a boundary you chose, and carries no seam. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that splits by itself is open at the foot (12pt under its last line, the seam, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab and no top-right bolt. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -2602,7 +2602,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc" data-source-range="442:443"><div class="dc-learning-path dc-path-block" data-name="example-path-3" data-path-ref="AUG1" data-source-range="444:445"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
+<div class="dc-skill-card dc-skill-card-cut" data-name="pain-compliance-aug1-4" name="pain-compliance">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Pain Compliance</h4>
     <span class="dc-tab-tier">AUG1.4</span>
@@ -2614,7 +2614,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Take Control:</em> Overpower one target in reach and place them in a painful hold. A controlled target cannot react out of turn and rolls Surreal.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance">
   <div class="dc-card-tab dc-card-tab-cont">
     <span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span>
@@ -2631,7 +2631,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Lights Out:</em> The target goes unconscious at the end of your turn.</p>
 </div>
 <div class="dc-sub-header">Predators don't negotiate.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h2 data-name="outcomes-inside-a-card">Outcomes inside a card</h2>
 <p>A <code>| Roll | Outcome |</code> table inside a skill card renders as that card’s outcome ladder.</p>
@@ -2703,7 +2703,7 @@ Once per round, outside your turn, you exploit a target in reach:
     <span class="dc-outcome-text">You fall prone and lose your next turn.</span>
   </div>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h2 class="gp-page-break" data-name="one-source-eight-shapes">One source, eight shapes</h2>
 <p>The same path and card markdown, dropped into a different <code>@specialty</code>, takes that family’s silhouette and color with no change to the source. Here it is under Gutterdruid. (The Dualist and Generalist borrow other specialties’ skills, so they have no trees of their own.)</p>
@@ -2726,7 +2726,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Take the Shape:</em> Your body rewrites into a natural form, from a mouse to a horse. The form has 6 HP; you gain its movement and senses but cannot use abilities, items, or language.</p>
 </div>
 <div class="dc-sub-header">Some problems need teeth, paws, and claws.</div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <p>Skill-card tokens: <code>--dc-card-accent</code>, <code>--dc-card-surface</code>, <code>--dc-card-tab-bg</code>, <code>--dc-card-tab-title-color</code>, <code>--dc-card-gap</code>, <code>--dc-card-tab-shadow</code>; tier pill: <code>--dc-tier-bg</code>, <code>--dc-tier-fg</code>, <code>--dc-tier-edge</code> (the specialty’s own chip: its signal colour, or cream where that colour fails contrast for the type); AP chip: <code>--dc-ap-bg</code>, <code>--dc-ap-fg</code>, <code>--dc-ap-border</code>.</p>
 </div></div>"
@@ -3852,7 +3852,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach makes a basic attack and rolls a <strong>Hard Choice</strong> or worse, your Backbiters knock the strike off line. They miss. …</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="proxy-proxy">Proxy — <code>.proxy</code></h3>
 <div class="dg-stage">
@@ -3873,7 +3873,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You grasp a willing creature in reach or clamp a hand over your own wound, pouring the light of your conviction into the injury as bioluminescent threads stitch flesh together. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="streetwarden-streetwarden">Streetwarden — <code>.streetwarden</code></h3>
 <div class="dg-stage">
@@ -3894,7 +3894,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">When you enter a new location—building, block, train car, street—you may ask the Dream Master one question. … The DM gives you one true insight about the area.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="gutterdruid-gutterdruid">Gutterdruid — <code>.gutterdruid</code></h3>
 <div class="dg-stage">
@@ -3915,7 +3915,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text">Your body rewrites into a natural form, flesh, bone, and instinct taking over. …</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="cybersurgeon-cybersurgeon">Cybersurgeon — <code>.cybersurgeon</code></h3>
 <div class="dg-stage">
@@ -3936,7 +3936,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You quickly examine a creature in reach of you and foam wounds shut, staple torn flesh, and flood the pain with emergency chems. Your efforts immediately restore 3 HP but do not remove impairments, heal permanent wounds, or cure diseases.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="wirephreak-wirephreak">Wirephreak — <code>.wirephreak</code></h3>
 <div class="dg-stage">
@@ -3957,7 +3957,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You check darksites, contact fixers, browse bounty boards, and quietly ask around the city’s underworld. After a byte or two, you know which bounties are worth chasing, who’s offering them, and roughly how dangerous the marks are. …</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="technosorcerer-technosorcerer">Technosorcerer — <code>.technosorcerer</code></h3>
 <div class="dg-stage">
@@ -3978,7 +3978,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You conjure harmless sensory or environmental effects by manipulating cybernetics, technology, or reality itself. Using an Action, you can maintain up to <strong>6 ongoing effects</strong> at once. …</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="etherlock-etherlock">Etherlock — <code>.etherlock</code></h3>
 <div class="dg-stage">
@@ -3999,7 +3999,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text">As your Action, you radically increase the elasticity of yourself, one willing packmate, or one surface or object <strong>In Range</strong> until the end of the encounter. …</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h2 data-name="skill-card-variants">Skill card variants</h2>
 <p>Every switch on one card, each under the same Augmerc wrapper. <code>@continue</code>, which splits a long card across pages, is shown in <a href="#ch-specialty" data-gp-source-token="[The Specialty System](#ch-specialty)" data-gp-source-occurrence="0">The Specialty System</a>.</p>
@@ -4021,7 +4021,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="tier-override-name-aug1-3">Tier override — <code>#### Name | AUG1.3</code></h3>
 <p>The tier is written on the heading and printed on the tab.</p>
@@ -4041,7 +4041,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="two-columns-columns-2-inside-a-skill">Two columns — <code>@columns 2</code> inside a <code>@skill</code></h3>
 <p>A long ability list packed into two columns. The columns are core’s <code>@columns 2</code> … <code>@end-columns</code> around just that part of the body; the flavor line and the lead paragraph stay full width.</p>
@@ -4074,7 +4074,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
-</div></div></div></div>
+</div></div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h3 data-name="outcome-table-a-roll-outcome-table-inside-the-card">Outcome table — a <code>| Roll | Outcome |</code> table inside the card</h3>
 <p>The table becomes the card’s outcome ladder.</p>
@@ -4117,7 +4117,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-text">You fall prone and lose your next turn.</span>
   </div>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div></div>
 <h2 data-name="ap-chips">AP chips</h2>
 <p>The plugin picks the chip from the cost written in bold at the start of an ability. The cards are the Augmerc’s Dirty Work and the Proxy’s Borrowed Mercy (its range line excerpted). The last four registers have no markdown form; they are raw spans. Free is an unlit LED (a grey lens with a hollow lamp and an ink edge: the quietest chip), standard is HUD blue, reduced is pale blue with a down-triangle, increased is blood with an up-triangle, VAR is deep magenta and special is amber: the drawn triangles keep reduced and increased apart in grayscale.</p>
@@ -4146,7 +4146,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap variable">VAR AP</span>
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div><div class="dc-specialty proxy" data-source-range="433:434"><div class="dc-learning-path dc-path-block" data-name="example-path-6" data-path-ref="PRX1" data-source-range="435:436"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
@@ -4166,7 +4166,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap variable">3–X AP</span>
   <p class="dc-ability-text">You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.</p>
 </div>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div><p><span class="dc-ap standard">2 AP</span> <span class="dc-ap reduced">1 AP</span> <span class="dc-ap increased">3 AP</span> <span class="dc-ap special">SPC</span></p>
 </div>
 <table>
@@ -4970,7 +4970,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <p class="dc-ability-text"><em>Bad Timing:</em> When an enemy in reach rolls a Hard Choice or worse on a basic attack against you, your Backbiters snap out and steal the moment. No damage and you have their weapon. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack using your weapon or theirs. On a Catastrophe, your hit deals double damage, and against a Master you can take their weapon. Free counter once per round.</p>
 </div>
 <p class="dc-card-signoff">Openings are invitations to take a chunk out 'em.</p>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card" data-name="rage-hit-aug1-2" name="rage-hit">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Rage Hit</h4>
@@ -5012,7 +5012,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <p>Until the start of your next turn, any enemy that starts their turn in reach of you takes 1 damage as your Backbiters stick anything that moves too close.</p>
 <p class="dc-card-signoff">Full send or full regret.</p>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
@@ -5060,7 +5060,7 @@ Never fight clean. Fight to finish.</p>
 </tbody>
 </table>
 <p class="dc-card-signoff">You don’t need an opening. You make one.</p>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Pain Compliance</h4>
@@ -5083,7 +5083,7 @@ Never fight clean. Fight to finish.</p>
   <p class="dc-ability-text"><em>Throat Control:</em> Get a grip on throat or collar. The target is <strong>Silenced</strong> and <strong>Slowed</strong> until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.</p>
 </div>
 <p class="dc-card-signoff">Pain is a language everyone understands.</p>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 <div class="dc-skill-card" data-name="its-personal-aug1-5" name="it-s-personal">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">It's Personal</h4>
@@ -5106,7 +5106,7 @@ Never fight clean. Fight to finish.</p>
   <p class="dc-ability-text"><em>End It:</em> Make a basic attack against your Fixated target. If it hits, deal <strong>double damage</strong>. If it downs them, you immediately clear any negative conditions affecting you and regain 2 AP on your next turn.</p>
 </div>
 <p class="dc-card-signoff">Some jobs are work. Some jobs are justice.</p>
-</div></div></div>
+</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>
 </div></div><div class="gp-page-break" aria-hidden="true" data-source-range="138:139"></div>
 <div class="section dc-section-panel" data-section="panel" data-name="combining-specialties" data-source-range="140:141"><h2 data-name="combining-specialties">Combining Specialties</h2>
 <p>The Field Guide allows Dreamers to expand beyond a single specialty over the course of a campaign. After a significant story milestone — completing a major job, surviving an encounter that changes your character, or finding a mentor — the Dream Master may allow you to begin learning from a second specialty.</p>

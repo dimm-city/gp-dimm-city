@@ -1135,7 +1135,8 @@ function isBoldOnlyInline(inline) {
  *   blockquote   → flavor line
  *   ordered list → ability rows
  *   Roll | Outcome table → outcomes ladder
- *   @continue    → closes the card and opens a "{name} ▸" continuation card
+ *   @continue    → closes the card (`.dc-skill-card-cut`: a straight foot and a ▸ flag)
+ *                  and opens a "{name} ▸" continuation card with the same ID
  */
 function dcSkillCards(state) {
   const md = state.md;
@@ -1171,9 +1172,11 @@ function dcSkillCards(state) {
     let compDepth = 0; // how many components (callout, columns) are open inside the card
     const endCard = (continuing = false) => {
       if (inCard && tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
-      if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
+      // .dc-card-inner, the two seam markers (cards.css, "The seam"), .dc-card-body, .dc-skill-card
+      if (inCard) emit('</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>\n');
       inCard = false;
     };
+    let cardTok = null; // the html token that opened the current card
 
     for (let i = 0; i < content.length; i++) {
       const tok = content[i];
@@ -1183,13 +1186,14 @@ function dcSkillCards(state) {
       if (tok.type === 'heading_open' && tok.tag === 'h4' && columnsDepth === 0) {
         endCard();
         const parsed = parseSkillTitle(content[i + 1].content || '');
-        title = { name: parsed.name, tier: parsed.tier };
         let autoTier = '';
         if (path) {
           const n = (numbered.get(path) || 0) + 1;
           numbered.set(path, n);
           autoTier = path.attrGet('data-path-ref') + '.' + n;
         }
+        // The continuation card repeats the ID the card shows, written or automatic.
+        title = { name: parsed.name, tier: parsed.tier || autoTier };
         // The skill's name is its `####` heading, kept a heading so the
         // outline lists it under its learning path. (A continuation card's
         // repeated title stays a span: it is not a new entry.)
@@ -1202,6 +1206,7 @@ function dcSkillCards(state) {
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
+        cardTok = out[out.length - 1];
         inCard = true;
         seenBlock = false;
         i += 2; // skip inline + heading_close
@@ -1210,6 +1215,9 @@ function dcSkillCards(state) {
 
       if (tok.type === 'dc_skill_continue') {
         endCard(true);
+        // The part before an explicit continuation closes straight (a foot, a
+        // bolt, a flag); the specialty's cut stays the mark of a card's real end.
+        if (cardTok) cardTok.content = cardTok.content.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cut');
         emit(
           cardOpen(true) +
           '  <div class="dc-card-tab dc-card-tab-cont">\n' +
@@ -1219,6 +1227,7 @@ function dcSkillCards(state) {
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
+        cardTok = out[out.length - 1];
         inCard = true;
         seenBlock = false;
         continue;

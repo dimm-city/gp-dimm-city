@@ -44,6 +44,9 @@ const bandTable = (head = ["Roll", "Outcome"], bands = ["20", "11-19", "6-10", "
   ...bands.map((b, i) => `| ${b} | ${texts[i] ?? "text"} |`),
 ];
 
+// The two zero-height seam markers every card closes with (cards.css, "The seam"): tests that match the card's trailing divs look past them.
+const SEAM_MARKERS = /<span class="dc-card-(?:start|end)"><\/span>/g;
+
 function countRolls(html) {
   return html.split('class="dc-roll-the-die"').length - 1;
 }
@@ -875,7 +878,7 @@ describe("declared specialty, learning path and skill", () => {
 
     test("a page break or another component ends the card; later content is outside it", () => {
       const { html } = renderGp(doc("@skill", "", card("A"), "", "@page-break", "", "after the break"));
-      expect(html).toMatch(/<\/div><\/div><\/div>\s*<div[^>]*gp-page-break[^>]*><\/div>\s*<p>after the break<\/p>/);
+      expect(html).toMatch(/<\/div>(?:<span class="dc-card-(?:start|end)"><\/span>){2}<\/div><\/div>\s*<div[^>]*gp-page-break[^>]*><\/div>\s*<p>after the break<\/p>/);
     });
 
     test("@columns, @column-break and @end-columns inside a card stay in its body, in place", () => {
@@ -889,7 +892,7 @@ describe("declared specialty, learning path and skill", () => {
       expect(count(html, /class="dc-skill-card"/g)).toBe(2);
       // the run sits inside the first card's .dc-card-inner, before the card closes
       expect(html).toMatch(
-        /<div class="dc-card-inner">[\s\S]*<div class="gp-columns gp-columns-2"[^>]*>[\s\S]*<li>two<\/li>[\s\S]*<div class="gp-column-break"[^>]*><\/div>[\s\S]*<li>three<\/li>[\s\S]*<\/div>\s*<p[^>]*>Closing line\.<\/p>\s*<\/div><\/div><\/div>/,
+        /<div class="dc-card-inner">[\s\S]*<div class="gp-columns gp-columns-2"[^>]*>[\s\S]*<li>two<\/li>[\s\S]*<div class="gp-column-break"[^>]*><\/div>[\s\S]*<li>three<\/li>[\s\S]*<\/div>\s*<p[^>]*>Closing line\.<\/p>\s*<\/div>(?:<span class="dc-card-(?:start|end)"><\/span>){2}<\/div><\/div>/,
       );
       // the first card holds the whole run and the closing line: nothing leaks out between the cards
       const firstCard = html.slice(html.indexOf('name="split"'), html.indexOf('name="next"'));
@@ -900,12 +903,12 @@ describe("declared specialty, learning path and skill", () => {
     test("a card after a columns run still starts as a card, and a stray @column-break still ends one", () => {
       const { html } = renderGp(doc("@skill", "", card("A"), "", "@columns 2", "", "text", "", "@end-columns", "", card("B"), "", "@column-break", "", "after"));
       expect(count(html, /class="dc-skill-card"/g)).toBe(2);
-      expect(html).toMatch(/<\/div><\/div><\/div>\s*<div[^>]*gp-column-break[^>]*><\/div>\s*<p>after<\/p>/);
+      expect(html).toMatch(/<\/div>(?:<span class="dc-card-(?:start|end)"><\/span>){2}<\/div><\/div>\s*<div[^>]*gp-column-break[^>]*><\/div>\s*<p>after<\/p>/);
     });
 
     test("a columns run opened before the cards wraps them; the cards are not inside the card of an earlier one", () => {
       const { html } = renderGp(doc("@columns 2", "", "@skill", "", card("A"), "", card("B"), "", "@end-skill", "", "@end-columns"));
-      expect(html).toMatch(/<div class="gp-columns gp-columns-2"[^>]*>\s*<div class="dc-skill-card"[\s\S]*name="b"[\s\S]*<\/div><\/div><\/div>\s*<\/div>/);
+      expect(html).toMatch(/<div class="gp-columns gp-columns-2"[^>]*>\s*<div class="dc-skill-card"[\s\S]*name="b"[\s\S]*<\/div>(?:<span class="dc-card-(?:start|end)"><\/span>){2}<\/div><\/div>\s*<\/div>/);
     });
 
     test("@card, @outcome and @procedure inside a skill are rewritten like anywhere else", () => {
@@ -951,6 +954,28 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<span class="dc-tab-tier">T2</span>');
       expect(html).not.toMatch(/gp-continued/);
       expect(warnings).toEqual([]);
+    });
+
+    test("the part before @continue closes straight (.dc-skill-card-cut); the continuation and a plain card do not", () => {
+      const { html } = renderGp(skill("@skill", "@end-skill"));
+      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cut" name="long-skill">');
+      expect(html).toContain('<div class="dc-skill-card dc-skill-card-cont" name="long-skill">');
+      expect(count(html, /dc-skill-card-cut/g)).toBe(1);
+      expect(count(renderGp(doc("@skill", "", card("Whole"))).html, /dc-skill-card-cut/g)).toBe(0);
+    });
+
+    test("the continuation tab carries the card's automatic ID, and a written one wins", () => {
+      const auto = renderGp(doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", "@skill", "", "#### Long Skill", "", "Text.", "", "@continue", "", "More.", "@end-skill", "@end-learning-path", "@end-specialty")).html;
+      const tiers = [...auto.matchAll(/<span class="dc-tab-tier">([^<]*)<\/span>/g)].map((m) => m[1]);
+      expect(tiers).toHaveLength(2);
+      expect(tiers[0]).toMatch(/^[A-Z]{3}\d+\.1$/);
+      expect(tiers[1]).toBe(tiers[0]);
+      expect(renderGp(skill("@skill", "@end-skill")).html).toContain('<span class="dc-tab-tier">T2</span>');
+    });
+
+    test("every card ends in the two seam markers, after its inner block", () => {
+      const html = renderGp(doc("@skill", "", card("Whole"))).html;
+      expect(html).toContain('</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>');
     });
 
     test("a card kept whole with .dc-avoid-split keeps its avoid on the continuation too", () => {
@@ -1099,7 +1124,7 @@ describe("declared card, outcome and procedure", () => {
     test("a card after a skill's card stays inside it, and its own #### is not a new skill card", () => {
       const { html } = renderGp(skill("@card", "", ...body, "@end-card"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
-      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-card"><div class="dc-card-heading">Title<\/div>[\s\S]*dc-card-body[\s\S]*(<\/div>\s*){4}$/);
+      expect(html.replace(SEAM_MARKERS, "")).toMatch(/dc-card-inner">[\s\S]*<div class="dc-card"><div class="dc-card-heading">Title<\/div>[\s\S]*dc-card-body[\s\S]*(<\/div>\s*){4}$/);
       expect(count(html, /<div[\s>]/g)).toBe(count(html, /<\/div>/g));
     });
   });
@@ -1145,7 +1170,7 @@ describe("declared card, outcome and procedure", () => {
       const { html } = renderGp(skill(...bandTable(), "", "@outcome", "", "20 | Crit | Yes.", "", "@end-outcome"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
       expect(count(html, /<div class="dc-outcomes"/g)).toBe(2);
-      expect(html).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
+      expect(html.replace(SEAM_MARKERS, "")).toMatch(/<div class="dc-card-inner">[\s\S]*<div class="dc-outcomes">[\s\S]*Crit<\/span>[\s\S]*<div class="dc-outcomes">[\s\S]*Yes\.[\s\S]*(<\/div>\s*){4}$/);
     });
 
     test("one left open at the end of the document warns, with core's own message", () => {
@@ -1304,7 +1329,7 @@ describe("declared card, outcome and procedure", () => {
     test("it stays in a skill's card", () => {
       const { html } = renderGp(skill("@roll-table", "", ...table, "", "@end-roll-table", "", "After the table."));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
-      expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p[^>]*>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
+      expect(html.replace(SEAM_MARKERS, "")).toMatch(/dc-card-inner">[\s\S]*<div class="dc-roll-table"[\s\S]*<p[^>]*>After the table\.<\/p>[\s\S]*(<\/div>\s*){3}$/);
     });
 
     test("an @roll-table with no table in it says so", () => {
@@ -1355,7 +1380,7 @@ describe("declared card, outcome and procedure", () => {
     test("inside a skill's card it stays in the card", () => {
       const { html } = renderGp(skill("@procedure", "", "1. One", "", "@end-procedure"));
       expect(count(html, /class="dc-skill-card/g)).toBe(1);
-      expect(html).toMatch(/dc-card-inner">[\s\S]*<ol class="dc-steps">[\s\S]*<\/ol>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
+      expect(html.replace(SEAM_MARKERS, "")).toMatch(/dc-card-inner">[\s\S]*<ol class="dc-steps">[\s\S]*<\/ol>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
     });
 
     test("inside a @callout it nests there, and the callout closes at its own @end-callout", () => {
@@ -1564,7 +1589,7 @@ describe("declared callout and dm-note", () => {
 
   test("a callout in a skill's card stays in the card", () => {
     const { html, warnings } = renderGp(doc("@skill", "", "#### Skill | T1", "", "> Flavor.", "", "1. **1 AP** *Move:* Do it.", "", "@callout warning", "", "Tip.", "", "@end-callout"));
-    expect(html).toMatch(/dc-card-inner">[\s\S]*<div class="dc-alert dc-note warning"[\s\S]*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
+    expect(html.replace(SEAM_MARKERS, "")).toMatch(/dc-card-inner">[\s\S]*<div class="dc-alert dc-note warning"[\s\S]*<\/div>\s*<\/div>\s*<\/div>\s*<\/div>\s*$/);
     expect(warnings).toEqual([]);
   });
 
@@ -1731,7 +1756,7 @@ describe("@field and the bold labels that mean it", () => {
   test("a @field inside a skill stays in the skill's card", () => {
     const { html } = renderGp("@skill\n\n#### S\n\n@field effects\n\nBody.\n\n@end-field\n\nAfter.\n\n@end-skill");
     expect(html.match(/dc-skill-card/g)).toHaveLength(1);
-    expect(html).toMatch(/dc-field-effects[\s\S]*<p[^>]*>After\.<\/p>[\s\S]*<\/div><\/div><\/div>\s*$/);
+    expect(html).toMatch(/dc-field-effects[\s\S]*<p[^>]*>After\.<\/p>[\s\S]*<\/div>(?:<span class="dc-card-(?:start|end)"><\/span>){2}<\/div><\/div>\s*$/);
   });
 });
 
