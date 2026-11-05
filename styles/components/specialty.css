@@ -90,7 +90,7 @@
   /* top .8rem clears a 7px gate notch, right 1.75rem a 24px stair, left
      1.25rem a 16px chamfer: each is the cut plus 2pt or more. */
   padding: 0.8rem 1.75rem 0.7rem 1.25rem;
-  margin: -1rem -1.25rem 0.6rem -1.25rem;
+  margin: -1rem -1.25rem 0.3rem -1.25rem;
   clip-path: var(--dc-specialty-intro-title-shape);
   border: none;
   break-after: avoid;
@@ -126,36 +126,36 @@
   transform: skewX(var(--dc-band-rule-skew));
 }
 
-.dc-specialty-intro>h3 {
+.dc-specialty-intro>:is(h3, h4) {
   /* Default --blood: 7.73:1 on paper-cream (--crimson is 4.03, fails AA).
      Inside a specialty it is the specialty's --spec-ink, its text-safe ink
      (>= 4.5:1 on cream), so the heading carries that specialty's colour.
-     The band is design: it reads as a hard-edged "wall object" and keeps
-     the h3 legible independent of the ::before pseudo-panel behind it. */
+     A sub-heading is 12pt (the brief's 13pt --fs-h4 made openers longer) with a 2px rule below only; the same 0.3rem
+     sits under it as under the title band (the brief's --space-sm is 2pt more
+     per gap, which made openers longer). */
   color: var(--dc-specialty-intro-h3-color);
   background: var(--paper-cream);
   letter-spacing: 0.05em;
   font-size: var(--fs-body);
   margin-top: 0.6rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
   padding: 0.15rem 0.4rem 0.25rem;
   border-bottom: 2px solid var(--dc-specialty-intro-h3-color);
 }
 
-.dc-specialty-intro>p {
+/* The intro's reading text is the 10pt floor on 1.5 leading; lists take the
+   book's list style (dc-core.css: padding and hung marker), set at the same
+   size. A block straight under a band or heading adds no margin of its own, so
+   every such gap is exactly the heading's 0.3rem. */
+.dc-specialty-intro>p,
+.dc-specialty-intro>:is(ul, ol) {
   margin-block: 0.3rem;
   font-size: var(--fs-floor);
   line-height: 1.5;
 }
 
-.dc-specialty-intro>h2:first-child+p {
-  margin-top: 0.2rem;
-}
-
-.dc-specialty-intro>ul,
-.dc-specialty-intro>ol {
-  margin-block: 0.45rem;
-  padding-left: 1.2rem;
+.dc-specialty-intro>:is(h2, h3, h4)+:is(p, ul, ol) {
+  margin-top: 0;
 }
 
 .dc-specialty-intro> :last-child {

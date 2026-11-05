@@ -669,38 +669,56 @@ describe("declared specialty, learning path and skill", () => {
         ]);
       });
 
-      test("an x in a name after the cost does not make it variable", () => {
-        expect(chip(skill("1. **3 AP - The Toxin That Binds:** x", "2. **3 AP — Butcher Roach** x"))).toEqual([
-          ["dc-ap", "3 AP - The Toxin That Binds:"], ["dc-ap", "3 AP — Butcher Roach"],
-        ]);
+      test("a name after the cost leaves the chip and leads the text; an x in it is not variable", () => {
+        const html = skill("1. **3 AP - The Toxin That Binds:** x", "2. **3 AP — Butcher Roach** y");
+        expect(chip(html)).toEqual([["dc-ap", "3 AP"], ["dc-ap", "3 AP"]]);
+        expect(html).toContain('<p class="dc-ability-text"><em>The Toxin That Binds:</em> x</p>');
+        expect(html).toContain('<p class="dc-ability-text"><em>Butcher Roach:</em> y</p>');
       });
 
-      test("per-unit and plus costs are chips; a trailing stop goes unless a name follows", () => {
-        expect(chip(skill("1. **1 AP/100 DC Per Ego Point or Mod Slot:** x", "2. **+1 AP per passenger.** x", "3. **3 AP — Corpse Pilot.** x"))).toEqual([
-          ["dc-ap", "1 AP/100 DC Per Ego Point or Mod Slot"], ["dc-ap", "+1 AP per passenger"], ["dc-ap", "3 AP — Corpse Pilot."],
-        ]);
+      test("qualifiers lead the text; a chip never carries a stop", () => {
+        const html = skill("1. **1 AP/100 DC Per Ego Point or Mod Slot:** x", "2. **+1 AP per passenger.** y", "3. **3 AP — Corpse Pilot.** z", "4. **3+ AP** w");
+        expect(chip(html)).toEqual([["dc-ap", "1 AP"], ["dc-ap", "+1 AP"], ["dc-ap", "3 AP"], ["dc-ap variable", "3+ AP"]]);
+        expect(html).toContain("<em>1 AP/100 DC Per Ego Point or Mod Slot:</em> x");
+        expect(html).toContain("<em>Per passenger:</em> y");
+        expect(html).toContain("<em>Corpse Pilot:</em> z");
       });
 
-      test("a die result is a roll row, not a chip", () => {
-        const html = skill("1. **20** Crit text.", "2. **11-19** Hit text.", "3. **1** Fail.");
+      test("a list of the five bands is the outcome ladder", () => {
+        const html = skill("**ROLL THE DIE!**", "", "1. **20** Crit text.", "2. **11-19** Hit text.", "3. **6-10** Mixed.", "4. **2-5** Miss.", "5. **1** Fail.");
         expect(chip(html)).toEqual([]);
-        expect(html).not.toContain("dc-ability");
-        expect(html).toContain('<span class="dc-roll-val">20</span>');
-        expect(html).toContain('<span class="dc-roll-val">11–19</span>');
-        expect(html).toContain('<div class="dc-roll-text">Hit text.</div>');
+        expect(html).toContain('<div class="dc-outcomes">');
+        expect(html).toContain("<span>Roll</span><span>Outcome</span>");
+        expect(html).toContain('<span class="dc-outcome-roll">11–19</span>');
+        expect(html).toContain('<span class="dc-outcome-text">Hit text.</span>');
         expect(html).not.toContain(" AP");
       });
 
-      test("a name lead stays an ordinary list item with its bold lead", () => {
+      test("any other set of die results is a roll table; a name stays bold in the cell", () => {
+        const html = skill("1. **1-10** Low.", "2. **11–15: Mid** Middle.", "3. **16–19** High.", "4. **20** Top.");
+        expect(chip(html)).toEqual([]);
+        expect(html).toContain('<div class="dc-roll-table">');
+        expect(html).toContain("<td>11–15</td><td><strong>Mid</strong> Middle.</td>");
+        expect(html).not.toContain("dc-outcomes");
+      });
+
+      test("a name lead is a bulleted option with its colon in the bold", () => {
         const html = skill("1. **Prefrontal Chaos** The creature acts.", "2. **Forced Expulsion: X** Out.");
         expect(chip(html)).toEqual([]);
-        expect(html).toContain("<ol>\n<li><strong>Prefrontal Chaos</strong> The creature acts.</li>\n<li><strong>Forced Expulsion: X</strong> Out.</li>\n</ol>");
+        expect(html).toContain("<ul>\n<li><strong>Prefrontal Chaos:</strong> The creature acts.</li>\n<li><strong>Forced Expulsion: X</strong> Out.</li>\n</ul>");
       });
 
       test("an unbolded item keeps its number between cost rows", () => {
         const html = skill("1. **1 AP** a", "2. Plain.", "3. **2 AP** b");
         expect(html).toContain('<ol start="2">\n<li>Plain.</li>\n</ol>');
         expect(chip(html)).toHaveLength(2);
+      });
+
+      test("ROLL THE DIE TWICE! and ROLL TWO DICE! take the roll hook", () => {
+        const html = skill("1. **0 AP** **ROLL TWO DICE!** a", "2. **2 AP** ROLL THE DIE TWICE! b", "3. **1 AP** ROLL A DIE! c");
+        expect(count(html, /class="dc-roll-the-die"/g)).toBe(3);
+        expect(html).toContain('<span class="dc-roll-the-die">ROLL TWO DICE!</span>');
+        expect(html).toContain('<span class="dc-roll-the-die">ROLL THE DIE TWICE!</span>');
       });
 
       test("a nested list under a cost item stays a list", () => {

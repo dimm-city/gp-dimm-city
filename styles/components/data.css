@@ -375,6 +375,20 @@
   z-index: 1;
 }
 
+/* The band's edge: a 2px bar in the row colour, drawn by the ROW so it runs the
+   row's full height. (On the text cell, which centres itself, the border was only
+   as tall as the text and left a short stub beside the key's colour band.) */
+.dc-outcome-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--dc-outcome-key-col);
+  width: 2px;
+  background: var(--row-color, var(--ink-dust));
+  pointer-events: none;
+}
+
 .dc-outcome-row:last-child {
   border-bottom: 0;
 }
@@ -444,7 +458,9 @@
      right-column text floats on plain paper-cream with no visual tie back to
      the row band, reading as untethered prose next to a designed table.
      Reads `--row-color` which is set per-variant on .dc-outcome-row.X. */
-  border-left: 2px solid var(--row-color, var(--ink-dust));
+  /* Its 2px left edge is the row's ::after bar; the padding keeps the text
+     where the border put it. */
+  padding-left: 16px;
 }
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
@@ -1077,6 +1093,13 @@ p.dc-img-wrapper {
   line-height: 1.1;
   color: var(--dc-at-a-glance-value);
   overflow-wrap: anywhere;
+}
+
+/* A table whose header cells are all empty (markdown requires a header row for a
+   boxed option list) draws no header row at all: not even the blank strip the
+   collapsed cells leave. */
+thead:not(:has(> tr > th:not(:empty))) {
+  display: none;
 }
 
 }

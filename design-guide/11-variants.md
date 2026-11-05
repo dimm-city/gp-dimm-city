@@ -462,8 +462,8 @@ Once per round, outside your turn, you exploit a target in reach:
 | Standard | `**1 AP**`, `**2 AP**` | `.dc-ap` |
 | Variable | `**VAR AP**` | `.dc-ap.variable` |
 | Variable | `**3-X AP**`, `**1--3 AP**`, any range (hyphen or dash) or `X` | `.dc-ap.variable` |
-| Standard, with a name | `**3 AP --- The Toxin That Binds:**` | `.dc-ap`, the name rides in the chip; only the cost part decides free or variable |
-| Not a chip | `**20**`, `**11-19**` (a die result) | `.dc-roll-row`; any other bold lead (`**Prefrontal Chaos**`) stays a list item |
+| Standard, with a name | `**3 AP --- Butcher Roach**` | chip `.dc-ap` reads `3 AP`; *Butcher Roach:* leads the row text |
+| Not a chip | `**20**`, `**11-19**` (all items) | outcome ladder or roll table; any other bold lead (`**Prefrontal Chaos**`) is a bulleted option |
 | Standard, explicit | `<span class="dc-ap standard">` | `.dc-ap.standard` |
 | Reduced | `<span class="dc-ap reduced">` | `.dc-ap.reduced` |
 | Increased | `<span class="dc-ap increased">` | `.dc-ap.increased` |

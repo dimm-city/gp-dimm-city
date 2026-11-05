@@ -162,14 +162,16 @@ describe("the tarball npm would publish", () => {
 describe("fonts", () => {
   const fontFiles = walk(path.join(ROOT, "fonts")).filter((p) => FONT_EXTS.includes(path.extname(p).toLowerCase()));
 
-  test("every font file is referenced by exactly one @font-face", () => {
+  test("every font file is referenced by an @font-face (tomorrow-700 by two: its own, and lixdu's punctuation fallback)", () => {
     const refs = (gp.styles ?? []).flatMap(cssAssetRefs).filter((r) => FONT_EXTS.includes(path.extname(r.resolved).toLowerCase()));
     const counts = new Map();
     for (const r of refs) counts.set(r.resolved, (counts.get(r.resolved) ?? 0) + 1);
     expect(fontFiles.length).toBeGreaterThan(0);
     for (const abs of fontFiles) {
       const rel = path.relative(ROOT, abs).split(path.sep).join("/");
-      expect(counts.get(rel) ?? 0).toBe(1);
+      // One face each; the single exception is tomorrow-700, which is also the
+      // source of lixdu's punctuation face (lixdu has no curly quotes or dashes).
+      expect(counts.get(rel) ?? 0).toBe(rel === "fonts/tomorrow/tomorrow-700.ttf" ? 2 : 1);
     }
   });
 

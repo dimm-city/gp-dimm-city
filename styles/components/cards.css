@@ -298,6 +298,13 @@
    card that is kept whole, where they change nothing until it is taller than
    a page. */
 
+/* A `---` in a skill card is the seam between sub-abilities: 1.5pt in the
+   specialty's mid (--dc-card-tab-bg is the colour the card's tab is filled with). */
+.dc-skill-card hr {
+  --dc-rule: var(--dc-card-tab-bg);
+  border-top-width: 1.5pt;
+}
+
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
@@ -415,9 +422,9 @@
 }
 
 .dc-ability-text strong {
-  /* --crimson on paper-cream = 4.03 (fails AA); --blood = 7.73:1 */
-  color: var(--blood);
-  font-weight: 600;
+  /* A game term is a word to notice, not a harm: the ink of the text around it. */
+  color: inherit;
+  font-weight: 700;
 }
 
 /* An ability row whose item also holds a nested list or more paragraphs: the
@@ -430,34 +437,6 @@
 .dc-ability-body > :is(ul, ol) {
   margin: 4px 0 0;
   padding-left: 1.2em;
-}
-
-/* ── Roll row ─────────────────────────────────────────────────────────────
-   A numbered item led by a die result ("20", "11-19"), not a price: the result
-   in mono type at the left, the text beside it. Restrained default; it is not
-   an AP chip and borrows nothing from one. */
-.dc-roll-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 6px;
-  align-items: baseline;
-  break-inside: avoid;
-}
-
-.dc-roll-val {
-  flex: none;
-  min-width: 3.2em;
-  font-family: var(--font-mono);
-  font-size: var(--fs-body);
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.dc-roll-text {
-  font-family: var(--font-body);
-  font-size: var(--fs-body);
-  line-height: 1.5;
-  color: var(--ink);
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:

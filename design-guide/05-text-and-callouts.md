@@ -266,7 +266,7 @@ Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`
 
 ## Rule
 
-A plain `---` between entries is a thin red rule --- the separator for gear lists and NPC entries.
+A plain `---` is a 1pt ink hairline, a pause between topics; in a skill card it is a 1.5pt seam in the specialty's colour between sub-abilities. It is not drawn first or last in its box, before a heading, table or component, or straight on the bare wall, and it never ends a page.
 
 ```markdown
 Trauma Kit × 2

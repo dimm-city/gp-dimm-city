@@ -62,7 +62,7 @@
  *                          to its origin card (dcContinueClassifier claims it
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
- *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
+ *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!, ROLL THE DIE TWICE!, ROLL TWO DICE!)
  *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
  *   the h1 under `@page intro | credits | contents` gets .dc-chevron
@@ -219,8 +219,8 @@ function buildStickerChain(items) {
   return html;
 }
 
-// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! — uppercase only.
-const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:A|THE) DIE!/g;
+// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! / ROLL THE DIE TWICE! / ROLL TWO DICE! — uppercase only.
+const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/g;
 
 function isWordChar(char) {
   return char !== '' && /[A-Za-z0-9_]/.test(char);
@@ -461,6 +461,7 @@ function collectSkillListItems(tokens, startIndex, md, env) {
       items.push({
         number,
         html: first >= 0 ? renderInlineChildren(body[first], md) : '',
+        src: first >= 0 ? body[first].content : '',
         rest: first >= 0 && after < body.length ? md.renderer.render(body.slice(after), md.options, env || {}) : '',
       });
       i = end;
@@ -470,19 +471,28 @@ function collectSkillListItems(tokens, startIndex, md, env) {
   return { items, endIndex: i };
 }
 
-// A skill card's ordered list: cost items are ability rows, die results are
-// roll rows, and every other item stays a list item (consecutive ones share one
-// <ol>, numbered as the author numbered them).
-function skillListHtml(items) {
+// A skill card's ordered list, read by what each bold lead says:
+//   - every item leads with a die result: not abilities but a ladder (the five
+//     standard bands: the outcome ladder) or a `.dc-roll-table` plate;
+//   - a cost leads an ability row (chip + text);
+//   - a name (or no bold lead) is an option or a plain item: a bulleted list
+//     with the name in bold and a colon when any item has a name, else an <ol>
+//     numbered as the author numbered it.
+function skillListHtml(items, md) {
+  const rolls = dieResultListHtml(items, md);
+  if (rolls) return rolls;
   const parsed = items.map((item) => ({ ...item, ability: parseAbilityFromListItem(item.html) }));
-  const costs = parsed.filter((p) => p.ability?.kind === 'cost').length;
+  const costs = parsed.filter((p) => p.ability).length;
   let html = '';
   let costIdx = 0;
   let plain = [];
   const flush = () => {
     if (!plain.length) return;
-    html += '<ol' + (plain[0].number !== '1' ? ' start="' + esc(plain[0].number) + '"' : '') + '>\n' +
-      plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
+    const named = plain.some((p) => optionHtml(p.html) !== p.html);
+    html += named
+      ? '<ul>\n' + plain.map((p) => '<li>' + optionHtml(p.html) + p.rest + '</li>\n').join('') + '</ul>\n'
+      : '<ol' + (plain[0].number !== '1' ? ' start="' + esc(plain[0].number) + '"' : '') + '>\n' +
+        plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
     plain = [];
   };
   parsed.forEach((item) => {
@@ -492,13 +502,6 @@ function skillListHtml(items) {
       return;
     }
     flush();
-    if (ability.kind === 'roll') {
-      html += '<div class="dc-roll-row">\n' +
-        '  <span class="dc-roll-val">' + esc(ability.rollVal) + '</span>\n' +
-        '  <div class="dc-roll-text">' + ability.text + item.rest + '</div>\n' +
-        '</div>\n';
-      return;
-    }
     let posAttrs = '';
     if (costs > 1) {
       if (costIdx === costs - 1) posAttrs = ' data-ability-last="true"';
@@ -515,51 +518,87 @@ function skillListHtml(items) {
   return html;
 }
 
+// An option's bold name takes its colon inside the bold ("**Name:** text").
+function optionHtml(html) {
+  const m = html.match(/^(\s*)<strong>([^<]+)<\/strong>/i);
+  if (!m) return html;
+  const name = m[2].trim();
+  return m[1] + '<strong>' + name + (/[:.!?]$|:/.test(name) ? '' : ':') + '</strong>' + html.slice(m[0].length);
+}
+
+// A bold die result in markdown: **20**, **11-19**, **6–10:**, **16–19: Name**.
+const DIE_RESULT_MD = /^\*\*\s*(\d{1,2}(?:\s*[-‐-―−]\s*\d{1,2})?)\s*(?::|(?:[:–—-]\s*([^*]+?)))?\s*\*\*\s*/;
+
+// A list whose items ALL lead with a die result is a roll list, not an ability
+// list: the five standard bands are the outcome ladder (the same component a
+// table of them makes); any other set is a `.dc-roll-table` plate. Both are built
+// from the same table reading the plugin already does.
+function dieResultListHtml(items, md) {
+  if (items.length < 2 || items.some((item) => item.rest)) return '';
+  const rows = [];
+  for (const item of items) {
+    const m = DIE_RESULT_MD.exec(item.src || '');
+    if (!m) return '';
+    const text = item.src.slice(m[0].length).trim();
+    rows.push([m[1], (m[2] ? '**' + m[2].trim() + '** ' : '') + text]);
+  }
+  const ladder = ladderRows({ head: ['Roll', 'Outcome'], rows });
+  if (ladder) return buildLadderBlock(ladder, md, { attrs: [] });
+  const cell = (c) => md.renderInline(c.trim()).replace(/\s*[-‐-―−]\s*/, '–');
+  return '<div class="dc-roll-table">\n<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d20</span></div>\n<table>\n<thead>\n<tr><th>Roll</th><th>Outcome</th></tr>\n</thead>\n<tbody>\n' +
+    rows.map(([r, t]) => '<tr><td>' + cell(r) + '</td><td>' + md.renderInline(t.trim()) + '</td></tr>\n').join('') +
+    '</tbody>\n</table>\n</div>\n';
+}
+
 // A numbered item in a skill card whose text opens with a bold lead is read by
 // what the lead says, never by its shape alone:
-//   - a COST: a number, a range (1-3, 1-X, 2-X; hyphen or dash), X or VAR, then
-//     "AP": "2 AP", "0 AP.", "3 AP — Butcher Roach", "1 AP/100 DC Per Ego Point:",
-//     "+1 AP per passenger.". The one bare form kept is the variable "3-X".
-//     It becomes the AP chip.
-//   - a DIE RESULT: only a number or a range of numbers ("20", "11-19"). It
-//     becomes a roll row, not a chip: it is not a price.
-//   - anything else (an option's name, a sentence) stays an ordinary list item.
-const COST_LEAD = /^(\+?\s*(?:\d+|X|VAR)(?:\s*[-‐-―−]\s*(?:\d+|X))?)\s*AP\b(.*)$/i;
+//   - a COST: a number, range (hyphen or dash), X or VAR, optional +, then "AP".
+//     It becomes the AP chip, and the chip carries only that readout ("3 AP").
+//     What follows the cost leaves the chip for the start of the row's text, as
+//     an italic run-in with a colon: a name ("3 AP — Butcher Roach" → "Butcher
+//     Roach:") or a qualifier ("+1 AP per passenger." → "Per passenger:"; a
+//     "/"-qualifier keeps its cost: "1 AP/100 DC Per Ego Point…:"). The one bare
+//     form kept is the variable "3-X".
+//   - anything else (a die result, a name, a sentence) is not a cost.
+const COST_LEAD = /^(\+?\s*(?:\d+|X|VAR)(?:\s*[-‐-―−]\s*(?:\d+|X))?\+?)\s*AP\b(.*)$/i;
 const BARE_VARIABLE_COST = /^\d+\s*[-‐-―−]\s*X$/i;
-const DIE_RESULT_LEAD = /^\d{1,2}(?:\s*[-‐-―−]\s*\d{1,2})?$/;
 
-// A rendered list item's text → { kind: 'cost', apVal, apClass, text } |
-// { kind: 'roll', rollVal, text } | null (an ordinary item).
+// A rendered list item's text → { apVal, apClass, text } | null (not a cost).
 function parseAbilityFromListItem(html) {
   const lead = html.match(/^\s*<strong>([^<]+)<\/strong>\s*/i);
   if (!lead) return null;
 
-  const label = lead[1].replace(/\s+/g, ' ').trim();
-  const text = html.slice(lead[0].length);
+  const label = lead[1].replace(/\s+/g, ' ').trim().replace(/[.]+$/, '').trim();
+  let text = html.slice(lead[0].length);
 
   let costPart;
   let apVal;
   const cost = COST_LEAD.exec(label);
   if (cost) {
     costPart = cost[1].replace(/\s+/g, '');
-    // A chip is a label, not a sentence: a closing stop or colon goes, unless a
-    // name follows the cost ("3 AP — Corpse Pilot.").
-    const named = /^\s*[\u2010-\u2015\u2212-]\s*\S/.test(cost[2]);
-    apVal = cost[1].trim() + ' AP' + (named ? cost[2] : cost[2].replace(/[.:]+$/, ''));
+    apVal = cost[1].replace(/\s+/g, '').replace(/^\+/, '+') + ' AP';
+    let tail = cost[2].trim();
+    if (tail) {
+      let runIn;
+      if (/^[‐-―−-]/.test(tail)) runIn = tail.replace(/^[‐-―−-]\s*/, '');
+      else if (tail.startsWith('/')) runIn = apVal + tail;
+      else runIn = tail.charAt(0).toUpperCase() + tail.slice(1);
+      runIn = runIn.replace(/[.:]+$/, '').trim();
+      if (runIn) text = '<em>' + runIn + ':</em> ' + text;
+    }
   } else if (BARE_VARIABLE_COST.test(label)) {
     costPart = label.replace(/\s+/g, '');
-    apVal = label + ' AP';
-  } else if (DIE_RESULT_LEAD.test(label)) {
-    return { kind: 'roll', rollVal: label.replace(/\s*[-‐-―−]\s*/, '–'), text };
+    apVal = label.replace(/\s+/g, '') + ' AP';
   } else {
     return null;
   }
 
+  const bare = costPart.replace(/^\+/, '');
   let apClass = 'dc-ap';
-  if (/^\+?0+$/.test(costPart)) apClass += ' free';
-  else if (/[-‐-―−]|X|VAR/i.test(costPart)) apClass += ' variable';
+  if (/^0+$/.test(bare)) apClass += ' free';
+  else if (/[-‐-―−]|X|VAR|\+$/i.test(bare)) apClass += ' variable';
 
-  return { kind: 'cost', apVal, apClass, text };
+  return { apVal, apClass, text };
 }
 
 
@@ -1148,7 +1187,7 @@ function dcSkillCards(state) {
 
       if (tok.type === 'ordered_list_open') {
         const { items, endIndex } = collectSkillListItems(content, i, md, state.env);
-        emit(skillListHtml(items));
+        emit(skillListHtml(items, md));
         i = endIndex;
         continue;
       }

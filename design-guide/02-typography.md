@@ -45,6 +45,10 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 <p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9&ndash;13</p>
 </div>
 
+Lixdu covers only plain ASCII, so a heading's curly quotes, en and em dashes and ellipsis come from a second `lixdu` face cut from the Tomorrow Bold file: they print in a matching weight, not in thin Tomorrow Regular. A heading breaks only between words; a single word wider than its column is not split, it overflows (widen the column, or place a soft hyphen). Running text has one ink, `--ink`: paragraphs, list items and table cells all print it.
+
+Lists hang their `»` (or numeral) in the left padding, 1.1em (1.6em for numbers, one more hang per nesting level), so wrapped lines align under the first word; items sit one small step apart whether the list is tight or loose, and a list adds no space above itself.
+
 ## Heading hierarchy
 
 Each level rendered at its print size:

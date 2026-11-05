@@ -521,10 +521,13 @@
   padding-bottom: 0.1in;
   margin-bottom: var(--space-md);
 }
-/* a numbered list in the sheet keeps its numbers inside the sheet's padding
-   (a bulleted one starts at the text edge: its marker is in the line) */
+/* a list in the sheet hangs its marker INSIDE the sheet's padding: the sheet's
+   own padding plus the list's hang (1.1em for the », 1.6em for a numeral) */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  padding-left: calc(var(--dc-page-sheet-pad) + 1.1em);
+}
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  padding-left: calc(var(--dc-page-sheet-pad) + 0.25in);
+  padding-left: calc(var(--dc-page-sheet-pad) + 1.6em);
 }
 
 /* ONE GAP under a free-standing heading, whatever follows it: a panel, a

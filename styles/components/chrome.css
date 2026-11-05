@@ -146,19 +146,49 @@ h1.dc-chevron {
 
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
-/* The chain flows inline, not as flex items: each arrow is joined to the chip
-   AFTER it by a word joiner (plugin.js), so a wrap may fall before an arrow and
-   never between an arrow and its chip. A line never ends on a »; the arrow
-   leads the next line with its chip. */
+/* The chain flows inline. Each » is bound to the chip BEFORE it: it is drawn as
+   that chip's ::after, in a margin the chip reserves, so a wrap falls only
+   between a chip-and-its-» and the next chip. A row may end on a », never start
+   with one; the last chip has none. The plugin's own <span class="dc-arrow">
+   stays in the DOM (text, outline) but is not drawn, and `line-break: anywhere`
+   on the strip lets a wrap fall at the word joiner the plugin puts after it
+   (the chips reset it, so a chip's own words never break). */
 .dc-stickers {
   display: block;
   margin: 4px 0 22px;
+  line-break: anywhere;
 }
 
-.dc-stickers > :is(.dc-sticker, .dc-arrow) {
+.dc-stickers > .dc-arrow {
+  display: none;
+}
+
+.dc-stickers > .dc-sticker {
   display: inline-block;
   vertical-align: middle;
+  position: relative;
+  white-space: nowrap;
+  line-break: auto;
   margin: 0 6px 8px 0;
+}
+
+.dc-stickers > .dc-sticker:has(+ .dc-arrow) {
+  margin-right: 1.6em;
+}
+
+.dc-stickers > .dc-sticker:has(+ .dc-arrow)::after {
+  content: "»";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 1.6em;
+  text-align: center;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: max(0.875em, var(--fs-floor));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--dc-arrow-color);
 }
 
 .dc-sticker {
@@ -341,10 +371,24 @@ h1.dc-chevron {
 }
 
 /* ── Rule divider (hr) ─────────────────────────────────────────── */
+/* A `---` is a pause between topics: one opaque 1pt ink hairline. In a skill
+   card it is the seam between sub-abilities (cards.css: 1.5pt, the specialty's
+   mid). It takes break-after: avoid so it never ends a page's content area.
+   It is NOT drawn when it is the first or last child of its container (which
+   also covers a fragment edge only when that edge is also a DOM edge), when the
+   block after it is a heading, a table or a component (those carry their own
+   edge). A rule that is a direct child of a wall page or chapter (the bare
+   wall, outside any sheet or card) is hidden by page-templates.css, which owns
+   page selectors. */
 hr {
   border: none;
-  border-top: 1.5px solid color-mix(in srgb, var(--hud-magenta) 50%, transparent);
-  margin: var(--space-lg) 0;
+  border-top: 1pt solid var(--dc-rule);
+  margin: var(--space-md) 0;
+  break-after: avoid;
+}
+hr:is(:first-child, :last-child),
+hr:has(+ :is(h1, h2, h3, h4, h5, h6, table, [class*="dc-"])) {
+  display: none;
 }
 
 

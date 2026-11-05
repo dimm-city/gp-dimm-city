@@ -44,6 +44,10 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
   line-height: var(--lh-normal);
+  /* One ink for running text: paragraphs, list items and table cells all
+     print --ink. Without this, anything not a <p> printed the UA's pure
+     black. Reversed type sets its own colour. */
+  color: var(--ink);
   /* Subtle tightening reads as "industrial print" against the slack default. */
   letter-spacing: 0.005em;
   text-wrap: pretty;
@@ -74,6 +78,12 @@ body {
    `hyphens: auto` (inherited from body) hyphenates where the engine has a
    dictionary, but uppercase display words are not reliably hyphenated, so
    the guaranteed break does not depend on it. */
+/* SUPERSEDED: a heading breaks only BETWEEN words (CYBERNETIC / S was a
+   mid-word break in a narrow column). `overflow-wrap: normal` and
+   `hyphens: manual` mean a single word wider than its column is not split:
+   it overflows its box on the trailing side instead, so an author gives it
+   room (a wider column) or a soft hyphen (&shy;) at a place of their
+   choosing, which `hyphens: manual` still honours. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
@@ -90,7 +100,8 @@ h1, h2, h3, h4, h5, h6,
   /* The base colour, --ink: every heading is 24pt or under, so a dark one has
      to print in black alone (the k-only pass); h1-h3 set their own colours. */
   color: var(--ink);
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  hyphens: manual;
 }
 
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
@@ -190,27 +201,45 @@ blockquote {
 }
 
 /* ── GLOBAL LIST STYLES ───────────────────────────────────────────────────── */
-/* A bulleted list starts at the text edge: its » marker is the indent. A list
-   inside an item steps in by about the marker's width; a numbered list keeps
-   room for its numbers. */
-ul { padding-left: 0; }
-ol { padding-left: 0.25in; }
-li > :is(ul, ol) { padding-left: 0.16in; }
-ul li { list-style: none; margin-bottom: 0.06in; }
-/* markdown-it wraps a loose item's text in <p>, and an inline ::before on the
-   <li> would sit alone on its own line above that block. A loose item draws
-   the bullet on its first paragraph instead, so it stays on the first line. */
-ul li:has(> p:first-child)::before { content: none; }
-ul li::before,
-ul li > p:first-child::before {
-  content: "» ";
-  /* --orange (#d4500a) on wall = 2.46:1 (fail). --rust (#b23a12) = 3.48:1
-     (measured — also fail). --blood (#901a12) = 5.21:1 on wall, passes
-     AA small text. Bullet markers appear in every list including those
-     outside paper substrates, so they MUST read on the wall background. */
-  color: var(--blood);
+/* A list is a tight column: the » (or the number) hangs in the list's own
+   left padding, so a wrapped line aligns under the first word. Every measure
+   is in em, so the hang scales with the 10pt intros, callouts and cards.
+   A list adds no space above (after a heading the gap is the heading's; after
+   a paragraph the paragraph's own bottom margin is --space-sm); it adds
+   --space-sm below. An item's own <p> (a loose item) has no margin, so tight
+   and loose lists share one pitch: --space-xs between items. Each nesting
+   level adds one more hang. */
+/* Zero specificity throughout (:where), so any component's own list rule wins
+   without a fight. The two lists that draw their own look (`@procedure`'s
+   .dc-steps and the contents page's .dc-toc ol) are left out: they have their
+   own marker, padding and row spacing. */
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) { margin: 0 0 var(--space-sm); }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.1em; }
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.6em; list-style: none; }
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li { position: relative; margin: 0 0 var(--space-xs); }
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li:last-child { margin-bottom: 0; }
+li > p { margin: 0; }
+li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li { list-style: none; }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li::before {
+  content: "\00bb";
+  position: absolute;
+  left: -1.1em;
+  /* The marker is the component's own ink (--dc-accent-ink is declared on
+     every surface; a callout overrides it below). */
+  color: var(--dc-accent-ink, var(--ink));
   font-weight: 700;
-  padding-right: 0.1em;
+}
+/* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
+   list-item honours start= and reversed, and nests per list. */
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) > li::before {
+  content: counter(list-item) ".";
+  position: absolute;
+  left: -1.6em;
+  width: 1.2em;
+  text-align: right;
+  color: var(--dc-accent-ink, var(--ink));
+  font-weight: 700;
 }
 
 /* ── TABLES — universal default look, no class required ─────────────────────

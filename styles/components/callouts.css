@@ -165,23 +165,14 @@
   color: inherit;
 }
 
-:is(.dc-alert, .gp-alert) :is(ul, ol) {
-  margin: 6pt 0 0;
-}
-
-:is(.dc-alert, .gp-alert) li {
-  margin-bottom: 0.04in;
-}
-
-:is(.dc-alert, .gp-alert) li::before,
-:is(.dc-alert, .gp-alert) li > p:first-child::before {
+:is(.dc-alert, .gp-alert) ul li::before,
+:is(.dc-alert, .gp-alert) ol li::before {
   color: var(--dc-alert-border);
 }
-/* Cyan is a rail colour: on white a marker in it would not read. */
-:is(.dc-dm-note, .dc-example-callout) li::before,
-:is(.dc-dm-note, .dc-example-callout) li > p:first-child::before {
-  color: var(--dc-accent-ink);
-}
+/* The marker of a dm-note or example callout is the callout's own ink
+   (--dc-accent-ink, the base rule); cyan is a rail colour and would not read
+   on white. The list's spacing is the global list spacing: em-based, so it
+   scales with the callout's type size. */
 
 /* ── Label chrome ───────────────────────────────────────────────────────── */
 .dc-alert-label,

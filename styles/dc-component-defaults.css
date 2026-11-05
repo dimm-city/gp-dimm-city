@@ -7,6 +7,7 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
+  --dc-rule:           var(--ink);          /* the `---` hairline; a skill card sets it to the specialty mid */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
 
