@@ -138,6 +138,15 @@ blank pages at the end where there were four.
   showed a plain heading. They match the first `h2` now, and the gap under the
   band equals the gap under the sub-headings. Each opener is a little shorter;
   Wirephreak's fits on one page again.
+- **The same anchor no longer defeats three more rules.** The anchor is also
+  the first child of a page, chapter or spread that Gutterpress measures (a
+  forced side break, a running head, pinned art). A `choose` form that opens
+  such a page or chapter kept its stamp clipped at the top margin (and, after
+  a blank page, spilled onto it), a heading that opens one kept its top
+  margin, and a rule first in a specialty intro printed. They skip the anchor
+  now (`:is(:first-child, :where(gp-anchor:first-child) + *)`); the preview
+  is unchanged. A test flags a bare `:first-child` on a direct child of a
+  page, chapter, spread or intro.
 - **Callouts and skill cards are bolted, not taped.** Tape that said "held to
   the wall" is replaced by the `##` slip's bolt. Every callout (note, tip,
   important, warning, caution, Dream Master note, vibe, origin, location,

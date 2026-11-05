@@ -480,6 +480,36 @@ describe("a location adjusts components by tokens only", () => {
   });
 });
 
+describe("a rule on a host's first child survives the print anchor", () => {
+  // At print time the engine inserts `<gp-anchor id="gp-m-N" style="display:inline">` as the FIRST CHILD of
+  // a page, spread, chapter or specialty intro (a forced side break, a running-head string, a pin root), so a
+  // bare `:first-child` / `:nth-child(` on a direct child of one matches in the preview and not in the PDF.
+  // Skip the anchor: `:is(:first-child, :where(gp-anchor:first-child) + *)` (same specificity).
+  const HOST = /(\.page|\.chapter|\.spread|\.dc-specialty-intro)(?![\w-])/;
+  const stripGroups = (x) => {
+    let prev;
+    do { prev = x; x = x.replace(/\([^()]*\)/g, ""); } while (x !== prev);
+    return x;
+  };
+  test("no direct child of a page, chapter or intro is matched by a bare :first-child", () => {
+    const bad = [];
+    for (const rel of ["styles/page-templates.css", "styles/page-rules.css", "styles/dc-native.css", ...readdirSync(path.join(ROOT, "styles/components")).map((f) => `styles/components/${f}`)]) {
+      postcss.parse(read(rel)).walkRules((rule) => {
+        for (const selector of rule.selectors) {
+          const m = HOST.exec(selector);
+          if (!m || selector.includes("gp-anchor")) continue;
+          const tail = selector.slice(m.index + m[0].length);
+          const at = stripGroups(tail).indexOf(">");
+          if (at < 0) continue;
+          const child = stripGroups(tail).slice(at + 1).split(/[>+~\s]/).find(Boolean) ?? "";
+          if (/:(first-child|nth-child|only-child)\b/.test(child) || /^:(first-child|nth-child|only-child)/.test(child)) bad.push(`${rel}: ${selector.trim().slice(0, 110)}`);
+        }
+      });
+    }
+    expect(bad, "use :is(:first-child, :where(gp-anchor:first-child) + *)").toEqual([]);
+  });
+});
+
 describe("snippets", () => {
   test("every snippet renders through the plugin without a layout warning", () => {
     const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
