@@ -24,9 +24,19 @@ profile and separate through their default CMYK profile), Python 3 and Pillow
 Profile: --icc PATH, else $CRPC1_ICC, else the CGATS21_CRPC1*.icc the
 installed gutterpress ships in node_modules/gutterpress/dist/.
 
+--check (what CI runs) measures the palette and compares every figure written
+down with it: the `TAC nnn% (Cx My Yz Kw)` in each hex token's comment in the
+two stylesheets (an alias has none and is skipped; a hex token without one
+fails), the `| `--token` | `#hex` | Cx My Yz Kw = nnn% |` rows of
+docs/constitution.md, the `c/m/y/k<br>nnn%` swatches of
+design-guide/03-palette.md, and each fenced block of
+docs/print-colour-audit-measurements.md against a fresh run of its mode. It
+exits non-zero and names each mismatch. --write regenerates those blocks.
+
 Usage: python3 scripts/measure-palette-crpc1.py [--icc PATH] [tokens|mixes|contrast|dupes|converge|all]
+       python3 scripts/measure-palette-crpc1.py [--icc PATH] --check | --write
 """
-import glob, math, os, re, subprocess, sys, tempfile
+import contextlib, glob, io, itertools, math, os, re, subprocess, sys, tempfile
 from PIL import Image, ImageCms
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -227,7 +237,53 @@ def report_converge():
                 if d1 < 10: print(f"  {a:22} {b:22} {d0:5.1f} -> {d1:5.1f}  (printed {tohex(printed(tok(a)))} vs {tohex(printed(tok(b)))})")
 
 MODES = {'tokens': report_tokens, 'mixes': report_mixes, 'contrast': report_contrast, 'dupes': report_dupes, 'converge': report_converge}
+
+DOC = 'docs/print-colour-audit-measurements.md'  # one fenced block per mode, under `## <mode>`
+def output(mode):
+    with contextlib.redirect_stdout(io.StringIO()) as out: MODES[mode]()
+    return out.getvalue().strip('\n')
+def check():
+    """--check: every figure written down, against a fresh measurement."""
+    bad, n = [], 0
+    def fig(c, m, y, k, tac=None): return f'TAC {c + m + y + k if tac is None else tac}% (C{c} M{m} Y{y} K{k})'
+    def ints(m, *groups): return [int(m.group(g)) for g in groups]
+    def compare(where, name, hx, written):  # written: [c, m, y, k, tac], or None for a hex token with no figure
+        nonlocal n; n += 1
+        rgb = tok(name)
+        if rgb is None: bad.append(f'{name}: {where} is not a palette token')
+        elif hx and hex2rgb(hx) != rgb: bad.append(f'{name}: {where} says {hx.lower()}, the stylesheet has {tohex(rgb)}')
+        elif written is None: bad.append(f'{name}: {where} has no CMYK figure, build gives {fig(*pct(rgb))}')
+        elif written[:4] != pct(rgb) or written[4] != sum(pct(rgb)): bad.append(f'{name}: {where} says {fig(*written)}, build gives {fig(*pct(rgb))}')
+    for f in ('styles/dc-palette.css', 'styles/dc-identity.css'):
+        for ln, line in enumerate(open(os.path.join(ROOT, f)), 1):
+            if m := re.match(r'\s*(--[a-z0-9-]+):\s*#[0-9a-fA-F]{3,6}\s*;(.*)', line):
+                w = re.search(r'TAC (\d+)% \(C(\d+) M(\d+) Y(\d+) K(\d+)\)', m.group(2))
+                compare(f'comment ({f}:{ln})', m.group(1), None, ints(w, 2, 3, 4, 5, 1) if w else None)
+    for ln, line in enumerate(open(os.path.join(ROOT, 'docs/constitution.md')), 1):
+        if m := re.match(r'\| `(--[a-z0-9-]+)` \| `(#[0-9a-fA-F]{3,6})` \| C(\d+) M(\d+) Y(\d+) K(\d+) = (\d+)% \|', line):
+            compare(f'docs/constitution.md:{ln}', m.group(1), m.group(2), ints(m, 3, 4, 5, 6, 7))
+    for ln, line in enumerate(open(os.path.join(ROOT, 'design-guide/03-palette.md')), 1):
+        for m in re.finditer(r'<code>(#[0-9a-fA-F]{3,6})</code><code>(--[a-z0-9-]+)</code><code>(\d+)/(\d+)/(\d+)/(\d+)<br>(\d+)%</code>', line):
+            compare(f'design-guide/03-palette.md:{ln}', m.group(2), m.group(1), ints(m, 3, 4, 5, 6, 7))
+    blocks = dict(re.findall(r'^## (\w+)\n\n```\n(.*?)\n```', open(os.path.join(ROOT, DOC)).read(), re.S | re.M))
+    for mode in MODES:
+        if mode not in blocks: bad.append(f'{DOC} has no "## {mode}" block'); continue
+        for i, (a, b) in enumerate(itertools.zip_longest(blocks[mode].splitlines(), output(mode).splitlines(), fillvalue='<end>'), 1):
+            if a != b: bad.append(f'{DOC} ## {mode}: line {i} says "{a}", build gives "{b}"'); break
+    for line in bad: print(line, file=sys.stderr)
+    if bad: return f"{len(bad)} figure(s) are not the build's: write the build's in their place (--write for {DOC})"
+    print(f"check: {n} written figures and the {len(MODES)} blocks of {DOC} are the build's")
+def write_doc():
+    """--write: the measurements doc's fenced blocks, from a fresh run; its prose is left alone."""
+    path = os.path.join(ROOT, DOC); text = open(path).read()
+    for mode in MODES:
+        text, done = re.subn(rf'(^## {mode}\n\n```\n).*?(\n```)', lambda m: m.group(1) + output(mode) + m.group(2), text, count=1, flags=re.S | re.M)
+        if not done: sys.exit(f'{DOC} has no "## {mode}" block')
+    open(path, 'w').write(text); print('wrote', DOC)
+
 print('profile:', ImageCms.getProfileDescription(cmyk).strip(), '· Ghostscript', gs_version)
+if args[:1] == ['--check']: sys.exit(check())
+if args[:1] == ['--write']: sys.exit(write_doc())
 for m in (MODES if args[:1] == ['all'] else args[:1] or ['tokens']):
     if len(MODES) > 1 and args[:1] == ['all']: print(f'\n## {m}')
     MODES[m]()
