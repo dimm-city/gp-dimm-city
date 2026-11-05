@@ -92,6 +92,78 @@ token name still works.
   240%, enforced by the CGATS21_CRPC1 profile"; no token exceeds 211%. The
   SWOP/GRACoL target is gone. Constitution §V says how the figures are
   measured.
+- **The ground prints at 300 DPI.** `images/ground.png`, the 10in × 0.6in strip
+  of pavement at the foot of every page, is 3000 × 182 px (was 2400 × 144,
+  240 DPI): `scripts/wall-tiles.py --ground` draws it at `GROUND_DPI` with the
+  same geometry (a copy scaled back to the old size differs by 3/255 on
+  average), for the 58 CSS px (0.604in) Chromium paints a 0.6in background
+  at, so on a page the PDF keeps as vector its rows measure 301 DPI, not 298.
+  The six stone-wall tiles stay at about 240 DPI: their sheet
+  (1024 × 1536, about 512px a panel) holds about 110 DPI of real detail, so
+  no upsampling would sharpen them, and no Gutterpress check sees a CSS
+  background. They are accepted as texture; the constitution's production
+  rules, the script's header and the `dc-native.css` wall comment now say
+  so, and that a sharper wall needs a source sheet of at least 2048 × 3072.
+- **The design guide's placeholder art prints at 300 DPI.** `scripts/make-placeholders.mjs`
+  drew 300 × 340 cards, 600 × 800 portraits and a 640 × 360 banner, which the
+  guide prints at 3.92in (77 DPI) and 8.63in (70-74 DPI); the PDF/X build
+  warned on 14 images and flagged four pages. The cards are now 1500 × 1700,
+  the portraits 2700 × 3600, the banner 6400 × 3600 (the art plate crops it
+  to cover the 11.25in sheet, so its height sets its resolution) and the three
+  stand-ins twice their size, each at least 300 DPI at the largest size the
+  guide prints it, as opaque palette PNGs of 12-113 KB (the flat shapes
+  compress; the folder grows from 4.07 MB to 4.61 MB). The hand-drawn `founder-house.png`
+  (952 px, 110 DPI across the sheet it is pinned to) is replaced by a
+  generated stand-in of the same aspect, as the Part 2 overview says the
+  guide's pictures are: the layout is the specimen, the art a proxy.
+  `scavenger.png` (1920 px) is at least 500 DPI everywhere the guide prints
+  it and stays. The build reports no image under the bar.
+- **Two docs describe the build as it is.** `docs/print-transparency-inventory.md`
+  now opens with the `preserve-text` model (translucent artwork rasterised at
+  300 DPI, text kept live), lists what is translucent today and what is
+  pre-composited, and verifies a book by the build's own report; the 1.7
+  pre-composite pass and its measurements are kept under a historical heading.
+  `docs/css-roadmap.md`'s accepted warnings are the three ellipsis notes
+  `validate --phase pre-build` reports today; the heading-order warnings are
+  off by configuration (alpha.2) and the `clip-path` warnings are gone with
+  Gutterpress's rule.
+- **The transparency decision is written down, in one voice.** Translucent
+  artwork (shadows, lifts, bevels, tape) is allowed by design; the accepted
+  cost is that a PDF/X page carrying any of it prints its artwork as one
+  300 DPI picture and the file grows, while `preserve-text` keeps the text
+  live; text colours stay opaque. The constitution's production rules, the
+  transparency inventory, the roadmap (item 19, the print-discipline and
+  Field Guide art notes), the placeholder generator's header and the wall,
+  slip, section and entry comments now say that and no longer ask a page to
+  stay vector. The generator's claim that an alpha channel flattens the
+  whole page was true of `flatten-page` only: under `preserve-text` the
+  image is composited with the page's artwork and the text is kept.
+- **A colour-space rule in constitution §V.** Chromium writes every colour
+  into the PDF as sRGB `DeviceRGB` clipped to the sRGB gamut (`oklch(62% 0.30
+  340)` comes out `.927 0 .739`, `color(display-p3 1 0 0)` comes out `1 0 0`),
+  so tokens are authored as sRGB hex and chosen by their CRPC1 round trip,
+  `oklch` is an interpolation space for mixing only, neutrals stay exactly
+  neutral for the K-only rewrite, the saturated sRGB corners are avoided, and
+  `color()` / `oklch()` are not used to author a colour.
+- **The print qualification is re-run on this release.**
+  `docs/print-qualification.md` now records the 176-page guide built with
+  Gutterpress 0.11.24-alpha.1 and Ghostscript 10.05.0 (which honours the
+  CRPC1 profile; the 1.8.0 run's 10.02.1 did not): 78 pages split with live
+  text and 98 vector, no fallback, 23 embedded CID TrueType subsets and no
+  Type 3, OutputIntent CGATS21-2-CRPC1, no dark four-colour text at 24pt or
+  under, the heaviest page at 221.6% TAC, and no image under 300 DPI. The
+  four comparison crops are retaken from this build, since the paper, the
+  hairlines and the gloss changed in 1.10.2.
+
+### Deprecated
+
+- **Six tokens no package rule reads** are candidates for removal in 1.11:
+  `--ink-mid`, `--deep-rust`, `--surface-tint-3`, `--font-sans`, `--fw-bold` and
+  `--callout-border-width-small` (`styles/dc-palette.css`). They stay public
+  and keep their values through 1.10; their comments and the palette
+  reference now say that nothing in the package reads them (the design
+  guide's own sheet reads `--deep-rust`, `--surface-tint-3` and `--font-sans`).
+  `--tint-hud-teal` is an alias of `--hud-blue` and stays one.
 
 ### Fixed
 

@@ -388,7 +388,9 @@
    (0.3in at its cut end) clears its diagonal; the slips are plain boxes, so no
    glyph, rule or marker is cut. The tape hangs below the slip, never past a
    page edge (a box past the content box makes the engine shrink the whole
-   document). Opaque, vector, no gradients. */
+   document). No gradients; the slips' shadows are opaque and the tape is
+   the one translucent layer, which a PDF/X build rasterises with the page's
+   artwork, text kept live. */
 
 /* THE GUARD. Every rule below is scoped to a direct child of a wall page or a
    chapter, written once as `:where(...)` (zero specificity, so a rule that
@@ -701,7 +703,7 @@
      - Section gets a clean paper-cream substrate with the same 4px
        magenta left rail as the lede; rail runs continuously through
        both.
-     - Vector shadows, per element: the lede and section each carry
+     - Box-shadows, per element: the lede and section each carry
        --shadow-poster; the clipped chevron carries none. (One
        `filter: drop-shadow()` on the .page wrapper would print as a
        bitmap: no live text, and a soft mask PDF/X-1a forbids.)

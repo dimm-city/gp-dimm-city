@@ -1,34 +1,70 @@
 # Print transparency inventory
 
-> **Update (Gutterpress #385).** Gutterpress's `pdfx.transparency:
-> preserve-text` flattens a page's artwork and keeps its text live, so the
-> poster shadow (`--shadow-ink`), the sticker and path-chip shadows, the rule
-> divider, the spray smudge, the pull-quote accent and the AP-chip and
-> outcome-key bevels are translucent again (see CHANGELOG, Unreleased).
-> Text colours stay pre-mixed: a translucent glyph prints opaque on a split
-> page. The wall tile stays opaque and `--wall-tone` is gone. 1.8.0 adds
-> more translucent artwork on top: soft lifts (`--shadow-lift`, the section's
-> `--dc-section-lift`), soft insets (`--shadow-press`), a translucent section
-> hard shadow and tape. (The band and tab gloss, `--light-gloss`, was translucent too until
-> 1.10.2: a gradient with transparent stops also writes a type-1 shading PDF.js cannot read,
-> so each component now pre-mixes it into its opaque fill.) No `filter` sits on an element
-> that holds text (a convention test enforces it). The table records the
-> opaque values from the 1.7 series; some of those components have since been
-> redesigned.
+What in this package is translucent, what is pre-composited, and how a PDF/X build treats each. The historical record of the 1.7 pre-composite pass (every translucent value it replaced, and the measurements) is kept at the end.
 
-**Why this exists.** PDF/X-1a, the format DriveThruRPG accepts for print, has no transparency. Ghostscript flattens any page that uses it into a single raster image. That page loses its live text and embedded fonts, and gutterpress's `pdfx.blackText: k-only` rewrite (black text on the black plate only) can't reach its text. This package used transparency in 26 places: an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`. On the Field Guide, **185 of 232 pages** came out image-only.
+**The decision.** Translucent artwork is allowed by design: the shadows, lifts, bevels and tape that make a component sit on the wall are translucent, so the brick darkens under them. The cost is accepted: in a PDF/X build every page that carries any of it prints its artwork (rules, fills and shapes included) as one 300 DPI picture, and the file grows with it (the design guide's PDF/X is 75.5 MB against 11.4 MB plain). `pdfx.transparency: preserve-text` keeps the text of those pages live, so fonts, search and the K-only black rewrite are unaffected. What stays opaque is text: a translucent glyph cannot be kept live and flattens its page whole. Nothing here asks a page to stay vector.
 
-Every one of those uses is now opaque. Each colour is **pre-composited** with `color-mix()`: it is the colour the transparency produced on the surface it sits on. The brick wall is an opaque tile baked the same way. This document lists every change, so the books can be checked visually against it.
+## The model today: `pdfx.transparency: preserve-text`
 
-Tests enforce what still matters: `test/conventions.test.js` → *keep text opaque (PDF/X-1a)* fails on a translucent text colour or `opacity` below 1, and *use no repeating gradient (PDF/X)* on any repeating gradient.
+PDF/X-1a, the format DriveThruRPG accepts, carries no transparency. Gutterpress's `pdfx.transparency: preserve-text` (0.11.23 and later; the design guide's manifest sets it, and a book that uses this package should) handles that page by page:
+
+- A page with no transparency stays vector.
+- A page with translucent **artwork** is split: its artwork is rasterised at 300 DPI (`pdfx.rasterDpi`) and its text is kept live on top, so the fonts stay embedded, `pdftotext` still reads it, and the `pdfx.blackText: k-only` rewrite still reaches its small text. On that page, rules, fills and shapes are raster, and text sits above every piece of artwork.
+- A page whose **text** is translucent (opacity, a blend mode, a soft mask, a translucent `text-shadow`, or a `filter` on an element that holds text) cannot keep its text live and is flattened whole; the build names the page and the cause.
+
+So translucency is allowed in artwork and forbidden in text. The package's styles follow that, and three tests enforce it (`test/conventions.test.js`): *keep text opaque (PDF/X-1a)*, *put a filter only on a ::before or ::after layer*, and *use no repeating gradient (PDF/X)* (PDF/X drops repeating gradients). What preserve-text does and does not cover, measured on the design guide, is in [print-qualification.md](./print-qualification.md).
+
+## Translucent today
+
+All artwork: shadows, lifts, bevels, a smudge and the tape. Each darkens or tints what is under it, so the wall's texture reads through.
+
+| What | Where | Value |
+|---|---|---|
+| Poster shadow `--shadow-ink` | `dc-palette.css`; the hard offset in `--shadow-poster`: every lede, the contents and credits panels, specialty cards, stat grids | `color-mix(in srgb, var(--ink) 28%, transparent)` |
+| Soft lift `--shadow-soft` / `--shadow-lift` | `dc-palette.css`; under anything hung on the wall: sections (`--dc-section-lift`), cards, the outcome ladder, the specialty card | `color-mix(in srgb, var(--ink) 34%, transparent)` |
+| Recess `--shadow-press` | `dc-palette.css`; the soft inset of anything sunk into the wall: the fiction cavity, the `lore` / `dm` / `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
+| Section hard shadow `--dc-section-hard-shadow` | `dc-component-defaults.css`; the section's offset copy (`section.css`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
+| Tape | the `##` slip's tape over its foot (`page-templates.css`); the strip holding a skill card to the wall (`cards.css`) | 78% of `--dc-page-slip-tape` over transparent; 78% of the card's mark tint on paper-aged over transparent |
+| Sticker and path-chip shadows, the spray smudge, the dashed rule | `chrome.css` | 35% and 30% ink; 8% of `--dc-spray-bg`; 50% magenta |
+| Pull-quote accent `--dc-pullquote-accent-soft` | `dc-component-defaults.css` | 15% of `--tint-magenta-rose` |
+| AP-chip and outcome-key bevels | `cards.css`, `data.css` | 8–18% ink and paper |
+
+A book that sets one of these tokens to an opaque colour loses nothing in print; one that sets a text colour translucent flattens that page whole.
+
+## Pre-composited (opaque by design)
+
+| What | Why |
+|---|---|
+| Every text colour | A translucent glyph flattens its page whole (above). |
+| The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
+| The band and tab gloss | `--light-gloss`, a gradient with transparent stops, made Chromium write a type-1 shading PDF.js cannot read (1.10.2). The path banner, the card tab and the specialty card band pre-mix the same sheen into their opaque fills; the token stays for books that read it. |
+| The tape divider's crimson dashes (`.dc-tape::before/::after`) | An ordinary gradient with opaque stops, tiled by `background-size`: a `repeating-linear-gradient` cannot be kept live and flattens the page whole. |
+| The paper tints (callout, section, faction, choice and entry surfaces) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). |
 
 ## How to verify a book
 
-1. Build the book (`--format pdf`) before and after the change and compare the pages listed under *Where it changed* below. Each entry under *Changes* says what to look at.
-2. Expect shadows and tints to keep their colour. The difference is that a shadow on the brick wall is now a **flat tone** where it used to show the wall texture darkened. Check that it still reads as a shadow, not a grey band.
-3. Build `--format pdfx` and confirm pages keep live text: `pdftotext -f N -l N book.pdf -` prints the page's words. A page that prints nothing has been flattened.
+1. `gutterpress build <book> --format pdfx`. The build lists the pages it split ("Pages … use transparency … flattened to a 300 DPI picture with its text kept live on top"), any page it flattened whole and why ("text drawn with transparency or blending"), and any text-free page (an art plate) it flattened whole. A split page is expected on every page that shows a shadow; a whole-page fallback on a page with text is a bug in the book's styles.
+2. `pdffonts <book>-pdfx.pdf`: every font embedded, none Type 3 (a Type 3 font is a synthesised bold or a filtered subtree printed as a picture). The build's `pdf.print.embedded-fonts` check reports a font that is not embedded; silence means they all are.
+3. `pdftotext -f N -l N <book>-pdfx.pdf -` on a split page prints its words. Compare with the plain `--format pdf` build: the only expected differences are word joiners and line-end hyphens.
+4. Small text prints in black alone: the build's `pdf.print.black-text` check reports any page with dark four-colour text at 24pt or under; silence means none.
+5. `bun test`: the three convention tests above pass.
 
-## The wall
+## Remaining transparency: the books' own art
+
+The Field Guide (dc-op-manual) places cutout art with a real alpha channel (25 of its 30 images; its own stylesheets use no transparency). With `preserve-text` that costs nothing: the art is rasterised with the page's other artwork at 300 DPI and the text stays live. Only a `flatten-page` build loses the page's text to it. A page that is nothing but art (a plate) is flattened whole in either mode, and loses nothing. The two fixes that used to be needed, flattening each image onto its background or exporting PDF/X-4, are no longer.
+
+## Checklist
+
+- [ ] PDF/X build: every page with text is either vector or split with live text; no page with text falls back to whole-page flattening.
+- [ ] `pdffonts`: all embedded, no Type 3.
+- [ ] `bun test`: *keep text opaque (PDF/X-1a)*, *put a filter only on a ::before or ::after layer* and *use no repeating gradient (PDF/X)* pass.
+- [ ] Design guide: Variant Gallery, chapter openers, ch.5 components: shadows darken the wall under them, text is sharp over them.
+
+## The 1.7 pre-composite pass (historical)
+
+Before Gutterpress had `preserve-text` (#385), Ghostscript flattened any page that used transparency into one raster image: the page lost its live text and embedded fonts, and the k-only rewrite could not reach it. This package used transparency in 26 places (an RGBA brick tile with a blend mode, semi-transparent shadows, tinted fills and `opacity`), and on the Field Guide **185 of 232 pages** came out image-only. The 1.7 series made every one opaque: each colour was pre-composited with `color-mix()` into the colour the transparency produced on the surface it sat on, and the brick wall became an opaque tile. Most of those values have since been reverted to translucent artwork (the table above), and some components have been redesigned since; this section records the pass as it was made, so the books can still be checked against it.
+
+### The wall
 
 | | Before | After |
 |---|---|---|
@@ -39,7 +75,7 @@ Tests enforce what still matters: `test/conventions.test.js` → *keep text opaq
 
 `--wall-tone: #c1beb8` is the opaque tile's average colour. Shadows that land on the wall mix against it.
 
-## Changes
+### Changes
 
 | ID | Component | Before | After | Mixed against | What to look at |
 |---|---|---|---|---|---|
@@ -65,15 +101,15 @@ Tests enforce what still matters: `test/conventions.test.js` → *keep text opaq
 
 **Removed outright:** the AP chip's soft `3px 3px 6px` shadow (K4). A blur fades to transparent by definition, so it has no opaque equivalent. The chip keeps its hard 2px shadow.
 
-## Not converted
+### Not converted
 
 Nothing. The one item left translucent at first, the unused `.dc-cover-page` composite (stacked translucent gradients with no opaque equivalent), was removed, and the transparency test now runs with no exemption.
 
-## Where it changed (measured)
+### Where it changed (measured)
 
 Each book was built before (last commit, `823b964`) and after, rendered at 50 dpi and compared pixel by pixel; a pixel counts as changed if any channel moves by more than 12/255. Page counts and layout are unchanged in both books: 132 and 232 pages. Every change is a colour change, and none is larger than 0.7% of a page's pixels.
 
-### Design guide: 49 of 132 pages changed
+#### Design guide: 49 of 132 pages changed
 
 Largest single-pixel changes first (`max` is the largest channel difference, in 0–255):
 
@@ -97,7 +133,7 @@ Largest single-pixel changes first (`max` is the largest channel difference, in 
 
 All changed pages: 2, 12, 18, 24, 25, 29, 33, 38, 50, 52, 53, 54, 55, 56, 57, 73, 74, 75, 76, 77, 78, 79, 80, 81, 88, 90, 91, 96, 97, 98, 100, 101, 104, 106, 110, 111, 112, 113, 115, 116, 117, 118, 119, 121, 122, 123, 125, 126, 128
 
-### Field Guide: 146 of 232 pages changed
+#### Field Guide: 146 of 232 pages changed
 
 Largest single-pixel changes first (`max` is the largest channel difference, in 0–255):
 
@@ -123,7 +159,7 @@ All changed pages: 1, 2, 3, 29, 36, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 
 
 Spot-checked by eye: the largest changes are AP chips (no soft blur), skill-card body shadows, sticker and tab bevels, and tape dashes. Before and after crops are visually the same. The tape dash colour measured identical: `(221, 61, 51)` in both.
 
-## PDF/X result
+### PDF/X result
 
 Field Guide, built with `--format pdfx --pdfx-flavor x1a` on gutterpress 0.11.15-alpha.1 (`dtrpg` preset):
 
@@ -135,29 +171,3 @@ Field Guide, built with `--format pdfx --pdfx-flavor x1a` on gutterpress 0.11.15
 | Pages with no text in any build | 14 (art pages and the 4 closing blanks) | 14 |
 
 The 8 pages still flattened carry the book's own alpha art, listed below. Every other text page keeps live, embedded fonts, so the k-only rewrite reaches its body text.
-
-## Remaining transparency: the books' own art
-
-These come from the book's own content, not this package. A page that places one of these images is still flattened in PDF/X-1a.
-
-Measured on the Field Guide (dc-op-manual): 25 of the 30 images its chapters place have a real alpha channel. Its own stylesheets use no transparency.
-
-| Image | Placed in |
-|---|---|
-| `images/chapter-02/augmerc.png`, `etherlock.png`, `gutterdruid.png`, `technosorcerer.png`, `wirephreak.png`, `scavenger.png`, `monkey-gunner.png` | chapter-02 specialty chapters, chapter-01 |
-| `images/cysu.png`, `etlock.png`, `gutdru.png`, `proxy.png`, `streetwarden.png`, `techsorc.png`, `wf.png` (specialty icons) | chapter-01, specialty chapters |
-| `images/blue-bot.png`, `image-everything.png`, `rabbit-walking.png`, `redpan.png` | chapter-01 |
-| `images/chapter-00/a-team-logo.png`, `creaturepunk.png`, `neonrabbit.png` | chapter-00 |
-| `images/chapter-03/Sluggernaughts.png` | chapter-03 |
-
-There are two fixes, and both belong to the book:
-
-- **Flatten each image onto its background.** The usual choice for cutout art that sits on a fixed place on the wall, but a cutout that moves with reflow will show a rectangle of wall that doesn't line up with the wall behind it.
-- **Export with PDF/X-4** (live transparency) if the printer accepts it. DriveThruRPG asks for X-1a or X-3.
-
-## Checklist
-
-- [ ] Design guide: Variant Gallery, chapter openers, ch.5 components: shadows read as shadows, tints unchanged.
-- [ ] Field Guide: a skill-tree spread (cards, AP chips, path stickers), a pull quote, a tape divider, the credits page.
-- [ ] `bun test`: *keep text opaque (PDF/X-1a)* and *use no repeating gradient (PDF/X)* pass.
-- [ ] PDF/X build: pages without alpha art keep live text (`pdftotext`).

@@ -65,7 +65,7 @@
   --ink:        #1e1d1c;  /* near-black with red bias — riso warm black; all small text · TAC 211% (C44 M38 Y37 K92) */
   --ink-dark:   #2f2622;  /* fills and rules, not small text (prints on four plates) · TAC 202% (C39 M38 Y38 K87) */
   --ink-smoke:  #4d4339;  /* sepia mid-tone — fills (fiction cavity, block accents) · TAC 175% (C32 M33 Y39 K71) */
-  --ink-mid:    #594f43;  /* between smoke and dust; no package rule reads it · TAC 166% (C32 M32 Y40 K62) */
+  --ink-mid:    #594f43;  /* between smoke and dust; public; no package rule reads it · TAC 166% (C32 M32 Y40 K62) */
   --ink-dust:   #665b4e;  /* the outcome row's fallback rail; no longer a text colour · TAC 156% (C31 M31 Y41 K53) */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
@@ -75,7 +75,7 @@
   --orange-deep: #a03808; /* burnt fire-deep — 6.9:1 on paper (deeper variant for small-text-on-fill contexts) · TAC 204% (C1 M76 Y88 K39) */
   --rust:       #b23a12;  /* burnt rebar edge · TAC 210% (C0 M80 Y100 K30) */
   --amber:      #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth · TAC 177% (C17 M33 Y75 K52) */
-  --deep-rust:  #70200e;  /* shadow rust — deepest warm dark · TAC 207% (C11 M73 Y58 K65) */
+  --deep-rust:  #70200e;  /* shadow rust — deepest warm dark; public; no package rule reads it · TAC 207% (C11 M73 Y58 K65) */
   --amber-dark: #5c3c10;  /* charred amber — follows amber down · TAC 193% (C21 M40 Y62 K70) */
 
   /* ── Brand Signature Layer — print-safe analogs of dimm.city web palette
@@ -102,13 +102,13 @@
   --hud-panel:       var(--concrete-pale);  /* alias: the default specialty-intro panel */
 
   /* ── Surface Tints ────────────────────────────────────────────────────── */
-  --surface-tint-3:      #f2f0ec;  /* design-guide only: its palette swatch reads it, no package rule does · TAC 13% (C4 M4 Y5 K0) */
+  --surface-tint-3:      #f2f0ec;  /* public; no package rule reads it (the design guide's palette swatch does) · TAC 13% (C4 M4 Y5 K0) */
   --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 52% (C13 M12 Y26 K1) */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
   --border-hairline: var(--ink);  /* the column and table rule: hairlines are >= 1pt in --ink or a one-ink tint (was tan #c8b898, three inks) */
   --bw-thin:         1px;
-  --callout-border-width-small: 2px;
+  --callout-border-width-small: 2px;  /* public; no package rule reads it */
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
@@ -123,7 +123,7 @@
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
   --font-tab:     'Tomorrow', 'lixdu', sans-serif;
   --font-body:    'Titillium Web', Georgia, sans-serif;
-  --font-sans:    'Titillium Web', 'Inter', system-ui, sans-serif;
+  --font-sans:    'Titillium Web', 'Inter', system-ui, sans-serif;  /* public; no package rule reads it (the design guide's own sheet does) */
   --font-mono:    'Tomorrow', 'Titillium Web', ui-monospace, monospace;
   --font-quote:   'Titillium Web', 'Tomorrow', serif;
 
@@ -144,7 +144,7 @@
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
   --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; 1.10× below h5 */
 
-  --fw-bold:     700;
+  --fw-bold:     700;  /* public; no package rule reads it */
 
   --lh-tight:  1.35;
   --lh-normal: 1.5;

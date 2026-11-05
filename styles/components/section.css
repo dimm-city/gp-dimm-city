@@ -463,8 +463,8 @@ h3 + .dc-section-panel {
 /* ── Recessed kinds: lore, dm, choose ─────────────────────────────────────────
    These sit sunk into the wall instead of hung on it: no drop-shadow layer, the
    wall's top edge casting a hard shadow down over the sheet's top (over its title
-   bar too; the left rail stays clear) and a light lip along its bottom and right. Vector and opaque box-
-   shadows. A panel's bottom padding hangs below its box as paint (the edge, see
+   bar too; the left rail stays clear) and a light lip along its bottom and right. Box-shadows: the
+   soft inset (--shadow-press) is translucent, the lip opaque. A panel's bottom padding hangs below its box as paint (the edge, see
    the panel chassis), so the bottom lip is the foot of that edge: the sheet's
    copy stops --dc-section-recess-foot short of it and the lip shows under it.
    `choose` paints its own surface (edge 0), so its lip is the inset one. */

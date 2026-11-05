@@ -344,8 +344,9 @@ in two files:
 /* page-rules.css — the base color */
 @page { background-color: var(--bg); }
 
-/* dc-native.css — the brick tile over it (opaque: PDF/X-1a has no
-   transparency, so the tile is pre-multiplied into --bg, no blend mode) */
+/* dc-native.css — the brick tile over it (opaque: a tile with alpha would
+   put every page through the PDF/X split, so it is pre-multiplied into --bg,
+   no blend mode) */
 @page {
   background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;

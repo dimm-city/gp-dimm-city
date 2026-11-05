@@ -212,7 +212,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--rust` | `#b23a12` | Burnt rebar edge |
 | `--amber` | `#7a5a20` | Sulfur-scorched brass |
 | `--amber-dark` | `#5c3c10` | Charred amber |
-| `--deep-rust` | `#70200e` | Shadow rust |
+| `--deep-rust` | `#70200e` | Shadow rust; public, no package rule reads it |
 
 ### Brand Cyber
 | Token | Value | Role |
