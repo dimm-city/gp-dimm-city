@@ -88,6 +88,19 @@ token name still works.
   background. They are accepted as texture; the constitution's production
   rules, the script's header and the `dc-native.css` wall comment now say
   so, and that a sharper wall needs a source sheet of at least 2048 × 3072.
+- **The design guide's placeholder art prints at 300 DPI.** `scripts/make-placeholders.mjs`
+  drew 300 × 340 cards, 600 × 800 portraits and a 640 × 360 banner, which the
+  guide prints at 3.92in (77 DPI) and 8.63in (70-74 DPI); the PDF/X build
+  warned on 14 images and flagged four pages. The cards are now 1500 × 1700,
+  the portraits 2700 × 3600, the banner 2880 × 1620 and the three stand-ins
+  twice their size, each at least 300 DPI at the largest size the guide
+  prints it, as opaque palette PNGs of 12-70 KB (the flat shapes compress; the
+  folder grows from 4.07 MB to 4.53 MB). The hand-drawn `founder-house.png`
+  (952 px, 110 DPI across the sheet it is pinned to) is replaced by a
+  generated stand-in of the same aspect, as the Part 2 overview says the
+  guide's pictures are: the layout is the specimen, the art a proxy.
+  `scavenger.png` (1920 px) is at least 500 DPI everywhere the guide prints
+  it and stays. The build reports no image under the bar.
 
 ### Fixed
 

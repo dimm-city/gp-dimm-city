@@ -3,15 +3,22 @@
 //
 //   node scripts/make-placeholders.mjs        (needs `convert`, ImageMagick 6 or 7's `magick`)
 //
-// One card (300x340) and one portrait (600x800) per specialty, a 640x360
-// banner for Augmerc, and three generic stand-ins (Lil Thump, Portrait,
-// Street Sign). Every file is OPAQUE: a flat dark ground in the specialty's own
-// `--<name>-dark`, its `--<name>-mid` silhouette and texture, an accent rule,
-// and the name in the bold display face. They exist so the guide builds offline
-// and so that its PDF/X output keeps live text: an image with an alpha channel
-// makes Ghostscript flatten the whole page into one bitmap (see README, "Art
-// must be opaque"). Colours are read from the stylesheets, so a retuned token
-// shows up the next time this runs. Flat shapes keep each file under ~30 KB.
+// One card (1500x1700) and one portrait (2700x3600) per specialty, a 2880x1620
+// banner for Augmerc, three generic stand-ins (Lil Thump and Portrait
+// 1200x800, Street Sign 1200x1600) and the Founders House plate (2720x1937,
+// the aspect of the hand-drawn 952px original, which was 110 DPI across the
+// sheet). Each is at least 300 DPI at the largest size the guide prints it: a
+// card at 3.92in (the catalog's full-width frame), the portrait, the banner
+// and the plate at the 8.63in sheet, Lil Thump at the fiction excerpt's 3in
+// default, Portrait at 2.25in, the sign at 1.75in. Every file is
+// OPAQUE: a flat dark ground in the specialty's own `--<name>-dark`, its
+// `--<name>-mid` silhouette and texture, an accent rule, and the name in the
+// bold display face. They exist so the guide builds offline and so that its
+// PDF/X output keeps live text: an image with an alpha channel makes
+// Ghostscript flatten the whole page into one bitmap (see README, "Art must be
+// opaque"). Colours are read from the stylesheets, so a retuned token shows up
+// the next time this runs. Flat shapes in a palette PNG keep each file small
+// (under ~150 KB at these sizes).
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -58,7 +65,7 @@ const SPECIALTIES = {
 // One image. `pattern` names the ground texture; the silhouette is a
 // head and shoulders in the mid tone with an accent rim.
 function draw({ file, w, h, name, dark, mid, accent, pattern }) {
-  const u = w / 300; // everything scales from the 300px card
+  const u = w / 300; // the drawing unit: the shapes were laid out on a 300px-wide card
   const tex = mix(dark, mid, 38);
   const plateH = Math.round(h * 0.17);
   const cx = w / 2;
@@ -136,8 +143,8 @@ function draw({ file, w, h, name, dark, mid, accent, pattern }) {
   const bin = process.env.IM_BIN || 'convert';
   execFileSync(bin, [
     '-size', `${w}x${h}`, `xc:${dark}`, ...cmds, ...label,
-    '-alpha', 'off', '-strip', '-define', 'png:color-type=2', '-define', 'png:compression-level=9',
-    `PNG24:${join(outDir, file)}`,
+    '-alpha', 'off', '-strip', '+dither', '-colors', '255', '-define', 'png:compression-level=9',
+    `PNG8:${join(outDir, file)}`,
   ]);
   console.log(`${file}  ${w}x${h}`);
 }
@@ -145,13 +152,14 @@ function draw({ file, w, h, name, dark, mid, accent, pattern }) {
 for (const [spec, pattern] of Object.entries(SPECIALTIES)) {
   const name = spec[0].toUpperCase() + spec.slice(1);
   const c = { dark: token(`--${spec}-dark`), mid: token(`--${spec}-mid`), accent: token(`--${spec}-accent`), pattern };
-  draw({ file: `specialty-${spec}-card.png`, w: 300, h: 340, name, ...c });
-  draw({ file: `specialty-${spec}-art.png`, w: 600, h: 800, name, ...c });
-  if (spec === 'augmerc') draw({ file: `specialty-${spec}-wide.png`, w: 640, h: 360, name, ...c });
+  draw({ file: `specialty-${spec}-card.png`, w: 1500, h: 1700, name, ...c });
+  draw({ file: `specialty-${spec}-art.png`, w: 2700, h: 3600, name, ...c });
+  if (spec === 'augmerc') draw({ file: `specialty-${spec}-wide.png`, w: 2880, h: 1620, name, ...c });
 }
 
 // Generic stand-ins for a character portrait, a vignette and a sign.
 const generic = { dark: token('--ink-smoke'), mid: token('--ink-dark'), accent: token('--brand-magenta-deep'), pattern: 'slash' };
-draw({ file: 'placeholder-lil-thump.png', w: 600, h: 400, name: 'Lil Thump', ...generic });
-draw({ file: 'placeholder-portrait.png', w: 600, h: 400, name: 'Portrait', ...generic });
-draw({ file: 'placeholder-street-sign.png', w: 600, h: 800, name: 'Street Sign', ...generic, pattern: 'hazard' });
+draw({ file: 'placeholder-lil-thump.png', w: 1200, h: 800, name: 'Lil Thump', ...generic });
+draw({ file: 'placeholder-portrait.png', w: 1200, h: 800, name: 'Portrait', ...generic });
+draw({ file: 'placeholder-street-sign.png', w: 1200, h: 1600, name: 'Street Sign', ...generic, pattern: 'hazard' });
+draw({ file: 'founder-house.png', w: 2720, h: 1937, name: 'Founders House', ...generic, pattern: 'arcs' });
