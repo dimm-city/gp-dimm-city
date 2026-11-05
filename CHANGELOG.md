@@ -132,6 +132,12 @@ blank pages at the end where there were four.
 - **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
   top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
   `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
+- **A specialty opener's title prints on its band again.** The band's rules
+  matched the title as the intro's first child, and in print Gutterpress puts
+  an inline anchor before it (the intro starts on a left page), so the PDF
+  showed a plain heading. They match the first `h2` now, and the gap under the
+  band equals the gap under the sub-headings. Each opener is a little shorter;
+  Wirephreak's fits on one page again.
 - **Callouts and skill cards are bolted, not taped.** Tape that said "held to
   the wall" is replaced by the `##` slip's bolt. Every callout (note, tip,
   important, warning, caution, Dream Master note, vibe, origin, location,
