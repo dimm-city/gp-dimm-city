@@ -9,7 +9,9 @@
 > page. The wall tile stays opaque and `--wall-tone` is gone. 1.8.0 adds
 > more translucent artwork on top: soft lifts (`--shadow-lift`, the section's
 > `--dc-section-lift`), soft insets (`--shadow-press`), a translucent section
-> hard shadow and tape, and the band and tab gloss (`--light-gloss`). No `filter` sits on an element
+> hard shadow and tape. (The band and tab gloss, `--light-gloss`, was translucent too until
+> 1.10.2: a gradient with transparent stops also writes a type-1 shading PDF.js cannot read,
+> so each component now pre-mixes it into its opaque fill.) No `filter` sits on an element
 > that holds text (a convention test enforces it). The table records the
 > opaque values from the 1.7 series; some of those components have since been
 > redesigned.

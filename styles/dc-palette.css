@@ -37,7 +37,12 @@
      into the wall (the fiction cavity, the lore/dm/choose sheets). */
   --shadow-press: color-mix(in srgb, var(--ink-dark) 42%, transparent);
   /* Light: a soft highlight across the top of a digital-display fill (a band,
-     a tab, a chip): the LED panel's sheen, layered over its colour. */
+     a tab, a chip): the LED panel's sheen, layered over its colour. Kept for
+     books that read it; the package's own bands and tabs no longer layer it.
+     A gradient with transparent stops makes the page transparent in a PDF/X
+     build and writes a type-1 (function) shading PDF.js cannot read, so each
+     component pre-mixes the same 30% / 62% sheen into its opaque fill instead
+     (cards.css .dc-card-tab, data.css .dc-path-shell, specialty.css). */
   --light-gloss: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, transparent), transparent 62%);
 
   /* ── Ink & Text — warm sepia drift, not neutral gray ───────────────────

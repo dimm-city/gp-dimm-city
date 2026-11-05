@@ -111,7 +111,10 @@
    redrawn here. */
 .dc-path-shell>h3.dc-spray:first-child {
   color: var(--dc-path-title-color);
-  background: var(--light-gloss), var(--dc-path-title-bg);
+  /* The band's gloss (--light-gloss), pre-composited onto its fill: opaque
+     stops make the PDF carry an axial shading, not a type-1 shading with
+     alpha, which PDF.js cannot read and which makes the page transparent. */
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, var(--dc-path-title-bg)), var(--dc-path-title-bg) 62%);
   clip-path: var(--dc-path-title-shape);
   /* the slanted rule (::after) overhangs the band by --dc-band-rule-bleed; the
      clip-path trims it on paper, this keeps it out of the page's scroll width
