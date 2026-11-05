@@ -94,11 +94,11 @@
    - `letter-spacing` leaves its tracking after the last glyph, so the
      inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.97in)
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.95in)
    is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
    TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
    print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
-   at the top of the band, `--chip-gap` (--space-md, 0.12in) below the text block, so its foot is at exactly 0.625in:
+   at the top of the band, `--chip-gap` (0.10in) below the text block, so its foot is at exactly 0.625in:
    on DriveThruRPG's 0.5in text minimum, where it always was. A sheet that fills
    the page therefore ends --space-md above the chip (its 3pt hard shadow reaches
    into that gap).
