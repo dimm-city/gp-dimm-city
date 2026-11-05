@@ -300,23 +300,23 @@
 */
 .dc-outcomes {
   margin: 8px 0;
-  border: 2px solid var(--dc-outcomes-border);
-  background: var(--dc-outcomes-surface);
   position: relative;
   break-inside: avoid;
-  /* A machined HUD plate: four even 45-degree chamfers (6px), and one tiny
-     chip out of the foot, the only grit. Text cells keep 12px padding. */
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 62% 100%, calc(62% - 3px) calc(100% - 3px), calc(62% - 7px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
   --dc-accent-ink: var(--dc-outcomes-border);
-  /* Inset hairline, 4px in from the frame: a 4px ring of the surface over a
-     5px ring of the hairline colour leaves a 1px line between them. It is a
-     shadow, not an absolutely positioned `::after` box: an absolutely
-     positioned box inside a multicol run stops Chromium balancing the run's
-     last fragment (it stretches to the full page height), which a
-     column run (`@columns 2`) ending in an `@outcome` showed. */
-  box-shadow:
-    inset 0 0 0 4px var(--dc-outcomes-surface),
-    inset 0 0 0 5px var(--dc-outcomes-inner-border);
+  /* The ladder draws nothing itself. Its frame, ground, hairline and cuts are
+     drawn by the parts that stay together, so a ladder that splits across a
+     page ends flush under its last tier (a framed box would stretch to the
+     page foot) and only its real head and real foot are cut:
+       .dc-outcomes-label     the head: the frame's top, with its two top chamfers (6px)
+       .dc-outcome-row        the ground, the frame's sides, the hairline's right side
+       .dc-outcome-row:last-child   the frame's foot, the bottom chamfers and the
+                              one tiny chip out of the foot, the only grit.
+     Unsplit, the parts add up to the box this used to be: a 2px frame, a 4px
+     ring of ground over a 5px ring of the hairline colour (1px line, 4px in),
+     four even 45-degree chamfers. The ring is a shadow, not an absolutely
+     positioned `::after` box: such a box inside a multicol run stops Chromium
+     balancing the run's last fragment, which an `@outcome` ending a column
+     run showed. */
 }
 
 .dc-outcomes-label {
@@ -330,7 +330,9 @@
   color: var(--dc-outcomes-label-color);
   background: var(--dc-outcomes-label-bg);
   padding: 6px 14px 5px;
+  border: 2px solid var(--dc-outcomes-border);
   border-bottom: 2pt solid var(--dc-outcomes-divider);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%, 0 6px);
   position: relative;
   z-index: 1;
 }
@@ -360,6 +362,11 @@
   grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
   border-bottom: 1pt solid var(--dc-outcomes-divider);
+  border-inline: 2px solid var(--dc-outcomes-border);
+  background: var(--dc-outcomes-surface);
+  box-shadow:
+    inset -4px 0 0 0 var(--dc-outcomes-surface),
+    inset -5px 0 0 0 var(--dc-outcomes-inner-border);
   position: relative;
   z-index: 1;
 }
@@ -378,10 +385,17 @@
   pointer-events: none;
 }
 
+/* The foot: the frame's bottom, the ring's bottom, the two bottom chamfers and the
+   chip, once, where the ladder really ends. */
 .dc-outcome-row:last-child {
-  border-bottom: 0;
+  border-bottom: 2px solid var(--dc-outcomes-border);
+  box-shadow:
+    inset -4px 0 0 0 var(--dc-outcomes-surface),
+    inset 0 -4px 0 0 var(--dc-outcomes-surface),
+    inset -5px 0 0 0 var(--dc-outcomes-inner-border),
+    inset 0 -5px 0 0 var(--dc-outcomes-inner-border);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 62% 100%, calc(62% - 3px) calc(100% - 3px), calc(62% - 7px) 100%, 6px 100%, 0 calc(100% - 6px));
 }
-
 .dc-outcome-key {
   /* Inner top-highlight + bottom-shadow simulates ink density — the chip reads
      as a "pressed-in" element rather than a flat color sticker. The 1px white

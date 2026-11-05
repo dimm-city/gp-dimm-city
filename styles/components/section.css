@@ -694,6 +694,14 @@ h3 + .dc-section-panel {
   width: var(--dc-choose-stamp-room);
   height: 11pt;
 }
+/* A form straight under another sheet, slip, panel or callout (or the top row
+   of a column run that is) has little wall above it, so its stamp hangs less far
+   over the edge and stays clear of the foot of what is above. A token only: the
+   form does not move or grow. */
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + .dc-section-choose,
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + :is(.gp-columns, [class*="gp-columns-"]) > .dc-section-choose:is(:first-child, .gp-column-break + *) {
+  --dc-choose-stamp-lift: calc(-50% + 6pt);
+}
 /* The stamp: out of the flow, across the form's top edge at the top right, half
    above the sheet, tilted. A heading's own ::after is the stamp (a section
    with no heading draws it on the section's ::after, below). */
@@ -1645,6 +1653,11 @@ h3 + .dc-section-panel {
    the paragraph above it, so it never opens a page alone. */
 .dc-kicker {
   break-before: avoid;
+}
+/* ...and the paragraph above it holds it: the pair moves together, taking at
+   least the last two lines (a long paragraph still splits inside). */
+p:has(+ .dc-kicker) {
+  break-after: avoid;
 }
 
 }

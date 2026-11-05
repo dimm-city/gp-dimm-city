@@ -964,7 +964,7 @@ components:
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
     emits:
       - div.section.dc-section-panel
-      - p.dc-kicker (a section's last paragraph when it is only a bold run: it never opens a page alone)
+      - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"

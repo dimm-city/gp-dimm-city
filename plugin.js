@@ -1105,7 +1105,7 @@ function dcLearningPaths(state) {
 }
 
 // A card's closing paragraph shorter than this (text characters) is a sign-off: it stays with the block above it.
-const SIGNOFF_MAX = 90;
+const SIGNOFF_MAX = 120; // one line at the card's measure
 
 /** The characters an inline token prints as plain text or code (markup and spans not counted). */
 function inlineTextLength(inline) {
@@ -1170,7 +1170,7 @@ function dcSkillCards(state) {
     let seenBlock = false;
     let compDepth = 0; // how many components (callout, columns) are open inside the card
     const endCard = (continuing = false) => {
-      if (inCard && tail && !tail.first && !continuing && tail.len < SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
+      if (inCard && tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
       if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
       inCard = false;
     };
@@ -1313,16 +1313,25 @@ function dcSkillCards(state) {
 }
 
 /**
- * A section or panel that ends in a paragraph that is only a bold run closes on
- * a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
+ * A section or panel that ends in a paragraph that is only a bold run, or has one
+ * right before a heading, closes on a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
  * so it never opens a page alone.
  */
 function dcKickers(state) {
   const t = state.tokens;
-  for (let i = 4; i < t.length; i++) {
-    if (t[i].type !== 'layout_section_close') continue;
-    if (t[i - 1].type === 'paragraph_close' && t[i - 3].type === 'paragraph_open' && t[i - 4].type !== 'layout_section_open' && isBoldOnlyInline(t[i - 2])) {
-      addTokenClass(t[i - 3], 'dc-kicker');
+  let depth = 0; // sections open around the token
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'layout_section_open') depth++;
+    if (t[i].type === 'layout_section_close') {
+      depth--;
+      if (i >= 4 && t[i - 1].type === 'paragraph_close' && t[i - 3].type === 'paragraph_open' && t[i - 4].type !== 'layout_section_open' && isBoldOnlyInline(t[i - 2])) {
+        addTokenClass(t[i - 3], 'dc-kicker');
+      }
+    }
+    // A bold-only paragraph right before a heading in the same section also closes
+    // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
+    if (depth > 0 && t[i].type === 'paragraph_open' && !t[i].hidden && t[i + 3]?.type === 'heading_open' && t[i + 2]?.type === 'paragraph_close' && isBoldOnlyInline(t[i + 1])) {
+      addTokenClass(t[i], 'dc-kicker');
     }
   }
 }

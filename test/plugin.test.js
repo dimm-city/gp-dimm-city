@@ -689,7 +689,7 @@ describe("declared specialty, learning path and skill", () => {
       const short = renderGp(doc("@skill", "", card("Close"), "", "Body text here.", "", "The leash is gone.")).html;
       expect(short).toContain('<p class="dc-card-signoff">The leash is gone.</p>');
       expect(count(short, /dc-card-signoff/g)).toBe(1);
-      const long = renderGp(doc("@skill", "", card("Close"), "", "Body.", "", "A closing paragraph that runs well past ninety characters of text so it is not a sign-off line at all, really.")).html;
+      const long = renderGp(doc("@skill", "", card("Close"), "", "Body.", "", "A closing paragraph that runs well past one hundred and twenty characters of text, so it is not a sign-off line at all, really, and never will be one.")).html;
       expect(long).not.toContain("dc-card-signoff");
       const notLast = renderGp(doc("@skill", "", card("Close"), "", "Short.", "", "- a", "- b")).html;
       expect(notLast).not.toContain("dc-card-signoff");
@@ -714,6 +714,19 @@ describe("declared specialty, learning path and skill", () => {
       expect(split).not.toContain('<p class="dc-card-signoff">Short bit.</p>');
       const first = renderGp(doc("@skill", "", "#### Bare", "", "Only paragraph.")).html;
       expect(first).not.toContain("dc-card-signoff");
+    });
+
+    test("a bold-only paragraph before a heading in a section is a kicker; before ordinary text it is not", () => {
+      const before = renderGp(doc("@section lore", "", "## Title", "", "Body.", "", "**Not a good time.**", "", "### Next", "", "More.", "@end-section")).html;
+      expect(before).toContain('<p class="dc-kicker"><strong>Not a good time.</strong></p>');
+      const runIn = renderGp(doc("@section lore", "", "## Title", "", "**Sub-heading**", "", "Text follows.", "@end-section")).html;
+      expect(runIn).not.toContain("dc-kicker");
+    });
+
+    test("a card's closing paragraph of up to 120 characters is a sign-off", () => {
+      const at = (n) => "x".repeat(n - 1) + ".";
+      expect(renderGp(doc("@skill", "", card("Close"), "", "Body.", "", at(120))).html).toContain("dc-card-signoff");
+      expect(renderGp(doc("@skill", "", card("Close"), "", "Body.", "", at(121))).html).not.toContain("dc-card-signoff");
     });
 
     test("a section's closing bold-only paragraph is its kicker", () => {

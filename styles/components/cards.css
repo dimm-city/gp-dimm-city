@@ -461,15 +461,21 @@
   break-after: avoid;
 }
 
-/* The outcome ladder and the roll plate may split too, between tiers only: a
-   ladder is 2 to 3.4in, and one that did not fit moved whole with its lead-in
-   and left that much empty card. The head row (or the plate's caption and
-   header) and tier 1 stay together, and so do the last two tiers, so a
-   five-tier ladder breaks only after tier 2 or tier 3. A plate repeats its
-   header row; a ladder's tiers name themselves. The ladder is one clipped,
-   framed box (data.css); how it looks split is checked in the rendered book. */
-.dc-skill-card :is(.dc-outcomes, .dc-roll-table) {
+/* The outcome ladder may split too, between tiers only: a ladder is 2 to 3.4in,
+   and one that did not fit moved whole with its lead-in and left that much
+   empty card. The head and tier 1 stay together, and so do the last two
+   tiers, so a five-tier ladder breaks only after tier 2 or tier 3. Its frame,
+   ground and cuts are drawn by the head and the rows (data.css), so a first
+   part ends flush under its last tier and the continuation starts straight. */
+.dc-skill-card .dc-outcomes {
   break-inside: auto;
+}
+/* The roll plate stays whole: it is one framed, clipped box (a die-faced plate
+   with two cuts) whose frame, ground and cuts cannot be moved onto its rows as
+   the ladder's were (data.css), so a split plate would repeat its top cut, show
+   an empty framed foot and lose its bottom cut. */
+.dc-skill-card .dc-roll-table {
+  break-inside: avoid;
 }
 .dc-skill-card .dc-outcome-row {
   break-inside: avoid;
@@ -550,10 +556,14 @@
 
 /* ── Ability row + ability text ───────────────────────────────────────── */
 .dc-ability {
-  display: flex;
-  gap: 12px;
+  /* Two columns: the chip's, and the text's. The text starts at one x in every
+     row: 4.77 chips (the free chip's width, the narrowest) and the 12px gap.
+     A chip wider than that (a range, "+1 AP") eats into its own gap, never
+     less than 4pt, and only then does its row's text move. */
+  display: grid;
+  grid-template-columns: minmax(calc(4.77 * var(--fs-floor) + 12px), auto) minmax(0, 1fr);
   margin-bottom: 6px;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .dc-ability:last-child {
@@ -647,6 +657,8 @@
 .dc-ability > .dc-ap {
   box-sizing: border-box;
   min-width: 4.77em;
+  margin-right: 4pt;
+  justify-self: start;
 }
 
 /* .dc-ap.free is in specialty-identity.css with the other cost variants. */

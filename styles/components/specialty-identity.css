@@ -492,4 +492,60 @@
   --dc-ap-fg: var(--paper-cream);
 }
 
+/* ── Card top marks ───────────────────────────────────────────────────────
+   Proxy's centre gate and Gutterdruid's cut corners are features of the card's
+   TOP edge. In the body shape (--dc-skill-body-shape) they were drawn again at
+   the top of every fragment of a card that split across a page, so the shape's
+   top edge is straight and the marks are drawn here, by the card's first
+   block (an element exists in the first fragment only), over the straight top:
+   an ink piece for the outline and the wall's own colour for the notch. They
+   are the shapes the polygon drew: the outline's cut sits 2px outside the
+   surface's, so an ink band 2px wide runs between them. The first block is not
+   positioned (a flavor line is, to carry nothing), so the marks sit against the
+   card's body. */
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child {
+  position: static;
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  z-index: 3;
+  pointer-events: none;
+}
+/* PROXY: a V gate, 36px wide and 6px deep, in the middle of the top edge. */
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after {
+  left: calc(50% - 18px);
+  width: 36px;
+  height: 8px;
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before {
+  background: var(--ink);
+  clip-path: polygon(0 0, 100% 0, 100% 2px, 50% 8px, 0 2px);
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after {
+  background: var(--bg);
+  clip-path: polygon(0 0, 100% 0, 50% 6px);
+}
+/* GUTTERDRUID: the top corners cut, 5px at the left and 6px at the right. */
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  left: -2px;
+  width: calc(100% + 4px);
+  height: 10px;
+}
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before {
+  background: var(--ink);
+  clip-path: polygon(0 0, 0 9px, 9px 0, calc(100% - 10px) 0, 100% 10px, 100% 0);
+}
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  background: var(--bg);
+  clip-path: polygon(0 0, 0 5px, 5px 0, calc(100% - 6px) 0, 100% 6px, 100% 0);
+}
+
 }

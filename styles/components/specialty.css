@@ -173,6 +173,12 @@
   margin-bottom: 0;
 }
 
+/* An epigraph straight under the title: the title's own bottom margin is the
+   gap, so the blockquote's top margin does not add to it. */
+.dc-specialty-intro > h2 + blockquote {
+  margin-top: 0;
+}
+
 /* ── Specialty section content (blockquote, h3 — component rules win for h2) ─── */
 .dc-specialty blockquote {
   margin: 0.12in 0;
