@@ -140,14 +140,14 @@ Result {.dg-result}
 
 | Type | Who it is for | Register | Looks like |
 |---|---|---|---|
-| `NOTE` | Players | A rules clarification | A white sheet with a heavy blue rail, a blue ring, a blue label chip and small, even machined chamfers |
-| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a white sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label |
-| `DM` | The Dream Master only | Guidance, hooks, adjudication | A file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the folder's tab; under it a white sheet in an ink ring, a cyan rail, one corner cut |
-| `VIBE` | Players | Atmosphere and narrative voice, full width | A white sheet with long shallow diagonal corners, framed in violet all round and along the diagonals, a strip of tape on top, italic, with a violet label chip |
-| `ORIGIN` | Players, in second person | Backstory addressed to the character | A white sheet with a torn bottom edge and a dog-eared corner, framed in rust along the tear and the fold, with a heavy rust rail and a worn crimson stamp label |
-| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: a white sheet with a torn bottom edge and a dog-eared corner, framed in teal along the tear and the fold, with a heavy teal rail and a worn deep-teal stamp label |
-| `VISIT` | Players | A location, present tense, before an encounter | A white signpost with a wobbly, organic outline, framed in fungi green along the wobble and the point, with a heavy green rail and a green map-pin label chip |
-| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail, a cyan ring and a taped-on label |
+| `NOTE` | Players | A rules clarification | A white sheet with a heavy blue rail, a blue ring, a blue label chip and small, even machined chamfers, a bolt head in each top corner |
+| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a white sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label, a bolt head in each top corner |
+| `DM` | The Dream Master only | Guidance, hooks, adjudication | A file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the folder's tab; under it a white sheet in an ink ring, a cyan rail, one corner cut, a bolt head in each top corner of the white body under the cyan rule |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A white sheet with long shallow diagonal corners, framed in violet all round and along the diagonals, a bolt head in each top corner, italic, with a violet label chip |
+| `ORIGIN` | Players, in second person | Backstory addressed to the character | A white sheet with a torn bottom edge and square corners, framed in rust along the tear, with a heavy rust rail, a bolt head in each top corner and a worn crimson stamp label |
+| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: a white sheet with a torn bottom edge and square corners, framed in teal along the tear, with a heavy teal rail, a bolt head in each top corner and a worn deep-teal stamp label |
+| `VISIT` | Players | A location, present tense, before an encounter | A white signpost with a wobbly, organic outline, framed in fungi green along the wobble and the point, with a heavy green rail, a bolt head in each top corner and a green map-pin label chip |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail, a cyan ring, a bolt head in each top corner and a taped-on label |
 
 Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is ink on white, italic except the example's, which is upright, and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 

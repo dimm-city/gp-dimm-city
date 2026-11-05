@@ -435,6 +435,8 @@
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
   --dc-skill-tab-shape:      polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left:   4px;  /* the card's bottom-left bolt: its distance from the left edge (a specialty sets its own beside its body shape) */
+  --dc-skill-foot-bolt-bottom: 4px;  /* ...and from the foot */
 
   /* .dc-specialty-card extra public API (shapes + title). Inside a
      .dc-specialty both shapes are the specialty's path-banner cuts. */
@@ -455,6 +457,11 @@
   --dc-tag-bg:               var(--paper-cream);
   --dc-tag-fg:               var(--ink);
   --dc-tag-border:           var(--ink);
+
+  /* Wall hardware: the bolt head that fixes a `##` slip, a vibe sheet and a skill card to the wall (chrome.css, "Bolt heads") */
+  --dc-bolt:                 var(--ink);          /* the bolt's ring, slot and shadow */
+  --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
+  --dc-bolt-size:            10px;                /* the bolt's diameter */
 
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
@@ -481,9 +488,9 @@
   --dc-page-slip-ink:        var(--ink);
   --dc-page-slip-edge:       var(--ink);
   --dc-page-slip-shadow:     var(--shadow-poster);
-  --dc-page-slip-bolt:       var(--ink);
-  --dc-page-slip-bolt-face:  var(--paper-stain);
-  --dc-page-slip-bolt-size:  10px;
+  --dc-page-slip-bolt:       var(--dc-bolt);
+  --dc-page-slip-bolt-face:  var(--dc-bolt-face);
+  --dc-page-slip-bolt-size:  var(--dc-bolt-size);
   --dc-page-slip-gap:        var(--space-xl);
   --dc-page-slip-foot:       6pt;
   --dc-page-sheet-pad:       0.18in;

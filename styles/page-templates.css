@@ -369,9 +369,9 @@
                         banner's diagonal tail (`--clip-banner`)
      ## heading         a paper SLIP pasted to the wall: cream, an accent rail
                         on the left, a heavy dashed ink foot (the stencil
-                        line), a hard shadow, a strip of masking tape over
-                        the foot
-     ### heading        a plain slip: the same, no tape, a thinner rail
+                        line), a hard shadow, a slotted bolt head in each
+                        top corner
+     ### heading        a plain slip: the same, no bolts, a thinner rail
      #### ##### ######  a label slip that shrinks to its words, ink frame
      loose text         a paper SHEET: one run of paragraphs, lists and
                         quotes is ONE sheet, cut off by whatever is not prose
@@ -386,11 +386,10 @@
 
    Safety. Nothing here is clipped except the title banner, whose own padding
    (0.3in at its cut end) clears its diagonal; the slips are plain boxes, so no
-   glyph, rule or marker is cut. The tape hangs below the slip, never past a
-   page edge (a box past the content box makes the engine shrink the whole
-   document). No gradients; the slips' shadows are opaque and the tape is
-   the one translucent layer, which a PDF/X build rasterises with the page's
-   artwork, text kept live. */
+   glyph, rule or marker is cut. The bolts sit inside the slip's own box, never
+   past a page edge (a box past the content box makes the engine shrink the
+   whole document). No gradient has a transparent stop; the slips' shadows and
+   bolts are opaque. */
 
 /* THE GUARD. Every rule below is scoped to a direct child of a wall page or a
    chapter, written once as `:where(...)` (zero specificity, so a rule that

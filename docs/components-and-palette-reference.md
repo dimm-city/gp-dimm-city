@@ -69,11 +69,11 @@ Use this to choose the right callout type before reaching for a class name.
    └── Dream Master only → dc-dm-note        (ink label bar in cyan, white sheet, ink ring, cyan rail)
    └── Player-facing → continue ↓
 
-2. What is it?
+2. What is it? (every callout is bolted: a bolt head in each top corner)
    └── A worked example              → dc-example-callout  (cyan rail and ring, taped-on label)
    └── Atmosphere / narrative voice  → dc-vibe-callout     (violet frame along its diagonals, violet chip, italic)
-   └── Backstory, in second person   → dc-origin-callout   (torn edge, dog-ear, rust frame and rail, worn crimson stamp)
-   └── A place, written up           → dc-location-callout (torn edge, dog-ear, teal frame and rail, worn teal stamp)
+   └── Backstory, in second person   → dc-origin-callout   (torn edge, rust frame and rail, worn crimson stamp)
+   └── A place, written up           → dc-location-callout (torn edge, teal frame and rail, worn teal stamp)
    └── A place, present tense        → dc-visit-callout    (wobbly signpost, fungi-green frame, rail and chip)
    └── Rules / mechanics             → continue ↓
 
@@ -344,7 +344,9 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-card-surface` | `--paper-cream` | Card body background |
 | `--dc-card-tab-bg` | `--ink-dark` | Tab strip background |
 | `--dc-card-tab-title-color` | `--paper-cream` | Tab title text |
-| `--dc-card-body-mark` | `--crimson` | Body accent mark |
+| `--dc-card-body-mark` | `--crimson` | Unused: kept for books that set it (the card's bolt is not tinted) |
+| `--dc-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The bolt head on a skill card's top right and bottom left, a callout's two top corners and a `##` slip (the slip's `--dc-page-slip-bolt*` default to these): ring and slot, face, diameter |
+| `--dc-skill-foot-bolt-left` / `-bottom` | `4px` / `4px` | Where the card's bottom-left bolt sits, from the left edge and the foot; each specialty sets its own beside its body shape so the bolt clears the foot's cut |
 | `--dc-tier-bg` / `-fg` / `-edge` | `--ink-dark` / `--paper-cream` / `--paper-cream` | The tier pill on the tab; each specialty sets its own chip |
 
 ### Specialty Intro (`.dc-specialty-intro`)
@@ -400,7 +402,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | Token | Default | Role |
 |---|---|---|
 | `--dc-page-slip-bg` / `-ink` / `-edge` / `-shadow` | `--paper-cream` / `--ink` / `--ink` / `--shadow-poster` | A heading slip's paper, type, ink edge and dashed foot, and hard shadow |
-| `--dc-page-slip-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The two slotted bolt heads in a `##` slip's top corners: ring and slot, face, diameter |
+| `--dc-page-slip-bolt` / `-bolt-face` / `-bolt-size` | `--dc-bolt` / `--dc-bolt-face` / `--dc-bolt-size` | The two slotted bolt heads in a `##` slip's top corners: ring and slot, face, diameter. Set one to change the slips only |
 | `--dc-page-slip-gap` | `--space-xl` | The space above a slip |
 | `--dc-page-slip-foot` | `6pt` | The space below a slip, the same whatever follows it |
 | `--dc-page-sheet-pad` | `0.18in` | The side padding of the prose sheet |

@@ -821,7 +821,7 @@ Generalists don't specialize --- they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more --- both emit the same seven registers, and `@callout example` makes an eighth. Each register is a white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet with a strip of tape, a torn, dog-eared origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more --- both emit the same seven registers, and `@callout example` makes an eighth. Each register is a bolted white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet, a torn origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.
 
 <div class="dg-stage dg-tall">
 

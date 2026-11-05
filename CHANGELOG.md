@@ -132,6 +132,21 @@ blank pages at the end where there were four.
 - **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
   top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
   `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
+- **Callouts and skill cards are bolted, not taped.** Tape that said "held to
+  the wall" is replaced by the `##` slip's bolt. Every callout (note, tip,
+  important, warning, caution, Dream Master note, vibe, origin, location,
+  visit, example) has a bolt in each top corner; on the Dream Master note they
+  sit on the white body, below the ink bar. A skill card has one at its top
+  right and one at its bottom left, placed per specialty clear of its foot cut
+  (`--dc-skill-foot-bolt-left`, `--dc-skill-foot-bolt-bottom`), and moved to
+  the text column when the card ends in a cost row. A bolt prints once, at a
+  callout's real top. One bolt is shared by all of them: `--dc-bolt`,
+  `--dc-bolt-face`, `--dc-bolt-size`, which the slip's `--dc-page-slip-bolt*`
+  tokens default to. `--dc-card-body-mark` no longer draws anything.
+- **The origin and location callouts lose their folded corner:** the top right
+  is square, the torn foot and stamp stay, and the text does not move.
+- The tape divider (`.dc-tape`), the example callout's taped-on tag and hazard
+  tape are unchanged: they label or warn, they do not hold a sheet up.
 - **One type scale, and every size is on it.** An audit of every `font-size`
   found no rule under the 10pt floor, but twenty literal sizes off the scale
   (`15px`, `1.6rem`, `0.95em`, `15pt`…). Each is now a `--fs-*` token: the

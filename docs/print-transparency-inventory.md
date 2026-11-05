@@ -2,7 +2,7 @@
 
 What in this package is translucent, what is pre-composited, and how a PDF/X build treats each. The historical record of the 1.7 pre-composite pass (every translucent value it replaced, and the measurements) is kept at the end.
 
-**The decision.** Translucent artwork is allowed by design: the shadows, lifts, bevels and tape that make a component sit on the wall are translucent, so the brick darkens under them. The cost is accepted: in a PDF/X build every page that carries any of it prints its artwork (rules, fills and shapes included) as one 300 DPI picture, and the file grows with it (the design guide's PDF/X is 75.5 MB against 11.4 MB plain). `pdfx.transparency: preserve-text` keeps the text of those pages live, so fonts, search and the K-only black rewrite are unaffected. What stays opaque is text: a translucent glyph cannot be kept live and flattens its page whole. Nothing here asks a page to stay vector.
+**The decision.** Translucent artwork is allowed by design: the shadows, lifts, bevels and tints that make a component sit on the wall are translucent, so the brick darkens under them. The cost is accepted: in a PDF/X build every page that carries any of it prints its artwork (rules, fills and shapes included) as one 300 DPI picture, and the file grows with it (the design guide's PDF/X is 75.5 MB against 11.4 MB plain). `pdfx.transparency: preserve-text` keeps the text of those pages live, so fonts, search and the K-only black rewrite are unaffected. What stays opaque is text: a translucent glyph cannot be kept live and flattens its page whole. Nothing here asks a page to stay vector.
 
 ## The model today: `pdfx.transparency: preserve-text`
 
@@ -16,7 +16,7 @@ So translucency is allowed in artwork and forbidden in text. The package's style
 
 ## Translucent today
 
-All artwork: shadows, lifts, bevels, a smudge and the tape. Each darkens or tints what is under it, so the wall's texture reads through.
+All artwork: shadows, lifts, bevels and a smudge. Each darkens or tints what is under it, so the wall's texture reads through.
 
 | What | Where | Value |
 |---|---|---|
@@ -24,7 +24,6 @@ All artwork: shadows, lifts, bevels, a smudge and the tape. Each darkens or tint
 | Soft lift `--shadow-soft` / `--shadow-lift` | `dc-palette.css`; under anything hung on the wall: sections (`--dc-section-lift`), cards, the outcome ladder, the specialty card | `color-mix(in srgb, var(--ink) 34%, transparent)` |
 | Recess `--shadow-press` | `dc-palette.css`; the soft inset of anything sunk into the wall: the fiction cavity, the `lore` / `dm` / `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
 | Section hard shadow `--dc-section-hard-shadow` | `dc-component-defaults.css`; the section's offset copy (`section.css`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
-| Tape | the strip holding a skill card to the wall (`cards.css`) | 78% of the card's mark tint on paper-aged over transparent |
 | Sticker and path-chip shadows, the spray smudge, the dashed rule | `chrome.css` | 35% and 30% ink; 8% of `--dc-spray-bg`; 50% magenta |
 | Pull-quote accent `--dc-pullquote-accent-soft` | `dc-component-defaults.css` | 15% of `--tint-magenta-rose` |
 | AP-chip and outcome-key bevels | `cards.css`, `data.css` | 8–18% ink and paper |
@@ -39,7 +38,7 @@ A book that sets one of these tokens to an opaque colour loses nothing in print;
 | The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
 | The band and tab gloss | `--light-gloss`, a gradient with transparent stops, made Chromium write a type-1 shading PDF.js cannot read (1.10.2). The path banner, the card tab and the specialty card band pre-mix the same sheen into their opaque fills; the token stays for books that read it. |
 | The tape divider's crimson dashes (`.dc-tape::before/::after`) | An ordinary gradient with opaque stops, tiled by `background-size`: a `repeating-linear-gradient` cannot be kept live and flattens the page whole. |
-| The bolt heads on a `##` slip (`page-templates.css`) | Opaque discs: an ink ring round a `--paper-stain` face, the slot a hard-stopped band of ink (an ordinary gradient with opaque stops). They replaced the slip's translucent tape. |
+| The bolt heads on a `##` slip, every callout and a skill card (`page-templates.css`, `chrome.css`) | Opaque discs: an ink ring round a `--paper-stain` face, the slot a hard-stopped band of ink (an ordinary gradient with opaque stops). They replaced the slip's translucent tape. |
 | The paper tints that remain (the tape's tan, the specialty mixes, the accent inks of the slate block and the Surreal definition) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). Callout, section, faction, choice and entry surfaces are no longer tinted: they are white. |
 
 ## How to verify a book

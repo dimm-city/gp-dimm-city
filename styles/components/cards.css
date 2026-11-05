@@ -7,7 +7,7 @@
      --dc-card-surface         → card body background (default --paper-cream)
      --dc-card-tab-bg          → tab background (default --ink-dark)
      --dc-card-tab-title-color → tab title text color (default --paper-cream)
-     --dc-card-body-mark       → decorative ::before mark color (default --crimson)
+     --dc-card-body-mark       → unused (kept for books that set it; the bolt is not tinted) (default --crimson)
      --dc-skill-card-break-inside → `avoid` keeps a card whole (default auto: it splits)
    Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
    Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)
@@ -514,21 +514,39 @@
    instead of shrinking to its content, so a column run (`@columns 2`)
    that ends in a `@card` would take a page of its own and spill its bottom
    edge onto one more. The `@card` primitive shares the `.dc-card-body` class
-   and never meant to carry this tick (its tokens are the skill card's). */
+   and never meant to carry this bolt (its tokens are the skill card's). */
 .dc-skill-card > .dc-card-body::before {
   content: '';
   position: absolute;
-  top: -5px;
-  right: 18px;
-  width: 34px;
-  height: 11px;
-  /* A strip of masking tape holding the card to the wall: a translucent tint
-     of the card's mark colour on paper-aged, so the card edge and the wall
-     read through it, with a hard edge line, slightly rotated. */
-  background: color-mix(in srgb, color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged)) 78%, transparent);
-  box-shadow: inset 0 -1pt 0 var(--ink);
-  transform: rotate(3deg);
+  top: 4px;
+  right: 4px;
   z-index: 2;
+}
+/* The card is bolted at its top right (the tab already fixes the top left) and
+   at its bottom left: a bolt head each (drawn in chrome.css, "Bolt heads"). The
+   body is not cloned at a page break, so the top bolt prints once; a
+   continuation card gets none. The bottom bolt sits at the card's foot (the
+   card has no bottom padding), placed by --dc-skill-foot-bolt-left / -bottom,
+   which each specialty sets beside its --dc-skill-body-shape so it clears the
+   foot's cut by 2pt. */
+.dc-skill-card.dc-skill-card-cont > .dc-card-body::before {
+  content: none;
+}
+.dc-skill-card::after {
+  left: var(--dc-skill-foot-bolt-left);
+  bottom: var(--dc-skill-foot-bolt-bottom);
+  z-index: 2;
+}
+/* A card that ends in an ability row (or a column run of them) ends in an AP
+   chip 12px above the foot, which the bolt's 14px would meet: the bolt moves
+   right, into the text column, past the chip and its shadow. */
+.dc-skill-card:has(> .dc-card-body > .dc-card-inner > :is(.dc-ability, .gp-columns:has(> * > .dc-ability)):last-child) {
+  --dc-skill-foot-bolt-left: calc(24px + 4.77 * var(--fs-floor));
+}
+/* A specialty's last card draws its surface 3pt + 2px early (below): the bolt
+   rises with it. */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child::after {
+  bottom: calc(var(--dc-skill-foot-bolt-bottom) + 3pt + 2px);
 }
 
 .dc-card-inner {
