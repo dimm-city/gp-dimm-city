@@ -58,6 +58,20 @@ white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
 - **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
   top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
   `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
+- **One type scale, and every size is on it.** An audit of every `font-size`
+  found no rule under the 10pt floor, but twenty literal sizes off the scale
+  (`15px`, `1.6rem`, `0.95em`, `15pt`…). Each is now a `--fs-*` token: the
+  package prints 10, 11, 12, 13, 16, 20 and 26pt and nothing between. The
+  largest moves are a point: TOC links and stat-strip numbers 15pt to 16pt, the
+  NPC chip line 12pt to 11pt, `h1.dc-chevron` 16.8pt to 20pt. `--fs-sm` and
+  `--fs-body-xs` (11.5pt, used once) are aliases of `--fs-body-sm`.
+- **Headings have their own line-height token.** `--lh-display` (1.35, the
+  value they had) is separate from `--lh-tight`, which compact text reads.
+  The spray title reads it too (it was 1.5), with padding that keeps its
+  slab's height.
+- **`######` is a label, not a smaller `#####`.** The two were a point apart
+  and alike in everything else. H6 takes the label face (Tomorrow, bold caps)
+  at the 10pt floor.
 - **Three substrates.** White paper, `--concrete-pale` and the wall. `--paper-light`
   and `--paper-form` are aliases of `--paper-cream`. `--paper-zine`, `--hud-panel` and
   `--paper-aged` are aliases of `--concrete-pale`. `--paper-form` had become
@@ -192,10 +206,11 @@ white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
 
 ### Fixed
 
+- **`small`, `sub` and `sup` hold the 10pt floor.** They had no rule, so the
+  browser's `font-size: smaller` printed 8.3pt in a table cell and 7pt when
+  nested (one such cell is in the Field Guide).
 - The specialty-intro title's default type is cream. The old default, `--bg` on
   magenta, was 2.73:1.
-- The visit callout's green is 85% rot, so its fungi-glow accent ink holds 5.0:1
-  (was 4.42:1).
 - The pullquote (20pt) prints in black alone. It was `--ink-dark`, which the
   PDF/X build's black-text check reported as four-colour text at 24pt or under
   on the Part 2 example pages; the headings' base look is `--ink` too (every

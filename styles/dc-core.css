@@ -82,7 +82,7 @@ h1, h2, h3, h4, h5, h6,
      in Lixdu's own stroke rather than a synthetic (Type 3) bold. */
   font-synthesis-weight: none;
   letter-spacing: var(--ls-display);
-  line-height: var(--lh-tight);
+  line-height: var(--lh-display);
   text-transform: uppercase;
   text-wrap: balance;
   margin-top: 0;
@@ -117,7 +117,10 @@ h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-
 /* H4–H6 — grim dark ramp: body labels */
 h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink);  letter-spacing: 0.06em; }
 h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
-h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
+/* H6 is a label, not a smaller H5: one point apart, the two were told apart
+   by nothing else. It takes the label face (mono, bold), as every other 10pt
+   label in the package does. */
+h6, .dc-h6 { font-family: var(--font-mono); font-size: var(--fs-h6); font-weight: 700; margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
 /* What h1/h2 add that no lower look has: clear it when a look class is on
    one of those tags. */
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
@@ -139,6 +142,13 @@ em  { color: var(--ink); font-style: italic; }
    reserved for FILLS / decorative rails; text colour on light backgrounds
    uses --blood. */
 a   { color: var(--blood); text-decoration: none; border-bottom: 1pt dotted var(--blood); }
+
+/* The 10pt floor holds for the browser's own shrinking elements too: `small`,
+   `sub` and `sup` default to `font-size: smaller`, which is 8.3pt in a 10pt
+   table cell (and less when nested). */
+small, sub, sup {
+  font-size: max(0.833em, var(--fs-floor));
+}
 
 code, kbd, samp {
   font-family: var(--font-mono);
