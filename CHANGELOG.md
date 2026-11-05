@@ -95,14 +95,16 @@ blank pages at the end where there were four.
     with its tab and one line. A sub-heading, a label and a lead-in stay with
     what follows; a short closing line stays with what precedes it.
   - A plain table may split between rows, with its header repeated. An outcome
-    ladder or roll table may split between tiers: the head and first tier stay
-    together, as do the last two.
+    ladder may split between tiers: the head and first tier stay together, as
+    do the last two, the first part ends flush under its last tier, and the
+    bottom cut prints once, at the real foot. A roll-table plate stays whole.
   - The requirement band never splits and never ends a page alone.
-  - A fragment keeps the card's padding at a page break; a continued Proxy or
-    Gutterdruid card has a straight top; a specialty's last card keeps its foot
-    inside the page.
+  - A fragment keeps the card's padding at a page break. A continued Proxy or
+    Gutterdruid card has a straight top, and the gate and corner cuts that
+    mark those specialties print only at a card's real top. A specialty's last
+    card keeps its foot inside the page.
   - In the Field Guide's specialty chapters, white holes of an inch or more
-    inside cards fell from 15 (26in in all) to 11 (17in), and single
+    inside cards fell from 15 (26in in all) to 12 (18in), and single
     carried-over lines from 18 to 8.
 - **Sheets, panels, sections and callouts keep their padding where they break**
   (`box-decoration-break: clone`). No unbroken box is taller. A `dm` section's
