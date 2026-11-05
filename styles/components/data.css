@@ -329,9 +329,14 @@
   text-transform: uppercase;
   color: var(--dc-outcomes-label-color);
   background: var(--dc-outcomes-label-bg);
-  padding: 6px 14px 5px;
+  /* The underline is an inset shadow, not a border: a bottom border meets the
+     frame's side borders in a diagonal mitre, which cut the light divider into
+     the frame. The shadow stops at the frame's inner edge. The padding takes
+     the border's place (a 2pt border lays out as 2px). */
+  padding: 6px 14px calc(5px + 2px);
   border: 2px solid var(--dc-outcomes-border);
-  border-bottom: 2pt solid var(--dc-outcomes-divider);
+  border-bottom: 0;
+  box-shadow: inset 0 -2pt 0 0 var(--dc-outcomes-divider);
   clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%, 0 6px);
   position: relative;
   z-index: 1;
@@ -361,12 +366,16 @@
      lines at most; in a half column it stays 130px. */
   grid-template-columns: var(--dc-outcome-key-col) 1fr;
   gap: 0;
-  border-bottom: 1pt solid var(--dc-outcomes-divider);
+  /* The divider is an inset shadow (the last in the list, so it paints under
+     the ring), not a bottom border: see .dc-outcomes-label. 1px of padding
+     takes the border's place (a 1pt border lays out as 1px). */
+  padding-bottom: 1px;
   border-inline: 2px solid var(--dc-outcomes-border);
   background: var(--dc-outcomes-surface);
   box-shadow:
     inset -4px 0 0 0 var(--dc-outcomes-surface),
-    inset -5px 0 0 0 var(--dc-outcomes-inner-border);
+    inset -5px 0 0 0 var(--dc-outcomes-inner-border),
+    inset 0 -1pt 0 0 var(--dc-outcomes-divider);
   position: relative;
   z-index: 1;
 }
@@ -388,6 +397,7 @@
 /* The foot: the frame's bottom, the ring's bottom, the two bottom chamfers and the
    chip, once, where the ladder really ends. */
 .dc-outcome-row:last-child {
+  padding-bottom: 0;
   border-bottom: 2px solid var(--dc-outcomes-border);
   box-shadow:
     inset -4px 0 0 0 var(--dc-outcomes-surface),
