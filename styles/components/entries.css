@@ -168,7 +168,7 @@
   background: var(--bg);
 }
 
-/* AUGMENT — a spec chip: the cleanest, lightest plate in a run, cyan top rule,
+/* AUGMENT — a spec chip: the cleanest plate in a run, cyan top rule,
    a stepped (right-angled) notch like a PCB edge, a teal name. */
 .dc-augment {
   --dc-entry-accent: var(--brand-cyan);

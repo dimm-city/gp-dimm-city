@@ -98,17 +98,17 @@
                chipped notch (player rules)
      warning   sign plate: octagon, 12px     hazard-stripe rail, heavy ink  yellow/ink tape chip
                cuts (danger)                 frame + misregistered crimson
-     dm        file folder: a tab rising     cyan rail + ink ring           cyan chip, top right
-               from the top + one cut corner
+     dm        file folder: a tab rising     cyan rail + ink ring           an ink bar across the
+               from the top + one cut corner                                top, cyan type on it
                (classified)
-     vibe      long shallow diagonals at     violet edge all round,         violet chip, paper type
-               two opposite corners (world)  tape strip on top
-     origin    torn bottom edge + dog-ear    heavy rust rail, worn          crimson rubber stamp
-               (backstory)                   (dashed) stamp ring
-     location  the origin's document         heavy teal rail, worn          deep-teal rubber stamp
-               (a place written up)          (dashed) stamp ring
-     visit     wobbly organic polygon with   heavy fungi-green rail         green chip, pin glyph
-               a signpost point (a place)
+     vibe      long shallow diagonals at     violet frame along every       violet chip, paper type
+               two opposite corners (world)  edge, tape strip on top
+     origin    torn bottom edge + dog-ear    rust frame along the tear      crimson rubber stamp
+               (backstory)                   and the dog-ear, heavy rail
+     location  the origin's document         teal frame, heavy rail         deep-teal rubber stamp
+               (a place written up)
+     visit     wobbly organic polygon with   fungi-green frame along the    green chip, pin glyph
+               a signpost point (a place)    wobble and the point
      example   ticket: a V notch in the      cyan rail + cyan ring          taped-on tag
                right edge (a sample)
 
@@ -158,9 +158,9 @@
 
 /* Inline emphasis + paragraphs inside callouts must inherit the alert's
    --dc-alert-fg color. The global p/em/strong rules in dc-core.css set
-   dark text colors (color: --ink). Inside dark-fill callout
-   variants (.dc-dm-note etc.), dark-on-dark measured 1.17:1 — invisible.
-   Inherit makes p/em/strong adopt the alert's own foreground. */
+   their own colour (--ink), which a book that sets --dc-alert-fg on a
+   dark callout of its own would otherwise read dark on dark. Inherit makes
+   p/em/strong adopt the alert's own foreground. */
 :is(.dc-alert, .gp-alert) :is(p, em, strong) {
   color: inherit;
 }

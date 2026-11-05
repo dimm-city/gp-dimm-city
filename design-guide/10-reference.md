@@ -103,10 +103,11 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Keep whole (`avoid` or `auto`) | `--dc-section-break-inside` (with `--dc-section-edge: 0px`) `--dc-catalog-break-inside` `--dc-npc-stat-break-inside` `--dc-skill-card-break-inside` `--dc-faction-break-inside` |
 | Space under paragraphs and list items | `--dc-flow-gap` (unset by default) |
 | Art by context | `--dc-entry-art-width` `--dc-credits-art-height` |
+| Page text (free-standing headings and prose) | `--dc-page-title-ink` `--dc-page-slip-bg` `--dc-page-slip-ink` `--dc-page-slip-edge` `--dc-page-slip-shadow` `--dc-page-slip-bolt` `--dc-page-slip-bolt-face` `--dc-page-slip-bolt-size` `--dc-page-slip-gap` `--dc-page-slip-foot` `--dc-page-sheet-pad` `--dc-heading-gap` |
 | Lede | `--dc-intro-bg` `--dc-intro-accent` `--dc-intro-color` `--dc-intro-size` `--dc-intro-weight` `--dc-intro-style` `--dc-intro-rail` `--dc-intro-rule` `--dc-intro-ink` |
 | Flavor | `--dc-flavor-accent` `--dc-flavor-accent-width` `--dc-flavor-color` `--dc-flavor-bg` |
 | Pull quote | `--dc-pullquote-accent` `--dc-pullquote-accent-soft` `--dc-pullquote-bg` |
-| Alerts, callout, DM note | `--dc-alert-bg` `--dc-alert-border` `--dc-alert-fg` `--dc-alert-label-color` `--dc-alert-border-width` `--dc-alert-label-size` `--dc-alert-body-size` `--dc-alert-frame` `--dc-alert-label-bg` `--dc-alert-label-pad` |
+| Alerts, callout, DM note | `--dc-alert-bg` `--dc-alert-border` `--dc-alert-fg` `--dc-alert-label-color` `--dc-alert-border-width` `--dc-alert-label-size` `--dc-alert-body-size` `--dc-alert-frame` `--dc-alert-frame-width` `--dc-alert-label-bg` `--dc-alert-label-pad` |
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` `--dc-tape-shape` |
 | Tag (inline chip) | `--dc-tag-bg` `--dc-tag-fg` `--dc-tag-border` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
@@ -125,7 +126,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Definition | `--dc-definition-block-surface` `--dc-definition-block-accent` `--dc-definition-block-term` `--dc-definition-block-accent-width` `--dc-definition-block-rule-bottom` `--dc-definition-block-shape` `--dc-definition-block-fg` `--dc-definition-block-style` `--dc-definition-block-frame` `--dc-definition-block-pad` |
 | Outcome ladder | `--dc-outcomes-surface` `--dc-outcomes-border` `--dc-outcomes-inner-border` `--dc-outcomes-label-bg` `--dc-outcomes-label-color` `--dc-outcome-key-color` `--dc-outcome-name-color` `--dc-outcome-name-opacity` `--dc-outcome-key-col` |
 | NPC stat block | `--dc-npc-stat-primary` `--dc-npc-stat-secondary` `--dc-npc-stat-label-color` `--dc-npc-stat-rule` `--dc-npc-stat-rule-width` |
-| Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-cavity` `--dc-fiction-hole` `--dc-fiction-shape` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
+| Fiction excerpt | `--dc-fiction-bg` `--dc-fiction-cavity` `--dc-fiction-title-size` `--dc-fiction-hole` `--dc-fiction-shape` `--dc-fiction-line-height` `--dc-fiction-art-float` `--dc-fiction-art-width` `--dc-fiction-art-outline` `--dc-fiction-art-shadow` |
 | Specialty wrapper | `--spec-accent` `--spec-mid` `--spec-dark` `--spec-band` `--spec-on-band` `--spec-chip-bg` `--spec-chip-fg` `--spec-chip-edge` `--dc-skill-tab-shape` `--dc-skill-body-shape` `--dc-path-title-shape` `--dc-path-shell-clip` `--dc-specialty-intro-title-shape` `--dc-specialty-intro-clip` |
 | Specialty intro | `--dc-specialty-intro-bg` `--dc-specialty-intro-title-bg` `--dc-specialty-intro-title-color` `--dc-specialty-intro-h3-color` |
 | Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` `--dc-band-reg` |
