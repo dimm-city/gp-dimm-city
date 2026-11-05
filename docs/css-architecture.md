@@ -306,9 +306,10 @@ into the token name, not scattered across heading rules.
 --fs-floor:   10pt;    /* THE floor: no glyph is smaller (chips, tabs, labels, folios too) */
 --fs-body:    12pt;
 --fs-body-sm: 11pt;    /* smallest running prose in a component */
---fs-body-xs: 11.5pt;  /* between sm and body — outcome text, cover body, TOC items */
+--fs-body-xs: var(--fs-body-sm);  /* alias, kept for books (was 11.5pt) */
 
 /* Line height */
+--lh-display: 1.2;     /* headings */
 --lh-normal:  1.5;
 --lh-tight:   1.35;
 

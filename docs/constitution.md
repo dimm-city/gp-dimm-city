@@ -314,9 +314,9 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 
 | Role | Preferred | Fallback | Size |
 |---|---|---|---|
-| Display | `lixdu` | Titillium Web Bold | H1 26–32pt, H2 18–24pt |
-| Body | Titillium Web | Tomorrow | Reading floor 10pt; the package sets 12pt (`--fs-body`), 11pt compact (`--fs-body-sm`), with 13–15pt leading |
-| Labels / Mono | Tomorrow | monospace | All-caps labels 10pt (the floor), tracked 0.08em or wider |
+| Display | `lixdu` | Titillium Web Bold | H1 26pt, H2 20pt, H3 16pt, H4 13pt, H5 11pt; leading 1.2 (`--lh-display`) |
+| Body | Titillium Web | Tomorrow | Reading floor 10pt; the package sets 12pt (`--fs-body`) on 18pt leading (`--lh-normal`, 1.5), 11pt compact (`--fs-body-sm`) |
+| Labels / Mono | Tomorrow | monospace | All-caps labels 10pt (the floor), tracked 0.08em or wider. H6 is one of them |
 
 ### Type floor: 10pt, for ALL text
 
@@ -334,14 +334,17 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 
 ### Type hierarchy
 
+**One scale, no literal sizes.** Every `font-size` in the package is a `--fs-*` token (or a multiple of one, for the two decorative display steps: the pull quote's mark and the design guide's Part title). The steps are 10, 11, 12, 13, 16, 20 and 26pt. Headings step down by about a quarter (26, 20, 16, 13); below 13pt the sizes are a point apart, too close to tell levels apart by size alone, so each level there differs in kind (face, caps, weight), never in size only. Headings are set on `--lh-display` (1.2): display caps have no descenders to clear, and a wrapped heading set looser falls apart. `small`, `sub` and `sup` are held at the floor too.
+
 | Element | Spec | Notes |
 |---|---|---|
-| H1 | lixdu, 26–32pt, uppercase | Chapter punch, minimal copy |
-| H2 | lixdu, 18–24pt | Can sit on angled magenta banner |
-| H3 | bold display or body-bold, 13–16pt | Use accent color sparingly |
-| H4 | body-bold or mono-bold, ~13pt | Component sub-headings (skill names, stat-block name) |
-| H5 | mono-caps, 10–11pt with 0.1em tracking | Chrome labels (TRAITS, EQUIPMENT, OUTCOMES) |
-| Body | 12pt (reading floor 10pt) with 13–15pt leading | Default reading size |
+| H1 | lixdu, 26pt (`--fs-h1`), uppercase | Chapter punch, minimal copy |
+| H2 | lixdu, 20pt (`--fs-h2`) | Can sit on angled magenta banner |
+| H3 | lixdu, 16pt (`--fs-h3`), deep teal | Sub-sections |
+| H4 | lixdu, 13pt (`--fs-h4`), ink | Component sub-headings (skill names, stat-block name) |
+| H5 | lixdu, 11pt (`--fs-h5`), 0.1em tracking | Sub-labels. Smaller than body: caps in the display face carry it |
+| H6 | Tomorrow bold caps, 10pt (`--fs-h6`, the floor), 0.1em tracking | Metadata labels. A label, not a smaller H5: the two are a point apart, so they differ in face |
+| Body | 12pt (reading floor 10pt) on 18pt leading | Default reading size |
 | Component rules text | 10–11pt | Never below 10pt |
 | Captions, table cells, stat lines | 10pt | Never below 10pt |
 | Reversed | 10pt minimum, semibold | Only on solid fills |

@@ -127,26 +127,29 @@
   --font-mono:    'Tomorrow', 'Titillium Web', ui-monospace, monospace;
   --font-quote:   'Titillium Web', 'Tomorrow', serif;
 
-  /* ── Type Scale — modular ~1.23× ratio, 12pt body anchor ──────────────
-     h1/h2: 1.30×  h2/h3: 1.25×  h3/h4: 1.23×  h4/h5: 1.18×  h5/h6: 1.22×
-     H5 == body-sm: display font + caps + tracking provide differentiation.
-     H6 sits on the 10pt floor: metadata-only; display font keeps it legible.
+  /* ── Type Scale — 12pt body anchor ─────────────────────────────────────
+     Headings step down by about a quarter: h1/h2 1.30×, h2/h3 1.25×,
+     h3/h4 1.23×. Below h4 the sizes are a point apart (13, 12, 11, 10), too
+     close to tell levels apart by size, so each differs in kind: h4 and h5
+     are display caps (h5 == body-sm), h6 is a mono label on the 10pt floor.
+     Every size a rule sets is one of these tokens: no literal sizes.
      ────────────────────────────────────────────────────────────────────── */
   --fs-floor:   10pt;    /* THE type floor: no glyph the package prints is smaller — chips, tabs, tier pills, labels, stamps, folios included */
   --fs-body:    12pt;
   --fs-body-sm: 11pt;    /* smallest running prose in a component */
-  --fs-body-xs: 11.5pt;  /* between sm and body */
-  --fs-sm:      11pt;    /* small body — aligns to --fs-body-sm */
+  --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books: was 11.5pt, a step no reader sees */
+  --fs-sm:      var(--fs-body-sm);  /* alias: small body */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
   --fs-h2:      20pt;    /* section headers; 1.30× below h1 */
   --fs-h3:      16pt;    /* sub-section, gear card titles; 1.25× below h2 */
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
-  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; 1.10× below h5 */
+  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; a mono label, not a smaller h5 */
 
   --fw-bold:     700;  /* public; no package rule reads it */
 
-  --lh-tight:  1.35;
+  --lh-display: 1.2;   /* headings: display caps have no descenders to clear */
+  --lh-tight:  1.35;   /* compact running text */
   --lh-normal: 1.5;
 
   --ls-display: 0.1em;

@@ -1330,7 +1330,7 @@ h3 + .dc-section-panel {
 /* The names are lixdu, the widest face in the book: in a two-column run a name
    such as GREASE MONKEY has to fit the column on one line. */
 .dc-npc-stat .gp-columns > h4 {
-  font-size: 11pt;
+  font-size: var(--fs-h5);
   letter-spacing: 0.03em;
 }
 
@@ -1386,7 +1386,7 @@ h3 + .dc-section-panel {
 .dc-npc-stat:not(.dc-npc-compact) blockquote + p::first-line {
   background: var(--dc-npc-stat-primary);
   color: var(--paper-cream);
-  font-size: 12pt;
+  font-size: var(--fs-body-sm);  /* never larger than the name over it (13pt, 11pt in a column run) */
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: none;
@@ -1502,7 +1502,7 @@ h3 + .dc-section-panel {
 .dc-card-grid .dc-specialty-card {
   --dc-specialty-card-media-height: 0.42in;
   --dc-specialty-card-media-width: 0.38in;
-  --dc-specialty-card-name-size: 0.95em;
+  --dc-specialty-card-name-size: var(--fs-body-sm);
   /* Padding clears the deepest cut (14px) by 2pt: no glyph meets a corner. */
   --dc-specialty-card-pad-x: 0.14in;
   padding-bottom: 0.22in;

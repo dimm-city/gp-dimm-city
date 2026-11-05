@@ -141,7 +141,7 @@
 
 .dc-tab-title {
   font-family: var(--font-tab);
-  font-size: 15px;
+  font-size: var(--fs-body-sm);
   /* Default to paper-cream so reverse-out text on the saturated tab fill
      always passes WCAG. Specialty contexts re-affirm the same color via
      their --dc-card-tab-title-color token. Without it the title would take

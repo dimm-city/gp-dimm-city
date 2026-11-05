@@ -209,7 +209,7 @@
   --dc-specialty-card-media-margin-even: 0 0 0.08in 0.14in;
   --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
   --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
-  --dc-specialty-card-name-size:    1.15em;
+  --dc-specialty-card-name-size:    var(--fs-h4);
   --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
   --dc-card-grid-row:               0;           /* the least height of a card in the grid */

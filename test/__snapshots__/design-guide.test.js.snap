@@ -425,7 +425,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <th>Role</th>
 </tr>
 </thead>
-<tbody data-source-range="14:24">
+<tbody data-source-range="14:26">
 <tr data-source-range="14:15">
 <td>H1</td>
 <td><code># Title</code></td>
@@ -451,36 +451,48 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <td>Skill names, gear names, stat-block names</td>
 </tr>
 <tr data-source-range="18:19">
+<td>H5</td>
+<td><code>##### Label</code></td>
+<td>11pt uppercase · lixdu</td>
+<td>Sub-labels: smaller than body, carried by the display caps</td>
+</tr>
+<tr data-source-range="19:20">
+<td>H6</td>
+<td><code>###### Label</code></td>
+<td>10pt bold uppercase · Tomorrow</td>
+<td>Metadata labels, in the label face</td>
+</tr>
+<tr data-source-range="20:21">
 <td>Body</td>
 <td>a paragraph</td>
 <td>12pt · Titillium Web</td>
 <td>All prose</td>
 </tr>
-<tr data-source-range="19:20">
+<tr data-source-range="21:22">
 <td>Flavor</td>
 <td><code>&gt; [!FLAVOR]</code></td>
 <td>11pt italic · Titillium Web</td>
 <td>In-world voice</td>
 </tr>
-<tr data-source-range="20:21">
+<tr data-source-range="22:23">
 <td>Chevron banner</td>
 <td><code># Title {.dc-chevron}</code></td>
 <td>H1 scale, angled fill</td>
 <td>One per chapter opener</td>
 </tr>
-<tr data-source-range="21:22">
+<tr data-source-range="23:24">
 <td>Spray banner</td>
 <td><code>## Title {.dc-spray}</code></td>
 <td>H2 scale, a stencilled tag with a stepped edge</td>
 <td>Learning paths, major topic breaks</td>
 </tr>
-<tr data-source-range="22:23">
+<tr data-source-range="24:25">
 <td>Card tab</td>
 <td>emitted by <code>@skill</code></td>
 <td>11pt title, 10pt tier pill · Tomorrow</td>
 <td>Skill-card tab labels</td>
 </tr>
-<tr data-source-range="23:24">
+<tr data-source-range="25:26">
 <td>Tag</td>
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;</code></td>
 <td>10pt · Tomorrow</td>
@@ -490,7 +502,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </table>
 <h2 data-name="the-three-faces">The three faces</h2>
 <div class="dg-face">
-<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
+<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.2, tracking 0.2em</p>
 <p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
 <p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>
@@ -514,7 +526,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </div>
 <h2 data-name="level-and-look">Level and look</h2>
 <p>A heading’s level is its place in the outline, and the outline never skips a level: <code>#</code> is followed by <code>##</code>, never <code>###</code>. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with <code>.dc-h3</code>, <code>.dc-h4</code>, <code>.dc-h5</code> or <code>.dc-h6</code>:</p>
-<pre><code data-source-range="65:74" class="language-markdown"># Cybernetics, Weapons, and Gear
+<pre><code data-source-range="67:76" class="language-markdown"># Cybernetics, Weapons, and Gear
 
 ## Useful Items {.dc-h3}
 
@@ -531,7 +543,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The look follows the class everywhere: an <code>##</code> with <code>.dc-h3</code> that opens a section takes the subordinate section bar, and a <code>###</code> with <code>.dc-h4</code> inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.</p>
 <h2 data-name="heading-chrome">Heading chrome</h2>
 <p>Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; <code>.dc-no-top</code> pulls it tight against whatever is above it.</p>
-<pre><code data-source-range="93:100" class="language-markdown"># Augmerc {.dc-chevron}
+<pre><code data-source-range="95:102" class="language-markdown"># Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
 
@@ -539,7 +551,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="105:106"><h1 class="dc-chevron" data-name="augmerc">Augmerc</h1>
+<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="107:108"><h1 class="dc-chevron" data-name="augmerc">Augmerc</h1>
 <h2 class="dc-spray" data-name="biting-distance">Biting Distance</h2>
 <h3 class="dc-spec-tweak dc-no-top" data-name="spec-tweak-wired-to-kill">Spec Tweak: Wired to Kill</h3>
 </div></div>
@@ -547,28 +559,28 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
 <div class="dc-flavor">
-<p data-source-range="123:125">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
+<p data-source-range="125:127">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
 </div>
 </div>
 <p>Flavor is 11pt italic in <code>--ink-dark</code>, with a rail and no box. Never set flavor in bold italic — it reads as urgency, not voice.</p>
 <p class="dg-dont-label">Don’t</p>
 <div class="dg-stage dg-dont">
 <div class="dc-flavor">
-<p data-source-range="134:136"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
+<p data-source-range="136:138"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
 </div>
 </div>
 <p><strong>Column-safe headings:</strong> in a two-column layout use <code>###</code> and <code>####</code>. <code>#</code> and <code>##</code> at full print size exceed a 3.5-inch column.</p>
 <h2 data-name="size-floors">Size floors</h2>
 <p>There is one floor, <code>--fs-floor</code> (10pt), and nothing prints smaller: not a chip, a tab, a tier pill, an AP chip, a folio or a stamp. It is a minimum, not a target; text that already meets it stays as it is.</p>
 <table>
-<thead data-source-range="145:146">
-<tr data-source-range="145:146">
+<thead data-source-range="147:148">
+<tr data-source-range="147:148">
 <th>Text</th>
 <th>Floor</th>
 </tr>
 </thead>
-<tbody data-source-range="147:148">
-<tr data-source-range="147:148">
+<tbody data-source-range="149:150">
+<tr data-source-range="149:150">
 <td>All text: body, rules, tables, captions, labels, chips, tabs and badges</td>
 <td>10pt (the book sets running body at 12pt)</td>
 </tr>
@@ -578,35 +590,35 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The renderer converts ASCII shortcuts as you type: <code>--</code> is an en dash --, <code>---</code> an em dash —, <code>...</code> an ellipsis …, and “straight quotes” curl. No special syntax, no Unicode entry.</p>
 <h2 data-name="font-tokens">Font tokens</h2>
 <table>
-<thead data-source-range="155:156">
-<tr data-source-range="155:156">
+<thead data-source-range="157:158">
+<tr data-source-range="157:158">
 <th>Token</th>
 <th>Face</th>
 <th>Used for</th>
 </tr>
 </thead>
-<tbody data-source-range="157:162">
-<tr data-source-range="157:158">
+<tbody data-source-range="159:164">
+<tr data-source-range="159:160">
 <td><code>--font-display</code></td>
 <td>lixdu</td>
 <td>H1–H3, banners</td>
 </tr>
-<tr data-source-range="158:159">
+<tr data-source-range="160:161">
 <td><code>--font-body</code></td>
 <td>Titillium Web</td>
 <td>Body prose, flavor, quotes</td>
 </tr>
-<tr data-source-range="159:160">
+<tr data-source-range="161:162">
 <td><code>--font-mono</code></td>
 <td>Tomorrow</td>
 <td>Code, counters, tabular data</td>
 </tr>
-<tr data-source-range="160:161">
+<tr data-source-range="162:163">
 <td><code>--font-tab</code></td>
 <td>Tomorrow</td>
 <td>Short label text: card tabs, stat labels</td>
 </tr>
-<tr data-source-range="161:162">
+<tr data-source-range="163:164">
 <td><code>--font-quote</code></td>
 <td>Titillium Web</td>
 <td>Italic quotes and attributions</td>

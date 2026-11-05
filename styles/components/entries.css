@@ -98,7 +98,7 @@
 /* The name. Sized so a typical name stays on one line in a half-width card
    (lixdu is a wide face); a long one wraps balanced. */
 .dc-entry > :is(h3, h4):first-child {
-  font-size: 11pt;
+  font-size: var(--fs-h5);
   letter-spacing: 0.03em;
   color: var(--dc-entry-ink);
   margin: 0 0 4px;
