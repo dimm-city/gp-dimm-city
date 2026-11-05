@@ -80,24 +80,9 @@ aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
-components/callouts.css:208            srgb --hud-blue-dark 50% --ink                   #193745  C58 M35 Y26 K71     190   71   26
-components/callouts.css:217            oklch --brand-yellow 25% --paper-cream           #fff6d4  C1 M1 Y16 K0         18   16    1
-components/callouts.css:292            oklch --brand-violet 22% --paper-cream           #dccfe5  C12 M14 Y1 K0        27   14    1
-components/callouts.css:326            oklch --surface-orange-tint 55% --paper-cream    #e9e4d5  C8 M7 Y14 K0         29   14    7
-components/callouts.css:342            oklch --hud-blue-dim 30% --paper-cream           #d8eaf1  C12 M2 Y2 K0         16   12    2
-components/callouts.css:380            srgb --fungi-rot 85% --fungi-glow                #475d23  C42 M15 Y72 K58     187   72   15
 components/data.css:716                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
-components/entries.css:192             oklch --crystal-amethyst 25% --paper-cream       #e3d5e9  C9 M13 Y0 K0         22   13    9
-components/entries.css:198             oklch --crystal-amethyst 40% --paper-cream       #d2bcdc  C15 M23 Y0 K0        38   23   15
-components/entries.css:232             oklch --fungi-glow 24% --paper-cream             #f1f8d8  C5 M0 Y16 K0         21   16    5
-components/entries.css:434             oklch --hud-blue-dim 38% --paper-cream           #cde4ed  C16 M3 Y4 K0         23   16    3
-components/entries.css:439             oklch --crimson 22% --paper-cream                #ffd6cf  C0 M15 Y12 K0        27   15   12
-components/section.css:852             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
-components/section.css:1031            oklch --blood 18% --paper-light                  #efd6d2  C6 M14 Y11 K0        31   14    6
-components/section.css:1063            oklch --brand-violet 25% --paper-form            #d7c9e2  C14 M17 Y1 K0        32   17    1
-components/section.css:1157            oklch --brand-violet 25% --paper-cream           #d7c9e2  C14 M17 Y1 K0        32   17    1
-components/section.css:1158            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
-components/section.css:1170            oklch --blood 18% --paper-cream                  #efd6d2  C6 M14 Y11 K0        31   14    6
+components/section.css:849             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
+components/section.css:1150            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
 components/specialty-identity.css:157  srgb --paper-cream 34% --augmerc-accent          #57d3e3  C50 M0 Y9 K0         59   50    9
 components/specialty-identity.css:185  srgb --paper-cream 45% --cybersurgeon-accent     #cfd6d8  C17 M9 Y10 K0        36   17    9
 components/specialty-identity.css:205  srgb --technosorcerer-accent 87% --paper-cream   #da672a  C0 M60 Y100 K11     171  100   11
@@ -108,8 +93,7 @@ components/specialty-identity.css:325  srgb --gutterdruid-mid 38% --gutterdruid-
 components/specialty-identity.css:355  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
 components/specialty-identity.css:384  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
 components/specialty-identity.css:409  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
-dc-component-defaults.css:387          oklch --ink-dark 18% --paper-cream               #d6d4d3  C14 M11 Y12 K0       37   14   11
-dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
+dc-component-defaults.css:455          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast

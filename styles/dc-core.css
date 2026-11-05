@@ -180,7 +180,12 @@ blockquote {
 }
 
 /* ── GLOBAL LIST STYLES ───────────────────────────────────────────────────── */
-ul { padding-left: 0.25in; }
+/* A bulleted list starts at the text edge: its » marker is the indent. A list
+   inside an item steps in by about the marker's width; a numbered list keeps
+   room for its numbers. */
+ul { padding-left: 0; }
+ol { padding-left: 0.25in; }
+li > :is(ul, ol) { padding-left: 0.16in; }
 ul li { list-style: none; margin-bottom: 0.06in; }
 /* markdown-it wraps a loose item's text in <p>, and an inline ::before on the
    <li> would sit alone on its own line above that block. A loose item draws

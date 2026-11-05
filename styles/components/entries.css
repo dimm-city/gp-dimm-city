@@ -13,9 +13,9 @@
 
      gear       a hang tag   kraft paper, clipped corners, punched eyelet, rust, ink name
      augment    a spec chip  clean pale cool plate, stepped circuit notch, cyan top rule, teal name
-     treasure   a gem        violet tint, eight-sided cut, a hard facet, violet name
-     vehicle    a plate      concrete, riveted chamfers, hazard-stripe head, yellow badge, ink name
-     drug       a label      lime tint, a wobbling organic outline, fungi-green head, "Rx" pill badge
+     treasure   a gem        eight-sided cut, a violet rail, a hexagonal badge, violet name
+     vehicle    a plate      riveted chamfers, a heavy ink frame, yellow rail and badge, ink name
+     drug       a label      a wobbling organic outline, fungi-green head, "Rx" pill badge
 
    Writes as the books write it:
 
@@ -173,7 +173,6 @@
 .dc-augment {
   --dc-entry-accent: var(--brand-cyan);
   --dc-entry-ink: var(--hud-blue-dark);
-  --dc-entry-surface: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-entry-kind: "Augment";
   --dc-entry-rule: 3px;
   --dc-entry-rail: 3px;
@@ -183,33 +182,25 @@
   --dc-entry-badge-shape: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* TREASURE — a gem: violet (9.2:1 on cream), an eight-sided cut, one hard
-   facet across the face (a flat-tone polygon layer behind the text), a
+/* TREASURE — a gem: violet (9.2:1 on the sheet), an eight-sided cut, a
    hexagonal badge. */
 .dc-treasure {
   --dc-entry-accent: var(--brand-violet);
   --dc-entry-ink: var(--brand-violet);
-  --dc-entry-surface: color-mix(in oklch, var(--crystal-amethyst) 25%, var(--paper-cream));
   --dc-entry-kind: "Treasure";
   --dc-entry-rail: 5px;
   --dc-entry-shape: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
-  --dc-entry-ornament: "";
-  --dc-entry-orn-inset: 0;
-  --dc-entry-orn-bg: color-mix(in oklch, var(--crystal-amethyst) 40%, var(--paper-cream));
-  --dc-entry-orn-clip: polygon(62% 0, 100% 0, 100% 100%, 38% 100%);
-  --dc-entry-orn-z: -1;
   --dc-entry-badge-bg: var(--brand-violet);
   --dc-entry-badge-fg: var(--paper-cream);
   --dc-entry-badge-shape: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
 }
 
-/* VEHICLE — an industrial plate: concrete, octagonal (12px) cut corners, a
+/* VEHICLE — an industrial plate: octagonal (12px) cut corners, a
    heavy 3px ink frame, an inner seam inside it, a yellow rail and a
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
   --dc-entry-ink: var(--ink);
-  --dc-entry-surface: var(--concrete-pale);
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
   --dc-entry-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
@@ -224,12 +215,11 @@
 
 /* DRUG — a prescription label: an irregular, wobbling outline (organic: no long
    straight edge),
-   lime tint, a fungi-green head band (the top border), a pill badge. One frame
+   a fungi-green head band (the top border), a pill badge. One frame
    only: the head band and rail. */
 .dc-drug {
   --dc-entry-accent: var(--fungi-rot);
   --dc-entry-ink: var(--fungi-rot);
-  --dc-entry-surface: color-mix(in oklch, var(--fungi-glow) 24%, var(--paper-cream));
   --dc-entry-kind: "Rx \00B7  Drug";
   --dc-entry-rail: 6px;
   --dc-entry-rule: 7px;
@@ -427,16 +417,16 @@
   --dc-field-surface: transparent;
 }
 /* Effects over Side Effects: the benefit, then the cost. The benefit is a solid
-   teal frame on a pale teal ground with a + on its chip; the cost a dashed
-   blood frame on a pale blood ground with a – on its chip. */
+   teal frame with a + on its chip; the cost a dashed blood frame with a – on
+   its chip. Both on white. */
 .dc-field-effects {
   --dc-field-accent: var(--hud-blue-dark);
-  --dc-field-surface: color-mix(in oklch, var(--hud-blue-dim) 38%, var(--paper-cream));
+  --dc-field-surface: var(--paper-cream);
   --dc-field-edge-width: 1pt;
 }
 .dc-field-side-effects {
   --dc-field-accent: var(--blood);
-  --dc-field-surface: color-mix(in oklch, var(--crimson) 22%, var(--paper-cream));
+  --dc-field-surface: var(--paper-cream);
   --dc-field-edge-width: 1pt;
   --dc-field-edge-style: dashed;
 }

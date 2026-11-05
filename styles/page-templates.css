@@ -428,9 +428,9 @@
 }
 
 /* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
-   jams against the box above it; below, it sits straight on its own sheet,
-   its dashed foot the sheet's top seam. A heading never ends a page (`break-after`,
-   which the tape pseudo-element does not disturb: it is out of flow). */
+   jams against the box above it; `--dc-page-slip-foot` is the space below it,
+   the same whatever follows. A heading never ends a page (`break-after`, which
+   the bolt pseudo-elements do not disturb: they are out of flow). */
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   position: relative;
   background: var(--dc-page-slip-bg);
@@ -447,31 +447,40 @@
   margin-top: 0;
 }
 
-/* `##`: the poster slip. Masking tape taped over the dashed foot, a few
-   degrees off square. It hangs below the slip, into the gap that follows every
-   heading (a heading never ends a page), never over the page's top edge, and
-   its top ends inside the slip's foot padding, so it never touches a glyph. */
+/* `##`: the poster slip, bolted to the wall: a slotted bolt head in each top
+   corner. Opaque discs (an ink ring round a grey face, the slot a hard-stopped
+   band of ink, each turned to a different angle as a hand leaves them), above
+   the first line's glyphs and inside the slip's own box, so they never touch
+   a letter, never reach over the page's top edge and are out of flow. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before,
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
   content: "";
   position: absolute;
-  bottom: -5px;
-  right: 0.5in;
-  width: 0.42in;
-  height: 11px;
-  background: color-mix(in srgb, var(--dc-page-slip-tape) 78%, transparent);
-  border: 1pt solid var(--dc-page-slip-edge);
-  border-width: 1pt 0;
-  rotate: -2.5deg;
+  top: 3px;
+  width: var(--dc-page-slip-bolt-size);
+  height: var(--dc-page-slip-bolt-size);
+  box-sizing: border-box;
+  border: 1.5px solid var(--dc-page-slip-bolt);
+  border-radius: 50%;
+  background: linear-gradient(35deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
+  box-shadow: 1px 1px 0 var(--dc-page-slip-bolt);
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before {
+  left: 10px; /* clear of the 7px rail */
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
+  right: 5px;
+  background: linear-gradient(-70deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
+}
+/* The first line starts clear of the left bolt. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+  padding-top: 0.13in;
 }
 
-/* `###`: a tag: it shrinks to its words, with a thinner rail and foot. It
-   sits on the left edge of the sheet below it, with no gap, so the tag and
-   its text read as one piece (a tag hung in from the edge, every second one
-   further, looked misaligned and floated free of its text). */
+/* `###`: the slip again, at the full width of its column, with a thinner
+   rail and foot (a tag that shrank to its words left a ragged right edge
+   above the full-width sheet under it). */
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  width: fit-content;
-  max-width: 100%;
-  margin-left: 0;
   border-bottom-width: 2pt;
   box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
   padding: 0.06in 0.12in 0.05in 0.2in;
@@ -512,9 +521,17 @@
   padding-bottom: 0.1in;
   margin-bottom: var(--space-md);
 }
-/* a list in the sheet keeps its markers inside the sheet's padding */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul, ol):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+/* a numbered list in the sheet keeps its numbers inside the sheet's padding
+   (a bulleted one starts at the text edge: its marker is in the line) */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   padding-left: calc(var(--dc-page-sheet-pad) + 0.25in);
+}
+
+/* ONE GAP under a free-standing heading, whatever follows it: a panel, a
+   callout, a card, a table or a sheet of loose text (--dc-page-slip-foot).
+   After the sheet rules above, which it must override. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) + * {
+  margin-top: var(--dc-page-slip-foot);
 }
 
 /* A `@columns` run with nothing but prose in it is one sheet, whole. */
