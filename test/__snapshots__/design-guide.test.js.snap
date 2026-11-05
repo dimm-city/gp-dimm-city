@@ -1538,7 +1538,7 @@ Roll 2d20, take the lower. Reality pushes back.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-outcomes" data-source-range="478:479">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label" data-source-range="478:479">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome. You do it, and the moment breaks your way.</span>
@@ -1574,7 +1574,7 @@ Roll 2d20, take the lower. Reality pushes back.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-outcomes">
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label">
   <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Result</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
@@ -2408,7 +2408,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span></div>
 <p><strong>Backbiter Spines:</strong> Reactive spine rigs in the forearms and shins. Spend an action defending and the rig braces, resisting 2 damage from melee and dealing 1 to everything in reach.</p>
 </div>
-<div class="dc-skill-card" data-name="punishing-counter" name="punishing-counter">
+<div class="dc-skill-card" data-name="punishing-counter" name="punishing-counter" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
@@ -2425,8 +2425,8 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <p class="dc-ability-text"><em>Bullet to Blood:</em> Slip a ranged shot as it screams past, surge forward, and <span class="dc-roll-the-die">ROLL THE DIE!</span> to make a basic attack.</p>
 </div>
 <div class="dc-sub-header">Openings are invitations to take a chunk outta 'em.</div>
-</div></div></div>
-<div class="dc-skill-card" data-name="rage-hit" name="rage-hit">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="punishing-counter" name="punishing-counter"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Punishing Counter <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card" data-name="rage-hit" name="rage-hit" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Rage Hit</h4>
     <span class="dc-tab-tier">AUG1.2</span>
@@ -2443,7 +2443,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <p class="dc-ability-text"><em>All Gas, No Brakes:</em> Two basic attacks against one target. If either roll is a 1, both fail.</p>
 </div>
 <div class="dc-sub-header">Full send or full regret.</div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="rage-hit" name="rage-hit"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Rage Hit <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.2</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <p>A path with no subtitle and no sticker chain is the band alone. Tokens: <code>--dc-path-title-bg</code>, <code>--dc-path-title-color</code>, <code>--dc-path-code-bg</code>, <code>--dc-path-code-fg</code>, <code>--dc-path-chip-bg</code>, <code>--dc-path-chip-fg</code>, <code>--dc-path-chip-edge</code>, <code>--dc-path-note-rail</code>, <code>--dc-path-accent</code>, <code>--dc-arrow-color</code>, and the band tokens above.</p>
 <h2 data-name="skill-card">Skill card</h2>
@@ -2479,7 +2479,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc" data-source-range="330:331"><div class="dc-learning-path dc-path-block" data-name="example-path" data-path-ref="AUG1" data-source-range="332:333"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
+<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
@@ -2501,7 +2501,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
 <div class="dc-sub-header">You don't need an opening. You make one.</div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dirty-work-aug1-3" name="dirty-work"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dirty Work <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.3</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <table>
 <thead data-source-range="358:359">
@@ -2540,7 +2540,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc" data-source-range="371:372"><div class="dc-learning-path dc-path-block" data-name="example-path-2" data-path-ref="AUG1" data-source-range="373:374"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="boost-morale-aug3-4" name="boost-morale">
+<div class="dc-skill-card" data-name="boost-morale-aug3-4" name="boost-morale" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
@@ -2566,10 +2566,10 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
 </div><div class="dc-sub-header">Courage spreads. So does panic.</div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="boost-morale-aug3-4" name="boost-morale"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Boost Morale <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG3.4</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h2 data-name="continuing-a-long-card">Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab and no top-right bolt. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
+<p>A card that runs past a page is cut where the page breaks, into two whole cards: Gutterpress measures the break and the plugin has already marked every card for it (the card’s learning path is its scope, and a template holds the continuation). The part that breaks is closed but uncut, and the continuation is a full card with a tab. <code>@continue</code> inside the card does the same at a boundary you chose: it closes the card and opens a continuation card with the same markup, a small triangle after the name on its tab and the ID pill. <code>{.dc-avoid-split}</code> keeps a card out of the cut. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. The part that continues is closed but uncut: a straight 2px ink foot with the hard shadow, a bolt at the bottom left, and a small ▸ flag in the tab colour hanging below the foot at the right. The continuation is a whole card: the full tab (“NAME ▸” and the ID pill), the top marks, the top-right bolt, a straight top and <code>--space-sm</code> between tab and text. Only the real top and the real foot carry the specialty’s silhouette: the foot cut is drawn once, at the card’s end. A paragraph cut at a line resumes without an indent, and a ladder cut between tiers repeats its label bar. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -2602,7 +2602,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc" data-source-range="442:443"><div class="dc-learning-path dc-path-block" data-name="example-path-3" data-path-ref="AUG1" data-source-range="444:445"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
+<div class="dc-skill-card dc-skill-card-cut" data-name="pain-compliance-aug1-4" name="pain-compliance" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Pain Compliance</h4>
     <span class="dc-tab-tier">AUG1.4</span>
@@ -2614,8 +2614,8 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Take Control:</em> Overpower one target in reach and place them in a painful hold. A controlled target cannot react out of turn and rolls Surreal.</p>
 </div>
-</div></div></div>
-<div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.4</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab dc-card-tab-cont">
     <span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span>
     <span class="dc-tab-tier">AUG1.4</span>
@@ -2631,7 +2631,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Lights Out:</em> The target goes unconscious at the end of your turn.</p>
 </div>
 <div class="dc-sub-header">Predators don't negotiate.</div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.4</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h2 data-name="outcomes-inside-a-card">Outcomes inside a card</h2>
 <p>A <code>| Roll | Outcome |</code> table inside a skill card renders as that card’s outcome ladder.</p>
@@ -2668,7 +2668,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-specialty augmerc" data-source-range="509:510"><div class="dc-learning-path dc-path-block" data-name="example-path-4" data-path-ref="AUG1" data-source-range="511:512"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="spit-flame-aug2-1" name="spit-flame">
+<div class="dc-skill-card" data-name="spit-flame-aug2-1" name="spit-flame" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Spit Flame</h4>
     <span class="dc-tab-tier">AUG2.1</span>
@@ -2680,7 +2680,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Torch:</em> Vent a cone of ignited bio-fuel at everything in Reach. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
-<div class="dc-outcomes">
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label">
   <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
@@ -2703,7 +2703,7 @@ Once per round, outside your turn, you exploit a target in reach:
     <span class="dc-outcome-text">You fall prone and lose your next turn.</span>
   </div>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="spit-flame-aug2-1" name="spit-flame"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Spit Flame <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG2.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h2 class="gp-page-break" data-name="one-source-eight-shapes">One source, eight shapes</h2>
 <p>The same path and card markdown, dropped into a different <code>@specialty</code>, takes that family’s silhouette and color with no change to the source. Here it is under Gutterdruid. (The Dualist and Generalist borrow other specialties’ skills, so they have no trees of their own.)</p>
@@ -2713,7 +2713,7 @@ Once per round, outside your turn, you exploit a target in reach:
 <div class="dc-intro">Some adapt and overcome. You mutate and dominate.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span></div>
 </div>
-<div class="dc-skill-card" data-name="feralmorph" name="feralmorph">
+<div class="dc-skill-card" data-name="feralmorph" name="feralmorph" data-gp-split=".dc-card-inner" data-gp-split-scope="GDR1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Feralmorph</h4>
     <span class="dc-tab-tier">GDR1.1</span>
@@ -2726,7 +2726,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <p class="dc-ability-text"><em>Take the Shape:</em> Your body rewrites into a natural form, from a mouse to a horse. The form has 6 HP; you gain its movement and senses but cannot use abilities, items, or language.</p>
 </div>
 <div class="dc-sub-header">Some problems need teeth, paws, and claws.</div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="feralmorph" name="feralmorph"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Feralmorph <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">GDR1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <p>Skill-card tokens: <code>--dc-card-accent</code>, <code>--dc-card-surface</code>, <code>--dc-card-tab-bg</code>, <code>--dc-card-tab-title-color</code>, <code>--dc-card-gap</code>, <code>--dc-card-tab-shadow</code>; tier pill: <code>--dc-tier-bg</code>, <code>--dc-tier-fg</code>, <code>--dc-tier-edge</code> (the specialty’s own chip: its signal colour, or cream where that colour fails contrast for the type); AP chip: <code>--dc-ap-bg</code>, <code>--dc-ap-fg</code>, <code>--dc-ap-border</code>.</p>
 </div></div>"
@@ -3840,7 +3840,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">If you can touch it, you can maul it. When things get close, they bleed.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Punishing Counter</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Rage Hit</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Dirty Work</span></div>
 </div>
-<div class="dc-skill-card" data-name="punishing-counter" name="punishing-counter">
+<div class="dc-skill-card" data-name="punishing-counter" name="punishing-counter" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
@@ -3852,7 +3852,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach makes a basic attack and rolls a <strong>Hard Choice</strong> or worse, your Backbiters knock the strike off line. They miss. …</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="punishing-counter" name="punishing-counter"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Punishing Counter <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="proxy-proxy">Proxy — <code>.proxy</code></h3>
 <div class="dg-stage">
@@ -3861,7 +3861,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Nothing ends while you are still standing.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Zeal Stitch</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Borrowed Mercy</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Redline Rhythm</span></div>
 </div>
-<div class="dc-skill-card" data-name="zeal-stitch" name="zeal-stitch">
+<div class="dc-skill-card" data-name="zeal-stitch" name="zeal-stitch" data-gp-split=".dc-card-inner" data-gp-split-scope="PRX1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Zeal Stitch</h4>
     <span class="dc-tab-tier">PRX1.1</span>
@@ -3873,7 +3873,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You grasp a willing creature in reach or clamp a hand over your own wound, pouring the light of your conviction into the injury as bioluminescent threads stitch flesh together. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="zeal-stitch" name="zeal-stitch"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Zeal Stitch <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">PRX1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="streetwarden-streetwarden">Streetwarden — <code>.streetwarden</code></h3>
 <div class="dg-stage">
@@ -3882,7 +3882,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">The more you know the less you carry.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Gut Sense</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Quick Fix</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stealth Camp Shroud</span></div>
 </div>
-<div class="dc-skill-card" data-name="gut-sense" name="gut-sense">
+<div class="dc-skill-card" data-name="gut-sense" name="gut-sense" data-gp-split=".dc-card-inner" data-gp-split-scope="STW1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Gut Sense</h4>
     <span class="dc-tab-tier">STW1.1</span>
@@ -3894,7 +3894,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">When you enter a new location—building, block, train car, street—you may ask the Dream Master one question. … The DM gives you one true insight about the area.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="gut-sense" name="gut-sense"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Gut Sense <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">STW1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="gutterdruid-gutterdruid">Gutterdruid — <code>.gutterdruid</code></h3>
 <div class="dg-stage">
@@ -3903,7 +3903,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Some adapt and overcome.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Feralmorph</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Environmental Assimilation</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Adaptive Mutation</span></div>
 </div>
-<div class="dc-skill-card" data-name="feralmorph" name="feralmorph">
+<div class="dc-skill-card" data-name="feralmorph" name="feralmorph" data-gp-split=".dc-card-inner" data-gp-split-scope="GDR1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Feralmorph</h4>
     <span class="dc-tab-tier">GDR1.1</span>
@@ -3915,7 +3915,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text">Your body rewrites into a natural form, flesh, bone, and instinct taking over. …</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="feralmorph" name="feralmorph"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Feralmorph <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">GDR1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="cybersurgeon-cybersurgeon">Cybersurgeon — <code>.cybersurgeon</code></h3>
 <div class="dg-stage">
@@ -3924,7 +3924,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Doctors are sworn to heal the sick but I require a 2000 cred downpayment to uphold my oath.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Peep and Patch</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Medicated Calm</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Triage Rig</span></div>
 </div>
-<div class="dc-skill-card" data-name="peep-and-patch" name="peep-and-patch">
+<div class="dc-skill-card" data-name="peep-and-patch" name="peep-and-patch" data-gp-split=".dc-card-inner" data-gp-split-scope="CBS1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Peep and Patch</h4>
     <span class="dc-tab-tier">CBS1.1</span>
@@ -3936,7 +3936,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You quickly examine a creature in reach of you and foam wounds shut, staple torn flesh, and flood the pain with emergency chems. Your efforts immediately restore 3 HP but do not remove impairments, heal permanent wounds, or cure diseases.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="peep-and-patch" name="peep-and-patch"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Peep and Patch <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">CBS1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="wirephreak-wirephreak">Wirephreak — <code>.wirephreak</code></h3>
 <div class="dg-stage">
@@ -3945,7 +3945,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Every contract should end clean.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Dead or Alive</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Killer Instinct</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Hemorrhage</span></div>
 </div>
-<div class="dc-skill-card" data-name="dead-or-alive" name="dead-or-alive">
+<div class="dc-skill-card" data-name="dead-or-alive" name="dead-or-alive" data-gp-split=".dc-card-inner" data-gp-split-scope="WPH1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dead or Alive</h4>
     <span class="dc-tab-tier">WPH1.1</span>
@@ -3957,7 +3957,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You check darksites, contact fixers, browse bounty boards, and quietly ask around the city’s underworld. After a byte or two, you know which bounties are worth chasing, who’s offering them, and roughly how dangerous the marks are. …</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dead-or-alive" name="dead-or-alive"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dead or Alive <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">WPH1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="technosorcerer-technosorcerer">Technosorcerer — <code>.technosorcerer</code></h3>
 <div class="dg-stage">
@@ -3966,7 +3966,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Reality doesn’t have to change. You just have to sell the alternative.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Practical Power</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Digital Chameleon</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Override</span></div>
 </div>
-<div class="dc-skill-card" data-name="practical-power" name="practical-power">
+<div class="dc-skill-card" data-name="practical-power" name="practical-power" data-gp-split=".dc-card-inner" data-gp-split-scope="TNS1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Practical Power</h4>
     <span class="dc-tab-tier">TNS1.1</span>
@@ -3978,7 +3978,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text">You conjure harmless sensory or environmental effects by manipulating cybernetics, technology, or reality itself. Using an Action, you can maintain up to <strong>6 ongoing effects</strong> at once. …</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="practical-power" name="practical-power"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Practical Power <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">TNS1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="etherlock-etherlock">Etherlock — <code>.etherlock</code></h3>
 <div class="dg-stage">
@@ -3987,7 +3987,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-intro">Matter, momentum, gravity, flesh. None of them are laws. They’re habits. Break them all.</div>
 <div class="dc-stickers"><span class="dc-sticker"><span class="dc-sticker-ref">1</span>Rubber Soul</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">2</span>Skyhook</span><span class="dc-arrow">»</span>⁠<span class="dc-sticker"><span class="dc-sticker-ref">3</span>Stolen Momentum</span></div>
 </div>
-<div class="dc-skill-card" data-name="rubber-soul" name="rubber-soul">
+<div class="dc-skill-card" data-name="rubber-soul" name="rubber-soul" data-gp-split=".dc-card-inner" data-gp-split-scope="ETH1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Rubber Soul</h4>
     <span class="dc-tab-tier">ETH1.1</span>
@@ -3999,7 +3999,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text">As your Action, you radically increase the elasticity of yourself, one willing packmate, or one surface or object <strong>In Range</strong> until the end of the encounter. …</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="rubber-soul" name="rubber-soul"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Rubber Soul <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">ETH1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h2 data-name="skill-card-variants">Skill card variants</h2>
 <p>Every switch on one card, each under the same Augmerc wrapper. <code>@continue</code>, which splits a long card across pages, is shown in <a href="#ch-specialty" data-gp-source-token="[The Specialty System](#ch-specialty)" data-gp-source-occurrence="0">The Specialty System</a>.</p>
@@ -4009,7 +4009,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc" data-source-range="280:281"><div class="dc-learning-path dc-path-block" data-name="example-path" data-path-ref="AUG1" data-source-range="282:283"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="dirty-work" name="dirty-work">
+<div class="dc-skill-card" data-name="dirty-work" name="dirty-work" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.1</span>
@@ -4021,7 +4021,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dirty-work" name="dirty-work"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dirty Work <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="tier-override-name-aug1-3">Tier override — <code>#### Name | AUG1.3</code></h3>
 <p>The tier is written on the heading and printed on the tab.</p>
@@ -4029,7 +4029,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc" data-source-range="308:309"><div class="dc-learning-path dc-path-block" data-name="example-path-2" data-path-ref="AUG1" data-source-range="310:311"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
+<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
@@ -4041,7 +4041,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dirty-work-aug1-3" name="dirty-work"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dirty Work <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.3</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="two-columns-columns-2-inside-a-skill">Two columns — <code>@columns 2</code> inside a <code>@skill</code></h3>
 <p>A long ability list packed into two columns. The columns are core’s <code>@columns 2</code> … <code>@end-columns</code> around just that part of the body; the flavor line and the lead paragraph stay full width.</p>
@@ -4049,7 +4049,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc" data-source-range="336:337"><div class="dc-learning-path dc-path-block" data-name="example-path-3" data-path-ref="AUG1" data-source-range="338:339"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="boost-morale-aug3-4" name="boost-morale">
+<div class="dc-skill-card" data-name="boost-morale-aug3-4" name="boost-morale" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Boost Morale</h4>
     <span class="dc-tab-tier">AUG3.4</span>
@@ -4074,7 +4074,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
-</div></div></div></div>
+</div></div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="boost-morale-aug3-4" name="boost-morale"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Boost Morale <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG3.4</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h3 data-name="outcome-table-a-roll-outcome-table-inside-the-card">Outcome table — a <code>| Roll | Outcome |</code> table inside the card</h3>
 <p>The table becomes the card’s outcome ladder.</p>
@@ -4082,7 +4082,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc" data-source-range="373:374"><div class="dc-learning-path dc-path-block" data-name="example-path-4" data-path-ref="AUG1" data-source-range="375:376"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="spit-flame-aug2-1" name="spit-flame">
+<div class="dc-skill-card" data-name="spit-flame-aug2-1" name="spit-flame" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Spit Flame</h4>
     <span class="dc-tab-tier">AUG2.1</span>
@@ -4094,7 +4094,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Torch:</em> Vent a cone of ignited bio-fuel at everything in Reach. <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
-<div class="dc-outcomes">
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label">
   <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
@@ -4117,7 +4117,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-text">You fall prone and lose your next turn.</span>
   </div>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="spit-flame-aug2-1" name="spit-flame"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Spit Flame <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG2.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div></div>
 <h2 data-name="ap-chips">AP chips</h2>
 <p>The plugin picks the chip from the cost written in bold at the start of an ability. The cards are the Augmerc’s Dirty Work and the Proxy’s Borrowed Mercy (its range line excerpted). The last four registers have no markdown form; they are raw spans. Free is an unlit LED (a grey lens with a hollow lamp and an ink edge: the quietest chip), standard is HUD blue, reduced is pale blue with a down-triangle, increased is blood with an up-triangle, VAR is deep magenta and special is amber: the drawn triangles keep reduced and increased apart in grayscale.</p>
@@ -4125,7 +4125,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <div class="dc-specialty augmerc" data-source-range="409:410"><div class="dc-learning-path dc-path-block" data-name="example-path-5" data-path-ref="AUG1" data-source-range="411:412"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">AUG1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="dirty-work-aug1-3-2" name="dirty-work">
+<div class="dc-skill-card" data-name="dirty-work-aug1-3-2" name="dirty-work" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
@@ -4146,11 +4146,11 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap variable">VAR AP</span>
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dirty-work-aug1-3-2" name="dirty-work"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dirty Work <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.3</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div><div class="dc-specialty proxy" data-source-range="433:434"><div class="dc-learning-path dc-path-block" data-name="example-path-6" data-path-ref="PRX1" data-source-range="435:436"><div class="dc-path-shell">
 <h3 class="dc-spray"><span class="dc-path-sticker">PRX1</span><span class="dc-path-sep"> </span>Example Path</h3>
 </div>
-<div class="dc-skill-card" data-name="borrowed-mercy" name="borrowed-mercy">
+<div class="dc-skill-card" data-name="borrowed-mercy" name="borrowed-mercy" data-gp-split=".dc-card-inner" data-gp-split-scope="PRX1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Borrowed Mercy</h4>
     <span class="dc-tab-tier">PRX1.1</span>
@@ -4166,7 +4166,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap variable">3–X AP</span>
   <p class="dc-ability-text">You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.</p>
 </div>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="borrowed-mercy" name="borrowed-mercy"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Borrowed Mercy <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">PRX1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div><p><span class="dc-ap standard">2 AP</span> <span class="dc-ap reduced">1 AP</span> <span class="dc-ap increased">3 AP</span> <span class="dc-ap special">SPC</span></p>
 </div>
 <table>
@@ -4406,7 +4406,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <h2 data-name="outcome-ladder">Outcome ladder</h2>
 <p><code>@outcome</code>, then <code>@outcome flush</code>. <code>flush</code> removes the ladder’s outer margin, so the difference is the spacing around it, not the ladder itself.</p>
 <div class="dg-stage">
-<div class="dc-outcomes" data-source-range="939:940">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label" data-source-range="939:940">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4427,7 +4427,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
     <span class="dc-outcome-key tier-fail"><span class="dc-outcome-name">Catastrophe</span><span class="dc-outcome-roll">1</span></span>
     <span class="dc-outcome-text">It goes bad, and then worse.</span>
   </div>
-</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-source-range="949:950">  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes dc-flush" data-outcome="flush" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label" data-source-range="949:950">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome.</span>
@@ -4948,7 +4948,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 <p><strong>Backbiter Spines:</strong> Anyone who walks the Biting Distance path installs reactive spine rigs in the forearms, shins, or wherever their street doc could wedge the hardware. Beneath the skin sits a row of hungry metal waiting for contact.</p>
 <p>When creatures crowd into reach, you can trigger the system to bloom outward in a form you choose upon implant: blades, spikes, studs, or writhing polyalloy pseudopods. Spending an action doing nothing but defending, the rig braces and answers every swing, letting you resist 2 damage from all melee attacks and dealing 1 damage to all creatures in reach at the start of your turn.</p>
 </div>
-<div class="dc-skill-card" data-name="punishing-counter-aug1-1" name="punishing-counter">
+<div class="dc-skill-card" data-name="punishing-counter-aug1-1" name="punishing-counter" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Punishing Counter</h4>
     <span class="dc-tab-tier">AUG1.1</span>
@@ -4970,8 +4970,8 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <p class="dc-ability-text"><em>Bad Timing:</em> When an enemy in reach rolls a Hard Choice or worse on a basic attack against you, your Backbiters snap out and steal the moment. No damage and you have their weapon. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack using your weapon or theirs. On a Catastrophe, your hit deals double damage, and against a Master you can take their weapon. Free counter once per round.</p>
 </div>
 <p class="dc-card-signoff">Openings are invitations to take a chunk out 'em.</p>
-</div></div></div>
-<div class="dc-skill-card" data-name="rage-hit-aug1-2" name="rage-hit">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="punishing-counter-aug1-1" name="punishing-counter"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Punishing Counter <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.1</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card" data-name="rage-hit-aug1-2" name="rage-hit" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Rage Hit</h4>
     <span class="dc-tab-tier">AUG1.2</span>
@@ -4987,7 +4987,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><strong><span class="dc-roll-the-die">ROLL THE DIE TWICE!</span></strong> <em>All Gas, No Brakes:</em> Make two basic attacks against one target. If either roll is a 1, both attacks catastrophically fail as your movement snags on gear, armor, or the environment at the worst possible moment. DM’s call on how bad it gets.</p>
 </div>
-<div class="dc-outcomes">
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label">
   <div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Crit</span><span class="dc-outcome-roll">20</span></span>
@@ -5012,8 +5012,8 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
 </div>
 <p>Until the start of your next turn, any enemy that starts their turn in reach of you takes 1 damage as your Backbiters stick anything that moves too close.</p>
 <p class="dc-card-signoff">Full send or full regret.</p>
-</div></div></div>
-<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="rage-hit-aug1-2" name="rage-hit"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Rage Hit <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.2</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Dirty Work</h4>
     <span class="dc-tab-tier">AUG1.3</span>
@@ -5060,8 +5060,8 @@ Never fight clean. Fight to finish.</p>
 </tbody>
 </table>
 <p class="dc-card-signoff">You don’t need an opening. You make one.</p>
-</div></div></div>
-<div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="dirty-work-aug1-3" name="dirty-work"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Dirty Work <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.3</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">Pain Compliance</h4>
     <span class="dc-tab-tier">AUG1.4</span>
@@ -5083,8 +5083,8 @@ Never fight clean. Fight to finish.</p>
   <p class="dc-ability-text"><em>Throat Control:</em> Get a grip on throat or collar. The target is <strong>Silenced</strong> and <strong>Slowed</strong> until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.</p>
 </div>
 <p class="dc-card-signoff">Pain is a language everyone understands.</p>
-</div></div></div>
-<div class="dc-skill-card" data-name="its-personal-aug1-5" name="it-s-personal">
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="pain-compliance-aug1-4" name="pain-compliance"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">Pain Compliance <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.4</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
+<div class="dc-skill-card" data-name="its-personal-aug1-5" name="it-s-personal" data-gp-split=".dc-card-inner" data-gp-split-scope="AUG1" data-gp-split-cut="dc-skill-card-cut" data-gp-split-reserve="20px">
   <div class="dc-card-tab">
     <h4 class="dc-tab-title">It's Personal</h4>
     <span class="dc-tab-tier">AUG1.5</span>
@@ -5106,7 +5106,7 @@ Never fight clean. Fight to finish.</p>
   <p class="dc-ability-text"><em>End It:</em> Make a basic attack against your Fixated target. If it hits, deal <strong>double damage</strong>. If it downs them, you immediately clear any negative conditions affecting you and regain 2 AP on your next turn.</p>
 </div>
 <p class="dc-card-signoff">Some jobs are work. Some jobs are justice.</p>
-</div></div></div>
+</div></div><template data-gp-split-head><div class="dc-skill-card dc-skill-card-cont" data-name="its-personal-aug1-5" name="it-s-personal"><div class="dc-card-tab dc-card-tab-cont"><span class="dc-tab-title">It's Personal <svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg></span><span class="dc-tab-tier">AUG1.5</span></div><div class="dc-card-body"><div class="dc-card-inner" data-gp-flow></div></div></div></template></div>
 </div></div><div class="gp-page-break" aria-hidden="true" data-source-range="138:139"></div>
 <div class="section dc-section-panel" data-section="panel" data-name="combining-specialties" data-source-range="140:141"><h2 data-name="combining-specialties">Combining Specialties</h2>
 <p>The Field Guide allows Dreamers to expand beyond a single specialty over the course of a campaign. After a significant story milestone — completing a major job, surviving an encounter that changes your character, or finding a mentor — the Dream Master may allow you to begin learning from a second specialty.</p>
@@ -5244,7 +5244,7 @@ The streets look solid, but they shift like a glitch in a hallucination—half a
 <p>A creature suffering a condition may attempt to end it at the time specified by the effect, usually at the start or end of its turn, by rolling 11 or higher on a d20.</p>
 <p>On a success, the condition ends. Conditions usually end when the encounter ends, unless the effect specifies otherwise. In unclear situations, it’s DM’s call.</p>
 </div></div><div class="section dc-section-panel" data-section="panel" data-name="rolling-the-die-full-outcome-ladder" data-source-range="179:180"><h3 data-name="rolling-the-die-full-outcome-ladder">Rolling the Die — Full Outcome Ladder</h3>
-<div class="dc-outcomes" data-source-range="183:184">  <div class="dc-outcomes-label">Outcomes</div>
+<div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label" data-source-range="183:184">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Triumph</span><span class="dc-outcome-roll">20</span></span>
     <span class="dc-outcome-text">Best-case outcome, extra impact</span>
@@ -5537,7 +5537,7 @@ exports[`rendered output 307-example-gear-tech.md matches its snapshot 1`] = `
 <p data-source-range="47:48">How many implants 'til your brain bluescreens for good?</p>
 </blockquote>
 <p>PCs start clean with 0 EP. But every aug you bolt on scrapes at your mind, tugs at your guts, and dials up the system errors. Ten is the cap—go past it, and your character crashes. Full body-hack burnout.</p>
-</div><div class="dc-outcomes" data-source-range="53:54">  <div class="dc-outcomes-label">Outcomes</div>
+</div><div class="dc-outcomes" data-gp-split-units=".dc-outcome-row" data-gp-split-repeat=".dc-outcomes-label" data-source-range="53:54">  <div class="dc-outcomes-label">Outcomes</div>
   <div class="dc-outcome-row crit">
     <span class="dc-outcome-key tier-crit"><span class="dc-outcome-name">Slim chance of control issues</span><span class="dc-outcome-roll">1–2</span></span>
     <span class="dc-outcome-text">SysChk 6–7</span>

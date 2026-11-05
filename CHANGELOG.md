@@ -21,6 +21,20 @@ blank pages at the end where there were four.
 
 ### Added
 
+- **Automatic continuation cards.** Every skill card (not `.dc-avoid-split`) carries
+  `data-gp-split=".dc-card-inner"`, `data-gp-split-scope` (its learning path) and
+  `data-gp-split-cut="dc-skill-card-cut"` and `data-gp-split-reserve="20px"` (room
+  under a cut part for its outline, shadow and continue flag), and ends in a
+  `<template data-gp-split-head>` holding the continuation card; an outcome ladder
+  carries `data-gp-split-units` and `data-gp-split-repeat`. A Gutterpress with
+  measured split (docs/engine/measured-split.md) cuts a card that spans pages at the
+  measured break; older ones ignore the markup. The part that breaks is closed but
+  uncut (straight 2px ink foot, shadow, bottom-left bolt, a ▸ flag in the tab
+  colour); the continuation is a whole card with its tab, ID pill, top marks and
+  top-right bolt (no hud-blue tab rule). `@continue` stays the author's break and
+  makes the same markup. A continuation's tab keeps the automatic ID (AUG1.4).
+  Styles for `p.gp-split-cont` and `[data-gp-split-copy]`.
+
 - **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
   measures every token as the build separates it and fails when a figure
   written in a token comment, a constitution §V row, a palette-chapter swatch

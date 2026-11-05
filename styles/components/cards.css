@@ -480,8 +480,11 @@
 .dc-skill-card .dc-outcome-row {
   break-inside: avoid;
 }
+/* A split ladder keeps its head with the first tier and its last two tiers
+   together. (Tiers one and two were glued as well: with the lead-in, that
+   chain was taller than the room left at a page foot, so the whole ladder
+   moved instead of splitting.) */
 .dc-skill-card .dc-outcomes-label,
-.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-child(2),
 .dc-skill-card .dc-outcomes > .dc-outcome-row:nth-last-child(2) {
   break-after: avoid;
 }
@@ -524,14 +527,12 @@
 }
 /* The card is bolted at its top right (the tab already fixes the top left) and
    at its bottom left: a bolt head each (drawn in chrome.css, "Bolt heads"). The
-   body is not cloned at a page break, so the top bolt prints once; a
-   continuation card gets none. The bottom bolt sits at the card's foot (the
-   card has no bottom padding), placed by --dc-skill-foot-bolt-left / -bottom,
-   which each specialty sets beside its --dc-skill-body-shape so it clears the
-   foot's cut by 2pt. */
-.dc-skill-card.dc-skill-card-cont > .dc-card-body::before {
-  content: none;
-}
+   body is not cloned at a page break, so a card that the browser breaks
+   natively prints its top bolt once; a continuation card (the split's, or an
+   author's @continue) is a whole card and is bolted at the top right again.
+   The bottom bolt sits at the card's foot (the card has no bottom padding),
+   placed by --dc-skill-foot-bolt-left / -bottom, which each specialty sets
+   beside its --dc-skill-body-shape so it clears the foot's cut by 2pt. */
 .dc-skill-card::after {
   left: var(--dc-skill-foot-bolt-left);
   bottom: var(--dc-skill-foot-bolt-bottom);
@@ -555,18 +556,63 @@
 }
 
 /* ── Continuation card variants ───────────────────────────────────────── */
+/* A card that spans pages is cut at the measured break (Gutterpress's measured
+   split, or the author's @continue) into two whole cards: the part that
+   breaks, `.dc-skill-card-cut`, and the continuation, `.dc-skill-card-cont`,
+   which heads its page with the full tab ("NAME" ▸, and the ID pill), its top
+   marks and its top-right bolt. */
 .dc-skill-card-cont {
   margin-top: -4px; /* the card's own offset: see .dc-skill-card */
 }
-
-.dc-card-tab-cont {
-  border-top-color: var(--hud-blue);
+/* a continuation opens closer to its tab: no flavour line, a snug top */
+.dc-skill-card.dc-skill-card-cont > .dc-card-body > .dc-card-inner {
+  padding-top: var(--space-sm);
 }
 
-/* Inside a skill card the tab's border paints on ::before (tab chrome rules
-   above), so the continuation colour goes there too. */
-.dc-skill-card > .dc-card-tab-cont::before {
-  border-top-color: var(--hud-blue);
+/* The part that breaks is closed but uncut: a straight 2px ink foot with the
+   hard shadow, a bolt at the bottom left, and a flag in the tab colour with a
+   ▸ hanging below it at the right. The specialty's foot cut (its
+   --dc-skill-body-shape) stays the mark of the card's real end, on the
+   continuation. The shape is set on the card, so it wins over the specialty's
+   own, inherited from the specialty. The bolt's place follows the straight
+   foot (the chip-row rule above still moves it right of the AP chip). */
+.dc-skill-card.dc-skill-card-cut {
+  --dc-skill-body-shape: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left: 4px;
+}
+.dc-skill-card.dc-skill-card-cut::after {
+  bottom: 4px;
+}
+.dc-skill-card.dc-skill-card-cut::before {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: calc(100% + 2px);
+  width: 34px;
+  height: 14px;
+  box-sizing: border-box;
+  background-color: var(--dc-card-tab-bg);
+  /* the ▸: drawn, not a glyph (see CONTINUED_MARK in plugin.js) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8'%3E%3Cpath d='M0 0 6 4 0 8z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 6px 8px;
+  border: 2px solid var(--ink);
+  border-top: 0;
+  box-shadow: 2pt 2pt 0 var(--shadow-ink);
+  z-index: 2;
+}
+
+/* The second half of a paragraph the split cut at a line (`p.gp-split-cont`)
+   continues the sentence: it takes no first-line indent and no space above. */
+.dc-skill-card p.gp-split-cont {
+  text-indent: 0;
+  margin-top: 0;
+}
+/* The ladder's label bar, copied onto the part after a cut between tiers
+   (`[data-gp-split-copy]`), is the same bar, and stays with its first tier. */
+.dc-skill-card .dc-outcomes-label[data-gp-split-copy] {
+  break-after: avoid;
 }
 
 

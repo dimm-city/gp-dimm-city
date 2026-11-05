@@ -378,7 +378,7 @@ components:
     snippet: outcome
     recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column is exactly the five bands 20, 11-19, 6-10, 2-5, 1 (any headers, either order), in a skill card or outside one"
     emits:
-      - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
+      - div.dc-outcomes[.dc-flush][data-gp-split-units=".dc-outcome-row"][data-gp-split-repeat=".dc-outcomes-label"] > div.dc-outcomes-label (the split attributes let Gutterpress cut a ladder between tiers and copy the label bar onto the next part)
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
       - span.dc-outcome-text
     css: styles/components/data.css
@@ -567,11 +567,29 @@ components:
   - name: skill-card-continuation
     status: live
     origin: plugin
-    recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
-    emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
+    recipe: "automatic: a skill card that spans pages is cut at the measured break by Gutterpress (the plugin marks every card: data-gp-split, data-gp-split-scope, data-gp-split-cut, and a <template data-gp-split-head> holding the continuation). Authored: @continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card, where the author wants the break)"
+    emits:
+      - div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont (tab: name, a drawn ▸, the tier or automatic ID)
+      - template[data-gp-split-head] > div.dc-skill-card.dc-skill-card-cont (last child of the card; the same markup as @continue, its .dc-card-inner an empty [data-gp-flow])
     css: styles/components/cards.css
-    breaks: "as skill; honours the parent card's .dc-avoid-split"
-    notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
+    tokens:
+      - --dc-skill-body-shape
+      - --dc-skill-foot-bolt-left
+    breaks: "a continuation always heads its page (Gutterpress adds [data-gp-split-cont] { break-before: page }); otherwise as skill. Honours the parent card's .dc-avoid-split: that card gets no split attributes and no template"
+    unstyled: [dc-card-tab-cont]
+    notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both. Needs Gutterpress with measured split (docs/engine/measured-split.md); without it the template is inert and @continue is the only way to break a card."
+
+  - name: skill-card-cut
+    status: live
+    origin: plugin
+    recipe: "(added by Gutterpress to the part of a card that continues, from the card's data-gp-split-cut; and by @continue to the part before it)"
+    emits: div.dc-skill-card.dc-skill-card-cut
+    css: styles/components/cards.css
+    tokens:
+      - --dc-skill-body-shape
+      - --dc-skill-foot-bolt-left
+    breaks: "none of its own"
+    notes: "Closed but uncut: a straight 2px ink foot with the hard shadow, the bottom-left bolt and a ▸ flag in the tab colour hanging below the foot at the right. The specialty's foot cut stays the mark of the card's real end, on the continuation. Also styled: p.gp-split-cont (the second half of a paragraph cut at a line: no indent) and [data-gp-split-copy] (a copied ladder label bar)."
 
   - name: ap-chip
     status: live

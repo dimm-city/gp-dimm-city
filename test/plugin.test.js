@@ -30,11 +30,21 @@ function createGutterpressMarkdown() {
 /** Core stamps source ranges, link tokens and block names (`data-name`) on blocks; they say nothing about the structure under test. */
 const stripSource = (html) => html.replace(/ data-(source-range|source-line|gp-source-token|gp-source-occurrence|name)="[^"]*"/g, "");
 
+/**
+ * The attributes and templates the plugin adds for Gutterpress's measured split
+ * (see "measured split markup" below); the other tests are about the card, so
+ * they read the render without them.
+ */
+const stripSplit = (html) =>
+  html
+    .replace(/<template data-gp-split-head>[\s\S]*?<\/template>/g, "")
+    .replace(/ data-gp-split(-[a-z]+)?="[^"]*"/g, "");
+
 /** Render through Gutterpress (declared markers need it), with source stamps removed. */
 function renderGp(src) {
   const env = {};
-  const html = stripSource(createGutterpressMarkdown().render(src, env));
-  return { html, warnings: env.layoutWarnings ?? [] };
+  const raw = stripSource(createGutterpressMarkdown().render(src, env));
+  return { html: stripSplit(raw), raw, warnings: env.layoutWarnings ?? [] };
 }
 
 /** A two-column pipe table of the five standard bands, with the given header and result texts. */
@@ -235,7 +245,7 @@ describe("behaviour carried from the book repo", () => {
     const md = createGutterpressMarkdown();
     const skillEnv = {};
     const sectionEnv = {};
-    const skillHtml = md.render(skill, skillEnv);
+    const skillHtml = stripSplit(md.render(skill, skillEnv));
     const sectionHtml = md.render(section, sectionEnv);
 
     expect((skillHtml.match(/class="dc-skill-card/g) ?? []).length).toBe(2);
@@ -973,6 +983,96 @@ describe("declared specialty, learning path and skill", () => {
         const { html } = renderGp(doc("@section", "", "@specialty .augmerc", "", skill("@skill").replace(/@continue[\s\S]*$/, ""), closer, "", "@continue", "", "z"));
         expect(html, closer).not.toContain("dc-skill-card-cont");
       }
+    });
+  });
+
+  // The markup Gutterpress's measured split reads (docs/engine/measured-split.md):
+  // a card that spans pages is cut at the measured break and the continuation is
+  // cloned from the template, so the template and an explicit @continue must be
+  // one markup.
+  describe("measured split markup", () => {
+    const path = (...cards) => doc("@specialty .augmerc", "", "@learning-path", "", "### P", "", "@skill", "", ...cards, "@end-learning-path", "@end-specialty");
+    const templateOf = (html) => html.match(/<template data-gp-split-head>([\s\S]*?)<\/template>/)?.[1];
+    const noWhitespaceBetweenTags = (html) => html.replace(/>\s+</g, "><").trim();
+
+    test("every skill card carries the split attributes, with its learning path as the scope", () => {
+      const { raw } = renderGp(path(card("A"), "", card("B")));
+      const roots = raw.match(/<div class="dc-skill-card"[^>]*>/g);
+      expect(roots).toHaveLength(2);
+      for (const root of roots) {
+        expect(root).toContain('data-gp-split=".dc-card-inner"');
+        expect(root).toContain('data-gp-split-scope="AUG1"');
+        expect(root).toContain('data-gp-split-cut="dc-skill-card-cut"');
+        expect(root).toContain('data-gp-split-reserve="20px"');
+      }
+    });
+
+    test("a card outside a learning path has no scope (one scope for the book)", () => {
+      const { raw } = renderGp(doc("@skill", "", card("A")));
+      expect(raw).toContain('data-gp-split=".dc-card-inner"');
+      expect(raw).not.toContain("data-gp-split-scope");
+    });
+
+    test("a card kept whole with .dc-avoid-split is not offered to the split", () => {
+      const { raw } = renderGp(doc("@skill .dc-avoid-split", "", card("A")));
+      expect(raw).toContain("dc-avoid-split");
+      expect(raw).not.toContain("data-gp-split");
+      expect(raw).not.toContain("<template");
+    });
+
+    test("the template is the card's last child, holds the continuation with an empty flow, and does not repeat the split attributes", () => {
+      const { raw } = renderGp(path(card("Hold the Line")));
+      expect(raw).toMatch(/<\/div><\/div><template data-gp-split-head>[\s\S]*<\/template><\/div>\n/);
+      const tpl = templateOf(raw);
+      expect(tpl.match(/<div class="dc-skill-card/g)).toHaveLength(1);
+      expect(tpl).toContain('<div class="dc-skill-card dc-skill-card-cont" name="hold-the-line">');
+      expect(tpl).toContain('<div class="dc-card-inner" data-gp-flow></div>');
+      expect(tpl).toMatch(/<span class="dc-tab-title">Hold the Line <svg class="dc-tab-cont-mark"/);
+      expect(tpl).not.toContain("data-gp-split=");
+      expect(tpl).not.toContain("<h4");
+    });
+
+    test("the continuation's tab carries the automatic ID, and a written tier wins", () => {
+      const { raw } = renderGp(path(card("A"), "", card("B | T9")));
+      const tiers = [...raw.matchAll(/<template data-gp-split-head>[\s\S]*?<span class="dc-tab-tier">([^<]*)<\/span>/g)].map((m) => m[1]);
+      expect(tiers).toEqual(["AUG1.1", "T9"]);
+    });
+
+    test("the ID pill reaches an explicit @continue card too", () => {
+      const { html } = renderGp(path("#### Long Skill", "", "1. **0 AP** *First:* One.", "", "@continue", "", "2. **1 AP** *Second:* Two."));
+      expect(html).toMatch(/dc-card-tab-cont">\s*<span class="dc-tab-title">Long Skill [\s\S]*?<span class="dc-tab-tier">AUG1\.1<\/span>/);
+    });
+
+    test("an explicit @continue and the template are the same markup", () => {
+      const { raw } = renderGp(path("#### Long Skill | AUG1.1", "", "1. **0 AP** *First:* One.", "", "@continue", "", "2. **1 AP** *Second:* Two."));
+      // the explicit continuation card, up to its (empty) body, and the first card's template
+      const explicit = raw.slice(raw.indexOf("</template></div>")).match(/<div class="dc-skill-card dc-skill-card-cont"[^>]*>[\s\S]*?<div class="dc-card-inner">/)[0];
+      const fromTemplate = templateOf(raw);
+      const strip = (h) => noWhitespaceBetweenTags(h.replace(/ data-gp-split(-[a-z]+)?="[^"]*"/g, "").replace(/<div class="dc-card-inner"[^>]*>(<\/div>)?/, ""));
+      expect(strip(explicit)).toBe(strip(fromTemplate).replace(/<\/div><\/div>$/, ""));
+    });
+
+    test("an explicit @continue closes the part before it with the cut class, which the cut foot styles", () => {
+      const { raw } = renderGp(path("#### Long Skill", "", "1. **0 AP** *First:* One.", "", "@continue", "", "2. **1 AP** *Second:* Two.", "", "@end-skill"));
+      expect(raw).toMatch(/<div class="dc-skill-card dc-skill-card-cut"/);
+      expect(raw).toMatch(/<div class="dc-skill-card dc-skill-card-cont"[^>]*data-gp-split=/);
+    });
+
+    test("an outcome ladder is cut between tiers and its label bar is copied: from a table, from @outcome", () => {
+      const table = renderGp(path("#### S", "", ...bandTable())).raw;
+      const outcome = renderGp(doc("@outcome", "20 | Crit | A", "11-19 | Hit | B", "6-10 | Mixed | C", "2-5 | Miss | D", "1 | Fail | E", "@end-outcome")).raw;
+      for (const html of [table, outcome]) {
+        const ladder = html.match(/<div class="dc-outcomes"[^>]*>/)[0];
+        expect(ladder).toContain('data-gp-split-units=".dc-outcome-row"');
+        expect(ladder).toContain('data-gp-split-repeat=".dc-outcomes-label"');
+      }
+    });
+
+    test("the ladder's head and rows are direct children of the ladder (units and repeat must be)", () => {
+      const { raw } = renderGp(path("#### S", "", ...bandTable()));
+      const ladder = raw.match(/<div class="dc-outcomes"[^>]*>([\s\S]*?)\n<\/div>\n/)[1];
+      expect(ladder.match(/\n  <div class="dc-outcome-row /g) ?? ladder.match(/^  <div class="dc-outcome-row /gm)).toHaveLength(5);
+      expect(ladder).toMatch(/^\s*<div class="dc-outcomes-label/);
     });
   });
 

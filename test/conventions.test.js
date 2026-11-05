@@ -29,6 +29,7 @@ const CORE_HOOKS_READ_BY_CSS = [
   ".gp-bleed",
   ".gp-behind",
   ".gp-page-break",
+  ".gp-split-cont", // the second half of a paragraph the measured split cut (docs/engine/measured-split.md)
   ".gp-column-break", // what `@column-break` emits: the box after one opens a column, so it takes the column's hang line
   ".gp-page-full-bleed", // core's `@page full-bleed`, which shares the plate geometry and named page of `.dc-full-page`
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
@@ -70,10 +71,12 @@ describe("plugin.js", () => {
   });
 
   test("never mentions gutterpress core's gp- prefix in code", () => {
-    // The one legitimate reference is core's `gp-continued` class, which the
-    // @continue handler must recognise — it is core's vocabulary, read not written.
+    // The legitimate references are core's `gp-continued` class, which the
+    // @continue handler must recognise (read, not written), and the
+    // `data-gp-split*` attributes of core's measured split, which the plugin
+    // emits on skill cards and outcome ladders (docs/engine/measured-split.md).
     const hits = [...code.matchAll(/["'`][^"'`]*\bgp-[a-z0-9-]+[^"'`]*["'`]/g)].map((m) => m[0]);
-    for (const h of hits) expect(h).toMatch(/gp-continued/);
+    for (const h of hits) expect(h).toMatch(/gp-continued|data-gp-(split|flow)/);
   });
 });
 

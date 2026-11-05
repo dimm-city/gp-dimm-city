@@ -430,11 +430,18 @@ function outcomeRowsHtml(rows, md, head = []) {
   return html;
 }
 
+// The ladder is cut between tiers when its card breaks across pages, and the
+// label bar is copied onto the next part (Gutterpress's measured split).
+const LADDER_SPLIT_ATTRS = [
+  ['data-gp-split-units', '.dc-outcome-row'],
+  ['data-gp-split-repeat', '.dc-outcomes-label'],
+];
+
 // A table of the five standard bands: tier and name come from the band. The
 // ladder replaces the table, so what the author wrote on the table (`{#id
 // .class}`) and what the renderer threaded on it move to the ladder.
 function buildLadderBlock({ head, rows }, md, table) {
-  const attrs = [['class', 'dc-outcomes']];
+  const attrs = [['class', 'dc-outcomes'], ...LADDER_SPLIT_ATTRS];
   for (const [name, value] of table.attrs || []) {
     if (name === 'class') attrs[0][1] += ' ' + value;
     else attrs.push([name, value]);
@@ -1158,20 +1165,53 @@ function dcSkillCards(state) {
     const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
     let columnsDepth = 0; // how many `@columns` runs sit open inside the current card
     const columnsCloses = new Set(); // their close tokens
-    let title = { name: '', tier: '' }; // the current card's title, for @continue
+    let title = { name: '', tier: '' }; // the current card's title and tier or ID, for continuations
 
-    const cardOpen = (cont) => {
+    // A card that may not split (`{.dc-avoid-split}`) is not offered to the measured split.
+    const splittable = !/(^|\s)dc-avoid-split(\s|$)/.test(open.attrGet('class') || '');
+    const scope = path ? path.attrGet('data-path-ref') || '' : '';
+    // `part`: 'first' (a card), 'cont' (a continuation card in the flow), or
+    // 'template' (the continuation the split clones: it takes the card's split
+    // attributes from the part it is cut from).
+    const cardOpen = (part) => {
+      const cont = part !== 'first';
       const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
       attrs.push(['name', slugify(title.name)]);
+      if (splittable && part !== 'template') {
+        attrs.push(['data-gp-split', '.dc-card-inner']);
+        if (scope) attrs.push(['data-gp-split-scope', scope]);
+        attrs.push(['data-gp-split-cut', 'dc-skill-card-cut']);
+        // room under the cut part's box for what hangs below it: the 2px outline,
+        // the hard shadow and the continue flag (styles/components/cards.css)
+        attrs.push(['data-gp-split-reserve', '20px']);
+      }
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
+    // The continuation card: the tab reads "NAME ▸" and carries the card's tier or
+    // automatic ID; the body is open. One builder for the template the split
+    // clones and for an explicit `@continue`, so the two are the same markup.
+    const continuationHtml = (part, flow) =>
+      cardOpen(part) +
+      '  <div class="dc-card-tab dc-card-tab-cont">\n' +
+      '    <span class="dc-tab-title">' + esc(title.name) + ' ' + CONTINUED_MARK + '</span>\n' +
+      (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
+      '  </div>\n' +
+      '  <div class="dc-card-body">\n' +
+      (flow ? '    <div class="dc-card-inner" data-gp-flow></div>\n  </div>\n</div>\n' : '    <div class="dc-card-inner">\n');
+    let cardTok = null; // the token that opened the current card
+
     // A card's closing sign-off is marked only when the card truly ends there: not
     // when it is cut for a continuation, and never its first paragraph.
     let seenBlock = false;
     let compDepth = 0; // how many components (callout, columns) are open inside the card
     const endCard = (continuing = false) => {
       if (inCard && tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
-      if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
+      if (inCard) {
+        // .dc-card-inner, .dc-card-body, then the continuation template (last, so
+        // `:first-child` rules still see the tab), then .dc-skill-card
+        const tpl = splittable ? '<template data-gp-split-head>' + continuationHtml('template', true).replace(/\n\s*/g, '') + '</template>' : '';
+        emit('</div></div>' + tpl + '</div>\n');
+      }
       inCard = false;
     };
 
@@ -1183,25 +1223,27 @@ function dcSkillCards(state) {
       if (tok.type === 'heading_open' && tok.tag === 'h4' && columnsDepth === 0) {
         endCard();
         const parsed = parseSkillTitle(content[i + 1].content || '');
-        title = { name: parsed.name, tier: parsed.tier };
         let autoTier = '';
         if (path) {
           const n = (numbered.get(path) || 0) + 1;
           numbered.set(path, n);
           autoTier = path.attrGet('data-path-ref') + '.' + n;
         }
+        // the continuation keeps the automatic ID too, not only a written one
+        title = { name: parsed.name, tier: parsed.tier || autoTier };
         // The skill's name is its `####` heading, kept a heading so the
         // outline lists it under its learning path. (A continuation card's
         // repeated title stays a span: it is not a new entry.)
         emit(
-          cardOpen(false) +
+          cardOpen('first') +
           '  <div class="dc-card-tab">\n' +
           '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
-          ((parsed.tier || autoTier) ? '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' : '') +
+          (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
           '  </div>\n' +
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
+        cardTok = out[out.length - 1];
         inCard = true;
         seenBlock = false;
         i += 2; // skip inline + heading_close
@@ -1209,16 +1251,12 @@ function dcSkillCards(state) {
       }
 
       if (tok.type === 'dc_skill_continue') {
+        // the author's break: the part before it gets the closed foot, as the
+        // split's parts do (the split's own cut class goes on the same way)
         endCard(true);
-        emit(
-          cardOpen(true) +
-          '  <div class="dc-card-tab dc-card-tab-cont">\n' +
-          '    <span class="dc-tab-title">' + esc(title.name) + ' ' + CONTINUED_MARK + '</span>\n' +
-          (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
-          '  </div>\n' +
-          '  <div class="dc-card-body">\n' +
-          '    <div class="dc-card-inner">\n'
-        );
+        if (cardTok) cardTok.content = cardTok.content.replace(/^<div class="dc-skill-card/, '<div class="dc-skill-card dc-skill-card-cut');
+        emit(continuationHtml('cont', false));
+        cardTok = out[out.length - 1];
         inCard = true;
         seenBlock = false;
         continue;
@@ -1411,6 +1449,7 @@ function dcOutcomes(state) {
         const [roll = '', name = '', text = ''] = line.split('|').map((cell) => cell.trim());
         return { tier: OUTCOME_TIERS[i] || 'hit', name, roll, text };
       });
+    for (const [name, value] of LADDER_SPLIT_ATTRS) run[0].attrSet(name, value);
     return [run[0], makeToken('html_block', outcomeRowsHtml(rows, state.md)), run[run.length - 1]];
   });
 }
