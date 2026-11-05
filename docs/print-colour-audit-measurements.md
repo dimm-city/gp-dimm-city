@@ -64,7 +64,6 @@ token                    hex      CMYK (build)          TAC printed     dE    ok
 --wirephreak-dark        #181b45  C66 M58 Y16 K69       209 #222647    4.0   0.25 0.078  276
 --technosorcerer-dark    #4c290f  C25 M45 Y51 K79       200 #4e3123    2.9   0.32 0.065   54
 --etherlock-dark         #46360c  C28 M32 Y57 K80       197 #47391d    1.8   0.34 0.061   87
---dualist-dark           #143a4a  C60 M34 Y24 K68       186 #233f4c    2.4   0.33 0.051  229
 --generalist-dark        #212a32  C49 M38 Y31 K82       200 #282e34    1.9   0.28 0.019  245
 --augmerc-mid            #006878  C75 M20 Y19 K38       152 #096a7a    0.7   0.48 0.083  213
 --proxy-mid              #9c0f63  C12 M100 Y8 K32       152 #9e2d65    3.7   0.46 0.182  352
@@ -74,7 +73,7 @@ token                    hex      CMYK (build)          TAC printed     dE    ok
 --technosorcerer-mid     #7a3008  C10 M66 Y71 K59       206 #7b371f    2.0   0.41 0.114   44
 --etherlock-mid          #8a6a00  C11 M25 Y91 K45       172 #8c6e1f    1.6   0.54 0.111   88
 --generalist-mid         #3a4854  C51 M34 Y24 K61       170 #3d4a55    0.8   0.39 0.027  244
-aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
+aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --dualist-dark -> --augmerc-dark, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
 ```
 
 ## mixes
@@ -210,7 +209,7 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
  5.09:1  AA       dualist: tier chip
  6.46:1  AA       dualist: text ink on paper
  6.46:1  AA       dualist: cream on --dualist-mid (tab)
-12.11:1  AAA      dualist: cream on --dualist-dark (chip)
+12.51:1  AAA      dualist: cream on --dualist-dark (chip)
  6.30:1  AA       generalist: on-band type on band
  6.30:1  AA       generalist: tier chip
  9.40:1  AAA      generalist: text ink on paper
@@ -221,9 +220,7 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
 ## dupes
 
 ```
-dE  2.4  --augmerc-dark           #003a40  ~  --dualist-dark           #143a4a
 dE  3.4  --ink-dark               #2f2622  ~  --generalist-dark        #212a32
-dE  3.5  --cybersurgeon-dark      #303840  ~  --dualist-dark           #143a4a
 dE  3.8  --orange-deep            #a03808  ~  --rust                   #b23a12
 dE  4.1  --technosorcerer-dark    #4c290f  ~  --etherlock-dark         #46360c
 dE  4.2  --paper-stain            #b0a89c  ~  --cybersurgeon-accent    #a8b4b8
@@ -247,7 +244,6 @@ dE  5.6  --fungi-rot              #30461e  ~  --etherlock-dark         #46360c
 dE  5.6  --augmerc-dark           #003a40  ~  --generalist-dark        #212a32
 dE  5.7  --cybersurgeon-dark      #303840  ~  --generalist-dark        #212a32
 dE  5.9  --cybersurgeon-dark      #303840  ~  --generalist-mid         #3a4854
-dE  5.9  --dualist-dark           #143a4a  ~  --generalist-dark        #212a32
 dE  5.9  --hud-blue-dim           #7ab8d0  ~  --cybersurgeon-accent    #a8b4b8
 dE  5.9  --amber                  #7a5a20  ~  --etherlock-mid          #8a6a00
 ```

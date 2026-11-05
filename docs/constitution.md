@@ -282,7 +282,7 @@ Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/st
 | wirephreak | signal-indigo | `#093c81` | `#181b45` | accent / cream | future-tech HIGH + landfill mid | 209% |
 | proxy | brand-magenta | `#9c0f63` | `--brand-magenta-deep` | magenta-deep / cream | tech HIGH + magic HIGH | 189% |
 | etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 197% |
-| dualist | crystal-aqua | `--augmerc-mid` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 186% |
+| dualist | crystal-aqua | `--augmerc-mid` | `--augmerc-dark` | accent / ink | magic HIGH + tech mid + wonderland mid | 191% |
 | generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 200% |
 
 **Lightness bands.** A tier reads as one system when every specialty's value is about the same and only the hue changes, and that is what keeps the ten apart in a grayscale proof. Targets in OKLab L: darks ~0.30, mids ~0.47, accents 0.65–0.75. Today the darks span 0.25–0.37, the mids 0.37–0.54 and the accents 0.49–0.89 (the outliers are listed in `dc-identity.css`); move a colour toward its band whenever you add or retune one.

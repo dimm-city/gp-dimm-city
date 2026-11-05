@@ -42,7 +42,8 @@
      dc-palette.css); every dark is <= 209%, under the profile's 240% cap.
      Cream on any of them is >= 10:1. Near-duplicates are aliases: proxy's
      dark is the deep magenta, streetwarden's and gutterdruid's are
-     --fungi-rot (each was within dE 2.1 of it). */
+     --fungi-rot (each was within dE 2.1 of it), dualist's is --augmerc-dark
+     (dE 2.4). */
   --augmerc-dark:          #003a40;  /* deep teal-black — cold chrome under the skin · TAC 191% (C60 M28 Y30 K73) */
   --proxy-dark:            var(--brand-magenta-deep);  /* alias (#8a1a90 was dE 2.1 from it) */
   --cybersurgeon-dark:     #303840;  /* cold clinical near-black · TAC 184% (C47 M35 Y28 K74) */
@@ -51,7 +52,7 @@
   --technosorcerer-dark:   #4c290f;  /* near-black scorch · TAC 200% (C25 M45 Y51 K79) */
   --gutterdruid-dark:      var(--fungi-rot);  /* alias: swamp-rot dark (#394017 was dE 2.1 from it) */
   --etherlock-dark:        #46360c;  /* deep tarnished gold · TAC 197% (C28 M32 Y57 K80) */
-  --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark · TAC 186% (C60 M34 Y24 K68) */
+  --dualist-dark:          var(--augmerc-dark);  /* alias: drowned teal-black, shared with augmerc (#143a4a was dE 2.4 from it) */
   --generalist-dark:       #212a32;  /* slate-black · TAC 200% (C49 M38 Y31 K82) */
 
   /* ── Specialty Mid Colors (card-tab bg + card border — uniform contract)

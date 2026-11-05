@@ -261,6 +261,11 @@ ceiling: CRPC1's saturated purples run from process magenta (h355) through viole
 plus lightness, so no pair can be pushed much past 12 without one token leaving
 its role.
 
+**Finding 3.** `--augmerc-dark` ~ `--dualist-dark` (dE 2.4), left separate above,
+is aliased after all: `--dualist-dark` is `--augmerc-dark`, the convention the
+other near-duplicate pairs follow. (The figure is a screen distance; it does not
+change with the conversion.)
+
 | Token | alpha.1 | alpha.2 | prints (build) |
 |---|---|---|---|
 | `--brand-magenta` | `#bf308f` | `#cf217e` | C2 M100 Y1 K12 = 115% |

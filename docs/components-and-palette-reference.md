@@ -404,6 +404,6 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 | Wirephreak | `--signal-indigo` (`#396cb7`) | `#093c81` | `#181b45` |
 | Proxy | `--brand-magenta` (`#cf217e`) | `#9c0f63` | `→ --brand-magenta-deep` (`#690045`) |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
-| Dualist | `--crystal-aqua` (`#4a98a8`) | `→ --augmerc-mid` (`#006878`) | `#143a4a` |
+| Dualist | `--crystal-aqua` (`#4a98a8`) | `→ --augmerc-mid` (`#006878`) | `→ --augmerc-dark` (`#003a40`) |
 | Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |
 

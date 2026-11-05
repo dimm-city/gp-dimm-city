@@ -42,7 +42,8 @@ token name still works.
   more.
 - **Near-duplicate colours are aliases:** `--proxy-dark` is `--brand-magenta-deep`,
   `--streetwarden-dark` and `--gutterdruid-dark` are `--fungi-rot`, `--dualist-mid`
-  is `--augmerc-mid`, `--cybersurgeon-mid` is `--crystal-slate`,
+  is `--augmerc-mid`, `--dualist-dark` is `--augmerc-dark` (alpha.2; it was dE 2.4
+  from it), `--cybersurgeon-mid` is `--crystal-slate`,
   `--tint-magenta-rose` is `--brand-magenta` and `--tint-hud-teal` is `--hud-blue`.
 - **Paper tints hold a printable dot.** On white paper the `color-mix()` callout,
   section, faction, choice and entry surfaces had a dominant ink of 2-4%,
