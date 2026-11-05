@@ -469,8 +469,8 @@ right border. Three rules keep the type centred:
   edge is balanced with `padding-top`, and the inline-end padding gives back the
   tracking a `letter-spacing` leaves after the last glyph;
 - the chip sits at the top of the footer band: the bottom margin
-  (`--bottom-margin`) is 0.875in from the sheet edge, and a 0.225in chip with
-  `margin-top: 0.025in` ends exactly 0.625in from the sheet edge, on
+  (`--bottom-margin`) is 0.97in from the sheet edge, and a 0.225in chip with
+  `margin-top: var(--chip-gap)` (0.12in) ends exactly 0.625in from the sheet edge, on
   DriveThruRPG's 0.5in text minimum (0.5in from the trim). The engine honours a margin on a margin box (measured: a 4pt margin
   moved the box 4.3pt);
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.

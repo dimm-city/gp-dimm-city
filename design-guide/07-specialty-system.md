@@ -405,7 +405,7 @@ When an ally in range ROLLS THE DIE!, bark encouragement that hits just right. O
 
 ## Continuing a long card
 
-When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose.
+When one ability runs past a page, `@continue` inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; `@continue` is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a `#####` sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate never split, so one that does not fit moves whole with its lead-in. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, `--space-md` under the page top, with no tab or tape. Only the real top and the real foot carry the specialty's silhouette. A `**Requires:**` band never splits and never ends a page alone.
 
 ```markdown {.dg-split}
 @specialty .augmerc

@@ -138,6 +138,10 @@
   padding: var(--space-lg) var(--space-xl);
   margin-top: var(--dc-alert-margin-top);
   break-inside: var(--dc-alert-break-inside);
+  /* A callout that splits (in a column run) keeps its padding on each fragment:
+     a continuation opens --space-lg under its edge and a fragment that goes on
+     ends --space-lg above its foot. */
+  box-decoration-break: clone;
   /* Alerts are full-width callouts that interrupt the reading flow; they
      should NEVER overlap a preceding right-floated image. Block elements
      don't wrap floats by default — clear: right ensures any alert after a

@@ -647,6 +647,22 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toContain('<div class="dc-sub-header">A real sub-header</div>');
     });
 
+    test("a paragraph that is only a bold run is the card's sub-head; a run-in label is not", () => {
+      const src = doc(
+        "Outside.", "", "**Outside bold**", "",
+        "@skill", "", card("Merge"), "",
+        "**Full Merge**", "",
+        "**Shared Senses:** You feel it.", "",
+        "Plain text.", "",
+        "**Bold** then text.",
+      );
+      const { html } = renderGp(src);
+      expect(html).toContain('<p class="dc-card-subhead"><strong>Full Merge</strong></p>');
+      expect(html).toContain("<p><strong>Shared Senses:</strong> You feel it.</p>");
+      expect(html).toContain("<p><strong>Outside bold</strong></p>");
+      expect(count(html, /dc-card-subhead/g)).toBe(1);
+    });
+
     describe("cost rows", () => {
       const skill = (...lines) => renderGp(["@skill", "", "#### S | T1", "", ...lines, "", "@end-skill"].join("\n")).html;
       const chip = (html) => [...html.matchAll(/<span class="(dc-ap[^"]*)">([^<]*)<\/span>/g)].map((m) => [m[1], m[2]]);

@@ -235,20 +235,9 @@
   --dc-accent-ink: var(--dc-steps-accent);
 }
 
-/* Grit: a staple holding the plate to the wall, a solid bar a few degrees off
-   square, on the top edge where no text is. */
-.dc-steps::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 14px;
-  width: 20px;
-  height: 4px;
-  background: var(--ink-smoke);
-  border-bottom: 1pt solid var(--ink);
-  transform: rotate(-4deg);
-  pointer-events: none;
-}
+/* No staple on the top edge: a bar a few degrees off square, 5px above the
+   plate, read as a stray dark sliver over its top-left corner (and prints
+   wrong when the plate opens a page). The frame and shadow are the plate's grit. */
 
 .dc-steps>li {
   display: grid;

@@ -50,7 +50,7 @@
   --dc-section-recess-foot:  0px;                 /* how far the sheet's hanging edge stops short of the lip */
   --dc-section-lift:         var(--shadow-soft);  /* the soft lift's colour; transparent on a recessed kind */
   --dc-section-hard-shadow:  color-mix(in srgb, var(--ink-dark) 82%, transparent);  /* the hard offset copy; translucent, so the brick reads through */
-  --dc-section-top:          0px;                 /* extra padding on top inside the box: a kind that draws a tab (dm) reserves its height here */
+  --dc-section-top:          0px;                 /* room above the first block, inside the box: a kind that draws a tab (dm) reserves its height here (a margin, not padding, so a continuation does not repeat it) */
   --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
   --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
   --dc-section-ink-tone:     var(--ink);

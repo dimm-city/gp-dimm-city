@@ -446,6 +446,12 @@
 .dc-field-requires {
   --dc-field-accent: var(--ink-dark);
   --dc-field-surface: var(--paper-aged);
+  /* A prerequisite is a tag, not a passage: it never splits (a two-line band
+     split one and one, the first a grey box stretched over empty space) and
+     never ends a page alone, so it stays with the line after it. The other
+     fields still split between lines (above). */
+  break-inside: avoid;
+  break-after: avoid;
 }
 
 }

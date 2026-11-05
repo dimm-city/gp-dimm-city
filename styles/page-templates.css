@@ -510,6 +510,10 @@
   box-shadow: var(--dc-page-slip-shadow);
   padding: 0.05in var(--dc-page-sheet-pad);
   margin: 0;
+  /* A block that splits keeps its own padding on each fragment, so a
+     continuation opens (and a fragment that goes on ends) with what the block
+     already had: 0.05in, 0.1in on the run's first and last block. */
+  box-decoration-break: clone;
   orphans: 3;
   widows: 3;
 }
@@ -528,6 +532,14 @@
 }
 :where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
   padding-left: calc(var(--dc-page-sheet-pad) + 1.6em);
+}
+
+/* A RULE ON THE BARE WALL is never drawn: an `---` that is a direct child of a
+   page or a chapter (outside any sheet, panel or card) would be a line across
+   the brick. A rule inside a section, a card or a column run is that
+   component's and is left to it. */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > hr:not([class*="dc-"]) {
+  display: none;
 }
 
 /* ONE GAP under a free-standing heading, whatever follows it: a panel, a
@@ -706,6 +718,11 @@
    which fix their own spacing here, outrank it. */
 :is(p, li) {
   margin-bottom: var(--dc-flow-gap, revert-layer);
+}
+/* An item's own paragraph (a loose list) has no margin of its own, so the gap
+   above is the item's alone and a tight and a loose list keep one pitch. */
+li > p {
+  margin-bottom: 0;
 }
 .dc-snug {
   --dc-flow-gap: 0.04in;

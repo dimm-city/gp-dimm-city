@@ -426,7 +426,7 @@ Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rul
 
 ## Procedure
 
-A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, ruled dividers, and a staple holding the plate to the wall. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
+A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, and ruled dividers. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
 
 Tokens: `--dc-steps-accent` (the number strip), `--dc-steps-surface` (the plate).
 

@@ -325,7 +325,7 @@ components:
       - div.dc-field.dc-field-requires
     css: styles/components/entries.css
     tokens: [--dc-field-accent, --dc-field-surface, --dc-field-fg, --dc-field-label-fg, --dc-field-edge-width, --dc-field-edge-style]
-    breaks: "break-inside: avoid; a label with no text keeps with the paragraph after it"
+    breaks: "splits between lines (two orphans and two widows) except `requires`, a prerequisite band, which never splits and never ends a page alone (break-inside and break-after: avoid); a label with no text keeps with the paragraph after it"
     usage:
       - "**SPECS:**"
       - "**Traits:**"
@@ -536,7 +536,9 @@ components:
     emits:
       - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
+      - p.dc-card-subhead (a paragraph in a card whose whole content is one bold run: its pseudo-heading; a run-in `**Label:** text` is not one)
       - div.dc-ability > span.dc-ap + p.dc-ability-text (div.dc-ability-body wraps the text and a nested list when the item has one)
+      - div.dc-ability.dc-ability-title (a cost row that is only a name, `**3 AP — Butcher Roach**`: the title of the paragraphs after it)
       - div.dc-outcomes or div.dc-roll-table (a numbered list whose items all lead with a bold die result)
       - ul > li (a numbered item led by a bold name is an option: bulleted, name in bold with a colon)
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
@@ -552,7 +554,7 @@ components:
       - --dc-tier-fg
       - --dc-tier-edge
       - --dc-skill-card-break-inside
-    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces (a bold sub-head with its paragraph; a paragraph or a cost-row title with the list, table or ladder after it), a sub-header stays with what follows, a list breaks only with two items each side, a plain table splits between rows (two body rows each side, header row repeated) while the outcome ladder and roll plate stay whole, and the last block stays with the one above it. A fragment that continues keeps 12pt under its last line and a continuation 0.12in above its first (box-decoration-break: clone on the padding box); only the real top and foot carry the cut and the shadow. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). The tier pill on the tab is the specialty's own chip (--dc-tier-*), not a position colour. There is no featured-card variant. Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-card-continuation

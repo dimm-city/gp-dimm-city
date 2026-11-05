@@ -509,7 +509,7 @@ function skillListHtml(items, md) {
     }
     costIdx++;
     const text = '<p class="dc-ability-text">' + ability.text + '</p>\n';
-    html += '<div class="dc-ability"' + posAttrs + '>\n' +
+    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + '"' + posAttrs + '>\n' +
       '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
       (item.rest ? '  <div class="dc-ability-body">\n' + text + item.rest + '  </div>\n' : '  ' + text) +
       '</div>\n';
@@ -598,7 +598,10 @@ function parseAbilityFromListItem(html) {
   if (/^0+$/.test(bare)) apClass += ' free';
   else if (/[-‐-―−]|X|VAR|\+$/i.test(bare)) apClass += ' variable';
 
-  return { apVal, apClass, text };
+  // A row that is only a name (`**3 AP — Butcher Roach**`, its text in the
+  // paragraphs that follow) is the title of what follows: `titleOnly`.
+  const titleOnly = !html.slice(lead[0].length).trim();
+  return { apVal, apClass, text, titleOnly };
 }
 
 
@@ -1056,6 +1059,13 @@ function dcLearningPaths(state) {
   });
 }
 
+/** True when an inline token's whole content is one `<strong>` run. */
+function isBoldOnlyInline(inline) {
+  const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
+  return kids.length > 2 && kids[0].type === 'strong_open' && kids[kids.length - 1].type === 'strong_close' &&
+    kids.filter((k) => k.type === 'strong_open' || k.type === 'strong_close').length === 2;
+}
+
 /**
  * `@skill`: every `####` heading inside it starts a card. The declared
  * wrapper only carries the author's classes and attributes (`{.dc-avoid-split}`,
@@ -1203,6 +1213,11 @@ function dcSkillCards(state) {
           continue;
         }
       }
+
+      // A paragraph that is nothing but one bold run is the card's pseudo
+      // heading (`**Full Merge**`); CSS cannot see text nodes, so only the
+      // plugin can tell it from a run-in `**Shared Senses:** text`.
+      if (tok.type === 'paragraph_open' && isBoldOnlyInline(content[i + 1])) addTokenClass(tok, 'dc-card-subhead');
 
       out.push(tok);
     }
