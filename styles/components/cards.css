@@ -420,6 +420,46 @@
   font-weight: 600;
 }
 
+/* An ability row whose item also holds a nested list or more paragraphs: the
+   text and what follows it share the column to the right of the chip. */
+.dc-ability-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dc-ability-body > :is(ul, ol) {
+  margin: 4px 0 0;
+  padding-left: 1.2em;
+}
+
+/* ── Roll row ─────────────────────────────────────────────────────────────
+   A numbered item led by a die result ("20", "11-19"), not a price: the result
+   in mono type at the left, the text beside it. Restrained default; it is not
+   an AP chip and borrows nothing from one. */
+.dc-roll-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
+  align-items: baseline;
+  break-inside: avoid;
+}
+
+.dc-roll-val {
+  flex: none;
+  min-width: 3.2em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.dc-roll-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
    --dc-accent-ink (the component's own text-safe ink; default the deep magenta).
    An instruction to act, set in the text around it: the same font and size as

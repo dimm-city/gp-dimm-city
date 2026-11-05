@@ -442,30 +442,124 @@ function buildLadderBlock({ head, rows }, md, table) {
   return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
-// Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
-function parseAbilityFromListItem(html) {
-  // Match <strong>N AP</strong> or <strong>N-X AP</strong> at the start (rendered HTML)
-  const apMatch = html.match(/^\s*<strong>([^<]+)<\/strong>\s*/i);
-  if (!apMatch) return null;
+// The items of an ordered list in a skill card: each is its first line (inline
+// HTML) and `rest`, whatever else the item holds (a nested list, a second
+// paragraph), rendered as it would be anywhere else so it stays what it is.
+function collectSkillListItems(tokens, startIndex, md, env) {
+  const open = tokens[startIndex];
+  const items = [];
+  let i = startIndex + 1;
+  while (i < tokens.length && !(tokens[i].type === 'ordered_list_close' && tokens[i].level === open.level)) {
+    if (tokens[i].type === 'list_item_open' && tokens[i].level === open.level + 1) {
+      const number = tokens[i].info || String(items.length + 1);
+      let end = i + 1;
+      while (!(tokens[end].type === 'list_item_close' && tokens[end].level === tokens[i].level)) end++;
+      const body = tokens.slice(i + 1, end);
+      const first = body.findIndex((t) => t.type === 'inline');
+      let after = first + 1;
+      if (first >= 0 && body[after]?.type === 'paragraph_close') after++;
+      items.push({
+        number,
+        html: first >= 0 ? renderInlineChildren(body[first], md) : '',
+        rest: first >= 0 && after < body.length ? md.renderer.render(body.slice(after), md.options, env || {}) : '',
+      });
+      i = end;
+    }
+    i++;
+  }
+  return { items, endIndex: i };
+}
 
-  let apVal = apMatch[1].trim();
-  // Normalize: ensure "AP" suffix
-  if (!apVal.toUpperCase().includes('AP')) {
-    apVal = apVal + ' AP';
+// A skill card's ordered list: cost items are ability rows, die results are
+// roll rows, and every other item stays a list item (consecutive ones share one
+// <ol>, numbered as the author numbered them).
+function skillListHtml(items) {
+  const parsed = items.map((item) => ({ ...item, ability: parseAbilityFromListItem(item.html) }));
+  const costs = parsed.filter((p) => p.ability?.kind === 'cost').length;
+  let html = '';
+  let costIdx = 0;
+  let plain = [];
+  const flush = () => {
+    if (!plain.length) return;
+    html += '<ol' + (plain[0].number !== '1' ? ' start="' + esc(plain[0].number) + '"' : '') + '>\n' +
+      plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
+    plain = [];
+  };
+  parsed.forEach((item) => {
+    const { ability } = item;
+    if (!ability) {
+      plain.push(item);
+      return;
+    }
+    flush();
+    if (ability.kind === 'roll') {
+      html += '<div class="dc-roll-row">\n' +
+        '  <span class="dc-roll-val">' + esc(ability.rollVal) + '</span>\n' +
+        '  <div class="dc-roll-text">' + ability.text + item.rest + '</div>\n' +
+        '</div>\n';
+      return;
+    }
+    let posAttrs = '';
+    if (costs > 1) {
+      if (costIdx === costs - 1) posAttrs = ' data-ability-last="true"';
+      if (costIdx === costs - 2) posAttrs = ' data-ability-penultimate="true"';
+    }
+    costIdx++;
+    const text = '<p class="dc-ability-text">' + ability.text + '</p>\n';
+    html += '<div class="dc-ability"' + posAttrs + '>\n' +
+      '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
+      (item.rest ? '  <div class="dc-ability-body">\n' + text + item.rest + '  </div>\n' : '  ' + text) +
+      '</div>\n';
+  });
+  flush();
+  return html;
+}
+
+// A numbered item in a skill card whose text opens with a bold lead is read by
+// what the lead says, never by its shape alone:
+//   - a COST: a number, a range (1-3, 1-X, 2-X; hyphen or dash), X or VAR, then
+//     "AP": "2 AP", "0 AP.", "3 AP — Butcher Roach", "1 AP/100 DC Per Ego Point:",
+//     "+1 AP per passenger.". The one bare form kept is the variable "3-X".
+//     It becomes the AP chip.
+//   - a DIE RESULT: only a number or a range of numbers ("20", "11-19"). It
+//     becomes a roll row, not a chip: it is not a price.
+//   - anything else (an option's name, a sentence) stays an ordinary list item.
+const COST_LEAD = /^(\+?\s*(?:\d+|X|VAR)(?:\s*[-‐-―−]\s*(?:\d+|X))?)\s*AP\b(.*)$/i;
+const BARE_VARIABLE_COST = /^\d+\s*[-‐-―−]\s*X$/i;
+const DIE_RESULT_LEAD = /^\d{1,2}(?:\s*[-‐-―−]\s*\d{1,2})?$/;
+
+// A rendered list item's text → { kind: 'cost', apVal, apClass, text } |
+// { kind: 'roll', rollVal, text } | null (an ordinary item).
+function parseAbilityFromListItem(html) {
+  const lead = html.match(/^\s*<strong>([^<]+)<\/strong>\s*/i);
+  if (!lead) return null;
+
+  const label = lead[1].replace(/\s+/g, ' ').trim();
+  const text = html.slice(lead[0].length);
+
+  let costPart;
+  let apVal;
+  const cost = COST_LEAD.exec(label);
+  if (cost) {
+    costPart = cost[1].replace(/\s+/g, '');
+    // A chip is a label, not a sentence: a closing stop or colon goes, unless a
+    // name follows the cost ("3 AP — Corpse Pilot.").
+    const named = /^\s*[\u2010-\u2015\u2212-]\s*\S/.test(cost[2]);
+    apVal = cost[1].trim() + ' AP' + (named ? cost[2] : cost[2].replace(/[.:]+$/, ''));
+  } else if (BARE_VARIABLE_COST.test(label)) {
+    costPart = label.replace(/\s+/g, '');
+    apVal = label + ' AP';
+  } else if (DIE_RESULT_LEAD.test(label)) {
+    return { kind: 'roll', rollVal: label.replace(/\s*[-‐-―−]\s*/, '–'), text };
+  } else {
+    return null;
   }
 
-  const rest = html.slice(apMatch[0].length);
-
-  // Determine AP class
   let apClass = 'dc-ap';
-  if (apVal === '0 AP' || apVal === '0AP') apClass += ' free';
-  else if (apVal.includes('-') || /X|VAR/.test(apVal.toUpperCase())) apClass += ' variable';
+  if (/^\+?0+$/.test(costPart)) apClass += ' free';
+  else if (/[-‐-―−]|X|VAR/i.test(costPart)) apClass += ' variable';
 
-  return {
-    apVal: apVal,
-    apClass: apClass,
-    text: rest
-  };
+  return { kind: 'cost', apVal, apClass, text };
 }
 
 
@@ -671,11 +765,31 @@ function dcAlertsTransform(state) {
     const config = DC_ALERT_TYPES[alertType];
     if (!config) { newTokens.push(tok); continue; }
 
+    // A title: text after the marker on its own line, with more following (a line
+    // break or another block), replaces the variant's default label. Alone on a
+    // one-line quote, text after the marker is the body, as it always was.
+    let titleHtml = '';
+    let titleCount = 0;
+    if (config.label) {
+      const kids = inlineTok.children;
+      const afterMarker = lead.content.replace(DC_ALERT_PATTERN, '').replace(/^\s+/, '');
+      if (afterMarker !== '') {
+        const brk = kids.findIndex((c) => c.type === 'softbreak' || c.type === 'hardbreak');
+        const moreBlocks = tokens.slice(firstInlineIdx + 2, closeIdx).length > 0;
+        if (brk > 0 || (brk === -1 && moreBlocks)) {
+          titleCount = brk === -1 ? kids.length : brk;
+          const titleKids = kids.slice(0, titleCount).map((c) => (c === lead ? Object.assign(Object.create(Object.getPrototypeOf(c)), c, { content: afterMarker }) : c));
+          if (afterMarker.trim() === '') titleCount = 0;
+          else titleHtml = state.md.renderer.renderInline(titleKids, state.md.options, state.env).trim();
+        }
+      }
+    }
+
     // Open div
     const openTok = new state.Token('html_block', '', 0);
     openTok.block = true;
     let openHtml = `<div class="${config.classes}">`;
-    if (config.label) openHtml += `<span class="dc-alert-label">${config.label}</span>`;
+    if (config.label) openHtml += `<span class="dc-alert-label">${titleHtml || config.label}</span>`;
     openHtml += '\n';
     openTok.content = openHtml;
     newTokens.push(openTok);
@@ -683,9 +797,14 @@ function dcAlertsTransform(state) {
     // Strip [!TYPE] prefix from first inline; suppress its paragraph wrapper if empty.
     const markerPrefix = /^\[![A-Z_]+\][ \t]*/i;
     const prefixMatch = inlineTok.content.match(markerPrefix);
-    const stripped = prefixMatch
+    let stripped = prefixMatch
       ? inlineTok.content.slice(prefixMatch[0].length).trim()
       : inlineTok.content;
+    if (titleHtml) {
+      // the title line leaves the paragraph: what is left is the text after its line break
+      const nl = stripped.search(/\r?\n/);
+      stripped = nl === -1 ? '' : stripped.slice(nl).trim();
+    }
 
     const paragraphOpenIdx = firstInlineIdx - 1;
     const paragraphCloseIdx = firstInlineIdx + 1;
@@ -703,8 +822,14 @@ function dcAlertsTransform(state) {
         // off the lead text (and the line break it leaves at the front) and
         // keep the rest; re-parsing would skip replacements, smartquotes and
         // text_join.
-        lead.content = lead.content.replace(markerPrefix, '');
-        if (lead.content === '') {
+        if (titleCount) {
+          inlineTok.children.splice(0, titleCount);
+          const next = inlineTok.children[0];
+          if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
+        } else {
+          lead.content = lead.content.replace(markerPrefix, '');
+        }
+        if (lead.content === '' && !titleCount) {
           inlineTok.children.shift();
           const next = inlineTok.children[0];
           if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
@@ -953,7 +1078,7 @@ function dcSkillCards(state) {
           cardOpen(false) +
           '  <div class="dc-card-tab">\n' +
           '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
-          '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' +
+          ((parsed.tier || autoTier) ? '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' : '') +
           '  </div>\n' +
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
@@ -1022,25 +1147,8 @@ function dcSkillCards(state) {
       }
 
       if (tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectOrderedListItems(content, i, md);
-        items.forEach((itemHtml, idx) => {
-          const ability = parseAbilityFromListItem(itemHtml);
-          if (!ability) {
-            emit('<p>' + itemHtml + '</p>\n'); // not "**N AP** *Name:* text": keep it as a paragraph
-            return;
-          }
-          let posAttrs = '';
-          if (items.length > 1) {
-            if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
-            if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
-          }
-          emit(
-            '<div class="dc-ability"' + posAttrs + '>\n' +
-            '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
-            '  <p class="dc-ability-text">' + ability.text + '</p>\n' +
-            '</div>\n'
-          );
-        });
+        const { items, endIndex } = collectSkillListItems(content, i, md, state.env);
+        emit(skillListHtml(items));
         i = endIndex;
         continue;
       }

@@ -64,7 +64,7 @@ components:
     status: live
     origin: plugin
     snippet: alert
-    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically)"
+    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically). A title: text after the marker on its own line, with a body under it (> [!NOTE] Escaping A Grapple / > body...), REPLACES the default label in span.dc-alert-label and keeps the variant class. Text after the marker in a one-line alert stays body text."
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning > span.dc-alert-label
@@ -536,7 +536,8 @@ components:
     emits:
       - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
-      - div.dc-ability > span.dc-ap + p.dc-ability-text
+      - div.dc-ability > span.dc-ap + p.dc-ability-text (div.dc-ability-body wraps the text and a nested list when the item has one)
+      - div.dc-roll-row > span.dc-roll-val + div.dc-roll-text (a numbered item led by a die result)
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
     tokens:
       - --dc-card-accent
@@ -565,7 +566,7 @@ components:
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">)"
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">). Only a real cost is a chip: number, range (hyphen or dash), X or VAR, then AP, optionally followed by a name (**3 AP — Name**), a per-unit qualifier (**1 AP/100 DC**) or a leading plus (**+1 AP per passenger**); bare **3-X** is accepted. A bold lead of only a number or range (**20**, **11-19**) is a die result: div.dc-roll-row, not a chip. Any other bold lead is an ordinary list item."
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]

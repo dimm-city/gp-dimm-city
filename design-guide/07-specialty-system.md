@@ -363,7 +363,7 @@ Once per round, outside your turn, you exploit a target in reach:
 | Two columns | `@columns 2` ... `@end-columns` around part of the body | Pack a long ability list into two columns; the flavor line and sub-header stay full width |
 | Avoid split | `@skill {.dc-avoid-split}` | Keep a card whole instead of letting it break across pages |
 
-The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose.
+The AP chip reads the number: `0 AP` is free (an unlit LED: a grey lens with a hollow lamp and an ink edge, the quietest chip on the card), a number is standard (HUD blue), `VAR` or a range is variable (deep magenta). Two more come from a raw span: `.reduced` is pale blue with a down-triangle and `.increased` is blood with an up-triangle, so they differ in grayscale too. A raw `<span class="dc-ap">2 AP</span>` makes a chip in prose. Only a real cost makes a chip: a number, range or `X`, then `AP` (a name may follow: `**3 AP --- Butcher Roach**`). A bold lead that is only a die result (`**20**`, `**11-19**`) becomes a roll row, and any other bold lead (an option's name) stays an ordinary list item. A list nested under a cost item stays a list under the row.
 
 ### Two columns
 
