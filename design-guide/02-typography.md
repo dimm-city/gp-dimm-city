@@ -28,7 +28,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 ## The three faces
 
 <div class="dg-face">
-<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.2, tracking 0.2em</p>
+<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
 <p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
 <p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>

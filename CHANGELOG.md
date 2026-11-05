@@ -65,9 +65,10 @@ white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
   largest moves are a point: TOC links and stat-strip numbers 15pt to 16pt, the
   NPC chip line 12pt to 11pt, `h1.dc-chevron` 16.8pt to 20pt. `--fs-sm` and
   `--fs-body-xs` (11.5pt, used once) are aliases of `--fs-body-sm`.
-- **Headings are set tight.** `--lh-display` (1.2) replaces the 1.35 that
-  headings shared with compact text: display caps have no descenders, and a
-  wrapped heading no longer falls apart. The spray title follows.
+- **Headings have their own line-height token.** `--lh-display` (1.35, the
+  value they had) is separate from `--lh-tight`, which compact text reads.
+  The spray title reads it too (it was 1.5), with padding that keeps its
+  slab's height.
 - **`######` is a label, not a smaller `#####`.** The two were a point apart
   and alike in everything else. H6 takes the label face (Tomorrow, bold caps)
   at the 10pt floor.

@@ -148,7 +148,7 @@
 
   --fw-bold:     700;  /* public; no package rule reads it */
 
-  --lh-display: 1.2;   /* headings: display caps have no descenders to clear */
+  --lh-display: 1.35;  /* headings. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart */
   --lh-tight:  1.35;   /* compact running text */
   --lh-normal: 1.5;
 

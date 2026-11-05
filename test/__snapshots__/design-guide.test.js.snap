@@ -502,7 +502,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </table>
 <h2 data-name="the-three-faces">The three faces</h2>
 <div class="dg-face">
-<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.2, tracking 0.2em</p>
+<p class="dg-face-meta"><strong>lixdu</strong> &mdash; display · <code>--font-display</code> · headings set uppercase, H1 26pt, leading 1.35, tracking 0.2em</p>
 <p class="dg-face-display">ABCDEFGHIJKLM<br>NOPQRSTUVWXYZ<br>0123456789</p>
 <p class="dg-face-display dg-face-set">Wired to kill</p>
 </div>

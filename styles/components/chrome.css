@@ -101,7 +101,7 @@ h1.dc-chevron {
   background: var(--dc-spray-bg);
   display: inline-block;
   box-sizing: border-box;
-  padding: 19px 22px 21px;  /* the slab's height, now that the line is set tight */
+  padding: 18px 22px 20px;  /* the slab's height at the heading line-height */
   position: relative;
   /* clip-path does double duty here: besides the chipped corner it makes this
      banner a stacking context, which is what keeps the ::before skew tab

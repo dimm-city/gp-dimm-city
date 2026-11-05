@@ -309,7 +309,7 @@ into the token name, not scattered across heading rules.
 --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books (was 11.5pt) */
 
 /* Line height */
---lh-display: 1.2;     /* headings */
+--lh-display: 1.35;    /* headings (lixdu's capitals fill the em) */
 --lh-normal:  1.5;
 --lh-tight:   1.35;
 
