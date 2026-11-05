@@ -69,11 +69,11 @@ Use this to choose the right callout type before reaching for a class name.
    └── Dream Master only → dc-dm-note        (ink label bar in cyan, white sheet, ink ring, cyan rail)
    └── Player-facing → continue ↓
 
-2. What is it?
+2. What is it? (every callout is bolted: a bolt head in each top corner)
    └── A worked example              → dc-example-callout  (cyan rail and ring, taped-on label)
    └── Atmosphere / narrative voice  → dc-vibe-callout     (violet frame along its diagonals, violet chip, italic)
-   └── Backstory, in second person   → dc-origin-callout   (torn edge, dog-ear, rust frame and rail, worn crimson stamp)
-   └── A place, written up           → dc-location-callout (torn edge, dog-ear, teal frame and rail, worn teal stamp)
+   └── Backstory, in second person   → dc-origin-callout   (torn edge, rust frame and rail, worn crimson stamp)
+   └── A place, written up           → dc-location-callout (torn edge, teal frame and rail, worn teal stamp)
    └── A place, present tense        → dc-visit-callout    (wobbly signpost, fungi-green frame, rail and chip)
    └── Rules / mechanics             → continue ↓
 
@@ -345,7 +345,8 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-card-tab-bg` | `--ink-dark` | Tab strip background |
 | `--dc-card-tab-title-color` | `--paper-cream` | Tab title text |
 | `--dc-card-body-mark` | `--crimson` | Unused: kept for books that set it (the card's bolt is not tinted) |
-| `--dc-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The bolt head on a skill card's top right, a vibe sheet's two top corners and a `##` slip (the slip's `--dc-page-slip-bolt*` default to these): ring and slot, face, diameter |
+| `--dc-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The bolt head on a skill card's top right and bottom left, a callout's two top corners and a `##` slip (the slip's `--dc-page-slip-bolt*` default to these): ring and slot, face, diameter |
+| `--dc-skill-foot-bolt-left` / `-bottom` | `4px` / `4px` | Where the card's bottom-left bolt sits, from the left edge and the foot; each specialty sets its own beside its body shape so the bolt clears the foot's cut |
 | `--dc-tier-bg` / `-fg` / `-edge` | `--ink-dark` / `--paper-cream` / `--paper-cream` | The tier pill on the tab; each specialty sets its own chip |
 
 ### Specialty Intro (`.dc-specialty-intro`)

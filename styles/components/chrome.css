@@ -472,17 +472,29 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
 
 
 /* ── Bolt heads ───────────────────────────────────────────────────────── */
-/* Wall hardware, drawn once: a vibe sheet is bolted at its two top corners (on
-   its label's two pseudo-elements) and a skill card at its top right (on the
-   body's ::before). The `##` slip draws the same bolt in page-templates.css
+/* Wall hardware, drawn once. Every callout is bolted at its two top corners
+   (callouts.css places them), a skill card at its top right and bottom left
+   (cards.css), and the `##` slip draws the same bolt in page-templates.css
    (layer guard) from the same tokens. An opaque disc: an ink ring round a grey
    face, the slot a hard-stopped band of ink (an ordinary gradient with opaque
    stops), a 1px hard shadow. A left-hand bolt turns its slot 35deg and a
-   right-hand one -70deg, as a hand leaves them. Each component places its own
-   bolts (callouts.css, cards.css). Tokens --dc-bolt / -face / -size. */
-.dc-vibe-callout > .dc-alert-label::before,
-.dc-vibe-callout > .dc-alert-label::after,
-.dc-skill-card > .dc-card-body::before {
+   right-hand one -70deg, as a hand leaves them. Tokens --dc-bolt / -face /
+   -size.
+   Hosts. A: the callout's own ::before (left) and ::after (right), free on the
+   note, the GFM note/tip/important alerts and the example. B: where ::before
+   is taken (the warning's rail, a framed sheet's white copy) the left bolt is
+   on the first body block's ::before and the right one on the callout's
+   ::after. The Dream Master note hangs both on its first body block. The first
+   block is static, so its pseudo is placed against the callout. A rotated
+   label (the warning chip, the origin and location stamps) cannot host a bolt:
+   the transform would make it the containing block. */
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
+.dc-dm-note > .dc-alert-label + *::after,
+.dc-skill-card > .dc-card-body::before,
+.dc-skill-card::after {
   content: "";
   position: absolute;
   width: var(--dc-bolt-size);
@@ -493,7 +505,10 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   background: linear-gradient(35deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
   box-shadow: 1px 1px 0 var(--dc-bolt);
 }
-.dc-vibe-callout > .dc-alert-label::after,
+/* The right-hand bolts (a callout's ::after, a card's top right). */
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+.dc-dm-note > .dc-alert-label + *::after,
 .dc-skill-card > .dc-card-body::before {
   background: linear-gradient(-70deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
 }

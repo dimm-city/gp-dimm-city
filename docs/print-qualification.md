@@ -81,7 +81,7 @@ PDF. Every row matched the plain PDF at 300 DPI, apart from CMYK gamut.
 | Section panels, soft lift, hard shadow | 39, 68, 69, 155, 163 | split | |
 | Recessed `lore` / `dm` / `choose` | 42, 163 | split | soft inset |
 | Fiction excerpt | 43, 91, 139, 142 | vector | the broken-wall edge is clipped vector shapes |
-| Skill cards: tab, bolt, AP chips | 76–83, 109–115, 150–153 | vector, split | the tab gloss is pre-mixed (1.10.2) |
+| Skill cards: tab, bolts, AP chips | 76–83, 109–115, 150–153 | vector, split | the tab gloss is pre-mixed (1.10.2) |
 | Outcome ladder | 50, 124, 161 | split | key bevel kept |
 | Path banners, specialty cards | 72, 74, 75, 77–81, 118, 119, 144–147 | vector, split | |
 | Tape divider (normal, `dc-flush`) | 36, 126, 165 | split, vector | tiled stripes regular in both |
@@ -124,8 +124,8 @@ the first three.
 - **Text prints above all artwork.** On a split page, text is redrawn on top
   of the flattened artwork. A decoration painted over text in the browser
   (a tint or a mark above a glyph) loses its effect in print. No default
-  component overlaps text. The skill card's bolt sits in the corner, clear
-  of the first line (checked with a full-width first line, #42).
+  component overlaps text. The skill card's bolts sit in its top-right and bottom-left corners, clear
+  of the first and last lines (checked with a full-width first line, #42).
 - **Artwork is a 300 DPI picture.** On a split page, rules, fills and shapes
   are raster, including ones that are vector in the plain PDF. 300 DPI is
   DriveThruRPG's colour requirement. `pdfx.rasterDpi` raises it, at a cost in

@@ -522,11 +522,31 @@
   right: 4px;
   z-index: 2;
 }
-/* The card is bolted at its top right (the tab already fixes the top left): one
-   bolt head (drawn in chrome.css, "Bolt heads"). The body is not cloned at a
-   page break, so the bolt prints once; a continuation card gets none. */
+/* The card is bolted at its top right (the tab already fixes the top left) and
+   at its bottom left: a bolt head each (drawn in chrome.css, "Bolt heads"). The
+   body is not cloned at a page break, so the top bolt prints once; a
+   continuation card gets none. The bottom bolt sits at the card's foot (the
+   card has no bottom padding), placed by --dc-skill-foot-bolt-left / -bottom,
+   which each specialty sets beside its --dc-skill-body-shape so it clears the
+   foot's cut by 2pt. */
 .dc-skill-card.dc-skill-card-cont > .dc-card-body::before {
   content: none;
+}
+.dc-skill-card::after {
+  left: var(--dc-skill-foot-bolt-left);
+  bottom: var(--dc-skill-foot-bolt-bottom);
+  z-index: 2;
+}
+/* A card that ends in an ability row (or a column run of them) ends in an AP
+   chip 12px above the foot, which the bolt's 14px would meet: the bolt moves
+   right, into the text column, past the chip and its shadow. */
+.dc-skill-card:has(> .dc-card-body > .dc-card-inner > :is(.dc-ability, .gp-columns:has(> * > .dc-ability)):last-child) {
+  --dc-skill-foot-bolt-left: calc(24px + 4.77 * var(--fs-floor));
+}
+/* A specialty's last card draws its surface 3pt + 2px early (below): the bolt
+   rises with it. */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child::after {
+  bottom: calc(var(--dc-skill-foot-bolt-bottom) + 3pt + 2px);
 }
 
 .dc-card-inner {

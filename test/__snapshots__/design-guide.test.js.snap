@@ -998,49 +998,49 @@ The city didn't go quiet --- it got loud. You came to Dimm City to disappear, an
 <td><code>NOTE</code></td>
 <td>Players</td>
 <td>A rules clarification</td>
-<td>A white sheet with a heavy blue rail, a blue ring, a blue label chip and small, even machined chamfers</td>
+<td>A white sheet with a heavy blue rail, a blue ring, a blue label chip and small, even machined chamfers, a bolt head in each top corner</td>
 </tr>
 <tr data-source-range="143:144">
 <td><code>WARNING</code></td>
 <td>Players</td>
 <td>A rule with consequences</td>
-<td>Hazard: an octagonal sign plate, a white sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label</td>
+<td>Hazard: an octagonal sign plate, a white sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label, a bolt head in each top corner</td>
 </tr>
 <tr data-source-range="144:145">
 <td><code>DM</code></td>
 <td>The Dream Master only</td>
 <td>Guidance, hooks, adjudication</td>
-<td>A file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the folder’s tab; under it a white sheet in an ink ring, a cyan rail, one corner cut</td>
+<td>A file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the folder’s tab; under it a white sheet in an ink ring, a cyan rail, one corner cut, a bolt head in each top corner of the white body under the cyan rule</td>
 </tr>
 <tr data-source-range="145:146">
 <td><code>VIBE</code></td>
 <td>Players</td>
 <td>Atmosphere and narrative voice, full width</td>
-<td>A white sheet with long shallow diagonal corners, framed in violet all round and along the diagonals, bolted at its top corners, italic, with a violet label chip</td>
+<td>A white sheet with long shallow diagonal corners, framed in violet all round and along the diagonals, a bolt head in each top corner, italic, with a violet label chip</td>
 </tr>
 <tr data-source-range="146:147">
 <td><code>ORIGIN</code></td>
 <td>Players, in second person</td>
 <td>Backstory addressed to the character</td>
-<td>A white sheet with a torn bottom edge and a dog-eared corner, framed in rust along the tear and the fold, with a heavy rust rail and a worn crimson stamp label</td>
+<td>A white sheet with a torn bottom edge and square corners, framed in rust along the tear, with a heavy rust rail, a bolt head in each top corner and a worn crimson stamp label</td>
 </tr>
 <tr data-source-range="147:148">
 <td><code>LOCATION</code></td>
 <td>Players</td>
 <td>A place written up: what it is, who holds it, how to get in</td>
-<td>Origin’s document in the map’s teal: a white sheet with a torn bottom edge and a dog-eared corner, framed in teal along the tear and the fold, with a heavy teal rail and a worn deep-teal stamp label</td>
+<td>Origin’s document in the map’s teal: a white sheet with a torn bottom edge and square corners, framed in teal along the tear, with a heavy teal rail, a bolt head in each top corner and a worn deep-teal stamp label</td>
 </tr>
 <tr data-source-range="148:149">
 <td><code>VISIT</code></td>
 <td>Players</td>
 <td>A location, present tense, before an encounter</td>
-<td>A white signpost with a wobbly, organic outline, framed in fungi green along the wobble and the point, with a heavy green rail and a green map-pin label chip</td>
+<td>A white signpost with a wobbly, organic outline, framed in fungi green along the wobble and the point, with a heavy green rail, a bolt head in each top corner and a green map-pin label chip</td>
 </tr>
 <tr data-source-range="149:150">
 <td><code>@callout example</code></td>
 <td>Players</td>
 <td>A worked example (a block only: there is no <code>[!EXAMPLE]</code>)</td>
-<td>A ticket (a V notch in its right edge), a cyan rail, a cyan ring and a taped-on label</td>
+<td>A ticket (a V notch in its right edge), a cyan rail, a cyan ring, a bolt head in each top corner and a taped-on label</td>
 </tr>
 </tbody>
 </table>
@@ -2569,7 +2569,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 </div></div></div>
 <h2 data-name="continuing-a-long-card">Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab or bolt. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
+<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab and no top-right bolt. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -4342,7 +4342,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
 <p><span class="dc-classtag augmerc">Augmerc</span> <span class="dc-classtag proxy">Proxy</span> <span class="dc-classtag streetwarden">Streetwarden</span> <span class="dc-classtag gutterdruid">Gutterdruid</span> <span class="dc-classtag cybersurgeon">Cybersurgeon</span> <span class="dc-classtag wirephreak">Wirephreak</span> <span class="dc-classtag technosorcerer">Technosorcerer</span> <span class="dc-classtag etherlock">Etherlock</span> <span class="dc-classtag dualist">Dualist</span> <span class="dc-classtag generalist">Generalist</span></p>
 </div>
 <h2 data-name="alerts-and-callouts">Alerts and callouts</h2>
-<p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same seven registers, and <code>@callout example</code> makes an eighth. Each register is a white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet, bolted to the wall, a torn, dog-eared origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.</p>
+<p><code>&gt; [!TYPE]</code> for one paragraph, <code>@callout note</code>, <code>@callout vibe</code> and the rest for more — both emit the same seven registers, and <code>@callout example</code> makes an eighth. Each register is a bolted white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet, a torn origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.</p>
 <div class="dg-stage dg-tall">
 <div class="dc-alert dc-note"><span class="dc-alert-label">Note</span>
 <p data-source-range="827:829">A character may hold no more than one Signature Augment at a time.</p>

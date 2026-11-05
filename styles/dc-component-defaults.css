@@ -435,6 +435,8 @@
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
   --dc-skill-tab-shape:      polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left:   4px;  /* the card's bottom-left bolt: its distance from the left edge (a specialty sets its own beside its body shape) */
+  --dc-skill-foot-bolt-bottom: 4px;  /* ...and from the foot */
 
   /* .dc-specialty-card extra public API (shapes + title). Inside a
      .dc-specialty both shapes are the specialty's path-banner cuts. */
