@@ -233,8 +233,8 @@ Measured with Ghostscript 10.05.0 on a file of three swatches: `-dRenderIntent=1
 writes the default's operands to the digit, and `-dRenderIntent=0` reproduces this
 audit's figures (`--brand-violet`: intent 0 → C66 M86 Y0 K4 = 156%, the figure
 above; the default → C67 M97 Y0 K16 = 180%). So every CMYK and TAC figure written
-for 1.10.2-alpha.1 ran under the build's: 15-30% TAC on the saturated purples
-(`--brand-magenta` 108% → 124%, `--wirephreak-mid` 186% → 215%) and about 15% on
+for 1.10.2-alpha.1 ran under the build's: 10-30% TAC on the purples
+(`--brand-magenta` 108% → 124%, `--wirephreak-mid` 186% → 215%) and 15-20% on
 the inks (`--ink` 196% → 211%). Nothing crossed the 240% limit — a PDF/X build of
 the design guide passes the per-page TAC check — so the error was in the
 documentation and in Finding 2A's premise, not in the ink.

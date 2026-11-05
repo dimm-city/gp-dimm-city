@@ -17,8 +17,8 @@ back out of the PDF, so these are the build's figures to the digit.
 - **dupes**: hex tokens closer than OKLab 6 (aliases are not listed: they are one colour).
 
 Until 1.10.2-alpha.1 this file was LittleCMS at perceptual intent, which the build never
-used: its figures ran under the build's by 15-30% TAC on the saturated purples and by
-about 15% on the inks.
+used: its figures ran under the build's by 10-30% TAC on the purples and by 15-20% on
+the inks.
 
 ## tokens
 

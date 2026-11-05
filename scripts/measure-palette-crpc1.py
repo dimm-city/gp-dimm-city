@@ -15,8 +15,8 @@ writes the same operands). The "printed" colour is that CMYK converted back
 to sRGB with LittleCMS at the same intent (relative colorimetric, BPC), so an
 in-gamut colour round-trips to itself and dE measures only what the gamut
 moved. Before 1.10.2-alpha.2 the forward conversion was LittleCMS at
-perceptual intent, which the build never used; the saturated purples came out
-15-30% TAC under the build's.
+perceptual intent, which the build never used; its figures ran 10-30% TAC under
+the build's on the purples and 15-20% under on the inks.
 
 Needs: Ghostscript 10.03 or newer on PATH (10.02 and older ignore the output
 profile and separate through their default CMYK profile), Python 3 and Pillow

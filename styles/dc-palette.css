@@ -53,8 +53,8 @@
      figures are the build's to the digit: scripts/measure-palette-crpc1.py
      runs a swatch of each token through the same conversion and reads the
      operands back out of the PDF. (Until 1.10.2-alpha.2 they were LittleCMS
-     at perceptual intent, which the build never used: 15-30% TAC under the
-     build's on the saturated purples.) They need a Ghostscript that honours
+     at perceptual intent, which the build never used: 10-30% TAC under the
+     build's on the purples, 15-20% under on the inks.) They need a Ghostscript that honours
      the profile: 10.03 and newer do; 10.02.1 (Ubuntu 24.04's) ignores it
      and separates through its default CMYK profile (#000 = 295%, the
      figures here before 1.10.2); gutterpress #495 warns when a build did

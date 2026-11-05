@@ -69,8 +69,8 @@ token name still works.
   build's to the digit; it needs Ghostscript 10.03 or newer, and keeps Pillow's
   LittleCMS only to show the printed colour and its distance from the screen.
   alpha.1 measured with LittleCMS at perceptual intent, which the build never
-  used: those figures ran 15-30% TAC under the build's on the saturated purples
-  and about 15% under on the inks (`--ink` 196% → 211%). The figures before
+  used: those figures ran 10-30% TAC under the build's on the purples and
+  15-20% under on the inks (`--ink` 196% → 211%). The figures before
   1.10.2 came from Ghostscript's default profile (`#000` = 295%), which
   Ghostscript 10.02.1 (Ubuntu 24.04's package) uses even when the CRPC1
   profile is given; 10.03 and newer honour the profile, and gutterpress (#495)
