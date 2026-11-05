@@ -79,10 +79,12 @@ token name still works.
   SWOP/GRACoL target is gone. Constitution §V says how the figures are
   measured.
 - **The ground prints at 300 DPI.** `images/ground.png`, the 10in × 0.6in strip
-  of pavement at the foot of every page, is 3000 × 180 px (was 2400 × 144,
-  240 DPI); `scripts/wall-tiles.py --ground` draws it at `GROUND_DPI` with the
-  same geometry (a copy scaled back to the old size differs by 2/255 on
-  average). The six stone-wall tiles stay at about 240 DPI: their sheet
+  of pavement at the foot of every page, is 3000 × 182 px (was 2400 × 144,
+  240 DPI): `scripts/wall-tiles.py --ground` draws it at `GROUND_DPI` with the
+  same geometry (a copy scaled back to the old size differs by 3/255 on
+  average), for the 58 CSS px (0.604in) Chromium paints a 0.6in background
+  at, so on a page the PDF keeps as vector its rows measure 301 DPI, not 298.
+  The six stone-wall tiles stay at about 240 DPI: their sheet
   (1024 × 1536, about 512px a panel) holds about 110 DPI of real detail, so
   no upsampling would sharpen them, and no Gutterpress check sees a CSS
   background. They are accepted as texture; the constitution's production
@@ -92,10 +94,11 @@ token name still works.
   drew 300 × 340 cards, 600 × 800 portraits and a 640 × 360 banner, which the
   guide prints at 3.92in (77 DPI) and 8.63in (70-74 DPI); the PDF/X build
   warned on 14 images and flagged four pages. The cards are now 1500 × 1700,
-  the portraits 2700 × 3600, the banner 2880 × 1620 and the three stand-ins
-  twice their size, each at least 300 DPI at the largest size the guide
-  prints it, as opaque palette PNGs of 12-70 KB (the flat shapes compress; the
-  folder grows from 4.07 MB to 4.53 MB). The hand-drawn `founder-house.png`
+  the portraits 2700 × 3600, the banner 6400 × 3600 (the art plate crops it
+  to cover the 11.25in sheet, so its height sets its resolution) and the three
+  stand-ins twice their size, each at least 300 DPI at the largest size the
+  guide prints it, as opaque palette PNGs of 12-113 KB (the flat shapes
+  compress; the folder grows from 4.07 MB to 4.61 MB). The hand-drawn `founder-house.png`
   (952 px, 110 DPI across the sheet it is pinned to) is replaced by a
   generated stand-in of the same aspect, as the Part 2 overview says the
   guide's pictures are: the layout is the specimen, the art a proxy.

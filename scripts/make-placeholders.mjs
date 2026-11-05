@@ -3,14 +3,16 @@
 //
 //   node scripts/make-placeholders.mjs        (needs `convert`, ImageMagick 6 or 7's `magick`)
 //
-// One card (1500x1700) and one portrait (2700x3600) per specialty, a 2880x1620
+// One card (1500x1700) and one portrait (2700x3600) per specialty, a 6400x3600
 // banner for Augmerc, three generic stand-ins (Lil Thump and Portrait
 // 1200x800, Street Sign 1200x1600) and the Founders House plate (2720x1937,
 // the aspect of the hand-drawn 952px original, which was 110 DPI across the
 // sheet). Each is at least 300 DPI at the largest size the guide prints it: a
-// card at 3.92in (the catalog's full-width frame), the portrait, the banner
-// and the plate at the 8.63in sheet, Lil Thump at the fiction excerpt's 3in
-// default, Portrait at 2.25in, the sign at 1.75in. Every file is
+// card at 3.92in (the catalog's full-width frame), the portrait and the plate
+// across the 8.63in sheet, the banner down the 11.25in sheet (the art plate
+// crops it to cover the page, so its height sets its resolution), Lil Thump at
+// the fiction excerpt's 3in default, Portrait at 2.25in, the sign at 1.75in.
+// Every file is
 // OPAQUE: a flat dark ground in the specialty's own `--<name>-dark`, its
 // `--<name>-mid` silhouette and texture, an accent rule, and the name in the
 // bold display face. They exist so the guide builds offline and so that its
@@ -154,7 +156,7 @@ for (const [spec, pattern] of Object.entries(SPECIALTIES)) {
   const c = { dark: token(`--${spec}-dark`), mid: token(`--${spec}-mid`), accent: token(`--${spec}-accent`), pattern };
   draw({ file: `specialty-${spec}-card.png`, w: 1500, h: 1700, name, ...c });
   draw({ file: `specialty-${spec}-art.png`, w: 2700, h: 3600, name, ...c });
-  if (spec === 'augmerc') draw({ file: `specialty-${spec}-wide.png`, w: 2880, h: 1620, name, ...c });
+  if (spec === 'augmerc') draw({ file: `specialty-${spec}-wide.png`, w: 6400, h: 3600, name, ...c });
 }
 
 // Generic stand-ins for a character portrait, a vignette and a sign.
