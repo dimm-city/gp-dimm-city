@@ -248,7 +248,7 @@ The dimm.city web-palette analogs, pulled inside the CRPC1 gamut. The purples ar
 | `--orange-deep` | `#a03808` | C1 M76 Y88 K39 = 204% | Press-safe orange on paper (6.9:1). |
 | `--rust` | `#b23a12` | C0 M80 Y100 K30 = 210% | Burnt rebar — section accents, miss row. |
 | `--amber` | `#7a5a20` | C17 M33 Y75 K52 = 177% | Sulphur-scorched brass — gear-chapter section accent. |
-| `--deep-rust` | `#70200e` | C11 M73 Y58 K65 = 207% | Shadow rust — deepest warm dark. |
+| `--deep-rust` | `#70200e` | C11 M73 Y58 K65 = 207% | Shadow rust — deepest warm dark. No package rule reads it; kept for books. |
 | `--amber-dark` | `#5c3c10` | C21 M40 Y62 K70 = 193% | Charred amber. |
 
 ### Fluorescent fungi layer (wonderland)

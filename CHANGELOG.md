@@ -102,6 +102,16 @@ token name still works.
   `scavenger.png` (1920 px) is at least 500 DPI everywhere the guide prints
   it and stays. The build reports no image under the bar.
 
+### Deprecated
+
+- **Six tokens no package rule reads** are candidates for removal in 1.11:
+  `--ink-mid`, `--deep-rust`, `--surface-tint-3`, `--font-sans`, `--fw-bold` and
+  `--callout-border-width-small` (`styles/dc-palette.css`). They stay public
+  and keep their values through 1.10; their comments and the palette
+  reference now say that nothing in the package reads them (the design
+  guide's own sheet reads `--deep-rust`, `--surface-tint-3` and `--font-sans`).
+  `--tint-hud-teal` is an alias of `--hud-blue` and stays one.
+
 ### Fixed
 
 - The specialty-intro title's default type is cream. The old default, `--bg` on
