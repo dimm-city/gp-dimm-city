@@ -53,11 +53,11 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
   <div class="dc-palette-swatch bg-border-hairline on-dark"><strong>Hairline</strong><code>#1e1d1c</code><code>--border-hairline</code><code>44/38/37/92<br>211%</code></div>
 </div>
 
-There are three substrates: white paper, one light grey (`--concrete-pale`, `#dcdad5`) and the wall. The other paper names are aliases of them: `--paper-light` and `--paper-form` (the `choose` form's sheet) are white; `--paper-zine` (the fiction excerpt and the shard block), `--paper-aged` (chips, `code`, outcome rows) and `--hud-panel` are the light grey. `--paper-stain` (`#b0a89c`) is a dark inset well and label strip: it never carries body text, and neither does any fill darker than the wall. `--border-hairline` is the column and table rule, in ink. Every hairline is at least 1pt, in `--ink` or a tint that prints in one ink. `--surface-tint-3` is only here for its swatch; no component uses it.
+There are three substrates: white paper, one light grey (`--concrete-pale`, `#dcdad5`) and the wall. The other paper names are aliases of them: `--paper-light` and `--paper-form` (the `choose` form's sheet) are white; `--paper-zine` (no component uses it: the fiction excerpt and the shard block are white), `--paper-aged` (chips, `code`, outcome rows) and `--hud-panel` are the light grey. Callouts, sections, cards and entries are white: a component's colour is in its rail, frame, title bar and label, never in a tinted body. `--paper-stain` (`#b0a89c`) is a dark inset well and label strip: it never carries body text, and neither does any fill darker than the wall. `--border-hairline` is the column and table rule, in ink. Every hairline is at least 1pt, in `--ink` or a tint that prints in one ink. `--surface-tint-3` is only here for its swatch; no component uses it.
 
 ## What each colour means
 
-Colour is a job, not a mood. A reader flipping pages should know what kind of content a box holds from its fill and silhouette before reading a word, and the same has to hold in a grayscale proof, so every variant also differs in value, edge or label: never in hue alone.
+Colour is a job, not a mood. A reader flipping pages should know what kind of content a box holds from its silhouette, its edge and its label before reading a word, and the same has to hold in a grayscale proof, so every variant also differs in shape, edge weight or label: never in hue alone. Text reads on white; the colour is in the rail, the frame, the title bar and the label.
 
 | Colour | Means | Used by |
 |---|---|---|
@@ -68,7 +68,7 @@ Colour is a job, not a mood. A reader flipping pages should know what kind of co
 | Blood, rust, crimson | Harm, cost, cult, a binding ruling | Slate block, flaws, cult faction, origin stamp, side effects |
 | Violet, amethyst | The world and the arcane | Vibe alert, lore section, dreams, cabal faction, treasure |
 | Fungi green | The living city: organic, toxic | Visit alert, drug gear, Gutterdruid |
-| Paper versus ink | Who it is for | Light paper is for players, an ink-dark fill is for the Dream Master, aged paper is fiction and the world |
+| Paper versus ink | Reading surface or display | White paper holds reading text, whoever it is for. An ink-dark fill is a display element: title bars, tabs, badges, label chips, the slate block and the Surreal definition |
 
 ## Usage rules
 

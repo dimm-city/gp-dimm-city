@@ -346,12 +346,12 @@ div[class="section"] {
   font-size: var(--fs-h5);
 }
 
-/* ── Free-standing heading, or a callout, directly before a panel — extra
-   top clearance so the heading (or the note) and the card's header bar don't
-   compete at the same visual weight on the vertical scan. */
+/* ── A heading directly before a panel: the one gap every heading has under
+   it (page-templates.css sets the same for whatever follows a page's own
+   heading). */
 h2 + .dc-section-panel,
 h3 + .dc-section-panel {
-  margin-top: 20pt;
+  margin-top: var(--dc-page-slip-foot);
 }
 /* A callout has a top margin only and the panel a bottom margin only, so they
    would touch. */
@@ -397,7 +397,7 @@ h3 + .dc-section-panel {
 
      panel      the default card, a solid accent bar      top right   chapter accent (magenta by default)
      reference  look it up, a PALE bar                    all four, small   HUD blue
-     lore       the world, not the rules                  top left + bottom right, long   violet, lilac sheet
+     lore       the world, not the rules                  top left + bottom right, long   violet
      dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
      choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Choose" stamp
      catalog    a run of entries (entries.css)            both top
@@ -408,7 +408,6 @@ h3 + .dc-section-panel {
 /* ── reference — a look-up ────────────────────────────────────────────────── */
 .dc-section-reference {
   --dc-section-accent: var(--hud-blue-dark);
-  --dc-section-bg: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-section-clip: 7px;
   --dc-section-cut-tl: 7px;
   --dc-section-cut-br: 7px;
@@ -451,7 +450,7 @@ h3 + .dc-section-panel {
   background: var(--paper-cream);
 }
 .dc-section-reference tr:nth-child(even) td {
-  background: var(--dc-section-bg);
+  background: var(--paper-aged);
 }
 .dc-section-reference :is(ul, ol) {
   margin-block: 0.04in;
@@ -491,7 +490,7 @@ h3 + .dc-section-panel {
 }
 
 /* ── lore — the world ─────────────────────────────────────────────────────────
-   Violet, the dream colour. A pale lilac sheet under a DEEP violet bar (cream
+   Violet, the dream colour. A white sheet under a DEEP violet bar (cream
    on it 10:1), a violet rule, and LONG ASYMMETRIC cuts: a shallow slash off the
    top left (56 x 20px) and a steep one off the bottom right (16 x 50px), so it
    reads as secret and cut open, never as a chamfer; the top edge past the slash
@@ -501,7 +500,6 @@ h3 + .dc-section-panel {
    slash eats at text height) and the right padding clears the steep one. */
 .dc-section-lore {
   --dc-section-accent: var(--brand-violet);
-  --dc-section-bg: color-mix(in oklch, var(--brand-violet) 22%, var(--paper-cream));
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 30px;
   --dc-section-cut-br: 16px;
@@ -547,7 +545,7 @@ h3 + .dc-section-panel {
    A classified file folder: a tab rising from the top edge (it carries the words
    "Dream Master", cyan on ink) and one opposite corner cut, bottom right. Cyan on
    ink is the Dream Master's colour pair, used nowhere else: the tab and bar are
-   ink with a cyan rule, the rail cyan, the body a cold concrete. With or without a
+   ink with a cyan rule, the rail cyan, the body white. With or without a
    heading the tab is drawn, so the kind never goes unmarked. The accent is cyan
    (rail, sub-heading ticks); the bar keeps the ink.
    The tab lives INSIDE the box: the box's top 15pt (`--dc-section-top`, added to
@@ -560,7 +558,6 @@ h3 + .dc-section-panel {
    are the cut + 2pt. */
 .dc-section-dm {
   --dc-section-accent: var(--brand-cyan);
-  --dc-section-bg: var(--concrete-pale);
   --dc-section-top: 15pt;
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 0px;
@@ -869,14 +866,14 @@ h3 + .dc-section-panel {
    are the one register that is paper and nothing else.
    Signal: flavor text, atmospheric descriptions, setting detail. */
 .dc-block.dc-shard {
-  --dc-block-bg:        var(--paper-zine);
+  --dc-block-bg:        var(--paper-cream);
   --dc-block-fg:        var(--ink);
   --dc-block-accent:    var(--ink-smoke);
   --dc-block-title-bg:  var(--paper-stain);
   --dc-block-title-fg:  var(--ink);
   --dc-block-title-rule: 2pt solid var(--ink-smoke);
   --dc-accent-ink: var(--ink);
-  background: var(--paper-zine);
+  background: var(--paper-cream);
   padding-bottom: calc(var(--space-lg) + 4px);
   box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 94.44% calc(100% - 6px), 88.89% 100%, 83.33% calc(100% - 6px), 77.78% 100%, 72.22% calc(100% - 6px), 66.67% 100%, 61.11% calc(100% - 4px), 55.56% 100%, 50% calc(100% - 4px), 44.44% 100%, 38.89% calc(100% - 6px), 33.33% 100%, 27.78% calc(100% - 4px), 22.22% 100%, 16.67% calc(100% - 3px), 11.11% 100%, 5.56% calc(100% - 6px), 0% 100%);
@@ -1001,8 +998,8 @@ h3 + .dc-section-panel {
   line-height: 1.4;
   box-shadow: var(--dc-label-shadow);
 }
-/* The closing quote: the choice's one line of voice. A well tinted with the
-   card's own colour (not the page's grey), ink on it, a ruled edge. */
+/* The closing quote: the choice's one line of voice. Ink on the card's white,
+   ruled down its left in the card's own colour. */
 .section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body .dc-card-footer {
   margin: var(--space-sm) 0 0;
   padding: 4pt 8pt;
@@ -1014,21 +1011,20 @@ h3 + .dc-section-panel {
   font-style: italic;
 }
 
-/* The three choices differ in grayscale as well as colour: fill value, edge
-   weight and how deep the silhouette bites. Flaw = the darkest sheet, a heavy
-   solid edge and a deep crack; Ideal = the mid sheet, a clean solid
-   edge and deep V stubs; Dream = the lightest sheet, a double edge and a steep
-   rise with perforated tears. Every cut is cleared by padding of cut + 2pt. */
+/* The three choices differ in grayscale as well as colour: edge weight and
+   how deep the silhouette bites, all three on white. Flaw = a heavy solid edge
+   and a deep crack; Ideal = a clean solid edge and deep V stubs; Dream = a
+   double edge and a steep rise with perforated tears. Every cut is cleared by
+   padding of cut + 2pt. */
 
 /* Flaws: blood. A cracked, ragged edge: a 40 x 26px nick off the top right and a
-   foot that jags up to 13px, over a blood-tinted quote. */
+   foot that jags up to 13px, over a blood-ruled quote. */
 .section.dc-flaws {
   --dc-choice-accent: var(--blood);
   --dc-choice-surface: var(--paper-light);
   --dc-choice-edge: 2pt solid var(--ink-dark);
   --dc-choice-band: 9px;
   --dc-choice-rail: 9px;
-  --dc-choice-tint: color-mix(in oklch, var(--blood) 18%, var(--paper-light));
   --dc-choice-kind: "Flaw";
   --dc-accent-ink: var(--blood);
   --dc-card-shape: polygon(0 0, calc(100% - 40px) 0, 100% 26px, 100% calc(100% - 9px), 94% 100%, 88% calc(100% - 13px), 80% calc(100% - 2px), 71% calc(100% - 12px), 63% calc(100% - 3px), 52% calc(100% - 13px), 41% calc(100% - 1px), 33% calc(100% - 11px), 22% calc(100% - 2px), 12% calc(100% - 12px), 5% calc(100% - 1px), 0 calc(100% - 8px));
@@ -1043,7 +1039,6 @@ h3 + .dc-section-panel {
 .section.dc-ideals {
   --dc-choice-accent: var(--hud-blue-dark);
   --dc-choice-surface: var(--paper-cream);
-  --dc-choice-tint: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-choice-kind: "Ideal";
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 14px), calc(100% - 14px) 50%, 100% calc(50% + 14px), 100% 100%, 0 100%, 0 calc(50% + 14px), 14px 50%, 0 calc(50% - 14px));
@@ -1060,7 +1055,6 @@ h3 + .dc-section-panel {
   --dc-choice-surface: var(--paper-form);
   --dc-choice-edge: 4pt double var(--ink-dark);
   --dc-choice-band: 3px;
-  --dc-choice-tint: color-mix(in oklch, var(--brand-violet) 25%, var(--paper-form));
   --dc-choice-kind: "Dream";
   --dc-accent-ink: var(--brand-violet);
   --dc-card-shape: polygon(0 30px, 100% 0, 100% 100%, 72% 100%, calc(72% - 9px) calc(100% - 9px), calc(72% - 18px) 100%, 32% 100%, calc(32% - 9px) calc(100% - 9px), calc(32% - 18px) 100%, 0 100%);
@@ -1141,33 +1135,30 @@ h3 + .dc-section-panel {
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-faction-shape: polygon(0 0, calc(100% - 16px) 0, calc(100% - 16px) 8px, 100% 8px, 100% 100%, 16px 100%, 16px calc(100% - 8px), 0 calc(100% - 8px));
   --dc-faction-badge-shape: none;
-  --dc-faction-surface: color-mix(in oklch, var(--hud-blue-dim) 30%, var(--paper-cream));
   --dc-faction-band: inset 0 6pt 0 0 var(--hud-blue-dark), inset 0 8pt 0 0 var(--brand-cyan);
   --dc-faction-title: var(--hud-blue-dark);
 }
 
 /* Cabal: violet and secretive. Long ASYMMETRIC cuts (the lore section's slash,
    mirrored): a shallow one off the top right (60 x 18px), a steep one off the
-   bottom left (16 x 50px); a deep violet band, a lilac sheet, and an inset
+   bottom left (16 x 50px); a deep violet band and an inset
    shadow down the foot. */
 .dc-faction-cabal {
   --dc-faction-accent: var(--brand-violet);
   --dc-accent-ink: var(--brand-violet);
   --dc-faction-shape: polygon(0 0, calc(100% - 60px) 0, 100% 18px, 100% 100%, 16px 100%, 0 calc(100% - 50px));
-  --dc-faction-surface: color-mix(in oklch, var(--brand-violet) 25%, var(--paper-cream));
   --dc-faction-band: inset 0 10pt 0 0 color-mix(in srgb, var(--brand-violet) 72%, var(--ink)), inset 0 -5px 0 0 var(--brand-violet);
   --dc-faction-band-height: 10pt;
   --dc-faction-pad-bottom: calc(10pt + 5px);
   --dc-faction-title: var(--brand-violet);
 }
 
-/* Cult: blood and ritual. Torn along the top and foot, a blood band, a pale
-   blood wash, the name in blood. Landfill, not tech. */
+/* Cult: blood and ritual. Torn along the top and foot, a blood band, the name
+   in blood. Landfill, not tech. */
 .dc-faction-cult {
   --dc-faction-accent: var(--blood);
   --dc-accent-ink: var(--blood);
   --dc-faction-shape: polygon(0% 0px, 7.14% 4px, 14.29% 0px, 21.43% 7px, 28.57% 0px, 35.71% 7px, 42.86% 0px, 50% 4px, 57.14% 0px, 64.29% 5px, 71.43% 0px, 78.57% 7px, 85.71% 0px, 92.86% 6px, 100% 0px, 100% 100%, 92.86% calc(100% - 7px), 85.71% 100%, 78.57% calc(100% - 3px), 71.43% 100%, 64.29% calc(100% - 7px), 57.14% 100%, 50% calc(100% - 3px), 42.86% 100%, 35.71% calc(100% - 6px), 28.57% 100%, 21.43% calc(100% - 5px), 14.29% 100%, 7.14% calc(100% - 7px), 0% 100%);
-  --dc-faction-surface: color-mix(in oklch, var(--blood) 18%, var(--paper-cream));
   --dc-faction-band: inset 0 12pt 0 0 var(--blood);
   --dc-faction-band-height: 12pt;
   --dc-faction-pad-bottom: 14pt;
@@ -1578,6 +1569,10 @@ h3 + .dc-section-panel {
   z-index: -1;
 }
 
+/* The title is a story's name, not a chapter's. */
+.dc-fiction-excerpt > h1 {
+  font-size: var(--dc-fiction-title-size);
+}
 .dc-fiction-excerpt p {
   orphans: 3;
   widows: 3;

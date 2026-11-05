@@ -108,19 +108,20 @@
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
-  --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
-  --dc-alert-border:         var(--hud-blue-dark);  /* left rail */
+  --dc-alert-bg:             var(--paper-cream);    /* every callout reads on white: its accent is in the rail, the frame and the label */
+  --dc-alert-border:         var(--hud-blue-dark);  /* the accent: left rail, frame, label chip */
   --dc-alert-fg:             var(--ink);
-  --dc-alert-label-color:    var(--ink);
+  --dc-alert-label-color:    var(--paper-cream);
   --dc-alert-body-size:      var(--fs-body-sm);
-  --dc-alert-border-width:   4px;
+  --dc-alert-border-width:   8px;
   --dc-alert-label-size:     var(--fs-floor);
   --dc-alert-label-weight:   700;
   --dc-alert-label-spacing:  0.1em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
-  --dc-alert-frame:          none;                  /* an inset box-shadow ring (warning's ink frame) */
-  --dc-alert-label-bg:       var(--paper-cream);    /* the label's chip: every label is a raised chip */
+  --dc-alert-frame:          inset 0 0 0 2pt var(--dc-alert-border);  /* an inset ring in the accent, so a callout keeps its edge on a white sheet too */
+  --dc-alert-frame-width:    3pt;                   /* the frame of a callout whose frame follows its outline (vibe, origin, location, visit) */
+  --dc-alert-label-bg:       var(--dc-alert-border);  /* the label's chip: the accent, with paper type */
   --dc-alert-label-pad:      2px 9px;
   --dc-alert-label-shadow:   var(--dc-label-shadow);
   /* Each boxed component cuts its own corners (a clip-path on the box), so its
@@ -241,8 +242,9 @@
   /* .dc-fiction-excerpt public API: a hole smashed in the wall, the story on the
      page behind it. The two colours are tokens; the hole's shape is generated
      (below). */
-  --dc-fiction-bg:           var(--paper-zine);    /* the page */
+  --dc-fiction-bg:           var(--paper-cream);   /* the page */
   --dc-fiction-cavity:       var(--ink-smoke);     /* the broken wall's thickness, round the hole */
+  --dc-fiction-title-size:   var(--fs-h2);         /* its h1: a story's name, a step under a chapter's */
   --dc-fiction-art-width:    3in;
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);
@@ -384,7 +386,7 @@
   --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
   --dc-choice-surface:       var(--paper-cream);
-  --dc-choice-tint:          color-mix(in oklch, var(--ink-dark) 18%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-tint:          var(--paper-cream);    /* the closing quote's ground: white, as every text surface is */
   --dc-choice-edge:          1.5pt solid var(--ink-dark);  /* the card's border */
   --dc-choice-band:          5px;                   /* the top band in the kind colour */
   --dc-choice-rail:          6px;                   /* the left rail in the kind colour */
@@ -466,16 +468,20 @@
        slip-ink    heading type on the slip
        slip-edge   the ink edge and dashed foot of a slip
        slip-shadow its hard shadow (opaque, no blur)
-       slip-tape   the masking tape across a `##` slip (default: the tape's colour)
        slip-gap    the space above a slip, so it never jams against the box above
+       slip-foot   the space below a slip, the same whatever follows it
+       slip-bolt   the bolt heads in a `##` slip's top corners (-face: their centre)
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
   --dc-page-slip-ink:        var(--ink);
   --dc-page-slip-edge:       var(--ink);
   --dc-page-slip-shadow:     var(--shadow-poster);
-  --dc-page-slip-tape:       var(--dc-tape-bg);
+  --dc-page-slip-bolt:       var(--ink);
+  --dc-page-slip-bolt-face:  var(--paper-stain);
+  --dc-page-slip-bolt-size:  10px;
   --dc-page-slip-gap:        var(--space-xl);
+  --dc-page-slip-foot:       6pt;
   --dc-page-sheet-pad:       0.18in;
   --dc-page-title-ink:       var(--paper-cream);
 

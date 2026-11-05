@@ -24,7 +24,7 @@ All artwork: shadows, lifts, bevels, a smudge and the tape. Each darkens or tint
 | Soft lift `--shadow-soft` / `--shadow-lift` | `dc-palette.css`; under anything hung on the wall: sections (`--dc-section-lift`), cards, the outcome ladder, the specialty card | `color-mix(in srgb, var(--ink) 34%, transparent)` |
 | Recess `--shadow-press` | `dc-palette.css`; the soft inset of anything sunk into the wall: the fiction cavity, the `lore` / `dm` / `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
 | Section hard shadow `--dc-section-hard-shadow` | `dc-component-defaults.css`; the section's offset copy (`section.css`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
-| Tape | the `##` slip's tape over its foot (`page-templates.css`); the strip holding a skill card to the wall (`cards.css`) | 78% of `--dc-page-slip-tape` over transparent; 78% of the card's mark tint on paper-aged over transparent |
+| Tape | the strip holding a skill card to the wall (`cards.css`) | 78% of the card's mark tint on paper-aged over transparent |
 | Sticker and path-chip shadows, the spray smudge, the dashed rule | `chrome.css` | 35% and 30% ink; 8% of `--dc-spray-bg`; 50% magenta |
 | Pull-quote accent `--dc-pullquote-accent-soft` | `dc-component-defaults.css` | 15% of `--tint-magenta-rose` |
 | AP-chip and outcome-key bevels | `cards.css`, `data.css` | 8–18% ink and paper |
@@ -39,7 +39,8 @@ A book that sets one of these tokens to an opaque colour loses nothing in print;
 | The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
 | The band and tab gloss | `--light-gloss`, a gradient with transparent stops, made Chromium write a type-1 shading PDF.js cannot read (1.10.2). The path banner, the card tab and the specialty card band pre-mix the same sheen into their opaque fills; the token stays for books that read it. |
 | The tape divider's crimson dashes (`.dc-tape::before/::after`) | An ordinary gradient with opaque stops, tiled by `background-size`: a `repeating-linear-gradient` cannot be kept live and flattens the page whole. |
-| The paper tints (callout, section, faction, choice and entry surfaces) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). |
+| The bolt heads on a `##` slip (`page-templates.css`) | Opaque discs: an ink ring round a `--paper-stain` face, the slot a hard-stopped band of ink (an ordinary gradient with opaque stops). They replaced the slip's translucent tape. |
+| The paper tints that remain (the tape's tan, the specialty mixes, the accent inks of the slate block and the Surreal definition) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). Callout, section, faction, choice and entry surfaces are no longer tinted: they are white. |
 
 ## How to verify a book
 

@@ -53,7 +53,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 ## Supported Components
 
 ### Callouts & Notes
-- `.dc-alert` — the one callout shell: eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill value, edge and label
+- `.dc-alert` — the one callout shell: eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label; every one is a white sheet, its colour in the rail, the frame and the label
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
 - `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-location-callout`, `.dc-visit-callout`, `.dc-example-callout`
@@ -66,32 +66,34 @@ Use this to choose the right callout type before reaching for a class name.
 
 ```
 1. Who sees it?
-   └── Dream Master only → dc-dm-note        (ink slab, cyan rail and chip)
+   └── Dream Master only → dc-dm-note        (ink label bar in cyan, white sheet, ink ring, cyan rail)
    └── Player-facing → continue ↓
 
 2. What is it?
-   └── A worked example              → dc-example-callout  (cyan rail, taped-on label)
-   └── Atmosphere / narrative voice  → dc-vibe-callout     (barely violet, one violet edge, italic)
-   └── Backstory, in second person   → dc-origin-callout   (warm paper, torn edge, dog-ear, rust rail, worn crimson stamp)
-   └── A place, written up           → dc-location-callout (map paper, torn edge, dog-ear, teal rail, worn teal stamp)
-   └── A place, present tense        → dc-visit-callout    (wobbly fungi-green signpost)
+   └── A worked example              → dc-example-callout  (cyan rail and ring, taped-on label)
+   └── Atmosphere / narrative voice  → dc-vibe-callout     (violet frame along its diagonals, violet chip, italic)
+   └── Backstory, in second person   → dc-origin-callout   (torn edge, dog-ear, rust frame and rail, worn crimson stamp)
+   └── A place, written up           → dc-location-callout (torn edge, dog-ear, teal frame and rail, worn teal stamp)
+   └── A place, present tense        → dc-visit-callout    (wobbly signpost, fungi-green frame, rail and chip)
    └── Rules / mechanics             → continue ↓
 
 3. How urgent?
    └── A rule with consequences   → dc-note.warning  (hazard-stripe rail, caution-tape label)
-   └── Informational              → dc-note          (HUD-blue panel, blue rail)
+   └── Informational              → dc-note          (heavy blue rail, blue ring, blue chip)
 ```
+
+Every one is a white sheet: the brackets name the rail, frame and label that tell them apart.
 
 ### Block Components (via `@block panel`, `slate`, `shard`)
 - `.dc-block` — base block container
 - `.dc-block.dc-panel` — data/rules panel (a `@block` register; the general card is `@section panel`)
 - `.dc-block.dc-slate` — authority voice: ink body, blood band, a stamped Binding tag
-- `.dc-block.dc-shard` — flavor/atmosphere: light zine paper, torn foot, no accent hue
+- `.dc-block.dc-shard` — flavor/atmosphere: white paper, torn foot, no accent hue
 
 ### Sections
 - `.dc-section-panel` — the card: cream substrate, accent rail, clipped corner, title bar
 - `.dc-section-flat` — the rail on a plain host
-- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar and sheet: a pale HUD band, a deep violet bar over lilac, an ink bar with a cyan rule, and for `choose` a form with no bar on the lightest sheet (`--paper-form`)
+- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar over a white sheet: a pale HUD band, a deep violet bar, an ink bar with a cyan rule, and for `choose` a form with no bar (`--paper-form`)
 - `.dc-npc-stat`, `.dc-citizen-walkthrough` — panels that carry their own class
 - `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — `choose` sections of choice cards: blood with a cracked edge, HUD blue with a steady tablet, violet with a rising edge (the card reads `--dc-choice-*`)
 - `.dc-fiction-excerpt`, `.dc-card-grid` — section components that are not panels
@@ -155,7 +157,7 @@ These are separate components — not variants of each other.
 - `.dc-steps` — the numbered instruction plate (`@procedure`): ink frame, hard shadow, HUD-blue number strip
 
 ### Gear
-- `.dc-card.dc-entry` with `.dc-gear` (or `.dc-augment`, `.dc-treasure`, `.dc-vehicle`, `.dc-drug`) — `@gear [kind]`; each kind has its own silhouette, surface, badge and name colour: a hang tag, a spec chip, a gem, an industrial plate, a prescription label
+- `.dc-card.dc-entry` with `.dc-gear` (or `.dc-augment`, `.dc-treasure`, `.dc-vehicle`, `.dc-drug`) — `@gear [kind]`; each kind has its own silhouette, frame, badge and name colour on a white sheet: a hang tag, a spec chip, a gem, an industrial plate, a prescription label
 - `.dc-field.dc-field-specs` — the SPECS box (`@field specs`, or a `**SPECS:**` paragraph in an entry)
 
 ### Layout Helpers
@@ -188,8 +190,8 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--bg` | `#c8c5bf` | Ash-concrete page background |
 | `--concrete-pale` | `#dcdad5` | Pale concrete — cold-grey panels |
 | `--paper-form` | `→ --paper-cream` | The `choose` form's sheet: white |
-| `--paper-cream` | `#ffffff` | White, no ink — primary text surface |
-| `--paper-zine` | `→ --concrete-pale` | The grey printed page — fiction excerpt, shard block |
+| `--paper-cream` | `#ffffff` | White, no ink — the text surface: every sheet that holds reading text |
+| `--paper-zine` | `→ --concrete-pale` | The grey printed page — no package rule reads it (the fiction excerpt and shard block are white); kept for books |
 | `--paper-light` | `→ --paper-cream` | White, no ink — secondary layered panel surface; the lede |
 | `--paper-aged` | `→ --concrete-pale` | Label and chip grounds (field chips, `code`, outcome rows) |
 | `--paper-stain` | `#b0a89c` | Deep stain — dark inset wells and label strips; never body text |
@@ -230,7 +232,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 | `--hud-blue` | `#1f6f94` | Teal-cyan mid HUD |
 | `--hud-blue-dark` | `#14516e` | Deep teal — borders, H2 text |
 | `--hud-blue-bright` | `→ --brand-cyan` | Neon accent alias (5 consumers) |
-| `--hud-blue-dim` | `#7ab8d0` | Visible cream panel tint |
+| `--hud-blue-dim` | `#7ab8d0` | Light cyan — the `reference` band and column heads, roll-table heads, dividers, the reduced AP chip; not a body fill |
 | `--hud-magenta` | `→ --brand-magenta` | Brand-magenta alias (29 consumers) |
 | `--hud-panel` | `→ --concrete-pale` | The default specialty-intro panel |
 
@@ -243,7 +245,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Crystal / Mineral
 | Token | Value | Role |
 |---|---|---|
-| `--crystal-amethyst` | `#905aa5` | Mineral violet (treasure tint) |
+| `--crystal-amethyst` | `#905aa5` | Mineral violet — the amethyst chapter chip |
 | `--crystal-slate` | `#52626f` | Cool slate stone — generalist accent |
 | `--crystal-aqua` | `#4a98a8` | Pale crystalline aquamarine |
 
@@ -276,14 +278,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 ### Alert / Callout (`.dc-alert`)
 | Token | Default | Role |
 |---|---|---|
-| `--dc-alert-bg` | `--hud-blue-dim` | Panel background |
-| `--dc-alert-border` | `--hud-blue-dark` | Left-rail border color |
+| `--dc-alert-bg` | `--paper-cream` | The sheet: white in every register |
+| `--dc-alert-border` | `--hud-blue-dark` | The accent: left rail, frame ring and label chip |
 | `--dc-alert-fg` | `--ink` | Body text color |
-| `--dc-alert-label-color` | `--ink` | Label chip text |
-| `--dc-alert-border-width` | `4px` | Left-rail width |
+| `--dc-alert-label-color` | `--paper-cream` | Label chip text (warning: ink on yellow; dm: cyan, `--hud-blue-bright`, on its ink bar) |
+| `--dc-alert-border-width` | `8px` | Left-rail width (dm, origin, location, example 6px; vibe 4px; warning 14px) |
 | `--dc-alert-label-size` | `10pt` (`--fs-floor`) | Label chip font size |
-| `--dc-alert-frame` | `none` | An inset ring (the warning's ink frame) |
-| `--dc-alert-label-bg` / `-label-pad` | `transparent` / `0` | A chip behind the label (warning tape, DM chip) |
+| `--dc-alert-frame` | `inset 0 0 0 2pt` in `--dc-alert-border` | An inset ring in the accent (warning and dm: ink; vibe, origin, location, visit: `none`, framed by the next token) |
+| `--dc-alert-frame-width` | `3pt` | The frame of a callout whose frame follows its outline (vibe, origin, location, visit): the box is filled with the accent under a white copy of its silhouette, this far in from the top, right and foot; the rail is the left side |
+| `--dc-alert-label-bg` / `-label-pad` | `--dc-alert-border` / `2px 9px` | The label's chip: the accent, with paper type (warning: yellow tape; dm: `--ink-dark`, the bar across its top; origin, location: paper, a stamp) |
+| `--dc-alert-label-shadow` | `--dc-label-shadow` | The chip's raised edge (dm: `none`) |
 
 ### Lede (`.dc-intro`)
 | Token | Default | Role |
@@ -307,10 +311,10 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 ### Choice Card, Faction, Entry (`.dc-card`, `.dc-faction`, `.dc-entry`)
 | Token | Default | Role |
 |---|---|---|
-| `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / ink-dark 18% in cream (oklch) / `none` | Set by `@flaws`, `@ideals`, `@dreams`: rail, top band and title colour; sheet; the quote's well; the one-word chip |
+| `--dc-choice-accent` / `-surface` / `-tint` / `-kind` | `--ink-dark` / `--paper-cream` / `--paper-cream` / `none` | Rail, top band and title colour; sheet; the closing quote's ground (white in all three); the one-word chip. `@flaws`, `@ideals`, `@dreams` set the accent, the sheet and the chip |
 | `--dc-choice-edge` / `-band` / `-rail` | `1.5pt solid --ink-dark` / `5px` / `6px` | The card's border and the weight of its top band and left rail (flaw: 2pt solid, 9px; dream: a 4pt double edge, 3px band) |
 | `--dc-faction-surface` / `-band` / `-band-height` / `-title` | `--paper-cream` / HUD-blue band image / `8pt` / `--hud-blue-dark` | A faction's sheet, top band (an image: `linear-gradient(c, c)` for solid) and name colour; each kind sets all of them |
-| `--dc-entry-radius` / `-mark` / `-mark-size` / `-frame` | `0` / `none` / `auto` / `none` | An entry kind's corner radius, background mark (eyelet, facet, hazard head) and inset keyline |
+| `--dc-entry-radius` / `-ornament` / `-frame` | `0` / `none` / `none` | An entry kind's corner radius, ornament layer (the vehicle's inner seam) and inset keyline |
 | `--dc-entry-badge-bg` / `-fg` / `-shape` / `-radius` | `--ink-dark` / `--paper-cream` / `none` / `0` | The kind badge over the name |
 | `--dc-field-edge-width` / `-edge-style` | `0px` / `solid` | The frame on a field's other three sides (effects solid, side effects dashed) |
 
@@ -322,7 +326,8 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-definition-block-accent` / `-accent-width` / `-surface` / `-shape` | `--hud-blue-dark` / `3pt` / `--paper-cream` / `none` | The rules; the rule over the block; page; clip |
 | `--dc-definition-block-term` / `-fg` / `-style` / `-frame` / `-rule-bottom` / `-pad` | `--hud-blue-dark` / `--ink` / `italic` / `--shadow-poster` / `1pt` / `8pt 12pt 9pt` | Headword colour; body colour; body style; box-shadow (the hard shadow, or an inset frame); the rule under; padding. `lucid` and `surreal` set them |
 | `--dc-outcome-key-col` | `max(130px, 26%)` | Outcome ladder chip column |
-| `--dc-fiction-bg` / `-cavity` | `--paper-zine` / `--ink-smoke` | The fiction excerpt's page; the broken wall's face round the hole |
+| `--dc-fiction-bg` / `-cavity` | `--paper-cream` / `--ink-smoke` | The fiction excerpt's page (white); the broken wall's face round the hole |
+| `--dc-fiction-title-size` | `--fs-h2` | The excerpt's `#` title: a story's name, a step under a chapter's |
 | `--dc-fiction-hole` / `-shape` | generated polygons | The hole and the page (the hole shrunk by the face), from `scripts/fiction-break.py` |
 | `--dc-fiction-line-height` | `1.45` | The fiction excerpt's leading |
 
@@ -384,6 +389,16 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-block-title-rule` | `none` | A whole `border-bottom` value under the band (slate: 3pt crimson; shard: 2pt solid) |
 | `--dc-block-tag` | `none` | A quoted word stamped on the band's right end (slate: "Binding") |
 | `--dc-block-tag-edge` | `1.5pt solid --paper-cream` | The tag's border (slate: `3pt double`, a worn stamp) |
+
+### Page text (free-standing headings and prose)
+| Token | Default | Role |
+|---|---|---|
+| `--dc-page-slip-bg` / `-ink` / `-edge` / `-shadow` | `--paper-cream` / `--ink` / `--ink` / `--shadow-poster` | A heading slip's paper, type, ink edge and dashed foot, and hard shadow |
+| `--dc-page-slip-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The two slotted bolt heads in a `##` slip's top corners: ring and slot, face, diameter |
+| `--dc-page-slip-gap` | `--space-xl` | The space above a slip |
+| `--dc-page-slip-foot` | `6pt` | The space below a slip, the same whatever follows it |
+| `--dc-page-sheet-pad` | `0.18in` | The side padding of the prose sheet |
+| `--dc-page-title-ink` | `--paper-cream` | Type on the page-title banner |
 
 ---
 

@@ -497,7 +497,7 @@ claimed alone (`ol.dc-steps`, `div.dc-intro`, `div.dc-toc`: this layer outranks
 `dc.components`; `test/page-text.test.js` enforces it), so a heading
 inside a section or callout is never matched, the guide's `@page .dg-doc`
 explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
-their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-bolt/-bolt-face/-bolt-size/-gap/-foot`,
 `--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
 read the chapter's `--dc-section-accent`, so a chapter word recolours them).
 

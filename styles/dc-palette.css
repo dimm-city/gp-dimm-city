@@ -11,7 +11,7 @@
   --concrete-pale: #dcdad5; /* pale concrete swatch — light cool grey lifted from the wall; substrate for lede/intro panels that should read cold-grey, not paper-cream · TAC 33% (C12 M9 Y12 K0) */
   --paper-cream:  #ffffff;  /* white — the unprinted stock, no ink · TAC 0% (C0 M0 Y0 K0) */
   --paper-form:   var(--paper-cream);  /* alias: the choose form and definition sheets print on the white stock */
-  --paper-zine:   var(--concrete-pale);  /* alias: the fiction excerpt and shard sheets, the grey printed page */
+  --paper-zine:   var(--concrete-pale);  /* alias: the grey printed page; kept for books, no package rule reads it */
   --paper-light:  var(--paper-cream);  /* alias: white, the unprinted stock */
   --paper-aged:   var(--concrete-pale);  /* alias: label and chip grounds (field chips, code, outcome rows); dE 6.4 off the wall, where #c8c2b8 was 1.0 */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 81% (C23 M20 Y27 K11) */
@@ -97,7 +97,7 @@
   --hud-blue:        #1f6f94;  /* teal-cyan mid HUD · TAC 139% (C78 M29 Y8 K24) */
   --hud-blue-dark:   #14516e;  /* deep teal for borders/rules/H2 text · TAC 166% (C74 M34 Y12 K46) */
   --hud-blue-bright: var(--brand-cyan);     /* alias — substrate-safe neon-cyan accent */
-  --hud-blue-dim:    #7ab8d0;  /* visible-on-cream panel tint · TAC 66% (C46 M9 Y8 K3) */
+  --hud-blue-dim:    #7ab8d0;  /* pale HUD band: the reference bar, table heads · TAC 66% (C46 M9 Y8 K3) */
   --hud-magenta:     var(--brand-magenta);  /* alias — brand-signature cyber-magenta */
   --hud-panel:       var(--concrete-pale);  /* alias: the default specialty-intro panel */
 
@@ -212,7 +212,7 @@
      The mineral-magic register: amethyst and aquamarine — geometric and
      refractive. Distinct from brand-violet (signal-saturated) and the warm
      gold of brand-yellow (electric). */
-  --crystal-amethyst: #905aa5;  /* mineral violet, lighter and redder than --brand-violet — the treasure tint and chapter chip; cream on it 5.0:1 · TAC 127% (C45 M80 Y0 K2) */
+  --crystal-amethyst: #905aa5;  /* mineral violet, lighter and redder than --brand-violet — the treasure chapter chip; cream on it 5.0:1 · TAC 127% (C45 M80 Y0 K2) */
   --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 105% (C62 M13 Y18 K12) */
   --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 6.3:1 · TAC 145% (C50 M31 Y22 K42) */
 
