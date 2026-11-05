@@ -2932,7 +2932,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="87:88">
 <td>Paragraphs, lists, quotes</td>
-<td>One paper sheet per run; the sheet ends where the run does. A bulleted list starts at the text edge (its marker is the indent); a numbered one keeps room for its numbers. A run of prose in <code>@columns</code> is one sheet and does not split across a page</td>
+<td>One paper sheet per run; the sheet ends where the run does. A list hangs its marker in a 1.1em indent (1.6em for numerals) inside the padding of the sheet, so wrapped lines align under the first word. A run of prose in <code>@columns</code> is one sheet and does not split across a page</td>
 </tr>
 </tbody>
 </table>

@@ -90,16 +90,19 @@
   /* top .8rem clears a 7px gate notch, right 1.75rem a 24px stair, left
      1.25rem a 16px chamfer: each is the cut plus 2pt or more. */
   padding: 0.8rem 1.75rem 0.7rem 1.25rem;
-  margin: -1rem -1.25rem 0.3rem -1.25rem;
+  /* bottom: the band's rule sits about 7pt above the margin edge, so the gap to
+     the first line is the sub-heading gap (0.3rem measured from the rule) */
+  margin: -1rem -1.25rem calc(0.3rem - 7pt) -1.25rem;
   clip-path: var(--dc-specialty-intro-title-shape);
   border: none;
   break-after: avoid;
 }
 
-/* The opener's title: its visible rule (the heading's own border) sits about 7pt
-   above the margin edge the gap is counted from, so the gap under the title
-   was 0.19in against 0.09in under a sub-heading. Tighten the title's own
-   bottom margin (0.5em from the heading base) by those 7pt. */
+/* The opener's title when the band rule above does NOT match. In the Field
+   Guide's PDF build the engine puts a zero-size marker (id gp-m-N, inline) in
+   front of the heading, so `h2:first-child` fails and the title prints as a
+   plain heading with its own 2.5pt rule: the gap to the text was 0.19in
+   against 0.09in under a sub-heading. Same 7pt tightening as the band rule. */
 .dc-specialty-intro>h2 {
   margin-bottom: calc(0.5em - 7pt);
 }

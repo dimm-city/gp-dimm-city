@@ -221,6 +221,8 @@ blockquote {
 /* a bulleted list straight before or after a numbered one: the seam is one item pitch */
 :where(ul:has(+ ol), ol:has(+ ul)) { margin-bottom: var(--space-xs); }
 li > p { margin: 0; }
+/* a second paragraph in the same item keeps a paragraph gap */
+li > p + p { margin-top: var(--space-xs); }
 li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
 :where(ul):where(:not(.dc-steps, .dc-toc ol)) > li { list-style: none; }
 :where(ul):where(:not(.dc-steps, .dc-toc ol)) > li::before {

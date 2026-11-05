@@ -278,11 +278,17 @@ describe("titled alerts", () => {
       '<div class="dc-alert dc-vibe-callout"><span class="dc-alert-label">Neon <em>rain</em></span>\n<p>Wet streets.</p>\n</div>\n');
   });
 
-  test("a title followed by another paragraph", () => {
-    const html = render("> [!NOTE] Title\n>\n> Body.");
-    expect(html).toContain('<span class="dc-alert-label">Title</span>');
-    expect(html).toContain("<p>Body.</p>");
-    expect(html).not.toContain("<p>Title");
+  test("a one-line first paragraph is body text whatever follows it", () => {
+    const html = render("> [!WARNING] Never split the party, it always ends badly.\n>\n> - one\n> - two");
+    expect(html).toContain('<span class="dc-alert-label">Warning</span>');
+    expect(html).toContain("<p>Never split the party, it always ends badly.</p>");
+    expect(render("> [!NOTE] Title\n>\n> Body.")).toContain('<span class="dc-alert-label">Note</span>\n<p>Title</p>');
+  });
+
+  test("a bold title over a body is the label, as plain text", () => {
+    const html = render("> [!NOTE] **Escaping A Grapple**\n> Body.");
+    expect(html).toContain('<span class="dc-alert-label">Escaping A Grapple</span>\n<p>Body.</p>');
+    expect(html).not.toContain("<strong>");
   });
 
   test("an untitled alert keeps the default label, and a lone line stays body text", () => {
@@ -689,6 +695,27 @@ describe("declared specialty, learning path and skill", () => {
       expect(notLast).not.toContain("dc-card-signoff");
     });
 
+    test("card marks stay on the card's own paragraphs, not those inside a callout or columns", () => {
+      const callout = renderGp(doc("@skill", "", card("Mix"), "", "@callout note", "", "**Heading**", "", "Intro:", "", "@end-callout")).html;
+      expect(callout).toContain("<p><strong>Heading</strong></p>\n<p>Intro:</p>");
+      expect(count(callout, /dc-card-subhead|dc-lead-in/g)).toBe(0);
+      const after = renderGp(doc("@skill", "", card("Mix"), "", "@callout note", "", "Inside:", "", "@end-callout", "", "Outside:", "", "More.")).html;
+      expect(after).toContain("<p>Inside:</p>");
+      expect(after).toContain('<p class="dc-lead-in">Outside:</p>');
+      const columns = renderGp(doc("@skill", "", card("Mix"), "", "@columns 2", "", "**Heading**", "", "Intro:", "", "@end-columns")).html;
+      expect(count(columns, /dc-card-subhead|dc-lead-in/g)).toBe(0);
+    });
+
+    test("a sign-off is not marked on a mid-ability split, nor on a card's first paragraph", () => {
+      const split = renderGp(doc("@skill", "", card("Cut"), "", "Short bit.", "", "@continue", "", "Tail opens.", "", "Short tail.")).html;
+      expect(count(split, /dc-card-signoff/g)).toBe(1);
+      expect(split).toContain('<p class="dc-card-signoff">Short tail.</p>');
+      expect(split).not.toContain('<p class="dc-card-signoff">Tail opens.</p>');
+      expect(split).not.toContain('<p class="dc-card-signoff">Short bit.</p>');
+      const first = renderGp(doc("@skill", "", "#### Bare", "", "Only paragraph.")).html;
+      expect(first).not.toContain("dc-card-signoff");
+    });
+
     test("a section's closing bold-only paragraph is its kicker", () => {
       const { html } = renderGp(doc("@section lore", "", "## Title", "", "Body.", "", "**Just a kicker.**", "@end-section", "", "**Outside bold.**"));
       expect(html).toContain('<p class="dc-kicker"><strong>Just a kicker.</strong></p>');
@@ -768,7 +795,7 @@ describe("declared specialty, learning path and skill", () => {
         expect(html).toContain("<ul>\n<li><strong>Prefrontal Chaos:</strong> The creature acts.</li>\n<li><strong>Forced Expulsion: X</strong> Out.</li>\n</ul>");
       });
 
-      test("an unbolded item keeps its number between cost rows", () => {
+      test("an unbolded item between cost rows becomes a bullet, not an orphaned number", () => {
         const html = skill("1. **1 AP** a", "2. Plain.", "3. **2 AP** b");
         expect(html).toContain("<ul>\n<li>Plain.</li>\n</ul>");
         expect(chip(html)).toHaveLength(2);
@@ -779,6 +806,44 @@ describe("declared specialty, learning path and skill", () => {
         expect(count(html, /class="dc-roll-the-die"/g)).toBe(3);
         expect(html).toContain('<span class="dc-roll-the-die">ROLL TWO DICE!</span>');
         expect(html).toContain('<span class="dc-roll-the-die">ROLL THE DIE TWICE!</span>');
+      });
+
+      test("a name after a colon or comma loses the separator; a parenthetical is plain lead text", () => {
+        const html = skill("1. **3 AP: Butcher Roach** Do it.", "2. **2 AP, Wirefly** Go.", "3. **2 AP (once per scene)** Again.", "4. **1 AP (per target)** Hit.");
+        expect(html).toContain("<em>Butcher Roach:</em> Do it.");
+        expect(html).toContain("<em>Wirefly:</em> Go.");
+        expect(html).toContain('<p class="dc-ability-text">(once per scene) Again.</p>');
+        expect(html).not.toContain("<em>(");
+        expect(chip(html)).toEqual([["dc-ap", "3 AP"], ["dc-ap", "2 AP"], ["dc-ap", "2 AP"], ["dc-ap", "1 AP"]]);
+      });
+
+      test("an option's colon is never doubled", () => {
+        for (const lead of ["**Grapple** hold them.", "**Grapple**: hold them.", "**Grapple:** hold them."]) {
+          expect(skill("1. " + lead)).toContain("<li><strong>Grapple:</strong> hold them.</li>");
+        }
+      });
+
+      test("an item that opens with a nested list is well-formed", () => {
+        const html = skill("1.", "    - nested", "2. **1 AP** after");
+        const tags = (re) => (html.match(re) ?? []).length;
+        expect(tags(/<ul>/g)).toBe(tags(/<\/ul>/g));
+        expect(tags(/<li>/g)).toBe(tags(/<\/li>/g));
+        expect(tags(/<div[ >]/g)).toBe(tags(/<\/div>/g));
+        expect(html).toContain("<li>nested</li>");
+      });
+
+      test("die results must tile a die: d6 set captioned d6, scrap and gaps and overlaps stay lists", () => {
+        const six = skill("1. **1-2:** a", "2. **3-4:** b", "3. **5-6:** c");
+        expect(six).toContain('<span class="dc-roll-table-die">d6</span>');
+        expect(six).toContain("<td>5–6</td>");
+        const planewalk = skill("1. **20** a", "2. **11-19** b", "3. **6-10** c", "4. **2-5** d", "5. **1** e");
+        expect(planewalk).toContain('<div class="dc-outcomes">');
+        for (const bad of [["1. **5** scrap", "2. **10** scrap"], ["1. **1-2** a", "2. **4-6** b"], ["1. **1-4** a", "2. **3-6** b"]]) {
+          const html = skill(...bad);
+          expect(html).not.toContain("dc-roll-table");
+          expect(html).not.toContain("dc-outcomes");
+          expect(html).toContain("<ul>");
+        }
       });
 
       test("a nested list under a cost item stays a list", () => {
@@ -1283,7 +1348,7 @@ describe("declared card, outcome and procedure", () => {
     test("inside a @callout it nests there, and the callout closes at its own @end-callout", () => {
       const src = doc("@callout note", "", "Before.", "", "@procedure", "", "1. One", "2. Two", "@end-procedure", "", "After.", "", "@end-callout", "", "Outside.");
       const { html, warnings } = renderGp(src);
-      expect(squash(html)).toMatch(/dc-alert dc-note"[^>]*><span[^>]*>Note<\/span><p>Before\.<\/p><ol class="dc-steps">.*<\/ol><p[^>]*>After\.<\/p><\/div><p>Outside\.<\/p>$/);
+      expect(squash(html)).toMatch(/dc-alert dc-note"[^>]*><span[^>]*>Note<\/span><p>Before\.<\/p><ol class="dc-steps">.*<\/ol><p>After\.<\/p><\/div><p>Outside\.<\/p>$/);
       expect(warnings).toEqual([]);
     });
 

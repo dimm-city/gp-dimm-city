@@ -376,8 +376,9 @@ h1.dc-chevron {
    mid). It takes break-after: avoid so it never ends a page's content area.
    It is NOT drawn when it is the first or last child of its container (which
    also covers a fragment edge only when that edge is also a DOM edge), when the
-   block after it is a heading, a table or a component (those carry their own
-   edge). A rule that is a direct child of a wall page or chapter (the bare
+   block after it is a heading, a table or a component that carries its own
+   top edge (the explicit list below). A plain block that merely has a dc- class
+   (a cost row, a bold sub-head) is not one: the seam between sub-abilities prints. A rule that is a direct child of a wall page or chapter (the bare
    wall, outside any sheet or card) is hidden by page-templates.css, which owns
    page selectors. */
 hr {
@@ -387,7 +388,42 @@ hr {
   break-after: avoid;
 }
 hr:is(:first-child, :last-child),
-hr:has(+ :is(h1, h2, h3, h4, h5, h6, table, [class*="dc-"])) {
+hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
+    .dc-outcomes,
+    .dc-roll-table,
+    .dc-steps,
+    .dc-alert,
+    .gp-alert,
+    .dc-section-panel,
+    .dc-section-flat,
+    .dc-section-reference,
+    .dc-section-lore,
+    .dc-section-dm,
+    .dc-section-choose,
+    .dc-section-catalog,
+    .dc-fiction-excerpt,
+    .dc-card,
+    .dc-skill-card,
+    .dc-entry,
+    .dc-block,
+    .dc-prose-panel,
+    .dc-definition-block,
+    .dc-field,
+    .dc-tape,
+    .dc-stat,
+    .dc-stat-strip,
+    .dc-pullquote,
+    .dc-intro,
+    .dc-flavor,
+    .dc-toc,
+    .dc-learning-path,
+    .dc-path-shell,
+    .dc-img-wrapper,
+    .dc-specialty,
+    .dc-specialty-intro,
+    .dc-specialty-art,
+    .dc-specialty-card,
+    .dc-sub-header)) {
   display: none;
 }
 

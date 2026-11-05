@@ -100,7 +100,7 @@
    print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
    at the top of the band, `--chip-gap` (0.10in) below the text block, so its foot is at exactly 0.625in:
    on DriveThruRPG's 0.5in text minimum, where it always was. A sheet that fills
-   the page therefore ends --space-md above the chip (its 3pt hard shadow reaches
+   the page therefore ends --chip-gap (0.10in) above the chip (its 3pt hard shadow reaches
    into that gap).
 
    A shrunk margin box stays anchored at its slot's START edge on the block

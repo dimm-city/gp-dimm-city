@@ -343,7 +343,9 @@
    head was a quote and a two-line paragraph opened with a tab, the quote and
    one line. A head that cannot split leaves it two breaks only, between the
    blocks (kept together above) or before the card, and it takes the second. */
-.dc-skill-card .dc-card-inner > :nth-child(-n+3) {
+/* A table, list, ladder, roll plate or columns run is left out: those split on
+   purpose (below), and this rule's specificity would beat theirs. */
+.dc-skill-card .dc-card-inner > :nth-child(-n+3):not(table, ul, ol, .dc-outcomes, .dc-roll-table, .gp-columns) {
   break-inside: avoid;
 }
 
@@ -492,6 +494,11 @@
    it) stays with the block after it, whatever that is. */
 .dc-skill-card .dc-card-inner > :is(p, .dc-ability).dc-lead-in:not(:last-child) {
   break-after: avoid;
+}
+/* It does not split either, unless it is a cost row holding its own body (a
+   nested list or paragraphs): that row is as long as its list, and the plain
+   ability-row rule above already keeps it whole. */
+.dc-skill-card .dc-card-inner > :is(p, .dc-ability:not(:has(> .dc-ability-body))).dc-lead-in:not(:last-child) {
   break-inside: avoid;
 }
 

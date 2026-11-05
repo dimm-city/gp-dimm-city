@@ -455,14 +455,17 @@ function collectSkillListItems(tokens, startIndex, md, env) {
       let end = i + 1;
       while (!(tokens[end].type === 'list_item_close' && tokens[end].level === tokens[i].level)) end++;
       const body = tokens.slice(i + 1, end);
-      const first = body.findIndex((t) => t.type === 'inline');
+      // The item's own first line: a paragraph at the item's level that opens it.
+      // An item that opens with a nested list has no lead of its own.
+      const own = tokens[i].level + 2;
+      const first = body[0]?.type === 'paragraph_open' && body[1]?.type === 'inline' && body[1].level === own ? 1 : -1;
       let after = first + 1;
       if (first >= 0 && body[after]?.type === 'paragraph_close') after++;
       items.push({
         number,
         html: first >= 0 ? renderInlineChildren(body[first], md) : '',
         src: first >= 0 ? body[first].content : '',
-        rest: first >= 0 && after < body.length ? md.renderer.render(body.slice(after), md.options, env || {}) : '',
+        rest: first >= 0 ? (after < body.length ? md.renderer.render(body.slice(after), md.options, env || {}) : '') : md.renderer.render(body, md.options, env || {}),
       });
       i = end;
     }
@@ -522,16 +525,42 @@ function skillListHtml(items, md) {
   return html;
 }
 
-// An option's bold name takes its colon inside the bold ("**Name:** text").
+// An option's bold name takes its colon inside the bold ("**Name:** text"); a
+// colon the author wrote after the bold ("**Name**: text") moves in, never doubles.
 function optionHtml(html) {
   const m = html.match(/^(\s*)<strong>([^<]+)<\/strong>/i);
   if (!m) return html;
-  const name = m[2].trim();
-  return m[1] + '<strong>' + name + (/[:.!?]$|:/.test(name) ? '' : ':') + '</strong>' + html.slice(m[0].length);
+  let name = m[2].trim();
+  let rest = html.slice(m[0].length);
+  if (/^:/.test(rest)) {
+    rest = rest.slice(1);
+    if (!name.endsWith(':')) name += ':';
+  } else if (!/[:.!?]$|:/.test(name)) {
+    name += ':';
+  }
+  return m[1] + '<strong>' + name + '</strong>' + rest;
 }
 
 // A bold die result in markdown: **20**, **11-19**, **6–10:**, **16–19: Name**.
-const DIE_RESULT_MD = /^\*\*\s*(\d{1,2}(?:\s*[-\u2010-\u2015\u2212]\s*\d{1,2})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*/;
+const DIE_RESULT_MD = /^\*\*\s*(\d{1,3}(?:\s*[-\u2010-\u2015\u2212]\s*\d{1,3})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*/;
+
+// The die a set of results is the faces of: ranges that do not overlap and
+// cover 1 to N with no gap (any order), N one of the usual dice. Else 0.
+function dieOfResults(leads) {
+  const spans = leads.map((l) => {
+    const n = l.match(/\d+/g).map(Number);
+    return [n[0], n[n.length - 1]];
+  });
+  if (spans.some(([lo, hi]) => lo > hi)) return 0;
+  spans.sort((x, y) => x[0] - y[0]);
+  let next = 1;
+  for (const [lo, hi] of spans) {
+    if (lo !== next) return 0;
+    next = hi + 1;
+  }
+  const top = next - 1;
+  return [4, 6, 8, 10, 12, 20, 100].includes(top) ? top : 0;
+}
 
 // A list whose items ALL lead with a die result is a roll list, not an ability
 // list: the five standard bands are the outcome ladder (the same component a
@@ -548,10 +577,12 @@ function dieResultListHtml(items, md) {
     const text = item.src.slice(m[0].length).trim();
     rows.push([m[1], (m[2] ? '**' + m[2].trim() + '** ' : '') + text]);
   }
+  const die = dieOfResults(rows.map((r) => r[0]));
+  if (!die) return '';
   const ladder = ladderRows({ head: ['Roll', 'Outcome'], rows });
   if (ladder) return buildLadderBlock(ladder, md, { attrs: [] });
   const cell = (c) => md.renderInline(c.trim()).replace(/\s*[-‐-―−]\s*/, '–');
-  return '<div class="dc-roll-table">\n<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d20</span></div>\n<table>\n<thead>\n<tr><th>Roll</th><th>Outcome</th></tr>\n</thead>\n<tbody>\n' +
+  return '<div class="dc-roll-table">\n<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d' + die + '</span></div>\n<table>\n<thead>\n<tr><th>Roll</th><th>Outcome</th></tr>\n</thead>\n<tbody>\n' +
     rows.map(([r, t]) => '<tr><td>' + cell(r) + '</td><td>' + md.renderInline(t.trim()) + '</td></tr>\n').join('') +
     '</tbody>\n</table>\n</div>\n';
 }
@@ -584,10 +615,13 @@ function parseAbilityFromListItem(html) {
   if (cost) {
     costPart = cost[1].replace(/\s+/g, '');
     apVal = cost[1].replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
-    let tail = cost[2].trim();
-    // a per-unit rate ("per passenger", "/100 DC Per Ego Point") makes the cost one you choose
-    perUnit = !/^[\u2010-\u2015\u2212-]/.test(tail) && /^\/?.*\bper\b/i.test(tail);
-    if (tail) {
+    let tail = cost[2].replace(/^\s*[:,]\s*/, '').trim();
+    // a per-unit rate ("per passenger", "/100 DC Per Ego Point") makes the cost one you choose;
+    // a parenthetical ("(once per scene)") is a qualifier, not a rate
+    perUnit = !/^[(\u2010-\u2015\u2212-]/.test(tail) && /^\/?.*\bper\b/i.test(tail);
+    if (tail.startsWith('(')) {
+      text = tail + ' ' + text;
+    } else if (tail) {
       let runIn;
       if (/^[‐-―−-]/.test(tail)) runIn = tail.replace(/^[‐-―−-]\s*/, '');
       else if (tail.startsWith('/')) runIn = apVal + tail;
@@ -816,22 +850,24 @@ function dcAlertsTransform(state) {
     const config = DC_ALERT_TYPES[alertType];
     if (!config) { newTokens.push(tok); continue; }
 
-    // A title: text after the marker on its own line, with more following (a line
-    // break or another block), replaces the variant's default label. Alone on a
-    // one-line quote, text after the marker is the body, as it always was.
+    // A title: the text between the marker and the first line break INSIDE the
+    // first paragraph, with body text after the break, replaces the variant's
+    // default label. A first paragraph of one line stays body text, whatever
+    // follows it. Bold in a title is dropped: the label is already a bold chip.
     let titleHtml = '';
     let titleCount = 0;
     if (config.label) {
       const kids = inlineTok.children;
       const afterMarker = lead.content.replace(DC_ALERT_PATTERN, '').replace(/^\s+/, '');
-      if (afterMarker !== '') {
-        const brk = kids.findIndex((c) => c.type === 'softbreak' || c.type === 'hardbreak');
-        const moreBlocks = tokens.slice(firstInlineIdx + 2, closeIdx).length > 0;
-        if (brk > 0 || (brk === -1 && moreBlocks)) {
-          titleCount = brk === -1 ? kids.length : brk;
-          const titleKids = kids.slice(0, titleCount).map((c) => (c === lead ? Object.assign(Object.create(Object.getPrototypeOf(c)), c, { content: afterMarker }) : c));
-          if (afterMarker.trim() === '') titleCount = 0;
-          else titleHtml = state.md.renderer.renderInline(titleKids, state.md.options, state.env).trim();
+      const brk = kids.findIndex((c) => c.type === 'softbreak' || c.type === 'hardbreak');
+      if (brk > 0 && (afterMarker !== '' || brk > 1)) {
+        const titleKids = kids.slice(0, brk)
+          .filter((c) => c.type !== 'strong_open' && c.type !== 'strong_close')
+          .map((c) => (c === lead ? Object.assign(Object.create(Object.getPrototypeOf(c)), c, { content: afterMarker }) : c));
+        const rendered = state.md.renderer.renderInline(titleKids, state.md.options, state.env).trim();
+        if (rendered !== '') {
+          titleCount = brk;
+          titleHtml = rendered;
         }
       }
     }
@@ -1115,6 +1151,7 @@ function dcSkillCards(state) {
     let tail = null;
     const emit = (html) => {
       tail = null;
+      seenBlock = true;
       out.push(makeToken('html_block', html));
     };
     let inCard = false;
@@ -1128,8 +1165,12 @@ function dcSkillCards(state) {
       attrs.push(['name', slugify(title.name)]);
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
-    const endCard = () => {
-      if (inCard && tail && tail.len < SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
+    // A card's closing sign-off is marked only when the card truly ends there: not
+    // when it is cut for a continuation, and never its first paragraph.
+    let seenBlock = false;
+    let compDepth = 0; // how many components (callout, columns) are open inside the card
+    const endCard = (continuing = false) => {
+      if (inCard && tail && !tail.first && !continuing && tail.len < SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
       if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
       inCard = false;
     };
@@ -1162,12 +1203,13 @@ function dcSkillCards(state) {
           '    <div class="dc-card-inner">\n'
         );
         inCard = true;
+        seenBlock = false;
         i += 2; // skip inline + heading_close
         continue;
       }
 
       if (tok.type === 'dc_skill_continue') {
-        endCard();
+        endCard(true);
         emit(
           cardOpen(true) +
           '  <div class="dc-card-tab dc-card-tab-cont">\n' +
@@ -1178,6 +1220,7 @@ function dcSkillCards(state) {
           '    <div class="dc-card-inner">\n'
         );
         inCard = true;
+        seenBlock = false;
         continue;
       }
 
@@ -1204,6 +1247,11 @@ function dcSkillCards(state) {
       if (columnsCloses.has(tok)) columnsDepth--;
       if (tok.type === 'layout_column_break' && columnsDepth > 0) belongsToCard.add(tok);
       if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
+
+      if (inCard && belongsToCard.has(tok)) {
+        if (tok.type === 'layout_component_open') compDepth++;
+        else if (tok.type === 'layout_component_close') compDepth--;
+      }
 
       if (!inCard) {
         out.push(tok);
@@ -1246,16 +1294,17 @@ function dcSkillCards(state) {
       // A paragraph that is nothing but one bold run is the card's pseudo
       // heading (`**Full Merge**`); CSS cannot see text nodes, so only the
       // plugin can tell it from a run-in `**Shared Senses:** text`.
-      if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === cardLevel) {
+      if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === cardLevel && compDepth === 0) {
         const inline = content[i + 1];
         if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
         // A paragraph that ends in a colon introduces the next block.
         if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
-        tail = { tok, len: inlineTextLength(inline) };
+        tail = { tok, len: inlineTextLength(inline), first: !seenBlock };
       } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
         tail = null;
       }
 
+      if (tok.type !== 'paragraph_open') seenBlock = true;
       out.push(tok);
     }
     endCard();
