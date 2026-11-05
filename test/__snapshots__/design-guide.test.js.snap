@@ -2487,7 +2487,7 @@ Once per round, outside your turn, you exploit a target in reach:
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.</p>
-<p>Once per round, outside your turn, you exploit a target in reach:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
@@ -2569,7 +2569,7 @@ Once per round, outside your turn, you exploit a target in reach:
 </div></div></div>
 </div></div></div>
 <h2 data-name="continuing-a-long-card">Continuing a long card</h2>
-<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate never split, so one that does not fit moves whole with its lead-in. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab or tape. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
+<p>When one ability runs past a page, <code>@continue</code> inside the card closes it and opens a continuation card with a small triangle after the name on its tab, keeping the same specialty shape. Cards split across pages by default; <code>@continue</code> is for a break at a boundary you chose. A card breaks where it reads: a bold sub-head stays with its paragraph, a lead-in with the list, table or ladder it opens, a <code>#####</code> sub-header with what follows, and a list breaks only with two items on each side. A plain table in a card may split between rows (the header row repeats on the next page; two rows stay on each side); the outcome ladder and the roll plate split between tiers only (the head and tier 1 stay together, and so do the last two tiers; a plate repeats its header row), so a five-tier ladder breaks after tier 2 or 3. A line that ends in a colon always stays with the block after it, a short closing line stays with the block above it, and a card’s last line is never left alone. A card that continues is open at the foot (12pt under its last line, no cut, no closing rule, no shadow); its continuation opens straight, <code>--space-md</code> under the page top, with no tab or tape. Only the real top and the real foot carry the specialty’s silhouette. A <code>**Requires:**</code> band never splits and never ends a page alone.</p>
 <pre><code class="dg-split language-markdown" data-source-range="409:437">@specialty .augmerc
 
 @learning-path
@@ -4133,7 +4133,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.</p>
-<p>Once per round, outside your turn, you exploit a target in reach:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
@@ -4163,7 +4163,7 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <p class="dc-ability-text">You invoke your devotion: whether to a deity, an ideal, or a personal creed. Project sustaining force into the fray. You and all nearby allies immediately heal 2 HP.</p>
 </div>
 <div class="dc-ability" data-ability-last="true">
-  <span class="dc-ap variable">3-X AP</span>
+  <span class="dc-ap variable">3–X AP</span>
   <p class="dc-ability-text">You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.</p>
 </div>
 </div></div></div>
@@ -4956,7 +4956,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
-<p>When an enemy falters, you may trigger one of the following counters:</p>
+<p class="dc-lead-in">When an enemy falters, you may trigger one of the following counters:</p>
 <div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach makes a basic attack and rolls a hard choice or worse, your Backbiters knock the strike off line. No damage. On a Failure or worse, try to drive steel into their liver. <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> and make a basic attack. Free counter once per round.</p>
@@ -4969,7 +4969,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Bad Timing:</em> When an enemy in reach rolls a Hard Choice or worse on a basic attack against you, your Backbiters snap out and steal the moment. No damage and you have their weapon. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack using your weapon or theirs. On a Catastrophe, your hit deals double damage, and against a Master you can take their weapon. Free counter once per round.</p>
 </div>
-<p>Openings are invitations to take a chunk out 'em.</p>
+<p class="dc-card-signoff">Openings are invitations to take a chunk out 'em.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="rage-hit-aug1-2" name="rage-hit">
   <div class="dc-card-tab">
@@ -5011,7 +5011,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   </div>
 </div>
 <p>Until the start of your next turn, any enemy that starts their turn in reach of you takes 1 damage as your Backbiters stick anything that moves too close.</p>
-<p>Full send or full regret.</p>
+<p class="dc-card-signoff">Full send or full regret.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="dirty-work-aug1-3" name="dirty-work">
   <div class="dc-card-tab">
@@ -5022,7 +5022,7 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
     <div class="dc-card-inner">
 <p class="dc-flavor">Fair fights are for nice mercs who lose.
 Never fight clean. Fight to finish.</p>
-<p>Once per round, outside your turn, you exploit a target in reach. Choose one technique:</p>
+<p class="dc-lead-in">Once per round, outside your turn, you exploit a target in reach. Choose one technique:</p>
 <table>
 <thead data-source-range="98:99">
 <tr data-source-range="98:99">
@@ -5059,7 +5059,7 @@ Never fight clean. Fight to finish.</p>
 </tr>
 </tbody>
 </table>
-<p>You don’t need an opening. You make one.</p>
+<p class="dc-card-signoff">You don’t need an opening. You make one.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="pain-compliance-aug1-4" name="pain-compliance">
   <div class="dc-card-tab">
@@ -5082,7 +5082,7 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Throat Control:</em> Get a grip on throat or collar. The target is <strong>Silenced</strong> and <strong>Slowed</strong> until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.</p>
 </div>
-<p>Pain is a language everyone understands.</p>
+<p class="dc-card-signoff">Pain is a language everyone understands.</p>
 </div></div></div>
 <div class="dc-skill-card" data-name="its-personal-aug1-5" name="it-s-personal">
   <div class="dc-card-tab">
@@ -5105,7 +5105,7 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>End It:</em> Make a basic attack against your Fixated target. If it hits, deal <strong>double damage</strong>. If it downs them, you immediately clear any negative conditions affecting you and regain 2 AP on your next turn.</p>
 </div>
-<p>Some jobs are work. Some jobs are justice.</p>
+<p class="dc-card-signoff">Some jobs are work. Some jobs are justice.</p>
 </div></div></div>
 </div></div><div class="gp-page-break" aria-hidden="true" data-source-range="138:139"></div>
 <div class="section dc-section-panel" data-section="panel" data-name="combining-specialties" data-source-range="140:141"><h2 data-name="combining-specialties">Combining Specialties</h2>

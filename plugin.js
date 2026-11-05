@@ -488,11 +488,14 @@ function skillListHtml(items, md) {
   let plain = [];
   const flush = () => {
     if (!plain.length) return;
-    const named = plain.some((p) => optionHtml(p.html) !== p.html);
-    html += named
+    // A bold lead makes an item a named option. Options bullet; so does any run
+    // that does not start at 1 (a table split the source list) or that sits
+    // among cost rows. Only a plain list from 1 stays numbered.
+    const named = plain.some((p) => /^\s*<strong>/i.test(p.html));
+    const bulleted = named || plain[0].number !== '1' || costs > 0;
+    html += bulleted
       ? '<ul>\n' + plain.map((p) => '<li>' + optionHtml(p.html) + p.rest + '</li>\n').join('') + '</ul>\n'
-      : '<ol' + (plain[0].number !== '1' ? ' start="' + esc(plain[0].number) + '"' : '') + '>\n' +
-        plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
+      : '<ol>\n' + plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
     plain = [];
   };
   parsed.forEach((item) => {
@@ -509,7 +512,8 @@ function skillListHtml(items, md) {
     }
     costIdx++;
     const text = '<p class="dc-ability-text">' + ability.text + '</p>\n';
-    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + '"' + posAttrs + '>\n' +
+    const leadIn = /:$/.test(ability.text.replace(/<[^>]*>/g, '').trim()); // "…the restoration:": the row introduces the block after it
+    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + (leadIn ? ' dc-lead-in' : '') + '"' + posAttrs + '>\n' +
       '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
       (item.rest ? '  <div class="dc-ability-body">\n' + text + item.rest + '  </div>\n' : '  ' + text) +
       '</div>\n';
@@ -527,7 +531,7 @@ function optionHtml(html) {
 }
 
 // A bold die result in markdown: **20**, **11-19**, **6–10:**, **16–19: Name**.
-const DIE_RESULT_MD = /^\*\*\s*(\d{1,2}(?:\s*[-‐-―−]\s*\d{1,2})?)\s*(?::|(?:[:–—-]\s*([^*]+?)))?\s*\*\*\s*/;
+const DIE_RESULT_MD = /^\*\*\s*(\d{1,2}(?:\s*[-\u2010-\u2015\u2212]\s*\d{1,2})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*/;
 
 // A list whose items ALL lead with a die result is a roll list, not an ability
 // list: the five standard bands are the outcome ladder (the same component a
@@ -539,6 +543,8 @@ function dieResultListHtml(items, md) {
   for (const item of items) {
     const m = DIE_RESULT_MD.exec(item.src || '');
     if (!m) return '';
+    const bold = m[0].replace(/\*\*/g, '').trim();
+    if (COST_LEAD.test(bold) || BARE_VARIABLE_COST.test(bold)) return ''; // "1-3 AP" is a cost, not a roll
     const text = item.src.slice(m[0].length).trim();
     rows.push([m[1], (m[2] ? '**' + m[2].trim() + '** ' : '') + text]);
   }
@@ -573,11 +579,14 @@ function parseAbilityFromListItem(html) {
 
   let costPart;
   let apVal;
+  let perUnit = false;
   const cost = COST_LEAD.exec(label);
   if (cost) {
     costPart = cost[1].replace(/\s+/g, '');
-    apVal = cost[1].replace(/\s+/g, '').replace(/^\+/, '+') + ' AP';
+    apVal = cost[1].replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
     let tail = cost[2].trim();
+    // a per-unit rate ("per passenger", "/100 DC Per Ego Point") makes the cost one you choose
+    perUnit = !/^[\u2010-\u2015\u2212-]/.test(tail) && /^\/?.*\bper\b/i.test(tail);
     if (tail) {
       let runIn;
       if (/^[‐-―−-]/.test(tail)) runIn = tail.replace(/^[‐-―−-]\s*/, '');
@@ -588,7 +597,7 @@ function parseAbilityFromListItem(html) {
     }
   } else if (BARE_VARIABLE_COST.test(label)) {
     costPart = label.replace(/\s+/g, '');
-    apVal = label.replace(/\s+/g, '') + ' AP';
+    apVal = label.replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
   } else {
     return null;
   }
@@ -596,7 +605,7 @@ function parseAbilityFromListItem(html) {
   const bare = costPart.replace(/^\+/, '');
   let apClass = 'dc-ap';
   if (/^0+$/.test(bare)) apClass += ' free';
-  else if (/[-‐-―−]|X|VAR|\+$/i.test(bare)) apClass += ' variable';
+  else if (/[-‐-―−]|X|VAR|\+$/i.test(bare) || perUnit) apClass += ' variable';
 
   // A row that is only a name (`**3 AP — Butcher Roach**`, its text in the
   // paragraphs that follow) is the title of what follows: `titleOnly`.
@@ -1059,6 +1068,19 @@ function dcLearningPaths(state) {
   });
 }
 
+// A card's closing paragraph shorter than this (text characters) is a sign-off: it stays with the block above it.
+const SIGNOFF_MAX = 90;
+
+/** The characters an inline token prints as plain text or code (markup and spans not counted). */
+function inlineTextLength(inline) {
+  return (inline?.children || []).reduce((n, k) => n + (k.type === 'text' || k.type === 'code_inline' ? k.content.length : 0), 0);
+}
+
+/** True when a paragraph's source ends in a colon (outside its emphasis marks): it introduces what follows. */
+function endsWithColon(inline) {
+  return inline?.type === 'inline' && /:$/.test((inline.content || '').replace(/[\s*_`]+$/, ''));
+}
+
 /** True when an inline token's whole content is one `<strong>` run. */
 function isBoldOnlyInline(inline) {
   const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
@@ -1087,8 +1109,14 @@ function dcSkillCards(state) {
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
     const content = run.slice(1, -1);
+    const cardLevel = content.find((t) => t.type === 'heading_open' && t.tag === 'h4')?.level;
     const out = [];
-    const emit = (html) => out.push(makeToken('html_block', html));
+    // The card's last block while it is still a paragraph: marked a sign-off when short (below).
+    let tail = null;
+    const emit = (html) => {
+      tail = null;
+      out.push(makeToken('html_block', html));
+    };
     let inCard = false;
     const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
     let columnsDepth = 0; // how many `@columns` runs sit open inside the current card
@@ -1101,6 +1129,7 @@ function dcSkillCards(state) {
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
     const endCard = () => {
+      if (inCard && tail && tail.len < SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
       if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
       inCard = false;
     };
@@ -1217,13 +1246,36 @@ function dcSkillCards(state) {
       // A paragraph that is nothing but one bold run is the card's pseudo
       // heading (`**Full Merge**`); CSS cannot see text nodes, so only the
       // plugin can tell it from a run-in `**Shared Senses:** text`.
-      if (tok.type === 'paragraph_open' && isBoldOnlyInline(content[i + 1])) addTokenClass(tok, 'dc-card-subhead');
+      if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === cardLevel) {
+        const inline = content[i + 1];
+        if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
+        // A paragraph that ends in a colon introduces the next block.
+        if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
+        tail = { tok, len: inlineTextLength(inline) };
+      } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
+        tail = null;
+      }
 
       out.push(tok);
     }
     endCard();
     return [open, ...out, close];
   });
+}
+
+/**
+ * A section or panel that ends in a paragraph that is only a bold run closes on
+ * a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
+ * so it never opens a page alone.
+ */
+function dcKickers(state) {
+  const t = state.tokens;
+  for (let i = 4; i < t.length; i++) {
+    if (t[i].type !== 'layout_section_close') continue;
+    if (t[i - 1].type === 'paragraph_close' && t[i - 3].type === 'paragraph_open' && t[i - 4].type !== 'layout_section_open' && isBoldOnlyInline(t[i - 2])) {
+      addTokenClass(t[i - 3], 'dc-kicker');
+    }
+  }
 }
 
 // ── Declared components: @card, @outcome, @procedure ───────────────────────
@@ -1686,6 +1738,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_kickers', dcKickers);
   md.core.ruler.push('dc_ladder_tables', dcLadderTables);
   md.core.ruler.push('dc_stat_strips', dcStatStrips);
   md.core.ruler.push('dc_field_lines', dcFieldLines);

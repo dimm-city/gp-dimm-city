@@ -62,6 +62,9 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
+  --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */
+  --dc-choose-stamp-top:   0px;                 /* where the stamp's top edge sits: 0 = on the form's top edge */
+  --dc-choose-stamp-lift:  -50%;                /* how far it is lifted over that edge: half its height */
 
   /* Panel edge. A template changes the panel's silhouette through these
      tokens, never through its ::before/::after: `clip` is the chamfer cut off

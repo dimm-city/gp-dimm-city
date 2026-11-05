@@ -96,6 +96,14 @@
   break-after: avoid;
 }
 
+/* The opener's title: its visible rule (the heading's own border) sits about 7pt
+   above the margin edge the gap is counted from, so the gap under the title
+   was 0.19in against 0.09in under a sub-heading. Tighten the title's own
+   bottom margin (0.5em from the heading base) by those 7pt. */
+.dc-specialty-intro>h2 {
+  margin-bottom: calc(0.5em - 7pt);
+}
+
 /* The intro title's register layers, the same three as the learning-path
    banner's (data.css, "The path banner"): ::before a flat plane at the right,
    ::after the rule under the band, both read from the --dc-band-* tokens a

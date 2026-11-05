@@ -585,6 +585,9 @@ h3 + .dc-section-panel {
 .dc-section-dm > :first-child {
   margin-top: var(--dc-section-top);
 }
+.dc-section-dm > :is(h4, .dc-h4):first-child {
+  margin-top: calc(var(--dc-section-top) + 0.05in); /* the heading's own 0.05in */
+}
 .dc-section-dm > :is(h2, h3):first-child {
   margin-top: calc(var(--dc-section-top) - var(--dc-section-pad-top));
 }
@@ -650,16 +653,12 @@ h3 + .dc-section-panel {
   --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--dc-section-accent);
   --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
-  /* The stamp (below) is 10pt type in a 1.4 line, a 1pt frame and 1px + 2px of
-     padding. It hangs half above the sheet's top edge, so the form's top
-     padding is the form's usual one (--space-md under the old 2pt border, now the
-     ring: so a form is as tall as it was): that is half the stamp's height plus
-     1.5pt, so it crowds neither a heading nor text. */
-  --dc-choose-stamp-h: calc(var(--fs-floor) * 1.4 + 3px + 2pt);
-  --dc-section-pad-top: calc(var(--space-md) + 2pt);
-  --dc-section-pad-right: calc(var(--space-lg) + 2pt);
-  --dc-section-pad-left: calc(var(--space-lg) + 2pt);
-  --dc-section-pad-bottom: 8pt;  /* the 4px perforation + 2pt + the ring */
+  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
+  /* The form's edge used to be a 2pt border (snapped by the engine to 2px,
+     1.5pt) outside the padding; the ring is paint now, so its 1.5pt is added to
+     the padding, whatever the padding tokens are: a form is as tall and as wide
+     as it was. The top is then half the stamp's height (9.1pt) plus 1.5pt. */
+  padding: calc(var(--dc-section-pad-top) + 1.5pt) calc(var(--dc-section-pad-right) + 1.5pt) calc(var(--dc-section-pad-bottom) + 1.5pt) calc(var(--dc-section-pad-left) + 1.5pt);
   background: none;
   box-shadow: none;
 }
@@ -686,17 +685,14 @@ h3 + .dc-section-panel {
   font-size: var(--fs-h4);
   clip-path: none;
 }
-/* A form that opens a page has no wall above it for the
-   stamp to hang over (the engine clips it at the page's top margin), so there
-   the stamp sits inside the top edge, beside the first block, which stops short
-   of it. The padding is the form's usual one: nothing grows. */
-:not(.gp-columns, [class*="gp-columns-"], .dc-section-panel) > .dc-section-choose:first-child > :is(h2, h3, p):first-child {
-  padding-right: 72pt;
-}
-:not(.gp-columns, [class*="gp-columns-"], .dc-section-panel) > .dc-section-choose:first-child > :is(h2, h3):first-child::after,
-:not(.gp-columns, [class*="gp-columns-"], .dc-section-panel) > .dc-section-choose:first-child:not(:has(> :is(h2, h3):first-child))::after {
-  top: 3pt;
-  transform: rotate(-2deg);
+/* Where the stamp sits inside the form's top edge (a form that opens a page,
+   page-templates.css), the first block's first lines stop short of it: a float
+   of the stamp's size, zero wide everywhere else. */
+.dc-section-choose > :is(h2, h3, p):first-child::before {
+  content: "";
+  float: right;
+  width: var(--dc-choose-stamp-room);
+  height: 11pt;
 }
 /* The stamp: out of the flow, across the form's top edge at the top right, half
    above the sheet, tilted. A heading's own ::after is the stamp (a section
@@ -706,8 +702,8 @@ h3 + .dc-section-panel {
   content: "Choose";
   position: absolute;
   inset: auto;
-  top: 0;
-  right: calc(var(--space-lg) + 2pt);
+  top: var(--dc-choose-stamp-top);
+  right: calc(var(--dc-section-pad-right) + 1.5pt);
   float: none;
   margin: 0;
   width: auto;
@@ -725,7 +721,7 @@ h3 + .dc-section-panel {
   letter-spacing: 0.1em;
   line-height: 1.4;
   text-transform: uppercase;
-  transform: translateY(-50%) rotate(-2deg);
+  transform: translateY(var(--dc-choose-stamp-lift)) rotate(-2deg);
   pointer-events: none;
 }
 .dc-section-choose td {
@@ -1643,6 +1639,12 @@ h3 + .dc-section-panel {
   margin: 0 var(--space-md) var(--space-sm) 0;
   outline: var(--dc-fiction-art-outline);
   box-shadow: var(--dc-fiction-art-shadow);
+}
+
+/* A section's closing bold line (the plugin marks it `.dc-kicker`) stays with
+   the paragraph above it, so it never opens a page alone. */
+.dc-kicker {
+  break-before: avoid;
 }
 
 }

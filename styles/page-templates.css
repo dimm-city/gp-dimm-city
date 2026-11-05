@@ -542,6 +542,26 @@
   display: none;
 }
 
+/* a bulleted list and a numbered one run together in a sheet: the seam is one
+   item pitch (--space-xs), not the two sheet paddings (the first gives up its
+   foot, the second its top) */
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)))) {
+  padding-bottom: 0;
+}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))):is(ul + ol, ol + ul) {
+  padding-top: var(--space-xs);
+}
+
+/* A `choose` form that opens a page has no wall above it for its stamp to hang
+   over (the engine clips it at the page's top margin): its stamp sits just inside
+   the top edge, and the first block's first lines stop short of it (tokens that
+   components/section.css reads; the form is as tall as it ever was). */
+:where(.page, .chapter) > .dc-section-choose:first-child {
+  --dc-choose-stamp-room: 72pt;
+  --dc-choose-stamp-top: 3pt;
+  --dc-choose-stamp-lift: 0%;
+}
+
 /* ONE GAP under a free-standing heading, whatever follows it: a panel, a
    callout, a card, a table or a sheet of loose text (--dc-page-slip-foot).
    After the sheet rules above, which it must override. */
