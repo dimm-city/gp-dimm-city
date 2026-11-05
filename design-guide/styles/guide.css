@@ -816,3 +816,6 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 .page.dg-doc :is(.dc-specialty-intro, .dc-learning-path) {
   break-before: auto;
 }
+
+/* Chapter labels, not styles: named here so the unknown-class check knows them. */
+.typography, .palette, .layout, .templates, .cli, .reference, .examples, .specialty-profile, .tech-cybernetics, .second-page {}
