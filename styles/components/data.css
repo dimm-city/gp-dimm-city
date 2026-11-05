@@ -568,7 +568,7 @@
 
 /* ───────── PULL-QUOTE ───────── */
 .dc-pullquote {
-  --dc-accent-ink: var(--brand-magenta-deep);  /* 7.5:1 on the concrete sheet */
+  --dc-accent-ink: var(--brand-magenta-deep);  /* 8.9:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
   border-right: 2px solid var(--dc-pullquote-accent-soft);

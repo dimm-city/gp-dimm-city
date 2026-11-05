@@ -15,6 +15,8 @@ They agree with gutterpress #331's real build measurement to within ~10% TAC
 `scripts/measure-palette-crpc1.py` (needs Python 3 + Pillow); its full output
 is in `docs/print-colour-audit-measurements.md`.
 
+> The intent was wrong; see *Correction (1.10.2-alpha.2)* at the end.
+
 ## What the vendors require
 
 - DriveThruRPG ("Quick Specifications for Print Books"): CMYK only;
@@ -220,3 +222,52 @@ Where the PR departs from the audit:
 - **3, near-duplicates.** The five pairs listed above are aliased. So is
   `--tint-magenta-rose`, which printed dE 5.4 from the new magenta.
   `--augmerc-dark` ~ `--dualist-dark` (2.4) remain separate.
+
+## Correction (1.10.2-alpha.2)
+
+The method above measured the wrong rendering intent. `measure-palette-crpc1.py`
+converted with LittleCMS at **perceptual** intent; the build converts with
+Ghostscript's pdfwrite at its default, **relative colorimetric with black-point
+compensation** (`-sOutputICCProfile=CGATS21_CRPC1.icc`, no `-dRenderIntent`).
+Measured with Ghostscript 10.05.0 on a file of three swatches: `-dRenderIntent=1`
+writes the default's operands to the digit, and `-dRenderIntent=0` reproduces this
+audit's figures (`--brand-violet`: intent 0 → C66 M86 Y0 K4 = 156%, the figure
+above; the default → C67 M97 Y0 K16 = 180%). So every CMYK and TAC figure written
+for 1.10.2-alpha.1 ran under the build's: 15-30% TAC on the saturated purples
+(`--brand-magenta` 108% → 124%, `--wirephreak-mid` 186% → 215%) and about 15% on
+the inks (`--ink` 196% → 211%). Nothing crossed the 240% limit — a PDF/X build of
+the design guide passes the per-page TAC check — so the error was in the
+documentation and in Finding 2A's premise, not in the ink.
+
+The script now drives Ghostscript itself: one swatch per colour through the
+build's own pdfwrite arguments, the `c m y k k` operands read back out of the
+PDF, so its figures match the build to the digit (it needs Ghostscript 10.03 or
+newer on PATH). LittleCMS is kept only for the CMYK → sRGB back-conversion (the
+"printed" column and dE), now at the same intent, so an in-gamut colour
+round-trips to itself. `docs/print-colour-audit-measurements.md` is regenerated.
+
+**Finding 2A, redone against the build's separation.** Through the build's
+numbers the alpha.1 purples did not collapse, but they were closer than claimed:
+six of the eight printed within dE 3.4 of the screen (`--proxy-mid` 4.2 and
+`--wirephreak-dark` 5.1 did not), and the three closest pairs printed 7.1
+(`--proxy-mid` / `--crystal-amethyst`), 7.7 (`--brand-magenta` / `--proxy-mid`)
+and 8.8 (`--wirephreak-mid` / `--wirephreak-dark`) apart, not the ≥ 8.3 the
+CHANGELOG said. The family is re-spaced once more, searched against the build's
+conversion: every pair now prints ≥ 11.6 apart (the closest, `--proxy-mid` /
+`--brand-violet`, 11.6), every token within dE 4.2 of its print, every text
+pairing the script checks at 5.0:1 or better, TAC ≤ 209%. The gamut sets the
+ceiling: CRPC1's saturated purples run from process magenta (h355) through violet
+(h311) to a C100 M73 blue (h258), and the eight tokens already use that whole span
+plus lightness, so no pair can be pushed much past 12 without one token leaving
+its role.
+
+| Token | alpha.1 | alpha.2 | prints (build) |
+|---|---|---|---|
+| `--brand-magenta` | `#bf308f` | `#cf217e` | C2 M100 Y1 K12 = 115% |
+| `--proxy-mid` | `#9a227d` | `#9c0f63` | C12 M100 Y8 K32 = 152% |
+| `--brand-magenta-deep` | `#76115e` | `#690045` | C24 M94 Y15 K56 = 189% |
+| `--crystal-amethyst` | `#835198` | `#905aa5` | C45 M80 Y0 K2 = 127% |
+| `--brand-violet` | `#5d3b88` | `#662d87` | C62 M100 Y0 K16 = 178% |
+| `--signal-indigo` | `#4b65ab` | `#396cb7` | C86 M54 Y0 K0 = 140% |
+| `--wirephreak-mid` | `#1c327d` | `#093c81` | C100 M73 Y0 K27 = 200% |
+| `--wirephreak-dark` | `#1e0f50` | `#181b45` | C66 M58 Y16 K69 = 209% |

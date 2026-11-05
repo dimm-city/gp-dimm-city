@@ -39,7 +39,7 @@
      --spec-band / --spec-on-band   the title-band fill and the type on it: the
                                 bright signal colour, with whichever of ink or
                                 cream holds >= 4.5:1 on it (proxy's band is the
-                                deep magenta, 10.4:1 with cream)
+                                deep magenta, 12.5:1 with cream)
      --spec-chip-bg / -fg / -edge   the tier pill on the card tab. REQUIRED: the
                                 --spec-* tokens have no :root default, so a
                                 specialty that omits one gets a transparent pill
@@ -288,7 +288,7 @@
   --spec-mid: var(--proxy-mid);
   --spec-dark: var(--proxy-dark);
   --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH + MAGIC: deep-magenta band (cream on it 10.4:1) with a faceted plane and a cyan LED rule. */
+  /* TECH + MAGIC: deep-magenta band (cream on it 12.5:1) with a faceted plane and a cyan LED rule. */
   --spec-band: var(--brand-magenta-deep);
   --spec-on-band: var(--paper-cream);
   --spec-chip-bg: var(--paper-cream);

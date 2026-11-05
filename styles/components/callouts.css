@@ -295,7 +295,7 @@
   --dc-alert-border-width: 2px;
   /* long, shallow diagonals at two opposite corners (the world's silhouette) */
   --dc-alert-shape: polygon(0 0, calc(100% - 30px) 0, 100% 8px, 100% 100%, 30px 100%, 0 calc(100% - 8px));
-  --dc-accent-ink: var(--brand-violet);  /* 5.9:1 on the sheet */
+  --dc-accent-ink: var(--brand-violet);  /* 6.2:1 on the sheet */
   --dc-alert-label-color: var(--brand-violet);
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);

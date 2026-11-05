@@ -14,10 +14,10 @@
      cybersurgeon=chrome). Streetwarden's #4db840 is high-vis civic hazard, distinct from the
      quieter lichen tone; gutterdruid is the alive-and-glowing spore. */
   --augmerc-accent:        var(--brand-cyan);      /* cyber-augmentation = brand neon-cyan */
-  --proxy-accent:          var(--brand-magenta);   /* ritual + tech = brand-signature magenta (pink, h345) */
-  --streetwarden-accent:   #4db840;                /* toxic civic green — hazard, not park bench · TAC 128% (C46 M0 Y82 K0) */
+  --proxy-accent:          var(--brand-magenta);   /* ritual + tech = brand-signature magenta (pink, h355) */
+  --streetwarden-accent:   #4db840;                /* toxic civic green — hazard, not park bench · TAC 158% (C58 M0 Y100 K0) */
   --gutterdruid-accent:    var(--fungi-glow);      /* bioluminescent spore — alley fungus at full flare */
-  --cybersurgeon-accent:   #a8b4b8;                /* cool blue-gray chrome · TAC 50% (C23 M12 Y13 K2) */
+  --cybersurgeon-accent:   #a8b4b8;                /* cool blue-gray chrome · TAC 66% (C28 M16 Y16 K6) */
   --wirephreak-accent:     var(--signal-indigo);  /* signal interference = indigo, its own hue (violet is the world's) */
   --technosorcerer-accent: var(--orange);          /* burnt-circuit orange */
   --etherlock-accent:      var(--brand-yellow);    /* spirit channeling = brand radiant gold */
@@ -28,44 +28,46 @@
      A triad reads as one system when every specialty's tier has about the
      same value and only the hue changes; that is also what keeps the ten
      apart in a grayscale proof. Targets, in OKLab L: darks ~0.30, mids ~0.47,
-     accents 0.65-0.75. Today the darks span 0.24-0.39 (wirephreak lowest,
-     proxy highest), the mids 0.35-0.54 (wirephreak and generalist low,
-     etherlock high) and the accents 0.49-0.89 (generalist's slate and
-     wirephreak's indigo low, etherlock's yellow and gutterdruid's glow high).
+     accents 0.65-0.75. Today the darks span 0.25-0.37 (wirephreak lowest;
+     the streetwarden and gutterdruid rot highest), the mids 0.37-0.54
+     (wirephreak and generalist low, etherlock high) and the accents
+     0.49-0.89 (generalist's slate, wirephreak's indigo, proxy's magenta and
+     technosorcerer's orange low; etherlock's yellow, gutterdruid's glow and
+     cybersurgeon's chrome high).
      Retune toward the band when you add or change a specialty colour, and
      measure it with scripts/measure-palette-crpc1.py.
 
      ── Specialty Dark Colors (path-shell + specialty-card backgrounds) ──
      CMYK/TAC through CGATS21_CRPC1 (see the Ink & Text note in
-     dc-palette.css); every dark is <= 214%, under the profile's 240% cap.
+     dc-palette.css); every dark is <= 209%, under the profile's 240% cap.
      Cream on any of them is >= 10:1. Near-duplicates are aliases: proxy's
      dark is the deep magenta, streetwarden's and gutterdruid's are
      --fungi-rot (each was within dE 2.1 of it). */
-  --augmerc-dark:          #003a40;  /* deep teal-black — cold chrome under the skin · TAC 171% (C63 M25 Y25 K58) */
+  --augmerc-dark:          #003a40;  /* deep teal-black — cold chrome under the skin · TAC 191% (C60 M28 Y30 K73) */
   --proxy-dark:            var(--brand-magenta-deep);  /* alias (#8a1a90 was dE 2.1 from it) */
-  --cybersurgeon-dark:     #303840;  /* cold clinical near-black · TAC 161% (C48 M34 Y21 K58) */
-  --wirephreak-dark:       #1e0f50;  /* deep indigo-black · TAC 214% (C86 M83 Y0 K45) */
+  --cybersurgeon-dark:     #303840;  /* cold clinical near-black · TAC 184% (C47 M35 Y28 K74) */
+  --wirephreak-dark:       #181b45;  /* deep indigo-black · TAC 209% (C66 M58 Y16 K69) */
   --streetwarden-dark:     var(--fungi-rot);  /* alias: rot-soaked forest dark (#294c1f was dE 2.0 from it) */
-  --technosorcerer-dark:   #4c290f;  /* near-black scorch · TAC 187% (C18 M44 Y56 K69) */
+  --technosorcerer-dark:   #4c290f;  /* near-black scorch · TAC 200% (C25 M45 Y51 K79) */
   --gutterdruid-dark:      var(--fungi-rot);  /* alias: swamp-rot dark (#394017 was dE 2.1 from it) */
-  --etherlock-dark:        #46360c;  /* deep tarnished gold · TAC 187% (C23 M30 Y66 K68) */
-  --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark · TAC 165% (C64 M33 Y16 K52) */
-  --generalist-dark:       #212a32;  /* slate-black · TAC 176% (C50 M36 Y22 K68) */
+  --etherlock-dark:        #46360c;  /* deep tarnished gold · TAC 197% (C28 M32 Y57 K80) */
+  --dualist-dark:          #143a4a;  /* sapphire-trench — deep crystal-aqua dark · TAC 186% (C60 M34 Y24 K68) */
+  --generalist-dark:       #212a32;  /* slate-black · TAC 200% (C49 M38 Y31 K82) */
 
   /* ── Specialty Mid Colors (card-tab bg + card border — uniform contract)
      Each mid sits perceptually midway between its specialty's accent and
      dark, slightly shifted toward the dark hue. Used wherever a specialty
      needs a chrome/structural tone that isn't accent-glare or dark-mass. */
-  --augmerc-mid:           #006878;  /* drowned signal teal · TAC 129% (C69 M17 Y17 K26) */
-  --proxy-mid:             #9a227d;  /* between brand-magenta and the deep magenta; cream on it 7.2:1 · TAC 135% (C22 M97 Y1 K15) */
+  --augmerc-mid:           #006878;  /* drowned signal teal · TAC 152% (C75 M20 Y19 K38) */
+  --proxy-mid:             #9c0f63;  /* between brand-magenta and the deep magenta; cream on it 7.9:1 · TAC 152% (C12 M100 Y8 K32) */
   --cybersurgeon-mid:      var(--crystal-slate);  /* alias: cool steel mid (#606870 was dE 2.9 from it) */
-  --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse · TAC 172% (C51 M2 Y90 K29) */
-  --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen · TAC 169% (C33 M11 Y80 K45) */
-  --wirephreak-mid:        #1c327d;  /* indigo midpoint; cream on it 11.7:1 · TAC 186% (C95 M75 Y0 K16) */
-  --technosorcerer-mid:    #7a3008;  /* burnt umber, between scorch-orange and dark · TAC 188% (C3 M63 Y74 K48) */
-  --etherlock-mid:         #8a6a00;  /* tarnished antique gold · TAC 159% (C9 M20 Y95 K35) */
+  --streetwarden-mid:      #347828;  /* civic green mid, not chartreuse · TAC 190% (C57 M3 Y92 K38) */
+  --gutterdruid-mid:       #4d6020;  /* olive-swamp lichen · TAC 185% (C39 M14 Y76 K56) */
+  --wirephreak-mid:        #093c81;  /* indigo midpoint; cream on it 10.6:1 · TAC 200% (C100 M73 Y0 K27) */
+  --technosorcerer-mid:    #7a3008;  /* burnt umber, between scorch-orange and dark · TAC 206% (C10 M66 Y71 K59) */
+  --etherlock-mid:         #8a6a00;  /* tarnished antique gold · TAC 172% (C11 M25 Y91 K45) */
   --dualist-mid:           var(--augmerc-mid);  /* alias: drowned teal, shared with augmerc (#2a6878 was dE 1.9 from it) */
-  --generalist-mid:        #3a4854;  /* mid slate — between crystal-slate and generalist-dark · TAC 148% (C52 M33 Y19 K44) */
+  --generalist-mid:        #3a4854;  /* mid slate — between crystal-slate and generalist-dark · TAC 170% (C51 M34 Y24 K61) */
 
 }
 

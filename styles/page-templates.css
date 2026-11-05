@@ -175,7 +175,7 @@
   --frontmatter-accent: var(--brand-magenta-deep);
   --frontmatter-lede-bg: var(--concrete-pale);
   --dc-intro-accent: var(--frontmatter-accent);
-  --dc-intro-ink: var(--frontmatter-accent);  /* deep magenta: 7.5:1 on the concrete lede */
+  --dc-intro-ink: var(--frontmatter-accent);  /* deep magenta: 8.9:1 on the concrete lede */
   --dc-intro-bg: var(--frontmatter-lede-bg);
   /* The lede stacks flush on the box below it (see "Lede flush-attaches"). */
   --dc-intro-gap: 0;
