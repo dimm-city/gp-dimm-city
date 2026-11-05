@@ -11,9 +11,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
 ([docs/print-colour-audit.md](docs/print-colour-audit.md)). Colour, tokens and
-documentation, plus a pass on the Field Guide's review notes that puts text on
-white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
-(the `##` slip is bolted now, not taped).
+documentation, plus two passes on the Field Guide: its review notes, which put
+text on white, and a page-by-page review of the built book, whose plugin
+findings are fixed here. A skill card's cost rows and a titled alert change
+markup (below); nothing else does. One token is gone: `--dc-page-slip-tape`
+(the `##` slip is bolted now, not taped). The Field Guide prints at the same
+length as before, 244 pages: 242 of content where there were 240, and two
+blank pages at the end where there were four.
 
 ### Added
 
@@ -53,8 +57,76 @@ white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
   table or a sheet of loose text (was none).
 - **The fiction excerpt's title is a step smaller:** its `h1` reads
   `--dc-fiction-title-size`, the `##` size by default.
-- **A bulleted list starts at the text edge.** The `»` marker is the indent; a
-  nested list steps in 0.16in and a numbered list keeps room for its numbers.
+- **Lists hang their marker.** A bulleted list has a 1.1em indent with the `»`
+  hung in it, so a wrapped line aligns under the first word; a numbered list
+  hangs right-aligned numerals in 1.6em; each nested level steps in one hang.
+  Tight and loose lists share one pitch, a list adds no space of its own above,
+  and a bulleted list directly followed by a numbered one has one item's pitch
+  between them. The marker is the accent ink of the component it sits in.
+- **In a skill card, only a cost is a cost chip.** A numbered item with a bold
+  lead used to become an AP chip whatever the lead said, with " AP" appended:
+  die results printed as "20 AP", option names as "Prefrontal Chaos AP".
+  - A lead is a cost when it reads as a number, a range, `X` or `VAR` followed
+    by `AP`. The chip is only that readout: a trailing stop is dropped, every
+    range prints with an en dash, and the text of every cost row starts in one
+    column.
+  - `0 AP` is free however it is typed (`0 AP.`, two spaces). A range, `X`, `N+`
+    or a per-unit rate (`+1 AP per passenger`) is variable. Only the cost
+    decides, so "The Toxin That Binds" no longer reads as an `X`.
+  - A name after the cost (`**3 AP — Butcher Roach**`) moves into the row as its
+    italic run-in; a qualifier leads the row text.
+  - A list of bold die results that tile a die from 1 to its top value is the
+    outcome ladder (the five d20 bands) or a roll table captioned with its
+    die; any other list of numbers stays a list.
+  - A bold name lead is an option: a bulleted item with the name in bold ink. A
+    plain list that starts at 1 keeps its numbers.
+  - A nested list under a cost item stays a list (`.dc-ability-body`). A
+    `@skill` with no ID draws no empty pill. Bold game terms in a cost row print
+    in ink, not blood. `ROLL TWO DICE!` and `ROLL THE DIE TWICE!` take the roll
+    hook.
+- **A titled alert.** `> [!NOTE] Escaping A Grapple` over a body puts the title
+  in the label chip in place of "Note". A one-line alert is unchanged.
+- **Skill cards break across pages on purpose.** New marks from the plugin:
+  `dc-card-subhead` (a bold-only paragraph), `dc-ability-title` (a cost row
+  that is only a name), `dc-lead-in` (a line that ends in a colon),
+  `dc-card-signoff` (a short closing line) and, in a section, `dc-kicker` (a
+  bold-only closing paragraph).
+  - The first blocks of a card move together, so a card never opens a page foot
+    with its tab and one line. A sub-heading, a label and a lead-in stay with
+    what follows; a short closing line stays with what precedes it.
+  - A plain table may split between rows, with its header repeated. An outcome
+    ladder or roll table may split between tiers: the head and first tier stay
+    together, as do the last two.
+  - The requirement band never splits and never ends a page alone.
+  - A fragment keeps the card's padding at a page break; a continued Proxy or
+    Gutterdruid card has a straight top; a specialty's last card keeps its foot
+    inside the page.
+  - In the Field Guide's specialty chapters, white holes of an inch or more
+    inside cards fell from 15 (26in in all) to 11 (17in), and single
+    carried-over lines from 18 to 8.
+- **Sheets, panels, sections and callouts keep their padding where they break**
+  (`box-decoration-break: clone`). No unbroken box is taller. A `dm` section's
+  tab band is not repeated on a continuation.
+- **The footer has clearance.** 0.10in of wall shows between a sheet that fills
+  a page and the page and chapter chips (`--bottom-margin` 0.95in, new
+  `--chip-gap` 0.10in; they were 0.875in and 0.025in). The chips do not move.
+  At 0.12in the Field Guide runs two pages longer.
+- **A rule is a seam, not a pink line.** `---` is a 1pt ink hairline
+  (`--dc-rule`), and inside a skill card a 1.5pt seam in the specialty's
+  colour. It stays with the block after it and is not drawn first or last in
+  its container, before a heading, a table or a component, or on the bare wall.
+- **The `choose` form's stamp is out of the flow**, across the form's top edge,
+  so it no longer shortens the first line or crowds a two-line heading
+  (`--dc-choose-stamp-room`, `--dc-choose-stamp-top`, `--dc-choose-stamp-lift`).
+- **Smaller changes.** Running text has one ink (`body` sets `--ink`; list
+  items and table cells printed pure black). A heading breaks only between
+  words. Curly quotes, dashes and the ellipsis in a heading print in Tomorrow
+  Bold, through a `unicode-range` face for lixdu, which covers only ASCII. The
+  `»` in an ability-chain strip belongs to the chip before it, so a row never
+  starts with one. A table whose header cells are all empty draws no header
+  row. The outcome ladder's colour bar runs the full height of its row. The
+  gap under a specialty opener's title equals the gap under its sub-headings.
+  The procedure plate's staple is gone.
 - **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
   top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
   `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
