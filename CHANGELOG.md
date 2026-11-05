@@ -11,8 +11,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
 ([docs/print-colour-audit.md](docs/print-colour-audit.md)). Colour, tokens and
-documentation only: no component's markup or structure changes, and every old
-token name still works.
+documentation, plus a pass on the Field Guide's review notes that puts text on
+white. No component's markup changes. One token is gone: `--dc-page-slip-tape`
+(the `##` slip is bolted now, not taped).
 
 ### Added
 
@@ -32,6 +33,28 @@ token name still works.
 
 - **The paper is white.** `--paper-cream` and `--paper-light` are `#ffffff`, the
   unprinted stock with no ink (was `#f0eee9` and `#e2ded7`).
+- **Text reads on white.** A callout, a `reference`, `lore` or `dm` section, the
+  fiction excerpt, the shard block, a faction card, a gear entry, an effect
+  field and a choice card's quote no longer tint or darken their body. The
+  colour that named them is in the edge: a callout's rail is twice as heavy
+  (`--dc-alert-border-width` 8px, 6px on the variants), it gains a ring in its
+  accent (`--dc-alert-frame`) and its label is a filled chip
+  (`--dc-alert-label-bg` is the accent, with paper type). The Dream Master
+  note is a white sheet in an ink ring under an ink folder tab, and the visit
+  callout a white placard with a fungi-green rail. Title bars, tabs, badges,
+  the slate block and the Surreal definition keep their fills.
+- **A `###` slip runs the full width of its column**, as the `##` slip does.
+  `####` and smaller still shrink to their words.
+- **One gap under a heading.** `--dc-page-slip-foot` (6pt) is the space below a
+  free-standing heading, whatever follows it: a panel (was 20pt), a callout, a
+  table or a sheet of loose text (was none).
+- **The fiction excerpt's title is a step smaller:** its `h1` reads
+  `--dc-fiction-title-size`, the `##` size by default.
+- **A bulleted list starts at the text edge.** The `»` marker is the indent; a
+  nested list steps in 0.16in and a numbered list keeps room for its numbers.
+- **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
+  top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
+  `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
 - **Three substrates.** White paper, `--concrete-pale` and the wall. `--paper-light`
   and `--paper-form` are aliases of `--paper-cream`. `--paper-zine`, `--hud-panel` and
   `--paper-aged` are aliases of `--concrete-pale`. `--paper-form` had become
@@ -59,11 +82,10 @@ token name still works.
   is `--augmerc-mid`, `--dualist-dark` is `--augmerc-dark` (alpha.2; it was dE 2.4
   from it), `--cybersurgeon-mid` is `--crystal-slate`,
   `--tint-magenta-rose` is `--brand-magenta` and `--tint-hud-teal` is `--hud-blue`.
-- **Paper tints hold a printable dot.** On white paper the `color-mix()` callout,
-  section, faction, choice and entry surfaces had a dominant ink of 2-4%,
-  which does not hold on Indigo or inkjet presses. Each now mixes `in oklch` at
-  a share that gives 9-12%. Examples: vibe and lore violet go from 6-7% to 22%,
-  the HUD-blue surfaces from 12-22% to 30%, and warning yellow from 14% to 25%.
+- **A paper tint must hold a printable dot.** On white paper a `color-mix()`
+  tint with a dominant ink of 2-4% does not hold on Indigo or inkjet presses,
+  so a tint mixes `in oklch` at a share that gives 8-10% (constitution §V).
+  With text on white (above), no body surface uses one any more.
 - **Small text is `--ink`.** Labels, heading slips, tags, flavour lines, entry
   names, h4-h6, `em`, the contents list and NPC secondary lines used `--ink-dark`,
   `--ink-smoke`, `--ink-mid` or `--ink-dust`, which print on four plates. They now
