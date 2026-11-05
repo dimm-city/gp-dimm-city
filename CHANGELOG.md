@@ -101,6 +101,15 @@ token name still works.
   guide's pictures are: the layout is the specimen, the art a proxy.
   `scavenger.png` (1920 px) is at least 500 DPI everywhere the guide prints
   it and stays. The build reports no image under the bar.
+- **Two docs describe the build as it is.** `docs/print-transparency-inventory.md`
+  now opens with the `preserve-text` model (translucent artwork rasterised at
+  300 DPI, text kept live), lists what is translucent today and what is
+  pre-composited, and verifies a book by the build's own report; the 1.7
+  pre-composite pass and its measurements are kept under a historical heading.
+  `docs/css-roadmap.md`'s accepted warnings are the three ellipsis notes
+  `validate --phase pre-build` reports today; the heading-order warnings are
+  off by configuration (alpha.2) and the `clip-path` warnings are gone with
+  Gutterpress's rule.
 
 ### Deprecated
 

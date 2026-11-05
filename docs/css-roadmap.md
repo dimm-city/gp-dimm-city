@@ -46,14 +46,14 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 
 ## Known, accepted warnings
 
-- **The design guide's 8 "heading level jump" warnings.** Each one is the first heading inside a rendered component example, where the component's syntax requires an `h4`:
-  - a skill card's `####` title;
-  - the NPC stat block;
-  - the citizen walkthrough;
-  - the sidebar box.
+`gutterpress validate design-guide --phase pre-build` passes with no warning and three notes (1.10.2-alpha.2, Gutterpress 0.11.24-alpha.1):
 
-  They are correct and are left as they are (reviewed 2026-10-09).
-- **About 33 `printsafe/no-risky-print-effects` warnings on `clip-path`, and the source-level `page-containment` warning on the scoped `.page` clip.** Both are false positives. gutterpress has no per-project setting to silence them; [dimm-city/gutterpress#339](https://github.com/dimm-city/gutterpress/issues/339) asks for one.
+- **Three "Ellipsis character (U+2026)" notes** (`08-page-templates.md:41`, `10-reference.md:17` and `:63`). Each is the range `wall-1 … wall-6` in a reference table, typed with the character on purpose. They are informational and are left as they are.
+
+What this section used to list, and where it went:
+
+- **The "heading level jump" warnings** (the first heading inside a rendered component example, where a skill card, stat block, walkthrough or sidebar box requires an `h4`; the Part 2 example chapters, which jump `h2` to `h4` as specimens of book pages). Since 1.10.2-alpha.2 the guide turns them off by configuration: `checks: source.accessibility.heading-order: off` in its manifest, and `MD001` and `MD024` off in the repository's `.markdownlint.jsonc`. The per-project setting the earlier note said was missing ([dimm-city/gutterpress#339](https://github.com/dimm-city/gutterpress/issues/339)) is the manifest's `checks:` map.
+- **The `printsafe/no-risky-print-effects` warnings on `clip-path` (about 33) and the `page-containment` warning on the scoped `.page` clip.** Neither appears any more: Gutterpress's rule no longer lists `clip-path` as a property that forces rasterisation (it flags `filter`, the blend modes, animation and `will-change`), and the containment warning is gone with it. Nothing in the package changed for either.
 
 ## Keep (what works)
 
