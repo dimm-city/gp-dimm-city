@@ -132,6 +132,16 @@ blank pages at the end where there were four.
 - **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
   top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
   `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
+- **The vibe callout and the skill card are bolted too.** Both carried a strip
+  of masking tape to say "held to the wall"; they now carry the `##` slip's
+  bolt: one in each top corner of a vibe callout, one at the top right of a
+  skill card, beside its tab. A bolt prints once, at the real top, never on a
+  continuation. One bolt is shared by all three: `--dc-bolt`, `--dc-bolt-face`
+  and `--dc-bolt-size`, which the slip's `--dc-page-slip-bolt*` tokens default
+  to, so a book that set those keeps its look. `--dc-card-body-mark` no longer
+  draws anything. The tape divider (`.dc-tape`), the example callout's taped-on
+  tag and hazard tape are unchanged: they label or warn, they do not hold a
+  sheet up.
 - **One type scale, and every size is on it.** An audit of every `font-size`
   found no rule under the 10pt floor, but twenty literal sizes off the scale
   (`15px`, `1.6rem`, `0.95em`, `15pt`…). Each is now a `--fs-*` token: the

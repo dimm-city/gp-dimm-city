@@ -471,6 +471,33 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
 .dc-classtag.generalist     { --dc-classtag-color: var(--generalist-accent); }
 
 
+/* ── Bolt heads ───────────────────────────────────────────────────────── */
+/* Wall hardware, drawn once: a vibe sheet is bolted at its two top corners (on
+   its label's two pseudo-elements) and a skill card at its top right (on the
+   body's ::before). The `##` slip draws the same bolt in page-templates.css
+   (layer guard) from the same tokens. An opaque disc: an ink ring round a grey
+   face, the slot a hard-stopped band of ink (an ordinary gradient with opaque
+   stops), a 1px hard shadow. A left-hand bolt turns its slot 35deg and a
+   right-hand one -70deg, as a hand leaves them. Each component places its own
+   bolts (callouts.css, cards.css). Tokens --dc-bolt / -face / -size. */
+.dc-vibe-callout > .dc-alert-label::before,
+.dc-vibe-callout > .dc-alert-label::after,
+.dc-skill-card > .dc-card-body::before {
+  content: "";
+  position: absolute;
+  width: var(--dc-bolt-size);
+  height: var(--dc-bolt-size);
+  box-sizing: border-box;
+  border: 1.5px solid var(--dc-bolt);
+  border-radius: 50%;
+  background: linear-gradient(35deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
+  box-shadow: 1px 1px 0 var(--dc-bolt);
+}
+.dc-vibe-callout > .dc-alert-label::after,
+.dc-skill-card > .dc-card-body::before {
+  background: linear-gradient(-70deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
+}
+
 /* ── Tape (torn-tape divider) ─────────────────────────────────────────── */
 /* A strip of masking tape: tan, torn at both ends, ink edges top and bottom,
    an ink label, crimson dashes either side. Tokens --dc-tape-bg / -border /

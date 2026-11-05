@@ -102,7 +102,7 @@
                from the top + one cut corner                                top, cyan type on it
                (classified)
      vibe      long shallow diagonals at     violet frame along every       violet chip, paper type
-               two opposite corners (world)  edge, tape strip on top
+               two opposite corners (world)  edge, a bolt in each top corner
      origin    torn bottom edge + dog-ear    rust frame along the tear      crimson rubber stamp
                (backstory)                   and the dog-ear, heavy rail
      location  the origin's document         teal frame, heavy rail         deep-teal rubber stamp
@@ -305,18 +305,19 @@
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
 }
-/* A strip of tape holding the sheet to the wall: a small tan solid, a few
-   degrees off true, clear of the label and the text. */
-.dc-vibe-callout::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 58%;
-  width: 54px;
-  height: 11px;
-  background: var(--dc-tape-bg);
-  border-block: 1pt solid var(--dc-tape-border);
-  transform: rotate(-3deg);
+/* Bolted to the wall at its two top corners: one bolt head on each of the
+   label's pseudo-elements (drawn in chrome.css, "Bolt heads"). The label is
+   not positioned, so they sit against the callout. The right one is lower: its
+   corner is the 30px x 8px diagonal, and the bolt stays inside the frame that
+   runs along it. The label exists only in a callout's first fragment, so a
+   bolt prints once, at the real top, never on a continuation. */
+.dc-vibe-callout > .dc-alert-label::before {
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  left: 5px;
+}
+.dc-vibe-callout > .dc-alert-label::after {
+  top: 13px;
+  right: 8px;
 }
 
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────

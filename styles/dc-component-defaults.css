@@ -456,6 +456,11 @@
   --dc-tag-fg:               var(--ink);
   --dc-tag-border:           var(--ink);
 
+  /* Wall hardware: the bolt head that fixes a `##` slip, a vibe sheet and a skill card to the wall (chrome.css, "Bolt heads") */
+  --dc-bolt:                 var(--ink);          /* the bolt's ring, slot and shadow */
+  --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
+  --dc-bolt-size:            10px;                /* the bolt's diameter */
+
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
   --dc-tape-border:          var(--ink);
@@ -481,9 +486,9 @@
   --dc-page-slip-ink:        var(--ink);
   --dc-page-slip-edge:       var(--ink);
   --dc-page-slip-shadow:     var(--shadow-poster);
-  --dc-page-slip-bolt:       var(--ink);
-  --dc-page-slip-bolt-face:  var(--paper-stain);
-  --dc-page-slip-bolt-size:  10px;
+  --dc-page-slip-bolt:       var(--dc-bolt);
+  --dc-page-slip-bolt-face:  var(--dc-bolt-face);
+  --dc-page-slip-bolt-size:  var(--dc-bolt-size);
   --dc-page-slip-gap:        var(--space-xl);
   --dc-page-slip-foot:       6pt;
   --dc-page-sheet-pad:       0.18in;
