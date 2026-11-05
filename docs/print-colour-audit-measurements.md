@@ -1,113 +1,115 @@
 # gp-dimm-city print colour audit — measurements
 
-The output of `python3 scripts/measure-palette-crpc1.py <mode>` for each mode below, regenerated after the fix
-(release 1.10.2). Every hex token in `styles/dc-palette.css` and `styles/dc-identity.css`,
-and every `color-mix()` of two palette tokens in `styles/`, converted sRGB -> CMYK
-through the CGATS21_CRPC1 profile gutterpress ships, with LittleCMS (Pillow) at
-perceptual intent.
+The output of `python3 scripts/measure-palette-crpc1.py <mode>` for each mode below, regenerated
+for 1.10.2-alpha.2. Every hex token in `styles/dc-palette.css` and `styles/dc-identity.css`,
+and every `color-mix()` of two palette tokens in `styles/`, converted sRGB -> CMYK the way
+the PDF/X build does it: a swatch of each colour through Ghostscript's pdfwrite with the
+CGATS21_CRPC1 profile gutterpress ships as the output profile, at Ghostscript's default
+intent (relative colorimetric with black-point compensation). The CMYK operands are read
+back out of the PDF, so these are the build's figures to the digit.
 
-- **printed**: the CMYK printed back to sRGB; **dE**: OKLab distance x100 between screen
-  and print (> 6 is a visible shift, > 10 a different colour).
+- **printed**: the CMYK converted back to sRGB with LittleCMS at the same intent, so a colour
+  inside the gamut round-trips to itself; **dE**: OKLab distance x100 between screen and
+  print (> 6 is a visible shift, > 10 a different colour).
 - **mixes**: **max** is the tint's strongest ink, **min** its weakest non-zero one (a
   1-2% dot does not hold on HP Indigo or inkjet).
 - **contrast**: WCAG 2 contrast on the sRGB values.
 - **dupes**: hex tokens closer than OKLab 6 (aliases are not listed: they are one colour).
 
-These are the profile's numbers, not the build's. Ghostscript, which the build converts
-with, was not run. gutterpress #331 measured the real build at `#000` -> C47 M42 Y40 K100;
-this method gives C50 M46 Y44 K100.
+Until 1.10.2-alpha.1 this file was LittleCMS at perceptual intent, which the build never
+used: its figures ran under the build's by 10-30% TAC on the purples and by 15-20% on
+the inks.
 
 ## tokens
 
 ```
-token                    hex      CMYK (perceptual)     TAC printed     dE    okL   okC  okH
---bg                     #c8c5bf  C14 M11 Y13 K0         38 #c8c6c1    0.3   0.82 0.009   85
---concrete-pale          #dcdad5  C9 M7 Y9 K0            25 #dcdad6    0.1   0.89 0.007   89
+token                    hex      CMYK (build)          TAC printed     dE    okL   okC  okH
+--bg                     #c8c5bf  C18 M15 Y18 K2         53 #c9c6c0    0.3   0.82 0.009   85
+--concrete-pale          #dcdad5  C12 M9 Y12 K0          33 #dddbd6    0.3   0.89 0.007   89
 --paper-cream            #ffffff  C0 M0 Y0 K0             0 #ffffff    0.0   1.00 0.000   90
---paper-stain            #b0a89c  C19 M16 Y22 K4         61 #afa89d    0.2   0.73 0.019   78
---ink                    #1e1d1c  C42 M36 Y33 K85       196 #1c1b1a    0.9   0.23 0.002   68
---ink-dark               #2f2622  C36 M36 Y33 K76       181 #2e2623    0.3   0.28 0.015   45
---ink-smoke              #4d4339  C32 M33 Y37 K55       157 #4d443b    0.4   0.39 0.021   67
---ink-mid                #594f43  C31 M31 Y38 K47       147 #595045    0.4   0.43 0.023   72
---ink-dust               #665b4e  C30 M29 Y37 K38       134 #655c4f    0.3   0.48 0.025   72
---crimson                #e1261c  C0 M93 Y93 K1         187 #d13c31    3.4   0.59 0.221   29
---blood                  #901a12  C0 M88 Y65 K37        190 #8e1e14    0.5   0.42 0.154   29
---orange                 #d4500a  C0 M71 Y98 K4         173 #cd542e    2.1   0.60 0.180   41
---orange-deep            #a03808  C0 M76 Y89 K27        192 #a03817    0.8   0.48 0.147   40
---rust                   #b23a12  C0 M82 Y91 K17        190 #b13b20    0.9   0.52 0.163   37
---amber                  #7a5a20  C13 M28 Y77 K41       159 #7a5c24    0.6   0.49 0.085   79
---deep-rust              #70200e  C4 M71 Y56 K54        185 #6f210e    0.3   0.37 0.116   34
---amber-dark             #5c3c10  C15 M36 Y71 K60       182 #5b3d14    0.4   0.38 0.073   70
---brand-magenta          #bf308f  C10 M92 Y0 K6         108 #ba3881    2.8   0.56 0.201  345
---brand-magenta-deep     #76115e  C28 M97 Y2 K29        156 #721b52    2.7   0.39 0.155  340
---brand-cyan             #00bcd4  C48 M0 Y7 K0           55 #51b7ce    2.8   0.73 0.126  211
---brand-yellow           #ffd700  C1 M4 Y91 K0           96 #f6d745    2.3   0.89 0.182   95
---brand-violet           #5d3b88  C66 M86 Y0 K4         156 #563f77    3.4   0.43 0.125  302
---signal-indigo          #4b65ab  C69 M44 Y0 K3         116 #4f6597    3.2   0.52 0.115  267
---hud-blue               #1f6f94  C73 M24 Y4 K13        114 #1d6f94    0.1   0.51 0.094  233
---hud-blue-dark          #14516e  C75 M32 Y8 K30        145 #11526f    0.3   0.41 0.077  234
---hud-blue-dim           #7ab8d0  C37 M4 Y5 K1           47 #7bb8d0    0.1   0.75 0.072  224
---surface-tint-3         #f2f0ec  C4 M3 Y4 K0            11 #f1efec    0.3   0.96 0.006   85
---surface-orange-tint    #d8cfb4  C10 M9 Y21 K0          40 #d8cfb5    0.1   0.85 0.038   92
---fungi-glow             #c8e040  C17 M0 Y75 K0          92 #c1ca53    6.5   0.86 0.179  118
---fungi-rot              #30461e  C39 M17 Y64 K62       182 #2f4721    0.4   0.37 0.069  133
---crystal-amethyst       #835198  C41 M71 Y0 K4         116 #7e5387    3.0   0.52 0.121  315
---crystal-aqua           #4a98a8  C53 M9 Y14 K6          82 #4998a9    0.2   0.64 0.080  213
---crystal-slate          #52626f  C48 M28 Y18 K27       121 #4f6371    0.5   0.49 0.029  243
---streetwarden-accent    #4db840  C46 M0 Y82 K0         128 #69ab4f    4.9   0.70 0.187  142
---cybersurgeon-accent    #a8b4b8  C23 M12 Y13 K2         50 #a9b5b9    0.3   0.76 0.015  220
---augmerc-dark           #003a40  C63 M25 Y25 K58       171 #043c42    0.8   0.32 0.054  206
---cybersurgeon-dark      #303840  C48 M34 Y21 K58       161 #313941    0.4   0.34 0.018  248
---wirephreak-dark        #1e0f50  C86 M83 Y0 K45        214 #1a1541    3.1   0.24 0.110  285
---technosorcerer-dark    #4c290f  C18 M44 Y56 K69       187 #4c2b12    0.6   0.32 0.065   54
---etherlock-dark         #46360c  C23 M30 Y66 K68       187 #45360f    0.3   0.34 0.061   87
---dualist-dark           #143a4a  C64 M33 Y16 K52       165 #133b4c    0.4   0.33 0.051  229
---generalist-dark        #212a32  C50 M36 Y22 K68       176 #232b32    0.5   0.28 0.019  245
---augmerc-mid            #006878  C69 M17 Y17 K26       129 #046979    0.4   0.48 0.083  213
---proxy-mid              #9a227d  C22 M97 Y1 K15        135 #952a6f    2.8   0.48 0.181  340
---streetwarden-mid       #347828  C51 M2 Y90 K29        172 #377732    1.2   0.51 0.134  141
---gutterdruid-mid        #4d6020  C33 M11 Y80 K45       169 #4e6123    0.4   0.46 0.092  124
---wirephreak-mid         #1c327d  C95 M75 Y0 K16        186 #22346a    3.4   0.35 0.130  267
---technosorcerer-mid     #7a3008  C3 M63 Y74 K48        188 #79320e    0.5   0.41 0.114   44
---etherlock-mid          #8a6a00  C9 M20 Y95 K35        159 #886b1a    1.0   0.54 0.111   88
---generalist-mid         #3a4854  C52 M33 Y19 K44       148 #3a4955    0.3   0.39 0.027  244
-aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
+--paper-stain            #b0a89c  C23 M20 Y27 K11        81 #b0a99d    0.3   0.73 0.019   78
+--ink                    #1e1d1c  C44 M38 Y37 K92       211 #1e1e1e    0.4   0.23 0.002   68
+--ink-dark               #2f2622  C39 M38 Y38 K87       202 #302926    1.1   0.28 0.015   45
+--ink-smoke              #4d4339  C32 M33 Y39 K71       175 #4e463d    1.0   0.39 0.021   67
+--ink-mid                #594f43  C32 M32 Y40 K62       166 #5a5247    1.0   0.43 0.023   72
+--ink-dust               #665b4e  C31 M31 Y41 K53       156 #675e51    0.9   0.48 0.025   72
+--crimson                #e1261c  C0 M100 Y100 K6       206 #e33e39    3.1   0.59 0.221   29
+--blood                  #901a12  C2 M92 Y65 K48        207 #952627    2.6   0.42 0.154   29
+--orange                 #d4500a  C0 M71 Y100 K13       184 #d75a34    2.7   0.60 0.180   41
+--orange-deep            #a03808  C1 M76 Y88 K39        204 #a54022    2.3   0.48 0.147   40
+--rust                   #b23a12  C0 M80 Y100 K30       210 #b64223    1.9   0.52 0.163   37
+--amber                  #7a5a20  C17 M33 Y75 K52       177 #7c5e2c    1.4   0.49 0.085   79
+--deep-rust              #70200e  C11 M73 Y58 K65       207 #712821    2.2   0.37 0.116   34
+--amber-dark             #5c3c10  C21 M40 Y62 K70       193 #5e4225    2.4   0.38 0.073   70
+--brand-magenta          #cf217e  C2 M100 Y1 K12        115 #d53e86    3.9   0.57 0.216  355
+--brand-magenta-deep     #690045  C24 M94 Y15 K56       189 #6c1546    2.5   0.34 0.144  349
+--brand-cyan             #00bcd4  C67 M0 Y11 K0          78 #10bcd5    0.3   0.73 0.126  211
+--brand-yellow           #ffd700  C0 M5 Y100 K1         106 #fddd29    1.4   0.89 0.182   95
+--brand-violet           #662d87  C62 M100 Y0 K16       178 #693f85    4.2   0.42 0.149  311
+--signal-indigo          #396cb7  C86 M54 Y0 K0         140 #3d6fb1    1.5   0.53 0.130  258
+--hud-blue               #1f6f94  C78 M29 Y8 K24        139 #1d7095    0.3   0.51 0.094  233
+--hud-blue-dark          #14516e  C74 M34 Y12 K46       166 #1c5470    1.2   0.41 0.077  234
+--hud-blue-dim           #7ab8d0  C46 M9 Y8 K3           66 #7abad2    0.6   0.75 0.072  224
+--surface-tint-3         #f2f0ec  C4 M4 Y5 K0            13 #f3f1ed    0.3   0.96 0.006   85
+--surface-orange-tint    #d8cfb4  C13 M12 Y26 K1         52 #d9d1b5    0.5   0.85 0.038   92
+--fungi-glow             #c8e040  C19 M0 Y95 K0         114 #ced741    2.4   0.86 0.179  118
+--fungi-rot              #30461e  C44 M20 Y60 K73       197 #364a2b    2.2   0.37 0.069  133
+--crystal-amethyst       #905aa5  C45 M80 Y0 K2         127 #945da2    1.3   0.56 0.126  316
+--crystal-aqua           #4a98a8  C62 M13 Y18 K12       105 #4a99a9    0.3   0.64 0.080  213
+--crystal-slate          #52626f  C50 M31 Y22 K42       145 #546370    0.4   0.49 0.029  243
+--streetwarden-accent    #4db840  C58 M0 Y100 K0        158 #61b54e    2.5   0.70 0.187  142
+--cybersurgeon-accent    #a8b4b8  C28 M16 Y16 K6         66 #a9b5ba    0.4   0.76 0.015  220
+--augmerc-dark           #003a40  C60 M28 Y30 K73       191 #183f43    2.6   0.32 0.054  206
+--cybersurgeon-dark      #303840  C47 M35 Y28 K74       184 #343b40    1.3   0.34 0.018  248
+--wirephreak-dark        #181b45  C66 M58 Y16 K69       209 #222647    4.0   0.25 0.078  276
+--technosorcerer-dark    #4c290f  C25 M45 Y51 K79       200 #4e3123    2.9   0.32 0.065   54
+--etherlock-dark         #46360c  C28 M32 Y57 K80       197 #47391d    1.8   0.34 0.061   87
+--generalist-dark        #212a32  C49 M38 Y31 K82       200 #282e34    1.9   0.28 0.019  245
+--augmerc-mid            #006878  C75 M20 Y19 K38       152 #096a7a    0.7   0.48 0.083  213
+--proxy-mid              #9c0f63  C12 M100 Y8 K32       152 #9e2d65    3.7   0.46 0.182  352
+--streetwarden-mid       #347828  C57 M3 Y92 K38        190 #3d7c34    1.9   0.51 0.134  141
+--gutterdruid-mid        #4d6020  C39 M14 Y76 K56       185 #51632d    1.7   0.46 0.092  124
+--wirephreak-mid         #093c81  C100 M73 Y0 K27       200 #18427f    2.2   0.37 0.127  258
+--technosorcerer-mid     #7a3008  C10 M66 Y71 K59       206 #7b371f    2.0   0.41 0.114   44
+--etherlock-mid          #8a6a00  C11 M25 Y91 K45       172 #8c6e1f    1.6   0.54 0.111   88
+--generalist-mid         #3a4854  C51 M34 Y24 K61       170 #3d4a55    0.8   0.39 0.027  244
+aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --dualist-dark -> --augmerc-dark, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
 ```
 
 ## mixes
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
-components/callouts.css:208            srgb --hud-blue-dark 50% --ink                   #193745  C61 M33 Y18 K55     167   61   18
-components/callouts.css:217            oklch --brand-yellow 25% --paper-cream           #fff6d4  C1 M1 Y12 K0         14   12    1
-components/callouts.css:292            oklch --brand-violet 22% --paper-cream           #d9d2e5  C9 M9 Y1 K0          19    9    1
-components/callouts.css:326            oklch --surface-orange-tint 55% --paper-cream    #e9e4d5  C6 M5 Y11 K0         22   11    5
-components/callouts.css:342            oklch --hud-blue-dim 30% --paper-cream           #d8eaf1  C9 M2 Y2 K0          13    9    2
-components/callouts.css:380            srgb --fungi-rot 85% --fungi-glow                #475d23  C36 M12 Y76 K47     171   76   12
-components/data.css:711                srgb --brand-magenta 38% --paper-cream           #e7b0d4  C5 M22 Y1 K0         28   22    1
-components/entries.css:192             oklch --crystal-amethyst 25% --paper-cream       #dfd2e5  C7 M10 Y1 K0         18   10    1
-components/entries.css:198             oklch --crystal-amethyst 40% --paper-cream       #ccb7d6  C12 M17 Y1 K0        30   17    1
-components/entries.css:232             oklch --fungi-glow 24% --paper-cream             #f1f8d8  C4 M0 Y10 K0         14   10    4
-components/entries.css:434             oklch --hud-blue-dim 38% --paper-cream           #cde4ed  C12 M2 Y3 K0         17   12    2
-components/entries.css:439             oklch --crimson 22% --paper-cream                #ffd6cf  C1 M11 Y8 K0         20   11    1
-components/section.css:852             srgb --crimson 40% --paper-cream                 #f3a8a4  C1 M25 Y16 K0        42   25    1
-components/section.css:1031            oklch --blood 18% --paper-light                  #efd6d2  C3 M11 Y8 K0         22   11    3
-components/section.css:1063            oklch --brand-violet 25% --paper-form            #d4cce2  C10 M11 Y1 K0        22   11    1
-components/section.css:1157            oklch --brand-violet 25% --paper-cream           #d4cce2  C10 M11 Y1 K0        22   11    1
-components/section.css:1158            srgb --brand-violet 72% --ink                    #4b336a  C66 M82 Y1 K18      167   82    1
-components/section.css:1170            oklch --blood 18% --paper-cream                  #efd6d2  C3 M11 Y8 K0         22   11    3
-components/specialty-identity.css:157  srgb --paper-cream 34% --augmerc-accent          #57d3e3  C32 M0 Y7 K0         39   32    7
-components/specialty-identity.css:185  srgb --paper-cream 45% --cybersurgeon-accent     #cfd6d8  C12 M6 Y7 K0         25   12    6
-components/specialty-identity.css:205  srgb --technosorcerer-accent 87% --paper-cream   #da672a  C0 M56 Y88 K3       147   88    3
-components/specialty-identity.css:244  srgb --paper-cream 22% --wirephreak-accent       #7387bd  C44 M27 Y0 K2        73   44    2
-components/specialty-identity.css:299  srgb --ink 30% --brand-magenta-deep              #5c154a  C33 M89 Y5 K41      168   89    5
-components/specialty-identity.css:301  srgb --paper-cream 26% --brand-magenta-deep      #9a4f88  C24 M74 Y1 K7       106   74    1
-components/specialty-identity.css:325  srgb --gutterdruid-mid 38% --gutterdruid-accent  #99af34  C25 M1 Y90 K6       122   90    1
-components/specialty-identity.css:355  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y64 K0         67   64    1
-components/specialty-identity.css:384  srgb --paper-cream 34% --dualist-accent          #88bbc6  C33 M5 Y10 K1        49   33    1
-components/specialty-identity.css:409  srgb --ink 26% --generalist-accent               #445059  C48 M31 Y21 K41     141   48   21
-dc-component-defaults.css:387          oklch --ink-dark 18% --paper-cream               #d6d4d3  C10 M8 Y8 K0         26   10    8
-dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged             #e6d995  C6 M4 Y38 K0         48   38    4
+components/callouts.css:208            srgb --hud-blue-dark 50% --ink                   #193745  C58 M35 Y26 K71     190   71   26
+components/callouts.css:217            oklch --brand-yellow 25% --paper-cream           #fff6d4  C1 M1 Y16 K0         18   16    1
+components/callouts.css:292            oklch --brand-violet 22% --paper-cream           #dccfe5  C12 M14 Y1 K0        27   14    1
+components/callouts.css:326            oklch --surface-orange-tint 55% --paper-cream    #e9e4d5  C8 M7 Y14 K0         29   14    7
+components/callouts.css:342            oklch --hud-blue-dim 30% --paper-cream           #d8eaf1  C12 M2 Y2 K0         16   12    2
+components/callouts.css:380            srgb --fungi-rot 85% --fungi-glow                #475d23  C42 M15 Y72 K58     187   72   15
+components/data.css:716                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
+components/entries.css:192             oklch --crystal-amethyst 25% --paper-cream       #e3d5e9  C9 M13 Y0 K0         22   13    9
+components/entries.css:198             oklch --crystal-amethyst 40% --paper-cream       #d2bcdc  C15 M23 Y0 K0        38   23   15
+components/entries.css:232             oklch --fungi-glow 24% --paper-cream             #f1f8d8  C5 M0 Y16 K0         21   16    5
+components/entries.css:434             oklch --hud-blue-dim 38% --paper-cream           #cde4ed  C16 M3 Y4 K0         23   16    3
+components/entries.css:439             oklch --crimson 22% --paper-cream                #ffd6cf  C0 M15 Y12 K0        27   15   12
+components/section.css:852             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
+components/section.css:1031            oklch --blood 18% --paper-light                  #efd6d2  C6 M14 Y11 K0        31   14    6
+components/section.css:1063            oklch --brand-violet 25% --paper-form            #d7c9e2  C14 M17 Y1 K0        32   17    1
+components/section.css:1157            oklch --brand-violet 25% --paper-cream           #d7c9e2  C14 M17 Y1 K0        32   17    1
+components/section.css:1158            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
+components/section.css:1170            oklch --blood 18% --paper-cream                  #efd6d2  C6 M14 Y11 K0        31   14    6
+components/specialty-identity.css:157  srgb --paper-cream 34% --augmerc-accent          #57d3e3  C50 M0 Y9 K0         59   50    9
+components/specialty-identity.css:185  srgb --paper-cream 45% --cybersurgeon-accent     #cfd6d8  C17 M9 Y10 K0        36   17    9
+components/specialty-identity.css:205  srgb --technosorcerer-accent 87% --paper-cream   #da672a  C0 M60 Y100 K11     171  100   11
+components/specialty-identity.css:244  srgb --paper-cream 22% --wirephreak-accent       #658cc7  C59 M34 Y0 K3        96   59    3
+components/specialty-identity.css:299  srgb --ink 30% --brand-magenta-deep              #520939  C32 M74 Y22 K68     196   74   22
+components/specialty-identity.css:301  srgb --paper-cream 26% --brand-magenta-deep      #904275  C27 M80 Y9 K27      143   80    9
+components/specialty-identity.css:325  srgb --gutterdruid-mid 38% --gutterdruid-accent  #99af34  C28 M0 Y99 K13      140   99   13
+components/specialty-identity.css:355  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
+components/specialty-identity.css:384  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
+components/specialty-identity.css:409  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
+dc-component-defaults.css:387          oklch --ink-dark 18% --paper-cream               #d6d4d3  C14 M11 Y12 K0       37   14   11
+dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast
@@ -122,30 +124,30 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
 12.00:1  AAA      --ink on --brand-yellow
 11.37:1  AAA      --ink on --fungi-glow (hit row)
 11.80:1  AAA      --ink on --dc-tape-bg
- 5.92:1  AA       white on magenta bar (90% over ink)
- 5.20:1  AA       white on --brand-magenta
- 5.20:1  AA       --brand-magenta on white (h1, large)
-10.44:1  AAA      white on --brand-magenta-deep (chevron, crit, VAR chip, proxy band)
-10.44:1  AAA      --brand-magenta-deep on white (default accent ink)
- 7.47:1  AAA      --brand-magenta-deep on --concrete-pale (pullquote ink)
-12.64:1  AAA      white on proxy band facet (30% ink)
- 9.33:1  AAA      magenta 38% term on --wirephreak-dark
-10.44:1  AAA      --proxy-dark on white (proxy chip)
-10.44:1  AAA      white on --proxy-dark (sticker)
- 7.24:1  AAA      white on --proxy-mid (tab)
- 8.58:1  AAA      white on --brand-violet (chip, badge)
- 8.58:1  AAA      --brand-violet on white (treasure ink)
- 5.85:1  AA       --brand-violet on vibe sheet (accent ink)
- 9.07:1  AAA      --ink on the darkest tint (treasure ornament)
+ 5.78:1  AA       white on magenta bar (90% over ink)
+ 5.03:1  AA       white on --brand-magenta
+ 5.03:1  AA       --brand-magenta on white (h1, large)
+12.45:1  AAA      white on --brand-magenta-deep (chevron, crit, VAR chip, proxy band)
+12.45:1  AAA      --brand-magenta-deep on white (default accent ink)
+ 8.91:1  AAA      --brand-magenta-deep on --concrete-pale (pullquote ink)
+14.41:1  AAA      white on proxy band facet (30% ink)
+ 8.83:1  AAA      magenta 38% term on --wirephreak-dark
+12.45:1  AAA      --proxy-dark on white (proxy chip)
+12.45:1  AAA      white on --proxy-dark (sticker)
+ 7.89:1  AAA      white on --proxy-mid (tab)
+ 9.17:1  AAA      white on --brand-violet (chip, badge)
+ 9.17:1  AAA      --brand-violet on white (treasure ink)
+ 6.16:1  AA       --brand-violet on vibe sheet (accent ink)
+ 9.59:1  AAA      --ink on the darkest tint (treasure ornament)
  6.50:1  AA       --blood on the flaws/cult tint
  6.97:1  AA       --hud-blue-dark on the ideals/reference tint
-10.60:1  AAA      white on lore bar (violet 72% over ink)
- 5.84:1  AA       white on --crystal-amethyst (chip)
- 5.60:1  AA       white on --signal-indigo (wirephreak band, chip)
- 5.60:1  AA       --signal-indigo on white (classtag)
-11.66:1  AAA      --wirephreak-mid on white (spec ink)
-11.66:1  AAA      white on --wirephreak-mid (tab)
-16.94:1  AAA      white on --wirephreak-dark
+11.17:1  AAA      white on lore bar (violet 72% over ink)
+ 5.01:1  AA       white on --crystal-amethyst (chip)
+ 5.25:1  AA       white on --signal-indigo (wirephreak band, chip)
+ 5.25:1  AA       --signal-indigo on white (classtag)
+10.63:1  AAA      --wirephreak-mid on white (spec ink)
+10.63:1  AAA      white on --wirephreak-mid (tab)
+16.39:1  AAA      white on --wirephreak-dark
  8.64:1  AAA      white on --hud-blue-dark (AP chip, block title)
  8.64:1  AAA      --hud-blue-dark on white
  5.99:1  AA       white on --rust (chapter chip)
@@ -187,16 +189,16 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
 11.90:1  AAA      cybersurgeon: text ink on paper
  6.30:1  AA       cybersurgeon: cream on --cybersurgeon-mid (tab)
 11.90:1  AAA      cybersurgeon: cream on --cybersurgeon-dark (chip)
- 5.60:1  AA       wirephreak: on-band type on band
- 5.60:1  AA       wirephreak: tier chip
-11.66:1  AAA      wirephreak: text ink on paper
-11.66:1  AAA      wirephreak: cream on --wirephreak-mid (tab)
-16.94:1  AAA      wirephreak: cream on --wirephreak-dark (chip)
-10.44:1  AAA      proxy: on-band type on band
-10.44:1  AAA      proxy: tier chip
-10.44:1  AAA      proxy: text ink on paper
- 7.24:1  AAA      proxy: cream on --proxy-mid (tab)
-10.44:1  AAA      proxy: cream on --proxy-dark (chip)
+ 5.25:1  AA       wirephreak: on-band type on band
+ 5.25:1  AA       wirephreak: tier chip
+10.63:1  AAA      wirephreak: text ink on paper
+10.63:1  AAA      wirephreak: cream on --wirephreak-mid (tab)
+16.39:1  AAA      wirephreak: cream on --wirephreak-dark (chip)
+12.45:1  AAA      proxy: on-band type on band
+12.45:1  AAA      proxy: tier chip
+12.45:1  AAA      proxy: text ink on paper
+ 7.89:1  AAA      proxy: cream on --proxy-mid (tab)
+12.45:1  AAA      proxy: cream on --proxy-dark (chip)
 12.00:1  AAA      etherlock: on-band type on band
 12.00:1  AAA      etherlock: tier chip
 11.71:1  AAA      etherlock: text ink on paper
@@ -207,7 +209,7 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
  5.09:1  AA       dualist: tier chip
  6.46:1  AA       dualist: text ink on paper
  6.46:1  AA       dualist: cream on --dualist-mid (tab)
-12.11:1  AAA      dualist: cream on --dualist-dark (chip)
+12.51:1  AAA      dualist: cream on --dualist-dark (chip)
  6.30:1  AA       generalist: on-band type on band
  6.30:1  AA       generalist: tier chip
  9.40:1  AAA      generalist: text ink on paper
@@ -218,9 +220,7 @@ dc-component-defaults.css:454          srgb --brand-yellow 30% --paper-aged     
 ## dupes
 
 ```
-dE  2.4  --augmerc-dark           #003a40  ~  --dualist-dark           #143a4a
 dE  3.4  --ink-dark               #2f2622  ~  --generalist-dark        #212a32
-dE  3.5  --cybersurgeon-dark      #303840  ~  --dualist-dark           #143a4a
 dE  3.8  --orange-deep            #a03808  ~  --rust                   #b23a12
 dE  4.1  --technosorcerer-dark    #4c290f  ~  --etherlock-dark         #46360c
 dE  4.2  --paper-stain            #b0a89c  ~  --cybersurgeon-accent    #a8b4b8
@@ -244,7 +244,6 @@ dE  5.6  --fungi-rot              #30461e  ~  --etherlock-dark         #46360c
 dE  5.6  --augmerc-dark           #003a40  ~  --generalist-dark        #212a32
 dE  5.7  --cybersurgeon-dark      #303840  ~  --generalist-dark        #212a32
 dE  5.9  --cybersurgeon-dark      #303840  ~  --generalist-mid         #3a4854
-dE  5.9  --dualist-dark           #143a4a  ~  --generalist-dark        #212a32
 dE  5.9  --hud-blue-dim           #7ab8d0  ~  --cybersurgeon-accent    #a8b4b8
 dE  5.9  --amber                  #7a5a20  ~  --etherlock-mid          #8a6a00
 ```
@@ -252,35 +251,27 @@ dE  5.9  --amber                  #7a5a20  ~  --etherlock-mid          #8a6a00
 ## converge
 
 ```
-
 == purples: OKLab distance on screen -> printed (CRPC1 round trip); pairs printing < 10 apart ==
-  --brand-magenta        --proxy-mid              8.4 ->   8.5  (printed #ba3881 vs #952a6f)
-  --proxy-mid            --brand-magenta-deep     9.3 ->   9.1  (printed #952a6f vs #721b52)
-  --proxy-mid            --crystal-amethyst       9.6 ->   9.1  (printed #952a6f vs #7e5387)
-  --crystal-amethyst     --brand-violet           9.5 ->   9.6  (printed #7e5387 vs #563f77)
-  --crystal-amethyst     --signal-indigo          9.7 ->   8.3  (printed #7e5387 vs #4f6597)
-  --brand-violet         --wirephreak-mid        11.1 ->   9.5  (printed #563f77 vs #22346a)
 
 == warm reds: OKLab distance on screen -> printed (CRPC1 round trip); pairs printing < 10 apart ==
-  --crimson              --orange                 6.1 ->   4.3  (printed #d13c31 vs #cd542e)
-  --crimson              --rust                   9.2 ->   6.6  (printed #d13c31 vs #b13b20)
-  --orange               --rust                   8.5 ->   7.9  (printed #cd542e vs #b13b20)
-  --rust                 --orange-deep            3.8 ->   3.7  (printed #b13b20 vs #a03817)
-  --rust                 --blood                  9.6 ->   9.6  (printed #b13b20 vs #8e1e14)
-  --orange-deep          --blood                  6.7 ->   6.4  (printed #a03817 vs #8e1e14)
-  --orange-deep          --technosorcerer-mid     8.4 ->   8.4  (printed #a03817 vs #79320e)
-  --blood                --deep-rust              6.8 ->   6.7  (printed #8e1e14 vs #6f210e)
-  --blood                --technosorcerer-mid     5.5 ->   5.2  (printed #8e1e14 vs #79320e)
-  --deep-rust            --technosorcerer-mid     4.4 ->   4.6  (printed #6f210e vs #79320e)
+  --crimson              --orange                 6.1 ->   5.1  (printed #e33e39 vs #d75a34)
+  --crimson              --rust                   9.2 ->   9.1  (printed #e33e39 vs #b64223)
+  --orange               --rust                   8.5 ->   8.6  (printed #d75a34 vs #b64223)
+  --rust                 --orange-deep            3.8 ->   3.5  (printed #b64223 vs #a54022)
+  --rust                 --blood                  9.6 ->   9.4  (printed #b64223 vs #952627)
+  --orange-deep          --blood                  6.7 ->   6.6  (printed #a54022 vs #952627)
+  --orange-deep          --technosorcerer-mid     8.4 ->   9.1  (printed #a54022 vs #7b371f)
+  --blood                --deep-rust              6.8 ->   7.6  (printed #952627 vs #712821)
+  --blood                --technosorcerer-mid     5.5 ->   6.0  (printed #952627 vs #7b371f)
+  --deep-rust            --technosorcerer-mid     4.4 ->   4.4  (printed #712821 vs #7b371f)
 
 == teals: OKLab distance on screen -> printed (CRPC1 round trip); pairs printing < 10 apart ==
-  --brand-cyan           --crystal-aqua          10.4 ->   9.3  (printed #51b7ce vs #4998a9)
-  --brand-cyan           --hud-blue-dim           6.2 ->   3.8  (printed #51b7ce vs #7bb8d0)
-  --hud-blue             --hud-blue-dark         10.2 ->   9.9  (printed #1d6f94 vs #11526f)
-  --hud-blue             --augmerc-mid            5.0 ->   4.7  (printed #1d6f94 vs #046979)
-  --hud-blue-dark        --augmerc-mid            7.0 ->   7.1  (printed #11526f vs #046979)
+  --brand-cyan           --hud-blue-dim           6.2 ->   6.0  (printed #10bcd5 vs #7abad2)
+  --hud-blue             --hud-blue-dark         10.2 ->   9.4  (printed #1d7095 vs #1c5470)
+  --hud-blue             --augmerc-mid            5.0 ->   4.6  (printed #1d7095 vs #096a7a)
+  --hud-blue-dark        --augmerc-mid            7.0 ->   6.7  (printed #1c5470 vs #096a7a)
 
 == greens: OKLab distance on screen -> printed (CRPC1 round trip); pairs printing < 10 apart ==
-  --fungi-glow           --brand-yellow           7.5 ->   8.6  (printed #c1ca53 vs #f6d745)
-  --streetwarden-mid     --gutterdruid-mid        7.4 ->   6.6  (printed #377732 vs #4e6123)
+  --fungi-glow           --brand-yellow           7.5 ->   6.9  (printed #ced741 vs #fddd29)
+  --streetwarden-mid     --gutterdruid-mid        7.4 ->   7.6  (printed #3d7c34 vs #51632d)
 ```

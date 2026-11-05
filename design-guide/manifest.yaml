@@ -69,3 +69,8 @@ page:
 pdfx:
   transparency: preserve-text
 
+# The Part 2 example pages jump h2 -> h4 by design: they are specimens of
+# book pages, not an outline.
+checks:
+  source.accessibility.heading-order: off
+

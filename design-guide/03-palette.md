@@ -12,14 +12,14 @@ Cream paper, dark ink, and two accent registers. Creaturepunk **fire** --- crims
 ## Paper & ink
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch border on-light"><strong>BG</strong><code>#c8c5bf</code><code>--bg</code><code>14/11/13/0<br>38%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>BG</strong><code>#c8c5bf</code><code>--bg</code><code>18/15/18/2<br>53%</code></div>
   <div class="dc-palette-swatch border on-light"><strong>Paper Cream</strong><code>#ffffff</code><code>--paper-cream</code><code>0/0/0/0<br>0%</code></div>
   <div class="dc-palette-swatch border on-light"><strong>Paper Light</strong><code>#ffffff</code><code>--paper-light</code><code>0/0/0/0<br>0%</code></div>
-  <div class="dc-palette-swatch border on-light"><strong>Paper Aged</strong><code>#dcdad5</code><code>--paper-aged</code><code>9/7/9/0<br>25%</code></div>
-  <div class="dc-palette-swatch bg-ink on-dark"><strong>Ink</strong><code>#1e1d1c</code><code>--ink</code><code>42/36/33/85<br>196%</code></div>
-  <div class="dc-palette-swatch bg-ink-dark on-dark"><strong>Ink Dark</strong><code>#2f2622</code><code>--ink-dark</code><code>36/36/33/76<br>181%</code></div>
-  <div class="dc-palette-swatch bg-ink-smoke on-dark"><strong>Ink Smoke</strong><code>#4d4339</code><code>--ink-smoke</code><code>32/33/37/55<br>157%</code></div>
-  <div class="dc-palette-swatch bg-ink-dust on-dark"><strong>Ink Dust</strong><code>#665b4e</code><code>--ink-dust</code><code>30/29/37/38<br>134%</code></div>
+  <div class="dc-palette-swatch border on-light"><strong>Paper Aged</strong><code>#dcdad5</code><code>--paper-aged</code><code>12/9/12/0<br>33%</code></div>
+  <div class="dc-palette-swatch bg-ink on-dark"><strong>Ink</strong><code>#1e1d1c</code><code>--ink</code><code>44/38/37/92<br>211%</code></div>
+  <div class="dc-palette-swatch bg-ink-dark on-dark"><strong>Ink Dark</strong><code>#2f2622</code><code>--ink-dark</code><code>39/38/38/87<br>202%</code></div>
+  <div class="dc-palette-swatch bg-ink-smoke on-dark"><strong>Ink Smoke</strong><code>#4d4339</code><code>--ink-smoke</code><code>32/33/39/71<br>175%</code></div>
+  <div class="dc-palette-swatch bg-ink-dust on-dark"><strong>Ink Dust</strong><code>#665b4e</code><code>--ink-dust</code><code>31/31/41/53<br>156%</code></div>
 </div>
 
 The page background (`--bg`) is the wall; a brick texture is painted over it by the package's `@page` rule. Paper surfaces are what sits on the wall --- cards, callouts, panels. Components are posters and displays hung on the wall: hard edges, decisive separation, never a soft tint that lets the texture through.
@@ -27,30 +27,30 @@ The page background (`--bg`) is the wall; a brick texture is painted over it by 
 ## Creaturepunk fire
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-crimson on-dark"><strong>Crimson</strong><code>#e1261c</code><code>--crimson</code><code>0/93/93/1<br>187%</code></div>
-  <div class="dc-palette-swatch bg-blood on-dark"><strong>Blood</strong><code>#901a12</code><code>--blood</code><code>0/88/65/37<br>190%</code></div>
-  <div class="dc-palette-swatch bg-orange on-dark"><strong>Orange</strong><code>#d4500a</code><code>--orange</code><code>0/71/98/4<br>173%</code></div>
-  <div class="dc-palette-swatch bg-rust on-dark"><strong>Rust</strong><code>#b23a12</code><code>--rust</code><code>0/82/91/17<br>190%</code></div>
-  <div class="dc-palette-swatch bg-amber on-light"><strong>Amber</strong><code>#7a5a20</code><code>--amber</code><code>13/28/77/41<br>159%</code></div>
-  <div class="dc-palette-swatch bg-deep-rust on-dark"><strong>Deep Rust</strong><code>#70200e</code><code>--deep-rust</code><code>4/71/56/54<br>185%</code></div>
+  <div class="dc-palette-swatch bg-crimson on-dark"><strong>Crimson</strong><code>#e1261c</code><code>--crimson</code><code>0/100/100/6<br>206%</code></div>
+  <div class="dc-palette-swatch bg-blood on-dark"><strong>Blood</strong><code>#901a12</code><code>--blood</code><code>2/92/65/48<br>207%</code></div>
+  <div class="dc-palette-swatch bg-orange on-dark"><strong>Orange</strong><code>#d4500a</code><code>--orange</code><code>0/71/100/13<br>184%</code></div>
+  <div class="dc-palette-swatch bg-rust on-dark"><strong>Rust</strong><code>#b23a12</code><code>--rust</code><code>0/80/100/30<br>210%</code></div>
+  <div class="dc-palette-swatch bg-amber on-light"><strong>Amber</strong><code>#7a5a20</code><code>--amber</code><code>17/33/75/52<br>177%</code></div>
+  <div class="dc-palette-swatch bg-deep-rust on-dark"><strong>Deep Rust</strong><code>#70200e</code><code>--deep-rust</code><code>11/73/58/65<br>207%</code></div>
 </div>
 
 ## HUD digital
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-hud-blue on-dark"><strong>HUD Blue</strong><code>#1f6f94</code><code>--hud-blue</code><code>73/24/4/13<br>114%</code></div>
-  <div class="dc-palette-swatch bg-hud-blue-bright on-light"><strong>HUD Bright</strong><code>#00bcd4</code><code>--hud-blue-bright</code><code>48/0/7/0<br>55%</code></div>
-  <div class="dc-palette-swatch bg-hud-blue-dim border on-light"><strong>HUD Dim</strong><code>#7ab8d0</code><code>--hud-blue-dim</code><code>37/4/5/1<br>47%</code></div>
-  <div class="dc-palette-swatch bg-hud-magenta on-dark"><strong>HUD Magenta</strong><code>#bf308f</code><code>--hud-magenta</code><code>10/92/0/6<br>108%</code></div>
+  <div class="dc-palette-swatch bg-hud-blue on-dark"><strong>HUD Blue</strong><code>#1f6f94</code><code>--hud-blue</code><code>78/29/8/24<br>139%</code></div>
+  <div class="dc-palette-swatch bg-hud-blue-bright on-light"><strong>HUD Bright</strong><code>#00bcd4</code><code>--hud-blue-bright</code><code>67/0/11/0<br>78%</code></div>
+  <div class="dc-palette-swatch bg-hud-blue-dim border on-light"><strong>HUD Dim</strong><code>#7ab8d0</code><code>--hud-blue-dim</code><code>46/9/8/3<br>66%</code></div>
+  <div class="dc-palette-swatch bg-hud-magenta on-dark"><strong>HUD Magenta</strong><code>#cf217e</code><code>--hud-magenta</code><code>2/100/1/12<br>115%</code></div>
 </div>
 
 ## Surfaces & borders
 
 <div class="dc-palette-grid">
-  <div class="dc-palette-swatch bg-hud-panel border on-light"><strong>HUD Panel</strong><code>#dcdad5</code><code>--hud-panel</code><code>9/7/9/0<br>25%</code></div>
-  <div class="dc-palette-swatch bg-surface-tint-3 border on-light"><strong>Surface 3</strong><code>#f2f0ec</code><code>--surface-tint-3</code><code>4/3/4/0<br>11%</code></div>
-  <div class="dc-palette-swatch bg-surface-orange-tint border on-light"><strong>Orange Tint</strong><code>#d8cfb4</code><code>--surface-orange-tint</code><code>10/9/21/0<br>40%</code></div>
-  <div class="dc-palette-swatch bg-border-hairline on-dark"><strong>Hairline</strong><code>#1e1d1c</code><code>--border-hairline</code><code>42/36/33/85<br>196%</code></div>
+  <div class="dc-palette-swatch bg-hud-panel border on-light"><strong>HUD Panel</strong><code>#dcdad5</code><code>--hud-panel</code><code>12/9/12/0<br>33%</code></div>
+  <div class="dc-palette-swatch bg-surface-tint-3 border on-light"><strong>Surface 3</strong><code>#f2f0ec</code><code>--surface-tint-3</code><code>4/4/5/0<br>13%</code></div>
+  <div class="dc-palette-swatch bg-surface-orange-tint border on-light"><strong>Orange Tint</strong><code>#d8cfb4</code><code>--surface-orange-tint</code><code>13/12/26/1<br>52%</code></div>
+  <div class="dc-palette-swatch bg-border-hairline on-dark"><strong>Hairline</strong><code>#1e1d1c</code><code>--border-hairline</code><code>44/38/37/92<br>211%</code></div>
 </div>
 
 There are three substrates: white paper, one light grey (`--concrete-pale`, `#dcdad5`) and the wall. The other paper names are aliases of them: `--paper-light` and `--paper-form` (the `choose` form's sheet) are white; `--paper-zine` (the fiction excerpt and the shard block), `--paper-aged` (chips, `code`, outcome rows) and `--hud-panel` are the light grey. `--paper-stain` (`#b0a89c`) is a dark inset well and label strip: it never carries body text, and neither does any fill darker than the wall. `--border-hairline` is the column and table rule, in ink. Every hairline is at least 1pt, in `--ink` or a tint that prints in one ink. `--surface-tint-3` is only here for its swatch; no component uses it.
@@ -122,4 +122,4 @@ Do not write bare `.dc-*` rules in a book to change a component; that fights the
 
 ## CMYK
 
-Each swatch's third line is its CMYK build (C/M/Y/K, percent) and total ink, converted from the hex through CGATS21_CRPC1 --- the newsprint-class press profile DriveThruRPG specifies and gutterpress embeds in a PDF/X build --- with LittleCMS at perceptual intent (`scripts/measure-palette-crpc1.py` in the gp-dimm-city repository). The build converts with Ghostscript, which lands within about 10% of these totals. CRPC1 is a small gamut, so the purples are chosen to print close to how they look on screen. Treat the figures as starting points and request a physical proof before the full print run.
+Each swatch's third line is its CMYK build (C/M/Y/K, percent) and total ink, converted from the hex the way a `pdfx` build converts it: through Ghostscript with CGATS21_CRPC1 --- the newsprint-class press profile DriveThruRPG specifies and gutterpress embeds in a PDF/X build --- at Ghostscript's default intent, relative colorimetric with black-point compensation (`scripts/measure-palette-crpc1.py` in the gp-dimm-city repository runs a swatch of each colour through that conversion and reads the operands back). The figures are the build's to the digit. CRPC1 is a small gamut, so the purples are chosen to print close to how they look on screen and well apart from each other. Treat the figures as starting points and request a physical proof before the full print run.

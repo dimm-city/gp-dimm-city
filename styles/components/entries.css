@@ -183,7 +183,7 @@
   --dc-entry-badge-shape: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* TREASURE — a gem: violet (8.6:1 on cream), an eight-sided cut, one hard
+/* TREASURE — a gem: violet (9.2:1 on cream), an eight-sided cut, one hard
    facet across the face (a flat-tone polygon layer behind the text), a
    hexagonal badge. */
 .dc-treasure {

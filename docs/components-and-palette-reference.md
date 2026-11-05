@@ -217,12 +217,12 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Brand Cyber
 | Token | Value | Role |
 |---|---|---|
-| `--brand-magenta` | `#bf308f` | Dimm.city signature magenta, pink and inside the press gamut |
-| `--brand-magenta-deep` | `#76115e` | Small-text-on-fill safe version |
+| `--brand-magenta` | `#cf217e` | Dimm.city signature magenta, pink and inside the press gamut |
+| `--brand-magenta-deep` | `#690045` | Small-text-on-fill safe version |
 | `--brand-cyan` | `#00bcd4` | Neon-cyan — signal/wire |
 | `--brand-yellow` | `#ffd700` | Brand radiant gold |
-| `--brand-violet` | `#5d3b88` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
-| `--signal-indigo` | `#4b65ab` | Indigo — wirephreak accent |
+| `--brand-violet` | `#662d87` | Cyber-violet — the world (lore, vibe, cabal); no specialty |
+| `--signal-indigo` | `#396cb7` | Indigo — wirephreak accent |
 
 ### HUD / Interface
 | Token | Value | Role |
@@ -243,7 +243,7 @@ Tokens are organized in layers. New projects override the pillar layer only wher
 ### Crystal / Mineral
 | Token | Value | Role |
 |---|---|---|
-| `--crystal-amethyst` | `#835198` | Mineral violet (treasure tint) |
+| `--crystal-amethyst` | `#905aa5` | Mineral violet (treasure tint) |
 | `--crystal-slate` | `#52626f` | Cool slate stone — generalist accent |
 | `--crystal-aqua` | `#4a98a8` | Pale crystalline aquamarine |
 
@@ -401,9 +401,9 @@ Every specialty also sets `--spec-band` (the title-band fill: the accent, except
 | Streetwarden | `#4db840` | `#347828` | `→ --fungi-rot` (`#30461e`) |
 | Gutterdruid | `--fungi-glow` (`#c8e040`) | `#4d6020` | `→ --fungi-rot` (`#30461e`) |
 | Cybersurgeon | `#a8b4b8` | `→ --crystal-slate` (`#52626f`) | `#303840` |
-| Wirephreak | `--signal-indigo` (`#4b65ab`) | `#1c327d` | `#1e0f50` |
-| Proxy | `--brand-magenta` (`#bf308f`) | `#9a227d` | `→ --brand-magenta-deep` (`#76115e`) |
+| Wirephreak | `--signal-indigo` (`#396cb7`) | `#093c81` | `#181b45` |
+| Proxy | `--brand-magenta` (`#cf217e`) | `#9c0f63` | `→ --brand-magenta-deep` (`#690045`) |
 | Etherlock | `--brand-yellow` (`#ffd700`) | `#8a6a00` | `#46360c` |
-| Dualist | `--crystal-aqua` (`#4a98a8`) | `→ --augmerc-mid` (`#006878`) | `#143a4a` |
+| Dualist | `--crystal-aqua` (`#4a98a8`) | `→ --augmerc-mid` (`#006878`) | `→ --augmerc-dark` (`#003a40`) |
 | Generalist | `--crystal-slate` (`#52626f`) | `#3a4854` | `#212a32` |
 

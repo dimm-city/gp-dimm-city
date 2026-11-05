@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
-"""Measure the palette through the CGATS21_CRPC1 press profile.
+"""Measure the palette the way the PDF/X build separates it.
 
 What it does: converts every hex token in styles/dc-palette.css and
 styles/dc-identity.css (and every color-mix() tint of two palette tokens in
-styles/) sRGB -> CMYK through the CRPC1 ICC profile with LittleCMS, perceptual
-intent, and reports TAC, the colour printed back to sRGB, OKLab distances and
+styles/) sRGB -> CMYK the way `gutterpress build --format pdfx` does: a swatch
+of each colour goes through Ghostscript's pdfwrite with CGATS21_CRPC1 as the
+output profile at Ghostscript's default intent (relative colorimetric with
+black-point compensation), and the `c m y k k` operands are read back out of
+the PDF. It reports TAC, the colour printed back to sRGB, OKLab distances and
 WCAG contrast. docs/print-colour-audit-measurements.md is this script's output.
 
-These are the profile's numbers, not the build's: the build converts with
-Ghostscript, which this script does not run. gutterpress #331 measured the
-real build at #000 -> C47 M42 Y40 K100; this method gives C50 M46 Y44 K100.
+The CMYK figures are the build's to the digit (the same Ghostscript release
+writes the same operands). The "printed" colour is that CMYK converted back
+to sRGB with LittleCMS at the same intent (relative colorimetric, BPC), so an
+in-gamut colour round-trips to itself and dE measures only what the gamut
+moved. Before 1.10.2-alpha.2 the forward conversion was LittleCMS at
+perceptual intent, which the build never used; its figures ran 10-30% TAC under
+the build's on the purples and 15-20% under on the inks.
 
-Needs: Python 3 and Pillow (built with LittleCMS, as the wheels are).
+Needs: Ghostscript 10.03 or newer on PATH (10.02 and older ignore the output
+profile and separate through their default CMYK profile), Python 3 and Pillow
+(built with LittleCMS, as the wheels are).
 Profile: --icc PATH, else $CRPC1_ICC, else the CGATS21_CRPC1*.icc the
 installed gutterpress ships in node_modules/gutterpress/dist/.
 
 Usage: python3 scripts/measure-palette-crpc1.py [--icc PATH] [tokens|mixes|contrast|dupes|converge|all]
 """
-import glob, math, os, re, sys
+import glob, math, os, re, subprocess, sys, tempfile
 from PIL import Image, ImageCms
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,18 +37,45 @@ if '--icc' in args:
 icc = icc or next(iter(sorted(glob.glob(os.path.join(ROOT, 'node_modules/gutterpress/dist/CGATS21_CRPC1*.icc')))), None)
 if not icc or not os.path.exists(icc):
     sys.exit('CGATS21_CRPC1 profile not found: run `bun install`, or pass --icc PATH / set CRPC1_ICC')
+try: gs_version = subprocess.run(['gs', '--version'], capture_output=True, text=True, check=True).stdout.strip()
+except (OSError, subprocess.CalledProcessError): sys.exit('Ghostscript (gs) not found: the build separates with it, so this script needs it')
+if tuple(map(int, gs_version.split('.')[:2])) < (10, 3): sys.exit(f'Ghostscript {gs_version} ignores -sOutputICCProfile; 10.03 or newer is needed')
 srgb = ImageCms.createProfile('sRGB'); cmyk = ImageCms.getOpenProfile(icc)
-T = ImageCms.buildTransform(srgb, cmyk, 'RGB', 'CMYK', renderingIntent=0)  # perceptual
-B = ImageCms.buildTransform(cmyk, srgb, 'CMYK', 'RGB', renderingIntent=0)
+B = ImageCms.buildTransform(cmyk, srgb, 'CMYK', 'RGB', renderingIntent=1, flags=ImageCms.Flags.BLACKPOINTCOMPENSATION)
 
 def hex2rgb(h):
     h = h.lstrip('#'); h = ''.join(c * 2 for c in h) if len(h) == 3 else h
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 def tohex(rgb): return '#%02x%02x%02x' % tuple(rgb)
-def px(mode, v, t): return ImageCms.applyTransform(Image.new(mode, (1, 1), v), t).getpixel((0, 0))
-def to_cmyk(rgb): return px('RGB', rgb, T)
-def printed(rgb): return px('CMYK', to_cmyk(rgb), B)
-def pct(rgb): return [round(x / 2.55) for x in to_cmyk(rgb)]
+
+CMYK = {}  # sRGB -> (c, m, y, k) in 0..1, as Ghostscript wrote them
+def separate(rgbs):
+    """Run the given sRGB colours through pdfwrite exactly as the build does (one
+    swatch each, in order) and cache the CMYK operands it writes. pdfwrite skips
+    a colour operator when the colour has not changed, so the swatches are
+    deduplicated; it writes no-ink white as DeviceGray `1 g`."""
+    rgbs = [c for c in dict.fromkeys(rgbs) if c not in CMYK]
+    if not rgbs: return
+    with tempfile.TemporaryDirectory() as d:
+        ps, pdf = os.path.join(d, 'swatches.ps'), os.path.join(d, 'swatches.pdf')
+        with open(ps, 'w') as f:
+            f.write('%%!\n<< /PageSize [%d 10] >> setpagedevice\n' % len(rgbs))
+            for i, (r, g, b) in enumerate(rgbs): f.write('%.6f %.6f %.6f setrgbcolor %d 0 1 10 rectfill\n' % (r / 255, g / 255, b / 255, i))
+            f.write('showpage\n')
+        subprocess.run(['gs', '-q', '-dBATCH', '-dNOPAUSE', '-dSAFER', f'--permit-file-read={icc}', '-sDEVICE=pdfwrite', '-dPDFX',
+                        '-dCompressPages=false', '-sProcessColorModel=DeviceCMYK', '-sColorConversionStrategy=CMYK',
+                        '-dOverrideICC=true', f'-sOutputICCProfile={icc}', f'-sOutputFile={pdf}', ps], check=True)
+        ops = []
+        for line in open(pdf, 'rb').read().decode('latin1').splitlines():
+            if m := re.fullmatch(r'([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) k', line.strip()): ops.append(tuple(float(x) for x in m.groups()))
+            elif m := re.fullmatch(r'([\d.]+) g', line.strip()): ops.append((0.0, 0.0, 0.0, 1 - float(m.group(1))))
+    if len(ops) != len(rgbs): sys.exit(f'Ghostscript wrote {len(ops)} colours for {len(rgbs)} swatches')
+    CMYK.update(zip(rgbs, ops))
+def to_cmyk(rgb):
+    if rgb not in CMYK: separate([rgb])
+    return CMYK[rgb]
+def printed(rgb): return ImageCms.applyTransform(Image.new('CMYK', (1, 1), tuple(round(x * 255) for x in to_cmyk(rgb))), B).getpixel((0, 0))
+def pct(rgb): return [round(x * 100) for x in to_cmyk(rgb)]
 def cmyk_str(p): return 'C%d M%d Y%d K%d' % tuple(p)
 
 # sRGB <-> OKLab / OKLCh
@@ -79,9 +115,10 @@ def tok(name):
     while name in aliases: name = aliases[name]
     return tokens.get(name)
 W = (255, 255, 255)
+separate(tokens.values())  # one Ghostscript run for the whole palette
 
 def report_tokens():
-    print(f"{'token':24} {'hex':8} {'CMYK (perceptual)':20} {'TAC':>4} {'printed':8} {'dE':>5}  {'okL':>5} {'okC':>5} {'okH':>4}")
+    print(f"{'token':24} {'hex':8} {'CMYK (build)':20} {'TAC':>4} {'printed':8} {'dE':>5}  {'okL':>5} {'okC':>5} {'okH':>4}")
     for n, rgb in tokens.items():
         p = pct(rgb); L, C, h = oklch(rgb)
         print(f"{n:24} {tohex(rgb):8} {cmyk_str(p):20} {sum(p):4d} {tohex(printed(rgb)):8} {dE(rgb, printed(rgb)):5.1f}  {L:5.2f} {C:5.3f} {h:4.0f}")
@@ -91,14 +128,17 @@ def report_mixes():
     """Every color-mix() of two palette tokens in styles/ (mixes with transparent,
     or with a --dc-* variable, are not tints of paper and are skipped)."""
     pat = re.compile(r'color-mix\(in (srgb|oklch), var\((--[a-z0-9-]+)\) (\d+)%, var\((--[a-z0-9-]+)\)(?: \d+%)?\)')
-    print(f"{'where':38} {'mix':48} {'hex':8} {'CMYK':18} {'TAC':>4} {'max':>4} {'min':>4}")
-    seen = set()
+    rows, seen = [], set()
     for f in sorted(glob.glob(os.path.join(ROOT, 'styles/**/*.css'), recursive=True)):
         for ln, line in enumerate(open(f), 1):
             for space, a, p, b in pat.findall(line):
                 if (space, a, p, b) in seen or not tok(a) or not tok(b): continue
-                seen.add((space, a, p, b)); rgb = mix(space, tok(a), int(p), tok(b)); c = pct(rgb); nz = [x for x in c if x]
-                print(f"{os.path.relpath(f, ROOT)[7:] + ':' + str(ln):38} {space + ' ' + a + ' ' + p + '% ' + b:48} {tohex(rgb):8} {cmyk_str(c):18} {sum(c):4d} {max(c):4d} {min(nz) if nz else 0:4d}")
+                seen.add((space, a, p, b)); rows.append((os.path.relpath(f, ROOT)[7:] + ':' + str(ln), space + ' ' + a + ' ' + p + '% ' + b, mix(space, tok(a), int(p), tok(b))))
+    separate(rgb for _, _, rgb in rows)
+    print(f"{'where':38} {'mix':48} {'hex':8} {'CMYK':18} {'TAC':>4} {'max':>4} {'min':>4}")
+    for where, what, rgb in rows:
+        c = pct(rgb); nz = [x for x in c if x]
+        print(f"{where:38} {what:48} {tohex(rgb):8} {cmyk_str(c):18} {sum(c):4d} {max(c):4d} {min(nz) if nz else 0:4d}")
 
 # Text-on-fill pairs: (what, text, ground). A colour is a token, a '#hex', or
 # ('oklch'|'srgb', token, percent, token) for a color-mix().
@@ -187,7 +227,7 @@ def report_converge():
                 if d1 < 10: print(f"  {a:22} {b:22} {d0:5.1f} -> {d1:5.1f}  (printed {tohex(printed(tok(a)))} vs {tohex(printed(tok(b)))})")
 
 MODES = {'tokens': report_tokens, 'mixes': report_mixes, 'contrast': report_contrast, 'dupes': report_dupes, 'converge': report_converge}
-print('profile:', ImageCms.getProfileDescription(cmyk).strip())
+print('profile:', ImageCms.getProfileDescription(cmyk).strip(), '· Ghostscript', gs_version)
 for m in (MODES if args[:1] == ['all'] else args[:1] or ['tokens']):
     if len(MODES) > 1 and args[:1] == ['all']: print(f'\n## {m}')
     MODES[m]()

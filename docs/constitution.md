@@ -124,7 +124,7 @@ Every specialty leans into a specific register mix that reflects WHO it is in th
 | **Augmerc** | ████ HIGH | low | ██ mid | low | Signal-cyan band with an LED rim and a teal-black, cyan-ticked LED rule; hard angular stair-step cuts. Tech-heavy, street-salvaged. |
 | **Wirephreak** | ████ HIGH | low | ██ mid | low | Electric-indigo band (a blue-violet of its own, clear of the world's violet), LED rim and a cyan, ink-ticked circuit rule; crisp circuit-jog clips. Decking + interference. |
 | **Cybersurgeon** | ████ HIGH | low | █ low | low | Cold chrome band with a bright rim and a ruler-scale rule, medical mono labels, blue-grey steel. Surgical precision. |
-| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: deep-magenta band with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. (Cream on the bright magenta fails 4.5:1, so the band uses `--brand-magenta-deep`.) |
+| **Proxy** | ████ HIGH | ████ HIGH | low | low | Tech + magic: deep-magenta band with an LED rim **and** a darker facet plane, a cyan rule, centre-notched gate clip. (Cream on the bright magenta is 5.0:1; the band uses `--brand-magenta-deep`, 12.5:1.) |
 | **Etherlock** | ██ mid | ████ HIGH | ██ mid | ██ mid | Citrine-yellow band with a pale refractive facet and a mid-gold rule. Secrets-as-currency, manifold magic. |
 | **Technosorcerer** | low | ████ HIGH | ████ HIGH | low | Scorch-orange band, darker scorch patch, torn bottom edge, no rule. Ritual worked on burnt scrap. |
 | **Streetwarden** | ██ mid | low | ██ mid | low | High-vis toxic-green band over a green-and-ink hazard-tape rule. Civic-warden register. |
@@ -191,7 +191,7 @@ Use a cold-grey page base with narrow, deliberate accent hits. Do not build full
 
 ### How CMYK and TAC are measured
 
-Every CMYK and TAC figure in this section, in the token comments and on the design guide's swatches is the token converted sRGB → CMYK through **CGATS21_CRPC1**, the profile DriveThruRPG specifies and gutterpress embeds in a PDF/X build, with LittleCMS at perceptual intent: `python3 scripts/measure-palette-crpc1.py` (Python 3 + Pillow; full output in [print-colour-audit-measurements.md](./print-colour-audit-measurements.md)). The build itself converts with Ghostscript, which was not run for these figures. They agree with gutterpress #331's measured build to within ~10% TAC (`#000`: build C47 M42 Y40 K100 = 229%, this method C50 M46 Y44 K100 = 240%). They hold for a Ghostscript that honours the output profile: 10.06.0 does; 10.02.1 (Ubuntu 24.04's package) ignores it and separates everything through its own default CMYK profile (`#000` = C72 M68 Y67 K88 = 295%, the figures this file carried before 1.10.2), and gutterpress (#495) measures which happened on every PDF/X build and warns. Re-run the script when you add or retune a colour, and write its figure in the token's comment.
+Every CMYK and TAC figure in this section, in the token comments and on the design guide's swatches is the token converted sRGB → CMYK the way a PDF/X build converts it: a swatch of the colour through Ghostscript's pdfwrite with **CGATS21_CRPC1**, the profile DriveThruRPG specifies and gutterpress embeds in the build, as the output profile, at Ghostscript's default intent (relative colorimetric with black-point compensation), and the `c m y k k` operands read back out of the PDF. `python3 scripts/measure-palette-crpc1.py` does this (Ghostscript 10.03 or newer, Python 3 + Pillow; full output in [print-colour-audit-measurements.md](./print-colour-audit-measurements.md)), so the figures are the build's to the digit. Until 1.10.2-alpha.2 they came from LittleCMS at perceptual intent, which the build never used; those ran 10-30% TAC under the build's on the purples and 15-20% under on the inks (`--ink`: 196% → 211%). They hold for a Ghostscript that honours the output profile: 10.03 and newer do; 10.02.1 (Ubuntu 24.04's package) ignores it and separates everything through its own default CMYK profile (`#000` = C72 M68 Y67 K88 = 295%, the figures this file carried before 1.10.2), and gutterpress (#495) measures which happened on every PDF/X build and warns. Re-run the script when you add or retune a colour, and write its figure in the token's comment.
 
 CRPC1 is the coldset-newsprint reference condition, the smallest of the seven CGATS 21 gamuts, so a saturated screen colour can print as another colour entirely. The script's "printed" column and its dE (OKLab distance × 100 between screen and print) show this; keep a token within dE ~4 of its print.
 
@@ -201,96 +201,96 @@ Three substrates: white paper, one light grey (`--concrete-pale`) and the wall. 
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--bg` | `#c8c5bf` | C14 M11 Y13 K0 = 38% | The wall. Ash-concrete page background — gritty, urban, structural. |
-| `--concrete-pale` | `#dcdad5` | C9 M7 Y9 K0 = 25% | The one light grey: lede and intro panels, the pullquote, the dm section, the vehicle plate; the grey printed page and the label/chip ground through its aliases below. |
+| `--bg` | `#c8c5bf` | C18 M15 Y18 K2 = 53% | The wall. Ash-concrete page background — gritty, urban, structural. |
+| `--concrete-pale` | `#dcdad5` | C12 M9 Y12 K0 = 33% | The one light grey: lede and intro panels, the pullquote, the dm section, the vehicle plate; the grey printed page and the label/chip ground through its aliases below. |
 | `--paper-cream` | `#ffffff` | C0 M0 Y0 K0 = 0% | White: the unprinted stock, no ink. Paper posters — flyers, callouts, cards. |
 | `--paper-light` | alias of `--paper-cream` | — | White — the lede, specialty intros, alternate panel fills. |
 | `--paper-form` | alias of `--paper-cream` | — | White — the `choose` form and the definition sheet. |
 | `--paper-zine` | alias of `--concrete-pale` | — | The grey printed page — the fiction excerpt and the shard block. |
 | `--hud-panel` | alias of `--concrete-pale` | — | The default specialty-intro panel. |
 | `--paper-aged` | alias of `--concrete-pale` | — | Label and chip grounds — field chips, `code`, the outcomes ladder rows, the catalog ledger band, three specialty cards. Not a reading surface. (Was `#c8c2b8`, dE 1.0 from the wall: no separation.) |
-| `--paper-stain` | `#b0a89c` | C19 M16 Y22 K4 = 61% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
-| `--ink` | `#1e1d1c` | C42 M36 Y33 K85 = 196% | Body text, **all small text** (labels, slips, tags, h4–h6, flavour lines), key rules, every hairline. The one dark the k-only pass prints in black alone. |
-| `--ink-dark` | `#2f2622` | C36 M36 Y33 K76 = 181% | Heavy fills (DM notes, chips, tabs), border anchors and rules ≥ 1.5pt. Not small text: it prints on four plates. |
-| `--ink-smoke` | `#4d4339` | C32 M33 Y37 K55 = 157% | Fills and heavy rules: the fiction cavity, the shard's accent rail. |
-| `--ink-mid` | `#594f43` | C31 M31 Y38 K47 = 147% | No package rule reads it; kept for books. |
-| `--ink-dust` | `#665b4e` | C30 M29 Y37 K38 = 134% | The outcome row's fallback rail. No longer a text colour. |
+| `--paper-stain` | `#b0a89c` | C23 M20 Y27 K11 = 81% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
+| `--ink` | `#1e1d1c` | C44 M38 Y37 K92 = 211% | Body text, **all small text** (labels, slips, tags, h4–h6, flavour lines), key rules, every hairline. The one dark the k-only pass prints in black alone. |
+| `--ink-dark` | `#2f2622` | C39 M38 Y38 K87 = 202% | Heavy fills (DM notes, chips, tabs), border anchors and rules ≥ 1.5pt. Not small text: it prints on four plates. |
+| `--ink-smoke` | `#4d4339` | C32 M33 Y39 K71 = 175% | Fills and heavy rules: the fiction cavity, the shard's accent rail. |
+| `--ink-mid` | `#594f43` | C32 M32 Y40 K62 = 166% | No package rule reads it; kept for books. |
+| `--ink-dust` | `#665b4e` | C31 M31 Y41 K53 = 156% | The outcome row's fallback rail. No longer a text colour. |
 
 ### Brand signature layer
 
-The dimm.city web-palette analogs, pulled inside the CRPC1 gamut. The purples are spaced so they stay ≥ 8 apart (OKLab × 100) once printed: magenta h345, deep magenta h340, amethyst h315, violet h302, indigo h267.
+The dimm.city web-palette analogs, pulled inside the CRPC1 gamut. The purples are spaced so they stay ≥ 11.6 apart (OKLab × 100) once printed through the build's separation, and each prints within dE 4.2 of its screen colour: magenta h355, deep magenta h349, amethyst h316, violet h311, indigo h258.
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--brand-magenta` | `#bf308f` | C10 M92 Y0 K6 = 108% | Display punch: section accents, gateway banners, the spray, h1. Pink (h345), inside the press gamut; cream on it 5.2:1. |
-| `--brand-magenta-deep` | `#76115e` | C28 M97 Y2 K29 = 156% | Press-safe magenta for type and reversed type: chevrons, the crit row, the VAR chip, Proxy's band (10.4:1 with cream either way). |
-| `--brand-cyan` | `#00bcd4` | C48 M0 Y7 K0 = 55% | Augmerc accent, wirephreak's LED rule. |
-| `--brand-yellow` | `#ffd700` | C1 M4 Y91 K0 = 96% | Brand radiant — etherlock accent, peak triumph. |
-| `--brand-violet` | `#5d3b88` | C66 M86 Y0 K4 = 156% | The world: lore, vibe, cabal, dreams, treasure (h302). No specialty uses it. 8.6:1 with cream. |
-| `--signal-indigo` | `#4b65ab` | C69 M44 Y0 K3 = 116% | Wirephreak accent: a lighter, bluer indigo (h267) of its own; cream on it 5.6:1. |
+| `--brand-magenta` | `#cf217e` | C2 M100 Y1 K12 = 115% | Display punch: section accents, gateway banners, the spray, h1. Pink (h355), inside the press gamut; cream on it 5.0:1. |
+| `--brand-magenta-deep` | `#690045` | C24 M94 Y15 K56 = 189% | Press-safe magenta for type and reversed type: chevrons, the crit row, the VAR chip, Proxy's band (12.5:1 with cream either way). |
+| `--brand-cyan` | `#00bcd4` | C67 M0 Y11 K0 = 78% | Augmerc accent, wirephreak's LED rule. |
+| `--brand-yellow` | `#ffd700` | C0 M5 Y100 K1 = 106% | Brand radiant — etherlock accent, peak triumph. |
+| `--brand-violet` | `#662d87` | C62 M100 Y0 K16 = 178% | The world: lore, vibe, cabal, dreams, treasure (h311). No specialty uses it. 9.2:1 with cream. |
+| `--signal-indigo` | `#396cb7` | C86 M54 Y0 K0 = 140% | Wirephreak accent: a lighter, bluer indigo (h258) of its own; cream on it 5.3:1. |
 
 ### HUD / digital-display layer
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--hud-blue` | `#1f6f94` | C73 M24 Y4 K13 = 114% | Mid HUD teal — primary stat lines, secondary chrome. |
-| `--hud-blue-dark` | `#14516e` | C75 M32 Y8 K30 = 145% | Deep teal — borders, rules, H2 text. |
-| `--hud-blue-dim` | `#7ab8d0` | C37 M4 Y5 K1 = 47% | Light cyan panel tint — note alert fill, table headers default, reduced-cost AP chip. Nearly one ink (cyan), so it may draw a 1pt rule. |
+| `--hud-blue` | `#1f6f94` | C78 M29 Y8 K24 = 139% | Mid HUD teal — primary stat lines, secondary chrome. |
+| `--hud-blue-dark` | `#14516e` | C74 M34 Y12 K46 = 166% | Deep teal — borders, rules, H2 text. |
+| `--hud-blue-dim` | `#7ab8d0` | C46 M9 Y8 K3 = 66% | Light cyan panel tint — note alert fill, table headers default, reduced-cost AP chip. Nearly one ink (cyan), so it may draw a 1pt rule. |
 | `--hud-magenta` | alias of `--brand-magenta` | — | Brand-signature cyber-magenta. |
 
 ### Gutter / fire-and-blood layer
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--crimson` | `#e1261c` | C0 M93 Y93 K1 = 187% | PMS Red 032 — danger, harm, active states, ROLL THE DIE tags. |
-| `--blood` | `#901a12` | C0 M88 Y65 K37 = 190% | Oxidised arterial — DM-chapter table headers (9.0:1 on paper). |
-| `--orange` | `#d4500a` | C0 M71 Y98 K4 = 173% | Burnt circuit-board — warnings, AP tags, arrows. |
-| `--orange-deep` | `#a03808` | C0 M76 Y89 K27 = 192% | Press-safe orange on paper (6.9:1). |
-| `--rust` | `#b23a12` | C0 M82 Y91 K17 = 190% | Burnt rebar — section accents, miss row. |
-| `--amber` | `#7a5a20` | C13 M28 Y77 K41 = 159% | Sulphur-scorched brass — gear-chapter section accent. |
-| `--deep-rust` | `#70200e` | C4 M71 Y56 K54 = 185% | Shadow rust — deepest warm dark. |
-| `--amber-dark` | `#5c3c10` | C15 M36 Y71 K60 = 182% | Charred amber. |
+| `--crimson` | `#e1261c` | C0 M100 Y100 K6 = 206% | PMS Red 032 — danger, harm, active states, ROLL THE DIE tags. |
+| `--blood` | `#901a12` | C2 M92 Y65 K48 = 207% | Oxidised arterial — DM-chapter table headers (9.0:1 on paper). |
+| `--orange` | `#d4500a` | C0 M71 Y100 K13 = 184% | Burnt circuit-board — warnings, AP tags, arrows. |
+| `--orange-deep` | `#a03808` | C1 M76 Y88 K39 = 204% | Press-safe orange on paper (6.9:1). |
+| `--rust` | `#b23a12` | C0 M80 Y100 K30 = 210% | Burnt rebar — section accents, miss row. |
+| `--amber` | `#7a5a20` | C17 M33 Y75 K52 = 177% | Sulphur-scorched brass — gear-chapter section accent. |
+| `--deep-rust` | `#70200e` | C11 M73 Y58 K65 = 207% | Shadow rust — deepest warm dark. |
+| `--amber-dark` | `#5c3c10` | C21 M40 Y62 K70 = 193% | Charred amber. |
 
 ### Fluorescent fungi layer (wonderland)
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--fungi-glow` | `#c8e040` | C17 M0 Y75 K0 = 92% | Bioluminescent yellow-green — gutterdruid accent, outcome-row.hit (with ink text). Prints duller (dE 6.5): proof it. |
-| `--fungi-rot` | `#30461e` | C39 M17 Y64 K62 = 182% | Deep moldering green — outcome-row.fail; the streetwarden and gutterdruid darks alias it. |
+| `--fungi-glow` | `#c8e040` | C19 M0 Y95 K0 = 114% | Bioluminescent yellow-green — gutterdruid accent, outcome-row.hit (with ink text). Prints duller (dE 6.5): proof it. |
+| `--fungi-rot` | `#30461e` | C44 M20 Y60 K73 = 197% | Deep moldering green — outcome-row.fail; the streetwarden and gutterdruid darks alias it. |
 | `--fungi-mid` | `#6aa030` | not a token; not measured | Luminous lichen mid — reserved for a future fungi-faction signal |
 
 ### Ancient crystals layer (magic)
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--crystal-amethyst` | `#835198` | C41 M71 Y0 K4 = 116% | Mineral violet, lighter and redder than the world's violet (h315) — the treasure tint and its chapter chip; no specialty accent. |
-| `--crystal-slate` | `#52626f` | C48 M28 Y18 K27 = 121% | Cool slate stone — generalist accent; cybersurgeon's mid aliases it. |
-| `--crystal-aqua` | `#4a98a8` | C53 M9 Y14 K6 = 82% | Crystalline aquamarine — dualist accent. |
+| `--crystal-amethyst` | `#905aa5` | C45 M80 Y0 K2 = 127% | Mineral violet, lighter and redder than the world's violet (h316) — the treasure tint and its chapter chip; no specialty accent. |
+| `--crystal-slate` | `#52626f` | C50 M31 Y22 K42 = 145% | Cool slate stone — generalist accent; cybersurgeon's mid aliases it. |
+| `--crystal-aqua` | `#4a98a8` | C62 M13 Y18 K12 = 105% | Crystalline aquamarine — dualist accent. |
 | `--crystal-citrine` | `#b89a3a` | not a token; not measured | Burnt mineral gold — reserved for a future crystal-faction signal |
 
 ### Specialty palette (per-specialty triad plus band and chip)
 
-Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Proxy's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Technosorcerer and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. A dark or mid within dE ~3 of another token is an alias of it, not a second colour. The last column is the dark's CRPC1 TAC; every dark is ≤ 214%.
+Every specialty has three tokens: **accent** (bright signal), **mid** (chrome/structural), **dark** (card-body fill). Two more are wired from them: the **band** (`--spec-band`, the title-band fill and the specialty-card header: the accent, except Proxy's deep magenta) with its **on-band** type (`--spec-on-band`, ink or cream, whichever holds ≥ 4.5:1), and the **tier chip** (`--spec-chip-bg/-fg/-edge`, the pill on a skill-card tab: the accent with ink or cream type, or a cream chip with dark type where the accent fails 4.5:1 for 10pt type: Technosorcerer and Proxy). The old bronze/gold/silver tier badges are gone: a tier pill belongs to its specialty, not to a position. A dark or mid within dE ~3 of another token is an alias of it, not a second colour. The last column is the dark's CRPC1 TAC; every dark is ≤ 209%.
 
 | Specialty | accent | mid | dark | band / on-band | Register lean | dark TAC |
 |---|---|---|---|---|---|---|
-| augmerc | brand-cyan | `#006878` | `#003a40` | accent / ink | future-tech HIGH + landfill mid | 171% |
-| technosorcerer | orange | `#7a3008` | `#4c290f` | orange / ink | magic HIGH + landfill HIGH | 187% |
-| streetwarden | `#4db840` toxic-civic | `#347828` | `--fungi-rot` | accent / ink | tech mid + landfill mid | 182% |
-| gutterdruid | fungi-glow | `#4d6020` | `--fungi-rot` | accent / ink | landfill HIGH + wonderland HIGH | 182% |
-| cybersurgeon | `#a8b4b8` chrome | `--crystal-slate` | `#303840` | accent / ink | future-tech HIGH | 161% |
-| wirephreak | signal-indigo | `#1c327d` | `#1e0f50` | accent / cream | future-tech HIGH + landfill mid | 214% |
-| proxy | brand-magenta | `#9a227d` | `--brand-magenta-deep` | magenta-deep / cream | tech HIGH + magic HIGH | 156% |
-| etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 187% |
-| dualist | crystal-aqua | `--augmerc-mid` | `#143a4a` | accent / ink | magic HIGH + tech mid + wonderland mid | 165% |
-| generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 176% |
+| augmerc | brand-cyan | `#006878` | `#003a40` | accent / ink | future-tech HIGH + landfill mid | 191% |
+| technosorcerer | orange | `#7a3008` | `#4c290f` | orange / ink | magic HIGH + landfill HIGH | 200% |
+| streetwarden | `#4db840` toxic-civic | `#347828` | `--fungi-rot` | accent / ink | tech mid + landfill mid | 197% |
+| gutterdruid | fungi-glow | `#4d6020` | `--fungi-rot` | accent / ink | landfill HIGH + wonderland HIGH | 197% |
+| cybersurgeon | `#a8b4b8` chrome | `--crystal-slate` | `#303840` | accent / ink | future-tech HIGH | 184% |
+| wirephreak | signal-indigo | `#093c81` | `#181b45` | accent / cream | future-tech HIGH + landfill mid | 209% |
+| proxy | brand-magenta | `#9c0f63` | `--brand-magenta-deep` | magenta-deep / cream | tech HIGH + magic HIGH | 189% |
+| etherlock | brand-yellow | `#8a6a00` | `#46360c` | accent / ink | magic HIGH + landfill mid + wonderland mid | 197% |
+| dualist | crystal-aqua | `--augmerc-mid` | `--augmerc-dark` | accent / ink | magic HIGH + tech mid + wonderland mid | 191% |
+| generalist | crystal-slate | `#3a4854` | `#212a32` | accent / cream | magic HIGH | 200% |
 
-**Lightness bands.** A tier reads as one system when every specialty's value is about the same and only the hue changes, and that is what keeps the ten apart in a grayscale proof. Targets in OKLab L: darks ~0.30, mids ~0.47, accents 0.65–0.75. Today the darks span 0.24–0.39, the mids 0.35–0.54 and the accents 0.49–0.89 (the outliers are listed in `dc-identity.css`); move a colour toward its band whenever you add or retune one.
+**Lightness bands.** A tier reads as one system when every specialty's value is about the same and only the hue changes, and that is what keeps the ten apart in a grayscale proof. Targets in OKLab L: darks ~0.30, mids ~0.47, accents 0.65–0.75. Today the darks span 0.25–0.37, the mids 0.37–0.54 and the accents 0.49–0.89 (the outliers are listed in `dc-identity.css`); move a colour toward its band whenever you add or retune one.
 
 ### Production rules (CMYK + press-safe)
 
 - **Press profile: CGATS21_CRPC1** (DriveThruRPG; IngramSpark's limits are the same). Both colour tiers print on 70# white stock.
-- **TAC: 240%, enforced by the CGATS21_CRPC1 profile.** The profile cannot emit more; no token exceeds 214% after conversion. There is no reason to lift a dark off black for coverage.
+- **TAC: 240%, enforced by the CGATS21_CRPC1 profile.** The profile cannot emit more; no token exceeds 211% after conversion. There is no reason to lift a dark off black for coverage.
 - **Gamut:** keep every token within dE ~4 of its CRPC1 print (the script's "printed" column), and keep tokens that must read as different colours ≥ 8 apart *after* conversion.
 - **Tints** of a colour into paper mix `in oklch` and keep the tint's strongest ink at ≥ 8–10%: a 1–2% dot does not hold on HP Indigo or inkjet. Mix `in srgb` only with `transparent`.
 - **Hairlines: ≥ 1pt, in `--ink` or a one-ink tint** (such as `--hud-blue-dim`, nearly cyan alone). A thinner rule, or one split over three or four plates, fringes when the plates are misregistered. Heavy rules (≥ 1.5pt) may use any colour.
@@ -446,7 +446,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - 1pt `--ink-dark` border for press registration grip.
 - Slight rotation (`transform: rotate(-1deg)`) keeps the chip from feeling pixel-aligned.
 - Type is 10pt semibold (the floor). The triangles and the lamp are drawn as CSS shapes (borders and a radius), not glyphs: vector in PDF/X and independent of any font.
-- Variants by AP cost, told apart in colour **and** by a glyph or fill value: **free** = an unlit LED (the grey lens of a dead indicator, ink type, ink edge and a hollow lamp: the quietest chip, so "0 AP" is not a red flag), **standard** = HUD blue dark, **reduced** = pale blue with a down-triangle, **increased** = blood with an up-triangle, **VAR** = deep magenta (cream on the bright magenta is 4.06:1), **special** = amber with cream type. Free and increased are never the same red.
+- Variants by AP cost, told apart in colour **and** by a glyph or fill value: **free** = an unlit LED (the grey lens of a dead indicator, ink type, ink edge and a hollow lamp: the quietest chip, so "0 AP" is not a red flag), **standard** = HUD blue dark, **reduced** = pale blue with a down-triangle, **increased** = blood with an up-triangle, **VAR** = deep magenta (cream on the bright magenta is 5.0:1, on the deep one 12.5:1), **special** = amber with cream type. Free and increased are never the same red.
 
 ### Callouts (.dc-alert variants)
 

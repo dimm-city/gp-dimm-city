@@ -72,7 +72,10 @@
   /* 18px right and 16px left clear the deepest tab cut (a specialty's
      --dc-skill-tab-shape, at most 15px) by more than 2pt. */
   padding: 3px 18px 3px 16px;
-  background: var(--light-gloss), var(--dc-card-tab-bg);
+  /* The tab's gloss (--light-gloss), pre-composited onto its fill: opaque
+     stops make the PDF carry an axial shading, not a type-1 shading with
+     alpha, which PDF.js cannot read and which makes the page transparent. */
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, var(--dc-card-tab-bg)), var(--dc-card-tab-bg) 62%);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
   margin-left: 10px;
@@ -142,7 +145,7 @@
   /* Default to paper-cream so reverse-out text on the saturated tab fill
      always passes WCAG. Specialty contexts re-affirm the same color via
      their --dc-card-tab-title-color token. Without it the title would take
-     the default near-black body color over a saturated magenta fill: 3.2:1,
+     the default near-black body color over a saturated magenta fill: 3.3:1,
      failing WCAG at this size. */
   color: var(--dc-card-tab-title-color);
   text-transform: uppercase;
@@ -424,8 +427,8 @@
    (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
    its cards), with a dotted underline in that colour. It is plain inline text,
    so the line keeps its height. Each component sets --dc-accent-ink to a shade
-   that holds 4.5:1 on its own surface; the deep magenta default holds 10.4:1 on
-   --paper-cream, 7.5:1 on --concrete-pale, 6.1:1 on --bg. */
+   that holds 4.5:1 on its own surface; the deep magenta default holds 12.5:1 on
+   --paper-cream, 8.9:1 on --concrete-pale, 7.2:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
   color: var(--dc-accent-ink);

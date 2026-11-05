@@ -24,17 +24,26 @@ token name still works.
   darker than the paper it was meant to sit just under, and `--paper-aged` was
   dE 1.0 from the wall; it is now 6.4 off it, so field chips, `code` and outcome
   rows stand off the wall.
-- **The purples are re-spaced inside the press gamut.** In print, magenta-deep,
-  violet, amethyst and Proxy's dark all came out as one plum (within dE 1.4-3.8).
-  New values: `--brand-magenta` `#bf308f` (pink), `--brand-magenta-deep`
-  `#76115e`, `--proxy-mid` `#9a227d`, `--crystal-amethyst` `#835198`,
-  `--brand-violet` `#5d3b88`, `--signal-indigo` `#4b65ab` (lighter, bluer),
-  `--wirephreak-mid` `#1c327d`. Each prints within dE 3.4 of the screen and
-  stays at least 8.3 from the others after conversion. Every text pairing on
-  them still holds 4.5:1 or more.
+- **The purples are re-spaced inside the press gamut, against the build's own
+  separation.** In print, magenta-deep, violet, amethyst and Proxy's dark all
+  came out as one plum (within dE 1.4-3.8). alpha.1 moved them apart but
+  measured through LittleCMS at perceptual intent, which the build does not use
+  (next entry); through the build's separation its closest pairs printed
+  7.1-8.8 apart, not the "at least 8.3" it claimed. alpha.2 re-spaces them once
+  more, searched against the build's conversion. New values and their
+  separations: `--brand-magenta` `#cf217e` (pink; C2 M100 Y1 K12 = 115%),
+  `--proxy-mid` `#9c0f63` (C12 M100 Y8 K32 = 152%), `--brand-magenta-deep`
+  `#690045` (C24 M94 Y15 K56 = 189%), `--crystal-amethyst` `#905aa5` (C45 M80
+  Y0 K2 = 127%), `--brand-violet` `#662d87` (C62 M100 Y0 K16 = 178%),
+  `--signal-indigo` `#396cb7` (bluer; C86 M54 Y0 K0 = 140%), `--wirephreak-mid`
+  `#093c81` (C100 M73 Y0 K27 = 200%) and `--wirephreak-dark` `#181b45` (C66 M58
+  Y16 K69 = 209%). Each prints within dE 4.2 of the screen and at least 11.6
+  from the others after conversion; every text pairing on them holds 5.0:1 or
+  more.
 - **Near-duplicate colours are aliases:** `--proxy-dark` is `--brand-magenta-deep`,
   `--streetwarden-dark` and `--gutterdruid-dark` are `--fungi-rot`, `--dualist-mid`
-  is `--augmerc-mid`, `--cybersurgeon-mid` is `--crystal-slate`,
+  is `--augmerc-mid`, `--dualist-dark` is `--augmerc-dark` (alpha.2; it was dE 2.4
+  from it), `--cybersurgeon-mid` is `--crystal-slate`,
   `--tint-magenta-rose` is `--brand-magenta` and `--tint-hud-teal` is `--hud-blue`.
 - **Paper tints hold a printable dot.** On white paper the `color-mix()` callout,
   section, faction, choice and entry surfaces had a dominant ink of 2-4%,
@@ -50,16 +59,25 @@ token name still works.
   ones are `--ink`. `--border-hairline`, which draws the column rule and the
   table rule, is an alias of `--ink`, and the AP chip, tag, tape and heading-slip
   edges default to `--ink`.
-- **Every CMYK and TAC figure is re-measured through CGATS21_CRPC1.** This covers
-  the token comments, constitution §V and the palette chapter's swatches. The
-  old figures came from Ghostscript's default profile (`#000` = 295%), which
+- **Every CMYK and TAC figure is measured the way the PDF/X build separates
+  it.** This covers the token comments, constitution §V and the palette
+  chapter's swatches. `scripts/measure-palette-crpc1.py` runs a swatch of each
+  colour through Ghostscript's pdfwrite with the CGATS21_CRPC1 profile as the
+  output profile, exactly as `gutterpress build --format pdfx` does (its
+  default intent: relative colorimetric with black-point compensation), and
+  reads the `c m y k k` operands back out of the PDF, so the figures are the
+  build's to the digit; it needs Ghostscript 10.03 or newer, and keeps Pillow's
+  LittleCMS only to show the printed colour and its distance from the screen.
+  alpha.1 measured with LittleCMS at perceptual intent, which the build never
+  used: those figures ran 10-30% TAC under the build's on the purples and
+  15-20% under on the inks (`--ink` 196% → 211%). The figures before
+  1.10.2 came from Ghostscript's default profile (`#000` = 295%), which
   Ghostscript 10.02.1 (Ubuntu 24.04's package) uses even when the CRPC1
-  profile is given; 10.06.0 honours the profile and produces the new figures,
-  and gutterpress (#495) warns when a build's Ghostscript did not. The
-  production rule is now "TAC 240%, enforced by the CGATS21_CRPC1 profile"; no
-  token exceeds 214%. The SWOP/GRACoL target is gone.
-  `scripts/measure-palette-crpc1.py` (Python 3 + Pillow) produces the figures,
-  and constitution §V says how they are measured.
+  profile is given; 10.03 and newer honour the profile, and gutterpress (#495)
+  warns when a build's Ghostscript did not. The production rule is now "TAC
+  240%, enforced by the CGATS21_CRPC1 profile"; no token exceeds 211%. The
+  SWOP/GRACoL target is gone. Constitution §V says how the figures are
+  measured.
 
 ### Fixed
 
@@ -67,6 +85,15 @@ token name still works.
   magenta, was 2.73:1.
 - The visit callout's green is 85% rot, so its fungi-glow accent ink holds 5.0:1
   (was 4.42:1).
+- The pullquote (20pt) prints in black alone. It was `--ink-dark`, which the
+  PDF/X build's black-text check reported as four-colour text at 24pt or under
+  on the Part 2 example pages; the headings' base look is `--ink` too (every
+  level already set its own colour, so none changes).
+- The band and tab gloss is pre-mixed into each fill (the path banner, the card
+  tab, the specialty card band). Layering the translucent `--light-gloss`
+  gradient made Chromium write a type-1 shading that PDF.js cannot read (24
+  warnings on the design guide) and made those pages transparent on its own;
+  the rendered bands are unchanged, and the token stays for books that read it.
 
 ## [1.10.1] - 2026-11-03
 

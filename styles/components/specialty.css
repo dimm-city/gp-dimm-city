@@ -286,7 +286,10 @@
   margin: 0 calc(-1 * var(--dc-specialty-card-pad-x)) 0.1in;
   padding: 12px 28px 7px 20px;
   border-top: 0;
-  background: var(--light-gloss), var(--dc-specialty-card-band-bg);
+  /* The band's gloss (--light-gloss), pre-composited onto its fill: opaque
+     stops make the PDF carry an axial shading, not a type-1 shading with
+     alpha, which PDF.js cannot read and which makes the page transparent. */
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, var(--dc-specialty-card-band-bg)), var(--dc-specialty-card-band-bg) 62%);
   box-shadow: var(--dc-band-rim);
   clip-path: var(--dc-specialty-card-band-shape);
   overflow: clip;
