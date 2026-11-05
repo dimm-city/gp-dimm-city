@@ -87,7 +87,9 @@ h1, h2, h3, h4, h5, h6,
   text-wrap: balance;
   margin-top: 0;
   margin-bottom: 0.5em;
-  color: var(--ink-dark);
+  /* The base colour, --ink: every heading is 24pt or under, so a dark one has
+     to print in black alone (the k-only pass); h1-h3 set their own colours. */
+  color: var(--ink);
   overflow-wrap: break-word;
 }
 

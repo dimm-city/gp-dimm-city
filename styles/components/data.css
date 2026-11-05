@@ -575,7 +575,9 @@
   font-style: italic;
   font-size: var(--fs-h2);
   line-height: 1.3;
-  color: var(--ink-dark);
+  /* 20pt, so 24pt or under: --ink prints in black alone (the k-only pass),
+     where --ink-dark printed on four plates (pdf.print.black-text). */
+  color: var(--ink);
   letter-spacing: -0.01em;
   margin: 18px 0;
   break-inside: avoid;
