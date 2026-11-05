@@ -4,12 +4,17 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    # Prereleases are cut from release/* branches (release.yml), so a pull
+    # request into one gets the same gate as one into main.
+    branches: [main, "release/**"]
 
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    # Ubuntu 26.04: its ghostscript package (10.06.0) honours the PDF/X output
+    # profile the palette check separates through; 24.04's (10.02.1, what
+    # ubuntu-latest is) does not (the "Require Ghostscript" step).
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v5
 
@@ -24,6 +29,23 @@ jobs:
       # through gutterpress's pipeline with the working-copy plugin and
       # compares it to the committed snapshot.
       - run: bun test
+
+      # scripts/measure-palette-crpc1.py --check runs a swatch of every palette
+      # token through Ghostscript's pdfwrite with the CGATS21_CRPC1 profile, as
+      # `gutterpress build --format pdfx` does, and fails when a CMYK figure
+      # written in a token comment, constitution §V, the palette chapter or
+      # docs/print-colour-audit-measurements.md is not the build's. python3-pil
+      # is Ubuntu's Pillow, built with LittleCMS, which prints each colour back
+      # to sRGB for the doc's "printed" column.
+      - name: Install Ghostscript and Pillow
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ghostscript python3-pil
+      - name: Require Ghostscript 10.03 or newer
+        # pdfwrite in older Ghostscript ignores the PDF/X output profile and
+        # separates through its default CMYK profile (Artifex bug 707350, fixed
+        # in 10.03.0): every figure would then read as wrong.
+        run: dpkg --compare-versions "$(gs --version)" ge 10.03 || { echo "Ghostscript $(gs --version) is older than 10.03"; exit 1; }
+      - name: Check the palette's measured figures against the build
+        run: python3 -I scripts/measure-palette-crpc1.py --check
 
   design-guide:
     name: Design guide (PDF)

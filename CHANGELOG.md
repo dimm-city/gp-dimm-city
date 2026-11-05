@@ -14,6 +14,20 @@ A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
 documentation only: no component's markup or structure changes, and every old
 token name still works.
 
+### Added
+
+- **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
+  measures every token as the build separates it and fails when a figure
+  written in a token comment, a constitution §V row, a palette-chapter swatch
+  or [docs/print-colour-audit-measurements.md](docs/print-colour-audit-measurements.md)
+  is not the build's; `--write` regenerates that file's blocks. CI runs it on
+  `ubuntu-26.04`, whose Ghostscript (10.06.0) honours the output profile where
+  `ubuntu-latest`'s (24.04, 10.02.1) does not, and now also runs for pull
+  requests into `release/*` branches, where the prereleases are cut.
+- A convention test refuses a gradient with a transparent stop anywhere in
+  `styles/` (the PDF/X shading PDF.js cannot read, below). `--light-gloss`,
+  the public token nothing in the package applies, is the one exception.
+
 ### Changed
 
 - **The paper is white.** `--paper-cream` and `--paper-light` are `#ffffff`, the
