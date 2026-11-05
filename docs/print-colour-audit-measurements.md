@@ -1,7 +1,7 @@
 # gp-dimm-city print colour audit — measurements
 
-The output of `python3 scripts/measure-palette-crpc1.py <mode>` for each mode below, regenerated
-for 1.10.2-alpha.2. Every hex token in `styles/dc-palette.css` and `styles/dc-identity.css`,
+The output of `python3 scripts/measure-palette-crpc1.py <mode>` for each mode below (`--write`
+regenerates the blocks; `--check`, which CI runs, fails when one differs from a fresh run). Every hex token in `styles/dc-palette.css` and `styles/dc-identity.css`,
 and every `color-mix()` of two palette tokens in `styles/`, converted sRGB -> CMYK the way
 the PDF/X build does it: a swatch of each colour through Ghostscript's pdfwrite with the
 CGATS21_CRPC1 profile gutterpress ships as the output profile, at Ghostscript's default
