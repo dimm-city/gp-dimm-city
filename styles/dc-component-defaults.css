@@ -119,7 +119,8 @@
   --dc-alert-label-spacing:  0.1em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
-  --dc-alert-frame:          inset 0 0 0 1.5pt var(--dc-alert-border);  /* an inset ring in the accent, so a callout keeps its edge on a white sheet too */
+  --dc-alert-frame:          inset 0 0 0 2pt var(--dc-alert-border);  /* an inset ring in the accent, so a callout keeps its edge on a white sheet too */
+  --dc-alert-frame-width:    3pt;                   /* the frame of a callout whose frame follows its outline (vibe, origin, location, visit) */
   --dc-alert-label-bg:       var(--dc-alert-border);  /* the label's chip: the accent, with paper type */
   --dc-alert-label-pad:      2px 9px;
   --dc-alert-label-shadow:   var(--dc-label-shadow);

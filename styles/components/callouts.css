@@ -298,20 +298,18 @@
 .dc-vibe-callout {
   --dc-alert-fg: var(--ink);
   --dc-alert-border: var(--brand-violet);
-  --dc-alert-border-width: 3px;
-  --dc-alert-frame: none;  /* the edge is a real border, all round */
+  --dc-alert-border-width: 4px;
+  --dc-alert-frame: none;  /* framed all round, along its diagonals too (see "A framed sheet") */
   --dc-alert-label-bg: var(--brand-violet);
   /* long, shallow diagonals at two opposite corners (the world's silhouette) */
   --dc-alert-shape: polygon(0 0, calc(100% - 30px) 0, 100% 8px, 100% 100%, 30px 100%, 0 calc(100% - 8px));
   --dc-accent-ink: var(--brand-violet);  /* 9.2:1 on the sheet */
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
-  border: var(--dc-alert-border-width) solid var(--dc-alert-border);
-  position: relative;
 }
 /* A strip of tape holding the sheet to the wall: a small tan solid, a few
    degrees off true, clear of the label and the text. */
-.dc-vibe-callout::before {
+.dc-vibe-callout::after {
   content: "";
   position: absolute;
   top: 3px;
@@ -324,12 +322,13 @@
 }
 
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────
-   A white sheet, a heavy rust rail, a dog-eared corner and a crimson rubber
-   stamp. Location (below) is the same document in the map's teal ink. */
+   A white sheet framed in rust (a heavy rail, and a frame that follows the
+   dog-eared corner and the torn foot) under a crimson rubber stamp. Location
+   (below) is the same document in the map's teal ink. */
 .dc-origin-callout {
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
   --dc-alert-border-width: 6px;
-  --dc-alert-frame: none;  /* a ring would be cut by the torn foot */
+  --dc-alert-frame: none;  /* framed along the tear and the dog-ear (see "A framed sheet") */
   --dc-alert-label-bg: var(--paper-cream);  /* a stamp is ink on the sheet, not a chip */
   /* a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
   --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
@@ -339,13 +338,13 @@
   --dc-alert-label-margin: var(--space-md);
 }
 /* ── Variant: Location Callout — a place, written up like a dossier page ───
-   Origin's document (dog-eared corner, torn foot, rubber stamp) with a teal
-   rail and a deep-teal stamp, so a place reads apart from a backstory in
+   Origin's document (dog-eared corner, torn foot, rubber stamp) framed in
+   teal under a deep-teal stamp, so a place reads apart from a backstory in
    colour, and from visit's green signpost by silhouette. */
 .dc-location-callout {
   --dc-alert-border: var(--hud-blue);
   --dc-alert-border-width: 6px;
-  --dc-alert-frame: none;  /* a ring would be cut by the torn foot */
+  --dc-alert-frame: none;  /* framed along the tear and the dog-ear (see "A framed sheet") */
   --dc-alert-label-bg: var(--paper-cream);  /* a stamp is ink on the sheet, not a chip */
   /* the origin's document: a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
   --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
@@ -355,7 +354,6 @@
   --dc-alert-label-margin: var(--space-md);
 }
 :is(.dc-origin-callout, .dc-location-callout) {
-  position: relative;
   padding-top: 14pt;  /* dog-ear 16px + 2pt */
 }
 /* The dog-ear fold: a solid triangle over the cut corner. */
@@ -379,13 +377,14 @@
 }
 
 /* ── Variant: Visit Callout — a place, a signpost ─────────────────────────
-   A white placard with a pointed (finger-post) end, a heavy fungi-green rail
-   and a map-pin label: the living city's own colour, set apart from the
+   A white placard with a pointed (finger-post) end, framed in fungi green
+   (a heavy rail, and a frame that follows the wobbling outline and the point)
+   under a map-pin label: the living city's own colour, set apart from the
    Dream Master's cyan and ink. */
 .dc-visit-callout {
   --dc-alert-border: var(--fungi-rot);
   --dc-alert-border-width: 8px;
-  --dc-alert-frame: none;  /* a ring would be cut by the wobbling outline */
+  --dc-alert-frame: none;  /* framed along the wobble and the point (see "A framed sheet") */
   /* organic: a wobbly polygon with no long straight edge, ending in a signpost point */
   --dc-alert-shape: polygon(0 3px, 12% 0, 31% 3px, 52% 0, 74% 3px, calc(100% - 22px) 0, 100% 50%, calc(100% - 20px) 100%, 76% calc(100% - 3px), 55% 100%, 30% calc(100% - 4px), 9% 100%, 0 calc(100% - 3px), 1px 50%);
   --dc-accent-ink: var(--fungi-rot);  /* 10.3:1 on the sheet */
@@ -409,10 +408,31 @@
   vertical-align: -1px;
 }
 
+/* ── A framed sheet (vibe, origin, location, visit) ───────────────────────
+   These four have an outline an inset ring cannot follow: a ring is square,
+   so a diagonal, a tear or a point cuts it off and leaves that edge bare. The
+   callout's own box is filled with its accent instead, and a white copy of
+   its silhouette sits inside it (--dc-alert-frame-width in from the top,
+   right and foot; the rail is the left side), so the frame runs along every
+   cut. The text is on the white copy. */
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout) {
+  position: relative;
+  isolation: isolate;
+  background: var(--dc-alert-border);
+}
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::before {
+  content: "";
+  position: absolute;
+  inset: var(--dc-alert-frame-width) var(--dc-alert-frame-width) var(--dc-alert-frame-width) 0;
+  background: var(--dc-alert-bg);
+  clip-path: var(--dc-alert-shape);
+  z-index: -1;
+}
+
 /* ── Variant: Example — a worked example, never a rule ───────────────────── */
 .dc-example-callout {
   --dc-alert-border: var(--brand-cyan);
-  --dc-alert-frame: inset 0 0 0 1.5pt var(--brand-cyan);
+  --dc-alert-frame: inset 0 0 0 2pt var(--brand-cyan);
   --dc-alert-label-color: var(--dc-tape-color);
   --dc-alert-border-width: 6px;
   --dc-alert-margin-top: var(--space-lg);
