@@ -45,8 +45,16 @@ For each panel:
 
 The tiles keep the source's pixel scale and print at DPI dots per inch, so
 the stones come out the size they are on the sheet, close to the default
-wall's bricks, and a tile is about 3.6-4.8in. A sharper source would let them
-print at 300.
+wall's bricks, and a tile is about 3.6-4.8in. That is about 240 DPI, under
+the 300 DPI print bar, and the sheet is 1024x1536 (about 512px a panel), so
+step 3's quilting has already grown each panel about 2x: the real detail is
+about 110 DPI. The walls are accepted as texture at that; no upsampling
+would add detail, and Gutterpress's resolution checks judge <img> elements,
+not CSS backgrounds, so nothing flags them. A sharper wall needs a source
+sheet of at least 2048x3072. The ground is drawn, not sampled, so it is
+drawn at GROUND_DPI (300): its setts are resampled up from the wall's scale
+in the perspective transform, and its joints, foot line and shadow are
+drawn at that resolution.
 """
 import random
 import sys
@@ -72,7 +80,8 @@ BEDDED = {5: 0.62}                  # walls squashed into beds first: flagstones
 GROUND = "images/ground.png"        # the pavement at the foot of every walled page
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
-GROUND_W = 2400                     # px across (10in): drawn once, in perspective, centred on the sheet
+GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
+GROUND_W = 3000                     # px across (10in at GROUND_DPI): drawn once, in perspective, centred on the sheet
 EYE = 5.5                           # in from the wall's foot up to the eye: how fast the rows recede
 LEAN = 0.5                          # px the ground's joints run across per px down: all one way, so a spread shows one view
 GROUND_DEPTH = 2.4                  # setts of pavement the strip shows, wall to sheet edge
@@ -397,10 +406,11 @@ def ground(panel, tones):
     for k in range(3):
         src.paste(grid, (k * grid.width, 0))
     U = 2                                                   # drawn at U times, then reduced
-    W, G, Hh = GROUND_W * U, round(GROUND_IN * DPI) * U, EYE * DPI * U
+    S = GROUND_DPI / DPI                                    # output px per source px: the setts are at the wall's scale
+    W, G, Hh = GROUND_W * U, round(GROUND_IN * GROUND_DPI) * U, EYE * GROUND_DPI * U
     depth = GROUND_DEPTH * SETT                             # source px from the wall's foot to the sheet edge
     K = depth / (1 / Hh - 1 / (Hh + G))
-    x0, z0, s0 = src.width / 2, SETT * 0.3, 1 / U
+    x0, z0, s0 = src.width / 2, SETT * 0.3, 1 / (S * U)
     # output (x, y) -> source (s0 (x - W/2 - LEAN y) + x0, z0 + (K / Hh) y / (Hh + y)):
     # no one projective map does that, so it is laid in bands two px deep
     X = lambda x, y: s0 * (x - W / 2 - LEAN * y) + x0
@@ -413,9 +423,9 @@ def ground(panel, tones):
     px = rgb.load()
     line = tuple(round(c * 0.55) for c in BG)               # the wall's foot
     for y in range(rgb.height):
-        k = GROUND_SHADE * (0.8 + 0.2 * min(1, y / 14))     # its shadow, fading over 14px
+        k = GROUND_SHADE * (0.8 + 0.2 * min(1, y / (14 * S)))  # its shadow, fading over 14 wall px
         for x in range(rgb.width):
-            px[x, y] = line if y < 3 else tuple(round(v * k) for v in px[x, y])
+            px[x, y] = line if y < 3 * S else tuple(round(v * k) for v in px[x, y])
     return rgb                                              # RGB: the shadow makes too many tones for a palette
 
 
@@ -472,7 +482,7 @@ def ground_layer(deeper="", sheet=False):
          f"+ var(--bottom-margin) - {GROUND_IN}in{back})")
     if sheet:
         y = f"calc(var(--gp-page-height, 11.25in) - {GROUND_IN}in)"
-    return f'url("../{GROUND}") 50% {y} / {GROUND_W / DPI:g}in {GROUND_IN}in no-repeat'
+    return f'url("../{GROUND}") 50% {y} / {GROUND_W / GROUND_DPI:g}in {GROUND_IN}in no-repeat'
 
 
 def write_css(walls):

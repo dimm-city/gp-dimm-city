@@ -78,6 +78,16 @@ token name still works.
   240%, enforced by the CGATS21_CRPC1 profile"; no token exceeds 211%. The
   SWOP/GRACoL target is gone. Constitution §V says how the figures are
   measured.
+- **The ground prints at 300 DPI.** `images/ground.png`, the 10in × 0.6in strip
+  of pavement at the foot of every page, is 3000 × 180 px (was 2400 × 144,
+  240 DPI); `scripts/wall-tiles.py --ground` draws it at `GROUND_DPI` with the
+  same geometry (a copy scaled back to the old size differs by 2/255 on
+  average). The six stone-wall tiles stay at about 240 DPI: their sheet
+  (1024 × 1536, about 512px a panel) holds about 110 DPI of real detail, so
+  no upsampling would sharpen them, and no Gutterpress check sees a CSS
+  background. They are accepted as texture; the constitution's production
+  rules, the script's header and the `dc-native.css` wall comment now say
+  so, and that a sharper wall needs a source sheet of at least 2048 × 3072.
 
 ### Fixed
 
