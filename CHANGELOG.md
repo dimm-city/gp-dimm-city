@@ -113,6 +113,15 @@ token name still works.
   `validate --phase pre-build` reports today; the heading-order warnings are
   off by configuration (alpha.2) and the `clip-path` warnings are gone with
   Gutterpress's rule.
+- **The print qualification is re-run on this release.**
+  `docs/print-qualification.md` now records the 176-page guide built with
+  Gutterpress 0.11.24-alpha.1 and Ghostscript 10.05.0 (which honours the
+  CRPC1 profile; the 1.8.0 run's 10.02.1 did not): 78 pages split with live
+  text and 98 vector, no fallback, 23 embedded CID TrueType subsets and no
+  Type 3, OutputIntent CGATS21-2-CRPC1, no dark four-colour text at 24pt or
+  under, the heaviest page at 221.6% TAC, and no image under 300 DPI. The
+  four comparison crops are retaken from this build, since the paper, the
+  hairlines and the gloss changed in 1.10.2.
 
 ### Deprecated
 
