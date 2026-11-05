@@ -449,13 +449,14 @@
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
    Creaturepunk pillar gradient across the 5-band outcome ladder:
-     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 10.4:1)
-     hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 12.24:1)
-     mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 5.25:1)
-     miss  → rust                (GUTTER deep — paper-cream 4.59:1)
-     fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 8.73:1)
+     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 12.5:1)
+     hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 11.4:1)
+     mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 6.9:1)
+     miss  → blood               (GUTTER deep — paper-cream 9.0:1)
+     fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 10.4:1)
    All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
-   for the 8pt outcome-name and 12pt roll-number text.
+   for the 10pt outcome-name and 12pt roll-number text (measured with
+   scripts/measure-palette-crpc1.py contrast).
 
    The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
    (below) because fungi-glow is too light to carry paper-cream text. Bright
@@ -476,9 +477,8 @@
 }
 
 .dc-outcome-row.miss {
-  /* --rust + cream = 4.48:1 (just under AA at small chip text). --blood
-     + cream = 7.73:1, safer at 9-10pt chip sizes. Still warm red, still
-     reads as "miss/fail" semantic. */
+  /* --rust + cream = 6.0:1; --blood + cream = 9.0:1, the safer margin at
+     10pt chip text. Still warm red, still reads as "miss/fail" semantic. */
   --row-color: var(--blood);
 }
 
