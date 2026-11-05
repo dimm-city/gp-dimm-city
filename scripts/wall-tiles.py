@@ -54,8 +54,11 @@ not CSS backgrounds, so nothing flags them. A sharper wall needs a source
 sheet of at least 2048x3072. The ground is drawn, not sampled, so it is
 drawn at GROUND_DPI (300): its setts are resampled up from the wall's scale
 in the perspective transform, and its joints, foot line and shadow are
-drawn at that resolution.
+drawn at that resolution. It is drawn for the depth Chromium paints it at
+(a background is painted in whole CSS px: 0.6in is 58px, 0.604in), so on a
+page the PDF keeps as vector the strip's rows measure 300 DPI, not 298.
 """
+import math
 import random
 import sys
 from multiprocessing import Pool
@@ -81,6 +84,7 @@ GROUND = "images/ground.png"        # the pavement at the foot of every walled p
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
+CSS_PX = 96                         # Chromium paints a background in whole CSS px: 0.6in (57.6px) paints 58px deep
 GROUND_W = 3000                     # px across (10in at GROUND_DPI): drawn once, in perspective, centred on the sheet
 EYE = 5.5                           # in from the wall's foot up to the eye: how fast the rows recede
 LEAN = 0.5                          # px the ground's joints run across per px down: all one way, so a spread shows one view
@@ -407,7 +411,8 @@ def ground(panel, tones):
         src.paste(grid, (k * grid.width, 0))
     U = 2                                                   # drawn at U times, then reduced
     S = GROUND_DPI / DPI                                    # output px per source px: the setts are at the wall's scale
-    W, G, Hh = GROUND_W * U, round(GROUND_IN * GROUND_DPI) * U, EYE * GROUND_DPI * U
+    painted = math.ceil(GROUND_IN * CSS_PX) / CSS_PX        # in: the depth Chromium paints the strip at (whole CSS px), so
+    W, G, Hh = GROUND_W * U, math.ceil(painted * GROUND_DPI) * U, EYE * GROUND_DPI * U  # its rows still land at 300 DPI
     depth = GROUND_DEPTH * SETT                             # source px from the wall's foot to the sheet edge
     K = depth / (1 / Hh - 1 / (Hh + G))
     x0, z0, s0 = src.width / 2, SETT * 0.3, 1 / (S * U)
