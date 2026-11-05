@@ -113,6 +113,24 @@ token name still works.
   `validate --phase pre-build` reports today; the heading-order warnings are
   off by configuration (alpha.2) and the `clip-path` warnings are gone with
   Gutterpress's rule.
+- **The transparency decision is written down, in one voice.** Translucent
+  artwork (shadows, lifts, bevels, tape) is allowed by design; the accepted
+  cost is that a PDF/X page carrying any of it prints its artwork as one
+  300 DPI picture and the file grows, while `preserve-text` keeps the text
+  live; text colours stay opaque. The constitution's production rules, the
+  transparency inventory, the roadmap (item 19, the print-discipline and
+  Field Guide art notes), the placeholder generator's header and the wall,
+  slip, section and entry comments now say that and no longer ask a page to
+  stay vector. The generator's claim that an alpha channel flattens the
+  whole page was true of `flatten-page` only: under `preserve-text` the
+  image is composited with the page's artwork and the text is kept.
+- **A colour-space rule in constitution §V.** Chromium writes every colour
+  into the PDF as sRGB `DeviceRGB` clipped to the sRGB gamut (`oklch(62% 0.30
+  340)` comes out `.927 0 .739`, `color(display-p3 1 0 0)` comes out `1 0 0`),
+  so tokens are authored as sRGB hex and chosen by their CRPC1 round trip,
+  `oklch` is an interpolation space for mixing only, neutrals stay exactly
+  neutral for the K-only rewrite, the saturated sRGB corners are avoided, and
+  `color()` / `oklch()` are not used to author a colour.
 - **The print qualification is re-run on this release.**
   `docs/print-qualification.md` now records the 176-page guide built with
   Gutterpress 0.11.24-alpha.1 and Ghostscript 10.05.0 (which honours the

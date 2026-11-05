@@ -15,12 +15,15 @@
 // Every file is
 // OPAQUE: a flat dark ground in the specialty's own `--<name>-dark`, its
 // `--<name>-mid` silhouette and texture, an accent rule, and the name in the
-// bold display face. They exist so the guide builds offline and so that its
-// PDF/X output keeps live text: an image with an alpha channel makes
-// Ghostscript flatten the whole page into one bitmap (see README, "Art must be
-// opaque"). Colours are read from the stylesheets, so a retuned token shows up
-// the next time this runs. Flat shapes in a palette PNG keep each file small
-// (under ~150 KB at these sizes).
+// bold display face. They exist so the guide builds offline. They are opaque
+// because it costs nothing: under `pdfx.transparency: preserve-text` (the
+// guide's manifest) an alpha channel is just more translucent artwork,
+// composited into the page's 300 DPI picture with the text kept live, and only
+// a page that shows no text is flattened whole; an opaque file leaves a page
+// with no other translucent artwork vector. (Under the default `flatten-page`
+// an alpha channel would cost the page its live text.) Colours are read from
+// the stylesheets, so a retuned token shows up the next time this runs. Flat
+// shapes in a palette PNG keep each file small (under ~150 KB at these sizes).
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';

@@ -25,7 +25,7 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 - **Offset tokens (14).** Add `--dc-outline`, `--dc-chrome-bleed` and `--dc-z-*`, then derive the hard-coded offsets from them. The "-2px to cancel the 2px outline" offsets are an example.
 - **Wall utility (16).** Add a `.dc-wall` utility and use it in the design guide's stages.
 - **One file per component (17).** Each component lives in one file, and each file is named for what it holds. The rules for the chevron and masthead, TOC, colophon, AP chip, sidebar and path shell are currently spread across several sheets.
-- **Gradients in PDF/X (19).** The outcome keys print as 360×180 ppi images in PDF/X, and the tape dashes use a hard-stop gradient. Replace them where a flat or vector form looks the same.
+- **Gradients in PDF/X (19).** Raster artwork on a split page is accepted (constitution §V), so a gradient being rasterised is no longer the concern. What stays off limits is a `repeating-*` or `conic-gradient()` (the page falls back to whole-page flattening and loses its live text) and a gradient with transparent stops (Chromium writes a type-1 shading PDF.js cannot read; the gloss was pre-mixed for that in 1.10.2). The tape dashes are already an ordinary gradient tiled by `background-size`. Replace a gradient only where a flat form looks the same and is simpler.
 
 ## Later: larger (a sprint each, with visible risk)
 
@@ -42,7 +42,7 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 - **Field Guide: sidebars.** Choose sidebar areas. `@sidebar-box` suits short asides that stay in the text flow. The inset rail was removed 2026-10-12.
 - **Field Guide: art.**
   - Eight pages have art below 300 DPI.
-  - Cutout art with an alpha channel still flattens a few pages in PDF/X-1a.
+  - Cutout art with an alpha channel is rasterised with the page's other artwork under `preserve-text`, text kept live; only a page that shows no text is flattened whole, and nothing is lost there.
 
 ## Known, accepted warnings
 
@@ -62,7 +62,7 @@ What this section used to list, and where it went:
 - **Print discipline.**
   - Clipped sibling layers.
   - Nothing a box paints extends above that box.
-  - Opaque `color-mix` composites, enforced by a test.
+  - Opaque text colours and no repeating or transparent-stop gradients, enforced by tests (*keep text opaque*, *use no repeating gradient*). Translucent artwork is allowed and prints as a 300 DPI picture on its page (constitution §V).
   - Accent rails drawn as inset shadows rather than gradients.
 - **Fragmentation care.** The heading look classes, the `.gp-columns-flow` fix, and the zero-specificity `flow-root`.
 - **Measured comments and an honest catalog.** Comments record real measurements, and `components.yaml` carries honest statuses.

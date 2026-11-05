@@ -2,6 +2,8 @@
 
 What in this package is translucent, what is pre-composited, and how a PDF/X build treats each. The historical record of the 1.7 pre-composite pass (every translucent value it replaced, and the measurements) is kept at the end.
 
+**The decision.** Translucent artwork is allowed by design: the shadows, lifts, bevels and tape that make a component sit on the wall are translucent, so the brick darkens under them. The cost is accepted: in a PDF/X build every page that carries any of it prints its artwork (rules, fills and shapes included) as one 300 DPI picture, and the file grows with it (the design guide's PDF/X is 75.5 MB against 11.4 MB plain). `pdfx.transparency: preserve-text` keeps the text of those pages live, so fonts, search and the K-only black rewrite are unaffected. What stays opaque is text: a translucent glyph cannot be kept live and flattens its page whole. Nothing here asks a page to stay vector.
+
 ## The model today: `pdfx.transparency: preserve-text`
 
 PDF/X-1a, the format DriveThruRPG accepts, carries no transparency. Gutterpress's `pdfx.transparency: preserve-text` (0.11.23 and later; the design guide's manifest sets it, and a book that uses this package should) handles that page by page:
@@ -34,7 +36,7 @@ A book that sets one of these tokens to an opaque colour loses nothing in print;
 | What | Why |
 |---|---|
 | Every text colour | A translucent glyph flattens its page whole (above). |
-| The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would make every page transparent. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
+| The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
 | The band and tab gloss | `--light-gloss`, a gradient with transparent stops, made Chromium write a type-1 shading PDF.js cannot read (1.10.2). The path banner, the card tab and the specialty card band pre-mix the same sheen into their opaque fills; the token stays for books that read it. |
 | The tape divider's crimson dashes (`.dc-tape::before/::after`) | An ordinary gradient with opaque stops, tiled by `background-size`: a `repeating-linear-gradient` cannot be kept live and flattens the page whole. |
 | The paper tints (callout, section, faction, choice and entry surfaces) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). |
