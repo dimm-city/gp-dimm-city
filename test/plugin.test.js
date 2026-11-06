@@ -1802,7 +1802,7 @@ describe("@ladder rungs", () => {
 
   test("the heading keeps its text and markup; it becomes the rung's chip and the body follows it", () => {
     const { html } = renderGp(ladder("### ~~Hard~~ Choice (6-10)"));
-    expect(html).toContain('<div class="dc-rung mixed">\n<h3 class="dc-rung-title"><s>Hard</s> Choice (6-10)</h3>\n<div class="dc-rung-body">\n<p>Body.</p>\n</div>\n</div>');
+    expect(html).toContain('<div class="dc-rung mixed">\n<h3 class="dc-rung-title"><s>Hard</s> Choice <span class="dc-rung-band">(6-10)</span></h3>\n<div class="dc-rung-body">\n<p>Body.</p>\n</div>\n</div>');
     expect(html.startsWith('<div class="dc-ladder">')).toBe(true);
   });
 
@@ -1881,5 +1881,21 @@ describe("the entry cost line", () => {
   });
   test("a paragraph with a bold run and other text does not", () => {
     for (const body of ["**Bold** then text.", "Text then **bold**.", "**One** and **two**", "*italic*"]) expect(cost(body), body).not.toContain("dc-entry-cost");
+  });
+});
+
+describe("polish rules in the stylesheets", () => {
+  const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+  test("every rung heading's band is wrapped, whatever the band's spelling or the heading's markup", () => {
+    for (const [h, band] of [["### Triumphs (20)", "(20)"], ["### Success (11\u201319)", "(11\u201319)"], ["### **Hard** Choice (6-10)", "(6-10)"], ["### Failure (2--5)", "(2\u20135)"]]) {
+      const html = renderGp(["@ladder", "", h, "", "x", "", "@end-ladder"].join("\n")).html;
+      expect(html, h).toMatch(/<span class="dc-rung-band">\([^<]*\)<\/span><\/h3>/);
+    }
+    expect(renderGp("@ladder\n\n### (20)\n\nx\n\n@end-ladder").html).toContain('<span class="dc-rung-band">(20)</span>');
+  });
+  test("an intro panel keeps with the entry under it; the roll phrase never breaks; a bold row label stays on a line", () => {
+    expect(css("components/entries.css")).toMatch(/\.dc-section-panel:has\(\+ \.dc-entry\) \{\s*break-after: avoid;/);
+    expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
+    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child:has\(> strong:only-child\) \{\s*white-space: nowrap;/);
   });
 });

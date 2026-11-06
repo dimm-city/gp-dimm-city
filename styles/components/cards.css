@@ -627,6 +627,7 @@
   text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
+  white-space: nowrap; /* ROLL / THE DIE! never breaks across lines */
 }
 
 /* The die call: a paragraph that is only ROLL THE DIE! (plugin.js marks it

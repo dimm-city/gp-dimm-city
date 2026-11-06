@@ -926,6 +926,18 @@ Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface
 You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
 
 @end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
 ```
 
 Result {.dg-result}
@@ -941,6 +953,18 @@ Result {.dg-result}
 **1 AP. ATTACK PROGRAM, 2 SesHP**
 
 You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
+
+@end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
 
 @end-gear
 
@@ -1150,9 +1174,9 @@ Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option
 ```markdown
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 ```
 
 Result {.dg-result}
@@ -1161,9 +1185,9 @@ Result {.dg-result}
 
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 
 </div>
 

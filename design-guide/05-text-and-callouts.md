@@ -194,9 +194,11 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 ```markdown
 @callout example
 
-The Dream Master: "The guard turns toward you. What do you do?"
+> The Dream Master: "The guard turns toward you. What do you do?"
 
-You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+> You: "I flip the noodle cart into the doorway."
+
+That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
 
 @end-callout
 ```
@@ -207,9 +209,11 @@ Result {.dg-result}
 
 @callout example
 
-The Dream Master: "The guard turns toward you. What do you do?"
+> The Dream Master: "The guard turns toward you. What do you do?"
 
-You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+> You: "I flip the noodle cart into the doorway."
+
+That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
 
 @end-callout
 

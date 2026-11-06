@@ -80,7 +80,7 @@ aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
-components/data.css:812                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
+components/data.css:817                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
 components/section.css:905             srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
 components/section.css:1206            srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
 components/specialty-identity.css:157  srgb --paper-cream 34% --augmerc-accent          #57d3e3  C50 M0 Y9 K0         59   50    9

@@ -1377,6 +1377,18 @@ function rungTier(text) {
   return LADDER_TIER_OF_BAND[lo === hi ? String(lo) : lo + '-' + hi] || null;
 }
 
+// The trailing "(20)" of a rung heading is wrapped in `span.dc-rung-band`, so
+// the band can be set in the label face: the display font has no parentheses.
+function markRungBand(inline) {
+  const kids = inline.children || [];
+  const last = kids[kids.length - 1];
+  const m = last?.type === 'text' && /^([\s\S]*?)(\([^()]*\))(\s*)$/.exec(last.content);
+  if (!m) return;
+  const text = (content) => Object.assign(makeToken('text', content), { level: last.level });
+  const html = (content) => Object.assign(makeToken('html_inline', content), { level: last.level });
+  kids.splice(kids.length - 1, 1, ...(m[1] ? [text(m[1])] : []), html('<span class="dc-rung-band">'), text(m[2]), html('</span>'), ...(m[3] ? [text(m[3])] : []));
+}
+
 function dcLadders(state) {
   forEachComponent(state.tokens, 'ladder', (run) => {
     const out = [run[0]];
@@ -1398,6 +1410,7 @@ function dcLadders(state) {
         if (tier) {
           out.push(makeToken('html_block', '<div class="dc-rung ' + tier + '">\n'));
           addTokenClass(tok, 'dc-rung-title');
+          markRungBand(run[i + 1]);
           out.push(tok, run[i + 1], run[i + 2], makeToken('html_block', '<div class="dc-rung-body">\n'));
           rung = true;
           i += 2;

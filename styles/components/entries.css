@@ -255,9 +255,17 @@
 .dc-program::before {
   display: block;
   margin: -16pt -18pt 8px;
-  padding: 3pt 18pt 3pt 24pt;
+  padding: 3pt 18pt;
   letter-spacing: 0.18em;
-  box-shadow: inset 8pt 0 0 0 var(--paper-cream);
+  box-shadow: none;
+}
+/* The comb hangs 7px below the card: room under it, so it never crowds the next card's strip. */
+.dc-card.dc-program {
+  margin-bottom: calc(var(--dc-section-gap) + 7px);
+}
+/* An intro panel stays with the first entry under it. */
+.dc-section-panel:has(+ .dc-entry) {
+  break-after: avoid;
 }
 /* The cost line, stamped like a gear's price tag but framed in HUD blue. */
 .dc-program > p.dc-entry-cost {

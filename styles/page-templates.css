@@ -743,6 +743,11 @@
 li > p {
   margin-bottom: 0;
 }
+/* A numbered step is a ruled cell: its number block runs the cell's full height,
+   so the gap under a paragraph or item never opens between two rows. */
+.dc-steps > li {
+  margin-bottom: 0;
+}
 .dc-snug {
   --dc-flow-gap: 0.04in;
 }

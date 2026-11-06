@@ -546,7 +546,7 @@
   display: block;
   width: fit-content;
   box-sizing: border-box;
-  margin: 0 0 -11px -10px;
+  margin: 0 0 -11px -6px;
   padding: 3px 16px 2px 10px;
   font-size: var(--fs-body);
   letter-spacing: 0.06em;
@@ -556,6 +556,12 @@
   border: 2px solid var(--dc-outcomes-border);
   box-shadow: var(--dc-label-shadow);
   break-after: avoid;
+}
+.dc-rung-band {
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  font-weight: 700;
+  vertical-align: 0.06em;
 }
 .dc-rung-body {
   position: relative;
@@ -568,14 +574,14 @@
     inset 0 0 0 5px var(--dc-outcomes-inner-border);
   clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
 }
-/* The tether: a 2px rail in the tier colour, from under the tab down the plate. */
+/* The tether: a 4px rail in the tier colour on the plate's frame, from under the tab down. */
 .dc-rung-body::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 8px;
-  left: 9px;
-  width: 2px;
+  left: 0;
+  width: 4px;
   background: var(--row-color);
 }
 .dc-rung-body > :last-child {
@@ -667,7 +673,6 @@
   --dc-accent-ink: var(--brand-magenta-deep);  /* 8.9:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
-  border-right: 2px solid var(--dc-pullquote-accent-soft);
   padding: 14px 20px 12px 28px;
   position: relative;
   font-family: var(--font-body);
@@ -687,7 +692,7 @@
      literal quotes in body text without removing the accent. */
   content: '"';
   position: absolute;
-  top: -6px;
+  top: 4px;
   left: 10px;
   font-family: var(--font-display);
   font-weight: 400;
@@ -812,9 +817,12 @@
   --dc-definition-block-term: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
   --dc-definition-block-style: italic;
   --dc-definition-block-frame: inset 5px 4px 0 var(--brand-magenta-deep), inset -5px -4px 0 var(--brand-violet);
-  --dc-definition-block-pad: 20pt 22pt 20pt 22pt;
+  --dc-definition-block-pad: 14pt 22pt 20pt;
   font-weight: 600; /* reversed type: semibold */
   --dc-accent-ink: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
+}
+.dc-definition-surreal > h4:first-child {
+  margin-bottom: 8pt; /* 6pt less above than lucid, so the body lines of a pair stay aligned */
 }
 .dc-definition-surreal > h4,
 .dc-definition-surreal p > strong:first-child {
@@ -851,6 +859,9 @@
 }
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
+}
+:is(.gp-columns, [class*="gp-columns-"]):has(> .dc-definition-block) {
+  --gp-column-rule: none; /* a pair of framed cards needs no rule between them */
 }
 .dc-definition-block hr {
   border: none;
@@ -1085,9 +1096,12 @@ table.dc-stat-strip {
 }
 
 .dc-stat.dc-flush,
-.dc-outcomes.dc-flush,
-.dc-pullquote.dc-flush {
+.dc-outcomes.dc-flush {
   margin: 0;
+}
+/* A pull quote runs the column's full width but keeps its air above and below. */
+.dc-pullquote.dc-flush {
+  margin: var(--space-lg) 0;
 }
 
 /* When markdown wraps a list-item's text in a <p> (loose-list rendering),

@@ -110,10 +110,19 @@ h1, h2, h3, h4, h5, h6,
    (--ink-dark, the ink every bar and chip casts), so the letter stays legible
    under a bar across it. */
 :is(h1, h2, h3, h4, h5, h6, .dc-chevron, .dc-spray) :is(s, del, strike) {
-  text-decoration: line-through;
-  text-decoration-thickness: 0.2em;
-  text-decoration-color: var(--ink-dark);
-  text-decoration-skip-ink: none;
+  position: relative;
+  text-decoration: none;
+}
+/* The strike is a solid bar across the middle of the capitals, as wide as the
+   letters (the trailing letter-spacing is left off), not the font's hairline. */
+:is(h1, h2, h3, h4, h5, h6, .dc-chevron, .dc-spray) :is(s, del, strike)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: var(--ls-display);
+  top: 0.44em;
+  height: 0.2em;
+  background: var(--ink-dark);
 }
 
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
@@ -308,6 +317,11 @@ td {
   border-bottom: 1pt solid var(--border-hairline);
   padding: 5px 8px;
   vertical-align: top;
+}
+
+/* A table's first column that is only a bold name (a row's label) stays on one line. */
+:is(td, th):first-child:has(> strong:only-child) {
+  white-space: nowrap;
 }
 
 /* ── DEFINITION LISTS — standard markdown `Term` / `: definition` ─────────────
