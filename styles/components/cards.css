@@ -461,29 +461,12 @@
   break-after: avoid;
 }
 
-/* The outcome ladder may split too, between tiers only: a ladder is 2 to 3.4in,
-   and one that did not fit moved whole with its lead-in and left that much
-   empty card. The head and tier 1 stay together, and so do the last two
-   tiers, so a five-tier ladder breaks only after tier 2 or tier 3. Its frame,
-   ground and cuts are drawn by the head and the rows (data.css), so a first
-   part ends flush under its last tier and the continuation starts straight. */
-.dc-skill-card .dc-outcomes {
-  break-inside: auto;
-}
-/* The roll plate stays whole: it is one framed, clipped box (a die-faced plate
-   with two cuts) whose frame, ground and cuts cannot be moved onto its rows as
-   the ladder's were (data.css), so a split plate would repeat its top cut, show
-   an empty framed foot and lose its bottom cut. */
-.dc-skill-card .dc-roll-table {
+/* The outcome ladder and the roll plate stay whole: a ladder read across a
+   page turn loses its scale (the owner's call), and the roll plate is one
+   framed, clipped box (a die-faced plate with two cuts) that cannot split.
+   The paragraph that leads into either moves with it (above). */
+.dc-skill-card :is(.dc-outcomes, .dc-roll-table) {
   break-inside: avoid;
-}
-.dc-skill-card .dc-outcome-row {
-  break-inside: avoid;
-}
-.dc-skill-card .dc-outcomes-label,
-.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-child(2),
-.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-last-child(2) {
-  break-after: avoid;
 }
 
 /* A closing line stays with the block above it, so a continuation never opens
@@ -524,14 +507,11 @@
 }
 /* The card is bolted at its top right (the tab already fixes the top left) and
    at its bottom left: a bolt head each (drawn in chrome.css, "Bolt heads"). The
-   body is not cloned at a page break, so the top bolt prints once; a
-   continuation card gets none. The bottom bolt sits at the card's foot (the
+   body is not cloned at a page break, so the top bolt prints once; an
+   explicit continuation card (`@continue`) is its own card and carries one. The bottom bolt sits at the card's foot (the
    card has no bottom padding), placed by --dc-skill-foot-bolt-left / -bottom,
    which each specialty sets beside its --dc-skill-body-shape so it clears the
    foot's cut by 2pt. */
-.dc-skill-card.dc-skill-card-cont > .dc-card-body::before {
-  content: none;
-}
 .dc-skill-card::after {
   left: var(--dc-skill-foot-bolt-left);
   bottom: var(--dc-skill-foot-bolt-bottom);
@@ -554,19 +534,110 @@
   z-index: 1;
 }
 
-/* ── Continuation card variants ───────────────────────────────────────── */
+/* ── The seam: a card that splits across pages ─────────────────────────── */
+/* The browser splits a long card where the page ends. The part that goes on
+   ends in a dashed seam in the specialty's tab colour with a small ▸, and the
+   part that continues starts with a matching dashed seam, both inside the card
+   edges. Nothing here adds height or moves a line: an unbroken card looks as
+   it did.
+
+   The seam is the cloned border image of .dc-card-inner (box-decoration-break:
+   clone, above), which paints in every fragment, top and foot alike: a
+   bottom-anchored background does not paint in a fragment that is not the last
+   in Chromium print, a border image does. The borders are zero wide (the
+   padding is untouched, so no layer or mark moves): border-image-width alone
+   gives the image its box, over the old padding. One SVG, stretched (a tiled
+   image prints as raster blocks, a stretched one stays vector): a 24px slice
+   at each side, the dashes between, 2px thick, 4px under the top edge and
+   11-13px above the foot, the ▸ 9px by 10px, 6-16px above the foot and 14px in
+   from the right edge; the foot's marker band covers 4-17px.
+   It cannot read a custom property, so each specialty names its own colour
+   below (its tab colour, --spec-mid).
+
+   Two zero-height markers close every card (plugin.js, `endCard`), in the card
+   body after .dc-card-inner: .dc-card-start sits at the top of the card and
+   exists in its first fragment only, .dc-card-end at its foot, in its last
+   only. They paint the card surface over the seam bands, so the card's real top
+   and real foot, and the foot of the part before an explicit @continue, show no
+   seam. Both stay clear of the card's corner cuts. */
+.dc-skill-card > .dc-card-body > .dc-card-inner {
+  border: 0 solid transparent;
+  border-image: var(--dc-seam) 8 24 16 24 / 8px 24px 12pt 24px / 0 stretch;
+}
+.dc-skill-card > .dc-card-body > .dc-card-start,
+.dc-skill-card > .dc-card-body > .dc-card-end {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+.dc-skill-card > .dc-card-body > .dc-card-start {
+  top: 2px;
+  right: 12px;
+  left: 12px;
+  height: 6px;
+  background: var(--dc-card-surface);
+}
+/* The foot's marker is the card's whole box, clipped to the card's own foot
+   shape (as the surface is), with a band painted at the bottom: a background
+   anchored to the bottom paints in the last fragment only, and the clip keeps
+   the cream inside the cut, off the ink outline around it. */
+.dc-skill-card > .dc-card-body > .dc-card-end {
+  inset: 0;
+  clip-path: var(--dc-skill-body-shape);
+  background: linear-gradient(var(--dc-card-surface), var(--dc-card-surface)) left 12px bottom 4px / calc(100% - 24px) 13px no-repeat;
+}
+/* the specialty's last card draws its surface 3pt + 2px early: so does this
+   box, and its band drops by as much to stay over the seam */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-end {
+  bottom: calc(3pt + 2px);
+  background-position: left 12px bottom calc(4px - 3pt - 2px);
+}
+.dc-specialty.augmerc { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
+.dc-specialty.cybersurgeon { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%2352626f' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%2352626f'/%3E%3C/svg%3E"); }
+.dc-specialty.technosorcerer { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%237a3008' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%237a3008'/%3E%3C/svg%3E"); }
+.dc-specialty.wirephreak { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23093c81' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23093c81'/%3E%3C/svg%3E"); }
+.dc-specialty.streetwarden { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23347828' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23347828'/%3E%3C/svg%3E"); }
+.dc-specialty.proxy { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%239c0f63' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%239c0f63'/%3E%3C/svg%3E"); }
+.dc-specialty.gutterdruid { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%234d6020' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%234d6020'/%3E%3C/svg%3E"); }
+.dc-specialty.etherlock { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%238a6a00' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%238a6a00'/%3E%3C/svg%3E"); }
+.dc-specialty.dualist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
+.dc-specialty.generalist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%233a4854' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%233a4854'/%3E%3C/svg%3E"); }
+
+/* ── Continuation card (an explicit @continue) ────────────────────────── */
 .dc-skill-card-cont {
   margin-top: -4px; /* the card's own offset: see .dc-skill-card */
 }
-
-.dc-card-tab-cont {
-  border-top-color: var(--hud-blue);
+/* a continuation opens close to its tab: no flavour line, a snug top */
+.dc-skill-card.dc-skill-card-cont > .dc-card-body > .dc-card-inner {
+  padding-top: var(--space-sm);
 }
 
-/* Inside a skill card the tab's border paints on ::before (tab chrome rules
-   above), so the continuation colour goes there too. */
-.dc-skill-card > .dc-card-tab-cont::before {
-  border-top-color: var(--hud-blue);
+/* The part before an @continue: a straight 2px ink foot with the hard shadow
+   (the specialty's cut stays the mark of the card's real end), the bottom-left
+   bolt, and a flag in the tab colour with a ▸ hanging under the foot at the
+   right, where the cut would be. The ▸ is an SVG background, vector. */
+.dc-specialty.dc-specialty .dc-skill-card.dc-skill-card-cut {
+  --dc-skill-body-shape: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left: 4px;
+  --dc-skill-foot-bolt-bottom: 4px;
+}
+.dc-skill-card.dc-skill-card-cut::before {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: calc(100% + 2px);
+  width: 34px;
+  height: 14px;
+  box-sizing: border-box;
+  background-color: var(--dc-card-tab-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8'%3E%3Cpath d='M0 0 6 4 0 8z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 6px 8px;
+  border: 2px solid var(--ink);
+  border-top: 0;
+  box-shadow: 2pt 2pt 0 var(--shadow-ink);
+  z-index: 2;
 }
 
 

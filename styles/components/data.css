@@ -305,7 +305,7 @@
   --dc-accent-ink: var(--dc-outcomes-border);
   /* The ladder draws nothing itself. Its frame, ground, hairline and cuts are
      drawn by the parts that stay together, so a ladder that splits across a
-     page ends flush under its last tier (a framed box would stretch to the
+     page (outside a skill card, where it may) ends flush under its last tier (a framed box would stretch to the
      page foot) and only its real head and real foot are cut:
        .dc-outcomes-label     the head: the frame's top, with its two top chamfers (6px)
        .dc-outcome-row        the ground, the frame's sides, the hairline's right side

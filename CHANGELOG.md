@@ -21,6 +21,20 @@ blank pages at the end where there were four.
 
 ### Added
 
+- **A skill card that splits across pages is marked.** The part that goes on
+  ends in a dashed seam in the specialty's tab colour with a small ▸, and the
+  part that continues starts with a matching one. CSS only (a stretched SVG
+  border image on the cloned `.dc-card-inner`, vector in the PDF, one colour
+  per specialty in `cards.css`) plus two zero-height markers the plugin adds
+  to every card (`.dc-card-start`, `.dc-card-end`) that hide the seam at the
+  card's real top and foot. No height is added and no text moves: an unbroken
+  card prints as before.
+- **`@continue` is a polished continuation.** The part before it closes with a
+  straight ink foot, its hard shadow, the bottom-left bolt and a ▸ flag
+  (`.dc-skill-card-cut`); the continuation card has the full tab with the
+  card's ID, written or automatic (it lost the automatic one), and the
+  top-right bolt. The hud-blue rule on the continuation tab is gone. A
+  `@continue` card takes about 0.3in more than before.
 - **`@ladder` … `@end-ladder`: the outcome ladder unfolded.** A run of `###`
   sections whose headings end in a band in parentheses (`(20)`, `(11–19)`,
   `(6-10)`, `(2-5)`, `(1)`; a hyphen, an en dash or `--`) becomes one rung per
@@ -117,9 +131,8 @@ blank pages at the end where there were four.
     with its tab and one line. A sub-heading, a label and a lead-in stay with
     what follows; a short closing line stays with what precedes it.
   - A plain table may split between rows, with its header repeated. An outcome
-    ladder may split between tiers: the head and first tier stay together, as
-    do the last two, the first part ends flush under its last tier, and the
-    bottom cut prints once, at the real foot. A roll-table plate stays whole.
+    ladder and a roll-table plate stay whole: each moves to the next page with
+    the line that leads into it, so a ladder is never read across a page turn.
   - The requirement band never splits and never ends a page alone.
   - A fragment keeps the card's padding at a page break. A continued Proxy or
     Gutterdruid card has a straight top, and the gate and corner cuts that
