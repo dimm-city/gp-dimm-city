@@ -461,29 +461,12 @@
   break-after: avoid;
 }
 
-/* The outcome ladder may split too, between tiers only: a ladder is 2 to 3.4in,
-   and one that did not fit moved whole with its lead-in and left that much
-   empty card. The head and tier 1 stay together, and so do the last two
-   tiers, so a five-tier ladder breaks only after tier 2 or tier 3. Its frame,
-   ground and cuts are drawn by the head and the rows (data.css), so a first
-   part ends flush under its last tier and the continuation starts straight. */
-.dc-skill-card .dc-outcomes {
-  break-inside: auto;
-}
-/* The roll plate stays whole: it is one framed, clipped box (a die-faced plate
-   with two cuts) whose frame, ground and cuts cannot be moved onto its rows as
-   the ladder's were (data.css), so a split plate would repeat its top cut, show
-   an empty framed foot and lose its bottom cut. */
-.dc-skill-card .dc-roll-table {
+/* The outcome ladder and the roll plate stay whole: a ladder read across a
+   page turn loses its scale (the owner's call), and the roll plate is one
+   framed, clipped box (a die-faced plate with two cuts) that cannot split.
+   The paragraph that leads into either moves with it (above). */
+.dc-skill-card :is(.dc-outcomes, .dc-roll-table) {
   break-inside: avoid;
-}
-.dc-skill-card .dc-outcome-row {
-  break-inside: avoid;
-}
-.dc-skill-card .dc-outcomes-label,
-.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-child(2),
-.dc-skill-card .dc-outcomes > .dc-outcome-row:nth-last-child(2) {
-  break-after: avoid;
 }
 
 /* A closing line stays with the block above it, so a continuation never opens

@@ -109,9 +109,8 @@ blank pages at the end where there were four.
     with its tab and one line. A sub-heading, a label and a lead-in stay with
     what follows; a short closing line stays with what precedes it.
   - A plain table may split between rows, with its header repeated. An outcome
-    ladder may split between tiers: the head and first tier stay together, as
-    do the last two, the first part ends flush under its last tier, and the
-    bottom cut prints once, at the real foot. A roll-table plate stays whole.
+    ladder and a roll-table plate stay whole: each moves to the next page with
+    the line that leads into it, so a ladder is never read across a page turn.
   - The requirement band never splits and never ends a page alone.
   - A fragment keeps the card's padding at a page break. A continued Proxy or
     Gutterdruid card has a straight top, and the gate and corner cuts that
