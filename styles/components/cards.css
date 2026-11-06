@@ -698,6 +698,67 @@
   text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
+  white-space: nowrap; /* ROLL / THE DIE! never breaks across lines */
+}
+
+/* The die call: a paragraph that is only ROLL THE DIE! (plugin.js marks it
+   `.dc-die-call`) is the table's imperative moment, so it is set as a raised
+   chip: the words on a deep-magenta face whose left end is cut like a d20's
+   facets (a pointed end, with the die's outline in cream), tipped -2deg, over
+   a 2px ink label shadow. The chip is two layers behind the text (the face
+   and its shadow, both exactly the box; the shadow is moved, not offset, so it
+   adds nothing to the layout and nothing hangs below the box). The same words
+   mid-sentence stay the inline mark above. Tokens: --dc-die-call-bg,
+   --dc-die-call-fg. */
+.dc-die-call {
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: var(--space-md) 0 var(--space-md) 10px;
+  padding: 4px 18px 3px 34px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  font-size: var(--fs-h4);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--dc-die-call-fg);
+  transform: rotate(-2deg);
+  break-inside: avoid;
+  break-after: avoid;
+}
+.dc-die-call :is(strong, .dc-roll-the-die) {
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+.dc-die-call::before,
+.dc-die-call::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
+}
+/* Inside an alert the alert's own text colour and italics must not reach the chip. */
+:is(.dc-alert, .gp-alert) p.dc-die-call,
+:is(.dc-alert, .gp-alert) p.dc-die-call :is(strong, em, .dc-roll-the-die) {
+  color: var(--dc-die-call-fg);
+  font-style: normal;
+}
+/* The face, with the d20 outline (a hexagon with its facet triangle) in white at the cut. */
+.dc-die-call::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 22' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M10 1 19 6v10l-9 5-9-5V6z'/%3E%3Cpath d='M10 6 15 14H5z'/%3E%3C/svg%3E") no-repeat 9px center / 17px 19px,
+    var(--dc-die-call-bg);
+}
+.dc-die-call::after {
+  background: var(--ink-dark);
+  transform: translate(2px, 2px);
+  z-index: -2;
 }
 
 /* ── AP base + author-facing variants ─────────────────────────────────── */

@@ -480,6 +480,21 @@
   z-index: -1;
 }
 
+/* Space under a callout, as over it: text that follows one sits a gap below it,
+   not against its foot. */
+:is(.dc-alert, .gp-alert):has(+ :is(p, ul, ol, h3, h4, .gp-columns, [class*="gp-columns-"])) {
+  margin-bottom: var(--space-md);
+}
+/* A quote inside a callout is a line of the callout's own text, not a second
+   box on it: a thin rail in the callout's accent, no fill, tight spacing. */
+:is(.dc-alert, .gp-alert) blockquote {
+  margin: 4pt 0;
+  padding: 1pt 0 1pt 10pt;
+  border-left-width: 3px;
+  border-left-color: var(--dc-alert-border);
+  background: none;
+}
+
 /* ── Variant: Example — a worked example, never a rule ───────────────────── */
 .dc-example-callout {
   --dc-alert-border: var(--brand-cyan);
@@ -490,6 +505,12 @@
   --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet */
   /* a ticket: one V notch (6px deep) in the right edge */
   --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(50% - 6px), calc(100% - 6px) 50%, 100% calc(50% + 6px), 100% 100%, 0 100%);
+  /* The notch cuts the cyan ring too, which on a white sheet reads as a break in
+     the frame. The cut is drawn: two cyan strokes along the V (a vector; the clip
+     trims the half outside the notch, leaving the ring's own 2pt width). */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 16'%3E%3Cpolyline points='9,2 3,8 9,14' fill='none' stroke='%2300bcd4' stroke-width='5.4'/%3E%3C/svg%3E") no-repeat right center / 9px 16px,
+    var(--dc-alert-bg);
 }
 .dc-example-callout p {
   font-style: normal;

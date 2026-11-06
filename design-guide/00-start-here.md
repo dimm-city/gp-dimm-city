@@ -94,9 +94,11 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A magic item or relic | `@gear treasure` |
 | A vehicle | `@gear vehicle` |
 | A drug, elixir or consumable | `@gear drug` |
+| Deck software, a program | `@gear program` |
 | A labelled line in an entry: SPECS, Traits, Effects... | `**SPECS:**` (or `@field specs`) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
+| One rule per roll result, a paragraph each | `@ladder` with `###` headings ending in a band |
 | A random table with equal bands (1-4, 5-8, ...) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
 | The Citizen File field list | `@citizen-walkthrough` |

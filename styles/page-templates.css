@@ -743,6 +743,16 @@
 li > p {
   margin-bottom: 0;
 }
+/* A numbered step is a ruled cell: its number block runs the cell's full height,
+   so the gap under a paragraph or item never opens between two rows. */
+.dc-steps > li {
+  margin-bottom: 0;
+}
+/* A die call is a stamped chip, not a line of text: it keeps its own air
+   under it at any paragraph gap. */
+p.dc-die-call {
+  margin-bottom: var(--space-md);
+}
 .dc-snug {
   --dc-flow-gap: 0.04in;
 }

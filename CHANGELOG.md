@@ -35,6 +35,28 @@ blank pages at the end where there were four.
   card's ID, written or automatic (it lost the automatic one), and the
   top-right bolt. The hud-blue rule on the continuation tab is gone. A
   `@continue` card takes about 0.3in more than before.
+- **`@ladder` … `@end-ladder`: the outcome ladder unfolded.** A run of `###`
+  sections whose headings end in a band in parentheses (`(20)`, `(11–19)`,
+  `(6-10)`, `(2-5)`, `(1)`; a hyphen, an en dash or `--`) becomes one rung per
+  band. The tier is read from the band, headings stay as written, and the
+  colours are the outcome ladder's. The heading is the tier's chip, hung as a
+  tab off the rung's left edge; the body is the ladder's machined plate (four
+  6px chamfers) with a 2px tether rail in the tier colour. A rung never splits;
+  the ladder breaks between rungs. Reported when no heading ends in a band.
+- **`@gear program`: a data cartridge** for deck software. A white plate in an
+  ink frame, an ink label strip with a PROGRAM badge, a connector comb cut in
+  the foot, a HUD-blue name and the usual stamped cost tag. It reads apart
+  from the augment in grayscale; no cyan on ink.
+- **The die call.** A paragraph that is only `**ROLL THE DIE!**` (or the bare
+  words, or `ROLL A DIE!` and the like) becomes `.dc-die-call`: a raised
+  deep-magenta chip with a d20 facet cut at its left, tipped -2deg over a 2px
+  ink shadow. Automatic; the same words in a sentence, list or quote are
+  unchanged. Tokens `--dc-die-call-bg`, `--dc-die-call-fg`.
+- **The street line.** The `.dc-kicker` a section's bold closing line already
+  carried is now a tear-off strip: a dotted ink perforation across the panel,
+  the line in 11pt bold body type, with a stub of the panel's accent. No markup
+  change; a ladder rung's closing line gets the same strip in the tier colour.
+
 - **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
   measures every token as the build separates it and fails when a figure
   written in a token comment, a constitution §V row, a palette-chapter swatch
@@ -323,6 +345,9 @@ blank pages at the end where there were four.
 
 ### Fixed
 
+- **A struck word in a heading or bar is legible.** `ROLL ~~M~~OR~~E~~ DIE!`
+  struck the letters with a hairline in the bar's own cream; `s`/`del` in a
+  heading now takes a heavy strike in the shadow ink.
 - **`small`, `sub` and `sup` hold the 10pt floor.** They had no rule, so the
   browser's `font-size: smaller` printed 8.3pt in a table cell and 7pt when
   nested (one such cell is in the Field Guide).

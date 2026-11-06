@@ -80,6 +80,46 @@ A panel's first `##` or `###` is its title bar; a heading after it is a sub-head
 | definition | --- | the headword |
 | choose | none: the form has no sub-headings | none |
 
+## Street line {#street-line}
+
+A panel's closing slogan, its last paragraph when it is only a bold run (or a bold-only paragraph right before a heading in it), is the street line. The plugin already marks it `.dc-kicker` so it never opens a page alone; the look is the tear-off strip at the foot of a flyer. A dotted ink perforation runs across the panel, and under it the line is set in the body face at 11pt bold, in ink, level, with a short stub of the panel's accent at its left. No capitals and no loud colour: a chapter can hold a dozen of them. There is nothing to write; end the panel with a bold line.
+
+```markdown
+@section panel
+
+## Dream Fast
+
+You do not need a plan to enter the Dream. You need a reason to stay in it.
+
+- **Pick** a seat.
+- **Say** what you want.
+
+**Dream fast. Die weird.**
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section panel
+
+## Dream Fast
+
+You do not need a plan to enter the Dream. You need a reason to stay in it.
+
+- **Pick** a seat.
+- **Say** what you want.
+
+**Dream fast. Die weird.**
+
+@end-section
+
+</div>
+
+The stub is `--dc-section-accent`, so a chapter that re-themes its panels re-themes its street lines.
+
 ## Kinds of text {#kinds-of-text}
 
 `reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter, in colour and in grayscale. Each cuts its own corners, as the skill cards do per specialty (a panel one larger chamfer, a reference four small even ones, lore long asymmetric slashes, dm a file-folder tab, choose ticket notches), and each has its own bar over a white sheet: a panel's bar is solid accent, a reference's is a pale band, lore is deep violet, dm is ink with a cyan rule, and choose has no bar at all. The shape and the bar say which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
@@ -520,6 +560,114 @@ Result {.dg-result}
 
 </div>
 
+## Ladder rungs
+
+The outcome ladder unfolded, for a rule that needs a paragraph or a list for each result. Wrap a run of `###` sections in `@ladder` and `@end-ladder`, each heading ending in its band in parentheses: `(20)`, `(11-19)`, `(6-10)`, `(2-5)`, `(1)`. A hyphen, an en dash (`11–19`) or `--` all read. The headings stay as you wrote them (a name, a joke, markup and all: a struck word in a heading or bar, `~~M~~OR~~E~~`, is struck heavy in the bar's shadow ink so it reads); the tier is read from the band, the way the ladder table reads it, and gets the ladder's own colour: crit, hit, hard choice, miss, catastrophe. Each heading becomes the tier's chip, hung as a tab off the left edge of its rung. The rung's plate is the ladder's, with four 6px chamfers and a 2px tether rail in the tier's colour. A rung never splits across a page; the ladder breaks between rungs. Whatever else sits in a rung, a callout, an example, a list, stays in it and renders as it would anywhere. A `###` that does not end in a band is an ordinary heading. A rung's closing bold line is set as its [street line](#street-line).
+
+```markdown
+@section panel
+
+## ROLL ~~M~~OR~~E~~ DIE!
+
+When a result matters, roll a **d20**.
+
+@ladder
+
+### Triumphs (20)
+
+A natural **20** succeeds spectacularly, and the Dream might add something extra.
+
+- **Combat:** Deal extra damage or disarm an enemy.
+- **Social:** Earn unexpected trust or a favor.
+
+**You didn't just pull it off. You made it look easy.**
+
+### Success (11–19)
+
+You do what you set out to do, with no complications.
+
+**You wanted something done. You did it.**
+
+### Hard Choice (6-10)
+
+You succeed with a catch: the Dream offers two setbacks and you choose one.
+
+@callout example
+
+You roll an **8** hacking a door while a gang closes in. The door opens, but it is the alarm or your rig.
+
+@end-callout
+
+### Failure (2-5)
+
+You do not get what you wanted.
+
+### Catastrophe (1)
+
+A natural **1** fails automatically, and things may get worse.
+
+**Some mistakes just explode.**
+
+@end-ladder
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-tall">
+
+@section panel
+
+## ROLL ~~M~~OR~~E~~ DIE!
+
+When a result matters, roll a **d20**.
+
+@ladder
+
+### Triumphs (20)
+
+A natural **20** succeeds spectacularly, and the Dream might add something extra.
+
+- **Combat:** Deal extra damage or disarm an enemy.
+- **Social:** Earn unexpected trust or a favor.
+
+**You didn't just pull it off. You made it look easy.**
+
+### Success (11–19)
+
+You do what you set out to do, with no complications.
+
+**You wanted something done. You did it.**
+
+### Hard Choice (6-10)
+
+You succeed with a catch: the Dream offers two setbacks and you choose one.
+
+@callout example
+
+You roll an **8** hacking a door while a gang closes in. The door opens, but it is the alarm or your rig.
+
+@end-callout
+
+### Failure (2-5)
+
+You do not get what you wanted.
+
+### Catastrophe (1)
+
+A natural **1** fails automatically, and things may get worse.
+
+**Some mistakes just explode.**
+
+@end-ladder
+
+@end-section
+
+</div>
+
+Tokens: the outcome ladder's `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-inner-border` and `--dc-outcome-key-color`.
+
 ## Roll table
 
 A random table that is not the ladder: one die, equal-weight rows, no tier colours. Wrap a pipe table in `@roll-table`; `label` names it and `die` picks the die on the chip (`d20` when you write none). Put the range in the first column (`1-4`, `5-8`, ...) and the result in the second.
@@ -622,7 +770,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 ## Gear and its kinds
 
-An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, and `@gear drug` for drugs, elixirs and other consumables. Each kind has its own silhouette, frame, badge and name colour on a white sheet, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a hexagonal badge), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, a fungi-green head band, an *Rx · Drug* pill). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, `@gear drug` for drugs, elixirs and other consumables, and `@gear program` for deck software. Each kind has its own silhouette, frame, badge and name colour on a white sheet, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a hexagonal badge), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, a fungi-green head band, an *Rx · Drug* pill) and a program is a data cartridge (an ink label strip, a connector comb cut in the foot, a HUD-blue name; see [Program](#program) below). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
 
 ```markdown {.dg-split}
 @gear augment
@@ -761,6 +909,66 @@ Result {.dg-result}
 </div>
 
 Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the badge word, a quoted string or `none`), `--dc-entry-shape` (the silhouette), `--dc-entry-radius`, `--dc-entry-ornament` with `--dc-entry-orn-inset`, `-orn-bg`, `-orn-border`, `-orn-clip` and `-orn-z` (the kind's solid-fill ornament layer: a vehicle's rivets), `--dc-entry-frame`, `--dc-entry-badge-bg`, `--dc-entry-badge-fg`, `--dc-entry-badge-shape`, `--dc-entry-badge-radius`.
+
+### Program
+
+`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line is stamped as a tag, as on general gear. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
+
+```markdown {.dg-split}
+@gear program
+
+#### DDoS
+
+> Can't crack it? Bury it.
+
+**1 AP. ATTACK PROGRAM, 2 SesHP**
+
+You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
+
+@end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@gear program
+
+#### DDoS
+
+> Can't crack it? Bury it.
+
+**1 AP. ATTACK PROGRAM, 2 SesHP**
+
+You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
+
+@end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
+
+</div>
 
 ### Fields
 
@@ -966,9 +1174,9 @@ Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option
 ```markdown
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 ```
 
 Result {.dg-result}
@@ -977,9 +1185,9 @@ Result {.dg-result}
 
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 
 </div>
 
