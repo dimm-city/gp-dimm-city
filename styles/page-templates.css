@@ -748,6 +748,11 @@ li > p {
 .dc-steps > li {
   margin-bottom: 0;
 }
+/* A die call is a stamped chip, not a line of text: it keeps its own air
+   under it at any paragraph gap. */
+p.dc-die-call {
+  margin-bottom: var(--space-md);
+}
 .dc-snug {
   --dc-flow-gap: 0.04in;
 }

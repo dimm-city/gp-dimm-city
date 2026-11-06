@@ -482,7 +482,7 @@
 
 /* Space under a callout, as over it: text that follows one sits a gap below it,
    not against its foot. */
-:is(.dc-alert, .gp-alert):has(+ :is(p, ul, ol, h3, h4)) {
+:is(.dc-alert, .gp-alert):has(+ :is(p, ul, ol, h3, h4, .gp-columns, [class*="gp-columns-"])) {
   margin-bottom: var(--space-md);
 }
 /* A quote inside a callout is a line of the callout's own text, not a second
