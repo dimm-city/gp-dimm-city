@@ -673,7 +673,7 @@
   --dc-accent-ink: var(--brand-magenta-deep);  /* 8.9:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
-  padding: 14px 20px 12px 28px;
+  padding: 10px 20px 8px 28px;
   position: relative;
   font-family: var(--font-body);
   font-style: italic;
@@ -692,11 +692,11 @@
      literal quotes in body text without removing the accent. */
   content: '"';
   position: absolute;
-  top: 4px;
+  top: 0;
   left: 10px;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: calc(var(--fs-h1) * 1.4);  /* a decorative mark, sized from the scale's top step */
+  font-size: var(--fs-h1);  /* a decorative mark at the scale's top step, clear of the first line */
   color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));
   line-height: 1;
 }
@@ -1101,7 +1101,7 @@ table.dc-stat-strip {
 }
 /* A pull quote runs the column's full width but keeps its air above and below. */
 .dc-pullquote.dc-flush {
-  margin: var(--space-lg) 0;
+  margin: var(--space-md) 0;
 }
 
 /* When markdown wraps a list-item's text in a <p> (loose-list rendering),
