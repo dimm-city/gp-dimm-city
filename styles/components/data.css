@@ -673,17 +673,17 @@
   --dc-accent-ink: var(--brand-magenta-deep);  /* 8.9:1 on the concrete sheet */
   background: var(--dc-pullquote-bg);
   border-left: 5px solid var(--dc-pullquote-accent);
-  padding: 10px 20px 8px 28px;
+  padding: 6px 20px 4px 28px;
   position: relative;
   font-family: var(--font-body);
   font-style: italic;
   font-size: var(--fs-h2);
-  line-height: 1.3;
+  line-height: 1.15;  /* display leading for 20pt italic */
   /* 20pt, so 24pt or under: --ink prints in black alone (the k-only pass),
      where --ink-dark printed on four plates (pdf.print.black-text). */
   color: var(--ink);
   letter-spacing: -0.01em;
-  margin: 18px 0;
+  margin: var(--space-sm) 0;
   break-inside: avoid;
 }
 
@@ -1101,7 +1101,7 @@ table.dc-stat-strip {
 }
 /* A pull quote runs the column's full width but keeps its air above and below. */
 .dc-pullquote.dc-flush {
-  margin: var(--space-md) 0;
+  margin: var(--space-sm) 0;
 }
 
 /* When markdown wraps a list-item's text in a <p> (loose-list rendering),
