@@ -361,7 +361,7 @@ describe("declared wrapper markers", () => {
       lede: "dc-intro",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction", "ladder"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`, "#### Name")); // an entry card needs its name
@@ -1594,7 +1594,7 @@ describe("definition variants", () => {
 });
 
 describe("entry cards", () => {
-  const KINDS = ["augment", "treasure", "vehicle", "drug"];
+  const KINDS = ["augment", "treasure", "vehicle", "drug", "program"];
   const ENTRIES = ["gear", ...KINDS];
   /** The marker line for an entry: bare `@gear` is general gear, a kind is a word on it. */
   const open = (name) => (name === "gear" ? "@gear" : `@gear ${name}`);
@@ -1781,5 +1781,105 @@ describe("@section catalog", () => {
     expect(rule(".dc-catalog hr")).toMatch(/display:\s*none/);
     expect(rule(".dc-entry > hr:last-child")).toMatch(/display:\s*none/);
     expect(rule(".dc-card.dc-entry")).toMatch(/border-top:\s*var\(--dc-entry-rule\)/);
+  });
+});
+
+describe("@ladder rungs", () => {
+  const ladder = (...rungs) => ["@ladder", "", ...rungs.flatMap((r) => [r, "", "Body.", ""]), "@end-ladder"].join("\n");
+  const tiers = (html) => [...html.matchAll(/<div class="dc-rung (\w+)">/g)].map((m) => m[1]);
+
+  test("the tier is read from the band at the end of each ### heading, in any of its spellings", () => {
+    const { html, warnings } = renderGp(ladder("### Triumphs (20)", "### Success (11\u201319)", "### Hard Choice (6-10)", "### Failure (2-5)", "### Catastrophe (1)"));
+    expect(warnings).toEqual([]);
+    expect(tiers(html)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+  });
+
+  test("a hyphen, an en dash, a double hyphen and loose spacing all read as the same band", () => {
+    for (const [heading, tier] of [["### A (11-19)", "hit"], ["### A (11\u201319)", "hit"], ["### A (11--19)", "hit"], ["### A ( 6 \u2013 10 )", "mixed"], ["### A (2\u20135)", "miss"], ["### A (**20**)", "crit"]]) {
+      expect(tiers(renderGp(ladder(heading)).html), heading).toEqual([tier]);
+    }
+  });
+
+  test("the heading keeps its text and markup; it becomes the rung's chip and the body follows it", () => {
+    const { html } = renderGp(ladder("### ~~Hard~~ Choice (6-10)"));
+    expect(html).toContain('<div class="dc-rung mixed">\n<h3 class="dc-rung-title"><s>Hard</s> Choice (6-10)</h3>\n<div class="dc-rung-body">\n<p>Body.</p>\n</div>\n</div>');
+    expect(html.startsWith('<div class="dc-ladder">')).toBe(true);
+  });
+
+  test("a ### that does not end in a standard band is an ordinary heading, and closes the rung before it", () => {
+    for (const heading of ["### Notes", "### Round (7)", "### Many (1-20)", "### Page 20"]) {
+      const { html } = renderGp(ladder("### Success (11-19)", heading));
+      expect(tiers(html), heading).toEqual(["hit"]);
+      expect(html, heading).toContain(`<h3>${heading.slice(4)}</h3>\n<p>Body.</p>\n</div>`); // plain h3, outside the rung
+    }
+  });
+
+  test("content between rungs, an example callout for one, stays inside the ladder and its rung", () => {
+    const { html, warnings } = renderGp(["@ladder", "", "### Hard Choice (6-10)", "", "Text.", "", "@callout example", "", "A roll of 8.", "", "@end-callout", "", "### Catastrophe (1)", "", "Boom.", "", "@end-ladder"].join("\n"));
+    expect(warnings).toEqual([]);
+    expect(html).toMatch(/dc-rung mixed[\s\S]*<div class="dc-rung-body">[\s\S]*<div class="dc-alert[^>]*>[\s\S]*A roll of 8\.<\/p>\n<\/div><\/div>\n<\/div>\n<div class="dc-rung fail">/);
+  });
+
+  test("a rung's closing bold line is its kicker; a bold lead-in is not", () => {
+    const { html } = renderGp(["@ladder", "", "### Success (11-19)", "", "**EXAMPLE:** a lead-in.", "", "**You did it.**", "", "### Failure (2-5)", "", "Text.", "", "@end-ladder"].join("\n"));
+    expect(html).toContain('<p class="dc-kicker"><strong>You did it.</strong></p>');
+    expect(html.match(/dc-kicker/g)).toHaveLength(1);
+  });
+
+  test("a ladder with no rung is reported", () => {
+    expect(renderGp("@ladder\n\n### Notes\n\nText.\n\n@end-ladder").warnings.map((w) => w.message ?? String(w)).join("\n")).toContain("has no rungs");
+  });
+});
+
+describe("@gear program", () => {
+  test("is an entry card of the program kind, with its bold-only cost line marked", () => {
+    const { html, warnings } = renderGp("@gear program\n\n#### DDoS\n\n> Bury it.\n\n**1 AP. ATTACK PROGRAM, 2 SesHP**\n\nYou flood it.\n\n@end-gear");
+    expect(warnings).toEqual([]);
+    expect(html).toContain('<div class="dc-card dc-entry dc-program"');
+    expect(html).toContain('<p class="dc-entry-cost"><strong>1 AP. ATTACK PROGRAM, 2 SesHP</strong></p>');
+    expect(html).not.toContain("dc-gear");
+  });
+});
+
+describe("the die call", () => {
+  const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
+
+  test("a paragraph that is only ROLL THE DIE!, bold or plain, is a die call", () => {
+    expect(callOf("**ROLL THE DIE!**")).toEqual([`<strong>${ROLL_HTML}</strong>`]);
+    expect(callOf("ROLL THE DIE!")).toEqual([ROLL_HTML]);
+    expect(callOf("**ROLL A DIE!**")).toHaveLength(1);
+    expect(callOf("Before it.\n\n**ROLL THE DIE!**\n\nAfter it.")).toHaveLength(1);
+  });
+
+  test("the words inside a sentence, with other text in the paragraph, in a list, a quote or a heading are not", () => {
+    for (const src of [
+      "You **ROLL THE DIE!** now.",
+      "**ROLL THE DIE!** and then act.",
+      "ROLL THE DIE! Then act.",
+      "**ROLL THE DIE!** *now*",
+      "- **ROLL THE DIE!**",
+      "1. **ROLL THE DIE!**",
+      "> **ROLL THE DIE!**",
+      "## ROLL THE DIE!",
+      "`ROLL THE DIE!`",
+      "REROLL THE DIE!",
+      "**ROLL THE DIE!**\ntwo lines",
+    ]) expect(callOf(src), src).toEqual([]);
+  });
+
+  test("it is only a marking: the inline mark inside it is the same one as everywhere", () => {
+    expect(renderGp("**ROLL THE DIE!**").html).toContain(`<strong>${ROLL_HTML}</strong>`);
+  });
+});
+
+describe("the entry cost line", () => {
+  const cost = (body) => renderGp(`@gear program\n\n#### X\n\n${body}\n\n@end-gear`).html;
+  test("a paragraph that is only one bold run gets .dc-entry-cost, in any kind", () => {
+    for (const kind of ["", " augment", " drug", " program"]) {
+      expect(renderGp(`@gear${kind}\n\n#### X\n\n**2 gp**\n\n@end-gear`).html, kind).toContain('<p class="dc-entry-cost"><strong>2 gp</strong></p>');
+    }
+  });
+  test("a paragraph with a bold run and other text does not", () => {
+    for (const body of ["**Bold** then text.", "Text then **bold**.", "**One** and **two**", "*italic*"]) expect(cost(body), body).not.toContain("dc-entry-cost");
   });
 });

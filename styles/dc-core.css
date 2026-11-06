@@ -104,6 +104,18 @@ h1, h2, h3, h4, h5, h6,
   hyphens: manual;
 }
 
+/* A struck word in a heading or a bar ("ROLL ~~M~~OR~~E~~ DIE!": markdown's
+   `~~` is <s>) is a joke the reader has to be able to read: the default hairline
+   strike in the bar's own cream vanishes. Strike it heavy, in the shadow ink
+   (--ink-dark, the ink every bar and chip casts), so the letter stays legible
+   under a bar across it. */
+:is(h1, h2, h3, h4, h5, h6, .dc-chevron, .dc-spray) :is(s, del, strike) {
+  text-decoration: line-through;
+  text-decoration-thickness: 0.2em;
+  text-decoration-color: var(--ink-dark);
+  text-decoration-skip-ink: none;
+}
+
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
 h1 {
   font-size: var(--fs-h1);

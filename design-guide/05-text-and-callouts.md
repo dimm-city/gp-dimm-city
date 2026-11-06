@@ -334,3 +334,69 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A tr
 </div>
 
 Token: `--dc-accent-ink`, the text-safe ink of the component the phrase sits in (the deep magenta by default; a panel, a lede, a specialty's cards and the like each set their own, so the phrase takes the colour of the box around it).
+
+### The die call
+
+A paragraph that is only the call, `**ROLL THE DIE!**` (bold, or the bare words, or `ROLL A DIE!` and the others), is the table's imperative moment, so it is not left as a line of text: it becomes a raised chip. The words sit on a deep-magenta face in the display type, the chip's left end is cut like a d20's facets with the die's outline in white, and it is tipped 2 degrees under a 2px ink shadow. There is nothing to write but the line. The same words inside a sentence, a list item or a quote stay the underlined mark above.
+
+```markdown
+When a result matters, the Dream Master tells you to:
+
+**ROLL THE DIE!**
+
+Then roll a d20 and read the ladder.
+
+@callout warning
+
+A trap springs.
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout note
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout example
+
+**ROLL THE DIE!**
+
+@end-callout
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-on-paper">
+
+When a result matters, the Dream Master tells you to:
+
+**ROLL THE DIE!**
+
+Then roll a d20 and read the ladder.
+
+@callout warning
+
+A trap springs.
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout note
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout example
+
+**ROLL THE DIE!**
+
+@end-callout
+
+</div>
+
+Tokens: `--dc-die-call-bg` (the face, deep magenta) and `--dc-die-call-fg`.

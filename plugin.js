@@ -15,11 +15,11 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear [augment|treasure|vehicle|drug]
+ *   @gear [augment|treasure|vehicle|drug|program]
  *                        → div.dc-card.dc-entry.dc-gear (general gear), or
  *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
  *                          treasure (magic items, relics), vehicle, drug (drugs,
- *                          elixirs, consumables)
+ *                          elixirs, consumables), program (deck software: a data cartridge)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @block [panel|slate|shard] label="Title"
@@ -38,6 +38,9 @@
  *   @card                → div.dc-card > .dc-card-heading (first ####),
  *                          .dc-card-pull (a quote right after it), .dc-card-body
  *                          (the rest; its last blockquote is .dc-card-footer)
+ *   @ladder              → div.dc-ladder: a run of `###` rungs whose headings end in an
+ *                          outcome band, `### Triumphs (20)`; each is div.dc-rung.<tier>
+ *                          > h3.dc-rung-title (the tier's chip) + div.dc-rung-body
  *   @outcome [flush]     → div.dc-outcomes[.dc-flush]: the d20 ladder, one row
  *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
  *   @procedure           → ol.dc-steps: each numbered list inside becomes the
@@ -1336,6 +1339,85 @@ function dcKickers(state) {
   }
 }
 
+/**
+ * A paragraph that is only the die call (`**ROLL THE DIE!**`, or the bare words,
+ * or any form of the phrase the inline rule picks out) is the table's imperative
+ * moment, not a sentence: `.dc-die-call`, a raised chip. Mid-sentence it stays the
+ * inline mark. A paragraph in a list or a quote is not set apart.
+ */
+function dcDieCalls(state) {
+  const t = state.tokens;
+  let quoted = 0;
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'blockquote_open' || t[i].type === 'list_item_open') quoted++;
+    else if (t[i].type === 'blockquote_close' || t[i].type === 'list_item_close') quoted--;
+    else if (t[i].type === 'paragraph_open' && !quoted && !t[i].hidden && t[i + 1]?.type === 'inline') {
+      const kids = (t[i + 1].children || []).filter((k) => k.type !== 'text' || k.content.trim());
+      const types = kids.map((k) => k.type).join();
+      if (types === 'dc_roll_the_die' || types === 'strong_open,dc_roll_the_die,strong_close') addTokenClass(t[i], 'dc-die-call');
+    }
+  }
+}
+
+// ── Declared component: @ladder ─────────────────────────────────────────────
+//
+// The outcome ladder unfolded: one rung per band, each a `###` whose heading
+// ends in its band in parentheses (`### Triumphs (20)`, `(11–19)`, `(6-10)`,
+// `(2–5)`, `(1)`; a hyphen, an en dash or `--` all read). The headings stay as
+// written; the tier is read from the band, the way the ladder table reads it
+// (LADDER_TIER_OF_BAND), and gets the ladder's own colour. A `###` with any
+// other ending is not a rung: it is left as it is, and closes the rung before it.
+
+/** `Triumphs (20)`, `Hard Choice (6-10)`, `Success (11–19)` → 'crit' | 'hit' | 'mixed' | 'miss' | 'fail'; any other heading → null. */
+function rungTier(text) {
+  const m = /\(([^()]*)\)\s*$/.exec(text || '');
+  const band = m && parseBand(m[1]);
+  if (!band) return null;
+  const [lo, hi] = band;
+  return LADDER_TIER_OF_BAND[lo === hi ? String(lo) : lo + '-' + hi] || null;
+}
+
+function dcLadders(state) {
+  forEachComponent(state.tokens, 'ladder', (run) => {
+    const out = [run[0]];
+    let depth = 0; // blocks open at the ladder's own level
+    let rung = false;
+    const endRung = () => {
+      if (!rung) return;
+      // a rung's closing bold line is the rung's kicker
+      const k = out.length;
+      if (out[k - 1].type === 'paragraph_close' && out[k - 3].type === 'paragraph_open' && out[k - 4].type !== 'html_block' && isBoldOnlyInline(out[k - 2])) addTokenClass(out[k - 3], 'dc-kicker');
+      out.push(makeToken('html_block', '</div>\n</div>\n'));
+      rung = false;
+    };
+    for (let i = 1; i < run.length - 1; i++) {
+      const tok = run[i];
+      if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h3') {
+        endRung();
+        const tier = rungTier(run[i + 1]?.content);
+        if (tier) {
+          out.push(makeToken('html_block', '<div class="dc-rung ' + tier + '">\n'));
+          addTokenClass(tok, 'dc-rung-title');
+          out.push(tok, run[i + 1], run[i + 2], makeToken('html_block', '<div class="dc-rung-body">\n'));
+          rung = true;
+          i += 2;
+          continue;
+        }
+      }
+      depth += tok.nesting;
+      out.push(tok);
+    }
+    endRung();
+    out.push(run[run.length - 1]);
+    return out;
+  });
+}
+
+function validateLadder({ blocks }) {
+  if (blocks.some((b) => b.type === 'heading' && b.level === 3 && rungTier(b.text))) return [];
+  return ['It has no rungs. Each starts with a `###` heading that ends in its band: `### Triumphs (20)`, `(11–19)`, `(6-10)`, `(2–5)`, `(1)`.'];
+}
+
 // ── Declared components: @card, @outcome, @procedure ───────────────────────
 //
 // Declared in `markers` like the three above, rewritten by core rules that
@@ -1588,7 +1670,7 @@ function validateSkill({ blocks }) {
     }));
 }
 
-const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug'];
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
 
 // A bare `@gear` (or an unrecognised word, which core reports) is general gear:
 // core added only the shared card, so the general-gear class goes right after it.
@@ -1599,8 +1681,21 @@ function dcGear(state) {
   });
 }
 
+// A paragraph in an entry that is only one bold run is its cost line
+// (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
+// A paragraph with a bold run and other text is body text.
+function dcEntryCosts(state) {
+  forEachComponent(state.tokens, 'gear', (run) => {
+    let depth = 0;
+    run.forEach((tok, i) => {
+      if (depth === 1 && tok.type === 'paragraph_open' && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
+      depth += tok.nesting;
+    });
+  });
+}
+
 /**
- * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`):
+ * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`, `program`):
  * one entry is one name. The name is the entry's first heading (`####`, or
  * `###`). An entry without one has no title bar, and one with a second heading
  * is usually two entries run together: a declared marker that opens again
@@ -1774,6 +1869,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
     '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
+  md.core.ruler.push('dc_die_calls', dcDieCalls);
 
   md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
 
@@ -1789,6 +1885,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_factions', dcFactions);
   md.core.ruler.push('dc_gear', dcGear);
+  md.core.ruler.push('dc_entry_costs', dcEntryCosts);
   md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
@@ -1796,6 +1893,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_ladders', dcLadders);
   md.core.ruler.push('dc_kickers', dcKickers);
   md.core.ruler.push('dc_ladder_tables', dcLadderTables);
   md.core.ruler.push('dc_stat_strips', dcStatStrips);
@@ -1852,6 +1950,7 @@ export const markers = {
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
   'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
+  ladder: wrapper('dc-ladder', { validate: validateLadder }),
 
   // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
   // the same marker with the `dm` variant preset. A default label comes from

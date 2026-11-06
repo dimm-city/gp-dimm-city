@@ -310,6 +310,19 @@ components:
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "A drug, elixir or other consumable: a prescription label, an irregular wobbling organic outline, a white sheet, a fungi-green head band, an Rx · Drug pill badge, a green name. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
 
+
+  - name: program
+    status: live
+    origin: plugin
+    markers: ["@gear program"]
+    snippet: program
+    recipe: "@gear program / #### Name / > tagline / **1 AP. ATTACK PROGRAM, 2 SesHP** / what it does … @end-gear"
+    emits: div.dc-card.dc-entry.dc-program
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "Deck software: a program found, bought or learned with an ability slot. A data cartridge: a white plate in a heavy ink frame, one cut corner top right, an ink label strip across the head with a PROGRAM badge, and a connector comb of ten ink pins cut into the foot. The name is HUD blue; the bold cost line is stamped as a tag (the gear's price tag, framed in HUD blue). It reads apart from the augment (stepped notch, cyan rule, teal name) in grayscale by its strip and comb. No cyan on the ink strip (that pairing is the Dream Master's). Same entry rules as @gear."
+
   - name: field
     status: live
     origin: plugin
@@ -396,6 +409,26 @@ components:
     usage: ["| 20 |"]
     breaks: "break-inside: avoid"
     notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. The chip column is max(130px, 26%) wide (--dc-outcome-key-col) so long band names wrap; names are 10pt semibold, result text 10pt. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
+
+
+  - name: ladder
+    status: live
+    origin: plugin
+    markers: ["@ladder"]
+    snippet: ladder
+    recipe: "@ladder / ### Triumphs (20) / text / ### Success (11–19) / text / ### Hard Choice (6-10) / text / ### Failure (2-5) / text / ### Catastrophe (1) / text … @end-ladder  (headings are the author's own words; only the band at the end is read; a hyphen, an en dash or -- all work)"
+    emits:
+      - div.dc-ladder
+      - div.dc-rung.crit|hit|mixed|miss|fail > h3.dc-rung-title + div.dc-rung-body
+      - p.dc-kicker (a rung's closing bold line)
+    css: styles/components/data.css
+    tokens:
+      - --dc-outcomes-surface
+      - --dc-outcomes-border
+      - --dc-outcomes-inner-border
+      - --dc-outcome-key-color
+    breaks: "a rung never splits (break-inside: avoid); the ladder breaks between rungs"
+    notes: "The outcome ladder unfolded, one rung per band, for a rule that needs a paragraph or a list for each result. Each `###` whose heading ends in a standard band in parentheses (20, 11-19, 6-10, 2-5, 1) is a rung: the tier is read from the band, not the words (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe), and the colours are the outcome ladder's. The heading stays as written and becomes the tier's chip, hung as a tab off the rung's left edge; the body is the ladder's machined plate (four 6px chamfers, hairline ring) with a 2px tether rail in the tier colour. A `###` with any other ending is an ordinary heading and closes the rung before it. Anything else between rungs, a callout or an example, is part of the rung before it. A rung's closing bold line is its street line. Reported when no heading in it ends in a band."
 
   - name: specialty
     status: live
@@ -594,6 +627,18 @@ components:
     usage: ["ROLL THE DIE!", "ROLL A DIE!", "ROLLS A DIE!", "ROLLING THE DIE!"]
     breaks: none
     notes: "Plain inline text in the line's own font and size: bold, in --dc-accent-ink (the ink of the component it sits in; default --brand-magenta-deep), with a dotted underline in that colour. The line keeps its height."
+
+
+  - name: die-call
+    status: live
+    origin: plugin
+    recipe: "**ROLL THE DIE!** (or the bare words, or ROLL A DIE! and the like) as a paragraph on its own; automatic, no markup"
+    emits: p.dc-die-call
+    css: styles/components/cards.css
+    tokens: [--dc-die-call-bg, --dc-die-call-fg]
+    usage: ["**ROLL THE DIE!**"]
+    breaks: "break-inside: avoid; break-after: avoid"
+    notes: "A paragraph that is only the die call (bold or plain, any form of the phrase the inline mark picks out) is the table's imperative moment: a raised deep-magenta chip with the words in the display face, a d20 facet cut and outline at its left, tipped -2deg, over a 2px ink label shadow. The same words in a sentence, in a list item or in a quote stay the inline mark (roll-the-die)."
 
   - name: img-wrapper
     status: live
@@ -974,6 +1019,16 @@ components:
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
     notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+
+
+  - name: street-line
+    status: live
+    origin: plugin
+    recipe: "**A closing line.** as the last paragraph of a section panel (or before a heading in it); automatic, no markup"
+    emits: p.dc-kicker
+    css: styles/components/section.css
+    breaks: "break-before: avoid; the paragraph above it breaks after: avoid"
+    notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour."
 
   - name: section-catalog
     status: live

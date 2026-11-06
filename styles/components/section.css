@@ -1660,4 +1660,50 @@ p:has(+ .dc-kicker) {
   break-after: avoid;
 }
 
+/* The street line: a section's closing slogan set as the tear-off strip at a
+   flyer's foot. A dotted ink perforation crosses the panel; under it the line
+   in the body face, 11pt bold, ink and level, with a short stub of the panel's
+   accent at its left. No capitals and no loud colour: a chapter holds a dozen
+   of them. A rung of a `@ladder` closes the same way, over its plate, with a
+   stub in the tier's colour. */
+.dc-section-panel > .dc-kicker,
+.dc-rung-body > .dc-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  text-align: left;
+  text-transform: none;
+  border-top: 2px dotted var(--ink);
+  padding-top: 6px;
+  margin-top: var(--space-md);
+}
+/* Across the panel, from its rail to its right edge. */
+.dc-section-panel > .dc-kicker {
+  margin-left: calc(var(--dc-section-rail) - var(--dc-section-pad-left));
+  margin-right: calc(-1 * var(--dc-section-pad-right));
+  padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
+  padding-right: var(--dc-section-pad-right);
+}
+/* Across a rung's plate, inside its hairline ring. */
+.dc-rung-body > .dc-kicker {
+  margin-left: -8px;
+  margin-right: -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+:is(.dc-section-panel, .dc-rung-body) > .dc-kicker::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 0.95em;
+  margin-right: 8px;
+  vertical-align: -0.12em;
+  background: var(--dc-section-accent);
+}
+.dc-rung-body > .dc-kicker::before {
+  background: var(--row-color);
+}
+
 }

@@ -353,6 +353,10 @@
   --dc-npc-stat-rule-width:  2pt;
   --dc-npc-stat-secondary:   var(--ink);
 
+  /* the die call (.dc-die-call): a paragraph that is only ROLL THE DIE! */
+  --dc-die-call-bg:          var(--brand-magenta-deep);  /* the die call's chip face (a paragraph that is only ROLL THE DIE!) */
+  --dc-die-call-fg:          var(--paper-cream);
+
   /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
   --dc-outcome-key-col:      max(130px, 26%);   /* chip column: wider on a full-width ladder so long band names wrap in three lines at most */
   --dc-outcome-key-color:    var(--paper-cream);
