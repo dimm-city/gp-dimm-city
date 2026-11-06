@@ -566,7 +566,8 @@
    gives the image its box, over the old padding. One SVG, stretched (a tiled
    image prints as raster blocks, a stretched one stays vector): a 24px slice
    at each side, the dashes between, 2px thick, 4px under the top edge and
-   11-13px above the foot, the ▸ 24px in from the right edge.
+   11-13px above the foot, the ▸ 9px by 10px, 6-16px above the foot and 14px in
+   from the right edge; the foot's marker band covers 4-17px.
    It cannot read a custom property, so each specialty names its own colour
    below (its tab colour, --spec-mid).
 
@@ -600,13 +601,13 @@
 .dc-skill-card > .dc-card-body > .dc-card-end {
   inset: 0;
   clip-path: var(--dc-skill-body-shape);
-  background: linear-gradient(var(--dc-card-surface), var(--dc-card-surface)) left 12px bottom 9px / calc(100% - 24px) 6px no-repeat;
+  background: linear-gradient(var(--dc-card-surface), var(--dc-card-surface)) left 12px bottom 4px / calc(100% - 24px) 13px no-repeat;
 }
 /* the specialty's last card draws its surface 3pt + 2px early: so does this
    box, and its band drops by as much to stay over the seam */
 .dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-end {
   bottom: calc(3pt + 2px);
-  background-position: left 12px bottom calc(9px - 3pt - 2px);
+  background-position: left 12px bottom calc(4px - 3pt - 2px);
 }
 .dc-specialty.augmerc { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
 .dc-specialty.cybersurgeon { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%2352626f' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%2352626f'/%3E%3C/svg%3E"); }
