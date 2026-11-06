@@ -561,17 +561,27 @@ components:
       - --dc-tier-fg
       - --dc-tier-edge
       - --dc-skill-card-break-inside
-    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces (a bold sub-head with its paragraph; a paragraph or a cost-row title with the list, table or ladder after it), a sub-header stays with what follows, a list breaks only with two items each side, a plain table splits between rows (two body rows each side, header row repeated), and so do the outcome ladder and roll plate, between tiers only (head and tier 1 together, last two tiers together), a line ending in a colon stays with the next block, a short closing line (.dc-card-signoff) stays with the block above, and the last block stays with the one above it. A fragment that continues keeps 12pt under its last line and a continuation 0.12in above its first (box-decoration-break: clone on the padding box); only the real top and foot carry the cut and the shadow. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces (a bold sub-head with its paragraph; a paragraph or a cost-row title with the list, table or ladder after it), a sub-header stays with what follows, a list breaks only with two items each side, a plain table splits between rows (two body rows each side, header row repeated), an outcome ladder and a roll plate never split (they move whole, with their lead-in), a line ending in a colon stays with the next block, a short closing line (.dc-card-signoff) stays with the block above, and the last block stays with the one above it. A fragment that continues keeps 12pt under its last line and a continuation 0.12in above its first (box-decoration-break: clone on the padding box); only the real top and foot carry the cut and the shadow. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). The tier pill on the tab is the specialty's own chip (--dc-tier-*), not a position colour. There is no featured-card variant. Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-card-continuation
     status: live
     origin: plugin
     recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
-    emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
+    emits: div.dc-skill-card.dc-skill-card-cut (the part before) + div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont (the continuation)
     css: styles/components/cards.css
+    unstyled: [dc-card-tab-cont]
     breaks: "as skill; honours the parent card's .dc-avoid-split"
-    notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
+    notes: "The part before @continue gets .dc-skill-card-cut: a straight ink foot with the hard shadow, the bottom-left bolt and a ▸ flag in the tab colour under the foot (no specialty cut: that stays for the card's real end). The continuation is a whole card: the full tab 'NAME ▸' with the card's ID (written or automatic) and the top-right bolt. A bare @continue outside a skill is core's section continuation; the usage count includes both."
+
+  - name: skill-card-seam
+    status: live
+    origin: plugin
+    recipe: "(automatic: every skill card; nothing to write)"
+    emits: span.dc-card-start + span.dc-card-end (zero-height markers closing every .dc-card-inner)
+    css: styles/components/cards.css
+    breaks: "Where the browser splits a card, the part that goes on ends in a dashed seam in the specialty's tab colour ending in a small ▸, and the part that continues starts with a matching dashed seam. Vector (an SVG border image, stretched), inside the card edges; the markers hide it at the card's real top and foot, so an unbroken card is unchanged. Adds no height."
+    notes: "The seam colour is one data-URI per specialty (--dc-seam on .dc-specialty.<name>): a border image cannot read a custom property. A new specialty needs a line there beside its tab colour."
 
   - name: ap-chip
     status: live
