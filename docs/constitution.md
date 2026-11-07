@@ -4,7 +4,7 @@ The canonical, self-contained north-star document for the Dimm City Design Guide
 
 If a design decision conflicts with this document, the design decision is wrong unless the conflict is explicitly resolved with a constitution update.
 
-**Version:** 2026-11-06
+**Version:** 2026-11-07
 **Authority:** project-level (this file) > AKM memory > knowledge:print/design/creaturepunk-design-guide
 **Related**: [css-architecture.md](./css-architecture.md), [adding-macros.md](./adding-macros.md)
 
@@ -184,16 +184,19 @@ The mistake to avoid: confusing **chaotic** with **hard to use**. Creaturepunk p
 - Line length: 45–75 characters.
 - Banners may be angled by a few degrees; text baseline inside stays level.
 
-### The paste-up register (a chapter in a book's own sheet)
+### The paste-up register
 
-A book may set one chapter as a paste-up wall instead of a column of hung panels: the Field Guide's rules chapter (chapter 3) is the reference. It is a register a book chooses in its own sheet, scoped to that chapter (`#chapter-03 …` in `fg-overrides.css`); the package's defaults do not change. Within that chapter, and only there, these amendments hold (owner decision, 2026-11-06):
+The paste-up wall is a register of the Dimm City design language, open to every Dimm City Gutterpress project, not one book's exception (owner decision, 2026-11-07). A section, a run of pages or a whole chapter may be set as a paste-up wall instead of a column of hung panels wherever the content suits it: rules and reference chapters that need varied rhythm, and catalogs of items. The Field Guide's rules chapter (chapter 3) is the reference, and its gear catalog (chapter 5: firearms and grenades) the second example. Until the package ships it as components, a project sets it in its own sheet, scoped to the part it applies to (`#chapter-03 …`, `#chapter-05 …`); the package's defaults do not change. Wherever it is used, these amendments hold:
 
-- **Sheets vary.** Sheets come in full, half and 62/38 widths, paired side by side in grid rows (never floats), each row kept whole. A sheet that ends early shows wall, not blank paper.
+- **Sheets vary.** Sheets come in full, half and 62/38 widths, paired side by side in grid rows (never floats), each row kept whole. A row does not stretch a shorter sheet to its neighbour's height: each sheet ends at its last line. A sheet that ends early shows wall, not blank paper.
+- **No sheet breaks inside itself.** Every sheet is kept whole. Where a section must run onto the next page, the markup splits it into two sheets at that point: the first ends at its last line, the second opens the next page with the same rail and paper and no title tag. A sheet's paper never runs blank to a page foot.
 - **Titles are tags that straddle the paper's edge.** A section's title leaves its sheet and is pasted over the sheet's top edge, tilted about −1° (§VII's in-sheet bar is replaced for these sheets). The tag's own text tilts with it: this is display type, so §IV's "baseline stays level" is waived for tags and bills only. Nothing paints above a sheet's top edge (a tilted corner at a page's top would print on the page before).
-- **Slogans are stickers.** A section's bold closing line (the street line, `.dc-kicker`) is a `--brand-yellow` sticker at the sheet's foot, tilted about −2°, in ink. It is a slogan, display text, so it may sit on yellow; reading text stays on white.
-- **Bills shout.** One big bill per section that opens a spread or a sub-system (ROLL THE DIE!, Hacking, Don't Be a Dick): cream or white display type on ink at 2× or 1.5× `--fs-h1` (52pt, 39pt). These are the only display steps outside the scale besides §VI's two decorative ones.
+- **Slogans are stickers.** A section's bold closing line (the street line, `.dc-kicker`) is a `--brand-yellow` sticker at the sheet's foot, tilted about −2°, in ink. It is a slogan, display text, so it may sit on yellow; reading text stays on white. Stickers are only for slogans.
+- **Bills shout.** One big bill per section that opens a spread or a sub-system (in the Field Guide: ROLL THE DIE!, Hacking, Don't Be a Dick): cream or white display type on ink at 2× or 1.5× `--fs-h1` (52pt, 39pt). These are the only display steps outside the scale besides §VI's two decorative ones.
+- **Art is pasted up too.** A plate of art on the wall is a print with a cream frame, one hard shadow and a slight tilt, filling wall a page would otherwise leave bare.
 - **One shadow.** These sheets keep the hard contact shadow and drop the soft lift (§II), so the wall reads as paper pasted flat.
-- **Rotation in quantity is the register, not a fault.** Tilted tags, stickers and bills on every page are what the paste-up register is; §IX's "same trick on every page" does not apply to them within that chapter. Body text, tables, lists and rules text stay level and upright, as everywhere.
+- **Rotation in quantity is the register, not a fault.** Tilted tags, stickers, bills and plates on every page are what the paste-up register is; §IX's "same trick on every page" does not apply to them where the register is used. Body text, tables, lists and rules text stay level and upright, as everywhere.
+- **Meaning still decides the component.** Inside the sheets, content keeps the component that matches what it is (a rule on a reference sheet, an item in a catalog entry, a warning in a warning callout); the register changes the wall, not the semantics.
 
 The 80/20 rule still governs it: the tilt, yellow and shouting are the 20; reading order, measure, the type floor and every component inside the sheets are the 80.
 
@@ -349,7 +352,7 @@ Display-face (lixdu) names inside a component must not wrap a short name onto tw
 
 ### Type hierarchy
 
-**One scale, no literal sizes.** Every `font-size` in the package is a `--fs-*` token (or a multiple of one, for the two decorative display steps: the pull quote's mark and the design guide's Part title; and, in a book's paste-up register only, its bills at 2× and 1.5× `--fs-h1`, §IV). The steps are 10, 11, 12, 13, 16, 20 and 26pt. Headings step down by about a quarter (26, 20, 16, 13); below 13pt the sizes are a point apart, too close to tell levels apart by size alone, so each level there differs in kind (face, caps, weight), never in size only. Headings are set on `--lh-display` (1.35). That is tight for this face, not loose: lixdu's capitals fill the whole em, so at 1.2 the two lines of a wrapped heading sit 2pt apart. `small`, `sub` and `sup` are held at the floor too.
+**One scale, no literal sizes.** Every `font-size` in the package is a `--fs-*` token (or a multiple of one, for the two decorative display steps: the pull quote's mark and the design guide's Part title; and, where the paste-up register is used, its bills at 2× and 1.5× `--fs-h1`, §IV). The steps are 10, 11, 12, 13, 16, 20 and 26pt. Headings step down by about a quarter (26, 20, 16, 13); below 13pt the sizes are a point apart, too close to tell levels apart by size alone, so each level there differs in kind (face, caps, weight), never in size only. Headings are set on `--lh-display` (1.35). That is tight for this face, not loose: lixdu's capitals fill the whole em, so at 1.2 the two lines of a wrapped heading sit 2pt apart. `small`, `sub` and `sup` are held at the floor too.
 
 | Element | Spec | Notes |
 |---|---|---|
