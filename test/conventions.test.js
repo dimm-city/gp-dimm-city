@@ -44,6 +44,20 @@ function stripComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
 }
 
+/** Every stylesheet under styles/, whether or not package.json lists it. */
+const STYLES_CSS = ["styles", "styles/components"].flatMap((d) => readdirSync(path.join(ROOT, d)).filter((f) => f.endsWith(".css")).map((f) => `${d}/${f}`));
+
+/** A colour with alpha: `transparent`, rgba()/hsla(), #rrggbbaa, a `/ <alpha>` in a colour function, or a color-mix() with transparent. */
+const TRANSLUCENT = /\btransparent\b|rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|\b(?:rgb|hsl|hwb|lab|lch|oklab|oklch|color)\([^()]*\/\s*[\d.]+%?\s*\)/;
+
+/** The argument list of the function whose opening parenthesis ends just before `start`. */
+function argsOf(css, start) {
+  let depth = 1;
+  let i = start;
+  for (; i < css.length && depth; i++) depth += css[i] === "(" ? 1 : css[i] === ")" ? -1 : 0;
+  return css.slice(start, i - 1);
+}
+
 describe("plugin.js", () => {
   const src = read("plugin.js");
   const code = stripComments(src);
@@ -137,6 +151,25 @@ describe("stylesheets", () => {
     expect(found).toEqual([]);
   });
 
+  // A gradient with a semi-transparent stop makes Chromium write a type-1
+  // (function-based) shading, which PDF.js cannot read, and makes its page
+  // transparent, so a PDF/X build flattens the whole page. Pre-mix the sheen
+  // into an opaque fill instead (cards.css .dc-card-tab, data.css
+  // .dc-path-shell, specialty.css). The one exception is the `--light-gloss`
+  // token in dc-palette.css: public API kept for books that read it, which
+  // nothing in the package applies.
+  test("use no gradient with transparent stops (PDF/X)", () => {
+    const found = [];
+    for (const rel of STYLES_CSS) {
+      const css = stripComments(read(rel)).replace(/--light-gloss:[^;]*;/, "");
+      for (const m of css.matchAll(/(?:linear|radial|conic)-gradient\(/g)) {
+        const args = argsOf(css, m.index + m[0].length);
+        if (TRANSLUCENT.test(args)) found.push(`${rel}: ${m[0]}${args})`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
+
   // PDF/X-1a (DriveThruRPG) carries no transparency. Gutterpress flattens the
   // artwork of a page that uses it and keeps the text live on top (#385), so
   // shadows and tints may be translucent, but text itself must stay opaque:
@@ -174,12 +207,11 @@ describe("stylesheets", () => {
 
   test("keep text opaque (PDF/X-1a)", () => {
     const TEXT_PAINT = /(?:^|[;{\s])(color|-webkit-text-fill-color|-webkit-text-stroke-color|text-decoration-color|text-shadow)\s*:([^;}]*)/g;
-    const ALPHA = /rgba\(|hsla\(|#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{4}\b(?![-\w])|color-mix\([^;]*\btransparent\b/;
     const found = [];
     for (const rel of sheets) {
       const css = stripComments(read(rel));
       for (const [, prop, value] of css.matchAll(TEXT_PAINT)) {
-        if (ALPHA.test(value)) found.push(`${rel}: ${prop}: ${value.trim()}`);
+        if (TRANSLUCENT.test(value)) found.push(`${rel}: ${prop}: ${value.trim()}`);
       }
       if (/(^|[^-\w])opacity\s*:\s*0?\.\d/.test(css)) found.push(`${rel}: opacity below 1`);
     }
@@ -228,8 +260,7 @@ function compoundsOf(selector) {
 describe("a bare @section is unstyled", () => {
   test("no selector in styles/** matches `.section` without a dc- class on the same element", () => {
     const bad = [];
-    const dirs = ["styles", "styles/components"];
-    for (const rel of dirs.flatMap((d) => readdirSync(path.join(ROOT, d)).filter((f) => f.endsWith(".css")).map((f) => `${d}/${f}`))) {
+    for (const rel of STYLES_CSS) {
       postcss.parse(read(rel)).walkRules((rule) => {
         for (const selector of rule.selectors) {
           for (const compound of compoundsOf(selector)) {
@@ -446,6 +477,36 @@ describe("a location adjusts components by tokens only", () => {
     }
     expect(seen, "found no location rules, so the check is not looking at anything").toBeGreaterThan(10);
     expect(bad, "a location sets --dc-* tokens on a component; the component's own rule reads them").toEqual([]);
+  });
+});
+
+describe("a rule on a host's first child survives the print anchor", () => {
+  // At print time the engine inserts `<gp-anchor id="gp-m-N" style="display:inline">` as the FIRST CHILD of
+  // a page, spread, chapter or specialty intro (a forced side break, a running-head string, a pin root), so a
+  // bare `:first-child` / `:nth-child(` on a direct child of one matches in the preview and not in the PDF.
+  // Skip the anchor: `:is(:first-child, :where(gp-anchor:first-child) + *)` (same specificity).
+  const HOST = /(\.page|\.chapter|\.spread|\.dc-specialty-intro)(?![\w-])/;
+  const stripGroups = (x) => {
+    let prev;
+    do { prev = x; x = x.replace(/\([^()]*\)/g, ""); } while (x !== prev);
+    return x;
+  };
+  test("no direct child of a page, chapter or intro is matched by a bare :first-child", () => {
+    const bad = [];
+    for (const rel of ["styles/page-templates.css", "styles/page-rules.css", "styles/dc-native.css", ...readdirSync(path.join(ROOT, "styles/components")).map((f) => `styles/components/${f}`)]) {
+      postcss.parse(read(rel)).walkRules((rule) => {
+        for (const selector of rule.selectors) {
+          const m = HOST.exec(selector);
+          if (!m || selector.includes("gp-anchor")) continue;
+          const tail = selector.slice(m.index + m[0].length);
+          const at = stripGroups(tail).indexOf(">");
+          if (at < 0) continue;
+          const child = stripGroups(tail).slice(at + 1).split(/[>+~\s]/).find(Boolean) ?? "";
+          if (/:(first-child|nth-child|only-child)\b/.test(child) || /^:(first-child|nth-child|only-child)/.test(child)) bad.push(`${rel}: ${selector.trim().slice(0, 110)}`);
+        }
+      });
+    }
+    expect(bad, "use :is(:first-child, :where(gp-anchor:first-child) + *)").toEqual([]);
   });
 });
 

@@ -1,10 +1,10 @@
 @layer dc.components {
 
 /* ═════════════════════════════════════════════════════════════════════════
-   ENTRY CARDS — @gear, and its kinds @gear augment|treasure|vehicle|drug
+   ENTRY CARDS — @gear, and its kinds @gear augment|treasure|vehicle|drug|program
    ═════════════════════════════════════════════════════════════════════════
    One item in a catalog: a name, an optional tagline, the item's prose, and
-   fields (`**SPECS:**`, `**Effects:**` …, below). The five kinds
+   fields (`**SPECS:**`, `**Effects:**` …, below). The six kinds
    share ONE rule set, `.dc-entry` below; each kind's class is a token setter
    on it and draws nothing of its own, so a sixth kind costs one variant word
    and a block of tokens. The kinds differ in silhouette, surface value, mark,
@@ -13,9 +13,10 @@
 
      gear       a hang tag   kraft paper, clipped corners, punched eyelet, rust, ink name
      augment    a spec chip  clean pale cool plate, stepped circuit notch, cyan top rule, teal name
-     treasure   a gem        violet tint, eight-sided cut, a hard facet, violet name
-     vehicle    a plate      concrete, riveted chamfers, hazard-stripe head, yellow badge, ink name
-     drug       a label      lime tint, a wobbling organic outline, fungi-green head, "Rx" pill badge
+     treasure   a gem        eight-sided cut, a violet rail, a hexagonal badge, violet name
+     vehicle    a plate      riveted chamfers, a heavy ink frame, yellow rail and badge, ink name
+     drug       a label      a wobbling organic outline, fungi-green head, "Rx" pill badge
+     program    a cartridge  ink label strip with a PROGRAM badge, a connector comb cut in the foot, HUD-blue name
 
    Writes as the books write it:
 
@@ -39,8 +40,8 @@
      --dc-entry-ornament — `""` draws the kind's ornament layer (an `::after`), `none` removes it
      --dc-entry-orn-inset / -bg / -border / -clip / -z — that layer's box, fill,
                            border, clip-path and stacking (solid fills, clips and
-                           borders only: they stay vector in PDF/X, where
-                           every gradient is rasterised or dropped)
+                           borders only, no gradient: a repeating one costs the
+                           page its live text in PDF/X)
      --dc-entry-frame    — an inset keyline (box-shadow)
      --dc-entry-badge-bg / -fg / -shape / -radius — the kind badge
 
@@ -98,7 +99,7 @@
 /* The name. Sized so a typical name stays on one line in a half-width card
    (lixdu is a wide face); a long one wraps balanced. */
 .dc-entry > :is(h3, h4):first-child {
-  font-size: 11pt;
+  font-size: var(--fs-h5);
   letter-spacing: 0.03em;
   color: var(--dc-entry-ink);
   margin: 0 0 4px;
@@ -109,7 +110,7 @@
 /* The tagline: a blockquote straight after the name is a line, not a box. */
 .dc-entry > :is(h3, h4):first-child + blockquote {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   background: none;
   border: 0;
   padding: 0;
@@ -168,12 +169,11 @@
   background: var(--bg);
 }
 
-/* AUGMENT — a spec chip: the cleanest, lightest plate in a run, cyan top rule,
+/* AUGMENT — a spec chip: the cleanest plate in a run, cyan top rule,
    a stepped (right-angled) notch like a PCB edge, a teal name. */
 .dc-augment {
   --dc-entry-accent: var(--brand-cyan);
   --dc-entry-ink: var(--hud-blue-dark);
-  --dc-entry-surface: color-mix(in srgb, var(--hud-blue-dim) 12%, var(--paper-cream));
   --dc-entry-kind: "Augment";
   --dc-entry-rule: 3px;
   --dc-entry-rail: 3px;
@@ -183,33 +183,25 @@
   --dc-entry-badge-shape: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
 }
 
-/* TREASURE — a gem: violet (6.5:1 on cream), an eight-sided cut, one hard
-   facet across the face (a flat-tone polygon layer behind the text), a
+/* TREASURE — a gem: violet (9.2:1 on the sheet), an eight-sided cut, a
    hexagonal badge. */
 .dc-treasure {
   --dc-entry-accent: var(--brand-violet);
   --dc-entry-ink: var(--brand-violet);
-  --dc-entry-surface: color-mix(in srgb, var(--crystal-amethyst) 10%, var(--paper-cream));
   --dc-entry-kind: "Treasure";
   --dc-entry-rail: 5px;
   --dc-entry-shape: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
-  --dc-entry-ornament: "";
-  --dc-entry-orn-inset: 0;
-  --dc-entry-orn-bg: color-mix(in srgb, var(--crystal-amethyst) 17%, var(--paper-cream));
-  --dc-entry-orn-clip: polygon(62% 0, 100% 0, 100% 100%, 38% 100%);
-  --dc-entry-orn-z: -1;
   --dc-entry-badge-bg: var(--brand-violet);
   --dc-entry-badge-fg: var(--paper-cream);
   --dc-entry-badge-shape: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
 }
 
-/* VEHICLE — an industrial plate: concrete, octagonal (12px) cut corners, a
+/* VEHICLE — an industrial plate: octagonal (12px) cut corners, a
    heavy 3px ink frame, an inner seam inside it, a yellow rail and a
    slanted yellow badge. (Hazard stripes are the danger register's.) */
 .dc-vehicle {
   --dc-entry-accent: var(--brand-yellow);
-  --dc-entry-ink: var(--ink-dark);
-  --dc-entry-surface: var(--concrete-pale);
+  --dc-entry-ink: var(--ink);
   --dc-entry-kind: "Vehicle";
   --dc-entry-rail: 6px;
   --dc-entry-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
@@ -224,12 +216,11 @@
 
 /* DRUG — a prescription label: an irregular, wobbling outline (organic: no long
    straight edge),
-   lime tint, a fungi-green head band (the top border), a pill badge. One frame
+   a fungi-green head band (the top border), a pill badge. One frame
    only: the head band and rail. */
 .dc-drug {
   --dc-entry-accent: var(--fungi-rot);
   --dc-entry-ink: var(--fungi-rot);
-  --dc-entry-surface: color-mix(in srgb, var(--fungi-glow) 24%, var(--paper-cream));
   --dc-entry-kind: "Rx \00B7  Drug";
   --dc-entry-rail: 6px;
   --dc-entry-rule: 7px;
@@ -239,14 +230,67 @@
   --dc-entry-badge-radius: 999px;
 }
 
+/* PROGRAM — a data cartridge: a white plate in a heavy ink frame, square at the
+   top with one cut corner, an ink LABEL STRIP across the head carrying the PROGRAM
+   badge, and a CONNECTOR polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 7px), 157px calc(100% - 7px), 157px 100%, 148px 100%, 148px calc(100% - 7px), 143px calc(100% - 7px), 143px 100%, 134px 100%, 134px calc(100% - 7px), 129px calc(100% - 7px), 129px 100%, 120px 100%, 120px calc(100% - 7px), 115px calc(100% - 7px), 115px 100%, 106px 100%, 106px calc(100% - 7px), 101px calc(100% - 7px), 101px 100%, 92px 100%, 92px calc(100% - 7px), 87px calc(100% - 7px), 87px 100%, 78px 100%, 78px calc(100% - 7px), 73px calc(100% - 7px), 73px 100%, 64px 100%, 64px calc(100% - 7px), 59px calc(100% - 7px), 59px 100%, 50px 100%, 50px calc(100% - 7px), 45px calc(100% - 7px), 45px 100%, 36px 100%, 36px calc(100% - 7px), 31px calc(100% - 7px), 31px 100%, 22px 100%, 22px calc(100% - 7px), 0 calc(100% - 7px)) cut into the foot (ten ink pins, the first 22px in).
+   The name is HUD blue, the cost line the usual stamped tag. In grayscale it
+   reads apart from the augment by the strip and the comb (the augment has a
+   stepped notch and a cyan rule). No cyan on the ink strip: that pairing is
+   the Dream Master's. */
+.dc-program {
+  --dc-entry-accent: var(--hud-blue-dark);
+  --dc-entry-ink: var(--hud-blue-dark);
+  --dc-entry-kind: "Program";
+  --dc-entry-rail: 0px;
+  --dc-entry-rule: 0px;
+  --dc-entry-shape: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 7px), 157px calc(100% - 7px), 157px 100%, 148px 100%, 148px calc(100% - 7px), 143px calc(100% - 7px), 143px 100%, 134px 100%, 134px calc(100% - 7px), 129px calc(100% - 7px), 129px 100%, 120px 100%, 120px calc(100% - 7px), 115px calc(100% - 7px), 115px 100%, 106px 100%, 106px calc(100% - 7px), 101px calc(100% - 7px), 101px 100%, 92px 100%, 92px calc(100% - 7px), 87px calc(100% - 7px), 87px 100%, 78px 100%, 78px calc(100% - 7px), 73px calc(100% - 7px), 73px 100%, 64px 100%, 64px calc(100% - 7px), 59px calc(100% - 7px), 59px 100%, 50px 100%, 50px calc(100% - 7px), 45px calc(100% - 7px), 45px 100%, 36px 100%, 36px calc(100% - 7px), 31px calc(100% - 7px), 31px 100%, 22px 100%, 22px calc(100% - 7px), 0 calc(100% - 7px));
+  --dc-entry-frame: inset 0 0 0 2px var(--ink);
+  --dc-entry-ornament: "";
+  --dc-entry-orn-inset: calc(100% - 9px) 0 0 0;
+  --dc-entry-orn-bg: var(--ink);
+  --dc-entry-badge-bg: var(--ink);
+  --dc-entry-badge-fg: var(--paper-cream);
+}
+/* The label strip: the kind badge widened to the card's width, over the card's padding. */
+.dc-program::before {
+  display: block;
+  margin: -16pt -18pt 8px;
+  padding: 3pt 18pt;
+  letter-spacing: 0.18em;
+  box-shadow: none;
+}
+/* The comb hangs 7px below the card: room under it, so it never crowds the next card's strip. */
+.dc-card.dc-program {
+  margin-bottom: calc(var(--dc-section-gap) + 7px);
+}
+/* An intro panel stays with the first entry under it. */
+.dc-section-panel:has(+ .dc-entry) {
+  break-after: avoid;
+}
+/* The cost line, stamped like a gear's price tag but framed in HUD blue. */
+.dc-program > p.dc-entry-cost {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--paper-cream);
+  border: 1.5pt solid var(--hud-blue-dark);
+  box-shadow: var(--dc-label-shadow);
+  padding: 0 6pt;
+  margin: 0 0 6px;
+  hyphens: none;
+  text-wrap: balance;
+}
+
 /* General gear: the italic tagline, and the bold price line stamped as a
    price tag (a raised rust-edged box). */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   margin: 0 0 6px;
 }
-.dc-gear > p:has(> strong:only-child) {
+.dc-gear > p.dc-entry-cost {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -427,16 +471,16 @@
   --dc-field-surface: transparent;
 }
 /* Effects over Side Effects: the benefit, then the cost. The benefit is a solid
-   teal frame on a pale teal ground with a + on its chip; the cost a dashed
-   blood frame on a pale blood ground with a – on its chip. */
+   teal frame with a + on its chip; the cost a dashed blood frame with a – on
+   its chip. Both on white. */
 .dc-field-effects {
   --dc-field-accent: var(--hud-blue-dark);
-  --dc-field-surface: color-mix(in srgb, var(--hud-blue-dim) 38%, var(--paper-cream));
+  --dc-field-surface: var(--paper-cream);
   --dc-field-edge-width: 1pt;
 }
 .dc-field-side-effects {
   --dc-field-accent: var(--blood);
-  --dc-field-surface: color-mix(in srgb, var(--crimson) 14%, var(--paper-cream));
+  --dc-field-surface: var(--paper-cream);
   --dc-field-edge-width: 1pt;
   --dc-field-edge-style: dashed;
 }
@@ -456,6 +500,12 @@
 .dc-field-requires {
   --dc-field-accent: var(--ink-dark);
   --dc-field-surface: var(--paper-aged);
+  /* A prerequisite is a tag, not a passage: it never splits (a two-line band
+     split one and one, the first a grey box stretched over empty space) and
+     never ends a page alone, so it stays with the line after it. The other
+     fields still split between lines (above). */
+  break-inside: avoid;
+  break-after: avoid;
 }
 
 }

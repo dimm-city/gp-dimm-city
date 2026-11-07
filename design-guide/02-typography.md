@@ -16,6 +16,8 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | H2 | `## Heading` | 20pt bold · lixdu | Section breaks, with an accent rule |
 | H3 | `### Sub-heading` | 16pt · lixdu | Column labels and sub-topics |
 | H4 | `#### Item` | 13pt uppercase · lixdu | Skill names, gear names, stat-block names |
+| H5 | `##### Label` | 11pt uppercase · lixdu | Sub-labels: smaller than body, carried by the display caps |
+| H6 | `###### Label` | 10pt bold uppercase · Tomorrow | Metadata labels, in the label face |
 | Body | a paragraph | 12pt · Titillium Web | All prose |
 | Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
@@ -42,6 +44,10 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 <p class="dg-face-tab">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
 <p class="dg-face-tab dg-face-set">AUG1.3 · 2 AP · SYSCHK 9&ndash;13</p>
 </div>
+
+Lixdu covers only plain ASCII, so a heading's curly quotes, en and em dashes and ellipsis come from a second `lixdu` face cut from the Tomorrow Bold file: they print in a matching weight, not in thin Tomorrow Regular. A heading breaks only between words; a single word wider than its column is not split, it overflows (widen the column, or place a soft hyphen). Running text has one ink, `--ink`: paragraphs, list items and table cells all print it.
+
+Lists hang their `»` (or numeral) in the left padding, 1.1em (1.6em for numbers, one more hang per nesting level), so wrapped lines align under the first word; items sit one small step apart whether the list is tight or loose, and a list adds no space above itself.
 
 ## Heading hierarchy
 

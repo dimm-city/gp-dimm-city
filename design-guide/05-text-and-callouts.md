@@ -82,7 +82,7 @@ Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-b
 
 ## Alerts
 
-One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, fill and label, so a reader knows the kind before reading a word, in colour and in grayscale. Write a GFM alert --- a blockquote whose first line is `[!TYPE]`, for the first seven --- and the label, colour, edge and shape come with the type. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
+One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert --- a blockquote whose first line is `[!TYPE]`, for the first seven --- and the label, colour, edge and shape come with the type. To give one its own title, write it after the marker with the body on the lines below (`> [!NOTE] Escaping A Grapple`): the title replaces the default label and the alert keeps its register. Text after the marker in a one-line alert is body text. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the `@callout` block below.
 
 ```markdown {.dg-split}
 > [!NOTE]
@@ -140,18 +140,18 @@ Result {.dg-result}
 
 | Type | Who it is for | Register | Looks like |
 |---|---|---|---|
-| `NOTE` | Players | A rules clarification | A calm HUD-blue panel with a blue rail and small, even machined chamfers |
-| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a light cream sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label |
-| `DM` | The Dream Master only | Guidance, hooks, adjudication | An ink file folder: a tab rising from the top edge, one corner cut, a cyan rail and a cyan chip at the top right |
-| `VIBE` | Players | Atmosphere and narrative voice, full width | A barely violet sheet with long shallow diagonal corners, one violet edge all round, a strip of tape on top, italic, with a violet-edged label chip |
-| `ORIGIN` | Players, in second person | Backstory addressed to the character | Warm paper with a torn bottom edge, a dog-eared corner, a rust rail and a worn crimson stamp label |
-| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: cool map paper with a torn bottom edge, a dog-eared corner, a teal rail and a worn deep-teal stamp label |
-| `VISIT` | Players | A location, present tense, before an encounter | A fungi-green signpost with a wobbly, organic outline and a map-pin label |
-| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail and a taped-on label |
+| `NOTE` | Players | A rules clarification | A white sheet with a heavy blue rail, a blue ring, a blue label chip and small, even machined chamfers, a bolt head in each top corner |
+| `WARNING` | Players | A rule with consequences | Hazard: an octagonal sign plate, a white sheet, a yellow-and-black stripe rail, a heavy ink frame (with a crimson second pass a hair out of register) and a yellow caution-tape label, a bolt head in each top corner |
+| `DM` | The Dream Master only | Guidance, hooks, adjudication | A file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the folder's tab; under it a white sheet in an ink ring, a cyan rail, one corner cut, a bolt head in each top corner of the white body under the cyan rule |
+| `VIBE` | Players | Atmosphere and narrative voice, full width | A white sheet with long shallow diagonal corners, framed in violet all round and along the diagonals, a bolt head in each top corner, italic, with a violet label chip |
+| `ORIGIN` | Players, in second person | Backstory addressed to the character | A white sheet with a torn bottom edge and square corners, framed in rust along the tear, with a heavy rust rail, a bolt head in each top corner and a worn crimson stamp label |
+| `LOCATION` | Players | A place written up: what it is, who holds it, how to get in | Origin's document in the map's teal: a white sheet with a torn bottom edge and square corners, framed in teal along the tear, with a heavy teal rail, a bolt head in each top corner and a worn deep-teal stamp label |
+| `VISIT` | Players | A location, present tense, before an encounter | A white signpost with a wobbly, organic outline, framed in fungi green along the wobble and the point, with a heavy green rail, a bolt head in each top corner and a green map-pin label chip |
+| `@callout example` | Players | A worked example (a block only: there is no `[!EXAMPLE]`) | A ticket (a V notch in its right edge), a cyan rail, a cyan ring, a bolt head in each top corner and a taped-on label |
 
-Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is italic except the example's, which is upright (the two reversed bodies, DM and visit, are semibold) and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
+Every cut edge is padded clear of the text, and every variant sets `--dc-accent-ink`, the text-safe ink of its own accent, so a `ROLL THE DIE!` inside takes the box's colour. Every body is ink on white, italic except the example's, which is upright, and every label is 10pt mono caps. A chapter can re-theme a panel's accent, but it never repaints an alert: the register is the same on every page.
 
-Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame`, `--dc-alert-label-bg`, `--dc-alert-label-pad`.
+Tokens shared by the family: `--dc-alert-bg`, `--dc-alert-border`, `--dc-alert-fg`, `--dc-alert-label-color`, `--dc-alert-border-width`, and, for the frame and label chrome, `--dc-alert-frame` (the inset ring), `--dc-alert-frame-width` (the frame that follows the outline of a vibe, origin, location or visit), `--dc-alert-label-bg`, `--dc-alert-label-pad`.
 
 
 ## Callout block
@@ -189,14 +189,16 @@ At Heat 3, expect a response. At Heat 5, the crew is actively hunted, and every 
 
 ## Worked example
 
-`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a cyan rail, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
+`@callout example` is the one spelling for a worked example: a play example, a sample exchange, a step-by-step. It is never a rule, and it reads that way: a cyan rail and ring, a taped-on label that says *Example*, upright body text. Speech lines stay as `>` lines inside it. (A bare `>` blockquote is reserved for a flavor line.) A longer example can be a `@section`; this is for the short ones that sit inside a section.
 
 ```markdown
 @callout example
 
-The Dream Master: "The guard turns toward you. What do you do?"
+> The Dream Master: "The guard turns toward you. What do you do?"
 
-You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+> You: "I flip the noodle cart into the doorway."
+
+That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
 
 @end-callout
 ```
@@ -207,9 +209,11 @@ Result {.dg-result}
 
 @callout example
 
-The Dream Master: "The guard turns toward you. What do you do?"
+> The Dream Master: "The guard turns toward you. What do you do?"
 
-You: "I flip the noodle cart into the doorway." That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
+> You: "I flip the noodle cart into the doorway."
+
+That is risky, so you **ROLL THE DIE!** and get a 14: a Success. The cart blocks the door.
 
 @end-callout
 
@@ -266,7 +270,7 @@ Tokens: `--dc-tape-bg`, `--dc-tape-border`, `--dc-tape-color`, `--dc-tape-shape`
 
 ## Rule
 
-A plain `---` between entries is a thin red rule --- the separator for gear lists and NPC entries.
+A plain `---` is a 1pt ink hairline, a pause between topics; in a skill card it is a 1.5pt seam in the specialty's colour between sub-abilities. It is not drawn first or last in its box, before a heading, table or component, or straight on the bare wall, and it never ends a page.
 
 ```markdown
 Trauma Kit × 2
@@ -334,3 +338,69 @@ When an ability says ROLL THE DIE!, roll a d20 and read the outcome ladder. A tr
 </div>
 
 Token: `--dc-accent-ink`, the text-safe ink of the component the phrase sits in (the deep magenta by default; a panel, a lede, a specialty's cards and the like each set their own, so the phrase takes the colour of the box around it).
+
+### The die call
+
+A paragraph that is only the call, `**ROLL THE DIE!**` (bold, or the bare words, or `ROLL A DIE!` and the others), is the table's imperative moment, so it is not left as a line of text: it becomes a raised chip. The words sit on a deep-magenta face in the display type, the chip's left end is cut like a d20's facets with the die's outline in white, and it is tipped 2 degrees under a 2px ink shadow. There is nothing to write but the line. The same words inside a sentence, a list item or a quote stay the underlined mark above.
+
+```markdown
+When a result matters, the Dream Master tells you to:
+
+**ROLL THE DIE!**
+
+Then roll a d20 and read the ladder.
+
+@callout warning
+
+A trap springs.
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout note
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout example
+
+**ROLL THE DIE!**
+
+@end-callout
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-on-paper">
+
+When a result matters, the Dream Master tells you to:
+
+**ROLL THE DIE!**
+
+Then roll a d20 and read the ladder.
+
+@callout warning
+
+A trap springs.
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout note
+
+**ROLL THE DIE!**
+
+@end-callout
+
+@callout example
+
+**ROLL THE DIE!**
+
+@end-callout
+
+</div>
+
+Tokens: `--dc-die-call-bg` (the face, deep magenta) and `--dc-die-call-fg`.

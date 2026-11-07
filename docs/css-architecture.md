@@ -259,30 +259,35 @@ hierarchy: color → typography → spacing → geometry.
 
 ```css
 /* Semantic brand colors — names carry meaning, not just hex values */
---crimson:        #e1261c;  /* PMS Red 032 — CMYK 0 95 90 0; survives POD */
+--crimson:        #e1261c;  /* PMS Red 032; survives POD */
 --blood:          #901a12;  /* oxidised arterial — heading color */
 --orange:         #d4500a;  /* burnt circuit-board — heat-damaged, not friendly cone */
 --rust:           #b23a12;  /* burnt rebar edge */
 --amber:          #7a5a20;  /* sulfur-scorched brass — contaminated, not generic earth */
---hud-blue:       #1f6f94;  /* teal-cyan mid HUD — CMYK 85 45 25 10 */
+--hud-blue:       #1f6f94;  /* teal-cyan mid HUD */
 
-/* Print substrate — neutral-cool greys, not warm cream */
+/* Print substrate — three: white paper, one light grey, the wall */
 --bg:             #c8c5bf;  /* ash-concrete — the brick wall (page background) */
---paper-cream:    #f0eee9;  /* light industrial flyer-stock — primary card surface */
---paper-light:    #e2ded7;  /* slightly darker grey alternate surface */
---paper-aged:     #c8c2b8;  /* weathered grey — decay register */
+--concrete-pale:  #dcdad5;  /* the one light grey */
+--paper-cream:    #ffffff;  /* white, no ink — primary card surface */
+--paper-light:    var(--paper-cream);    /* alias */
+--paper-aged:     var(--concrete-pale);  /* alias — chip and label grounds */
 
 /* Ink scale — warm sepia drift, not neutral gray */
---ink:            #1e1d1c;  /* near-black with red bias — riso warm black */
---ink-dark:       #2f2622;  /* warmer secondary heading weight */
---ink-smoke:      #4d4339;  /* sepia mid-tone — body emphasis */
---ink-dust:       #665b4e;  /* muted labels, subtitles */
+--ink:            #1e1d1c;  /* near-black with red bias — body, all small text, hairlines */
+--ink-dark:       #2f2622;  /* fills and heavy rules (prints on four plates) */
+--ink-smoke:      #4d4339;  /* sepia mid-tone — fills and rails */
+--ink-dust:       #665b4e;  /* fallback rail */
 ```
 
 These are the live values in `dc-palette.css` — that file, not this document, is the
 source of truth for token values. `dc-palette.css` also carries tokens omitted above
-(`--concrete-pale`, `--paper-stain`, `--orange-deep`, `--ink-mid`, `--deep-rust`,
-`--amber-dark`, the `--brand-*` signature layer); consult it before adding a color.
+(`--paper-stain`, `--orange-deep`, `--ink-mid`, `--deep-rust`, `--amber-dark`, the
+`--brand-*` signature layer); consult it before adding a color. Each hex token's
+comment carries its CMYK and total ink through the CGATS21_CRPC1 press profile; a
+new or retuned colour is measured with `scripts/measure-palette-crpc1.py` and must
+pass the print rules in [constitution §V](./constitution.md) (gamut, separation
+after conversion, tints `in oklch`, hairlines >= 1pt in ink, small text in `--ink`).
 
 Color token names are semantic — `--blood` is not "dark red", it is the specific
 heading-level red chosen because `--crimson` fails WCAG AA contrast (2.71:1) against
@@ -301,9 +306,10 @@ into the token name, not scattered across heading rules.
 --fs-floor:   10pt;    /* THE floor: no glyph is smaller (chips, tabs, labels, folios too) */
 --fs-body:    12pt;
 --fs-body-sm: 11pt;    /* smallest running prose in a component */
---fs-body-xs: 11.5pt;  /* between sm and body — outcome text, cover body, TOC items */
+--fs-body-xs: var(--fs-body-sm);  /* alias, kept for books (was 11.5pt) */
 
 /* Line height */
+--lh-display: 1.35;    /* headings (lixdu's capitals fill the em) */
 --lh-normal:  1.5;
 --lh-tight:   1.35;
 
@@ -339,8 +345,9 @@ in two files:
 /* page-rules.css — the base color */
 @page { background-color: var(--bg); }
 
-/* dc-native.css — the brick tile over it (opaque: PDF/X-1a has no
-   transparency, so the tile is pre-multiplied into --bg, no blend mode) */
+/* dc-native.css — the brick tile over it (opaque: a tile with alpha would
+   put every page through the PDF/X split, so it is pre-multiplied into --bg,
+   no blend mode) */
 @page {
   background: var(--bg) url("../images/brick-wall.png") repeat;
   background-size: 1.5in auto;
@@ -462,8 +469,8 @@ right border. Three rules keep the type centred:
   edge is balanced with `padding-top`, and the inline-end padding gives back the
   tracking a `letter-spacing` leaves after the last glyph;
 - the chip sits at the top of the footer band: the bottom margin
-  (`--bottom-margin`) is 0.875in from the sheet edge, and a 0.225in chip with
-  `margin-top: 0.025in` ends exactly 0.625in from the sheet edge, on
+  (`--bottom-margin`) is 0.95in from the sheet edge, and a 0.225in chip with
+  `margin-top: var(--chip-gap)` (0.10in) ends exactly 0.625in from the sheet edge, on
   DriveThruRPG's 0.5in text minimum (0.5in from the trim). The engine honours a margin on a margin box (measured: a 4pt margin
   moved the box 4.3pt);
 - nothing clips: a chip is a plain bordered box, so no glyph can be cut.
@@ -491,7 +498,7 @@ claimed alone (`ol.dc-steps`, `div.dc-intro`, `div.dc-toc`: this layer outranks
 `dc.components`; `test/page-text.test.js` enforces it), so a heading
 inside a section or callout is never matched, the guide's `@page .dg-doc`
 explainer pages stay plain, and `{.dc-chevron}` / `{.dc-spray}` headings keep
-their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-tape/-gap/-offset`,
+their own substrate. Tokens: `--dc-page-slip-bg/-ink/-edge/-shadow/-bolt/-bolt-face/-bolt-size/-gap/-foot`,
 `--dc-page-sheet-pad`, `--dc-page-title-ink`, and `--dc-heading-gap` (the space above any plain heading that follows a box) (the slip rail and the banner fill
 read the chapter's `--dc-section-accent`, so a chapter word recolours them).
 
@@ -601,7 +608,7 @@ an h3:
 /* components/entries.css — general gear's italic tagline */
 .dc-gear > p:has(> em:only-child) {
   font-size: var(--fs-body-sm);
-  color: var(--ink-smoke);
+  color: var(--ink);
   margin: 0 0 6px;
 }
 ```

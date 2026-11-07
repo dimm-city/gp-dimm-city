@@ -7,7 +7,7 @@
      --dc-card-surface         → card body background (default --paper-cream)
      --dc-card-tab-bg          → tab background (default --ink-dark)
      --dc-card-tab-title-color → tab title text color (default --paper-cream)
-     --dc-card-body-mark       → decorative ::before mark color (default --crimson)
+     --dc-card-body-mark       → unused (kept for books that set it; the bolt is not tinted) (default --crimson)
      --dc-skill-card-break-inside → `avoid` keeps a card whole (default auto: it splits)
    Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
    Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)
@@ -72,7 +72,10 @@
   /* 18px right and 16px left clear the deepest tab cut (a specialty's
      --dc-skill-tab-shape, at most 15px) by more than 2pt. */
   padding: 3px 18px 3px 16px;
-  background: var(--light-gloss), var(--dc-card-tab-bg);
+  /* The tab's gloss (--light-gloss), pre-composited onto its fill: opaque
+     stops make the PDF carry an axial shading, not a type-1 shading with
+     alpha, which PDF.js cannot read and which makes the page transparent. */
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--paper-cream) 30%, var(--dc-card-tab-bg)), var(--dc-card-tab-bg) 62%);
   border: 2px solid var(--dc-card-accent);
   border-bottom: 0;
   margin-left: 10px;
@@ -138,12 +141,12 @@
 
 .dc-tab-title {
   font-family: var(--font-tab);
-  font-size: 15px;
+  font-size: var(--fs-body-sm);
   /* Default to paper-cream so reverse-out text on the saturated tab fill
      always passes WCAG. Specialty contexts re-affirm the same color via
      their --dc-card-tab-title-color token. Without it the title would take
-     the default near-black body color over a saturated magenta fill: 2.95:1,
-     failing WCAG at all sizes. */
+     the default near-black body color over a saturated magenta fill: 3.3:1,
+     failing WCAG at this size. */
   color: var(--dc-card-tab-title-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -184,7 +187,7 @@
   line-height: 1;
   background-color: var(--dc-tier-bg);
   color: var(--dc-tier-fg);
-  box-shadow: inset 0 0 0 1px var(--dc-tier-edge), var(--dc-label-shadow);
+  box-shadow: inset 0 0 0 1pt var(--dc-tier-edge), var(--dc-label-shadow);
   letter-spacing: 0.05em;
   white-space: nowrap;
   flex-shrink: 0;
@@ -221,7 +224,14 @@
 }
 
 .dc-skill-card > .dc-card-body > .dc-card-inner {
-  padding: 8px 12px 16px;
+  /* The padding is cloned onto every fragment: a card that continues keeps
+     12pt (16px) under its last line, and a continuation opens --space-md
+     below the page edge's top, where a sliced box dropped both and set the
+     text against the edge. Only the box is cloned: the surface, outline and
+     shadow are the pseudos below, which stay one slice, so the foot cut is
+     drawn once, at the card's real foot. */
+  box-decoration-break: clone;
+  padding: var(--space-md) 12px 12pt;
   /* Not a stacking context here (the unscoped rule below lifts it to 1): the
      surface and shadow are this element's pseudos and must paint behind the
      outline, which is the body's pseudo — that order only exists while all
@@ -252,7 +262,23 @@
    fragmentation overflow. */
 .dc-specialty > .dc-learning-path:last-child {
   overflow-y: clip;
-  overflow-clip-margin: 8px;
+  overflow-clip-margin: 0;
+}
+/* ...but a card that ends a page there left its hanging foot (the 2px outline
+   and 3pt shadow, 6px past the box) on a page of its own, printed alone. On the
+   specialty's last card the foot is drawn INSIDE the box instead: the surface
+   ends 3pt + 2px early, the outline 3pt early, the shadow at the box's edge,
+   and the clip above takes nothing away. The box is exactly as tall as before;
+   the gap from the last line to the foot's cut is 6px less (16px to 10px) on
+   that one card. */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-inner::before {
+  bottom: 0;
+}
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body::after {
+  bottom: 3pt;
+}
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-inner::after {
+  bottom: calc(3pt + 2px);
 }
 
 /* 2px ink outline: the surface shape on a box 2px larger on every side,
@@ -295,6 +321,13 @@
    card that is kept whole, where they change nothing until it is taller than
    a page. */
 
+/* A `---` in a skill card is the seam between sub-abilities: 1.5pt in the
+   specialty's mid (--dc-card-tab-bg is the colour the card's tab is filled with). */
+.dc-skill-card hr {
+  --dc-rule: var(--dc-card-tab-bg);
+  border-top-width: 1.5pt;
+}
+
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
@@ -303,10 +336,28 @@
   break-after: avoid;
 }
 
-/* Text in a card never leaves one line alone at a page edge. Orphans are 3,
-   not the body's 2: Chromium keeps the orphans and drops the widows when a
+/* The first three blocks never split. Measured in Chromium: when the block at
+   a page foot is the end of a `break-after: avoid` chain and does not fit, it
+   splits a paragraph there, one line and one line, ignoring orphans and
+   widows, rather than back up to the break ahead of the card. A card whose
+   head was a quote and a two-line paragraph opened with a tab, the quote and
+   one line. A head that cannot split leaves it two breaks only, between the
+   blocks (kept together above) or before the card, and it takes the second. */
+/* A table, list, ladder, roll plate or columns run is left out: those split on
+   purpose (below), and this rule's specificity would beat theirs. */
+.dc-skill-card .dc-card-inner > :nth-child(-n+3):not(table, ul, ol, .dc-outcomes, .dc-roll-table, .gp-columns) {
+  break-inside: avoid;
+}
+
+
+/* Text in a card asks not to leave one line alone at a page edge. Orphans are
+   3, not the body's 2: Chromium keeps the orphans and drops the widows when a
    paragraph is too short to satisfy both, so at 2 a three-line paragraph still
-   split 2 + 1. At 3 it moves whole. */
+   split 2 + 1. At 3 it moves whole. What this cannot do: a two-line paragraph
+   (fewer lines than the orphans) and a four-line one (3 + 1) still split, and
+   in a `break-after: avoid` chain Chromium ignores both. Those are kept whole
+   where it matters, not by line count: the first three blocks of a card and
+   every lead-in never split (above and below), and a list breaks by item. */
 .dc-skill-card :is(.dc-ability-text, p, li) {
   orphans: 3;
   widows: 2;
@@ -323,27 +374,121 @@
   break-inside: avoid;
 }
 
-/* A lead-in stays with what it introduces: a bold-only pseudo-heading with the
-   paragraph under it, a paragraph with the list or table it opens. CSS cannot
-   see text nodes, so `strong:only-child` also takes a paragraph whose only
-   markup is one bold run. A last child is left out: its break-after would pass
-   up to the card and glue the next path banner to it.
+/* A lead-in stays with what it introduces. A bold-only paragraph (the plugin
+   marks it `.dc-card-subhead`: CSS cannot see text nodes, and
+   `p:has(> strong:only-child)` also took a run-in `**Label:** text`, which
+   chained four blocks into one run and left a 2in hole) stays with the
+   paragraph under it; a paragraph stays with the list, table, outcome ladder
+   or roll table it opens; an ability row stays with the list that follows it
+   (the row is its title: "3 AP Butcher Roach" over its bullets). A last child
+   is left out: its break-after would pass up to the card and glue the next
+   path banner to it. The ladder and the roll plate cannot split, so the
+   lead-in and the plate move together; a list or a table CAN split (below), so
+   the lead-in only needs its first rows.
 
-   An ability row is NOT a lead-in. It used to be glued to the block after it, so
-   a card of N rows had no place to split at all, and a card that reached a
-   page foot split inside its one breakable paragraph instead (a row or two on
-   one page, a hand's breadth of empty cream under them, the rest on the next).
-   Rows now split between rows; only the last block stays with the one above it
-   (below). */
-.dc-skill-card .dc-card-inner > p:has(> strong:only-child):not(:last-child),
-.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table)) {
+   An ability row is otherwise NOT a lead-in. It used to be glued to the block
+   after it, so a card of N rows had no place to split at all, and a card that
+   reached a page foot split inside its one breakable paragraph instead (a row
+   or two on one page, a hand's breadth of empty cream under them, the rest on
+   the next). Rows split between rows; only the last block stays with the one
+   above it (below). */
+.dc-skill-card .dc-card-inner > p.dc-card-subhead:not(:last-child),
+.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table, .dc-outcomes, .dc-roll-table)),
+.dc-skill-card .dc-card-inner > .dc-ability:has(+ :is(ul, ol)) {
+  break-after: avoid;
+}
+/* A lead-in is a short line that introduces something and never splits:
+   inside a keep-with-next chain Chromium would rather cut it one line and one
+   line than back up to a better break (see the first three blocks, above). */
+.dc-skill-card .dc-card-inner > p.dc-card-subhead,
+.dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table, .dc-outcomes, .dc-roll-table)) {
+  break-inside: avoid;
+}
+
+/* An ability row that is only a name (the plugin marks it `.dc-ability-title`:
+   `**3 AP — Butcher Roach**`, its text in the paragraphs after it) is the
+   title of what follows. */
+.dc-skill-card .dc-card-inner > .dc-ability-title:not(:last-child) {
   break-after: avoid;
 }
 
-/* The closing line of a card (a one-line sign-off, a trailing note) stays
-   with the block above it, so a continuation never opens with it alone. */
-.dc-skill-card .dc-card-inner > :last-child:not(:first-child) {
+/* A list in a card breaks only where two items stay on each side: no bullet is
+   carried to the next page alone, and none is left alone at a foot. (Orphans
+   and widows count lines, and a list item is one short line, so they do
+   nothing for a list of one-line items.)
+   Changing the bullet character (`*`, `+`, `-`) in the source starts a new
+   list in markdown, so a run of one-item lists is common: Gutterdruid's
+   "Choose one" options are five `<ul>`s of one `<li>`. The two rules after the
+   first count the run as one list: its first single item stays with the next
+   list, and the last single item stays with the list before it. */
+.dc-skill-card :is(ul, ol) > li:first-child:not(:only-child),
+.dc-skill-card :is(ul, ol) > li:nth-last-child(2) {
+  break-after: avoid;
+}
+.dc-skill-card .dc-card-inner > ul:not(:has(> li + li)):not(ul + ul):has(+ ul) {
+  break-after: avoid;
+}
+.dc-skill-card .dc-card-inner > ul + ul:not(:has(> li + li)):not(:has(+ ul)) {
   break-before: avoid;
+}
+/* The run's pitch is one list's: --space-xs between items, not --space-sm. */
+.dc-skill-card .dc-card-inner > ul:has(+ ul) {
+  margin-bottom: var(--space-xs);
+}
+
+/* A sub-header (a ##### line) and the card's tab stay with what follows them. */
+.dc-skill-card .dc-sub-header,
+.dc-skill-card > .dc-card-tab {
+  break-after: avoid;
+}
+
+/* A plain table in a card (a stat table, a scale) may split between rows,
+   never inside one: kept whole, a table that did not fit moved with its
+   lead-in and left 2 to 4in of empty card above it. At least two body rows
+   stay on each side of the break; Chromium repeats the header row (thead) at
+   the top of the next page. The outcome ladder and the roll plate stay whole
+   (data.css). Core's `table` is `break-inside: avoid`; this wins on
+   specificity. */
+.dc-skill-card table {
+  break-inside: auto;
+}
+.dc-skill-card tr {
+  break-inside: avoid;
+}
+.dc-skill-card thead,
+.dc-skill-card tbody > tr:first-child:not(:last-child),
+.dc-skill-card tbody > tr:nth-last-child(2) {
+  break-after: avoid;
+}
+
+/* The outcome ladder and the roll plate stay whole: a ladder read across a
+   page turn loses its scale (the owner's call), and the roll plate is one
+   framed, clipped box (a die-faced plate with two cuts) that cannot split.
+   The paragraph that leads into either moves with it (above). */
+.dc-skill-card :is(.dc-outcomes, .dc-roll-table) {
+  break-inside: avoid;
+}
+
+/* A closing line stays with the block above it, so a continuation never opens
+   with it alone: an ability row or any block but a paragraph always, a
+   paragraph only when it is a sign-off (the plugin marks a card's last
+   paragraph `.dc-card-signoff` when it is under 90 characters). A longer
+   closing paragraph, or the one after a table, carries over on its own: glued,
+   it dragged the table and the row before it to the next page with it. */
+.dc-skill-card .dc-card-inner > :last-child:not(:first-child):not(p:not(.dc-card-signoff)) {
+  break-before: avoid;
+}
+
+/* A lead-in (a paragraph, or a cost row, that ends in a colon: the plugin marks
+   it) stays with the block after it, whatever that is. */
+.dc-skill-card .dc-card-inner > :is(p, .dc-ability).dc-lead-in:not(:last-child) {
+  break-after: avoid;
+}
+/* It does not split either, unless it is a cost row holding its own body (a
+   nested list or paragraphs): that row is as long as its list, and the plain
+   ability-row rule above already keeps it whole. */
+.dc-skill-card .dc-card-inner > :is(p, .dc-ability:not(:has(> .dc-ability-body))).dc-lead-in:not(:last-child) {
+  break-inside: avoid;
 }
 
 /* Scoped to the skill card on purpose. This mark is an absolutely positioned
@@ -352,21 +497,36 @@
    instead of shrinking to its content, so a column run (`@columns 2`)
    that ends in a `@card` would take a page of its own and spill its bottom
    edge onto one more. The `@card` primitive shares the `.dc-card-body` class
-   and never meant to carry this tick (its tokens are the skill card's). */
+   and never meant to carry this bolt (its tokens are the skill card's). */
 .dc-skill-card > .dc-card-body::before {
   content: '';
   position: absolute;
-  top: -5px;
-  right: 18px;
-  width: 34px;
-  height: 11px;
-  /* A strip of masking tape holding the card to the wall: a translucent tint
-     of the card's mark colour on paper-aged, so the card edge and the wall
-     read through it, with a hard edge line, slightly rotated. */
-  background: color-mix(in srgb, color-mix(in srgb, var(--dc-card-body-mark) 14%, var(--paper-aged)) 78%, transparent);
-  box-shadow: inset 0 -1px 0 var(--ink-dust);
-  transform: rotate(3deg);
+  top: 4px;
+  right: 4px;
   z-index: 2;
+}
+/* The card is bolted at its top right (the tab already fixes the top left) and
+   at its bottom left: a bolt head each (drawn in chrome.css, "Bolt heads"). The
+   body is not cloned at a page break, so the top bolt prints once; an
+   explicit continuation card (`@continue`) is its own card and carries one. The bottom bolt sits at the card's foot (the
+   card has no bottom padding), placed by --dc-skill-foot-bolt-left / -bottom,
+   which each specialty sets beside its --dc-skill-body-shape so it clears the
+   foot's cut by 2pt. */
+.dc-skill-card::after {
+  left: var(--dc-skill-foot-bolt-left);
+  bottom: var(--dc-skill-foot-bolt-bottom);
+  z-index: 2;
+}
+/* A card that ends in an ability row (or a column run of them) ends in an AP
+   chip 12px above the foot, which the bolt's 14px would meet: the bolt moves
+   right, into the text column, past the chip and its shadow. */
+.dc-skill-card:has(> .dc-card-body > .dc-card-inner > :is(.dc-ability, .gp-columns:has(> * > .dc-ability)):last-child) {
+  --dc-skill-foot-bolt-left: calc(24px + 4.77 * var(--fs-floor));
+}
+/* A specialty's last card draws its surface 3pt + 2px early (below): the bolt
+   rises with it. */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child::after {
+  bottom: calc(var(--dc-skill-foot-bolt-bottom) + 3pt + 2px);
 }
 
 .dc-card-inner {
@@ -374,19 +534,110 @@
   z-index: 1;
 }
 
-/* ── Continuation card variants ───────────────────────────────────────── */
+/* ── The seam: a card that splits across pages ─────────────────────────── */
+/* The browser splits a long card where the page ends. The part that goes on
+   ends in a dashed seam in the specialty's tab colour with a small ▸, and the
+   part that continues starts with a matching dashed seam, both inside the card
+   edges. Nothing here adds height or moves a line: an unbroken card looks as
+   it did.
+
+   The seam is the cloned border image of .dc-card-inner (box-decoration-break:
+   clone, above), which paints in every fragment, top and foot alike: a
+   bottom-anchored background does not paint in a fragment that is not the last
+   in Chromium print, a border image does. The borders are zero wide (the
+   padding is untouched, so no layer or mark moves): border-image-width alone
+   gives the image its box, over the old padding. One SVG, stretched (a tiled
+   image prints as raster blocks, a stretched one stays vector): a 24px slice
+   at each side, the dashes between, 2px thick, 4px under the top edge and
+   11-13px above the foot, the ▸ 9px by 10px, 6-16px above the foot and 14px in
+   from the right edge; the foot's marker band covers 4-17px.
+   It cannot read a custom property, so each specialty names its own colour
+   below (its tab colour, --spec-mid).
+
+   Two zero-height markers close every card (plugin.js, `endCard`), in the card
+   body after .dc-card-inner: .dc-card-start sits at the top of the card and
+   exists in its first fragment only, .dc-card-end at its foot, in its last
+   only. They paint the card surface over the seam bands, so the card's real top
+   and real foot, and the foot of the part before an explicit @continue, show no
+   seam. Both stay clear of the card's corner cuts. */
+.dc-skill-card > .dc-card-body > .dc-card-inner {
+  border: 0 solid transparent;
+  border-image: var(--dc-seam) 8 24 16 24 / 8px 24px 12pt 24px / 0 stretch;
+}
+.dc-skill-card > .dc-card-body > .dc-card-start,
+.dc-skill-card > .dc-card-body > .dc-card-end {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+.dc-skill-card > .dc-card-body > .dc-card-start {
+  top: 2px;
+  right: 12px;
+  left: 12px;
+  height: 6px;
+  background: var(--dc-card-surface);
+}
+/* The foot's marker is the card's whole box, clipped to the card's own foot
+   shape (as the surface is), with a band painted at the bottom: a background
+   anchored to the bottom paints in the last fragment only, and the clip keeps
+   the cream inside the cut, off the ink outline around it. */
+.dc-skill-card > .dc-card-body > .dc-card-end {
+  inset: 0;
+  clip-path: var(--dc-skill-body-shape);
+  background: linear-gradient(var(--dc-card-surface), var(--dc-card-surface)) left 12px bottom 4px / calc(100% - 24px) 13px no-repeat;
+}
+/* the specialty's last card draws its surface 3pt + 2px early: so does this
+   box, and its band drops by as much to stay over the seam */
+.dc-specialty > .dc-learning-path:last-child > .dc-skill-card:last-child > .dc-card-body > .dc-card-end {
+  bottom: calc(3pt + 2px);
+  background-position: left 12px bottom calc(4px - 3pt - 2px);
+}
+.dc-specialty.augmerc { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
+.dc-specialty.cybersurgeon { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%2352626f' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%2352626f'/%3E%3C/svg%3E"); }
+.dc-specialty.technosorcerer { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%237a3008' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%237a3008'/%3E%3C/svg%3E"); }
+.dc-specialty.wirephreak { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23093c81' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23093c81'/%3E%3C/svg%3E"); }
+.dc-specialty.streetwarden { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23347828' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23347828'/%3E%3C/svg%3E"); }
+.dc-specialty.proxy { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%239c0f63' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%239c0f63'/%3E%3C/svg%3E"); }
+.dc-specialty.gutterdruid { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%234d6020' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%234d6020'/%3E%3C/svg%3E"); }
+.dc-specialty.etherlock { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%238a6a00' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%238a6a00'/%3E%3C/svg%3E"); }
+.dc-specialty.dualist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
+.dc-specialty.generalist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%233a4854' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%233a4854'/%3E%3C/svg%3E"); }
+
+/* ── Continuation card (an explicit @continue) ────────────────────────── */
 .dc-skill-card-cont {
   margin-top: -4px; /* the card's own offset: see .dc-skill-card */
 }
-
-.dc-card-tab-cont {
-  border-top-color: var(--hud-blue);
+/* a continuation opens close to its tab: no flavour line, a snug top */
+.dc-skill-card.dc-skill-card-cont > .dc-card-body > .dc-card-inner {
+  padding-top: var(--space-sm);
 }
 
-/* Inside a skill card the tab's border paints on ::before (tab chrome rules
-   above), so the continuation colour goes there too. */
-.dc-skill-card > .dc-card-tab-cont::before {
-  border-top-color: var(--hud-blue);
+/* The part before an @continue: a straight 2px ink foot with the hard shadow
+   (the specialty's cut stays the mark of the card's real end), the bottom-left
+   bolt, and a flag in the tab colour with a ▸ hanging under the foot at the
+   right, where the cut would be. The ▸ is an SVG background, vector. */
+.dc-specialty.dc-specialty .dc-skill-card.dc-skill-card-cut {
+  --dc-skill-body-shape: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left: 4px;
+  --dc-skill-foot-bolt-bottom: 4px;
+}
+.dc-skill-card.dc-skill-card-cut::before {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: calc(100% + 2px);
+  width: 34px;
+  height: 14px;
+  box-sizing: border-box;
+  background-color: var(--dc-card-tab-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8'%3E%3Cpath d='M0 0 6 4 0 8z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 6px 8px;
+  border: 2px solid var(--ink);
+  border-top: 0;
+  box-shadow: 2pt 2pt 0 var(--shadow-ink);
+  z-index: 2;
 }
 
 
@@ -394,10 +645,14 @@
 
 /* ── Ability row + ability text ───────────────────────────────────────── */
 .dc-ability {
-  display: flex;
-  gap: 12px;
+  /* Two columns: the chip's, and the text's. The text starts at one x in every
+     row: 4.77 chips (the free chip's width, the narrowest) and the 12px gap.
+     A chip wider than that (a range, "+1 AP") eats into its own gap, never
+     less than 4pt, and only then does its row's text move. */
+  display: grid;
+  grid-template-columns: minmax(calc(4.77 * var(--fs-floor) + 12px), auto) minmax(0, 1fr);
   margin-bottom: 6px;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .dc-ability:last-child {
@@ -412,9 +667,20 @@
 }
 
 .dc-ability-text strong {
-  /* --crimson on paper-cream = 4.03 (fails AA); --blood = 7.73:1 */
-  color: var(--blood);
-  font-weight: 600;
+  /* A game term is a word to notice, not a harm: the ink of the text around it. */
+  color: inherit;
+  font-weight: 700;
+}
+
+/* An ability row whose item also holds a nested list or more paragraphs: the
+   text and what follows it share the column to the right of the chip. */
+.dc-ability-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dc-ability-body > :is(ul, ol) {
+  margin: var(--space-xs) 0 0;
 }
 
 /* ROLL THE DIE! (and ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!) — token:
@@ -424,14 +690,75 @@
    (magenta in a magenta panel, blood in a blood box, a specialty's own ink in
    its cards), with a dotted underline in that colour. It is plain inline text,
    so the line keeps its height. Each component sets --dc-accent-ink to a shade
-   that holds 4.5:1 on its own surface; the deep magenta default holds 7.0:1 on
-   --paper-cream, 5.8:1 on --concrete-pale, 4.7:1 on --bg. */
+   that holds 4.5:1 on its own surface; the deep magenta default holds 12.5:1 on
+   --paper-cream, 8.9:1 on --concrete-pale, 7.2:1 on --bg. */
 .dc-roll-the-die {
   font-weight: 700;
   color: var(--dc-accent-ink);
   text-decoration: underline dotted var(--dc-accent-ink);
   text-decoration-thickness: 1.5pt;
   text-underline-offset: 0.15em;
+  white-space: nowrap; /* ROLL / THE DIE! never breaks across lines */
+}
+
+/* The die call: a paragraph that is only ROLL THE DIE! (plugin.js marks it
+   `.dc-die-call`) is the table's imperative moment, so it is set as a raised
+   chip: the words on a deep-magenta face whose left end is cut like a d20's
+   facets (a pointed end, with the die's outline in cream), tipped -2deg, over
+   a 2px ink label shadow. The chip is two layers behind the text (the face
+   and its shadow, both exactly the box; the shadow is moved, not offset, so it
+   adds nothing to the layout and nothing hangs below the box). The same words
+   mid-sentence stay the inline mark above. Tokens: --dc-die-call-bg,
+   --dc-die-call-fg. */
+.dc-die-call {
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: var(--space-md) 0 var(--space-md) 10px;
+  padding: 4px 18px 3px 34px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  font-size: var(--fs-h4);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--dc-die-call-fg);
+  transform: rotate(-2deg);
+  break-inside: avoid;
+  break-after: avoid;
+}
+.dc-die-call :is(strong, .dc-roll-the-die) {
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+.dc-die-call::before,
+.dc-die-call::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
+}
+/* Inside an alert the alert's own text colour and italics must not reach the chip. */
+:is(.dc-alert, .gp-alert) p.dc-die-call,
+:is(.dc-alert, .gp-alert) p.dc-die-call :is(strong, em, .dc-roll-the-die) {
+  color: var(--dc-die-call-fg);
+  font-style: normal;
+}
+/* The face, with the d20 outline (a hexagon with its facet triangle) in white at the cut. */
+.dc-die-call::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 22' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M10 1 19 6v10l-9 5-9-5V6z'/%3E%3Cpath d='M10 6 15 14H5z'/%3E%3C/svg%3E") no-repeat 9px center / 17px 19px,
+    var(--dc-die-call-bg);
+}
+.dc-die-call::after {
+  background: var(--ink-dark);
+  transform: translate(2px, 2px);
+  z-index: -2;
 }
 
 /* ── AP base + author-facing variants ─────────────────────────────────── */
@@ -456,10 +783,10 @@
       var(--dc-ap-bg) 50%,
       color-mix(in srgb, var(--dc-ap-bg) 94%, var(--ink) 6%) 100%); /* PDF/X-1a: pre-composite to ~94% bg + 6% ink; e.g. on --crimson (#e1261c) → #d42419 */
   color: var(--dc-ap-fg);
-  /* 1pt ink-dark hairline gives registration grip — without it, adjacent
+  /* 1pt ink hairline gives registration grip — without it, adjacent
      red-family AP chips (free/var/increased) merge under CMYK dot gain
      at chip scale (38px wide, ~0.5in on press). */
-  border: 1px solid var(--dc-ap-border);
+  border: 1pt solid var(--dc-ap-border);
   transform: rotate(-1deg);
   /* Layered shadow: an inset highlight plus a hard offset, so the chip reads
      as lifted off the card. */
@@ -474,13 +801,23 @@
   margin-top: 1px;
 }
 
+/* In an ability row every chip is at least as wide as the free chip (lamp and
+   "0 AP": 47.7pt at the 10pt floor, measured from a render), so free and
+   standard rows share one text column; a range or "+1 AP" may be wider. */
+.dc-ability > .dc-ap {
+  box-sizing: border-box;
+  min-width: 4.77em;
+  margin-right: 4pt;
+  justify-self: start;
+}
+
 /* .dc-ap.free is in specialty-identity.css with the other cost variants. */
 
 /* The plugin emits `.variable` (a range, X or VAR); `.var` is the raw
    authored spelling. */
 .dc-ap:is(.var, .variable) {
   /* --brand-magenta-deep, not the bright --hud-magenta: cream type on the
-     bright one is 4.06:1. */
+     deep one is 10.4:1 (5.2:1 on the bright one, before the gloss). */
   --dc-ap-bg: var(--brand-magenta-deep);
 }
 

@@ -325,7 +325,10 @@ The tests (`bun test`) are the CI gate:
 - `test/conventions.test.js` — one prefix (`dc-`), no runtime imports, only
   allow-listed core hooks.
 
-CI (`.github/workflows/ci.yml`) runs the tests and then builds the design
+CI (`.github/workflows/ci.yml`) runs the tests, checks every CMYK figure
+written down against the build's separation (`python3
+scripts/measure-palette-crpc1.py --check`; it needs Ghostscript 10.03 or
+newer and Pillow, so the job runs on `ubuntu-26.04`), and builds the design
 guide PDF with the PR's plugin and CSS, uploaded as the `design-guide-pdf`
 artifact — open it to see what a change did to every page. On `main`, the
 *Publish design guide* workflow deploys the HTML build to GitHub Pages

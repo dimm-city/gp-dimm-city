@@ -64,7 +64,7 @@ components:
     status: live
     origin: plugin
     snippet: alert
-    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically)"
+    recipe: "> [!NOTE] | > [!WARNING] | > [!DM] | > [!VIBE] | > [!ORIGIN] | > [!LOCATION] | > [!VISIT]  (GFM-style blockquote; the label is added automatically). A title: text after the marker on its own line, with a body under it (> [!NOTE] Escaping A Grapple / > body...), REPLACES the default label in span.dc-alert-label and keeps the variant class. Text after the marker in a one-line alert stays body text."
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning > span.dc-alert-label
@@ -88,10 +88,11 @@ components:
       - --dc-alert-margin-top
       - --dc-alert-shape
       - --dc-alert-frame
+      - --dc-alert-frame-width
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
-    notes: "One shell, eight registers, told apart by silhouette, fill value, edge and label (in colour and in grayscale): note (HUD blue, blue rail, machined chamfers), warning (sign-plate octagon, light cream, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (ink file folder with a tab, cyan rail and chip, Dream Master only), vibe (barely violet sheet, long shallow diagonals, one violet edge, tape strip, italic), origin (warm paper, torn bottom edge, dog-ear, rust rail, worn crimson stamp label), location (origin's document in map teal: cool paper, teal rail, deep-teal stamp), visit (wobbly fungi-green signpost, map-pin label), example (ticket V notch, cyan rail, taped-on tag). Every label is a raised chip (--dc-alert-label-shadow). A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
+    notes: "One shell, eight registers, told apart by silhouette, edge and label (in colour and in grayscale). Every one is a white sheet (--dc-alert-bg): its colour is in the rail, the frame and the label, never in the fill: note (heavy blue rail, 2pt blue ring, blue chip with paper type, machined chamfers), warning (sign-plate octagon, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the tab; an ink ring, a cyan rail, one cut corner; Dream Master only), vibe (long shallow diagonals, a violet frame that follows them, violet chip, italic), origin (torn bottom edge, square corners, a rust frame along the tear, a heavy rust rail, worn crimson stamp label), location (origin's document in map teal: teal frame and rail, deep-teal stamp), visit (wobbly signpost, a fungi-green frame along the wobble and the point, a heavy green rail, green map-pin chip), example (ticket V notch, cyan rail and 2pt cyan ring, taped-on tag). The ring is --dc-alert-frame (an inset box-shadow); vibe, origin, location and visit, whose outline a ring cannot follow, are filled with the accent under a white copy of their silhouette, --dc-alert-frame-width (3pt) in from the top, right and foot. Every register is bolted to the wall: a bolt head in each top corner, on the white body under the rule on the Dream Master note (--dc-bolt tokens; first fragment only). Every label is a raised chip (--dc-alert-label-shadow), except the dm note's, which is its ink bar. A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
     status: live
@@ -164,7 +165,7 @@ components:
     css: styles/components/data.css
     tokens: [--dc-definition-block-surface, --dc-definition-block-accent, --dc-definition-block-shape, --dc-definition-block-frame, --dc-definition-block-style, --dc-definition-block-pad]
     breaks: "break-inside: avoid (via .dc-prose-panel)"
-    notes: "A definition for the Lucid roll state, the opposite of surreal: the lightest sheet, four even 45-degree machined chamfers, a blue frame with a cyan hairline inside it, upright body, the headword ruled off in blue. Same markup and rules as @definition."
+    notes: "A definition for the Lucid roll state, the opposite of surreal: a white sheet, four even 45-degree machined chamfers, a blue frame with a cyan hairline inside it, upright body, the headword ruled off in blue. Same markup and rules as @definition."
 
   - name: definition-surreal
     status: live
@@ -205,11 +206,11 @@ components:
   - name: block-variants
     status: live
     origin: author
-    description: "The three looks of a @block: panel (HUD blue), slate (ink body, blood band) and shard (zine paper)."
+    description: "The three looks of a @block: panel (HUD blue), slate (ink body, blood band) and shard (white paper, torn foot)."
     recipe: "@block panel | slate | shard"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard
     css: styles/components/section.css
-    notes: "Three clip-path/surface treatments (the fourth, codex, is retired: see block-codex) on .dc-block: panel is a HUD-blue band with hex corners; slate an ink body under a blood band with a crimson rule and a stamped Binding tag (not magenta, not cyan); shard light zine paper with a torn foot and a taupe label strip, no accent hue. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
+    notes: "Three clip-path/surface treatments (the fourth, codex, is retired: see block-codex) on .dc-block: panel is a HUD-blue band with hex corners; slate an ink body under a blood band with a crimson rule and a stamped Binding tag (not magenta, not cyan); shard white paper with a torn foot and a taupe label strip, no accent hue. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
 
   - name: roll-table
     status: live
@@ -246,7 +247,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-choose.dc-flaws|.dc-ideals|.dc-dreams
     css: styles/components/section.css
     tokens: [--dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail, --dc-card-shape]
-    notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks. The kind sets the --dc-choice-* tokens and the card shape, and the cards read them: flaws = blood, a cracked jagged foot and a nicked corner; ideals = HUD blue, a symmetric tablet with a rule under the name; dreams = violet, a top edge rising to the right. Each card has a rail, a top band, a one-word kind chip (FLAW, IDEAL, DREAM) and the closing quote in a kind-tinted well. With no heading the section draws nothing around the cards."
+    notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks. The kind sets the --dc-choice-* tokens and the card shape, and the cards read them: flaws = blood, a cracked jagged foot and a nicked corner; ideals = HUD blue, a symmetric tablet with a rule under the name; dreams = violet, a top edge rising to the right. Each card has a rail, a top band, a one-word kind chip (FLAW, IDEAL, DREAM) and the closing quote in ink on the card's white, ruled down its left in the kind colour. All three are white sheets: they differ in edge weight and silhouette. With no heading the section draws nothing around the cards."
 
   # ── Entry cards: one rule set (.dc-entry), each kind a token setter ─────
   - name: gear
@@ -271,7 +272,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A cybernetic or mod: a spec chip, the lightest cool plate, a stepped PCB notch top-right, a 3px cyan top rule, a teal name, an arrow badge. Same entry rules as @gear."
+    notes: "A cybernetic or mod: a spec chip, a white plate, a stepped PCB notch top-right, a 3px cyan top rule, a teal name, an arrow badge. Same entry rules as @gear."
 
   - name: treasure
     status: live
@@ -283,7 +284,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A magic item or relic: a gem, pale amethyst, an octagon cut, one hard two-tone facet, a violet rail and name, a hexagon badge. Same entry rules as @gear."
+    notes: "A magic item or relic: a gem, a white sheet in an octagon cut, a violet rail and name, a hexagon badge. Same entry rules as @gear."
 
   - name: vehicle
     status: live
@@ -295,7 +296,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A vehicle: an industrial plate, cold concrete with chamfers, an ink inset frame, an inner seam, a yellow rail and slanted yellow badge. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
+    notes: "A vehicle: an industrial plate, a white sheet with chamfers, an ink inset frame, an inner seam, a yellow rail and slanted yellow badge. Its `**SPECS:**` line is the usual boxed strip. Same entry rules as @gear."
 
   - name: drug
     status: live
@@ -307,7 +308,20 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "A drug, elixir or other consumable: a prescription label, an irregular wobbling organic outline, a lime tint, a fungi-green head band, an Rx · Drug pill badge, a green name. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
+    notes: "A drug, elixir or other consumable: a prescription label, an irregular wobbling organic outline, a white sheet, a fungi-green head band, an Rx · Drug pill badge, a green name. Its `**Effects:**` and `**Side Effects:**` paragraphs are paired field lines. Same entry rules as @gear."
+
+
+  - name: program
+    status: live
+    origin: plugin
+    markers: ["@gear program"]
+    snippet: program
+    recipe: "@gear program / #### Name / > tagline / **1 AP. ATTACK PROGRAM, 2 SesHP** / what it does … @end-gear"
+    emits: div.dc-card.dc-entry.dc-program
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "Deck software: a program found, bought or learned with an ability slot. A data cartridge: a white plate in a heavy ink frame, one cut corner top right, an ink label strip across the head with a PROGRAM badge, and a connector comb of ten ink pins cut into the foot. The name is HUD blue; the bold cost line is stamped as a tag (the gear's price tag, framed in HUD blue). It reads apart from the augment (stepped notch, cyan rule, teal name) in grayscale by its strip and comb. No cyan on the ink strip (that pairing is the Dream Master's). Same entry rules as @gear."
 
   - name: field
     status: live
@@ -324,7 +338,7 @@ components:
       - div.dc-field.dc-field-requires
     css: styles/components/entries.css
     tokens: [--dc-field-accent, --dc-field-surface, --dc-field-fg, --dc-field-label-fg, --dc-field-edge-width, --dc-field-edge-style]
-    breaks: "break-inside: avoid; a label with no text keeps with the paragraph after it"
+    breaks: "splits between lines (two orphans and two widows) except `requires`, a prerequisite band, which never splits and never ends a page alone (break-inside and break-after: avoid); a label with no text keeps with the paragraph after it"
     usage:
       - "**SPECS:**"
       - "**Traits:**"
@@ -335,7 +349,7 @@ components:
       - "**Wirephreak Gear:**"
       - "**Cybersurgeon Instrument(s):**"
       - "**TECHNOENHANCEMENT:**"
-    notes: "A labelled field: a rail, a surface and a label chip (one slanted-edge chip for all six), then the text beside it. Effects are a solid teal frame on a pale teal ground with a + on the chip (the benefit); side effects a dashed blood frame on a pale blood ground with a – on the chip (the cost). The variant is a bare word and its default label is the variant's name; `label=\"…\"` replaces it, as with @callout. Inside an entry card (@gear, of any kind), @npc-stat (or @section npc) and @skill, a paragraph that opens with one of these bold labels (colon inside the bold, any case) is rewritten to exactly the markup the marker writes, keeping the author's own words as the label, so books need no change. `specs` is the one SPECS box (dark, with a yellow rail); the retired `@callout gear` and `[!GEAR]` made the same box. The labels are the FIELD_LABELS table in plugin.js: SPECS, Traits, Equipment, Effects, Side Effects, Requires, and the profession labels Wirephreak Gear, Cybersurgeon Instrument / Instruments / Instrument(s) and TECHNOENHANCEMENT (all means requires). Elsewhere the paragraph stays a paragraph. A new label is one line in that table; a new field type is a variant name there plus one token-setting rule in entries.css."
+    notes: "A labelled field: a rail, a surface and a label chip (one slanted-edge chip for all six), then the text beside it. Effects are a solid teal frame with a + on the chip (the benefit); side effects a dashed blood frame with a – on the chip (the cost); both on white. The variant is a bare word and its default label is the variant's name; `label=\"…\"` replaces it, as with @callout. Inside an entry card (@gear, of any kind), @npc-stat (or @section npc) and @skill, a paragraph that opens with one of these bold labels (colon inside the bold, any case) is rewritten to exactly the markup the marker writes, keeping the author's own words as the label, so books need no change. `specs` is the one SPECS box (dark, with a yellow rail); the retired `@callout gear` and `[!GEAR]` made the same box. The labels are the FIELD_LABELS table in plugin.js: SPECS, Traits, Equipment, Effects, Side Effects, Requires, and the profession labels Wirephreak Gear, Cybersurgeon Instrument / Instruments / Instrument(s) and TECHNOENHANCEMENT (all means requires). Elsewhere the paragraph stays a paragraph. A new label is one line in that table; a new field type is a variant name there plus one token-setting rule in entries.css."
 
   - name: lede
     status: live
@@ -395,6 +409,26 @@ components:
     usage: ["| 20 |"]
     breaks: "break-inside: avoid"
     notes: "Declared marker; `flush` is its one variant (also writable .dc-flush). One row per `roll | name | text` line, coloured by position; a sixth row is a plain hit. Left open at the end of the file it warns (declared_marker_eof_close); a line that is not a row, a non-row block, or no rows at all is reported. The table form is recognised by its band values, not its headers: a table with any other set of bands (six bands, three, a split at 10) is a plain table, or an @roll-table. The chip column is max(130px, 26%) wide (--dc-outcome-key-col) so long band names wrap; names are 10pt semibold, result text 10pt. A table row's tier and name come from its band (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe)."
+
+
+  - name: ladder
+    status: live
+    origin: plugin
+    markers: ["@ladder"]
+    snippet: ladder
+    recipe: "@ladder / ### Triumphs (20) / text / ### Success (11–19) / text / ### Hard Choice (6-10) / text / ### Failure (2-5) / text / ### Catastrophe (1) / text … @end-ladder  (headings are the author's own words; only the band at the end is read; a hyphen, an en dash or -- all work)"
+    emits:
+      - div.dc-ladder
+      - div.dc-rung.crit|hit|mixed|miss|fail > h3.dc-rung-title + div.dc-rung-body
+      - p.dc-kicker (a rung's closing bold line)
+    css: styles/components/data.css
+    tokens:
+      - --dc-outcomes-surface
+      - --dc-outcomes-border
+      - --dc-outcomes-inner-border
+      - --dc-outcome-key-color
+    breaks: "a rung never splits (break-inside: avoid); the ladder breaks between rungs"
+    notes: "The outcome ladder unfolded, one rung per band, for a rule that needs a paragraph or a list for each result. Each `###` whose heading ends in a standard band in parentheses (20, 11-19, 6-10, 2-5, 1) is a rung: the tier is read from the band, not the words (20 crit, 11-19 hit, 6-10 hard choice, 2-5 miss, 1 catastrophe), and the colours are the outcome ladder's. The heading stays as written and becomes the tier's chip, hung as a tab off the rung's left edge; the body is the ladder's machined plate (four 6px chamfers, hairline ring) with a 2px tether rail in the tier colour. A `###` with any other ending is an ordinary heading and closes the rung before it. Anything else between rungs, a callout or an example, is part of the rung before it. A rung's closing bold line is its street line. Reported when no heading in it ends in a band."
 
   - name: specialty
     status: live
@@ -535,7 +569,13 @@ components:
     emits:
       - div.dc-skill-card[name] > div.dc-card-tab > h4.dc-tab-title + span.dc-tab-tier
       - div.dc-card-body > div.dc-card-inner > p.dc-flavor + div.dc-sub-header
-      - div.dc-ability > span.dc-ap + p.dc-ability-text
+      - p.dc-card-subhead (a paragraph in a card whose whole content is one bold run: its pseudo-heading; a run-in `**Label:** text` is not one)
+      - p.dc-lead-in, div.dc-ability.dc-lead-in (a paragraph or cost row in a card whose text ends in a colon: it stays with the block after it)
+      - p.dc-card-signoff (the card's last paragraph when it is short, under 90 characters: it stays with the block above it)
+      - div.dc-ability > span.dc-ap + p.dc-ability-text (div.dc-ability-body wraps the text and a nested list when the item has one)
+      - div.dc-ability.dc-ability-title (a cost row that is only a name, `**3 AP — Butcher Roach**`: the title of the paragraphs after it)
+      - div.dc-outcomes or div.dc-roll-table (a numbered list whose items all lead with a bold die result)
+      - ul > li (a numbered item led by a bold name is an option: bulleted, name in bold with a colon)
     css: [styles/components/cards.css, styles/components/data.css, styles/components/specialty-identity.css, styles/dc-native.css]
     tokens:
       - --dc-card-accent
@@ -543,28 +583,43 @@ components:
       - --dc-card-tab-bg
       - --dc-card-tab-title-color
       - --dc-card-body-mark
+      - --dc-bolt
+      - --dc-bolt-face
+      - --dc-bolt-size
+      - --dc-skill-foot-bolt-left
+      - --dc-skill-foot-bolt-bottom
       - --dc-card-gap
       - --dc-card-tab-shadow
       - --dc-tier-bg
       - --dc-tier-fg
       - --dc-tier-edge
       - --dc-skill-card-break-inside
-    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces, and the last block stays with the one above it. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
+    breaks: "splits across pages by default (a card is a third to half a page, so whole cards left pages one card deep); a split card never opens with only its tab, an ability row is never cut, a lead-in stays with what it introduces (a bold sub-head with its paragraph; a paragraph or a cost-row title with the list, table or ladder after it), a sub-header stays with what follows, a list breaks only with two items each side, a plain table splits between rows (two body rows each side, header row repeated), an outcome ladder and a roll plate never split (they move whole, with their lead-in), a line ending in a colon stays with the next block, a short closing line (.dc-card-signoff) stays with the block above, and the last block stays with the one above it. A fragment that continues keeps 12pt under its last line and a continuation 0.12in above its first (box-decoration-break: clone on the padding box); only the real top and foot carry the cut and the shadow. {.dc-avoid-split} keeps one whole, as --dc-skill-card-break-inside: avoid does"
     notes: "Declared marker. Every #### heading in one @skill is its own card, with the @skill line's classes and attributes. @end-skill closes only the skill, never the path around it. A ##### Outcomes sub-header is swallowed (the outcomes block carries its own label). The tier pill on the tab is the specialty's own chip (--dc-tier-*), not a position colour. There is no featured-card variant. Part of a card's body can sit in columns: wrap it in `@columns 2` … `@end-columns`; the run (and any `@column-break` in it) stays inside the card's .dc-card-inner, in place."
 
   - name: skill-card-continuation
     status: live
     origin: plugin
     recipe: "@continue  (inside an open @skill card; closes it and opens a '{name} ▸' continuation card)"
-    emits: div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont
+    emits: div.dc-skill-card.dc-skill-card-cut (the part before) + div.dc-skill-card.dc-skill-card-cont > div.dc-card-tab.dc-card-tab-cont (the continuation)
     css: styles/components/cards.css
+    unstyled: [dc-card-tab-cont]
     breaks: "as skill; honours the parent card's .dc-avoid-split"
-    notes: "A bare @continue outside a skill is core's section continuation; the usage count includes both."
+    notes: "The part before @continue gets .dc-skill-card-cut: a straight ink foot with the hard shadow, the bottom-left bolt and a ▸ flag in the tab colour under the foot (no specialty cut: that stays for the card's real end). The continuation is a whole card: the full tab 'NAME ▸' with the card's ID (written or automatic) and the top-right bolt. A bare @continue outside a skill is core's section continuation; the usage count includes both."
+
+  - name: skill-card-seam
+    status: live
+    origin: plugin
+    recipe: "(automatic: every skill card; nothing to write)"
+    emits: span.dc-card-start + span.dc-card-end (zero-height markers closing every .dc-card-inner)
+    css: styles/components/cards.css
+    breaks: "Where the browser splits a card, the part that goes on ends in a dashed seam in the specialty's tab colour ending in a small ▸, and the part that continues starts with a matching dashed seam. Vector (an SVG border image, stretched), inside the card edges; the markers hide it at the card's real top and foot, so an unbroken card is unchanged. Adds no height."
+    notes: "The seam colour is one data-URI per specialty (--dc-seam on .dc-specialty.<name>): a border image cannot read a custom property. A new specialty needs a line there beside its tab colour."
 
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, ranges/X/VAR → .variable; also authored as raw <span class=\"dc-ap\">)"
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, a single number → standard, a range, X, VAR or N+ → .variable; also authored as raw <span class=\"dc-ap\">). Only a real cost is a chip, and the chip holds only the readout (\"3 AP\", no name, no stop): number, range (hyphen or dash), X or VAR, then AP; bare **3-X** is accepted. What follows the cost moves into the row text as an italic run-in with a colon: **3 AP — Butcher Roach** → chip 3 AP + \"Butcher Roach:\"; **+1 AP per passenger.** → chip +1 AP + \"Per passenger:\"; **1 AP/100 DC Per Ego Point:** → chip 1 AP + \"1 AP/100 DC Per Ego Point:\". Variable is decided by the cost token only, plus a per-unit rate in the qualifier (per passenger, /100 DC Per …); every range prints with an en dash. Rows share one text column: a chip is at least the free chip's width. A list whose items ALL lead with a bold die result (**20**, **11-19**, **16–19: Name**) is a roll list: the five standard bands are the outcome ladder, any other set a .dc-roll-table plate. Any other bold lead (**Prefrontal Chaos**) is an option: a bulleted item with the name in bold and a colon; a run that does not start at 1 or sits among cost rows is bulleted too, and only a plain list from 1 stays numbered."
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
@@ -582,6 +637,18 @@ components:
     usage: ["ROLL THE DIE!", "ROLL A DIE!", "ROLLS A DIE!", "ROLLING THE DIE!"]
     breaks: none
     notes: "Plain inline text in the line's own font and size: bold, in --dc-accent-ink (the ink of the component it sits in; default --brand-magenta-deep), with a dotted underline in that colour. The line keeps its height."
+
+
+  - name: die-call
+    status: live
+    origin: plugin
+    recipe: "**ROLL THE DIE!** (or the bare words, or ROLL A DIE! and the like) as a paragraph on its own; automatic, no markup"
+    emits: p.dc-die-call
+    css: styles/components/cards.css
+    tokens: [--dc-die-call-bg, --dc-die-call-fg]
+    usage: ["**ROLL THE DIE!**"]
+    breaks: "break-inside: avoid; break-after: avoid"
+    notes: "A paragraph that is only the die call (bold or plain, any form of the phrase the inline mark picks out) is the table's imperative moment: a raised deep-magenta chip with the words in the display face, a d20 facet cut and outline at its left, tipped -2deg, over a 2px ink label shadow. The same words in a sentence, in a list item or in a quote stay the inline mark (roll-the-die)."
 
   - name: img-wrapper
     status: live
@@ -665,6 +732,7 @@ components:
     tokens:
       - --dc-fiction-bg
       - --dc-fiction-cavity
+      - --dc-fiction-title-size
       - --dc-fiction-hole
       - --dc-fiction-shape
       - --dc-fiction-line-height
@@ -673,7 +741,7 @@ components:
       - --dc-fiction-art-outline
       - --dc-fiction-art-shadow
     breaks: "orphans/widows 3 on paragraphs"
-    notes: "A hole smashed in the wall with the story on the page (--dc-fiction-bg) behind it: the edge breaks along the brick courses with a few hairline cracks, and the broken wall's thickness shows as one dark face all round (--dc-fiction-cavity, 5px), every step's sides joined. Two clipped layers on a box 16px larger than the excerpt: the face (--dc-fiction-hole) and the page (--dc-fiction-shape), polygons generated by scripts/fiction-break.py; each edge holds whole 172px runs of steps, so the bricks keep their size at any box size. The 16px reach is the margin, so it stays inside the column. Vector and opaque, no image, no blur; text sits only on the page."
+    notes: "A hole smashed in the wall with the story on the page (--dc-fiction-bg, white) behind it: the edge breaks along the brick courses with a few hairline cracks, and the broken wall's thickness shows as one dark face all round (--dc-fiction-cavity, 5px), every step's sides joined. Two clipped layers on a box 16px larger than the excerpt: the face (--dc-fiction-hole) and the page (--dc-fiction-shape), polygons generated by scripts/fiction-break.py; each edge holds whole 172px runs of steps, so the bricks keep their size at any box size. The 16px reach is the margin, so it stays inside the column. Vector and opaque, no image, no blur; text sits only on the page. Its h1 is set at --dc-fiction-title-size (the h2 size): a story's name, not a chapter's."
 
   - name: npc-stat
     status: live
@@ -711,8 +779,8 @@ components:
     recipe: "@page chapter-start"
     emits: div.page.dc-page-chapter-start
     css: styles/page-templates.css
-    tokens: [--dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-tape, --dc-page-slip-gap, --dc-page-sheet-pad, --dc-heading-gap]
-    notes: "A chapter opener: the h1 gets headroom, is kept with the block after it and is a banner in the chapter's accent (any page's free-standing `#` is), the paragraph straight under it is a lede on a paper sheet. Free-standing text on any wall page prints on a substrate with no markup: `##` a paper slip with an accent rail, dashed foot and tape, `###` a plain slip, `####`+ a label slip, loose paragraphs, lists and quotes one paper sheet per run (page-templates.css, FREE-STANDING PAGE TEXT; the guide's @page .dg-doc pages are exempt)."
+    tokens: [--dc-page-title-ink, --dc-page-slip-bg, --dc-page-slip-ink, --dc-page-slip-edge, --dc-page-slip-shadow, --dc-page-slip-bolt, --dc-page-slip-bolt-face, --dc-page-slip-bolt-size, --dc-page-slip-gap, --dc-page-slip-foot, --dc-page-sheet-pad, --dc-heading-gap]
+    notes: "A chapter opener: the h1 gets headroom, is kept with the block after it and is a banner in the chapter's accent (any page's free-standing `#` is), the paragraph straight under it is a lede on a paper sheet. Free-standing text on any wall page prints on a substrate with no markup: `##` a paper slip with an accent rail, a dashed foot and two slotted bolt heads in its top corners, `###` a plainer slip at the full width of its column, `####`+ a label slip that shrinks to its words, one gap (--dc-page-slip-foot) under every heading whatever follows, loose paragraphs, lists and quotes one paper sheet per run (page-templates.css, FREE-STANDING PAGE TEXT; the guide's @page .dg-doc pages are exempt)."
 
   - name: page-wall
     status: live
@@ -954,11 +1022,23 @@ components:
     markers: ["@section panel"]
     snippet: section-panel
     recipe: "@section panel … @end-section  (or @section .dc-section-panel)"
-    emits: div.section.dc-section-panel
+    emits:
+      - div.section.dc-section-panel
+      - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
     notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+
+
+  - name: street-line
+    status: live
+    origin: plugin
+    recipe: "**A closing line.** as the last paragraph of a section panel (or before a heading in it); automatic, no markup"
+    emits: p.dc-kicker
+    css: styles/components/section.css
+    breaks: "break-before: avoid; the paragraph above it breaks after: avoid"
+    notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour."
 
   - name: section-catalog
     status: live
@@ -1004,7 +1084,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-lore
     css: [styles/components/section.css]
     tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail]
-    notes: "A panel for the world, not the rules: a deep violet bar over a pale lilac sheet, a violet rule, long asymmetric slashes (shallow top-left, steep bottom-right), italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
+    notes: "A panel for the world, not the rules: a deep violet bar over a white sheet, a violet rule, long asymmetric slashes (shallow top-left, steep bottom-right), italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
 
   - name: section-dm
     status: live
@@ -1015,7 +1095,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-dm
     css: [styles/components/section.css]
     tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
-    notes: "A panel for behind-the-screen text, drawn as a classified file folder: an ink tab rising from the top edge carries the words Dream Master (cyan on ink; drawn with or without a heading), an ink title bar with a cyan rule, a cyan rail, a cold concrete body, one opposite corner cut (bottom right). The accent is cyan (cyan on ink is the Dream Master's pair, used nowhere else); --dc-accent-ink is HUD blue."
+    notes: "A panel for behind-the-screen text, drawn as a classified file folder: an ink tab rising from the top edge carries the words Dream Master (cyan on ink; drawn with or without a heading), an ink title bar with a cyan rule, a cyan rail, a white body, one opposite corner cut (bottom right). The accent is cyan (cyan on ink is the Dream Master's pair, used nowhere else); --dc-accent-ink is HUD blue."
 
   - name: section-choose
     status: live
@@ -1026,7 +1106,7 @@ components:
     emits: div.section.dc-section-panel.dc-section-choose
     css: [styles/components/section.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
-    notes: "A printed, stamped form, not a panel: a paper sheet a hair lighter than cream (--paper-form), recessed (sunk into the wall: a cast shadow along its top, a light lip on its bottom and right) in an ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no drop shadow, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Choose' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
+    notes: "A printed, stamped form, not a panel: a white paper sheet (--paper-form), recessed (sunk into the wall: a cast shadow along its top, a light lip on its bottom and right) in an ink edge cut like a ticket (a V punched in each side, a perforated foot), no bar and no drop shadow, an ink title over a double rule, dotted write-in rules under table rows, a heavy ink tick box before each list item and a hazard-yellow 'Choose' stamp (drawn even when there is no heading). The chapter's accent colours only the double rule. @flaws, @ideals and @dreams are runs of @card inside a choose section with their own class."
 
   - name: faction
     status: live
@@ -1038,7 +1118,7 @@ components:
     css: [styles/components/section.css]
     tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside, --dc-faction-shape, --dc-faction-surface, --dc-faction-band, --dc-faction-band-height, --dc-faction-pad-bottom, --dc-faction-badge-shape, --dc-faction-title, --dc-faction-title-bg, --dc-faction-title-pad]
     breaks: "splits between paragraphs by default (--dc-faction-break-inside: auto); .dc-avoid-split keeps one whole"
-    notes: "An organization's profile: a card whose silhouette, top band, name colour and badge all say the kind: megacorp a hard blue rectangle with a cyan-edged band, cabal violet with long corner cuts, cult blood and torn along the top and foot, enforcer an octagon with a hazard-stripe band and a yellow name label. The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."
+    notes: "An organization's profile: a card whose silhouette, top band, name colour and badge all say the kind: megacorp a hard-edged rectangle with an ink-blue, cyan-edged band, cabal violet with long corner cuts, cult blood and torn along the top and foot, enforcer an octagon with a hazard-stripe band and a yellow name label. Every kind is a white sheet. The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."
 
   - name: stat-strip
     status: live

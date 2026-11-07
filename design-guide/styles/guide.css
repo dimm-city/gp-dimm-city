@@ -222,7 +222,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 }
 
 .page.dg-doc > h1 {
-  font-size: 26pt;
+  font-size: var(--fs-h1);
   line-height: 1.15;
   border-bottom: 1.5pt solid var(--ink-dark);
   padding-bottom: 0.08in;
@@ -231,19 +231,19 @@ div.chapter[id^="ch-example-"][data-ch] {
 
 .page.dg-doc > h2,
 .page.dg-doc > .dg-toc > h2 {
-  font-size: 15pt;
+  font-size: var(--fs-h3);
   margin-top: 0.22in;
   border-bottom: 0.75pt solid var(--dg-rule);
 }
 
 .page.dg-doc > h3 {
-  font-size: 13pt;
+  font-size: var(--fs-h4);
   margin-top: 10pt;
   margin-bottom: 4pt;
 }
 
 .page.dg-doc > p.dg-lede {
-  font-size: 12.5pt;
+  font-size: var(--fs-h4);
   line-height: 1.45;
   color: var(--dg-ink-soft);
   margin-bottom: 0.2in;
@@ -252,11 +252,11 @@ div.chapter[id^="ch-example-"][data-ch] {
 /* A Part title page (300-example-overview.md). */
 .page.dg-doc.dg-part > p.dg-kicker {
   margin-top: 3in;
-  font-size: 11pt;
+  font-size: var(--fs-body-sm);
 }
 
 .page.dg-doc.dg-part > h1 {
-  font-size: 36pt;
+  font-size: calc(var(--fs-h1) * 1.4);  /* a Part title: one step over the scale's top, on purpose */
   border-bottom-width: 3pt;
 }
 
@@ -481,28 +481,28 @@ div.chapter[id^="ch-example-"][data-ch] {
 .dg-face-display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 16pt;
+  font-size: var(--fs-h3);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  line-height: 1.35;
+  line-height: var(--lh-display);
   color: var(--dg-ink);
 }
 
 .dg-face-display.dg-face-set {
-  font-size: 26pt;
+  font-size: var(--fs-h1);
   letter-spacing: 0.2em;
 }
 
 .dg-face-body {
   font-family: var(--font-body);
-  font-size: 12pt;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
   color: var(--dg-ink);
 }
 
 .dg-face-tab {
   font-family: var(--font-tab);
-  font-size: 11pt;
+  font-size: var(--fs-body-sm);
   letter-spacing: 0.06em;
   color: var(--dg-ink);
 }
@@ -693,11 +693,14 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 
 /* ── DM/NPC chapter: page-title h1/h2 in neutral ink, not teal ──────────────
    Default h1/h2 colors (--hud-magenta for h1, --hud-blue-dark for h2) clash
-   with this chapter's rust --dc-section-accent. Neutral --ink-dark
-   page-titles let the chapter's rust components carry the chroma identity
-   without fighting the title. */
+   with this chapter's rust --dc-section-accent. Neutral --ink page-titles
+   let the chapter's rust components carry the chroma identity without
+   fighting the title. --ink, not --ink-dark: a 20pt title is small text to
+   DriveThruRPG, and --ink is the one dark the PDF/X build prints in black
+   alone (--ink-dark was the four-colour text pdf.print.black-text flagged on
+   this chapter's pages). */
 #ch-example-dm-npcs h2:not(.dc-spray, .dc-chevron, .dc-section-panel > h2) {
-   color: var(--ink-dark);
+   color: var(--ink);
    border-bottom-color: var(--rust);
 }
 
@@ -816,3 +819,6 @@ div.chapter.dg-guide .dc-palette-swatch.bg-border-hairline {
 .page.dg-doc :is(.dc-specialty-intro, .dc-learning-path) {
   break-before: auto;
 }
+
+/* Chapter labels, not styles: named here so the unknown-class check knows them. */
+.typography, .palette, .layout, .templates, .cli, .reference, .examples, .specialty-profile, .tech-cybernetics, .second-page {}

@@ -49,5 +49,11 @@
   "MD051": false,
 
   // Stacked `> [!NOTE]` alerts are separate blocks separated by a blank line.
-  "MD028": false
+  "MD028": false,
+
+  // The design guide's Part 2 example chapters (300-307) and its variants
+  // chapter are specimens of pages, not prose: they repeat headings and jump
+  // heading levels on purpose.
+  "MD024": false,
+  "MD001": false
 }

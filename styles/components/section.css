@@ -100,7 +100,7 @@ div[class="section"] {
      the accent, deepened. Derived here, not at :root, so a chapter that sets only
      the accent still recolours it. A kind may set its own. */
   --dc-accent-ink: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-ink-mix), var(--dc-section-ink-tone));
-  padding: calc(var(--dc-section-pad-top) + var(--dc-section-top)) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
+  padding: var(--dc-section-pad-top) var(--dc-section-pad-right) calc(var(--dc-section-pad-bottom) - var(--dc-section-edge)) var(--dc-section-pad-left);
   /* Single-direction margin: bottom only. Consecutive sections collapse to
      the bottom margin gap (12pt). First section after a chevron has no
      top gap → flush attachment without an adjacency rule.
@@ -113,6 +113,11 @@ div[class="section"] {
   margin: 0 3px calc(var(--dc-section-gap) + var(--dc-section-edge)) 0;
   position: relative;
   flex-grow: var(--dc-section-grow);
+  /* A fragment that continues keeps the box's own padding: a continuation
+     opens --dc-section-pad-top under its edge. The foot's padding is the
+     hanging edge (paint), so a fragment that goes on ends flush at the page
+     foot: nothing is added, so an unbroken section is as tall as ever. */
+  box-decoration-break: clone;
 }
 
 /* ── panel ───────────────────────────────────────────────────────────────── */
@@ -346,12 +351,12 @@ div[class="section"] {
   font-size: var(--fs-h5);
 }
 
-/* ── Free-standing heading, or a callout, directly before a panel — extra
-   top clearance so the heading (or the note) and the card's header bar don't
-   compete at the same visual weight on the vertical scan. */
+/* ── A heading directly before a panel: the one gap every heading has under
+   it (page-templates.css sets the same for whatever follows a page's own
+   heading). */
 h2 + .dc-section-panel,
 h3 + .dc-section-panel {
-  margin-top: 20pt;
+  margin-top: var(--dc-page-slip-foot);
 }
 /* A callout has a top margin only and the panel a bottom margin only, so they
    would touch. */
@@ -397,7 +402,7 @@ h3 + .dc-section-panel {
 
      panel      the default card, a solid accent bar      top right   chapter accent (magenta by default)
      reference  look it up, a PALE bar                    all four, small   HUD blue
-     lore       the world, not the rules                  top left + bottom right, long   violet, lilac sheet
+     lore       the world, not the rules                  top left + bottom right, long   violet
      dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
      choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Choose" stamp
      catalog    a run of entries (entries.css)            both top
@@ -408,7 +413,6 @@ h3 + .dc-section-panel {
 /* ── reference — a look-up ────────────────────────────────────────────────── */
 .dc-section-reference {
   --dc-section-accent: var(--hud-blue-dark);
-  --dc-section-bg: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
   --dc-section-clip: 7px;
   --dc-section-cut-tl: 7px;
   --dc-section-cut-br: 7px;
@@ -423,7 +427,7 @@ h3 + .dc-section-panel {
 .dc-section-reference {
   --dc-section-bar-mix: 0%;
   --dc-section-bar-tone: var(--hud-blue-dim);
-  --dc-section-bar-fg: var(--ink-dark);
+  --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--ink-dark);
   --dc-section-bar-rule-sub: 3pt double var(--ink-dark);
 }
@@ -441,7 +445,7 @@ h3 + .dc-section-panel {
 }
 .dc-section-reference th {
   background: var(--hud-blue-dim);
-  color: var(--ink-dark);
+  color: var(--ink);
   padding: 3px 8px;
 }
 .dc-section-reference td {
@@ -451,20 +455,17 @@ h3 + .dc-section-panel {
   background: var(--paper-cream);
 }
 .dc-section-reference tr:nth-child(even) td {
-  background: var(--dc-section-bg);
+  background: var(--paper-aged);
 }
 .dc-section-reference :is(ul, ol) {
   margin-block: 0.04in;
-}
-.dc-section-reference li {
-  margin-bottom: 0.02in;
 }
 
 /* ── Recessed kinds: lore, dm, choose ─────────────────────────────────────────
    These sit sunk into the wall instead of hung on it: no drop-shadow layer, the
    wall's top edge casting a hard shadow down over the sheet's top (over its title
-   bar too; the left rail stays clear) and a light lip along its bottom and right. Vector and opaque box-
-   shadows. A panel's bottom padding hangs below its box as paint (the edge, see
+   bar too; the left rail stays clear) and a light lip along its bottom and right. Box-shadows: the
+   soft inset (--shadow-press) is translucent, the lip opaque. A panel's bottom padding hangs below its box as paint (the edge, see
    the panel chassis), so the bottom lip is the foot of that edge: the sheet's
    copy stops --dc-section-recess-foot short of it and the lip shows under it.
    `choose` paints its own surface (edge 0), so its lip is the inset one. */
@@ -491,7 +492,7 @@ h3 + .dc-section-panel {
 }
 
 /* ── lore — the world ─────────────────────────────────────────────────────────
-   Violet, the dream colour. A pale lilac sheet under a DEEP violet bar (cream
+   Violet, the dream colour. A white sheet under a DEEP violet bar (cream
    on it 10:1), a violet rule, and LONG ASYMMETRIC cuts: a shallow slash off the
    top left (56 x 20px) and a steep one off the bottom right (16 x 50px), so it
    reads as secret and cut open, never as a chamfer; the top edge past the slash
@@ -501,7 +502,6 @@ h3 + .dc-section-panel {
    slash eats at text height) and the right padding clears the steep one. */
 .dc-section-lore {
   --dc-section-accent: var(--brand-violet);
-  --dc-section-bg: color-mix(in srgb, var(--brand-violet) 7%, var(--paper-cream));
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 30px;
   --dc-section-cut-br: 16px;
@@ -547,7 +547,7 @@ h3 + .dc-section-panel {
    A classified file folder: a tab rising from the top edge (it carries the words
    "Dream Master", cyan on ink) and one opposite corner cut, bottom right. Cyan on
    ink is the Dream Master's colour pair, used nowhere else: the tab and bar are
-   ink with a cyan rule, the rail cyan, the body a cold concrete. With or without a
+   ink with a cyan rule, the rail cyan, the body white. With or without a
    heading the tab is drawn, so the kind never goes unmarked. The accent is cyan
    (rail, sub-heading ticks); the bar keeps the ink.
    The tab lives INSIDE the box: the box's top 15pt (`--dc-section-top`, added to
@@ -560,7 +560,6 @@ h3 + .dc-section-panel {
    are the cut + 2pt. */
 .dc-section-dm {
   --dc-section-accent: var(--brand-cyan);
-  --dc-section-bg: var(--concrete-pale);
   --dc-section-top: 15pt;
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 0px;
@@ -578,6 +577,19 @@ h3 + .dc-section-panel {
 }
 .dc-section-dm :is(.dc-section-panel, .dc-section-flat) {
   --dc-section-top: 0px; /* the tab band is the folder's, not its nested sections' */
+}
+/* The tab band is the first block's margin, not padding: the padding is cloned
+   onto a continuation (`box-decoration-break: clone`), the margin is not, so a
+   continuation opens --dc-section-pad-top under its edge and no tab band. The
+   heading bar's own negative margin gives the pad back. */
+.dc-section-dm > :first-child {
+  margin-top: var(--dc-section-top);
+}
+.dc-section-dm > :is(h4, .dc-h4):first-child {
+  margin-top: calc(var(--dc-section-top) + 0.05in); /* the heading's own 0.05in */
+}
+.dc-section-dm > :is(h2, h3):first-child {
+  margin-top: calc(var(--dc-section-top) - var(--dc-section-pad-top));
 }
 /* The surface starts below the tab band and keeps only the bottom-right cut. */
 .dc-section-dm::before {
@@ -624,10 +636,15 @@ h3 + .dc-section-panel {
    dotted write-in rule under every row and a heavy ink tick box in front of
    every option. The accent stays the chapter's: it colours the rule only. */
 .dc-section-choose {
-  --dc-section-surface: none;
+  /* The sheet is the panel's own surface layer (::before), not the box: a
+     clip-path on the box would clip the stamp that hangs over its top edge. The
+     layer is the paper, the ink edge (a ring in the flag slot) and the sunk
+     shade; it has no rail, no hanging edge and no drop shadow. */
   --dc-section-shadow: none;
   --dc-section-edge: 0px;
+  --dc-section-rail: 0px;
   --dc-section-bg: var(--paper-form);
+  --dc-section-flag: inset 0 0 0 2pt var(--ink-dark);
   --dc-section-tab: "Choose";
   --dc-section-tab-bg: var(--brand-yellow);
   --dc-section-tab-fg: var(--ink);
@@ -636,11 +653,19 @@ h3 + .dc-section-panel {
   --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--dc-section-accent);
   --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
-  background: var(--dc-section-bg);
-  border: 2pt solid var(--ink-dark);
-  box-shadow: var(--dc-section-recess);
-  /* A ticket: a V punched out of the middle of each side and a perforated
-     (square-notched) foot, as if it tears off. Padding clears the notches. */
+  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
+  /* The form's edge used to be a 2pt border (snapped by the engine to 2px,
+     1.5pt) outside the padding; the ring is paint now, so its 1.5pt is added to
+     the padding, whatever the padding tokens are: a form is as tall and as wide
+     as it was. The top is then half the stamp's height (9.1pt) plus 1.5pt. */
+  padding: calc(var(--dc-section-pad-top) + 1.5pt) calc(var(--dc-section-pad-right) + 1.5pt) calc(var(--dc-section-pad-bottom) + 1.5pt) calc(var(--dc-section-pad-left) + 1.5pt);
+  background: none;
+  box-shadow: none;
+}
+/* A ticket: a V punched out of the middle of each side and a perforated
+   (square-notched) foot, as if it tears off. Padding clears the notches. */
+.dc-section-choose::before {
+  --dc-section-recess-foot: 0px;
   clip-path: polygon(
     0 0, 100% 0,
     100% calc(50% - 8px), calc(100% - 8px) 50%, 100% calc(50% + 8px),
@@ -653,7 +678,6 @@ h3 + .dc-section-panel {
     0 100%,
     0 calc(50% + 8px), 8px 50%, 0 calc(50% - 8px)
   );
-  --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
 }
 .dc-section-choose.dc-section-panel > :is(h2, h3):first-child {
   margin: 0 0 var(--space-md);
@@ -661,20 +685,39 @@ h3 + .dc-section-panel {
   font-size: var(--fs-h4);
   clip-path: none;
 }
-.dc-section-choose > :is(h2, h3):first-child::after {
-  border: 1pt solid var(--ink);
-  font-size: var(--fs-floor);
-  transform: rotate(-2deg);
-}
-/* No heading: the sheet carries the stamp itself, floated to its right corner. */
-.dc-section-choose:not(:has(> :is(h2, h3):first-child))::before {
-  content: "Choose";
-  position: static;
+/* Where the stamp sits inside the form's top edge (a form that opens a page,
+   page-templates.css), the first block's first lines stop short of it: a float
+   of the stamp's size, zero wide everywhere else. */
+.dc-section-choose > :is(h2, h3, p):first-child::before {
+  content: "";
   float: right;
+  width: var(--dc-choose-stamp-room);
+  height: 11pt;
+}
+/* A form straight under another sheet, slip, panel or callout (or the top row
+   of a column run that is) has little wall above it, so its stamp hangs less far
+   over the edge and stays clear of the foot of what is above. A token only: the
+   form does not move or grow. */
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + .dc-section-choose,
+:is(.dc-section-panel, .dc-section-flat, .dc-alert, .dc-card, table, h2, h3, h4, h5, h6, p, ul, ol, blockquote) + :is(.gp-columns, [class*="gp-columns-"]) > .dc-section-choose:is(:first-child, .gp-column-break + *) {
+  --dc-choose-stamp-lift: calc(-50% + 6pt);
+}
+/* The stamp: out of the flow, across the form's top edge at the top right, half
+   above the sheet, tilted. A heading's own ::after is the stamp (a section
+   with no heading draws it on the section's ::after, below). */
+.dc-section-choose > :is(h2, h3):first-child::after,
+.dc-section-choose:not(:has(> :is(h2, h3):first-child))::after {
+  content: "Choose";
+  position: absolute;
   inset: auto;
-  z-index: auto;
+  top: var(--dc-choose-stamp-top);
+  right: calc(var(--dc-section-pad-right) + 1.5pt);
+  float: none;
+  margin: 0;
+  width: auto;
+  height: auto;
   clip-path: none;
-  margin: 0 0 var(--space-sm) var(--space-md);
+  z-index: 2;
   padding: 2px 8px 1px;
   background: var(--brand-yellow);
   border: 1pt solid var(--ink);
@@ -686,29 +729,38 @@ h3 + .dc-section-panel {
   letter-spacing: 0.1em;
   line-height: 1.4;
   text-transform: uppercase;
-  transform: rotate(-2deg);
+  transform: translateY(var(--dc-choose-stamp-lift)) rotate(-2deg);
+  pointer-events: none;
 }
 .dc-section-choose td {
-  border-bottom: 1pt dotted var(--ink-dust);
+  border-bottom: 1pt dotted var(--ink);
 }
 .dc-section-choose tr:nth-child(odd) td,
 .dc-section-choose tr:nth-child(even) td {
   background: var(--dc-section-bg);
 }
-.dc-section-choose li {
-  border-bottom: 1pt dotted var(--ink-dust);
-  padding-bottom: 0.02in;
+.dc-section-choose :is(ul, ol) {
+  padding-left: 0;
 }
-.dc-section-choose li::before,
-.dc-section-choose li > p:first-child::before {
+.dc-section-choose li {
+  border-bottom: 1pt dotted var(--ink);
+  padding-bottom: 0.02in;
+  /* the box (0.75em + its 2.25pt frame twice) and 0.5em before the text */
+  padding-left: calc(1.25em + 4.5pt);
+}
+/* The tick box takes the list's own marker slot (core draws every marker as
+   `li::before`, absolutely positioned in the hang), so a loose item, whose
+   text sits in a <p>, still draws exactly one box. */
+.dc-section-choose li::before {
   content: "";
-  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0.22em;
   width: 0.75em;
   height: 0.75em;
-  margin-right: 0.5em;
+  margin: 0;
   border: 2.25pt solid var(--ink);
   background: var(--paper-form);
-  vertical-align: -0.1em;
 }
 /* A run of choice cards (`@flaws`, `@ideals`, `@dreams`) with no heading and
    nothing in it but the cards is just the cards: each carries its own kind, so
@@ -723,7 +775,8 @@ h3 + .dc-section-panel {
   border: 0;
   box-shadow: none;
 }
-.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::before {
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::before,
+.dc-section-choose:where(.dc-flaws, .dc-ideals, .dc-dreams):not(:has(> :is(h2, h3):first-child)):not(:has(> :not(.dc-card)))::after {
   content: none;
 }
 /* A choice inside it keeps one card, never half of one. */
@@ -869,14 +922,14 @@ h3 + .dc-section-panel {
    are the one register that is paper and nothing else.
    Signal: flavor text, atmospheric descriptions, setting detail. */
 .dc-block.dc-shard {
-  --dc-block-bg:        var(--paper-zine);
+  --dc-block-bg:        var(--paper-cream);
   --dc-block-fg:        var(--ink);
   --dc-block-accent:    var(--ink-smoke);
   --dc-block-title-bg:  var(--paper-stain);
   --dc-block-title-fg:  var(--ink);
   --dc-block-title-rule: 2pt solid var(--ink-smoke);
-  --dc-accent-ink: var(--ink-smoke);
-  background: var(--paper-zine);
+  --dc-accent-ink: var(--ink);
+  background: var(--paper-cream);
   padding-bottom: calc(var(--space-lg) + 4px);
   box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 94.44% calc(100% - 6px), 88.89% 100%, 83.33% calc(100% - 6px), 77.78% 100%, 72.22% calc(100% - 6px), 66.67% 100%, 61.11% calc(100% - 4px), 55.56% 100%, 50% calc(100% - 4px), 44.44% 100%, 38.89% calc(100% - 6px), 33.33% 100%, 27.78% calc(100% - 4px), 22.22% 100%, 16.67% calc(100% - 3px), 11.11% 100%, 5.56% calc(100% - 6px), 0% 100%);
@@ -921,12 +974,12 @@ h3 + .dc-section-panel {
   text-transform: uppercase;
   letter-spacing: var(--ls-heading);
   margin-bottom: var(--space-xs);
-  color: var(--ink-dark);
+  color: var(--ink);
 }
 
 .dc-card-pull {
   font-style: italic;
-  color: var(--ink-mid);
+  color: var(--ink);
   margin-bottom: var(--space-xs);
   font-size: var(--fs-sm);
 }
@@ -948,7 +1001,7 @@ h3 + .dc-section-panel {
   padding-left: 0;
   margin-top: var(--space-xs);
   font-size: var(--fs-sm);
-  color: var(--ink-mid);
+  color: var(--ink);
   font-style: italic;
 }
 
@@ -1001,8 +1054,8 @@ h3 + .dc-section-panel {
   line-height: 1.4;
   box-shadow: var(--dc-label-shadow);
 }
-/* The closing quote: the choice's one line of voice. A well tinted with the
-   card's own colour (not the page's grey), ink on it, a ruled edge. */
+/* The closing quote: the choice's one line of voice. Ink on the card's white,
+   ruled down its left in the card's own colour. */
 .section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body .dc-card-footer {
   margin: var(--space-sm) 0 0;
   padding: 4pt 8pt;
@@ -1014,21 +1067,20 @@ h3 + .dc-section-panel {
   font-style: italic;
 }
 
-/* The three choices differ in grayscale as well as colour: fill value, edge
-   weight and how deep the silhouette bites. Flaw = the darkest sheet, a heavy
-   solid edge and a deep crack; Ideal = the mid sheet, a clean solid
-   edge and deep V stubs; Dream = the lightest sheet, a double edge and a steep
-   rise with perforated tears. Every cut is cleared by padding of cut + 2pt. */
+/* The three choices differ in grayscale as well as colour: edge weight and
+   how deep the silhouette bites, all three on white. Flaw = a heavy solid edge
+   and a deep crack; Ideal = a clean solid edge and deep V stubs; Dream = a
+   double edge and a steep rise with perforated tears. Every cut is cleared by
+   padding of cut + 2pt. */
 
 /* Flaws: blood. A cracked, ragged edge: a 40 x 26px nick off the top right and a
-   foot that jags up to 13px, over a blood-tinted quote. */
+   foot that jags up to 13px, over a blood-ruled quote. */
 .section.dc-flaws {
   --dc-choice-accent: var(--blood);
   --dc-choice-surface: var(--paper-light);
   --dc-choice-edge: 2pt solid var(--ink-dark);
   --dc-choice-band: 9px;
   --dc-choice-rail: 9px;
-  --dc-choice-tint: color-mix(in srgb, var(--blood) 13%, var(--paper-light));
   --dc-choice-kind: "Flaw";
   --dc-accent-ink: var(--blood);
   --dc-card-shape: polygon(0 0, calc(100% - 40px) 0, 100% 26px, 100% calc(100% - 9px), 94% 100%, 88% calc(100% - 13px), 80% calc(100% - 2px), 71% calc(100% - 12px), 63% calc(100% - 3px), 52% calc(100% - 13px), 41% calc(100% - 1px), 33% calc(100% - 11px), 22% calc(100% - 2px), 12% calc(100% - 12px), 5% calc(100% - 1px), 0 calc(100% - 8px));
@@ -1043,7 +1095,6 @@ h3 + .dc-section-panel {
 .section.dc-ideals {
   --dc-choice-accent: var(--hud-blue-dark);
   --dc-choice-surface: var(--paper-cream);
-  --dc-choice-tint: color-mix(in srgb, var(--hud-blue-dim) 22%, var(--paper-cream));
   --dc-choice-kind: "Ideal";
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 14px), calc(100% - 14px) 50%, 100% calc(50% + 14px), 100% 100%, 0 100%, 0 calc(50% + 14px), 14px 50%, 0 calc(50% - 14px));
@@ -1060,7 +1111,6 @@ h3 + .dc-section-panel {
   --dc-choice-surface: var(--paper-form);
   --dc-choice-edge: 4pt double var(--ink-dark);
   --dc-choice-band: 3px;
-  --dc-choice-tint: color-mix(in srgb, var(--brand-violet) 10%, var(--paper-form));
   --dc-choice-kind: "Dream";
   --dc-accent-ink: var(--brand-violet);
   --dc-card-shape: polygon(0 30px, 100% 0, 100% 100%, 72% 100%, calc(72% - 9px) calc(100% - 9px), calc(72% - 18px) 100%, 32% 100%, calc(32% - 9px) calc(100% - 9px), calc(32% - 18px) 100%, 0 100%);
@@ -1141,33 +1191,30 @@ h3 + .dc-section-panel {
   --dc-accent-ink: var(--hud-blue-dark);
   --dc-faction-shape: polygon(0 0, calc(100% - 16px) 0, calc(100% - 16px) 8px, 100% 8px, 100% 100%, 16px 100%, 16px calc(100% - 8px), 0 calc(100% - 8px));
   --dc-faction-badge-shape: none;
-  --dc-faction-surface: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
   --dc-faction-band: inset 0 6pt 0 0 var(--hud-blue-dark), inset 0 8pt 0 0 var(--brand-cyan);
   --dc-faction-title: var(--hud-blue-dark);
 }
 
 /* Cabal: violet and secretive. Long ASYMMETRIC cuts (the lore section's slash,
    mirrored): a shallow one off the top right (60 x 18px), a steep one off the
-   bottom left (16 x 50px); a deep violet band, a lilac sheet, and an inset
+   bottom left (16 x 50px); a deep violet band and an inset
    shadow down the foot. */
 .dc-faction-cabal {
   --dc-faction-accent: var(--brand-violet);
   --dc-accent-ink: var(--brand-violet);
   --dc-faction-shape: polygon(0 0, calc(100% - 60px) 0, 100% 18px, 100% 100%, 16px 100%, 0 calc(100% - 50px));
-  --dc-faction-surface: color-mix(in srgb, var(--brand-violet) 9%, var(--paper-cream));
   --dc-faction-band: inset 0 10pt 0 0 color-mix(in srgb, var(--brand-violet) 72%, var(--ink)), inset 0 -5px 0 0 var(--brand-violet);
   --dc-faction-band-height: 10pt;
   --dc-faction-pad-bottom: calc(10pt + 5px);
   --dc-faction-title: var(--brand-violet);
 }
 
-/* Cult: blood and ritual. Torn along the top and foot, a blood band, a pale
-   blood wash, the name in blood. Landfill, not tech. */
+/* Cult: blood and ritual. Torn along the top and foot, a blood band, the name
+   in blood. Landfill, not tech. */
 .dc-faction-cult {
   --dc-faction-accent: var(--blood);
   --dc-accent-ink: var(--blood);
   --dc-faction-shape: polygon(0% 0px, 7.14% 4px, 14.29% 0px, 21.43% 7px, 28.57% 0px, 35.71% 7px, 42.86% 0px, 50% 4px, 57.14% 0px, 64.29% 5px, 71.43% 0px, 78.57% 7px, 85.71% 0px, 92.86% 6px, 100% 0px, 100% 100%, 92.86% calc(100% - 7px), 85.71% 100%, 78.57% calc(100% - 3px), 71.43% 100%, 64.29% calc(100% - 7px), 57.14% 100%, 50% calc(100% - 3px), 42.86% 100%, 35.71% calc(100% - 6px), 28.57% 100%, 21.43% calc(100% - 5px), 14.29% 100%, 7.14% calc(100% - 7px), 0% 100%);
-  --dc-faction-surface: color-mix(in srgb, var(--blood) 9%, var(--paper-cream));
   --dc-faction-band: inset 0 12pt 0 0 var(--blood);
   --dc-faction-band-height: 12pt;
   --dc-faction-pad-bottom: 14pt;
@@ -1268,7 +1315,7 @@ h3 + .dc-section-panel {
      --dc-npc-stat-rule-width   → name top-rule weight (default 2pt)
      --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
      --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
-     --dc-npc-stat-secondary    → secondary stat-line color (default --ink-smoke)
+     --dc-npc-stat-secondary    → secondary stat-line color (default --ink)
      --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
    Override per chapter / per faction in the book's own sheet selector chains. */
 /* Its shape: both right corners cut, a dossier's edge. */
@@ -1339,7 +1386,7 @@ h3 + .dc-section-panel {
 /* The names are lixdu, the widest face in the book: in a two-column run a name
    such as GREASE MONKEY has to fit the column on one line. */
 .dc-npc-stat .gp-columns > h4 {
-  font-size: 11pt;
+  font-size: var(--fs-h5);
   letter-spacing: 0.03em;
 }
 
@@ -1352,7 +1399,7 @@ h3 + .dc-section-panel {
   border-color: var(--dc-npc-stat-rule);
   padding: 2pt 0 2pt 10pt;
   margin: 0.06in 0;
-  color: var(--ink-smoke);
+  color: var(--ink);
 }
 
 .dc-npc-stat h5 {
@@ -1395,7 +1442,7 @@ h3 + .dc-section-panel {
 .dc-npc-stat:not(.dc-npc-compact) blockquote + p::first-line {
   background: var(--dc-npc-stat-primary);
   color: var(--paper-cream);
-  font-size: 12pt;
+  font-size: var(--fs-body-sm);  /* never larger than the name over it (13pt, 11pt in a column run) */
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: none;
@@ -1412,7 +1459,7 @@ h3 + .dc-section-panel {
   color: var(--dc-npc-stat-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-bottom: 0.75pt solid var(--ink-dust);
+  border-bottom: 1pt solid var(--ink);
   padding-bottom: 0.05in;
   margin-bottom: 0.06in;
 }
@@ -1511,7 +1558,7 @@ h3 + .dc-section-panel {
 .dc-card-grid .dc-specialty-card {
   --dc-specialty-card-media-height: 0.42in;
   --dc-specialty-card-media-width: 0.38in;
-  --dc-specialty-card-name-size: 0.95em;
+  --dc-specialty-card-name-size: var(--fs-body-sm);
   /* Padding clears the deepest cut (14px) by 2pt: no glyph meets a corner. */
   --dc-specialty-card-pad-x: 0.14in;
   padding-bottom: 0.22in;
@@ -1578,6 +1625,10 @@ h3 + .dc-section-panel {
   z-index: -1;
 }
 
+/* The title is a story's name, not a chapter's. */
+.dc-fiction-excerpt > h1 {
+  font-size: var(--dc-fiction-title-size);
+}
 .dc-fiction-excerpt p {
   orphans: 3;
   widows: 3;
@@ -1596,6 +1647,63 @@ h3 + .dc-section-panel {
   margin: 0 var(--space-md) var(--space-sm) 0;
   outline: var(--dc-fiction-art-outline);
   box-shadow: var(--dc-fiction-art-shadow);
+}
+
+/* A section's closing bold line (the plugin marks it `.dc-kicker`) stays with
+   the paragraph above it, so it never opens a page alone. */
+.dc-kicker {
+  break-before: avoid;
+}
+/* ...and the paragraph above it holds it: the pair moves together, taking at
+   least the last two lines (a long paragraph still splits inside). */
+p:has(+ .dc-kicker) {
+  break-after: avoid;
+}
+
+/* The street line: a section's closing slogan set as the tear-off strip at a
+   flyer's foot. A dotted ink perforation crosses the panel; under it the line
+   in the body face, 11pt bold, ink and level, with a short stub of the panel's
+   accent at its left. No capitals and no loud colour: a chapter holds a dozen
+   of them. A rung of a `@ladder` closes the same way, over its plate, with a
+   stub in the tier's colour. */
+.dc-section-panel > .dc-kicker,
+.dc-rung-body > .dc-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  text-align: left;
+  text-transform: none;
+  border-top: 2px dotted var(--ink);
+  padding-top: 6px;
+  margin-top: var(--space-md);
+}
+/* Across the panel, from its rail to its right edge. */
+.dc-section-panel > .dc-kicker {
+  margin-left: calc(var(--dc-section-rail) - var(--dc-section-pad-left));
+  margin-right: calc(-1 * var(--dc-section-pad-right));
+  padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
+  padding-right: var(--dc-section-pad-right);
+}
+/* Across a rung's plate, inside its hairline ring. */
+.dc-rung-body > .dc-kicker {
+  margin-left: -8px;
+  margin-right: -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+:is(.dc-section-panel, .dc-rung-body) > .dc-kicker::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 0.95em;
+  margin-right: 8px;
+  vertical-align: -0.12em;
+  background: var(--dc-section-accent);
+}
+.dc-rung-body > .dc-kicker::before {
+  background: var(--row-color);
 }
 
 }

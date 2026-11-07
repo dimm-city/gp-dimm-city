@@ -21,7 +21,7 @@ The `@page` rules in the package's `styles/page-rules.css` set the margins on th
 | Trim | --- | 8.5 × 11 in | --- |
 | Bleed | 0.125 in at top, bottom and the outside edge; none at the spine | --- | --- |
 | Top margin | 0.625 in | 0.5 in | 0.5 in |
-| Bottom margin (the folio and chapter chips sit in it) | 0.875 in | 0.75 in | 0.5 in --- the chips sit at the top of the band and end 0.5 in from the trim |
+| Bottom margin (the folio and chapter chips sit in it) | 0.95 in | 0.825 in | 0.5 in --- the chips sit at the top of the band and end 0.5 in from the trim; a sheet that fills a page ends 0.10 in above them |
 | Outside margin | 0.625 in | 0.5 in | 0.5 in |
 | Binding margin | 0.5 in | 0.5 in | 0.5 in |
 
@@ -82,19 +82,19 @@ Nothing is ever printed straight on the brick. Anything you write directly on a 
 | You write | It prints as |
 |---|---|
 | `# Title` | A banner in the chapter's accent colour with cream type |
-| `## Heading` | A paper slip: an accent rail on the left, a dashed ink foot, a hard shadow and a strip of masking tape |
-| `### Heading` | A tag that shrinks to its words, on the left edge of its sheet, no tape |
-| `#### Heading` and smaller | A label slip that shrinks to its words, on the left edge of its sheet |
-| Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does. A heading sits straight on the sheet below it. A run of prose in `@columns` is one sheet and does not split across a page |
+| `## Heading` | A paper slip bolted to the wall: an accent rail on the left, a dashed ink foot, a hard shadow and a slotted bolt head in each top corner |
+| `### Heading` | The same slip at the full width of its column, with a thinner rail and foot and no bolts |
+| `#### Heading` and smaller | A label slip that shrinks to its words, framed in ink |
+| Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does. A list hangs its marker in a 1.1em indent (1.6em for numerals) inside the padding of the sheet, so wrapped lines align under the first word. A run of prose in `@columns` is one sheet and does not split across a page |
 
-Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-tape`, `--dc-page-slip-gap` (the space above a slip), `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
+Every heading has the same small gap under it, whatever follows: a sheet of text, a panel, a callout, a card or a table. Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-bolt`, `--dc-page-slip-bolt-face` and `--dc-page-slip-bolt-size` (the bolt heads on a `##` slip: ring and slot, face, diameter), `--dc-page-slip-gap` (the space above a slip), `--dc-page-slip-foot` (the space below it, 6pt), `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
 
 
 ## Where the content sits
 
 A location is the page template or the chapter a section sits in. It draws nothing: it sets tokens, and the components read them. That is how one `@section panel` looks right in an opener, in a rules chapter and in a lore chapter without a rule per book.
 
-A **chapter word** sets the colour register of every panel in the chapter. It recolours a panel's accent and nothing else: an alert, a faction, a choice card or a gear entry keeps its own identity in every chapter, so a warning is a hazard sign and a Dream Master note is an ink slab wherever they sit:
+A **chapter word** sets the colour register of every panel in the chapter. It recolours a panel's accent and nothing else: an alert, a faction, a choice card or a gear entry keeps its own identity in every chapter, so a warning is a hazard sign and a Dream Master note is a file under an ink bar wherever they sit:
 
 | You write | Section accent | Use for |
 |---|---|---|

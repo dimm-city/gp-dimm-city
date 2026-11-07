@@ -35,11 +35,14 @@
    no flat --bg patch in the bottom band beside the chips.
 
    The image is OPAQUE: brick-wall.png is brick-bg-01.png multiplied into
-   --bg (#c8c5bf) and flattened. A transparent tile would make every page
-   transparent, and PDF/X-1a cannot carry transparency: Ghostscript would
-   flatten EVERY walled page to a raster image in a DriveThruRPG build — no
-   live text, no embedded fonts, and black text left four-colour, since
-   gutterpress's `pdfx.blackText: k-only` rewrite only reaches vector text.
+   --bg (#c8c5bf) and flattened. A tile with alpha would make every page
+   transparent: under `pdfx.transparency: preserve-text` every walled page,
+   not only those with translucent artwork, would print its artwork as a
+   picture (a text-free one whole), and under the default `flatten-page`
+   Ghostscript would flatten every walled page to a raster image with no
+   live text, no embedded fonts and black text left four-colour. An opaque
+   tile leaves a page vector unless it carries other translucent artwork,
+   which is allowed (docs/print-transparency-inventory.md).
    --bg stays as the fill under the tile, but a book that retints --bg does
    not tint the brick with it. To bake a tile for another colour, take
    the RGBA source (source-art/brick-bg-01.png in the repository; it is not
@@ -91,15 +94,17 @@
    - `letter-spacing` leaves its tracking after the last glyph, so the
      inline-end padding gives it back (`calc(9px - 0.1em)`).
 
-   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.875in)
+   WHERE IT SITS IN THE BAND. The bottom margin (`--bottom-margin`, 0.95in)
    is measured from the SHEET edge. DriveThruRPG wants text 0.5in inside the
    TRIM, and the trim is 0.125in inside the sheet at the bottom, so nothing may
    print below 0.625in from the sheet edge. The chip is 0.225in tall and sits
-   at the top of the band, 0.025in below the text block, so its foot is at
-   exactly 0.625in: on DriveThruRPG's 0.5in text minimum.
+   at the top of the band, `--chip-gap` (0.10in) below the text block, so its foot is at exactly 0.625in:
+   on DriveThruRPG's 0.5in text minimum, where it always was. A sheet that fills
+   the page therefore ends --chip-gap (0.10in) above the chip (its 3pt hard shadow reaches
+   into that gap).
 
    A shrunk margin box stays anchored at its slot's START edge on the block
-   axis, which is why the offset is a margin (`margin-top: 0.025in`). Shrinking the box leaves no hole
+   axis, which is why the offset is a margin (`margin-top: var(--chip-gap)`). Shrinking the box leaves no hole
    in the band: §1's `@page` background paints underneath, so the wall shows
    through the rest of the slot on its own.
 
@@ -108,7 +113,7 @@
    pin frees, gutterpress re-homes these chips into a flex slot the size of
    the margin box, centred vertically (gutterpress-agent setFlushFurniture,
    `align-items: center`), and copies these declarations onto the chip;
-   anchored at the slot's top, it sits 0.025in below the text block there too. The declaration does nothing to a native margin box, which
+   anchored at the slot's top, it sits --chip-gap below the text block there too. The declaration does nothing to a native margin box, which
    is not a flex item.
 
    THE TWO CHIPS.
@@ -125,7 +130,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -135,17 +140,17 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
   @bottom-right {
     /* chapter coupon */
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -157,8 +162,8 @@
     padding: 2px calc(8px - 0.06em) 0 8px;
     color: var(--paper-cream);
     background: var(--brand-magenta-deep);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
 }
 
@@ -168,7 +173,7 @@
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -180,15 +185,15 @@
     padding: 2px calc(8px - 0.06em) 0 8px;
     color: var(--paper-cream);
     background: var(--brand-magenta-deep);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
   @bottom-right {
     /* folio sticker: civic register */
     width: fit-content;
     height: 0.225in;
     box-sizing: border-box;
-    margin-top: 0.025in;
+    margin-top: var(--chip-gap);
     align-self: flex-start;
     vertical-align: middle;
     line-height: 1;
@@ -198,10 +203,10 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
-    color: var(--ink-dark);
+    color: var(--ink);
     background: var(--paper-cream);
-    border: 1px solid var(--ink-dark);
-    border-width: 1px 3px 3px 1px;
+    border: 1pt solid var(--ink);
+    border-width: 1pt 3px 3px 1pt;
   }
 }
 
@@ -235,8 +240,14 @@
    the brick, a book that retints --bg does not retint them). Each tile is
    about 4.5in of wall regrown from its panel with no repeat inside it (the
    panel alone is 1.5in, a grid of the same stones down the page), so a page
-   holds barely two of it. They are opaque PNGs (PDF/X carries no
-   transparency) printed at 240 DPI. All of it is
+   holds barely two of it. They are opaque PNGs (an alpha channel would put
+   every page through the PDF/X split, as §1 says) printed at about 240 DPI,
+   with about 110 DPI of real
+   detail: the sheet is 1024x1536 (about 512px a panel) and the bake has
+   already grown each panel about 2x. They are accepted as texture at
+   that (no check sees a CSS background, and upsampling would add no
+   detail); a sharper wall needs a source sheet of at least 2048x3072.
+   The ground is drawn at 300 DPI. All of it is
    generated, tiles included, by scripts/wall-tiles.py from
    source-art/wall-sheet.png. */
 /* page-walls:begin — generated by scripts/wall-tiles.py; edit that, not this */

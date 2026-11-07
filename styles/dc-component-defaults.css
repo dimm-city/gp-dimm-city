@@ -7,6 +7,7 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
+  --dc-rule:           var(--ink);          /* the `---` hairline; a skill card sets it to the specialty mid */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
 
@@ -32,7 +33,7 @@
      a `###` bar. A kind of section sets them (dm, lore, choose, reference, the
      catalog). `flag` is one more box-shadow in the panel surface layer's stack,
      zero-size unless a kind sets it. */
-  --dc-section-bar-mix:      90%;                 /* 90% accent over ink: cream on the default magenta bar is 4.7:1 (100% is 4.06:1) */
+  --dc-section-bar-mix:      90%;                 /* 90% accent over ink: cream on the default magenta bar is 5.8:1 (100% is 5.0:1) */
   --dc-section-bar-tone:     var(--ink);
   --dc-section-bar-fg:       var(--paper-cream);
   --dc-section-bar-rule:     3pt solid var(--orange);
@@ -49,7 +50,7 @@
   --dc-section-recess-foot:  0px;                 /* how far the sheet's hanging edge stops short of the lip */
   --dc-section-lift:         var(--shadow-soft);  /* the soft lift's colour; transparent on a recessed kind */
   --dc-section-hard-shadow:  color-mix(in srgb, var(--ink-dark) 82%, transparent);  /* the hard offset copy; translucent, so the brick reads through */
-  --dc-section-top:          0px;                 /* extra padding on top inside the box: a kind that draws a tab (dm) reserves its height here */
+  --dc-section-top:          0px;                 /* room above the first block, inside the box: a kind that draws a tab (dm) reserves its height here (a margin, not padding, so a continuation does not repeat it) */
   --dc-section-shadow-y:     0px;                 /* the shadow layer's extra offset: a kind with its own polygon adds it to both layers' foot */
   --dc-section-ink-mix:      72%;                 /* --dc-accent-ink of a panel: the accent mixed this far with --dc-section-ink-tone */
   --dc-section-ink-tone:     var(--ink);
@@ -61,6 +62,9 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
+  --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */
+  --dc-choose-stamp-top:   0px;                 /* where the stamp's top edge sits: 0 = on the form's top edge */
+  --dc-choose-stamp-lift:  -50%;                /* how far it is lifted over that edge: half its height */
 
   /* Panel edge. A template changes the panel's silhouette through these
      tokens, never through its ::before/::after: `clip` is the chamfer cut off
@@ -108,19 +112,20 @@
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
-  --dc-alert-bg:             var(--hud-blue-dim);   /* player-facing note panel */
-  --dc-alert-border:         var(--hud-blue-dark);  /* left rail */
+  --dc-alert-bg:             var(--paper-cream);    /* every callout reads on white: its accent is in the rail, the frame and the label */
+  --dc-alert-border:         var(--hud-blue-dark);  /* the accent: left rail, frame, label chip */
   --dc-alert-fg:             var(--ink);
-  --dc-alert-label-color:    var(--ink-dark);       /* ink-dark on hud-blue-dim = 7.05:1 AA pass */
+  --dc-alert-label-color:    var(--paper-cream);
   --dc-alert-body-size:      var(--fs-body-sm);
-  --dc-alert-border-width:   4px;
+  --dc-alert-border-width:   8px;
   --dc-alert-label-size:     var(--fs-floor);
   --dc-alert-label-weight:   700;
   --dc-alert-label-spacing:  0.1em;
   --dc-alert-label-margin:   8pt;
   --dc-alert-margin-top:     0;
-  --dc-alert-frame:          none;                  /* an inset box-shadow ring (warning's ink frame) */
-  --dc-alert-label-bg:       var(--paper-cream);    /* the label's chip: every label is a raised chip */
+  --dc-alert-frame:          inset 0 0 0 2pt var(--dc-alert-border);  /* an inset ring in the accent, so a callout keeps its edge on a white sheet too */
+  --dc-alert-frame-width:    3pt;                   /* the frame of a callout whose frame follows its outline (vibe, origin, location, visit) */
+  --dc-alert-label-bg:       var(--dc-alert-border);  /* the label's chip: the accent, with paper type */
   --dc-alert-label-pad:      2px 9px;
   --dc-alert-label-shadow:   var(--dc-label-shadow);
   /* Each boxed component cuts its own corners (a clip-path on the box), so its
@@ -141,7 +146,7 @@
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
-  --dc-specialty-intro-title-color: var(--bg);
+  --dc-specialty-intro-title-color: var(--paper-cream);
   --dc-specialty-intro-bg:          var(--hud-panel);
   --dc-specialty-intro-h3-color:    var(--blood);      /* overridden by .dc-specialty.<name> context */
 
@@ -208,7 +213,7 @@
   --dc-specialty-card-media-margin-even: 0 0 0.08in 0.14in;
   --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
   --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
-  --dc-specialty-card-name-size:    1.15em;
+  --dc-specialty-card-name-size:    var(--fs-h4);
   --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
   --dc-card-grid-row:               0;           /* the least height of a card in the grid */
@@ -236,13 +241,14 @@
   --dc-arrow-color:          var(--blood);
   --dc-ap-bg:                var(--hud-blue-dark);
   --dc-ap-fg:                var(--paper-cream);
-  --dc-ap-border:            var(--ink-dark);
+  --dc-ap-border:            var(--ink);
 
   /* .dc-fiction-excerpt public API: a hole smashed in the wall, the story on the
      page behind it. The two colours are tokens; the hole's shape is generated
      (below). */
-  --dc-fiction-bg:           var(--paper-zine);    /* the page */
+  --dc-fiction-bg:           var(--paper-cream);   /* the page */
   --dc-fiction-cavity:       var(--ink-smoke);     /* the broken wall's thickness, round the hole */
+  --dc-fiction-title-size:   var(--fs-h2);         /* its h1: a story's name, a step under a chapter's */
   --dc-fiction-art-width:    3in;
   --dc-fiction-art-shadow:   4px 4px 0 var(--hud-blue-dark);
   --dc-fiction-art-outline:  3px solid var(--ink-dark);
@@ -283,13 +289,13 @@
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
-  --dc-flavor-color:         var(--ink-dark);
+  --dc-flavor-color:         var(--ink);
   --dc-flavor-bg:            var(--paper-cream);   /* a flavor line is never set straight on the wall */
 
   /* entry cards (@gear and its kinds augment, treasure, vehicle, drug) public API;
      each kind sets these on its own class (components/entries.css) */
   --dc-entry-accent:         var(--ink-dark);       /* rail, and the rule over an entry in a catalog */
-  --dc-entry-ink:            var(--ink-dark);       /* name and field-label colour */
+  --dc-entry-ink:            var(--ink);            /* name and field-label colour */
   --dc-entry-surface:        var(--paper-light);
   --dc-entry-rail:           3px;                   /* a catalog sets 0 */
   --dc-entry-rule:           0px;                   /* a catalog sets it */
@@ -345,7 +351,11 @@
   --dc-npc-stat-primary:     var(--hud-blue-dark);
   --dc-npc-stat-rule:        var(--rust);
   --dc-npc-stat-rule-width:  2pt;
-  --dc-npc-stat-secondary:   var(--ink-smoke);
+  --dc-npc-stat-secondary:   var(--ink);
+
+  /* the die call (.dc-die-call): a paragraph that is only ROLL THE DIE! */
+  --dc-die-call-bg:          var(--brand-magenta-deep);  /* the die call's chip face (a paragraph that is only ROLL THE DIE!) */
+  --dc-die-call-fg:          var(--paper-cream);
 
   /* outcomes table (.dc-outcomes / .dc-outcome-*) public API */
   --dc-outcome-key-col:      max(130px, 26%);   /* chip column: wider on a full-width ladder so long band names wrap in three lines at most */
@@ -384,7 +394,7 @@
   --dc-card-shape:           polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   --dc-choice-accent:        var(--ink-dark);       /* rail, top band, title colour */
   --dc-choice-surface:       var(--paper-cream);
-  --dc-choice-tint:          color-mix(in srgb, var(--ink-dark) 8%, var(--paper-cream));  /* the closing quote's well */
+  --dc-choice-tint:          var(--paper-cream);    /* the closing quote's ground: white, as every text surface is */
   --dc-choice-edge:          1.5pt solid var(--ink-dark);  /* the card's border */
   --dc-choice-band:          5px;                   /* the top band in the kind colour */
   --dc-choice-rail:          6px;                   /* the left rail in the kind colour */
@@ -429,6 +439,8 @@
   /* .dc-skill-card extra public API (shape geometry) */
   --dc-skill-body-shape:     polygon(0 0, 100% 0, 100% calc(100% - 28px), calc(100% - 44px) 100%, 0 100%);
   --dc-skill-tab-shape:      polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+  --dc-skill-foot-bolt-left:   4px;  /* the card's bottom-left bolt: its distance from the left edge (a specialty sets its own beside its body shape) */
+  --dc-skill-foot-bolt-bottom: 4px;  /* ...and from the foot */
 
   /* .dc-specialty-card extra public API (shapes + title). Inside a
      .dc-specialty both shapes are the specialty's path-banner cuts. */
@@ -447,12 +459,17 @@
 
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);
-  --dc-tag-fg:               var(--ink-dark);
-  --dc-tag-border:           var(--ink-dark);
+  --dc-tag-fg:               var(--ink);
+  --dc-tag-border:           var(--ink);
+
+  /* Wall hardware: the bolt head that fixes a `##` slip, a vibe sheet and a skill card to the wall (chrome.css, "Bolt heads") */
+  --dc-bolt:                 var(--ink);          /* the bolt's ring, slot and shadow */
+  --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
+  --dc-bolt-size:            10px;                /* the bolt's diameter */
 
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
-  --dc-tape-border:          var(--ink-dark);
+  --dc-tape-border:          var(--ink);
   --dc-tape-color:           var(--ink);
   --dc-tape-shape:           polygon(0 0, 100% 0, calc(100% - 6px) 25%, 100% 50%, calc(100% - 6px) 75%, 100% 100%, 0 100%, 6px 75%, 0 50%, 6px 25%);  /* torn ends */
 
@@ -466,16 +483,20 @@
        slip-ink    heading type on the slip
        slip-edge   the ink edge and dashed foot of a slip
        slip-shadow its hard shadow (opaque, no blur)
-       slip-tape   the masking tape across a `##` slip (default: the tape's colour)
        slip-gap    the space above a slip, so it never jams against the box above
+       slip-foot   the space below a slip, the same whatever follows it
+       slip-bolt   the bolt heads in a `##` slip's top corners (-face: their centre)
        sheet-pad   the side padding of the prose sheet
        title-ink   type on the page-title banner, whose fill is the chapter's accent */
   --dc-page-slip-bg:         var(--paper-cream);
-  --dc-page-slip-ink:        var(--ink-dark);
-  --dc-page-slip-edge:       var(--ink-dark);
+  --dc-page-slip-ink:        var(--ink);
+  --dc-page-slip-edge:       var(--ink);
   --dc-page-slip-shadow:     var(--shadow-poster);
-  --dc-page-slip-tape:       var(--dc-tape-bg);
+  --dc-page-slip-bolt:       var(--dc-bolt);
+  --dc-page-slip-bolt-face:  var(--dc-bolt-face);
+  --dc-page-slip-bolt-size:  var(--dc-bolt-size);
   --dc-page-slip-gap:        var(--space-xl);
+  --dc-page-slip-foot:       6pt;
   --dc-page-sheet-pad:       0.18in;
   --dc-page-title-ink:       var(--paper-cream);
 
