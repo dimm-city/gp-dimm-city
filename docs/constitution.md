@@ -671,7 +671,7 @@ When in doubt: keep components FLAT, give them HARD SHADOWS, hard edges, decisiv
 ### Image rules
 
 - Favor high-contrast art with urban decay, hard lighting, threat.
-- Let art interrupt layout instead of sitting politely in frames.
+- Let art interrupt layout instead of sitting politely in frames. A framed, tilted plate is the paste-up register's print on the wall, used only where §IV's guidance says; it is not a frame to put every picture in.
 - Magenta or orange light accents as supporting note, not whole image strategy.
 - Avoid cute expressions, fantasy scrollwork, sleek luxury tech imagery.
 
