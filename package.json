@@ -52,6 +52,7 @@
       "styles/components/entries.css",
       "styles/components/section.css",
       "styles/page-templates.css",
+      "styles/paste-up.css",
       "styles/page-rules.css",
       "styles/dc-native.css"
     ],

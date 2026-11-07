@@ -7,6 +7,21 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
+  /* Paste-up register (`.dc-paste-up`, styles/paste-up.css). Band and foot are
+     the wall above and below a sheet's paper (the tag and the closing sticker
+     straddle them); lift is how far a tag's top rises above the paper's edge;
+     inset moves the sheets in so a tag's overhang stays in the content box;
+     pair-gap is the gap between sheets in a `.dc-pu-row`; the sticker tokens
+     size and seat a closing street line. A chapter sets them on its id. */
+  --dc-pu-band:           0.18in;
+  --dc-pu-foot:           0.16in;
+  --dc-pu-lift:           0.1in;
+  --dc-pu-inset:          0in;
+  --dc-pu-pair-gap:       var(--space-xl);
+  --dc-pu-sticker-size:   var(--fs-h3);
+  --dc-pu-sticker-gap:    var(--space-lg);
+  --dc-pu-sticker-drop:   calc(0.1in + 2pt);
+
   --dc-rule:           var(--ink);          /* the `---` hairline; a skill card sets it to the specialty mid */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
