@@ -38,8 +38,8 @@
      --spec-accent/-mid/-dark   the triad, aliasing its own --<name>-accent/-mid/-dark
      --spec-band / --spec-on-band   the title-band fill and the type on it: the
                                 bright signal colour, with whichever of ink or
-                                cream holds >= 4.5:1 on it (proxy uses the
-                                deep magenta: cream on the bright one is 3.6:1)
+                                cream holds >= 4.5:1 on it (proxy's band is the
+                                deep magenta, 12.5:1 with cream)
      --spec-chip-bg / -fg / -edge   the tier pill on the card tab. REQUIRED: the
                                 --spec-* tokens have no :root default, so a
                                 specialty that omits one gets a transparent pill
@@ -161,6 +161,7 @@
   --spec-edge-rest: 100% calc(100% - 12px), calc(100% - 8px) calc(100% - 12px), calc(100% - 8px) calc(100% - 8px), calc(100% - 16px) calc(100% - 8px), calc(100% - 16px) calc(100% - 4px), calc(100% - 24px) calc(100% - 4px), calc(100% - 24px) 100%, 10px 100%, 0 calc(100% - 10px);
   --dc-skill-tab-shape: polygon(0 8px, 8px 0, calc(100% - 15px) 0, calc(100% - 15px) 5px, calc(100% - 10px) 5px, calc(100% - 10px) 10px, calc(100% - 5px) 10px, calc(100% - 5px) 15px, 100% 15px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 8px) calc(100% - 12px), calc(100% - 8px) calc(100% - 8px), calc(100% - 16px) calc(100% - 8px), calc(100% - 16px) calc(100% - 4px), calc(100% - 24px) calc(100% - 4px), calc(100% - 24px) 100%, 12px 100%, 0 calc(100% - 12px));
+  --dc-skill-foot-bolt-left: 9px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 6px) calc(100% - 12px), calc(100% - 6px) calc(100% - 8px), calc(100% - 12px) calc(100% - 8px), calc(100% - 12px) calc(100% - 4px), calc(100% - 18px) calc(100% - 4px), calc(100% - 18px) 100%, 0 100%);
 }
 
@@ -216,10 +217,17 @@
   --spec-edge-rest: 100% calc(100% - 22px), calc(100% - 4px) calc(100% - 17px), calc(100% - 2px) calc(100% - 11px), calc(100% - 13px) calc(100% - 9px), calc(100% - 17px) calc(100% - 3px), 100% 100%, calc(100% - 48px) 100%, 82% calc(100% - 6px), 69% calc(100% - 1px), 55% calc(100% - 7px), 41% calc(100% - 2px), 27% calc(100% - 7px), 14% calc(100% - 1px), 7% calc(100% - 4px), 0 100%, 0 calc(100% - 9px), 3px calc(100% - 14px);
   --dc-skill-tab-shape: polygon(0 14px, 14px 0, 38% 2px, 44% 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 5px) calc(100% - 15px), calc(100% - 4px) calc(100% - 9px), calc(100% - 17px) calc(100% - 8px), calc(100% - 24px) calc(100% - 2px), 100% 100%, calc(100% - 38px) 100%, 78% calc(100% - 5px), 62% calc(100% - 1px), 47% calc(100% - 6px), 31% calc(100% - 2px), 17% calc(100% - 6px), 8% calc(100% - 1px), 4px calc(100% - 3px), 0 100%, 0 calc(100% - 7px));
+  --dc-skill-foot-bolt-left: 6px;  --dc-skill-foot-bolt-bottom: 7px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-edge-title: 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px);
   --spec-media-shape: polygon(0 14px, 14px 0, 100% 0, calc(100% - 2px) 40%, 100% 70%, 100% 100%, calc(100% - 20px) calc(100% - 3px), 86% calc(100% - 7px), 72% calc(100% - 2px), 58% calc(100% - 8px), 43% calc(100% - 3px), 29% calc(100% - 8px), 15% calc(100% - 2px), 6% calc(100% - 6px), 0 100%);
 }
 
+.dc-specialty.gutterdruid .dc-skill-card:has(> .dc-card-body > .dc-card-inner > .dc-ability:last-child) {
+  --dc-skill-foot-bolt-bottom: 9px;  /* the foot rises to the right: the bolt, moved right of the chip, rises with it */
+}
+.dc-specialty.technosorcerer .dc-skill-card:has(> .dc-card-body > .dc-card-inner > .dc-ability:last-child) {
+  --dc-skill-foot-bolt-bottom: 9px;  /* the tear is 3px up at the left: clear of the chip row as well */
+}
 .dc-specialty.technosorcerer .dc-specialty-card {
   --dc-specialty-card-bg: var(--paper-aged);
 }
@@ -248,6 +256,7 @@
   --spec-edge-rest: 100% calc(100% - 10px), calc(100% - 10px) 100%, 22px 100%, 22px calc(100% - 6px), 11px calc(100% - 6px), 11px calc(100% - 12px), 0 calc(100% - 12px);
   --dc-skill-tab-shape: polygon(0 0, calc(100% - 22px) 0, calc(100% - 22px) 10px, calc(100% - 11px) 10px, calc(100% - 11px) 20px, 100% 20px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 22px 100%, 22px calc(100% - 6px), 11px calc(100% - 6px), 11px calc(100% - 12px), 0 calc(100% - 12px));
+  --dc-skill-foot-bolt-left: 25px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 0, calc(100% - 18px) 0, calc(100% - 18px) 6px, calc(100% - 9px) 6px, calc(100% - 9px) 12px, 100% 12px, 100% 100%, 18px 100%, 18px calc(100% - 6px), 9px calc(100% - 6px), 9px calc(100% - 12px), 0 calc(100% - 12px));
 }
 
@@ -275,6 +284,7 @@
   --spec-edge-rest: 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px);
   --dc-skill-tab-shape: polygon(0 8px, 8px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
+  --dc-skill-foot-bolt-left: 11px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 14px, 14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
 }
 
@@ -288,7 +298,7 @@
   --spec-mid: var(--proxy-mid);
   --spec-dark: var(--proxy-dark);
   --spec-ink: var(--brand-magenta-deep);  /* text-safe ink: >= 4.5:1 on cream (skill card, path shell) and light (intro) paper; on aged paper only where this specialty's card uses it (technosorcerer, gutterdruid, etherlock). ROLL THE DIE! and the like */
-  /* TECH + MAGIC: deep-magenta band (cream on the bright magenta is 3.6:1) with a faceted plane and a cyan LED rule. */
+  /* TECH + MAGIC: deep-magenta band (cream on it 12.5:1) with a faceted plane and a cyan LED rule. */
   --spec-band: var(--brand-magenta-deep);
   --spec-on-band: var(--paper-cream);
   --spec-chip-bg: var(--paper-cream);
@@ -304,7 +314,8 @@
   --spec-edge-top: 0 0, calc(50% - 22px) 0, 50% 7px, calc(50% + 22px) 0, calc(100% - 14px) 0, 100% 14px;
   --spec-edge-rest: 100% calc(100% - 12px), calc(100% - 10px) calc(100% - 12px), calc(100% - 10px) calc(100% - 6px), calc(100% - 20px) calc(100% - 6px), calc(100% - 20px) 100%, 12px 100%, 0 calc(100% - 12px);
   --dc-skill-tab-shape: polygon(0 8px, 8px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
-  --dc-skill-body-shape: polygon(0 0, calc(50% - 18px) 0, 50% 6px, calc(50% + 18px) 0, 100% 0, 100% calc(100% - 12px), calc(100% - 10px) calc(100% - 12px), calc(100% - 10px) calc(100% - 6px), calc(100% - 20px) calc(100% - 6px), calc(100% - 20px) 100%, 12px 100%, 0 calc(100% - 12px));
+  --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 10px) calc(100% - 12px), calc(100% - 10px) calc(100% - 6px), calc(100% - 20px) calc(100% - 6px), calc(100% - 20px) 100%, 12px 100%, 0 calc(100% - 12px));
+  --dc-skill-foot-bolt-left: 9px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 16px 100%, 16px calc(100% - 5px), 8px calc(100% - 5px), 8px calc(100% - 10px), 0 calc(100% - 10px));
 }
 
@@ -329,7 +340,8 @@
   --spec-edge-top: 0 9px, 9px 0, 16% 3px, 33% 3px, 50% 3px, 67% 1px, 84% 1px, calc(100% - 7px) 0, 100% 7px;
   --spec-edge-rest: calc(100% - 3px) 63%, calc(100% - 2px) 73%, calc(100% - 4px) 83%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 85% calc(100% - 6px), 71% calc(100% - 6px), 57% calc(100% - 5px), 43% calc(100% - 5px), 29% calc(100% - 2px), 15% calc(100% - 2px), 12px 100%, 0 calc(100% - 12px), 4px 83%, 4px 73%, 0 63%;
   --dc-skill-tab-shape: polygon(0 7px, 7px 0, 40% 2px, 60% 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-  --dc-skill-body-shape: polygon(0 5px, 5px 0, 38% 0, 53% 1px, 69% 2px, 84% 1px, calc(100% - 6px) 0, 100% 6px, calc(100% - 1px) 22%, calc(100% - 1px) 50%, 100% 78%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 85% calc(100% - 4px), 71% 100%, 57% 100%, 43% calc(100% - 6px), 29% calc(100% - 2px), 15% calc(100% - 6px), 12px 100%, 0 calc(100% - 12px), 1px 78%, 4px 50%, 3px 22%);
+  --dc-skill-body-shape: polygon(0 0, 100% 0, calc(100% - 1px) 22%, calc(100% - 1px) 50%, 100% 78%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 85% calc(100% - 4px), 71% 100%, 57% 100%, 43% calc(100% - 6px), 29% calc(100% - 2px), 15% calc(100% - 6px), 12px 100%, 0 calc(100% - 12px), 1px 78%, 4px 50%, 3px 22%);
+  --dc-skill-foot-bolt-left: 8px;  --dc-skill-foot-bolt-bottom: 5px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-edge-title: 100% calc(100% - 2px), 96% 100%, 91% calc(100% - 4px), 85% calc(100% - 1px), 79% calc(100% - 4px), 72% 100%, 65% calc(100% - 5px), 58% calc(100% - 1px), 50% calc(100% - 4px), 42% 100%, 35% calc(100% - 3px), 27% calc(100% - 1px), 20% calc(100% - 4px), 12% 100%, 6% calc(100% - 3px), 0 calc(100% - 1px);
   --spec-media-shape: polygon(0 8px, 8px 0, 16% 3px, 33% 2px, 50% 1px, 67% 1px, 84% 3px, calc(100% - 10px) 0, 100% 10px, 100% 18%, 100% 40%, calc(100% - 2px) 60%, calc(100% - 1px) 82%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 85% calc(100% - 2px), 71% calc(100% - 3px), 57% calc(100% - 1px), 43% calc(100% - 5px), 29% calc(100% - 2px), 15% 100%, 9px 100%, 0 calc(100% - 9px), 0 82%, 4px 60%, 4px 40%, 3px 18%);
 }
@@ -360,6 +372,7 @@
   --spec-edge-rest: 100% calc(100% - 16px), calc(100% - 16px) 100%, 6px 100%, 0 calc(100% - 6px);
   --dc-skill-tab-shape: polygon(0 10px, 10px 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 8px 100%, 0 calc(100% - 8px));
+  --dc-skill-foot-bolt-left: 5px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 14px, 14px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 6px 100%, 0 calc(100% - 6px));
 }
 
@@ -389,6 +402,7 @@
   --spec-edge-rest: 100% calc(100% - 14px), calc(100% - 14px) 100%, calc(50% + 26px) 100%, 50% calc(100% - 7px), calc(50% - 26px) 100%, 14px 100%, 0 calc(100% - 14px);
   --dc-skill-tab-shape: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, calc(50% + 24px) 100%, 50% calc(100% - 7px), calc(50% - 24px) 100%, 14px 100%, 0 calc(100% - 14px));
+  --dc-skill-foot-bolt-left: 11px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
 }
 
@@ -414,6 +428,7 @@
   --spec-edge-rest: 100% calc(100% - 6px), calc(100% - 6px) 100%, 22px 100%, 0 calc(100% - 22px);
   --dc-skill-tab-shape: polygon(0 4px, 4px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   --dc-skill-body-shape: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 18px 100%, 0 calc(100% - 18px));
+  --dc-skill-foot-bolt-left: 15px;  --dc-skill-foot-bolt-bottom: 4px;  /* the bottom-left bolt, 2pt clear of the foot's cut */
   --spec-media-shape: polygon(0 5px, 5px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 18px 100%, 0 calc(100% - 18px));
 }
 
@@ -490,6 +505,62 @@
 .dc-ap.special {
   --dc-ap-bg: var(--amber);
   --dc-ap-fg: var(--paper-cream);
+}
+
+/* ── Card top marks ───────────────────────────────────────────────────────
+   Proxy's centre gate and Gutterdruid's cut corners are features of the card's
+   TOP edge. In the body shape (--dc-skill-body-shape) they were drawn again at
+   the top of every fragment of a card that split across a page, so the shape's
+   top edge is straight and the marks are drawn here, by the card's first
+   block (an element exists in the first fragment only), over the straight top:
+   an ink piece for the outline and the wall's own colour for the notch. They
+   are the shapes the polygon drew: the outline's cut sits 2px outside the
+   surface's, so an ink band 2px wide runs between them. The first block is not
+   positioned (a flavor line is, to carry nothing), so the marks sit against the
+   card's body. */
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child {
+  position: static;
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  z-index: 3;
+  pointer-events: none;
+}
+/* PROXY: a V gate, 36px wide and 6px deep, in the middle of the top edge. */
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after {
+  left: calc(50% - 18px);
+  width: 36px;
+  height: 8px;
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::before {
+  background: var(--ink);
+  clip-path: polygon(0 0, 100% 0, 100% 2px, 50% 8px, 0 2px);
+}
+.dc-specialty.proxy .dc-skill-card .dc-card-inner > :first-child::after {
+  background: var(--bg);
+  clip-path: polygon(0 0, 100% 0, 50% 6px);
+}
+/* GUTTERDRUID: the top corners cut, 5px at the left and 6px at the right. */
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before,
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  left: -2px;
+  width: calc(100% + 4px);
+  height: 10px;
+}
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::before {
+  background: var(--ink);
+  clip-path: polygon(0 0, 0 9px, 9px 0, calc(100% - 10px) 0, 100% 10px, 100% 0);
+}
+.dc-specialty.gutterdruid .dc-skill-card .dc-card-inner > :first-child::after {
+  background: var(--bg);
+  clip-path: polygon(0 0, 0 5px, 5px 0, calc(100% - 6px) 0, 100% 6px, 100% 0);
 }
 
 }

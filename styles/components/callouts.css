@@ -88,28 +88,34 @@
    .dc-alert base + .dc-alert-label label chrome + thin variant classes.
    GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros.
 
-   One shell, eight registers, told apart by SILHOUETTE, FILL VALUE, EDGE and
-   LABEL before a word is read, in colour and in grayscale:
+   One shell, eight registers, told apart by SILHOUETTE, EDGE and LABEL before
+   a word is read, in colour and in grayscale. Every register reads on WHITE:
+   the body text of a book sits on white paper, and a callout's colour is in
+   its rail, its frame and its label, never in its fill.
 
-     register  fill (value)       silhouette (meaning)          edge / grit          label
-     note      HUD-blue (mid)     machined 6px chamfers + one   blue rail            plain mono caps
-                                  chipped notch (player rules)
-     warning   light warm cream   sign plate: octagon, 12px     hazard-stripe rail,  yellow/ink tape
-                                  cuts (danger)                 heavy ink frame +    chip
-                                                                misregistered crimson line
-     dm        ink-dark (darkest) file folder: a tab rising     cyan rail            cyan chip, top right
-                                  from the top + one cut corner
-                                  (classified)
-     vibe      barely violet      long shallow diagonals at     violet edge,         violet chip
-               (light, flat)      two opposite corners (world)  tape strip on top
-     origin    warm paper (light) torn bottom edge + dog-ear    rust rail, worn      crimson rubber stamp
-                                  (backstory)                   (dashed) stamp ring
-     location  cool map paper     the origin's document         teal rail, worn      deep-teal rubber stamp
-               (light)            (a place written up)          (dashed) stamp ring
-     visit     fungi green (dark) wobbly organic polygon with   none                 pin glyph + caps
-                                  a signpost point (a place)
-     example   cream (light)      ticket: a V notch in the     cyan rail            taped-on tag
-                                  right edge (a sample)
+     register  silhouette (meaning)          edge / grit                    label
+     note      machined 6px chamfers + one   heavy blue rail + blue ring    blue chip, paper type
+               chipped notch (player rules)  + a bolt in each top corner
+     warning   sign plate: octagon, 12px     hazard-stripe rail, heavy ink  yellow/ink tape chip
+               cuts (danger)                 frame + misregistered crimson
+     dm        file folder: a tab rising     cyan rail + ink ring           an ink bar across the
+               from the top + one cut corner                                top, cyan type on it
+               (classified)                  bolts on the white body
+     vibe      long shallow diagonals at     violet frame along every       violet chip, paper type
+               two opposite corners (world)  edge, a bolt in each top corner
+     origin    torn bottom edge, square      rust frame along the tear,     crimson rubber stamp
+               corners (backstory)           heavy rail
+     location  the origin's document         teal frame, heavy rail         deep-teal rubber stamp
+               (a place written up)
+     visit     wobbly organic polygon with   fungi-green frame along the    green chip, pin glyph
+               a signpost point (a place)    wobble and the point
+     example   ticket: a V notch in the      cyan rail + cyan ring          taped-on tag
+               right edge (a sample)
+
+   Every register is bolted to the wall: one bolt head in each top corner,
+   drawn in chrome.css ("Bolt heads") and placed in the rules below. A bolt
+   sits on the callout's first fragment only, so it prints once, at the real
+   top, never on a continuation.
 
    Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is
    ever cut. Each variant also sets --dc-accent-ink: the text-safe ink of its own
@@ -118,7 +124,7 @@
    The 20% chrome is on the labels and the edges, never on the reading
    surface. */
 
-/* ── Base shell — player-facing: pale cyan HUD panel, blue border ─────────── */
+/* ── Base shell — player-facing: a white sheet, a heavy blue rail and ring ── */
 /* Token defaults for .dc-alert are declared in :root in dc-component-defaults.css.
    Override at chapter-id scope in the book's own sheet (unlayered), or in variant rules below.
    A GitHub-style alert (`> [!NOTE]`, from the gutterpress-gfm-alerts extension:
@@ -127,6 +133,7 @@
    as the note, warning and caution as the warning. */
 .dc-alert,
 .gp-alert {
+  position: relative;  /* the host of the callout's bolts (chrome.css, "Bolt heads") */
   clip-path: var(--dc-alert-shape);
   background: var(--dc-alert-bg);
   box-shadow: var(--dc-alert-frame);
@@ -137,6 +144,10 @@
   padding: var(--space-lg) var(--space-xl);
   margin-top: var(--dc-alert-margin-top);
   break-inside: var(--dc-alert-break-inside);
+  /* A callout that splits (in a column run) keeps its padding on each fragment:
+     a continuation opens --space-lg under its edge and a fragment that goes on
+     ends --space-lg above its foot. */
+  box-decoration-break: clone;
   /* Alerts are full-width callouts that interrupt the reading flow; they
      should NEVER overlap a preceding right-floated image. Block elements
      don't wrap floats by default — clear: right ensures any alert after a
@@ -157,25 +168,23 @@
 
 /* Inline emphasis + paragraphs inside callouts must inherit the alert's
    --dc-alert-fg color. The global p/em/strong rules in dc-core.css set
-   dark text colors (color: --ink / --ink-smoke). Inside dark-fill callout
-   variants (.dc-dm-note etc.), dark-on-dark measured 1.17:1 — invisible.
-   Inherit makes p/em/strong adopt the alert's own foreground. */
+   their own colour (--ink), which a book that sets --dc-alert-fg on a
+   dark callout of its own would otherwise read dark on dark. Inherit makes
+   p/em/strong adopt the alert's own foreground. */
 :is(.dc-alert, .gp-alert) :is(p, em, strong) {
   color: inherit;
 }
 
-:is(.dc-alert, .gp-alert) :is(ul, ol) {
-  margin: 6pt 0 0;
-  padding-left: 0.2in;
-}
-
-:is(.dc-alert, .gp-alert) li {
-  margin-bottom: 0.04in;
-}
-
-:is(.dc-alert, .gp-alert) li::before,
-:is(.dc-alert, .gp-alert) li > p:first-child::before {
+:is(.dc-alert, .gp-alert) ul li::before,
+:is(.dc-alert, .gp-alert) ol li::before {
   color: var(--dc-alert-border);
+}
+/* A dm-note or example callout sits on white: its rail colour (cyan) is not
+   text-safe there, so its marker takes the callout's own ink. Bullets and
+   numerals alike. The list spacing is the global one (em-based, so it scales
+   with the callout's type size). */
+:is(.dc-dm-note, .dc-example-callout) :is(ul, ol) > li::before {
+  color: var(--dc-accent-ink);
 }
 
 /* ── Label chrome ───────────────────────────────────────────────────────── */
@@ -205,23 +214,33 @@
 .dc-note {
   --dc-alert-label-margin: var(--space-sm);
   --dc-alert-margin-top: var(--space-lg);
-  --dc-accent-ink: color-mix(in srgb, var(--hud-blue-dark) 50%, var(--ink));  /* 6:1 on the blue panel */
+  --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet */
+}
+
+/* The note's bolts (host A): the callout's own ::before and ::after, 2pt ring
+   + 3px in. The same for the GFM note, tip and important alerts and the example. */
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before {
+  top: calc(2pt + 3px);
+  left: calc(2pt + 3px);
+}
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after {
+  top: calc(2pt + 3px);
+  right: calc(2pt + 4px);
 }
 
 /* ── Variant: Warning — a rule with consequences: hazard register ─────────
-   A light, warm surface (body text must read), a hazard-stripe rail down the
-   left, an ink frame, and a yellow/ink caution-tape label. Yellow and ink
-   are the "danger / you must choose" pair across the system. */
+   A white sheet, a hazard-stripe rail down the left, an ink frame, and a
+   yellow/ink caution-tape label. Yellow and ink are the "danger / you must
+   choose" pair across the system. */
 .dc-note.warning,
 .gp-alert:is(.gp-alert-warning, .gp-alert-caution) {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-yellow) 14%, var(--paper-cream));
   --dc-alert-border: var(--ink);
   --dc-alert-border-width: 14px;
   /* a heavy ink frame, and a crimson second pass a hair out of register along the
      right and bottom edge */
   --dc-alert-frame: inset 0 0 0 3px var(--ink), inset -2px -2px 0 3px var(--crimson);
   --dc-alert-shape: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);  /* sign plate */
-  --dc-accent-ink: var(--blood);  /* 7.5:1 on the cream */
+  --dc-accent-ink: var(--blood);  /* 9.4:1 on the sheet */
   --dc-alert-label-color: var(--ink);
   --dc-alert-label-bg: var(--brand-yellow);
   --dc-alert-label-pad: 2px 9px;
@@ -256,141 +275,175 @@
   transform-origin: left center;
 }
 
-/* ── Variant: DM Note (Dream Master only) — the ink "intelligence drop" ───── */
+/* The warning's bolts (host B): inside the 3px ink frame, clear of the 12px
+   octagon cuts, the rail and the crimson second pass at the right. */
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution)) > :is(.dc-alert-label, .gp-alert-title) + *::before {
+  top: 6px;
+  left: 6px;
+}
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution))::after {
+  top: 6px;
+  right: 9px;
+}
+
+/* ── Variant: DM Note (Dream Master only) — a classified file ─────────────
+   The `dm` section's colours and parts, at a callout's size: an INK bar across
+   the top carries the label in cyan over a cyan rule, its left end rising as a
+   folder tab; under it a white sheet in an ink ring with the cyan rail. Cyan
+   on ink is the Dream Master's pair, used nowhere else. */
 .dc-dm-note {
-  --dc-alert-bg: var(--ink-dark);
-  --dc-alert-fg: var(--paper-cream);
   --dc-alert-border: var(--hud-blue-bright);
-  --dc-alert-border-width: 3px;
-  /* a file folder: a 12px tab rising over the left 42%, one cut corner opposite */
-  --dc-alert-shape: polygon(0 0, calc(42% - 6px) 0, 42% 12px, 100% 12px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-  --dc-accent-ink: var(--hud-blue-bright);  /* 6.7:1 on the ink slab */
-  --dc-alert-label-color: var(--ink);
-  --dc-alert-label-bg: var(--hud-blue-bright);
-  --dc-alert-label-shadow: 2px 2px 0 0 var(--ink);  /* the darkest ink, so it reads on the slab */
-  --dc-alert-label-pad: 2px 9px;
+  --dc-alert-border-width: 6px;
+  --dc-alert-frame: inset 0 0 0 2pt var(--ink-dark);
+  /* a file folder: a tab rising 9px over the left 42%, one cut corner opposite */
+  --dc-alert-shape: polygon(0 0, calc(42% - 6px) 0, 42% 9px, 100% 9px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet (cyan itself is a rail colour, not a text one) */
+  --dc-alert-label-color: var(--hud-blue-bright);  /* 6.7:1 on the ink bar */
+  --dc-alert-label-bg: var(--ink-dark);
+  --dc-alert-label-shadow: none;
+  --dc-alert-label-pad: 13px var(--space-xl) 4px;  /* the top clears the 9px tab rise */
+  --dc-alert-label-margin: var(--space-md);
   --dc-alert-body-size: var(--fs-floor);   /* insider small print, at the reading-text floor */
-  font-weight: 600;             /* reversed type is semibold */
   --dc-alert-label-weight: 700;
   --dc-alert-label-spacing: 0.1em;
   --dc-alert-margin-top: 9pt;
+  padding-top: 0;  /* the bar is the callout's top */
 }
-/* The cyan chip sits top right, as the Dream Master chip does on a `dm` section. */
+/* The label is the bar: it spans the callout, edge to edge inside the rail. */
 .dc-dm-note .dc-alert-label {
-  margin-left: auto;
+  width: auto;
+  margin-inline: calc(-1 * var(--space-xl));
+  border-bottom: 3pt solid var(--hud-blue-bright);
 }
-.dc-dm-note {
-  padding-top: calc(var(--space-lg) + 12px);  /* clears the folder tab */
+
+/* The Dream Master's bolts hang on its first body block, on the white body 2pt
+   under the cyan rule, in the side paddings (the block is positioned, so they
+   are placed against it). */
+.dc-dm-note > .dc-alert-label + * {
+  position: relative;
+}
+.dc-dm-note > .dc-alert-label + *::before,
+.dc-dm-note > .dc-alert-label + *::after {
+  top: calc(2pt - var(--dc-alert-label-margin));
+}
+.dc-dm-note > .dc-alert-label + *::before {
+  left: calc(2pt + 3px - var(--space-xl));
+}
+.dc-dm-note > .dc-alert-label + *::after {
+  right: calc(2pt + 4px - var(--space-xl));
 }
 
 /* ── Variant: Vibe Callout — atmosphere, the narrator's voice ─────────────
-   Not a slab: a flat, barely violet sheet with ONE violet edge all round, no
-   rail, in the narrator's italic. The world's colour (violet); light value and
-   an all-round edge with no rail separate
-   it from the blue note, the ink DM slab and the pull quote's magenta bar. */
+   A white sheet with ONE violet edge all round, no rail, in the narrator's
+   italic. The world's colour (violet); an all-round edge with no rail
+   separates it from the blue note, the Dream Master's file and the pull
+   quote's magenta bar. */
 .dc-vibe-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--brand-violet) 6%, var(--paper-cream));
   --dc-alert-fg: var(--ink);
   --dc-alert-border: var(--brand-violet);
-  --dc-alert-border-width: 2px;
+  --dc-alert-border-width: 4px;
+  --dc-alert-frame: none;  /* framed all round, along its diagonals too (see "A framed sheet") */
+  --dc-alert-label-bg: var(--brand-violet);
   /* long, shallow diagonals at two opposite corners (the world's silhouette) */
   --dc-alert-shape: polygon(0 0, calc(100% - 30px) 0, 100% 8px, 100% 100%, 30px 100%, 0 calc(100% - 8px));
-  --dc-accent-ink: var(--brand-violet);  /* 5.9:1 on the sheet */
-  --dc-alert-label-color: var(--brand-violet);
+  --dc-accent-ink: var(--brand-violet);  /* 9.2:1 on the sheet */
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
-  border: var(--dc-alert-border-width) solid var(--dc-alert-border);
-  position: relative;
 }
-/* A strip of tape holding the sheet to the wall: a small tan solid, a few
-   degrees off true, clear of the label and the text. */
-.dc-vibe-callout::before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 58%;
-  width: 54px;
-  height: 11px;
-  background: var(--dc-tape-bg);
-  border-block: 1px solid color-mix(in srgb, var(--dc-tape-bg) 70%, var(--ink));
-  transform: rotate(-3deg);
+/* The vibe's bolts: the left one on the first body block, the right one on the
+   callout's ::after (host B). The right one is lower: its corner is the 30px x
+   8px diagonal, and the bolt stays inside the frame that runs along it. */
+.dc-vibe-callout > .dc-alert-label + *::before {
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  left: 5px;
 }
-.dc-vibe-callout .dc-alert-label {
-  border: 1.5px solid var(--brand-violet);
+.dc-vibe-callout::after {
+  top: 13px;
+  right: 8px;
 }
 
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────
-   Warm paper, a rust rail, a dog-eared corner and a crimson rubber stamp.
-   Location (below) is the same document in the map's teal ink. */
+   A white sheet framed in rust (a heavy rail, and a frame that follows the
+   torn foot) under a crimson rubber stamp. Location
+   (below) is the same document in the map's teal ink. */
 .dc-origin-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--surface-orange-tint) 55%, var(--paper-cream));
   --dc-alert-border: var(--rust);  /* warmth without blood's full danger weight */
-  --dc-alert-border-width: 3px;
-  /* a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
-  --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
-  --dc-accent-ink: var(--blood);  /* 6.6:1 on the paper */
+  --dc-alert-border-width: 6px;
+  --dc-alert-frame: none;  /* framed along the tear (see "A framed sheet") */
+  --dc-alert-label-bg: var(--paper-cream);  /* a stamp is ink on the sheet, not a chip */
+  /* square corners and a torn bottom edge (4px deep at most) */
+  --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
+  --dc-accent-ink: var(--blood);  /* 9.4:1 on the sheet */
   --dc-alert-label-color: var(--blood);
   --dc-alert-label-spacing: 0.12em;
   --dc-alert-label-margin: var(--space-md);
 }
 /* ── Variant: Location Callout — a place, written up like a dossier page ───
-   Origin's document (dog-eared corner, torn foot, rubber stamp) on cool map
-   paper: a teal rail and a deep-teal stamp, so a place reads apart from a
-   backstory in colour and in value, and from visit's green signpost by
-   silhouette. */
+   Origin's document (torn foot, rubber stamp) framed in
+   teal under a deep-teal stamp, so a place reads apart from a backstory in
+   colour, and from visit's green signpost by silhouette. */
 .dc-location-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--hud-blue-dim) 16%, var(--paper-cream));
   --dc-alert-border: var(--hud-blue);
-  --dc-alert-border-width: 3px;
-  /* the origin's document: a 16px dog-ear top right and a torn bottom edge (4px deep at most) */
-  --dc-alert-shape: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
-  --dc-accent-ink: var(--hud-blue-dark);  /* 7.5:1 on the map paper */
+  --dc-alert-border-width: 6px;
+  --dc-alert-frame: none;  /* framed along the tear (see "A framed sheet") */
+  --dc-alert-label-bg: var(--paper-cream);  /* a stamp is ink on the sheet, not a chip */
+  /* the origin's document: square corners and a torn bottom edge (4px deep at most) */
+  --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(100% - 3px), 95% 100%, 89% calc(100% - 4px), 82% calc(100% - 1px), 74% 100%, 66% calc(100% - 4px), 57% calc(100% - 2px), 49% 100%, 41% calc(100% - 3px), 32% 100%, 24% calc(100% - 4px), 15% calc(100% - 1px), 7% 100%, 0 calc(100% - 3px));
+  --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet */
   --dc-alert-label-color: var(--hud-blue-dark);
   --dc-alert-label-spacing: 0.12em;
   --dc-alert-label-margin: var(--space-md);
 }
 :is(.dc-origin-callout, .dc-location-callout) {
-  position: relative;
-  padding-top: 14pt;  /* dog-ear 16px + 2pt */
+  padding-top: 14pt;  /* the stamp's place, kept from the dog-ear */
 }
-/* The dog-ear fold: a solid triangle over the cut corner. */
+/* The bolts: the left on the first body block, the right on the callout's
+   ::after (host B), 3pt frame + 3px in from the top. */
+:is(.dc-origin-callout, .dc-location-callout) > .dc-alert-label + *::before {
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  left: 5px;
+}
 :is(.dc-origin-callout, .dc-location-callout)::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 16px;
-  height: 16px;
-  background: var(--paper-stain);
-  clip-path: polygon(0 0, 0 100%, 100% 100%);
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  right: 8px;
 }
 :is(.dc-origin-callout, .dc-location-callout) .dc-alert-label {
   padding: 1px 9px;
   border: 2px solid currentColor;
-  outline: 1px dashed currentColor;  /* a worn, broken outer ring */
+  outline: 1pt dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
   margin-left: 3px;
   transform: rotate(-2deg);
 }
 
 /* ── Variant: Visit Callout — a place, a signpost ─────────────────────────
-   Fungi-green placard with a pointed (finger-post) end and a map-pin label:
-   the living city's own colour, set apart from the cyan/ink Dream Master slab. */
+   A white placard with a pointed (finger-post) end, framed in fungi green
+   (a heavy rail, and a frame that follows the wobbling outline and the point)
+   under a map-pin label: the living city's own colour, set apart from the
+   Dream Master's cyan and ink. */
 .dc-visit-callout {
-  --dc-alert-bg: color-mix(in srgb, var(--fungi-rot) 80%, var(--fungi-glow));
-  --dc-alert-fg: var(--paper-cream);
-  --dc-alert-border: var(--fungi-glow);
-  --dc-alert-border-width: 0px;
+  --dc-alert-border: var(--fungi-rot);
+  --dc-alert-border-width: 8px;
+  --dc-alert-frame: none;  /* framed along the wobble and the point (see "A framed sheet") */
   /* organic: a wobbly polygon with no long straight edge, ending in a signpost point */
   --dc-alert-shape: polygon(0 3px, 12% 0, 31% 3px, 52% 0, 74% 3px, calc(100% - 22px) 0, 100% 50%, calc(100% - 20px) 100%, 76% calc(100% - 3px), 55% 100%, 30% calc(100% - 4px), 9% 100%, 0 calc(100% - 3px), 1px 50%);
-  --dc-accent-ink: var(--fungi-glow);  /* 4.8:1 on the green */
+  --dc-accent-ink: var(--fungi-rot);  /* 10.3:1 on the sheet */
   --dc-alert-body-size: var(--fs-body);
-  --dc-alert-label-color: var(--paper-cream);
   --dc-alert-label-bg: var(--fungi-rot);
   --dc-alert-label-spacing: 0.1em;
-  font-weight: 600;             /* reversed type is semibold */
   margin: 0.12in 0;
   padding-right: calc(var(--space-xl) + 14px);
+}
+
+/* The visit's bolts (host B): inside the wobble, the right one at the
+   signpost's shoulder, 3px short of where the point begins. */
+.dc-visit-callout > .dc-alert-label + *::before {
+  top: 10px;
+  left: 5px;
+}
+.dc-visit-callout::after {
+  top: 8px;
+  right: 30px;
 }
 
 /* The place marker: a teardrop pin drawn in CSS (no glyph to fall back). */
@@ -406,16 +459,58 @@
   vertical-align: -1px;
 }
 
+/* ── A framed sheet (vibe, origin, location, visit) ───────────────────────
+   These four have an outline an inset ring cannot follow: a ring is square,
+   so a diagonal, a tear or a point cuts it off and leaves that edge bare. The
+   callout's own box is filled with its accent instead, and a white copy of
+   its silhouette sits inside it (--dc-alert-frame-width in from the top,
+   right and foot; the rail is the left side), so the frame runs along every
+   cut. The text is on the white copy. */
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout) {
+  position: relative;
+  isolation: isolate;
+  background: var(--dc-alert-border);
+}
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::before {
+  content: "";
+  position: absolute;
+  inset: var(--dc-alert-frame-width) var(--dc-alert-frame-width) var(--dc-alert-frame-width) 0;
+  background: var(--dc-alert-bg);
+  clip-path: var(--dc-alert-shape);
+  z-index: -1;
+}
+
+/* Space under a callout, as over it: text that follows one sits a gap below it,
+   not against its foot. */
+:is(.dc-alert, .gp-alert):has(+ :is(p, ul, ol, h3, h4, .gp-columns, [class*="gp-columns-"])) {
+  margin-bottom: var(--space-md);
+}
+/* A quote inside a callout is a line of the callout's own text, not a second
+   box on it: a thin rail in the callout's accent, no fill, tight spacing. */
+:is(.dc-alert, .gp-alert) blockquote {
+  margin: 4pt 0;
+  padding: 1pt 0 1pt 10pt;
+  border-left-width: 3px;
+  border-left-color: var(--dc-alert-border);
+  background: none;
+}
+
 /* ── Variant: Example — a worked example, never a rule ───────────────────── */
 .dc-example-callout {
-  --dc-alert-bg: var(--paper-light);
   --dc-alert-border: var(--brand-cyan);
+  --dc-alert-frame: inset 0 0 0 2pt var(--brand-cyan);
   --dc-alert-label-color: var(--dc-tape-color);
-  --dc-alert-border-width: 3px;
+  --dc-alert-border-width: 6px;
   --dc-alert-margin-top: var(--space-lg);
-  --dc-accent-ink: var(--hud-blue-dark);  /* 6.4:1 on the sheet */
+  --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet */
   /* a ticket: one V notch (6px deep) in the right edge */
   --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(50% - 6px), calc(100% - 6px) 50%, 100% calc(50% + 6px), 100% 100%, 0 100%);
+  /* The notch cuts the cyan ring too, which on a white sheet reads as a break in
+     the frame. The cut is drawn: two cyan strokes along the V (a vector; the clip
+     trims the half outside the notch, leaving the ring's own 2pt width). */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 16'%3E%3Cpolyline points='9,2 3,8 9,14' fill='none' stroke='%2300bcd4' stroke-width='5.4'/%3E%3C/svg%3E") no-repeat right center / 9px 16px,
+    var(--dc-alert-bg);
 }
 .dc-example-callout p {
   font-style: normal;
@@ -425,7 +520,7 @@
   display: inline-block;
   padding: 1px 7px;
   background: var(--dc-tape-bg);
-  border: 1px solid var(--dc-tape-border);
+  border: 1pt solid var(--dc-tape-border);
   color: var(--dc-tape-color);
 }
 

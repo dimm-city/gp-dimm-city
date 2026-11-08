@@ -268,8 +268,10 @@ describe("file contracts", () => {
     expect(bad, "columns are core's `@columns N`; set `--gp-column-gap` / `--gp-column-rule` at :root instead").toEqual([]);
   });
 
-  test("the only component-internal grids are the four approved ones", () => {
-    const APPROVED = new Set([".dc-stat-grid", ".dc-steps>li", ".dc-outcome-row", ".dc-card-grid>.gp-columns"]);
+  test("the only component-internal grids are the six approved ones", () => {
+    // `.dc-pu-row` is the paste-up wall's pair of sheets, side by side, each ending at its own last line (a grid, so the two stay level and a row stays whole).
+    // `.dc-ability` is a chip column and a text column, so every row's text starts at one x whatever its chip's width.
+    const APPROVED = new Set([".dc-pu-row", ".dc-stat-grid", ".dc-steps>li", ".dc-outcome-row", ".dc-ability", ".dc-card-grid>.gp-columns"]);
     const found = new Set();
     for (const s of PKG) {
       s.root.walkDecls("grid-template-columns", (d) => {

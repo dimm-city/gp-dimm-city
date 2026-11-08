@@ -80,16 +80,56 @@ A panel's first `##` or `###` is its title bar; a heading after it is a sub-head
 | definition | --- | the headword |
 | choose | none: the form has no sub-headings | none |
 
+## Street line {#street-line}
+
+A panel's closing slogan, its last paragraph when it is only a bold run (or a bold-only paragraph right before a heading in it), is the street line. The plugin already marks it `.dc-kicker` so it never opens a page alone; the look is the tear-off strip at the foot of a flyer. A dotted ink perforation runs across the panel, and under it the line is set in the body face at 11pt bold, in ink, level, with a short stub of the panel's accent at its left. No capitals and no loud colour: a chapter can hold a dozen of them. There is nothing to write; end the panel with a bold line.
+
+```markdown
+@section panel
+
+## Dream Fast
+
+You do not need a plan to enter the Dream. You need a reason to stay in it.
+
+- **Pick** a seat.
+- **Say** what you want.
+
+**Dream fast. Die weird.**
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section panel
+
+## Dream Fast
+
+You do not need a plan to enter the Dream. You need a reason to stay in it.
+
+- **Pick** a seat.
+- **Say** what you want.
+
+**Dream fast. Die weird.**
+
+@end-section
+
+</div>
+
+The stub is `--dc-section-accent`, so a chapter that re-themes its panels re-themes its street lines.
+
 ## Kinds of text {#kinds-of-text}
 
-`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter, in colour and in grayscale. Each cuts its own corners, as the skill cards do per specialty (a panel one larger chamfer, a reference four small even ones, lore long asymmetric slashes, dm a file-folder tab, choose ticket notches), and each has its own bar and sheet: a panel's bar is solid accent on cream, a reference's is a pale band, lore is deep violet, dm is ink with a cyan rule, and choose has no bar at all. The shape, the bar and the sheet say which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
+`reference`, `lore`, `dm` and `choose` are panels that say what kind of text they hold, so a reader can tell a look-up from a rule from the world from advice for the Dream Master at a glance, in any chapter, in colour and in grayscale. Each cuts its own corners, as the skill cards do per specialty (a panel one larger chamfer, a reference four small even ones, lore long asymmetric slashes, dm a file-folder tab, choose ticket notches), and each has its own bar over a white sheet: a panel's bar is solid accent, a reference's is a pale band, lore is deep violet, dm is ink with a cyan rule, and choose has no bar at all. The shape and the bar say which kind it is before the colour does. Each has a word on `@section` and nothing else to learn: write the heading and the content as you would in a panel.
 
 | You are writing | Write | Looks like |
 |---|---|---|
 | A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers |
-| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar with a slashed top-left corner and a torn top edge over a pale lilac sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
-| Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab in the box's top band that carries the words *Dream Master* in cyan (it never splits from the box at a page break), an ink title bar with a cyan rule and a cyan rail over a cold concrete body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
-| A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a paper sheet a hair lighter than cream, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Choose* stamp |
+| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar with a slashed top-left corner and a torn top edge over a white sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
+| Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab in the box's top band that carries the words *Dream Master* in cyan (it never splits from the box at a page break), an ink title bar with a cyan rule and a cyan rail over a white body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
+| A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a white paper sheet, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Choose* stamp |
 
 ```markdown {.dg-split}
 @section reference
@@ -207,7 +247,7 @@ I wuz tearin down an alley, lungs burnin, heart jackhammering like it wanted out
 
 </div>
 
-Tokens: `--dc-fiction-bg` (the page), `--dc-fiction-cavity` (the broken wall's face), `--dc-fiction-line-height`, `--dc-fiction-art-float`, `--dc-fiction-art-width`, `--dc-fiction-art-outline`, `--dc-fiction-art-shadow`. The hole's shape, `--dc-fiction-hole` and `--dc-fiction-shape`, is generated by `scripts/fiction-break.py`.
+Tokens: `--dc-fiction-bg` (the page, white), `--dc-fiction-cavity` (the broken wall's face), `--dc-fiction-title-size` (the `#` title: a story's name is set at the `##` size, a step under a chapter's), `--dc-fiction-line-height`, `--dc-fiction-art-float`, `--dc-fiction-art-width`, `--dc-fiction-art-outline`, `--dc-fiction-art-shadow`. The hole's shape, `--dc-fiction-hole` and `--dc-fiction-shape`, is generated by `scripts/fiction-break.py`.
 
 ## Block
 
@@ -243,7 +283,7 @@ On your turn you get **one Move and one Action**. Spend Augment Points to push p
 |---|---|---|
 | `.dc-panel` | HUD blue band, symmetric hex chamfers | Player-facing rules summaries, structured data |
 | `.dc-slate` | A sign plate: octagonal corners in a heavy crimson frame, ink body, a blood band with a crimson rule and a stamped (double-edged) *Binding* tag | Binding rulings, Dream Master directives |
-| `.dc-shard` | Light zine paper, a torn foot and a dog-eared corner, a taupe label strip, no accent hue | Fiction, atmosphere, setting asides |
+| `.dc-shard` | White paper, a torn foot and a dog-eared corner, a taupe label strip, no accent hue | Fiction, atmosphere, setting asides |
 
 The fourth register, `.dc-codex` (look-ups and glossaries), is retired: write a look-up as [`@section reference`](#kinds-of-text), a small box inside a section as `@block panel`, and a glossary as an `@definition` run.
 
@@ -374,7 +414,7 @@ Roll your dice in the open. If a die lands off the table, it doesn't count: rero
 
 ### Lucid and Surreal
 
-The two states of a roll get a definition each, one word on the marker, and they are drawn as opposites so a reader can tell them apart across the table. `@definition lucid` is sharp, aligned and in control: the lightest sheet, four even machined chamfers, a blue frame with a cyan hairline inside it, upright type and a headword ruled off in blue. `@definition surreal` is reality pushing back: an inverted, violet-black sheet with light type, a skewed outline torn along the foot, two inks (magenta and violet) off-register on opposite inner edges and a leaning headword. They differ in value, edge and type, so they stay opposites in greyscale. The body text is never rotated: only the headword leans.
+The two states of a roll get a definition each, one word on the marker, and they are drawn as opposites so a reader can tell them apart across the table. `@definition lucid` is sharp, aligned and in control: a white sheet, four even machined chamfers, a blue frame with a cyan hairline inside it, upright type and a headword ruled off in blue. `@definition surreal` is reality pushing back: an inverted, violet-black sheet with light type, a skewed outline torn along the foot, two inks (magenta and violet) off-register on opposite inner edges and a leaning headword. They differ in value, edge and type, so they stay opposites in greyscale. The body text is never rotated: only the headword leans.
 
 ```markdown
 @definition lucid
@@ -426,7 +466,7 @@ Tokens: `--dc-definition-block-surface`, `--dc-definition-block-accent` (the rul
 
 ## Procedure
 
-A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, ruled dividers, and a staple holding the plate to the wall. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
+A numbered instruction plate for anything the table runs in order: a cream plate with an ink frame and a hard shadow, a solid HUD-blue number strip down the left, 10pt ink step text with bold leads, and ruled dividers. It sits on its own paper, never on the wall. The list may break between steps; a step is never cut.
 
 Tokens: `--dc-steps-accent` (the number strip), `--dc-steps-surface` (the plate).
 
@@ -519,6 +559,114 @@ Result {.dg-result}
 | 1 | The handle comes off in your hand. |
 
 </div>
+
+## Ladder rungs
+
+The outcome ladder unfolded, for a rule that needs a paragraph or a list for each result. Wrap a run of `###` sections in `@ladder` and `@end-ladder`, each heading ending in its band in parentheses: `(20)`, `(11-19)`, `(6-10)`, `(2-5)`, `(1)`. A hyphen, an en dash (`11–19`) or `--` all read. The headings stay as you wrote them (a name, a joke, markup and all: a struck word in a heading or bar, `~~M~~OR~~E~~`, is struck heavy in the bar's shadow ink so it reads); the tier is read from the band, the way the ladder table reads it, and gets the ladder's own colour: crit, hit, hard choice, miss, catastrophe. Each heading becomes the tier's chip, hung as a tab off the left edge of its rung. The rung's plate is the ladder's, with four 6px chamfers and a 2px tether rail in the tier's colour. A rung never splits across a page; the ladder breaks between rungs. Whatever else sits in a rung, a callout, an example, a list, stays in it and renders as it would anywhere. A `###` that does not end in a band is an ordinary heading. A rung's closing bold line is set as its [street line](#street-line).
+
+```markdown
+@section panel
+
+## ROLL ~~M~~OR~~E~~ DIE!
+
+When a result matters, roll a **d20**.
+
+@ladder
+
+### Triumphs (20)
+
+A natural **20** succeeds spectacularly, and the Dream might add something extra.
+
+- **Combat:** Deal extra damage or disarm an enemy.
+- **Social:** Earn unexpected trust or a favor.
+
+**You didn't just pull it off. You made it look easy.**
+
+### Success (11–19)
+
+You do what you set out to do, with no complications.
+
+**You wanted something done. You did it.**
+
+### Hard Choice (6-10)
+
+You succeed with a catch: the Dream offers two setbacks and you choose one.
+
+@callout example
+
+You roll an **8** hacking a door while a gang closes in. The door opens, but it is the alarm or your rig.
+
+@end-callout
+
+### Failure (2-5)
+
+You do not get what you wanted.
+
+### Catastrophe (1)
+
+A natural **1** fails automatically, and things may get worse.
+
+**Some mistakes just explode.**
+
+@end-ladder
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage dg-tall">
+
+@section panel
+
+## ROLL ~~M~~OR~~E~~ DIE!
+
+When a result matters, roll a **d20**.
+
+@ladder
+
+### Triumphs (20)
+
+A natural **20** succeeds spectacularly, and the Dream might add something extra.
+
+- **Combat:** Deal extra damage or disarm an enemy.
+- **Social:** Earn unexpected trust or a favor.
+
+**You didn't just pull it off. You made it look easy.**
+
+### Success (11–19)
+
+You do what you set out to do, with no complications.
+
+**You wanted something done. You did it.**
+
+### Hard Choice (6-10)
+
+You succeed with a catch: the Dream offers two setbacks and you choose one.
+
+@callout example
+
+You roll an **8** hacking a door while a gang closes in. The door opens, but it is the alarm or your rig.
+
+@end-callout
+
+### Failure (2-5)
+
+You do not get what you wanted.
+
+### Catastrophe (1)
+
+A natural **1** fails automatically, and things may get worse.
+
+**Some mistakes just explode.**
+
+@end-ladder
+
+@end-section
+
+</div>
+
+Tokens: the outcome ladder's `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-inner-border` and `--dc-outcome-key-color`.
 
 ## Roll table
 
@@ -622,7 +770,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 ## Gear and its kinds
 
-An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, and `@gear drug` for drugs, elixirs and other consumables. Each kind has its own silhouette, surface, badge and name colour, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a pale plate, a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a facet), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, lime, an *Rx · Drug* pill). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, `@gear drug` for drugs, elixirs and other consumables, and `@gear program` for deck software. Each kind has its own silhouette, frame, badge and name colour on a white sheet, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a hexagonal badge), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, a fungi-green head band, an *Rx · Drug* pill) and a program is a data cartridge (an ink label strip, a connector comb cut in the foot, a HUD-blue name; see [Program](#program) below). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
 
 ```markdown {.dg-split}
 @gear augment
@@ -760,7 +908,67 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the badge word, a quoted string or `none`), `--dc-entry-shape` (the silhouette), `--dc-entry-radius`, `--dc-entry-ornament` with `--dc-entry-orn-inset`, `-orn-bg`, `-orn-border`, `-orn-clip` and `-orn-z` (the kind's solid-fill ornament layer: a treasure's facet, a vehicle's rivets), `--dc-entry-frame`, `--dc-entry-badge-bg`, `--dc-entry-badge-fg`, `--dc-entry-badge-shape`, `--dc-entry-badge-radius`.
+Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface`, `--dc-entry-rail`, `--dc-entry-rule`, `--dc-entry-kind` (the badge word, a quoted string or `none`), `--dc-entry-shape` (the silhouette), `--dc-entry-radius`, `--dc-entry-ornament` with `--dc-entry-orn-inset`, `-orn-bg`, `-orn-border`, `-orn-clip` and `-orn-z` (the kind's solid-fill ornament layer: a vehicle's rivets), `--dc-entry-frame`, `--dc-entry-badge-bg`, `--dc-entry-badge-fg`, `--dc-entry-badge-shape`, `--dc-entry-badge-radius`.
+
+### Program
+
+`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line is stamped as a tag, as on general gear. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
+
+```markdown {.dg-split}
+@gear program
+
+#### DDoS
+
+> Can't crack it? Bury it.
+
+**1 AP. ATTACK PROGRAM, 2 SesHP**
+
+You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
+
+@end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@gear program
+
+#### DDoS
+
+> Can't crack it? Bury it.
+
+**1 AP. ATTACK PROGRAM, 2 SesHP**
+
+You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.
+
+@end-gear
+
+@gear program
+
+#### Ping Sweep
+
+> Who else is in here?
+
+**1 AP. SCAN PROGRAM, 1 SesHP**
+
+You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
+
+</div>
 
 ### Fields
 
@@ -771,8 +979,8 @@ A field is a labelled line of an entry: its rules, its traits, what a drug does 
 | `specs` | SPECS | the boxed rules strip: dark, with a yellow rail |
 | `traits` | Traits | a plain line under a chip |
 | `equipment` | Equipment | the same, in grey |
-| `effects` | Effects | a solid teal frame on a pale teal ground, a + on the chip: the benefit; sits over side effects |
-| `side-effects` | Side Effects | a dashed blood frame on a pale blood ground, a -- on the chip: the cost |
+| `effects` | Effects | a solid teal frame on white, a + on the chip: the benefit; sits over side effects |
+| `side-effects` | Side Effects | a dashed blood frame on white, a -- on the chip: the cost |
 | `requires` | Requires | a grey requirement bar |
 
 ```markdown {.dg-split}
@@ -895,7 +1103,7 @@ A voice that is never quite yours.
 
 ## Faction
 
-An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined blue rectangle (an L-shaped step out of two corners) with a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
+An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined rectangle (an L-shaped step out of two corners) with an ink-blue band and a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.
 
 ```markdown {.dg-split}
 @faction megacorp
@@ -966,9 +1174,9 @@ Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option
 ```markdown
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 ```
 
 Result {.dg-result}
@@ -977,9 +1185,9 @@ Result {.dg-result}
 
 | Augment | Slot | Cost | Effect |
 |---|---|---|---|
-| Reflex Booster | Legs | 1,200 | +2 to initiative rolls |
-| Subdermal Plating | Torso | 1,800 | Reduce bludgeoning damage by 1 |
-| Optic Splice | Head | 900 | Ignore darkness penalties |
+| **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
+| **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
+| **Optic Splice** | Head | 900 | Ignore darkness penalties |
 
 </div>
 

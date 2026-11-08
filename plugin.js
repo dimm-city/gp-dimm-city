@@ -15,11 +15,11 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear [augment|treasure|vehicle|drug]
+ *   @gear [augment|treasure|vehicle|drug|program]
  *                        → div.dc-card.dc-entry.dc-gear (general gear), or
  *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
  *                          treasure (magic items, relics), vehicle, drug (drugs,
- *                          elixirs, consumables)
+ *                          elixirs, consumables), program (deck software: a data cartridge)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @block [panel|slate|shard] label="Title"
@@ -38,6 +38,9 @@
  *   @card                → div.dc-card > .dc-card-heading (first ####),
  *                          .dc-card-pull (a quote right after it), .dc-card-body
  *                          (the rest; its last blockquote is .dc-card-footer)
+ *   @ladder              → div.dc-ladder: a run of `###` rungs whose headings end in an
+ *                          outcome band, `### Triumphs (20)`; each is div.dc-rung.<tier>
+ *                          > h3.dc-rung-title (the tier's chip) + div.dc-rung-body
  *   @outcome [flush]     → div.dc-outcomes[.dc-flush]: the d20 ladder, one row
  *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
  *   @procedure           → ol.dc-steps: each numbered list inside becomes the
@@ -62,7 +65,7 @@
  *                          to its origin card (dcContinueClassifier claims it
  *                          before core's layout transform; anywhere else it is
  *                          core's section continuation)
- *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!)
+ *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!, ROLL THE DIE TWICE!, ROLL TWO DICE!)
  *                        → span.dc-roll-the-die
  *   an image-only paragraph gets p.dc-img-wrapper
  *   the h1 under `@page intro | credits | contents` gets .dc-chevron
@@ -219,8 +222,8 @@ function buildStickerChain(items) {
   return html;
 }
 
-// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! — uppercase only.
-const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:A|THE) DIE!/g;
+// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! / ROLL THE DIE TWICE! / ROLL TWO DICE! — uppercase only.
+const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/g;
 
 function isWordChar(char) {
   return char !== '' && /[A-Za-z0-9_]/.test(char);
@@ -442,30 +445,209 @@ function buildLadderBlock({ head, rows }, md, table) {
   return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
-// Parse ability from list item - handles rendered HTML: "<strong>0 AP</strong> <em>Name:</em> Description"
-function parseAbilityFromListItem(html) {
-  // Match <strong>N AP</strong> or <strong>N-X AP</strong> at the start (rendered HTML)
-  const apMatch = html.match(/^\s*<strong>([^<]+)<\/strong>\s*/i);
-  if (!apMatch) return null;
+// The items of an ordered list in a skill card: each is its first line (inline
+// HTML) and `rest`, whatever else the item holds (a nested list, a second
+// paragraph), rendered as it would be anywhere else so it stays what it is.
+function collectSkillListItems(tokens, startIndex, md, env) {
+  const open = tokens[startIndex];
+  const items = [];
+  let i = startIndex + 1;
+  while (i < tokens.length && !(tokens[i].type === 'ordered_list_close' && tokens[i].level === open.level)) {
+    if (tokens[i].type === 'list_item_open' && tokens[i].level === open.level + 1) {
+      const number = tokens[i].info || String(items.length + 1);
+      let end = i + 1;
+      while (!(tokens[end].type === 'list_item_close' && tokens[end].level === tokens[i].level)) end++;
+      const body = tokens.slice(i + 1, end);
+      // The item's own first line: a paragraph at the item's level that opens it.
+      // An item that opens with a nested list has no lead of its own.
+      const own = tokens[i].level + 2;
+      const first = body[0]?.type === 'paragraph_open' && body[1]?.type === 'inline' && body[1].level === own ? 1 : -1;
+      let after = first + 1;
+      if (first >= 0 && body[after]?.type === 'paragraph_close') after++;
+      items.push({
+        number,
+        html: first >= 0 ? renderInlineChildren(body[first], md) : '',
+        src: first >= 0 ? body[first].content : '',
+        rest: first >= 0 ? (after < body.length ? md.renderer.render(body.slice(after), md.options, env || {}) : '') : md.renderer.render(body, md.options, env || {}),
+      });
+      i = end;
+    }
+    i++;
+  }
+  return { items, endIndex: i };
+}
 
-  let apVal = apMatch[1].trim();
-  // Normalize: ensure "AP" suffix
-  if (!apVal.toUpperCase().includes('AP')) {
-    apVal = apVal + ' AP';
+// A skill card's ordered list, read by what each bold lead says:
+//   - every item leads with a die result: not abilities but a ladder (the five
+//     standard bands: the outcome ladder) or a `.dc-roll-table` plate;
+//   - a cost leads an ability row (chip + text);
+//   - a name (or no bold lead) is an option or a plain item: a bulleted list
+//     with the name in bold and a colon when any item has a name, else an <ol>
+//     numbered as the author numbered it.
+function skillListHtml(items, md) {
+  const rolls = dieResultListHtml(items, md);
+  if (rolls) return rolls;
+  const parsed = items.map((item) => ({ ...item, ability: parseAbilityFromListItem(item.html) }));
+  const costs = parsed.filter((p) => p.ability).length;
+  let html = '';
+  let costIdx = 0;
+  let plain = [];
+  const flush = () => {
+    if (!plain.length) return;
+    // A bold lead makes an item a named option. Options bullet; so does any run
+    // that does not start at 1 (a table split the source list) or that sits
+    // among cost rows. Only a plain list from 1 stays numbered.
+    const named = plain.some((p) => /^\s*<strong>/i.test(p.html));
+    const bulleted = named || plain[0].number !== '1' || costs > 0;
+    html += bulleted
+      ? '<ul>\n' + plain.map((p) => '<li>' + optionHtml(p.html) + p.rest + '</li>\n').join('') + '</ul>\n'
+      : '<ol>\n' + plain.map((p) => '<li>' + p.html + p.rest + '</li>\n').join('') + '</ol>\n';
+    plain = [];
+  };
+  parsed.forEach((item) => {
+    const { ability } = item;
+    if (!ability) {
+      plain.push(item);
+      return;
+    }
+    flush();
+    let posAttrs = '';
+    if (costs > 1) {
+      if (costIdx === costs - 1) posAttrs = ' data-ability-last="true"';
+      if (costIdx === costs - 2) posAttrs = ' data-ability-penultimate="true"';
+    }
+    costIdx++;
+    const text = '<p class="dc-ability-text">' + ability.text + '</p>\n';
+    const leadIn = /:$/.test(ability.text.replace(/<[^>]*>/g, '').trim()); // "…the restoration:": the row introduces the block after it
+    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + (leadIn ? ' dc-lead-in' : '') + '"' + posAttrs + '>\n' +
+      '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
+      (item.rest ? '  <div class="dc-ability-body">\n' + text + item.rest + '  </div>\n' : '  ' + text) +
+      '</div>\n';
+  });
+  flush();
+  return html;
+}
+
+// An option's bold name takes its colon inside the bold ("**Name:** text"); a
+// colon the author wrote after the bold ("**Name**: text") moves in, never doubles.
+function optionHtml(html) {
+  const m = html.match(/^(\s*)<strong>([^<]+)<\/strong>/i);
+  if (!m) return html;
+  let name = m[2].trim();
+  let rest = html.slice(m[0].length);
+  if (/^:/.test(rest)) {
+    rest = rest.slice(1);
+    if (!name.endsWith(':')) name += ':';
+  } else if (!/[:.!?]$|:/.test(name)) {
+    name += ':';
+  }
+  return m[1] + '<strong>' + name + '</strong>' + rest;
+}
+
+// A bold die result in markdown: **20**, **11-19**, **6–10:**, **16–19: Name**.
+const DIE_RESULT_MD = /^\*\*\s*(\d{1,3}(?:\s*[-\u2010-\u2015\u2212]\s*\d{1,3})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*/;
+
+// The die a set of results is the faces of: ranges that do not overlap and
+// cover 1 to N with no gap (any order), N one of the usual dice. Else 0.
+function dieOfResults(leads) {
+  const spans = leads.map((l) => {
+    const n = l.match(/\d+/g).map(Number);
+    return [n[0], n[n.length - 1]];
+  });
+  if (spans.some(([lo, hi]) => lo > hi)) return 0;
+  spans.sort((x, y) => x[0] - y[0]);
+  let next = 1;
+  for (const [lo, hi] of spans) {
+    if (lo !== next) return 0;
+    next = hi + 1;
+  }
+  const top = next - 1;
+  return [4, 6, 8, 10, 12, 20, 100].includes(top) ? top : 0;
+}
+
+// A list whose items ALL lead with a die result is a roll list, not an ability
+// list: the five standard bands are the outcome ladder (the same component a
+// table of them makes); any other set is a `.dc-roll-table` plate. Both are built
+// from the same table reading the plugin already does.
+function dieResultListHtml(items, md) {
+  if (items.length < 2 || items.some((item) => item.rest)) return '';
+  const rows = [];
+  for (const item of items) {
+    const m = DIE_RESULT_MD.exec(item.src || '');
+    if (!m) return '';
+    const bold = m[0].replace(/\*\*/g, '').trim();
+    if (COST_LEAD.test(bold) || BARE_VARIABLE_COST.test(bold)) return ''; // "1-3 AP" is a cost, not a roll
+    const text = item.src.slice(m[0].length).trim();
+    rows.push([m[1], (m[2] ? '**' + m[2].trim() + '** ' : '') + text]);
+  }
+  const die = dieOfResults(rows.map((r) => r[0]));
+  if (!die) return '';
+  const ladder = ladderRows({ head: ['Roll', 'Outcome'], rows });
+  if (ladder) return buildLadderBlock(ladder, md, { attrs: [] });
+  const cell = (c) => md.renderInline(c.trim()).replace(/\s*[-‐-―−]\s*/, '–');
+  return '<div class="dc-roll-table">\n<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d' + die + '</span></div>\n<table>\n<thead>\n<tr><th>Roll</th><th>Outcome</th></tr>\n</thead>\n<tbody>\n' +
+    rows.map(([r, t]) => '<tr><td>' + cell(r) + '</td><td>' + md.renderInline(t.trim()) + '</td></tr>\n').join('') +
+    '</tbody>\n</table>\n</div>\n';
+}
+
+// A numbered item in a skill card whose text opens with a bold lead is read by
+// what the lead says, never by its shape alone:
+//   - a COST: a number, range (hyphen or dash), X or VAR, optional +, then "AP".
+//     It becomes the AP chip, and the chip carries only that readout ("3 AP").
+//     What follows the cost leaves the chip for the start of the row's text, as
+//     an italic run-in with a colon: a name ("3 AP — Butcher Roach" → "Butcher
+//     Roach:") or a qualifier ("+1 AP per passenger." → "Per passenger:"; a
+//     "/"-qualifier keeps its cost: "1 AP/100 DC Per Ego Point…:"). The one bare
+//     form kept is the variable "3-X".
+//   - anything else (a die result, a name, a sentence) is not a cost.
+const COST_LEAD = /^(\+?\s*(?:\d+|X|VAR)(?:\s*[-‐-―−]\s*(?:\d+|X))?\+?)\s*AP\b(.*)$/i;
+const BARE_VARIABLE_COST = /^\d+\s*[-‐-―−]\s*X$/i;
+
+// A rendered list item's text → { apVal, apClass, text } | null (not a cost).
+function parseAbilityFromListItem(html) {
+  const lead = html.match(/^\s*<strong>([^<]+)<\/strong>\s*/i);
+  if (!lead) return null;
+
+  const label = lead[1].replace(/\s+/g, ' ').trim().replace(/[.]+$/, '').trim();
+  let text = html.slice(lead[0].length);
+
+  let costPart;
+  let apVal;
+  let perUnit = false;
+  const cost = COST_LEAD.exec(label);
+  if (cost) {
+    costPart = cost[1].replace(/\s+/g, '');
+    apVal = cost[1].replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
+    let tail = cost[2].replace(/^\s*[:,]\s*/, '').trim();
+    // a per-unit rate ("per passenger", "/100 DC Per Ego Point") makes the cost one you choose;
+    // a parenthetical ("(once per scene)") is a qualifier, not a rate
+    perUnit = !/^[(\u2010-\u2015\u2212-]/.test(tail) && /^\/?.*\bper\b/i.test(tail);
+    if (tail.startsWith('(')) {
+      text = tail + ' ' + text;
+    } else if (tail) {
+      let runIn;
+      if (/^[‐-―−-]/.test(tail)) runIn = tail.replace(/^[‐-―−-]\s*/, '');
+      else if (tail.startsWith('/')) runIn = apVal + tail;
+      else runIn = tail.charAt(0).toUpperCase() + tail.slice(1);
+      runIn = runIn.replace(/[.:]+$/, '').trim();
+      if (runIn) text = '<em>' + runIn + ':</em> ' + text;
+    }
+  } else if (BARE_VARIABLE_COST.test(label)) {
+    costPart = label.replace(/\s+/g, '');
+    apVal = label.replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
+  } else {
+    return null;
   }
 
-  const rest = html.slice(apMatch[0].length);
-
-  // Determine AP class
+  const bare = costPart.replace(/^\+/, '');
   let apClass = 'dc-ap';
-  if (apVal === '0 AP' || apVal === '0AP') apClass += ' free';
-  else if (apVal.includes('-') || /X|VAR/.test(apVal.toUpperCase())) apClass += ' variable';
+  if (/^0+$/.test(bare)) apClass += ' free';
+  else if (/[-‐-―−]|X|VAR|\+$/i.test(bare) || perUnit) apClass += ' variable';
 
-  return {
-    apVal: apVal,
-    apClass: apClass,
-    text: rest
-  };
+  // A row that is only a name (`**3 AP — Butcher Roach**`, its text in the
+  // paragraphs that follow) is the title of what follows: `titleOnly`.
+  const titleOnly = !html.slice(lead[0].length).trim();
+  return { apVal, apClass, text, titleOnly };
 }
 
 
@@ -671,11 +853,33 @@ function dcAlertsTransform(state) {
     const config = DC_ALERT_TYPES[alertType];
     if (!config) { newTokens.push(tok); continue; }
 
+    // A title: the text between the marker and the first line break INSIDE the
+    // first paragraph, with body text after the break, replaces the variant's
+    // default label. A first paragraph of one line stays body text, whatever
+    // follows it. Bold in a title is dropped: the label is already a bold chip.
+    let titleHtml = '';
+    let titleCount = 0;
+    if (config.label) {
+      const kids = inlineTok.children;
+      const afterMarker = lead.content.replace(DC_ALERT_PATTERN, '').replace(/^\s+/, '');
+      const brk = kids.findIndex((c) => c.type === 'softbreak' || c.type === 'hardbreak');
+      if (brk > 0 && (afterMarker !== '' || brk > 1)) {
+        const titleKids = kids.slice(0, brk)
+          .filter((c) => c.type !== 'strong_open' && c.type !== 'strong_close')
+          .map((c) => (c === lead ? Object.assign(Object.create(Object.getPrototypeOf(c)), c, { content: afterMarker }) : c));
+        const rendered = state.md.renderer.renderInline(titleKids, state.md.options, state.env).trim();
+        if (rendered !== '') {
+          titleCount = brk;
+          titleHtml = rendered;
+        }
+      }
+    }
+
     // Open div
     const openTok = new state.Token('html_block', '', 0);
     openTok.block = true;
     let openHtml = `<div class="${config.classes}">`;
-    if (config.label) openHtml += `<span class="dc-alert-label">${config.label}</span>`;
+    if (config.label) openHtml += `<span class="dc-alert-label">${titleHtml || config.label}</span>`;
     openHtml += '\n';
     openTok.content = openHtml;
     newTokens.push(openTok);
@@ -683,9 +887,14 @@ function dcAlertsTransform(state) {
     // Strip [!TYPE] prefix from first inline; suppress its paragraph wrapper if empty.
     const markerPrefix = /^\[![A-Z_]+\][ \t]*/i;
     const prefixMatch = inlineTok.content.match(markerPrefix);
-    const stripped = prefixMatch
+    let stripped = prefixMatch
       ? inlineTok.content.slice(prefixMatch[0].length).trim()
       : inlineTok.content;
+    if (titleHtml) {
+      // the title line leaves the paragraph: what is left is the text after its line break
+      const nl = stripped.search(/\r?\n/);
+      stripped = nl === -1 ? '' : stripped.slice(nl).trim();
+    }
 
     const paragraphOpenIdx = firstInlineIdx - 1;
     const paragraphCloseIdx = firstInlineIdx + 1;
@@ -703,8 +912,14 @@ function dcAlertsTransform(state) {
         // off the lead text (and the line break it leaves at the front) and
         // keep the rest; re-parsing would skip replacements, smartquotes and
         // text_join.
-        lead.content = lead.content.replace(markerPrefix, '');
-        if (lead.content === '') {
+        if (titleCount) {
+          inlineTok.children.splice(0, titleCount);
+          const next = inlineTok.children[0];
+          if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
+        } else {
+          lead.content = lead.content.replace(markerPrefix, '');
+        }
+        if (lead.content === '' && !titleCount) {
           inlineTok.children.shift();
           const next = inlineTok.children[0];
           if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
@@ -892,6 +1107,26 @@ function dcLearningPaths(state) {
   });
 }
 
+// A card's closing paragraph shorter than this (text characters) is a sign-off: it stays with the block above it.
+const SIGNOFF_MAX = 120; // one line at the card's measure
+
+/** The characters an inline token prints as plain text or code (markup and spans not counted). */
+function inlineTextLength(inline) {
+  return (inline?.children || []).reduce((n, k) => n + (k.type === 'text' || k.type === 'code_inline' ? k.content.length : 0), 0);
+}
+
+/** True when a paragraph's source ends in a colon (outside its emphasis marks): it introduces what follows. */
+function endsWithColon(inline) {
+  return inline?.type === 'inline' && /:$/.test((inline.content || '').replace(/[\s*_`]+$/, ''));
+}
+
+/** True when an inline token's whole content is one `<strong>` run. */
+function isBoldOnlyInline(inline) {
+  const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
+  return kids.length > 2 && kids[0].type === 'strong_open' && kids[kids.length - 1].type === 'strong_close' &&
+    kids.filter((k) => k.type === 'strong_open' || k.type === 'strong_close').length === 2;
+}
+
 /**
  * `@skill`: every `####` heading inside it starts a card. The declared
  * wrapper only carries the author's classes and attributes (`{.dc-avoid-split}`,
@@ -903,7 +1138,8 @@ function dcLearningPaths(state) {
  *   blockquote   → flavor line
  *   ordered list → ability rows
  *   Roll | Outcome table → outcomes ladder
- *   @continue    → closes the card and opens a "{name} ▸" continuation card
+ *   @continue    → closes the card (`.dc-skill-card-cut`: a straight foot and a ▸ flag)
+ *                  and opens a "{name} ▸" continuation card with the same ID
  */
 function dcSkillCards(state) {
   const md = state.md;
@@ -913,8 +1149,15 @@ function dcSkillCards(state) {
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
     const content = run.slice(1, -1);
+    const cardLevel = content.find((t) => t.type === 'heading_open' && t.tag === 'h4')?.level;
     const out = [];
-    const emit = (html) => out.push(makeToken('html_block', html));
+    // The card's last block while it is still a paragraph: marked a sign-off when short (below).
+    let tail = null;
+    const emit = (html) => {
+      tail = null;
+      seenBlock = true;
+      out.push(makeToken('html_block', html));
+    };
     let inCard = false;
     const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
     let columnsDepth = 0; // how many `@columns` runs sit open inside the current card
@@ -926,10 +1169,17 @@ function dcSkillCards(state) {
       attrs.push(['name', slugify(title.name)]);
       return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
     };
-    const endCard = () => {
-      if (inCard) emit('</div></div></div>\n'); // .dc-card-inner, .dc-card-body, .dc-skill-card
+    // A card's closing sign-off is marked only when the card truly ends there: not
+    // when it is cut for a continuation, and never its first paragraph.
+    let seenBlock = false;
+    let compDepth = 0; // how many components (callout, columns) are open inside the card
+    const endCard = (continuing = false) => {
+      if (inCard && tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
+      // .dc-card-inner, the two seam markers (cards.css, "The seam"), .dc-card-body, .dc-skill-card
+      if (inCard) emit('</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>\n');
       inCard = false;
     };
+    let cardTok = null; // the html token that opened the current card
 
     for (let i = 0; i < content.length; i++) {
       const tok = content[i];
@@ -939,13 +1189,14 @@ function dcSkillCards(state) {
       if (tok.type === 'heading_open' && tok.tag === 'h4' && columnsDepth === 0) {
         endCard();
         const parsed = parseSkillTitle(content[i + 1].content || '');
-        title = { name: parsed.name, tier: parsed.tier };
         let autoTier = '';
         if (path) {
           const n = (numbered.get(path) || 0) + 1;
           numbered.set(path, n);
           autoTier = path.attrGet('data-path-ref') + '.' + n;
         }
+        // The continuation card repeats the ID the card shows, written or automatic.
+        title = { name: parsed.name, tier: parsed.tier || autoTier };
         // The skill's name is its `####` heading, kept a heading so the
         // outline lists it under its learning path. (A continuation card's
         // repeated title stays a span: it is not a new entry.)
@@ -953,18 +1204,23 @@ function dcSkillCards(state) {
           cardOpen(false) +
           '  <div class="dc-card-tab">\n' +
           '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
-          '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' +
+          ((parsed.tier || autoTier) ? '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' : '') +
           '  </div>\n' +
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
+        cardTok = out[out.length - 1];
         inCard = true;
+        seenBlock = false;
         i += 2; // skip inline + heading_close
         continue;
       }
 
       if (tok.type === 'dc_skill_continue') {
-        endCard();
+        endCard(true);
+        // The part before an explicit continuation closes straight (a foot, a
+        // bolt, a flag); the specialty's cut stays the mark of a card's real end.
+        if (cardTok) cardTok.content = cardTok.content.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cut');
         emit(
           cardOpen(true) +
           '  <div class="dc-card-tab dc-card-tab-cont">\n' +
@@ -974,7 +1230,9 @@ function dcSkillCards(state) {
           '  <div class="dc-card-body">\n' +
           '    <div class="dc-card-inner">\n'
         );
+        cardTok = out[out.length - 1];
         inCard = true;
+        seenBlock = false;
         continue;
       }
 
@@ -1002,6 +1260,11 @@ function dcSkillCards(state) {
       if (tok.type === 'layout_column_break' && columnsDepth > 0) belongsToCard.add(tok);
       if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
 
+      if (inCard && belongsToCard.has(tok)) {
+        if (tok.type === 'layout_component_open') compDepth++;
+        else if (tok.type === 'layout_component_close') compDepth--;
+      }
+
       if (!inCard) {
         out.push(tok);
         continue;
@@ -1022,25 +1285,8 @@ function dcSkillCards(state) {
       }
 
       if (tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectOrderedListItems(content, i, md);
-        items.forEach((itemHtml, idx) => {
-          const ability = parseAbilityFromListItem(itemHtml);
-          if (!ability) {
-            emit('<p>' + itemHtml + '</p>\n'); // not "**N AP** *Name:* text": keep it as a paragraph
-            return;
-          }
-          let posAttrs = '';
-          if (items.length > 1) {
-            if (idx === items.length - 1) posAttrs = ' data-ability-last="true"';
-            if (idx === items.length - 2) posAttrs = ' data-ability-penultimate="true"';
-          }
-          emit(
-            '<div class="dc-ability"' + posAttrs + '>\n' +
-            '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
-            '  <p class="dc-ability-text">' + ability.text + '</p>\n' +
-            '</div>\n'
-          );
-        });
+        const { items, endIndex } = collectSkillListItems(content, i, md, state.env);
+        emit(skillListHtml(items, md));
         i = endIndex;
         continue;
       }
@@ -1057,11 +1303,141 @@ function dcSkillCards(state) {
         }
       }
 
+      // A paragraph that is nothing but one bold run is the card's pseudo
+      // heading (`**Full Merge**`); CSS cannot see text nodes, so only the
+      // plugin can tell it from a run-in `**Shared Senses:** text`.
+      if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === cardLevel && compDepth === 0) {
+        const inline = content[i + 1];
+        if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
+        // A paragraph that ends in a colon introduces the next block.
+        if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
+        tail = { tok, len: inlineTextLength(inline), first: !seenBlock };
+      } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
+        tail = null;
+      }
+
+      if (tok.type !== 'paragraph_open') seenBlock = true;
       out.push(tok);
     }
     endCard();
     return [open, ...out, close];
   });
+}
+
+/**
+ * A section or panel that ends in a paragraph that is only a bold run, or has one
+ * right before a heading, closes on a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
+ * so it never opens a page alone.
+ */
+function dcKickers(state) {
+  const t = state.tokens;
+  let depth = 0; // sections open around the token
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'layout_section_open') depth++;
+    if (t[i].type === 'layout_section_close') {
+      depth--;
+      if (i >= 4 && t[i - 1].type === 'paragraph_close' && t[i - 3].type === 'paragraph_open' && t[i - 4].type !== 'layout_section_open' && isBoldOnlyInline(t[i - 2])) {
+        addTokenClass(t[i - 3], 'dc-kicker');
+      }
+    }
+    // A bold-only paragraph right before a heading in the same section also closes
+    // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
+    if (depth > 0 && t[i].type === 'paragraph_open' && !t[i].hidden && t[i + 3]?.type === 'heading_open' && t[i + 2]?.type === 'paragraph_close' && isBoldOnlyInline(t[i + 1])) {
+      addTokenClass(t[i], 'dc-kicker');
+    }
+  }
+}
+
+/**
+ * A paragraph that is only the die call (`**ROLL THE DIE!**`, or the bare words,
+ * or any form of the phrase the inline rule picks out) is the table's imperative
+ * moment, not a sentence: `.dc-die-call`, a raised chip. Mid-sentence it stays the
+ * inline mark. A paragraph in a list or a quote is not set apart.
+ */
+function dcDieCalls(state) {
+  const t = state.tokens;
+  let quoted = 0;
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'blockquote_open' || t[i].type === 'list_item_open') quoted++;
+    else if (t[i].type === 'blockquote_close' || t[i].type === 'list_item_close') quoted--;
+    else if (t[i].type === 'paragraph_open' && !quoted && !t[i].hidden && t[i + 1]?.type === 'inline') {
+      const kids = (t[i + 1].children || []).filter((k) => k.type !== 'text' || k.content.trim());
+      const types = kids.map((k) => k.type).join();
+      if (types === 'dc_roll_the_die' || types === 'strong_open,dc_roll_the_die,strong_close') addTokenClass(t[i], 'dc-die-call');
+    }
+  }
+}
+
+// ── Declared component: @ladder ─────────────────────────────────────────────
+//
+// The outcome ladder unfolded: one rung per band, each a `###` whose heading
+// ends in its band in parentheses (`### Triumphs (20)`, `(11–19)`, `(6-10)`,
+// `(2–5)`, `(1)`; a hyphen, an en dash or `--` all read). The headings stay as
+// written; the tier is read from the band, the way the ladder table reads it
+// (LADDER_TIER_OF_BAND), and gets the ladder's own colour. A `###` with any
+// other ending is not a rung: it is left as it is, and closes the rung before it.
+
+/** `Triumphs (20)`, `Hard Choice (6-10)`, `Success (11–19)` → 'crit' | 'hit' | 'mixed' | 'miss' | 'fail'; any other heading → null. */
+function rungTier(text) {
+  const m = /\(([^()]*)\)\s*$/.exec(text || '');
+  const band = m && parseBand(m[1]);
+  if (!band) return null;
+  const [lo, hi] = band;
+  return LADDER_TIER_OF_BAND[lo === hi ? String(lo) : lo + '-' + hi] || null;
+}
+
+// The trailing "(20)" of a rung heading is wrapped in `span.dc-rung-band`, so
+// the band can be set in the label face: the display font has no parentheses.
+function markRungBand(inline) {
+  const kids = inline.children || [];
+  const last = kids[kids.length - 1];
+  const m = last?.type === 'text' && /^([\s\S]*?)(\([^()]*\))(\s*)$/.exec(last.content);
+  if (!m) return;
+  const text = (content) => Object.assign(makeToken('text', content), { level: last.level });
+  const html = (content) => Object.assign(makeToken('html_inline', content), { level: last.level });
+  kids.splice(kids.length - 1, 1, ...(m[1] ? [text(m[1])] : []), html('<span class="dc-rung-band">'), text(m[2]), html('</span>'), ...(m[3] ? [text(m[3])] : []));
+}
+
+function dcLadders(state) {
+  forEachComponent(state.tokens, 'ladder', (run) => {
+    const out = [run[0]];
+    let depth = 0; // blocks open at the ladder's own level
+    let rung = false;
+    const endRung = () => {
+      if (!rung) return;
+      // a rung's closing bold line is the rung's kicker
+      const k = out.length;
+      if (out[k - 1].type === 'paragraph_close' && out[k - 3].type === 'paragraph_open' && out[k - 4].type !== 'html_block' && isBoldOnlyInline(out[k - 2])) addTokenClass(out[k - 3], 'dc-kicker');
+      out.push(makeToken('html_block', '</div>\n</div>\n'));
+      rung = false;
+    };
+    for (let i = 1; i < run.length - 1; i++) {
+      const tok = run[i];
+      if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h3') {
+        endRung();
+        const tier = rungTier(run[i + 1]?.content);
+        if (tier) {
+          out.push(makeToken('html_block', '<div class="dc-rung ' + tier + '">\n'));
+          addTokenClass(tok, 'dc-rung-title');
+          markRungBand(run[i + 1]);
+          out.push(tok, run[i + 1], run[i + 2], makeToken('html_block', '<div class="dc-rung-body">\n'));
+          rung = true;
+          i += 2;
+          continue;
+        }
+      }
+      depth += tok.nesting;
+      out.push(tok);
+    }
+    endRung();
+    out.push(run[run.length - 1]);
+    return out;
+  });
+}
+
+function validateLadder({ blocks }) {
+  if (blocks.some((b) => b.type === 'heading' && b.level === 3 && rungTier(b.text))) return [];
+  return ['It has no rungs. Each starts with a `###` heading that ends in its band: `### Triumphs (20)`, `(11–19)`, `(6-10)`, `(2–5)`, `(1)`.'];
 }
 
 // ── Declared components: @card, @outcome, @procedure ───────────────────────
@@ -1316,7 +1692,7 @@ function validateSkill({ blocks }) {
     }));
 }
 
-const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug'];
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
 
 // A bare `@gear` (or an unrecognised word, which core reports) is general gear:
 // core added only the shared card, so the general-gear class goes right after it.
@@ -1327,8 +1703,21 @@ function dcGear(state) {
   });
 }
 
+// A paragraph in an entry that is only one bold run is its cost line
+// (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
+// A paragraph with a bold run and other text is body text.
+function dcEntryCosts(state) {
+  forEachComponent(state.tokens, 'gear', (run) => {
+    let depth = 0;
+    run.forEach((tok, i) => {
+      if (depth === 1 && tok.type === 'paragraph_open' && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
+      depth += tok.nesting;
+    });
+  });
+}
+
 /**
- * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`):
+ * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`, `program`):
  * one entry is one name. The name is the entry's first heading (`####`, or
  * `###`). An entry without one has no title bar, and one with a second heading
  * is usually two entries run together: a declared marker that opens again
@@ -1502,6 +1891,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
     '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
+  md.core.ruler.push('dc_die_calls', dcDieCalls);
 
   md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
 
@@ -1517,6 +1907,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_factions', dcFactions);
   md.core.ruler.push('dc_gear', dcGear);
+  md.core.ruler.push('dc_entry_costs', dcEntryCosts);
   md.core.ruler.push('dc_fields', dcFields);
   md.core.ruler.push('dc_cards', dcCards);
   md.core.ruler.push('dc_outcomes', dcOutcomes);
@@ -1524,6 +1915,8 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_procedures', dcProcedures);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_ladders', dcLadders);
+  md.core.ruler.push('dc_kickers', dcKickers);
   md.core.ruler.push('dc_ladder_tables', dcLadderTables);
   md.core.ruler.push('dc_stat_strips', dcStatStrips);
   md.core.ruler.push('dc_field_lines', dcFieldLines);
@@ -1579,6 +1972,7 @@ export const markers = {
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
   'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
+  ladder: wrapper('dc-ladder', { validate: validateLadder }),
 
   // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
   // the same marker with the `dm` variant preset. A default label comes from

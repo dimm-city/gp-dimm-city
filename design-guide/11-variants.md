@@ -458,10 +458,12 @@ Once per round, outside your turn, you exploit a target in reach:
 
 | Chip, in order | You write | Class |
 |---|---|---|
-| Free | `**0 AP**` | `.dc-ap.free` |
+| Free | `**0 AP**`, `**0 AP.**` | `.dc-ap.free` |
 | Standard | `**1 AP**`, `**2 AP**` | `.dc-ap` |
 | Variable | `**VAR AP**` | `.dc-ap.variable` |
-| Variable | `**3-X AP**`, any range or `X` | `.dc-ap.variable` |
+| Variable | `**3-X AP**`, `**1--3 AP**`, any range (hyphen or dash) or `X` | `.dc-ap.variable` |
+| Standard, with a name | `**3 AP --- Butcher Roach**` | chip `.dc-ap` reads `3 AP`; *Butcher Roach:* leads the row text |
+| Not a chip | `**20**`, `**11-19**` (all items) | outcome ladder or roll table; any other bold lead (`**Prefrontal Chaos**`) is a bulleted option |
 | Standard, explicit | `<span class="dc-ap standard">` | `.dc-ap.standard` |
 | Reduced | `<span class="dc-ap reduced">` | `.dc-ap.reduced` |
 | Increased | `<span class="dc-ap increased">` | `.dc-ap.increased` |
@@ -819,7 +821,7 @@ Generalists don't specialize --- they scavenge. Picking up scraps of every art t
 
 ## Alerts and callouts
 
-`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more --- both emit the same seven registers, and `@callout example` makes an eighth. Each register has its own silhouette, fill value, edge and label: a calm blue note with machined chamfers, a hazard-stripe warning on an octagonal sign plate, an ink Dream Master folder with a tab and a cyan chip, a vibe sheet in a single violet edge with a strip of tape, a torn, dog-eared origin sheet with a worn crimson stamp, the same sheet in map teal for a location, a wobbly green visit signpost, and a ticket-notched cyan example with a taped-on label.
+`> [!TYPE]` for one paragraph, `@callout note`, `@callout vibe` and the rest for more --- both emit the same seven registers, and `@callout example` makes an eighth. Each register is a bolted white sheet with its own silhouette, edge and label: a note with a heavy blue rail, a blue ring and machined chamfers, a hazard-stripe warning on an octagonal sign plate, a Dream Master folder under an ink bar that carries its label in cyan, a vibe sheet framed in violet, a torn origin sheet framed in rust with a worn crimson stamp, the same sheet in map teal for a location, a wobbly visit signpost framed in fungi green, and a ticket-notched example with a cyan rail and ring and a taped-on label.
 
 <div class="dg-stage dg-tall">
 
@@ -855,7 +857,7 @@ A worked example (`@callout example`, which has no blockquote form): a cyan rail
 
 ## Blocks
 
-`@block .dc-panel | .dc-slate | .dc-shard`: a HUD-blue band, an ink body under a blood band stamped *Binding*, and light zine paper with a torn foot and no accent hue.
+`@block .dc-panel | .dc-slate | .dc-shard`: a HUD-blue band, an ink body under a blood band stamped *Binding*, and white paper with a torn foot and no accent hue.
 
 <div class="dg-stage">
 
@@ -1057,7 +1059,7 @@ Augmerc learning paths assume combat-grade augmentations.
 
 ## Section variants
 
-`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`. Each kind has its own bar and sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.
+`@section panel`, `@section flat`, the four kinds of text (`reference`, `lore`, `dm`, `choose`), a bare `@section`, and a panel with its body in `@columns 2`. Each kind has its own bar over a white sheet as well as its own cut corners: a solid accent bar and one larger chamfer, a pale band and four small even ones, a deep violet bar and long asymmetric slashes, an ink bar under a file-folder tab, and no bar at all on a ticket-notched form.
 
 <div class="dg-stage dg-tall">
 
@@ -1094,7 +1096,7 @@ A look-up: HUD blue, a pale title band, tight rows.
 
 ### Lore section
 
-The world, not the rules: a deep violet bar over a pale lilac sheet, with long cuts off two opposite corners.
+The world, not the rules: a deep violet bar over a white sheet, with long cuts off two opposite corners.
 
 @end-section
 
@@ -1110,7 +1112,7 @@ Behind the screen: a file-folder tab that says Dream Master over an ink bar with
 
 ### Choose section
 
-A pick-one choice for the Citizen File, set as a form: the lightest sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Choose* stamp:
+A pick-one choice for the Citizen File, set as a form: a white sheet sunk into the wall, an ink edge, no bar, an ink title over a double rule, tick boxes, dotted write-in rules and a yellow *Choose* stamp:
 
 - A first option.
 - A second option.

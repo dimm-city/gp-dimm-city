@@ -7,6 +7,373 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.2] - 2026-11-07
+
+A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
+([docs/print-colour-audit.md](docs/print-colour-audit.md)). Colour, tokens and
+documentation, plus two passes on the Field Guide: its review notes, which put
+text on white, and a page-by-page review of the built book, whose plugin
+findings are fixed here. A skill card's cost rows and a titled alert change
+markup (below); nothing else does. One token is gone: `--dc-page-slip-tape`
+(the `##` slip is bolted now, not taped). The Field Guide prints at the same
+length as before, 244 pages: 242 of content where there were 240, and two
+blank pages at the end where there were four.
+
+### Added
+
+- **A skill card that splits across pages is marked.** The part that goes on
+  ends in a dashed seam in the specialty's tab colour with a small ▸, and the
+  part that continues starts with a matching one. CSS only (a stretched SVG
+  border image on the cloned `.dc-card-inner`, vector in the PDF, one colour
+  per specialty in `cards.css`) plus two zero-height markers the plugin adds
+  to every card (`.dc-card-start`, `.dc-card-end`) that hide the seam at the
+  card's real top and foot. No height is added and no text moves: an unbroken
+  card prints as before.
+- **`@continue` is a polished continuation.** The part before it closes with a
+  straight ink foot, its hard shadow, the bottom-left bolt and a ▸ flag
+  (`.dc-skill-card-cut`); the continuation card has the full tab with the
+  card's ID, written or automatic (it lost the automatic one), and the
+  top-right bolt. The hud-blue rule on the continuation tab is gone. A
+  `@continue` card takes about 0.3in more than before.
+- **`@ladder` … `@end-ladder`: the outcome ladder unfolded.** A run of `###`
+  sections whose headings end in a band in parentheses (`(20)`, `(11–19)`,
+  `(6-10)`, `(2-5)`, `(1)`; a hyphen, an en dash or `--`) becomes one rung per
+  band. The tier is read from the band, headings stay as written, and the
+  colours are the outcome ladder's. The heading is the tier's chip, hung as a
+  tab off the rung's left edge; the body is the ladder's machined plate (four
+  6px chamfers) with a 2px tether rail in the tier colour. A rung never splits;
+  the ladder breaks between rungs. Reported when no heading ends in a band.
+- **`@gear program`: a data cartridge** for deck software. A white plate in an
+  ink frame, an ink label strip with a PROGRAM badge, a connector comb cut in
+  the foot, a HUD-blue name and the usual stamped cost tag. It reads apart
+  from the augment in grayscale; no cyan on ink.
+- **The die call.** A paragraph that is only `**ROLL THE DIE!**` (or the bare
+  words, or `ROLL A DIE!` and the like) becomes `.dc-die-call`: a raised
+  deep-magenta chip with a d20 facet cut at its left, tipped -2deg over a 2px
+  ink shadow. Automatic; the same words in a sentence, list or quote are
+  unchanged. Tokens `--dc-die-call-bg`, `--dc-die-call-fg`.
+- **The street line.** The `.dc-kicker` a section's bold closing line already
+  carried is now a tear-off strip: a dotted ink perforation across the panel,
+  the line in 11pt bold body type, with a stub of the panel's accent. No markup
+  change; a ladder rung's closing line gets the same strip in the tier colour.
+- **`.dc-paste-up`: the paste-up wall register, opt-in.** Write it on a chapter
+  (`@chapter rules .dc-paste-up #id ch="N"`) or one section to set the sheets,
+  title tags, yellow stickers, bills, rows, continuation sheets and pasted
+  cut-outs and plates of constitution section IV. The helpers are `.dc-pu-row`,
+  `.dc-pu-cont`, `.dc-pu-spacer`, `.dc-pu-bill`, `.dc-pu-cutout` and
+  `.dc-pu-plate`; the geometry is `--dc-pu-*` tokens. Nothing changes for a book
+  that does not use it.
+
+- **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
+  measures every token as the build separates it and fails when a figure
+  written in a token comment, a constitution §V row, a palette-chapter swatch
+  or [docs/print-colour-audit-measurements.md](docs/print-colour-audit-measurements.md)
+  is not the build's; `--write` regenerates that file's blocks. CI runs it on
+  `ubuntu-26.04`, whose Ghostscript (10.06.0) honours the output profile where
+  `ubuntu-latest`'s (24.04, 10.02.1) does not, and now also runs for pull
+  requests into `release/*` branches, where the prereleases are cut.
+- A convention test refuses a gradient with a transparent stop anywhere in
+  `styles/` (the PDF/X shading PDF.js cannot read, below). `--light-gloss`,
+  the public token nothing in the package applies, is the one exception.
+
+### Changed
+
+- **The paper is white.** `--paper-cream` and `--paper-light` are `#ffffff`, the
+  unprinted stock with no ink (was `#f0eee9` and `#e2ded7`).
+- **Text reads on white.** A callout, a `reference`, `lore` or `dm` section, the
+  fiction excerpt, the shard block, a faction card, a gear entry, an effect
+  field and a choice card's quote no longer tint or darken their body. The
+  colour that named them is in the edge: a callout's rail is twice as heavy
+  (`--dc-alert-border-width` 8px), the note, tip and example gain a 2pt ring
+  in their accent (`--dc-alert-frame`) and the label is a filled chip
+  (`--dc-alert-label-bg` is the accent, with paper type). The vibe, origin,
+  location and visit callouts are framed in their accent along their whole
+  outline, diagonals, torn foot and signpost point included
+  (`--dc-alert-frame-width`, 3pt). The Dream Master note carries its label in
+  cyan on an ink bar across its top, as a `dm` section does, over a white
+  sheet in an ink ring. Title bars, tabs, badges, the slate block and the
+  Surreal definition keep their fills.
+- **A `###` slip runs the full width of its column**, as the `##` slip does.
+  `####` and smaller still shrink to their words.
+- **One gap under a heading.** `--dc-page-slip-foot` (6pt) is the space below a
+  free-standing heading, whatever follows it: a panel (was 20pt), a callout, a
+  table or a sheet of loose text (was none).
+- **The fiction excerpt's title is a step smaller:** its `h1` reads
+  `--dc-fiction-title-size`, the `##` size by default.
+- **Lists hang their marker.** A bulleted list has a 1.1em indent with the `»`
+  hung in it, so a wrapped line aligns under the first word; a numbered list
+  hangs right-aligned numerals in 1.6em; each nested level steps in one hang.
+  Tight and loose lists share one pitch, a list adds no space of its own above,
+  and a bulleted list directly followed by a numbered one has one item's pitch
+  between them. The marker is the accent ink of the component it sits in.
+- **In a skill card, only a cost is a cost chip.** A numbered item with a bold
+  lead used to become an AP chip whatever the lead said, with " AP" appended:
+  die results printed as "20 AP", option names as "Prefrontal Chaos AP".
+  - A lead is a cost when it reads as a number, a range, `X` or `VAR` followed
+    by `AP`. The chip is only that readout: a trailing stop is dropped, every
+    range prints with an en dash, and the text of every cost row starts in one
+    column.
+  - `0 AP` is free however it is typed (`0 AP.`, two spaces). A range, `X`, `N+`
+    or a per-unit rate (`+1 AP per passenger`) is variable. Only the cost
+    decides, so "The Toxin That Binds" no longer reads as an `X`.
+  - A name after the cost (`**3 AP — Butcher Roach**`) moves into the row as its
+    italic run-in; a qualifier leads the row text.
+  - A list of bold die results that tile a die from 1 to its top value is the
+    outcome ladder (the five d20 bands) or a roll table captioned with its
+    die; any other list of numbers stays a list.
+  - A bold name lead is an option: a bulleted item with the name in bold ink. A
+    plain list that starts at 1 keeps its numbers.
+  - A nested list under a cost item stays a list (`.dc-ability-body`). A
+    `@skill` with no ID draws no empty pill. Bold game terms in a cost row print
+    in ink, not blood. `ROLL TWO DICE!` and `ROLL THE DIE TWICE!` take the roll
+    hook.
+- **A titled alert.** `> [!NOTE] Escaping A Grapple` over a body puts the title
+  in the label chip in place of "Note". A one-line alert is unchanged.
+- **Skill cards break across pages on purpose.** New marks from the plugin:
+  `dc-card-subhead` (a bold-only paragraph), `dc-ability-title` (a cost row
+  that is only a name), `dc-lead-in` (a line that ends in a colon),
+  `dc-card-signoff` (a short closing line) and, in a section, `dc-kicker` (a
+  bold-only closing paragraph).
+  - The first blocks of a card move together, so a card never opens a page foot
+    with its tab and one line. A sub-heading, a label and a lead-in stay with
+    what follows; a short closing line stays with what precedes it.
+  - A plain table may split between rows, with its header repeated. An outcome
+    ladder and a roll-table plate stay whole: each moves to the next page with
+    the line that leads into it, so a ladder is never read across a page turn.
+  - The requirement band never splits and never ends a page alone.
+  - A fragment keeps the card's padding at a page break. A continued Proxy or
+    Gutterdruid card has a straight top, and the gate and corner cuts that
+    mark those specialties print only at a card's real top. A specialty's last
+    card keeps its foot inside the page.
+  - In the Field Guide's specialty chapters, white holes of an inch or more
+    inside cards fell from 15 (26in in all) to 12 (18in), and single
+    carried-over lines from 18 to 8.
+- **Sheets, panels, sections and callouts keep their padding where they break**
+  (`box-decoration-break: clone`). No unbroken box is taller. A `dm` section's
+  tab band is not repeated on a continuation.
+- **The footer has clearance.** 0.10in of wall shows between a sheet that fills
+  a page and the page and chapter chips (`--bottom-margin` 0.95in, new
+  `--chip-gap` 0.10in; they were 0.875in and 0.025in). The chips do not move.
+  At 0.12in the Field Guide runs two pages longer.
+- **A rule is a seam, not a pink line.** `---` is a 1pt ink hairline
+  (`--dc-rule`), and inside a skill card a 1.5pt seam in the specialty's
+  colour. It stays with the block after it and is not drawn first or last in
+  its container, before a heading, a table or a component, or on the bare wall.
+- **The `choose` form's stamp is out of the flow**, across the form's top edge,
+  so it no longer shortens the first line or crowds a two-line heading
+  (`--dc-choose-stamp-room`, `--dc-choose-stamp-top`, `--dc-choose-stamp-lift`).
+- **Smaller changes.** Running text has one ink (`body` sets `--ink`; list
+  items and table cells printed pure black). A heading breaks only between
+  words. Curly quotes, dashes and the ellipsis in a heading print in Tomorrow
+  Bold, through a `unicode-range` face for lixdu, which covers only ASCII. The
+  `»` in an ability-chain strip belongs to the chip before it, so a row never
+  starts with one. A table whose header cells are all empty draws no header
+  row. The outcome ladder's colour bar runs the full height of its row. The
+  gap under a specialty opener's title equals the gap under its sub-headings.
+  The procedure plate's staple is gone.
+- **A `##` slip is bolted to the wall, not taped:** a slotted bolt head in each
+  top corner (`--dc-page-slip-bolt`, `--dc-page-slip-bolt-face`,
+  `--dc-page-slip-bolt-size`), opaque, in place of the translucent tape strip.
+- **A specialty opener's title prints on its band again.** The band's rules
+  matched the title as the intro's first child, and in print Gutterpress puts
+  an inline anchor before it (the intro starts on a left page), so the PDF
+  showed a plain heading. They match the first `h2` now, and the gap under the
+  band equals the gap under the sub-headings. Each opener is a little shorter;
+  Wirephreak's fits on one page again.
+- **The same anchor no longer defeats three more rules.** The anchor is also
+  the first child of a page, chapter or spread that Gutterpress measures (a
+  forced side break, a running head, pinned art). A `choose` form that opens
+  such a page or chapter kept its stamp clipped at the top margin (and, after
+  a blank page, spilled onto it), a heading that opens one kept its top
+  margin, and a rule first in a specialty intro printed. They skip the anchor
+  now (`:is(:first-child, :where(gp-anchor:first-child) + *)`); the preview
+  is unchanged. A test flags a bare `:first-child` on a direct child of a
+  page, chapter, spread or intro.
+- **Callouts and skill cards are bolted, not taped.** Tape that said "held to
+  the wall" is replaced by the `##` slip's bolt. Every callout (note, tip,
+  important, warning, caution, Dream Master note, vibe, origin, location,
+  visit, example) has a bolt in each top corner; on the Dream Master note they
+  sit on the white body, below the ink bar. A skill card has one at its top
+  right and one at its bottom left, placed per specialty clear of its foot cut
+  (`--dc-skill-foot-bolt-left`, `--dc-skill-foot-bolt-bottom`), and moved to
+  the text column when the card ends in a cost row. A bolt prints once, at a
+  callout's real top. One bolt is shared by all of them: `--dc-bolt`,
+  `--dc-bolt-face`, `--dc-bolt-size`, which the slip's `--dc-page-slip-bolt*`
+  tokens default to. `--dc-card-body-mark` no longer draws anything.
+- **The origin and location callouts lose their folded corner:** the top right
+  is square, the torn foot and stamp stay, and the text does not move.
+- The tape divider (`.dc-tape`), the example callout's taped-on tag and hazard
+  tape are unchanged: they label or warn, they do not hold a sheet up.
+- **One type scale, and every size is on it.** An audit of every `font-size`
+  found no rule under the 10pt floor, but twenty literal sizes off the scale
+  (`15px`, `1.6rem`, `0.95em`, `15pt`…). Each is now a `--fs-*` token: the
+  package prints 10, 11, 12, 13, 16, 20 and 26pt and nothing between. The
+  largest moves are a point: TOC links and stat-strip numbers 15pt to 16pt, the
+  NPC chip line 12pt to 11pt, `h1.dc-chevron` 16.8pt to 20pt. `--fs-sm` and
+  `--fs-body-xs` (11.5pt, used once) are aliases of `--fs-body-sm`.
+- **Headings have their own line-height token.** `--lh-display` (1.35, the
+  value they had) is separate from `--lh-tight`, which compact text reads.
+  The spray title reads it too (it was 1.5), with padding that keeps its
+  slab's height.
+- **`######` is a label, not a smaller `#####`.** The two were a point apart
+  and alike in everything else. H6 takes the label face (Tomorrow, bold caps)
+  at the 10pt floor.
+- **Three substrates.** White paper, `--concrete-pale` and the wall. `--paper-light`
+  and `--paper-form` are aliases of `--paper-cream`. `--paper-zine`, `--hud-panel` and
+  `--paper-aged` are aliases of `--concrete-pale`. `--paper-form` had become
+  darker than the paper it was meant to sit just under, and `--paper-aged` was
+  dE 1.0 from the wall; it is now 6.4 off it, so field chips, `code` and outcome
+  rows stand off the wall.
+- **The purples are re-spaced inside the press gamut, against the build's own
+  separation.** In print, magenta-deep, violet, amethyst and Proxy's dark all
+  came out as one plum (within dE 1.4-3.8). alpha.1 moved them apart but
+  measured through LittleCMS at perceptual intent, which the build does not use
+  (next entry); through the build's separation its closest pairs printed
+  7.1-8.8 apart, not the "at least 8.3" it claimed. alpha.2 re-spaces them once
+  more, searched against the build's conversion. New values and their
+  separations: `--brand-magenta` `#cf217e` (pink; C2 M100 Y1 K12 = 115%),
+  `--proxy-mid` `#9c0f63` (C12 M100 Y8 K32 = 152%), `--brand-magenta-deep`
+  `#690045` (C24 M94 Y15 K56 = 189%), `--crystal-amethyst` `#905aa5` (C45 M80
+  Y0 K2 = 127%), `--brand-violet` `#662d87` (C62 M100 Y0 K16 = 178%),
+  `--signal-indigo` `#396cb7` (bluer; C86 M54 Y0 K0 = 140%), `--wirephreak-mid`
+  `#093c81` (C100 M73 Y0 K27 = 200%) and `--wirephreak-dark` `#181b45` (C66 M58
+  Y16 K69 = 209%). Each prints within dE 4.2 of the screen and at least 11.6
+  from the others after conversion; every text pairing on them holds 5.0:1 or
+  more.
+- **Near-duplicate colours are aliases:** `--proxy-dark` is `--brand-magenta-deep`,
+  `--streetwarden-dark` and `--gutterdruid-dark` are `--fungi-rot`, `--dualist-mid`
+  is `--augmerc-mid`, `--dualist-dark` is `--augmerc-dark` (alpha.2; it was dE 2.4
+  from it), `--cybersurgeon-mid` is `--crystal-slate`,
+  `--tint-magenta-rose` is `--brand-magenta` and `--tint-hud-teal` is `--hud-blue`.
+- **A paper tint must hold a printable dot.** On white paper a `color-mix()`
+  tint with a dominant ink of 2-4% does not hold on Indigo or inkjet presses,
+  so a tint mixes `in oklch` at a share that gives 8-10% (constitution §V).
+  With text on white (above), no body surface uses one any more.
+- **Small text is `--ink`.** Labels, heading slips, tags, flavour lines, entry
+  names, h4-h6, `em`, the contents list and NPC secondary lines used `--ink-dark`,
+  `--ink-smoke`, `--ink-mid` or `--ink-dust`, which print on four plates. They now
+  use `--ink`, which Gutterpress's k-only pass prints in black alone.
+  `--ink-dark` stays on fills and rules.
+- **Hairlines are at least 1pt.** Every 1px or 0.75pt rule is now 1pt. The dark
+  ones are `--ink`. `--border-hairline`, which draws the column rule and the
+  table rule, is an alias of `--ink`, and the AP chip, tag, tape and heading-slip
+  edges default to `--ink`.
+- **Every CMYK and TAC figure is measured the way the PDF/X build separates
+  it.** This covers the token comments, constitution §V and the palette
+  chapter's swatches. `scripts/measure-palette-crpc1.py` runs a swatch of each
+  colour through Ghostscript's pdfwrite with the CGATS21_CRPC1 profile as the
+  output profile, exactly as `gutterpress build --format pdfx` does (its
+  default intent: relative colorimetric with black-point compensation), and
+  reads the `c m y k k` operands back out of the PDF, so the figures are the
+  build's to the digit; it needs Ghostscript 10.03 or newer, and keeps Pillow's
+  LittleCMS only to show the printed colour and its distance from the screen.
+  alpha.1 measured with LittleCMS at perceptual intent, which the build never
+  used: those figures ran 10-30% TAC under the build's on the purples and
+  15-20% under on the inks (`--ink` 196% → 211%). The figures before
+  1.10.2 came from Ghostscript's default profile (`#000` = 295%), which
+  Ghostscript 10.02.1 (Ubuntu 24.04's package) uses even when the CRPC1
+  profile is given; 10.03 and newer honour the profile, and gutterpress (#495)
+  warns when a build's Ghostscript did not. The production rule is now "TAC
+  240%, enforced by the CGATS21_CRPC1 profile"; no token exceeds 211%. The
+  SWOP/GRACoL target is gone. Constitution §V says how the figures are
+  measured.
+- **The ground prints at 300 DPI.** `images/ground.png`, the 10in × 0.6in strip
+  of pavement at the foot of every page, is 3000 × 182 px (was 2400 × 144,
+  240 DPI): `scripts/wall-tiles.py --ground` draws it at `GROUND_DPI` with the
+  same geometry (a copy scaled back to the old size differs by 3/255 on
+  average), for the 58 CSS px (0.604in) Chromium paints a 0.6in background
+  at, so on a page the PDF keeps as vector its rows measure 301 DPI, not 298.
+  The six stone-wall tiles stay at about 240 DPI: their sheet
+  (1024 × 1536, about 512px a panel) holds about 110 DPI of real detail, so
+  no upsampling would sharpen them, and no Gutterpress check sees a CSS
+  background. They are accepted as texture; the constitution's production
+  rules, the script's header and the `dc-native.css` wall comment now say
+  so, and that a sharper wall needs a source sheet of at least 2048 × 3072.
+- **The design guide's placeholder art prints at 300 DPI.** `scripts/make-placeholders.mjs`
+  drew 300 × 340 cards, 600 × 800 portraits and a 640 × 360 banner, which the
+  guide prints at 3.92in (77 DPI) and 8.63in (70-74 DPI); the PDF/X build
+  warned on 14 images and flagged four pages. The cards are now 1500 × 1700,
+  the portraits 2700 × 3600, the banner 6400 × 3600 (the art plate crops it
+  to cover the 11.25in sheet, so its height sets its resolution) and the three
+  stand-ins twice their size, each at least 300 DPI at the largest size the
+  guide prints it, as opaque palette PNGs of 12-113 KB (the flat shapes
+  compress; the folder grows from 4.07 MB to 4.61 MB). The hand-drawn `founder-house.png`
+  (952 px, 110 DPI across the sheet it is pinned to) is replaced by a
+  generated stand-in of the same aspect, as the Part 2 overview says the
+  guide's pictures are: the layout is the specimen, the art a proxy.
+  `scavenger.png` (1920 px) is at least 500 DPI everywhere the guide prints
+  it and stays. The build reports no image under the bar.
+- **Two docs describe the build as it is.** `docs/print-transparency-inventory.md`
+  now opens with the `preserve-text` model (translucent artwork rasterised at
+  300 DPI, text kept live), lists what is translucent today and what is
+  pre-composited, and verifies a book by the build's own report; the 1.7
+  pre-composite pass and its measurements are kept under a historical heading.
+  `docs/css-roadmap.md`'s accepted warnings are the three ellipsis notes
+  `validate --phase pre-build` reports today; the heading-order warnings are
+  off by configuration (alpha.2) and the `clip-path` warnings are gone with
+  Gutterpress's rule.
+- **The transparency decision is written down, in one voice.** Translucent
+  artwork (shadows, lifts, bevels, tape) is allowed by design; the accepted
+  cost is that a PDF/X page carrying any of it prints its artwork as one
+  300 DPI picture and the file grows, while `preserve-text` keeps the text
+  live; text colours stay opaque. The constitution's production rules, the
+  transparency inventory, the roadmap (item 19, the print-discipline and
+  Field Guide art notes), the placeholder generator's header and the wall,
+  slip, section and entry comments now say that and no longer ask a page to
+  stay vector. The generator's claim that an alpha channel flattens the
+  whole page was true of `flatten-page` only: under `preserve-text` the
+  image is composited with the page's artwork and the text is kept.
+- **A colour-space rule in constitution §V.** Chromium writes every colour
+  into the PDF as sRGB `DeviceRGB` clipped to the sRGB gamut (`oklch(62% 0.30
+  340)` comes out `.927 0 .739`, `color(display-p3 1 0 0)` comes out `1 0 0`),
+  so tokens are authored as sRGB hex and chosen by their CRPC1 round trip,
+  `oklch` is an interpolation space for mixing only, neutrals stay exactly
+  neutral for the K-only rewrite, the saturated sRGB corners are avoided, and
+  `color()` / `oklch()` are not used to author a colour.
+- **The paste-up register is a Dimm City register** (constitution §IV), not
+  one book's chapter: any section, run of pages or chapter may use it where the
+  content suits it, with its rules for sheets, tags, stickers, bills and pasted
+  art. §X points to its plate guidance.
+- **The print qualification is re-run on this release.**
+  `docs/print-qualification.md` now records the 176-page guide built with
+  Gutterpress 0.11.24-alpha.1 and Ghostscript 10.05.0 (which honours the
+  CRPC1 profile; the 1.8.0 run's 10.02.1 did not): 78 pages split with live
+  text and 98 vector, no fallback, 23 embedded CID TrueType subsets and no
+  Type 3, OutputIntent CGATS21-2-CRPC1, no dark four-colour text at 24pt or
+  under, the heaviest page at 221.6% TAC, and no image under 300 DPI. The
+  four comparison crops are retaken from this build, since the paper, the
+  hairlines and the gloss changed in 1.10.2.
+
+### Deprecated
+
+- **Six tokens no package rule reads** are candidates for removal in 1.11:
+  `--ink-mid`, `--deep-rust`, `--surface-tint-3`, `--font-sans`, `--fw-bold` and
+  `--callout-border-width-small` (`styles/dc-palette.css`). They stay public
+  and keep their values through 1.10; their comments and the palette
+  reference now say that nothing in the package reads them (the design
+  guide's own sheet reads `--deep-rust`, `--surface-tint-3` and `--font-sans`).
+  `--tint-hud-teal` is an alias of `--hud-blue` and stays one.
+
+### Fixed
+
+- **A struck word in a heading or bar is legible.** `ROLL ~~M~~OR~~E~~ DIE!`
+  struck the letters with a hairline in the bar's own cream; `s`/`del` in a
+  heading now takes a heavy strike in the shadow ink.
+- **`small`, `sub` and `sup` hold the 10pt floor.** They had no rule, so the
+  browser's `font-size: smaller` printed 8.3pt in a table cell and 7pt when
+  nested (one such cell is in the Field Guide).
+- The specialty-intro title's default type is cream. The old default, `--bg` on
+  magenta, was 2.73:1.
+- The pullquote (20pt) prints in black alone. It was `--ink-dark`, which the
+  PDF/X build's black-text check reported as four-colour text at 24pt or under
+  on the Part 2 example pages; the headings' base look is `--ink` too (every
+  level already set its own colour, so none changes).
+- The band and tab gloss is pre-mixed into each fill (the path banner, the card
+  tab, the specialty card band). Layering the translucent `--light-gloss`
+  gradient made Chromium write a type-1 shading that PDF.js cannot read (24
+  warnings on the design guide) and made those pages transparent on its own;
+  the rendered bands are unchanged, and the token stays for books that read it.
+
 ## [1.10.1] - 2026-11-03
 
 ### Added

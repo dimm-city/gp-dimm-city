@@ -16,7 +16,7 @@
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
-  border: 1px solid var(--dc-tag-border);
+  border: 1pt solid var(--dc-tag-border);
   padding: 1px 7px 0;
   margin: 0 2px;
   vertical-align: baseline;
@@ -70,12 +70,12 @@
 
 /* H1.dc-chevron — chapter-title banner sized to fit long chapter names on
    one or two lines. The base .dc-chevron font-size is too large for typical
-   H1 chapter titles ("What Do You Dream of Doing?", etc.). Front-matter pages
-   (TOC / Credits / Introduction) set it back up to a commanding display size
-   in their own page-scoped rules. The banner-to-body ratio must stay ≥ 2× at
-   print scale for the chapter-punch role. */
+   H1 chapter titles ("What Do You Dream of Doing?", etc.): it takes the `##`
+   size, the step under the page title's. Front-matter pages (TOC / Credits /
+   Introduction) set it back up to a commanding display size in their own
+   page-scoped rules. */
 h1.dc-chevron {
-  font-size: 1.4rem;
+  font-size: var(--fs-h2);
   line-height: 1.2;
 }
 
@@ -94,14 +94,14 @@ h1.dc-chevron {
 .dc-spray {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 22px;
+  font-size: var(--fs-h3);
   color: var(--dc-spray-color);
   text-transform: uppercase;
-  line-height: 1.5;
+  line-height: var(--lh-display);
   background: var(--dc-spray-bg);
   display: inline-block;
   box-sizing: border-box;
-  padding: 16px 22px 18px;
+  padding: 18px 22px 20px;  /* the slab's height at the heading line-height */
   position: relative;
   /* clip-path does double duty here: besides the chipped corner it makes this
      banner a stacking context, which is what keeps the ::before skew tab
@@ -146,19 +146,49 @@ h1.dc-chevron {
 
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
-/* The chain flows inline, not as flex items: each arrow is joined to the chip
-   AFTER it by a word joiner (plugin.js), so a wrap may fall before an arrow and
-   never between an arrow and its chip. A line never ends on a »; the arrow
-   leads the next line with its chip. */
+/* The chain flows inline. Each » is bound to the chip BEFORE it: it is drawn as
+   that chip's ::after, in a margin the chip reserves, so a wrap falls only
+   between a chip-and-its-» and the next chip. A row may end on a », never start
+   with one; the last chip has none. The plugin's own <span class="dc-arrow">
+   stays in the DOM (text, outline) but is not drawn, and `line-break: anywhere`
+   on the strip lets a wrap fall at the word joiner the plugin puts after it
+   (the chips reset it, so a chip's own words never break). */
 .dc-stickers {
   display: block;
   margin: 4px 0 22px;
+  line-break: anywhere;
 }
 
-.dc-stickers > :is(.dc-sticker, .dc-arrow) {
+.dc-stickers > .dc-arrow {
+  display: none;
+}
+
+.dc-stickers > .dc-sticker {
   display: inline-block;
   vertical-align: middle;
+  position: relative;
+  white-space: nowrap;
+  line-break: auto;
   margin: 0 6px 8px 0;
+}
+
+.dc-stickers > .dc-sticker:has(+ .dc-arrow) {
+  margin-right: 1.6em;
+}
+
+.dc-stickers > .dc-sticker:has(+ .dc-arrow)::after {
+  content: "»";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 1.6em;
+  text-align: center;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: max(0.875em, var(--fs-floor));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--dc-arrow-color);
 }
 
 .dc-sticker {
@@ -191,7 +221,7 @@ h1.dc-chevron {
 .dc-arrow {
   font-family: var(--font-mono);
   color: var(--dc-arrow-color);
-  font-size: 14px;
+  font-size: max(0.875em, var(--fs-floor));  /* a little under its line, never under the floor */
   font-weight: 700;
 }
 
@@ -240,7 +270,7 @@ h1.dc-chevron {
 
 /* ── Flavor (italic flavor text) ──────────────────────────────────────────
    Token contract:
-     --dc-flavor-color         → text color (default --ink-dark)
+     --dc-flavor-color         → text color (default --ink)
      --dc-flavor-accent        → left-rail color (default --orange)
      --dc-flavor-accent-width  → left-rail weight (default 3px)
 */
@@ -272,7 +302,7 @@ h1.dc-chevron {
   color: var(--hud-blue);
   margin: 6px 0 3px;
   padding-top: 4px;
-  border-top: 1px solid var(--hud-blue-dim);
+  border-top: 1pt solid var(--hud-blue-dim);
 }
 
 
@@ -321,16 +351,16 @@ h1.dc-chevron {
 
 /* ── Spec tweak section header ────────────────────────────────────────── */
 .dc-spec-tweak {
-  /* lixdu is a wide face: 15px keeps "SPEC TWEAK: WIRED TO KILL" on one line in
-     a two-column run (~3.4in), under the 22px spray title it sits beneath. */
-  font-size: 15px;
+  /* lixdu is a wide face: 11pt keeps "SPEC TWEAK: WIRED TO KILL" on one line in
+     a two-column run (~3.4in), under the 16pt spray title it sits beneath. */
+  font-size: var(--fs-h5);
   letter-spacing: 0.05em;
   line-height: 1.3;
-  /* Neutral --ink-dark for text + bottom-rule (--blood would read as
+  /* Neutral --ink for text + bottom-rule (--blood would read as
      "warning/wound", too strong for a structural section label), with
      --brand-magenta as the left-rail accent so the brand color anchors the
      element without taking the text color hostage. */
-  color: var(--ink-dark);
+  color: var(--ink);
   /* A paper strip behind the title: a spec-tweak is never set straight on the
      wall (inside a panel it is paper on paper). */
   background: var(--paper-cream);
@@ -341,10 +371,60 @@ h1.dc-chevron {
 }
 
 /* ── Rule divider (hr) ─────────────────────────────────────────── */
+/* A `---` is a pause between topics: one opaque 1pt ink hairline. In a skill
+   card it is the seam between sub-abilities (cards.css: 1.5pt, the specialty's
+   mid). It takes break-after: avoid so it never ends a page's content area.
+   It is NOT drawn when it is the first or last child of its container (which
+   also covers a fragment edge only when that edge is also a DOM edge), when the
+   block after it is a heading, a table or a component that carries its own
+   top edge (the explicit list below). A plain block that merely has a dc- class
+   (a cost row, a bold sub-head) is not one: the seam between sub-abilities prints. A rule that is a direct child of a wall page or chapter (the bare
+   wall, outside any sheet or card) is hidden by page-templates.css, which owns
+   page selectors. */
 hr {
   border: none;
-  border-top: 1.5px solid color-mix(in srgb, var(--hud-magenta) 50%, transparent);
-  margin: var(--space-lg) 0;
+  border-top: 1pt solid var(--dc-rule);
+  margin: var(--space-md) 0;
+  break-after: avoid;
+}
+hr:is(:first-child, :where(gp-anchor:first-child) + *, :last-child),
+hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
+    .dc-outcomes,
+    .dc-roll-table,
+    .dc-steps,
+    .dc-alert,
+    .gp-alert,
+    .dc-section-panel,
+    .dc-section-flat,
+    .dc-section-reference,
+    .dc-section-lore,
+    .dc-section-dm,
+    .dc-section-choose,
+    .dc-section-catalog,
+    .dc-fiction-excerpt,
+    .dc-card,
+    .dc-skill-card,
+    .dc-entry,
+    .dc-block,
+    .dc-prose-panel,
+    .dc-definition-block,
+    .dc-field,
+    .dc-tape,
+    .dc-stat,
+    .dc-stat-strip,
+    .dc-pullquote,
+    .dc-intro,
+    .dc-flavor,
+    .dc-toc,
+    .dc-learning-path,
+    .dc-path-shell,
+    .dc-img-wrapper,
+    .dc-specialty,
+    .dc-specialty-intro,
+    .dc-specialty-art,
+    .dc-specialty-card,
+    .dc-sub-header)) {
+  display: none;
 }
 
 
@@ -390,6 +470,48 @@ hr {
 .dc-classtag.dualist        { --dc-classtag-color: var(--dualist-accent); }
 .dc-classtag.generalist     { --dc-classtag-color: var(--generalist-accent); }
 
+
+/* ── Bolt heads ───────────────────────────────────────────────────────── */
+/* Wall hardware, drawn once. Every callout is bolted at its two top corners
+   (callouts.css places them), a skill card at its top right and bottom left
+   (cards.css), and the `##` slip draws the same bolt in page-templates.css
+   (layer guard) from the same tokens. An opaque disc: an ink ring round a grey
+   face, the slot a hard-stopped band of ink (an ordinary gradient with opaque
+   stops), a 1px hard shadow. A left-hand bolt turns its slot 35deg and a
+   right-hand one -70deg, as a hand leaves them. Tokens --dc-bolt / -face /
+   -size.
+   Hosts. A: the callout's own ::before (left) and ::after (right), free on the
+   note, the GFM note/tip/important alerts and the example. B: where ::before
+   is taken (the warning's rail, a framed sheet's white copy) the left bolt is
+   on the first body block's ::before and the right one on the callout's
+   ::after. The Dream Master note hangs both on its first body block. The first
+   block is static, so its pseudo is placed against the callout. A rotated
+   label (the warning chip, the origin and location stamps) cannot host a bolt:
+   the transform would make it the containing block. */
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
+.dc-dm-note > .dc-alert-label + *::after,
+.dc-skill-card > .dc-card-body::before,
+.dc-skill-card::after {
+  content: "";
+  position: absolute;
+  width: var(--dc-bolt-size);
+  height: var(--dc-bolt-size);
+  box-sizing: border-box;
+  border: 1.5px solid var(--dc-bolt);
+  border-radius: 50%;
+  background: linear-gradient(35deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
+  box-shadow: 1px 1px 0 var(--dc-bolt);
+}
+/* The right-hand bolts (a callout's ::after, a card's top right). */
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+.dc-dm-note > .dc-alert-label + *::after,
+.dc-skill-card > .dc-card-body::before {
+  background: linear-gradient(-70deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
+}
 
 /* ── Tape (torn-tape divider) ─────────────────────────────────────────── */
 /* A strip of masking tape: tan, torn at both ends, ink edges top and bottom,

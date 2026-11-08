@@ -44,6 +44,10 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
   line-height: var(--lh-normal);
+  /* One ink for running text: paragraphs, list items and table cells all
+     print --ink. Without this, anything not a <p> printed the UA's pure
+     black. Reversed type sets its own colour. */
+  color: var(--ink);
   /* Subtle tightening reads as "industrial print" against the slack default. */
   letter-spacing: 0.005em;
   text-wrap: pretty;
@@ -74,6 +78,12 @@ body {
    `hyphens: auto` (inherited from body) hyphenates where the engine has a
    dictionary, but uppercase display words are not reliably hyphenated, so
    the guaranteed break does not depend on it. */
+/* SUPERSEDED: a heading breaks only BETWEEN words (CYBERNETIC / S was a
+   mid-word break in a narrow column). `overflow-wrap: normal` and
+   `hyphens: manual` mean a single word wider than its column is not split:
+   it overflows its box on the trailing side instead, so an author gives it
+   room (a wider column) or a soft hyphen (&shy;) at a place of their
+   choosing, which `hyphens: manual` still honours. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
@@ -82,13 +92,37 @@ h1, h2, h3, h4, h5, h6,
      in Lixdu's own stroke rather than a synthetic (Type 3) bold. */
   font-synthesis-weight: none;
   letter-spacing: var(--ls-display);
-  line-height: var(--lh-tight);
+  line-height: var(--lh-display);
   text-transform: uppercase;
   text-wrap: balance;
   margin-top: 0;
   margin-bottom: 0.5em;
-  color: var(--ink-dark);
-  overflow-wrap: break-word;
+  /* The base colour, --ink: every heading is 24pt or under, so a dark one has
+     to print in black alone (the k-only pass); h1-h3 set their own colours. */
+  color: var(--ink);
+  overflow-wrap: normal;
+  hyphens: manual;
+}
+
+/* A struck word in a heading or a bar ("ROLL ~~M~~OR~~E~~ DIE!": markdown's
+   `~~` is <s>) is a joke the reader has to be able to read: the default hairline
+   strike in the bar's own cream vanishes. Strike it heavy, in the shadow ink
+   (--ink-dark, the ink every bar and chip casts), so the letter stays legible
+   under a bar across it. */
+:is(h1, h2, h3, h4, h5, h6, .dc-chevron, .dc-spray) :is(s, del, strike) {
+  position: relative;
+  text-decoration: none;
+}
+/* The strike is a solid bar across the middle of the capitals, as wide as the
+   letters (the trailing letter-spacing is left off), not the font's hairline. */
+:is(h1, h2, h3, h4, h5, h6, .dc-chevron, .dc-spray) :is(s, del, strike)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: var(--ls-display);
+  top: 0.44em;
+  height: 0.2em;
+  background: var(--ink-dark);
 }
 
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
@@ -113,9 +147,12 @@ h2 {
 /* H3 — deep teal: sub-sections (hud-blue-dark gives 6.4:1 on paper-cream vs hud-blue's 3.8:1) */
 h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); }
 /* H4–H6 — grim dark ramp: body labels */
-h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink-dark);  letter-spacing: 0.06em; }
-h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink-smoke); letter-spacing: var(--ls-display); }
-h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink-dust); letter-spacing: var(--ls-display); }
+h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink);  letter-spacing: 0.06em; }
+h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
+/* H6 is a label, not a smaller H5: one point apart, the two were told apart
+   by nothing else. It takes the label face (mono, bold), as every other 10pt
+   label in the package does. */
+h6, .dc-h6 { font-family: var(--font-mono); font-size: var(--fs-h6); font-weight: 700; margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
 /* What h1/h2 add that no lower look has: clear it when a look class is on
    one of those tags. */
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
@@ -131,12 +168,19 @@ h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink-dust); let
    inherit a colour that can fall to 1.33:1 on the wall; an explicit --ink
    keeps loose paragraphs legible. Components may still override it. */
 p   { margin-top: 0; margin-bottom: 0.08in; color: var(--ink); }
-em  { color: var(--ink-smoke); font-style: italic; }
+em  { color: var(--ink); font-style: italic; }
 /* Links: --crimson #e1261c on paper-cream = 4.03:1 (fails AA normal text).
    --blood #901a12 on paper-cream = 7.73:1 (passes AA + AAA). Crimson is
    reserved for FILLS / decorative rails; text colour on light backgrounds
    uses --blood. */
-a   { color: var(--blood); text-decoration: none; border-bottom: 1px dotted var(--blood); }
+a   { color: var(--blood); text-decoration: none; border-bottom: 1pt dotted var(--blood); }
+
+/* The 10pt floor holds for the browser's own shrinking elements too: `small`,
+   `sub` and `sup` default to `font-size: smaller`, which is 8.3pt in a 10pt
+   table cell (and less when nested). */
+small, sub, sup {
+  font-size: max(0.833em, var(--fs-floor));
+}
 
 code, kbd, samp {
   font-family: var(--font-mono);
@@ -147,7 +191,7 @@ code, kbd, samp {
   background: var(--paper-aged);
   padding: 1pt 4pt;
   border-radius: 2pt;
-  border: 1px solid var(--paper-aged);
+  border: 1pt solid var(--paper-aged);
 }
 
 /* Code blocks: wrap instead of spilling. An unwrapped long line inside a
@@ -178,22 +222,49 @@ blockquote {
 }
 
 /* ── GLOBAL LIST STYLES ───────────────────────────────────────────────────── */
-ul { padding-left: 0.25in; }
-ul li { list-style: none; margin-bottom: 0.06in; }
-/* markdown-it wraps a loose item's text in <p>, and an inline ::before on the
-   <li> would sit alone on its own line above that block. A loose item draws
-   the bullet on its first paragraph instead, so it stays on the first line. */
-ul li:has(> p:first-child)::before { content: none; }
-ul li::before,
-ul li > p:first-child::before {
-  content: "» ";
-  /* --orange (#d4500a) on wall = 2.46:1 (fail). --rust (#b23a12) = 3.48:1
-     (measured — also fail). --blood (#901a12) = 5.21:1 on wall, passes
-     AA small text. Bullet markers appear in every list including those
-     outside paper substrates, so they MUST read on the wall background. */
-  color: var(--blood);
+/* A list is a tight column: the » (or the number) hangs in the list's own
+   left padding, so a wrapped line aligns under the first word. Every measure
+   is in em, so the hang scales with the 10pt intros, callouts and cards.
+   A list adds no space above (after a heading the gap is the heading's; after
+   a paragraph the paragraph's own bottom margin is --space-sm); it adds
+   --space-sm below. An item's own <p> (a loose item) has no margin, so tight
+   and loose lists share one pitch: --space-xs between items. Each nesting
+   level adds one more hang. */
+/* Zero specificity throughout (:where), so any component's own list rule wins
+   without a fight. The two lists that draw their own look (`@procedure`'s
+   .dc-steps and the contents page's .dc-toc ol) are left out: they have their
+   own marker, padding and row spacing. */
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) { margin: 0 0 var(--space-sm); }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.1em; }
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.6em; list-style: none; }
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li { position: relative; margin: 0 0 var(--space-xs); }
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li:last-child { margin-bottom: 0; }
+/* a bulleted list straight before or after a numbered one: the seam is one item pitch */
+:where(ul:has(+ ol), ol:has(+ ul)) { margin-bottom: var(--space-xs); }
+li > p { margin: 0; }
+/* a second paragraph in the same item keeps a paragraph gap */
+li > p + p { margin-top: var(--space-xs); }
+li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li { list-style: none; }
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li::before {
+  content: "\00bb";
+  position: absolute;
+  left: -1.1em;
+  /* The marker is the component's own ink (--dc-accent-ink is declared on
+     every surface; a callout overrides it below). */
+  color: var(--dc-accent-ink, var(--ink));
   font-weight: 700;
-  padding-right: 0.1em;
+}
+/* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
+   list-item honours start= and reversed, and nests per list. */
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) > li::before {
+  content: counter(list-item) ".";
+  position: absolute;
+  left: -1.6em;
+  width: 1.2em;
+  text-align: right;
+  color: var(--dc-accent-ink, var(--ink));
+  font-weight: 700;
 }
 
 /* ── TABLES — universal default look, no class required ─────────────────────
@@ -246,6 +317,11 @@ td {
   border-bottom: 1pt solid var(--border-hairline);
   padding: 5px 8px;
   vertical-align: top;
+}
+
+/* A table's first column that is only a bold name (a row's label) stays on one line. */
+:is(td, th):first-child:has(> strong:only-child) {
+  white-space: nowrap;
 }
 
 /* ── DEFINITION LISTS — standard markdown `Term` / `: definition` ─────────────
