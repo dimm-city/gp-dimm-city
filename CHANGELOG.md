@@ -7,17 +7,7 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
-### Added
-
-- **`.dc-paste-up`: the paste-up wall register, opt-in.** Write it on a chapter
-  (`@chapter rules .dc-paste-up #id ch="N"`) or one section to set the sheets,
-  title tags, yellow stickers, bills, rows, continuation sheets and pasted
-  cut-outs and plates of constitution section IV. The helpers are `.dc-pu-row`,
-  `.dc-pu-cont`, `.dc-pu-spacer`, `.dc-pu-bill`, `.dc-pu-cutout` and
-  `.dc-pu-plate`; the geometry is `--dc-pu-*` tokens. Nothing changes for a book
-  that does not use it.
-
-## [1.10.2] - 2026-11-04
+## [1.10.2] - 2026-11-07
 
 A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1
 ([docs/print-colour-audit.md](docs/print-colour-audit.md)). Colour, tokens and
@@ -66,6 +56,13 @@ blank pages at the end where there were four.
   carried is now a tear-off strip: a dotted ink perforation across the panel,
   the line in 11pt bold body type, with a stub of the panel's accent. No markup
   change; a ladder rung's closing line gets the same strip in the tier colour.
+- **`.dc-paste-up`: the paste-up wall register, opt-in.** Write it on a chapter
+  (`@chapter rules .dc-paste-up #id ch="N"`) or one section to set the sheets,
+  title tags, yellow stickers, bills, rows, continuation sheets and pasted
+  cut-outs and plates of constitution section IV. The helpers are `.dc-pu-row`,
+  `.dc-pu-cont`, `.dc-pu-spacer`, `.dc-pu-bill`, `.dc-pu-cutout` and
+  `.dc-pu-plate`; the geometry is `--dc-pu-*` tokens. Nothing changes for a book
+  that does not use it.
 
 - **The measured figures are checked in CI.** `python3 scripts/measure-palette-crpc1.py --check`
   measures every token as the build separates it and fails when a figure
@@ -333,6 +330,10 @@ blank pages at the end where there were four.
   `oklch` is an interpolation space for mixing only, neutrals stay exactly
   neutral for the K-only rewrite, the saturated sRGB corners are avoided, and
   `color()` / `oklch()` are not used to author a colour.
+- **The paste-up register is a Dimm City register** (constitution §IV), not
+  one book's chapter: any section, run of pages or chapter may use it where the
+  content suits it, with its rules for sheets, tags, stickers, bills and pasted
+  art. §X points to its plate guidance.
 - **The print qualification is re-run on this release.**
   `docs/print-qualification.md` now records the 176-page guide built with
   Gutterpress 0.11.24-alpha.1 and Ghostscript 10.05.0 (which honours the
