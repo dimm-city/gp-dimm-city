@@ -7,6 +7,16 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Added
+
+- **`.dc-paste-up`: the paste-up wall register, opt-in.** Write it on a chapter
+  (`@chapter rules .dc-paste-up #id ch="N"`) or one section to set the sheets,
+  title tags, yellow stickers, bills, rows, continuation sheets and pasted
+  cut-outs and plates of constitution section IV. The helpers are `.dc-pu-row`,
+  `.dc-pu-cont`, `.dc-pu-spacer`, `.dc-pu-bill`, `.dc-pu-cutout` and
+  `.dc-pu-plate`; the geometry is `--dc-pu-*` tokens. Nothing changes for a book
+  that does not use it.
+
 ## [1.10.2] - 2026-11-04
 
 A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1

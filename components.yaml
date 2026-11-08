@@ -978,6 +978,19 @@ components:
     tokens: [--dc-flow-gap]
     notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
 
+  - name: paste-up
+    status: live
+    origin: author
+    modifier: [dc-paste-up, dc-pu-row, dc-pu-cont, dc-pu-spacer, dc-pu-bill, dc-pu-bill-mid, dc-pu-cutout, dc-pu-plate]
+    description: "Set a chapter or a section as a paste-up wall: sheets pasted flat, title tags over the paper's edge, yellow stickers."
+    snippet: paste-up
+    recipe: "@chapter rules .dc-paste-up #id ch=\"N\"  (every section a sheet)  |  @section reference .dc-paste-up  (one sheet).  Helpers: <div class=\"dc-pu-row\"> two sheets side by side; @section panel .dc-pu-cont a continuation sheet (with <div class=\"dc-pu-spacer\"></div> before a sub-head); ## Title {.dc-pu-bill} (or .dc-pu-bill .dc-pu-bill-mid) a bill; ![](x.png){.dc-pu-cutout} a pinned cut-out; ![](x.png){.dc-pu-plate} a framed plate."
+    emits: .dc-paste-up (on the chapter or section it is written on)
+    css: styles/paste-up.css
+    tokens: [--dc-pu-band, --dc-pu-foot, --dc-pu-lift, --dc-pu-inset, --dc-pu-pair-gap, --dc-pu-sticker-size, --dc-pu-sticker-gap, --dc-pu-sticker-drop]
+    breaks: "a sheet is never split (break-inside: avoid); split a long section in markup into a sheet and a `.dc-pu-cont` sheet"
+    notes: "The paste-up register of docs/constitution.md section IV. Opt-in: nothing changes without the class. On a chapter it sets every section in it (except a fiction excerpt) as a sheet: a top band and a foot band of wall around the paper, the first ## or ### a tag tilted -1deg across the paper's top edge, a `.dc-kicker` last in a sheet a yellow sticker tilted -2deg across its foot, the soft lift dropped for the hard contact shadow, the sheet clipped above its top edge so a tilted corner never paints on the page before. The geometry is tokens, set on the chapter's id (a book whose sheets sit at the content edge sets --dc-pu-inset: 0.06in so the tags' overhang stays inside the box). Individual sheet splits, widths and fixes stay in the book's sheet."
+
   - name: heading-look
     status: live
     origin: author
