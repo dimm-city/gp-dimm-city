@@ -979,17 +979,101 @@ components:
     notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
 
   - name: paste-up
+    status: retired
+    origin: author
+    replaced_by: "nothing: a panel, reference, lore, dm or catalog section is a pasted sheet with no class"
+    recipe: "@chapter rules .dc-paste-up  /  @section reference .dc-paste-up"
+    emits: .dc-paste-up
+    notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (section.css, PASTE-UP). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
+
+  - name: row
+    status: live
+    origin: plugin
+    markers: ["@row"]
+    snippet: row
+    recipe: "@row / @section … @end-section / @section … @end-section / @end-row"
+    emits: div.dc-pu-row
+    css: styles/components/section.css
+    tokens: [--dc-pu-row-cols, --dc-pu-pair-gap]
+    breaks: "a row is kept whole (break-inside: avoid)"
+    notes: "Two paste-up sheets side by side, half and half, each ending at its own last line, closing stickers at the foot. An alias of core's `@columns 2` (the one frame that may hold sections), which the plugin writes as `div.dc-pu-row`, a grid, with core's column classes taken off. `@row-wide` is 62/38 and `@row-narrow` 38/62, the register's other widths. Closed by `@end-row`."
+
+  - name: row-wide
+    status: live
+    origin: plugin
+    markers: ["@row-wide"]
+    snippet: row-wide
+    recipe: "@row-wide / @section … @end-section / @section … @end-section / @end-row"
+    emits: div.dc-pu-row.dc-pu-row-wide
+    css: styles/components/section.css
+    tokens: [--dc-pu-row-cols]
+    breaks: "a row is kept whole (break-inside: avoid)"
+    notes: "A `@row` whose first sheet is the wider: 62/38 (sets --dc-pu-row-cols). Closed by `@end-row`."
+
+  - name: row-narrow
+    status: live
+    origin: plugin
+    markers: ["@row-narrow"]
+    snippet: row-narrow
+    recipe: "@row-narrow / @section … @end-section / @section … @end-section / @end-row"
+    emits: div.dc-pu-row.dc-pu-row-narrow
+    css: styles/components/section.css
+    tokens: [--dc-pu-row-cols]
+    breaks: "a row is kept whole (break-inside: avoid)"
+    notes: "A `@row` whose first sheet is the narrower: 38/62, a short intro beside a longer sheet (sets --dc-pu-row-cols). Closed by `@end-row`."
+
+  - name: paste-up-continuation
     status: live
     origin: author
-    modifier: [dc-paste-up, dc-pu-row, dc-pu-cont, dc-pu-spacer, dc-pu-bill, dc-pu-bill-mid, dc-pu-cutout, dc-pu-plate]
-    description: "Set a chapter or a section as a paste-up wall: sheets pasted flat, title tags over the paper's edge, yellow stickers."
-    snippet: paste-up
-    recipe: "@chapter rules .dc-paste-up #id ch=\"N\"  (every section a sheet)  |  @section reference .dc-paste-up  (one sheet).  Helpers: <div class=\"dc-pu-row\"> two sheets side by side; @section panel .dc-pu-cont a continuation sheet (with <div class=\"dc-pu-spacer\"></div> before a sub-head); ## Title {.dc-pu-bill} (or .dc-pu-bill .dc-pu-bill-mid) a bill; ![](x.png){.dc-pu-cutout} a pinned cut-out; ![](x.png){.dc-pu-plate} a framed plate."
-    emits: .dc-paste-up (on the chapter or section it is written on)
-    css: styles/paste-up.css
-    tokens: [--dc-pu-band, --dc-pu-foot, --dc-pu-lift, --dc-pu-inset, --dc-pu-pair-gap, --dc-pu-sticker-size, --dc-pu-sticker-gap, --dc-pu-sticker-drop]
-    breaks: "a sheet is never split (break-inside: avoid); split a long section in markup into a sheet and a `.dc-pu-cont` sheet"
-    notes: "The paste-up register of docs/constitution.md section IV. Opt-in: nothing changes without the class. On a chapter it sets every section in it (except a fiction excerpt) as a sheet: a top band and a foot band of wall around the paper, the first ## or ### a tag tilted -1deg across the paper's top edge, a `.dc-kicker` last in a sheet a yellow sticker tilted -2deg across its foot, the soft lift dropped for the hard contact shadow, the sheet clipped above its top edge so a tilted corner never paints on the page before. The geometry is tokens, set on the chapter's id (a book whose sheets sit at the content edge sets --dc-pu-inset: 0.06in so the tags' overhang stays inside the box). Individual sheet splits, widths and fixes stay in the book's sheet."
+    modifier: dc-pu-cont
+    description: "A paste-up sheet that carries on from the one before it: a clean top, no title tag."
+    recipe: "@section panel .dc-pu-cont"
+    emits:
+      - .dc-pu-cont (on the section it is written on)
+      - "div.dc-pu-spacer (the plugin's, ahead of a ## or ### that opens the sheet)"
+    css: styles/components/section.css
+    tokens: [--dc-pu-band]
+    notes: "The second part of a section split in markup because a sheet is never split. Its band is shallow and it has no tag. When it opens with a ## or ###, the plugin puts a zero-height `div.dc-pu-spacer` ahead of the heading so it stays a sub-head (every first-child heading rule would otherwise read it as the sheet's title); the author writes nothing extra."
+
+  - name: paste-up-bill
+    status: live
+    origin: author
+    modifier: [dc-pu-bill, dc-pu-bill-mid]
+    description: "A ## that shouts: cream display type on ink at twice h1 (1.5x with .dc-pu-bill-mid)."
+    recipe: "## Title {.dc-pu-bill}  /  ## Title {.dc-pu-bill .dc-pu-bill-mid}  (the first heading of a paste-up sheet)"
+    emits: h2.dc-pu-bill
+    css: styles/components/section.css
+    notes: "One bill per section that opens a spread or a sub-system (constitution §IV): the full width of the sheet, a yellow foot rule, a hard shadow. The two display steps outside the type scale besides §VI's."
+
+  - name: paste-up-tag
+    status: live
+    origin: author
+    modifier: dc-pu-tag
+    description: "A sub-head pasted on mid-sheet as a tag, like the sheet's own title."
+    recipe: "### Fall Damage {.dc-pu-tag}  (a ## or ### inside a paste-up sheet, not its first)"
+    emits: h3.dc-pu-tag
+    css: styles/components/section.css
+    notes: "The title tag's look (tilted -1deg, hard shadow, the sheet's bar colours) on a heading further down a sheet, with room above it. For a sub-system inside one sheet that should read as pasted on."
+
+  - name: paste-up-plate
+    status: live
+    origin: author
+    modifier: dc-pu-plate
+    description: "A framed print pasted on the wall: a cream frame, a hard shadow, a tilt."
+    recipe: "![Caption](x.png){.dc-pu-plate}  /  {.dc-pu-plate .gp-size-30} (core's size classes set its width)"
+    emits: img.dc-pu-plate
+    css: styles/components/images.css
+    notes: "For a self-contained picture between sheets where a page would leave about a quarter or more bare (constitution §IV): opaque, never translucent, one per page. 40% of the column unless core's `.gp-size-NN` is on the image."
+
+  - name: paste-up-cutout
+    status: live
+    origin: author
+    modifier: dc-pu-cutout
+    description: "A cut-out pinned to the wall: transparent art, tilted."
+    recipe: "![Caption](x.png){.dc-pu-cutout}"
+    emits: img.dc-pu-cutout
+    css: styles/components/images.css
+    notes: "Transparent art set as an object pinned to the wall, 55% wide and tilted 5deg. Give it a hard shadow or a die-cut outline in the art (constitution §IV: never a bare cut-out with no shadow)."
 
   - name: heading-look
     status: live
@@ -1040,8 +1124,8 @@ components:
       - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
-    breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
-    notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+    breaks: "a sheet is kept whole (--dc-section-break-inside: avoid); split a section that must run on in markup, the second part `.dc-pu-cont`"
+    notes: "A sheet pasted flat on the wall (section.css, PASTE-UP; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
 
 
   - name: street-line

@@ -7,6 +7,45 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.3] - 2026-11-10
+
+Paste-up becomes part of the package proper, and gear sections get a kind each.
+
+### Changed
+
+- **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or
+  `catalog` section (and the gear kinds) is a sheet pasted on the wall with
+  nothing to write: tag over the paper's edge, closing line a sticker, one hard
+  shadow, kept whole. A chapter opener's `#` title is tilted, and a fiction
+  excerpt's closing line is a sticker. The hung-panel look those replace is
+  retired, and so is `.dc-paste-up`: delete it from marker lines (it styles
+  nothing now). A creature (`npc`), the Citizen File walkthrough, the `choose`
+  sections and a fiction excerpt's text keep their own looks. A book whose
+  long sections now run onto another page splits them in markup, the second
+  part `.dc-pu-cont`.
+- **A sheet keeps its shadow inside the page.** A paste-up sheet set its right
+  margin to 0, so its 3px hard shadow reached past the content box and
+  Chromium shrank the whole book to fit (the Field Guide printed at 99.6%). It
+  keeps the 3px every panel keeps. And a sheet sits `--dc-pu-inset` (now
+  0.08in by default, was 0) in from the content edge, so its tilted tag, which
+  hangs about 0.07in off the sheet's left edge, stays inside it; a book whose
+  pages clip the overhang may set 0.
+- **Paste-up works like the rest of the package.** `styles/paste-up.css` is
+  gone: its rules live with the components they style (sheets, tags, bills,
+  stickers and rows in `section.css`, plates and cut-outs in `images.css`), and
+  a paste-up chapter needs no raw HTML.
+  - `@row`, `@row-wide` (62/38) and `@row-narrow` (38/62), closed by
+    `@end-row`, replace `<div class="dc-pu-row">` … `</div>`. They write the
+    same `div.dc-pu-row`; the widths are the token `--dc-pu-row-cols`.
+  - A `.dc-pu-cont` sheet that opens with a `##` or `###` gets its
+    `.dc-pu-spacer` from the plugin; drop `<div class="dc-pu-spacer"></div>`.
+  - `{.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, in the sheet's bar
+    colours.
+  - A plate takes core's `.gp-size-NN` for its width (40% without one).
+  - In a paste-up chapter the opener's `#` title is tilted -2deg and a fiction
+    excerpt's closing line is a sticker (both were the Field Guide's own CSS).
+  - The catalog has one entry per piece, and design guide chapter 6 a specimen.
+
 ### Added
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The

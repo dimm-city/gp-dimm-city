@@ -22,6 +22,9 @@
  *                          elixirs, consumables), program (deck software: a data cartridge)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
+ *   @row, @row-wide, @row-narrow
+ *                        → div.dc-pu-row[.dc-pu-row-wide|-narrow]: two paste-up sheets
+ *                          side by side (half and half, 62/38, 38/62); closed by @end-row
  *   @block [panel|slate|shard] label="Title"
  *                        → div.dc-block.dc-<variant> + div.dc-block-title
  *                          (`@block .dc-panel` class form works too)
@@ -1878,12 +1881,50 @@ function validateProcedure({ blocks }) {
 /**
  * Main plugin function - the default export Gutterpress loads
  */
+// ── Paste-up: rows and continuation sheets ──────────────────────────────────
+//
+// `@row` … `@end-row` is two sheets side by side (`@row-wide` 62/38,
+// `@row-narrow` 38/62). It is an alias of core's `@columns 2`, because only a
+// columns frame may hold sections; this rule then makes it the row: the open
+// token becomes `div.dc-pu-row` (plus the width's class) with core's column
+// classes and data taken off, so no column rule applies to it.
+const PU_ROWS = { row: '', 'row-wide': 'dc-pu-row-wide', 'row-narrow': 'dc-pu-row-narrow' };
+
+function dcRows(state) {
+  for (const tok of state.tokens) {
+    if (tok.type !== 'layout_component_open' || !(tok.meta?.component in PU_ROWS)) continue;
+    const written = (tok.meta.attrs?.class || '').split(/\s+/);
+    tok.attrs = (tok.attrs || []).filter(([k]) => k !== 'class' && k !== 'data-columns');
+    tok.attrSet('class', ['dc-pu-row', PU_ROWS[tok.meta.component], ...written].filter(Boolean).join(' '));
+  }
+}
+
+// `@section … .dc-pu-cont` is a sheet that carries on from the one before it,
+// so it has no title tag. Its first `##` or `###` would otherwise be read as the
+// sheet's title (every `:first-child` heading rule in the package), so the plugin
+// puts a zero-height `.dc-pu-spacer` ahead of it and the heading stays a sub-head.
+// The author writes nothing extra.
+const PU_SPACER = '<div class="dc-pu-spacer"></div>\n';
+
+function dcContinuations(state) {
+  const t = state.tokens;
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type !== 'layout_section_open') continue;
+    if (!(t[i].attrGet('class') || '').split(/\s+/).includes('dc-pu-cont')) continue;
+    const next = t[i + 1];
+    if (next?.type !== 'heading_open' || !['h2', 'h3'].includes(next.tag)) continue;
+    t.splice(i + 1, 0, makeToken('html_block', PU_SPACER));
+  }
+}
+
 export default function dimmCityPlugin(md, options = {}) {
   registerSkillContinueBridge(md);
 
   // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
   // transform operates on already-parsed token streams.
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
+  md.core.ruler.push('dc_rows', dcRows);
+  md.core.ruler.push('dc_continuations', dcContinuations);
 
   // Transform the canonical roll instruction while it is still structured
   // inline content. This covers every markdown context without rewriting
@@ -2015,6 +2056,12 @@ export const markers = {
   }),
   toc: wrapper('dc-toc'),
   lede: wrapper('dc-intro'),
+  // Paste-up: two sheets side by side, kept whole (section.css, PASTE-UP).
+  // Aliases of core's columns, the one frame that may hold sections; `dcRows`
+  // makes each a `div.dc-pu-row`. Half and half, 62/38, 38/62.
+  row: { alias: 'columns', preset: { variant: '2' } },
+  'row-wide': { alias: 'columns', preset: { variant: '2' } },
+  'row-narrow': { alias: 'columns', preset: { variant: '2' } },
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
