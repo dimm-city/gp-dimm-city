@@ -7,6 +7,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+## [1.10.3] - 2026-11-10
+
+Paste-up becomes part of the package proper, and gear sections get a kind each.
+
 ### Changed
 
 - **Paste-up works like the rest of the package.** `styles/paste-up.css` is
