@@ -2132,7 +2132,7 @@ A voice that is never quite yours.
 </div>
 </div></div></div></div>
 <h3 data-name="gear-sections-by-kind">Gear sections by kind</h3>
-<p><code>@section weapons</code>, <code>@section explosives</code> and <code>@section armor</code> are the catalog in one accent and one chip label per kind of gear, so a run of them reads as one system: weapons in blood with a <em>Weapons</em> chip, explosives in deep orange with <em>Explosives</em>, armor in slate steel with <em>Protection</em>. The accent is the rail, the chip, the rule over each entry inside, and the rule over a <code>####</code> sub-head, which is set like an entry’s name. Everything else is the catalog’s own.</p>
+<p><code>@section weapons</code>, <code>@section explosives</code> and <code>@section armor</code> are the catalog in one colour and one chip label per kind of gear, so a run of them reads as one system and each is told at a glance: weapons in blood with a <em>Weapons</em> chip, explosives in hazard yellow (ink type) with <em>Explosives</em>, armor in slate steel with <em>Protection</em>. The colour is the title, every table’s head row, the rail, and the rule over each entry and each <code>####</code> sub-head (set like an entry’s name). The three read apart in grayscale too. Everything else is the catalog’s own.</p>
 <pre><code class="dg-split language-markdown" data-source-range="1107:1143">@section weapons
 
 ### Firearms

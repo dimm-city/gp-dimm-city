@@ -10,12 +10,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
 ### Added
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
-  catalog in one accent and one chip label per kind of gear, so firearms,
-  grenades and armor read as one system: weapons in blood (WEAPONS),
-  explosives in deep orange (EXPLOSIVES), armor in slate steel (PROTECTION).
-  The accent is the rail, the chip, the rule over each entry inside (in place
-  of the entry kind's own) and the rule over a `####` sub-head, set like an
-  entry's name. Snippets `section-weapons`, `section-explosives`,
+  catalog in one colour and one chip label per kind of gear, so firearms,
+  grenades and armor read as one system and each is told at a glance, in
+  grayscale too: weapons in blood (WEAPONS), explosives in hazard yellow with
+  ink type (EXPLOSIVES), armor in slate steel (PROTECTION). The colour is the
+  title, every table's head row, the rail, and the 3pt rule over each entry
+  inside (in place of the entry kind's own) and over a `####` sub-head, set
+  like an entry's name. Snippets `section-weapons`, `section-explosives`,
   `section-armor`.
 
 ## [1.10.2] - 2026-11-07

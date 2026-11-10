@@ -1073,9 +1073,9 @@ components:
     recipe: "@section weapons ### Title … tables, entries, #### sub-heads … @end-section"
     emits: div.section.dc-section-panel.dc-catalog.dc-section-weapons
     css: styles/components/entries.css
-    tokens: [--dc-section-accent, --dc-section-tab, --dc-section-tab-bg]
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
     breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
-    notes: "A catalog for weapons: firearms, blasters, blades. The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, and differ only in accent and chip label: this one is blood, its chip WEAPONS. The accent is the rail, the chip, the rule over each entry inside it (in place of the entry kind's own) and the rule over a `####` sub-head, which is set like an entry's name."
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is blood, its chip WEAPONS in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
 
   - name: section-explosives
     status: live
@@ -1085,9 +1085,9 @@ components:
     recipe: "@section explosives ### Title … tables, entries, #### sub-heads … @end-section"
     emits: div.section.dc-section-panel.dc-catalog.dc-section-explosives
     css: styles/components/entries.css
-    tokens: [--dc-section-accent, --dc-section-tab, --dc-section-tab-bg]
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
     breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
-    notes: "A catalog for explosives: grenades, charges, mines. The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, and differ only in accent and chip label: this one is deep orange, its chip EXPLOSIVES. The accent is the rail, the chip, the rule over each entry inside it (in place of the entry kind's own) and the rule over a `####` sub-head, which is set like an entry's name."
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is hazard yellow (ink type on it), its chip EXPLOSIVES in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
 
   - name: section-armor
     status: live
@@ -1097,9 +1097,9 @@ components:
     recipe: "@section armor ### Title … tables, entries, #### sub-heads … @end-section"
     emits: div.section.dc-section-panel.dc-catalog.dc-section-armor
     css: styles/components/entries.css
-    tokens: [--dc-section-accent, --dc-section-tab, --dc-section-tab-bg]
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
     breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
-    notes: "A catalog for armor: its rules and its armor table. The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, and differ only in accent and chip label: this one is slate steel, its chip PROTECTION. The accent is the rail, the chip, the rule over each entry inside it (in place of the entry kind's own) and the rule over a `####` sub-head, which is set like an entry's name."
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is slate steel, its chip PROTECTION in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
 
   - name: section-flat
     status: live

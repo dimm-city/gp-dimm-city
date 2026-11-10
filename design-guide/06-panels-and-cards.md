@@ -1103,7 +1103,7 @@ A voice that is never quite yours.
 
 ### Gear sections by kind
 
-`@section weapons`, `@section explosives` and `@section armor` are the catalog in one accent and one chip label per kind of gear, so a run of them reads as one system: weapons in blood with a *Weapons* chip, explosives in deep orange with *Explosives*, armor in slate steel with *Protection*. The accent is the rail, the chip, the rule over each entry inside, and the rule over a `####` sub-head, which is set like an entry's name. Everything else is the catalog's own.
+`@section weapons`, `@section explosives` and `@section armor` are the catalog in one colour and one chip label per kind of gear, so a run of them reads as one system and each is told at a glance: weapons in blood with a *Weapons* chip, explosives in hazard yellow (ink type) with *Explosives*, armor in slate steel with *Protection*. The colour is the title, every table's head row, the rail, and the rule over each entry and each `####` sub-head (set like an entry's name). The three read apart in grayscale too. Everything else is the catalog's own.
 
 ```markdown {.dg-split}
 @section weapons
