@@ -422,12 +422,15 @@
   --dc-entry-accent: var(--dc-section-accent);
   --dc-entry-rule: 3pt;
 }
-.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4 {
+/* In a column run too: a sub-head that opens a column keeps the column's top. */
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4,
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > .gp-columns > h4 {
   margin: var(--space-md) 0 4px;
   padding-top: 8pt;
   border-top: 3pt solid var(--dc-section-accent);
 }
-.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4:first-child {
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4:first-child,
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > .gp-columns > h4:is(:first-child, .gp-column-break + *) {
   margin-top: 0;
 }
 
