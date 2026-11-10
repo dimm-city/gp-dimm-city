@@ -1874,6 +1874,32 @@ describe("@gear program", () => {
   });
 });
 
+describe("paste-up: rows and continuation sheets", () => {
+  const sheet = (t) => `@section panel\n\n### ${t}\n\nx\n\n@end-section`;
+  test("@row, @row-wide and @row-narrow hold two sheets in div.dc-pu-row, with none of core's column classes", () => {
+    for (const [marker, cls] of [["@row", "dc-pu-row"], ["@row-wide", "dc-pu-row dc-pu-row-wide"], ["@row-narrow", "dc-pu-row dc-pu-row-narrow"]]) {
+      const { html, warnings } = renderGp(`${marker}\n\n${sheet("A")}\n\n${sheet("B")}\n\n@end-row\n\nafter`);
+      expect(warnings, marker).toEqual([]);
+      expect(html, marker).toMatch(new RegExp(`^<div class="${cls}"><div class="section dc-section-panel"[^>]*><h3>A</h3>[\\s\\S]*<h3>B</h3>[\\s\\S]*</div></div>\\n?<p>after</p>`));
+      expect(html, marker).not.toContain("columns");
+    }
+  });
+  test("a class written on @row stays", () => {
+    expect(renderGp(`@row .fg-x\n\n${sheet("A")}\n\n@end-row`).html).toContain('<div class="dc-pu-row fg-x">');
+  });
+  test("a plain @columns is still core's", () => {
+    expect(renderGp("@columns 2\n\na\n\n@end-columns").html).toContain("columns-2");
+  });
+  test("a continuation sheet that opens with a ## or ### gets the spacer ahead of it; any other does not", () => {
+    const cont = (body) => renderGp(`@section panel .dc-pu-cont\n\n${body}\n\n@end-section`).html;
+    expect(cont("### Sub\n\nx")).toContain('<div class="dc-pu-spacer"></div>\n<h3>Sub</h3>');
+    expect(cont("## Sub\n\nx")).toContain('<div class="dc-pu-spacer"></div>\n<h2>Sub</h2>');
+    expect(cont("#### Sub\n\nx")).not.toContain("dc-pu-spacer");
+    expect(cont("Text.")).not.toContain("dc-pu-spacer");
+    expect(renderGp("@section panel\n\n### Title\n\nx\n\n@end-section").html).not.toContain("dc-pu-spacer");
+  });
+});
+
 describe("the die call", () => {
   const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 
