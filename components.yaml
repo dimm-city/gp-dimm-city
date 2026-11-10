@@ -255,7 +255,7 @@ components:
     origin: plugin
     markers: ["@gear"]
     snippet: gear
-    recipe: "@gear [augment|treasure|vehicle|drug] #### Name … @end-gear  (a @gear after a @gear closes the first)"
+    recipe: "@gear [augment|treasure|vehicle|drug|program|armor] #### Name … @end-gear  (a @gear after a @gear closes the first)"
     emits: div.dc-card.dc-entry.dc-gear
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-art-width, --dc-entry-shape, --dc-entry-radius, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape, --dc-entry-badge-radius]
@@ -322,6 +322,18 @@ components:
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
     notes: "Deck software: a program found, bought or learned with an ability slot. A data cartridge: a white plate in a heavy ink frame, one cut corner top right, an ink label strip across the head with a PROGRAM badge, and a connector comb of ten ink pins cut into the foot. The name is HUD blue; the bold cost line is stamped as a tag (the gear's price tag, framed in HUD blue). It reads apart from the augment (stepped notch, cyan rule, teal name) in grayscale by its strip and comb. No cyan on the ink strip (that pairing is the Dream Master's). Same entry rules as @gear."
+
+  - name: armor
+    status: live
+    origin: plugin
+    markers: ["@gear armor"]
+    snippet: armor
+    recipe: "@gear armor / #### Name / > tagline / **Soak 2** / **Durability:** Surreal / prose … @end-gear"
+    emits: div.dc-card.dc-entry.dc-armor
+    css: styles/components/entries.css
+    tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
+    breaks: "break-inside: avoid (via .dc-card)"
+    notes: "Armor: a pauldron plate pasted to the wall, in the paste-up register (constitution §IV). Both top corners are cut at 45deg (the shoulders) and the plate has a heavy ink frame and a 3px hard shadow, both part of its one clipped silhouette, with a bolt fixing each shoulder to the wall. The ARMOR badge rides the name row at the right, cut with the same shoulders. The bold protection line (`**Soak 2**`, a paragraph that is one bold run) is the stat strip: a slate-steel block holding a shield, then the value in cream on ink. Durability and anything else are ordinary lines. Reads apart in grayscale by the shoulders, the bolts and the shadow. In a catalog it is a ruled entry like every kind; the stat strip stays. Same entry rules as @gear."
 
   - name: field
     status: live

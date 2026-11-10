@@ -1619,7 +1619,7 @@ describe("definition variants", () => {
 });
 
 describe("entry cards", () => {
-  const KINDS = ["augment", "treasure", "vehicle", "drug", "program"];
+  const KINDS = ["augment", "treasure", "vehicle", "drug", "program", "armor"];
   const ENTRIES = ["gear", ...KINDS];
   /** The marker line for an entry: bare `@gear` is general gear, a kind is a word on it. */
   const open = (name) => (name === "gear" ? "@gear" : `@gear ${name}`);
@@ -1862,6 +1862,16 @@ describe("@gear program", () => {
     expect(warnings).toEqual([]);
     expect(html).toContain('<div class="dc-card dc-entry dc-program"');
     expect(html).toContain('<p class="dc-entry-cost"><strong>1 AP. ATTACK PROGRAM, 2 SesHP</strong></p>');
+    expect(html).not.toContain("dc-gear");
+  });
+});
+
+describe("@gear armor", () => {
+  test("is an entry card of the armor kind, with its bold-only protection line marked", () => {
+    const { html, warnings } = renderGp("@gear armor\n\n#### Riot Plating\n\n**Soak 2**\n\n**Durability:** Roll Surreal.\n\n@end-gear");
+    expect(warnings).toEqual([]);
+    expect(html).toContain('<div class="dc-card dc-entry dc-armor"');
+    expect(html).toContain('<p class="dc-entry-cost"><strong>Soak 2</strong></p>');
     expect(html).not.toContain("dc-gear");
   });
 });

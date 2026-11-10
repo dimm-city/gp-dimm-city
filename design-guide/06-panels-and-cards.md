@@ -770,7 +770,7 @@ You believe in a code, and upholding it is your duty no matter the cost.
 
 ## Gear and its kinds
 
-An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, `@gear drug` for drugs, elixirs and other consumables, and `@gear program` for deck software. Each kind has its own silhouette, frame, badge and name colour on a white sheet, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a hexagonal badge), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, a fungi-green head band, an *Rx · Drug* pill) and a program is a data cartridge (an ink label strip, a connector comb cut in the foot, a HUD-blue name; see [Program](#program) below). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
+An item entry is a card with a name and the item's prose. It is one marker, `@gear`, and a bare word on the marker line picks the kind, so a book's catalog can tell them apart at a glance: `@gear` alone for general gear, `@gear augment` for cybernetics and mods, `@gear treasure` for magic items and relics, `@gear vehicle`, `@gear drug` for drugs, elixirs and other consumables, `@gear program` for deck software, and `@gear armor` for armor. Each kind has its own silhouette, frame, badge and name colour on a white sheet, so a reader knows what an entry is before reading it, and in grayscale: gear is a hang tag (a paper card in a heavy ink frame, a rust rail, an eyelet), an augment is a spec chip (a stepped notch, a cyan rule, a teal name), treasure is a gem (violet, an eight-sided cut, a hexagonal badge), a vehicle is an industrial plate (octagonal cut corners, a heavy ink frame, a dotted seam of rivets, a yellow badge) and a drug is a prescription label (a wobbling organic outline, a fungi-green head band, an *Rx · Drug* pill) and a program is a data cartridge (an ink label strip, a connector comb cut in the foot, a HUD-blue name; see [Program](#program) below), and armor is a pauldron plate pasted to the wall (cut shoulders, bolts, a hard shadow, a slate stat strip; see [Armor](#armor) below). The kind badge is added for you; then your markdown. The name is the first `####` heading (`###` works too). A blockquote straight under it is the tagline.
 
 ```markdown {.dg-split}
 @gear augment
@@ -878,7 +878,7 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 
 </div>
 
-A `@gear` after another `@gear` closes the first, so a run needs an `@end-gear` only after the last entry. An entry with no name, or with two, is reported as a problem, and a word that is not one of the four kinds is reported and read as general gear. General gear keeps its own shape: an italic tagline paragraph and a bold price line, picked out by their shape (the price line is stamped as a dashed price tag).
+A `@gear` after another `@gear` closes the first, so a run needs an `@end-gear` only after the last entry. An entry with no name, or with two, is reported as a problem, and a word that is not one of the kinds is reported and read as general gear. General gear keeps its own shape: an italic tagline paragraph and a bold price line, picked out by their shape (the price line is stamped as a dashed price tag).
 
 ```markdown {.dg-split}
 @gear
@@ -965,6 +965,62 @@ You flood a target system with junk traffic. It takes 1d4 SesHP of damage and ca
 **1 AP. SCAN PROGRAM, 1 SesHP**
 
 You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.
+
+@end-gear
+
+</div>
+
+### Armor
+
+`@gear armor` is armor: something worn that soaks damage or cancels a roll. It is a pauldron plate pasted to the wall, in the paste-up register: both top corners cut at 45 degrees like shoulders, a heavy ink frame and a hard shadow, a bolt fixing each shoulder, and an ARMOR badge on the name row cut with the same shoulders. Write the protection as a line that is one bold run (`**Soak 2**`): it becomes the stat strip, a slate-steel block holding a shield and then the value on ink. Durability and anything else are ordinary lines. In a catalog it is ruled like every kind, and the stat strip stays.
+
+```markdown {.dg-split}
+@gear armor
+
+#### Riot Plating
+
+> Corpo-issue. Dents, doesn't die.
+
+**Soak 2**
+
+**Durability:** Roll Surreal.
+
+@end-gear
+
+@gear armor
+
+#### Hexweave Cloak
+
+**Cancels odd rolls (1 excluded)**
+
+**Durability:** Roll Lucid.
+
+@end-gear
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@gear armor
+
+#### Riot Plating
+
+> Corpo-issue. Dents, doesn't die.
+
+**Soak 2**
+
+**Durability:** Roll Surreal.
+
+@end-gear
+
+@gear armor
+
+#### Hexweave Cloak
+
+**Cancels odd rolls (1 excluded)**
+
+**Durability:** Roll Lucid.
 
 @end-gear
 
