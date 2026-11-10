@@ -434,6 +434,14 @@ describe("declared wrapper markers", () => {
     expect(render(wrap("@section", "@end-section")).html).toContain('<div class="section">');
   });
 
+  test("@section weapons, explosives and armor are the catalog with their kind's class, and keep a class written beside them", () => {
+    for (const word of ["weapons", "explosives", "armor"]) {
+      const { html, warnings } = render(wrap(`@section ${word} .dc-pu-cont`, "@end-section"));
+      expect(html, word).toContain(`<div class="section dc-section-panel dc-catalog dc-section-${word} dc-pu-cont"`);
+      expect(warnings, word).toEqual([]);
+    }
+  });
+
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
     const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {

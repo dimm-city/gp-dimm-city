@@ -1101,6 +1101,88 @@ A voice that is never quite yours.
 
 </div>
 
+### Gear sections by kind
+
+`@section weapons`, `@section explosives` and `@section armor` are the catalog in one colour and one chip label per kind of gear, so a run of them reads as one system and each is told at a glance: weapons in blood with a *Weapons* chip, explosives in hazard yellow (ink type) with *Explosives*, armor in slate steel with *Protection*. The colour is the title, every table's head row, the rail, and the rule over each entry and each `####` sub-head (set like an entry's name). The three read apart in grayscale too. Everything else is the catalog's own.
+
+```markdown {.dg-split}
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
+@section armor
+
+### Armor
+
+#### Damage Soak
+
+Armor reduces damage from every hit.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
+@section armor
+
+### Armor
+
+#### Damage Soak
+
+Armor reduces damage from every hit.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+
+@end-section
+
+</div>
+
 ## Faction
 
 An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined rectangle (an L-shaped step out of two corners) with an ink-blue band and a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.

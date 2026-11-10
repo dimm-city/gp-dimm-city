@@ -385,6 +385,55 @@
   padding-top: 0.7rem;
 }
 
+/* GEAR SECTIONS BY KIND — `@section weapons`, `explosives`, `armor`: the
+   catalog above in one colour and one chip label per kind of gear, so a run of
+   them (firearms, grenades, armor) reads as one system and each is told at a
+   glance, in grayscale too (dark blood, light hazard yellow, mid slate steel).
+   The kind's colour is where the eye goes: the title (the tag over the sheet's
+   edge in a paste-up chapter), every table's head row, the rail, and the rule
+   over each entry and `####` sub-head. The chip is ink on all three. */
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) {
+  --dc-section-bar-mix: 100%;
+  --dc-section-bar-fg: var(--paper-cream);
+  --dc-section-tab-bg: var(--ink-dark);
+}
+.dc-section-panel.dc-catalog.dc-section-weapons {
+  --dc-section-accent: var(--blood);
+  --dc-section-tab: "Weapons";
+}
+.dc-section-panel.dc-catalog.dc-section-explosives {
+  --dc-section-accent: var(--brand-yellow);
+  --dc-section-bar-fg: var(--ink);    /* ink on the yellow, as on a sticker */
+  --dc-section-ink-mix: 0%;           /* accent text (a ROLL A DIE! mark) stays ink */
+  --dc-section-tab: "Explosives";
+}
+.dc-section-panel.dc-catalog.dc-section-armor {
+  --dc-section-accent: var(--crystal-slate);
+  --dc-section-tab: "Protection";
+}
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) th {
+  background: var(--dc-section-accent);
+  color: var(--dc-section-bar-fg);
+}
+/* Every sub-part reads alike: an entry's rule takes the kind's colour, and a
+   `####` sub-head (an armor rule's Damage Soak, Repairs) is set like an entry's
+   name, under the same rule. */
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) .dc-entry {
+  --dc-entry-accent: var(--dc-section-accent);
+  --dc-entry-rule: 3pt;
+}
+/* In a column run too: a sub-head that opens a column keeps the column's top. */
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4,
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > .gp-columns > h4 {
+  margin: var(--space-md) 0 4px;
+  padding-top: 8pt;
+  border-top: 3pt solid var(--dc-section-accent);
+}
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > h4:first-child,
+.dc-catalog:is(.dc-section-weapons, .dc-section-explosives, .dc-section-armor) > .gp-columns > h4:is(:first-child, .gp-column-break + *) {
+  margin-top: 0;
+}
+
 /* ═════════════════════════════════════════════════════════════════════════
    FIELD — `@field <variant>`, and `**Label:** …` inside a card
    ═════════════════════════════════════════════════════════════════════════

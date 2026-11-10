@@ -1065,6 +1065,42 @@ components:
     breaks: "a panel that splits by default (--dc-catalog-break-inside: auto), between entries; .dc-avoid-split, or --dc-catalog-break-inside: avoid, keeps one whole; each entry stays whole and never splits across a column or page"
     notes: "A panel for a run of entries (@gear, of any kind). Its title bar is a ledger header (a pale aged-paper band under heavy ink rules, an ink rail, an INVENTORY chip), not an accent bar. Its entries are ruled instead of boxed: no card, no rail, a rule in the entry's own accent over each, each kept whole, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
 
+  - name: section-weapons
+    status: live
+    origin: plugin
+    markers: ["@section weapons"]
+    snippet: section-weapons
+    recipe: "@section weapons ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-weapons
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is blood, its chip WEAPONS in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
+
+  - name: section-explosives
+    status: live
+    origin: plugin
+    markers: ["@section explosives"]
+    snippet: section-explosives
+    recipe: "@section explosives ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-explosives
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is hazard yellow (ink type on it), its chip EXPLOSIVES in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
+
+  - name: section-armor
+    status: live
+    origin: plugin
+    markers: ["@section armor"]
+    snippet: section-armor
+    recipe: "@section armor ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-armor
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is slate steel, its chip PROTECTION in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
+
   - name: section-flat
     status: live
     origin: plugin
