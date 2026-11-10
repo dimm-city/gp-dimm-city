@@ -1708,12 +1708,13 @@ p:has(+ .dc-kicker) {
 
 
 /* ═════════════════════════════════════════════════════════════════════════
-   PASTE-UP — `.dc-paste-up`, the paste-up wall register (constitution §IV)
+   PASTE-UP — the sheet: how a panel looks (constitution §IV)
    ═════════════════════════════════════════════════════════════════════════
-   Opt-in, a modifier class like `.dc-snug`: write it on a chapter (`@chapter
-   rules .dc-paste-up #chapter-03 ch="3"`) to set every section in it as a sheet
-   pasted on the wall, or on one section (`@section reference .dc-paste-up`) to
-   set just that one. Nothing here applies without the class.
+   A section of the kinds that are sheets is a sheet pasted flat on the wall,
+   with nothing to write: `panel`, `reference`, `lore`, `dm`, and `catalog` with
+   its gear kinds. A creature (`npc`), the Citizen File walkthrough and the
+   `choose` sections keep their own look, and so does a fiction excerpt (only
+   its closing line is a sticker). The chapter opener's `#` title is tilted.
 
    A sheet's box = a top band (wall) + the paper + a foot band (wall). The title
    tag straddles the paper's top edge, a closing sticker its foot, and nothing
@@ -1721,7 +1722,7 @@ p:has(+ .dc-kicker) {
    before). A sheet is always kept whole: a section that must run onto the next
    page is split in markup, the second part a `.dc-pu-cont` sheet.
 
-   What a paste-up chapter is written with (all of it the plugin's):
+   The pieces of a paste-up wall (all of them the plugin's):
      @row [wide|narrow] … @end-row   two sheets side by side, kept whole
                                       (half and half; 62/38; 38/62)
      @section … .dc-pu-cont           a continuation sheet: a clean top, no tag
@@ -1736,12 +1737,11 @@ p:has(+ .dc-kicker) {
 /* ── Sheets ──────────────────────────────────────────────────────────────── */
 /* Every section in the chapter is kept whole and clipped above its own top edge
    (sides and foot stay open for shadows and stickers). */
-.section:is(.dc-paste-up .section, .section.dc-paste-up) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
   --dc-section-break-inside: avoid;
-  break-inside: avoid;
   clip-path: inset(0 -1in -1in -1in);
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up):not(.dc-fiction-excerpt) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
   --dc-section-edge: 0px;
   --dc-section-pad-bottom: var(--space-xs);
   margin: 0 0 0 var(--dc-pu-inset);
@@ -1749,13 +1749,13 @@ p:has(+ .dc-kicker) {
   padding-bottom: calc(var(--dc-pu-foot) + var(--dc-section-pad-bottom));
   box-shadow: none;                 /* the soft lift would shade the bands */
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up):not(.dc-fiction-excerpt)::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
-.section:is(.dc-paste-up .section, .section.dc-paste-up):not(.dc-fiction-excerpt)::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose)::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose)::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
 
 /* Tags: the first ## or ### pasted over the paper's top edge, and a `{.dc-pu-tag}`
    sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours). */
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > :is(h2, h3):first-child,
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > :is(h2, h3).dc-pu-tag:not(:first-child) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3):first-child,
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3).dc-pu-tag:not(:first-child) {
   width: fit-content; max-width: 88%;
   margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
   padding: 0.3rem var(--space-lg) 0.22rem;
@@ -1766,20 +1766,20 @@ p:has(+ .dc-kicker) {
   position: relative; z-index: 2;
   break-after: avoid;
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > :is(h2, h3).dc-pu-tag:not(:first-child) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3).dc-pu-tag:not(:first-child) {
   margin-top: var(--space-lg);
   border: 0;
   background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
   color: var(--dc-section-bar-fg);
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
-.section:is(.dc-paste-up .section, .section.dc-paste-up):not(.dc-catalog) > :is(h2, h3):first-child::after,
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > .dc-pu-tag::after { content: none; }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > :is(h2, h3):first-child + * { break-before: avoid; }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose):not(.dc-catalog) > :is(h2, h3):first-child::after,
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-pu-tag::after { content: none; }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3):first-child + * { break-before: avoid; }
 
 /* Bills: one per section that opens a spread or a sub-system. */
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > h2.dc-pu-bill:first-child {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2.dc-pu-bill:first-child {
   width: auto; max-width: none;
   margin-left: calc(-1 * var(--dc-section-pad-left));
   margin-right: calc(-1 * var(--dc-section-pad-right));
@@ -1790,12 +1790,12 @@ p:has(+ .dc-kicker) {
   border-bottom: 6pt solid var(--brand-yellow);
   box-shadow: 4px 4px 0 var(--shadow-ink);
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
 .dc-pu-bill + .dc-flavor { margin-top: calc(-1 * var(--space-lg)); }
 
 /* Stickers: street lines. A closing one straddles the paper's foot. A fiction
    excerpt's closing line (an opener's "What do you do?") is a sticker too. */
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > .dc-kicker {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker {
   width: fit-content; max-width: 86%;
   margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 0 auto;   /* its foot: page-templates.css, FLOW GAP */
   padding: var(--space-xs) var(--space-md);
@@ -1806,18 +1806,16 @@ p:has(+ .dc-kicker) {
   position: relative; z-index: 2;
 }
 /* In a fiction excerpt the sticker keeps the excerpt's own spacing and is set upright. */
-.dc-paste-up .dc-fiction-excerpt .dc-kicker {
+.section.dc-fiction-excerpt .dc-kicker {
   width: fit-content; padding: var(--space-xs) var(--space-md);
   border: 1.5pt solid var(--ink); background: var(--brand-yellow); color: var(--ink);
   box-shadow: 2px 2px 0 var(--ink);
   font-size: var(--dc-pu-sticker-size); font-style: normal;
   transform: rotate(-2deg);
 }
-.section:is(.dc-paste-up .section, .section.dc-paste-up) > .dc-kicker::before,
-.dc-paste-up .dc-fiction-excerpt .dc-kicker::before { content: none; }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker::before,
+.section.dc-fiction-excerpt .dc-kicker::before { content: none; }
 
-/* A paste-up chapter's opening title is a bill pasted on the wall: tilted. */
-.dc-paste-up .dc-page-chapter-start h1 { transform: rotate(-2deg); position: relative; z-index: 2; }
 
 /* Rows (`@row`): two sheets side by side, kept whole, each ending at its last
    line, closing stickers at the foot. Half and half; `wide` is 62/38 and
@@ -1831,16 +1829,16 @@ p:has(+ .dc-kicker) {
 .dc-pu-row > * { min-width: 0; }
 .dc-pu-row > .dc-section-panel { display: flex; flex-direction: column; }
 .dc-pu-row > .dc-section-panel > .dc-kicker:last-child { margin-top: auto; }
-.dc-pu-row > .section:is(.dc-paste-up .section, .section.dc-paste-up) > h3:first-child { font-size: 14pt; }   /* a full-size tag overran a half sheet */
+.dc-pu-row > .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h3:first-child { font-size: 14pt; }   /* a full-size tag overran a half sheet */
 
 /* Continuation sheets: a clean sheet top, no tag. The plugin puts a zero-height
    `.dc-pu-spacer` ahead of a `###` that opens one, so the heading stays a sub-head. */
 .dc-pu-spacer { height: 0; }
-.section.dc-pu-cont:is(.dc-paste-up .section, .section.dc-paste-up) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose).dc-pu-cont {
   --dc-pu-band: 0.06in; --dc-section-pad-top: 0.06in;
   padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
 }
-.section.dc-pu-cont:is(.dc-paste-up .section, .section.dc-paste-up) > h3:first-child,
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose).dc-pu-cont > h3:first-child,
 .section.dc-pu-cont > .dc-pu-spacer + h3 { margin-top: 0; }
 
 }

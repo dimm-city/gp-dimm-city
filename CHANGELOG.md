@@ -13,6 +13,16 @@ Paste-up becomes part of the package proper, and gear sections get a kind each.
 
 ### Changed
 
+- **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or
+  `catalog` section (and the gear kinds) is a sheet pasted on the wall with
+  nothing to write: tag over the paper's edge, closing line a sticker, one hard
+  shadow, kept whole. A chapter opener's `#` title is tilted, and a fiction
+  excerpt's closing line is a sticker. The hung-panel look those replace is
+  retired, and so is `.dc-paste-up`: delete it from marker lines (it styles
+  nothing now). A creature (`npc`), the Citizen File walkthrough, the `choose`
+  sections and a fiction excerpt's text keep their own looks. A book whose
+  long sections now run onto another page splits them in markup, the second
+  part `.dc-pu-cont`.
 - **Paste-up works like the rest of the package.** `styles/paste-up.css` is
   gone: its rules live with the components they style (sheets, tags, bills,
   stickers and rows in `section.css`, plates and cut-outs in `images.css`), and

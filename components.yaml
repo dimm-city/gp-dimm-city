@@ -979,17 +979,12 @@ components:
     notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
 
   - name: paste-up
-    status: live
+    status: retired
     origin: author
-    modifier: dc-paste-up
-    description: "Set a chapter or a section as a paste-up wall: sheets pasted flat, title tags over the paper's edge, yellow stickers."
-    snippet: paste-up
-    recipe: "@chapter rules .dc-paste-up #id ch=\"N\"  (every section a sheet)  |  @section reference .dc-paste-up  (one sheet)"
-    emits: .dc-paste-up (on the chapter or section it is written on)
-    css: styles/components/section.css
-    tokens: [--dc-pu-band, --dc-pu-foot, --dc-pu-lift, --dc-pu-inset, --dc-pu-pair-gap, --dc-pu-sticker-size, --dc-pu-sticker-gap, --dc-pu-sticker-drop]
-    breaks: "a sheet is never split (break-inside: avoid); split a long section in markup into a sheet and a `.dc-pu-cont` sheet"
-    notes: "The paste-up register of docs/constitution.md section IV. Opt-in: nothing changes without the class. On a chapter it sets every section in it (except a fiction excerpt) as a sheet: a top band and a foot band of wall around the paper, the first ## or ### a tag tilted -1deg across the paper's top edge, a `.dc-kicker` last in a sheet a yellow sticker tilted -2deg across its foot, the soft lift dropped for the hard contact shadow, the sheet clipped above its top edge so a tilted corner never paints on the page before. A fiction excerpt's closing line is a sticker too, and the chapter opener's `#` title is tilted -2deg. The geometry is tokens, set on the chapter's id (a book whose sheets sit at the content edge sets --dc-pu-inset: 0.06in so the tags' overhang stays inside the box). Rows are `@row`; the other pieces are the entries below."
+    replaced_by: "nothing: a panel, reference, lore, dm or catalog section is a pasted sheet with no class"
+    recipe: "@chapter rules .dc-paste-up  /  @section reference .dc-paste-up"
+    emits: .dc-paste-up
+    notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (section.css, PASTE-UP). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
 
   - name: row
     status: live
@@ -1129,8 +1124,8 @@ components:
       - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
-    breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
-    notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+    breaks: "a sheet is kept whole (--dc-section-break-inside: avoid); split a section that must run on in markup, the second part `.dc-pu-cont`"
+    notes: "A sheet pasted flat on the wall (section.css, PASTE-UP; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
 
 
   - name: street-line

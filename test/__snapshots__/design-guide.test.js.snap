@@ -1237,7 +1237,7 @@ exports[`rendered output 06-panels-and-cards.md matches its snapshot 1`] = `
 <h1 data-name="panels-cards-data">Panels, Cards &amp; Data</h1>
 <p class="dg-lede">The enclosures: the section variants and the kinds of text they hold, three block registers, definition and glossary forms, the numbered procedure, the outcome ladder and roll tables, choice cards, item entries (gear, augments, treasure, vehicles, drugs), fields, catalogs, factions, tables, and the stat blocks a Dream Master runs from.</p>
 <h2 data-name="section">Section</h2>
-<p>A <code>@section</code> groups what is inside it. Bare, it is core’s plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold (<a href="#kinds-of-text" data-gp-source-token="[below](#kinds-of-text)" data-gp-source-occurrence="0">below</a>). Sections split across pages by default; <code>.dc-avoid-split</code> keeps one whole. One accent knob, <code>--dc-section-accent</code>, colours a panel’s rail and title bar. For the named components (<code>@npc-stat</code>, <code>@gear</code>, <code>@outcome</code> and the rest), <a href="#ch-start" data-gp-source-token="[Pick a section](#ch-start)" data-gp-source-occurrence="0">Pick a section</a> maps what you are writing to the marker.</p>
+<p>A <code>@section</code> groups what is inside it. Bare, it is core’s plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold (<a href="#kinds-of-text" data-gp-source-token="[below](#kinds-of-text)" data-gp-source-occurrence="0">below</a>). A <code>panel</code> and the kinds of text are sheets pasted on the wall (<a href="#paste-up-wall" data-gp-source-token="[Paste-up wall](#paste-up-wall)" data-gp-source-occurrence="0">Paste-up wall</a>), each kept whole: a section that must run onto the next page is split in markup, the second part <code>.dc-pu-cont</code>. One accent knob, <code>--dc-section-accent</code>, colours a sheet’s rail and title tag. For the named components (<code>@npc-stat</code>, <code>@gear</code>, <code>@outcome</code> and the rest), <a href="#ch-start" data-gp-source-token="[Pick a section](#ch-start)" data-gp-source-occurrence="0">Pick a section</a> maps what you are writing to the marker.</p>
 <pre><code class="dg-split language-markdown" data-source-range="15:36">@section panel
 
 ## Rules Panel
@@ -1267,7 +1267,7 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 <div class="dg-stage dg-on-paper">
 <div class="section" data-source-range="59:60"><p>A bare section: no look of its own. The text sits on a plain sheet of paper.</p>
 </div></div>
-<p><code>panel</code> is the look for rules text with a heading; <code>.dc-avoid-split</code> on it keeps a short panel on one page. For a short note set off from the text, use <a href="#ch-text" data-gp-source-token="[\`@callout\`](#ch-text)" data-gp-source-occurrence="0"><code>@callout</code></a>. Tokens: <code>--dc-section-bg</code>, <code>--dc-section-accent</code>, <code>--dc-section-pad-top</code>, <code>-right</code>, <code>-bottom</code>, <code>-left</code>, and for <code>panel</code> also <code>--dc-section-surface</code> and <code>--dc-section-shadow</code> (<code>none</code> removes the layer).</p>
+<p><code>panel</code> is the look for rules text with a heading: a sheet pasted on the wall, its heading a tag over the paper’s edge, a closing bold line a sticker. For a short note set off from the text, use <a href="#ch-text" data-gp-source-token="[\`@callout\`](#ch-text)" data-gp-source-occurrence="0"><code>@callout</code></a>. Tokens: <code>--dc-section-bg</code>, <code>--dc-section-accent</code>, <code>--dc-section-pad-top</code>, <code>-right</code>, <code>-bottom</code>, <code>-left</code>, and for <code>panel</code> also <code>--dc-section-surface</code> and <code>--dc-section-shadow</code> (<code>none</code> removes the layer).</p>
 <p>The components below that are sections have a marker of their own and a word on <code>@section</code>: <code>@npc-stat</code> (<code>npc</code>), <code>@fiction-excerpt</code> (<code>fiction</code>), <code>@citizen-walkthrough</code> (<code>walkthrough</code>), <code>@card-grid</code> (<code>cards</code>), <code>@flaws</code>, <code>@ideals</code> and <code>@dreams</code>.</p>
 <h2 id="panel-subheads" data-name="sub-headings-in-a-panel">Sub-headings in a panel</h2>
 <p>A panel’s first <code>##</code> or <code>###</code> is its title bar; a heading after it is a sub-heading, set one step below the bar so it never reads as a second title. Under a <code>##</code> bar (16pt) an <code>###</code> is 13pt; under an <code>###</code> bar (13pt), or an <code>##</code> with the h3 look, an <code>###</code> is 11pt; an <code>####</code> is 11pt in any panel. Each takes more room above than below, so it reads as the head of the text after it. A look class (<code>{.dc-h4}</code>) still wins, and a panel with no bar is left alone. Use one sub-level per panel: under an <code>###</code> bar, an <code>###</code> and an <code>####</code> are both 11pt and differ only by the <code>###</code>'s rail and colour.</p>
@@ -2233,11 +2233,11 @@ Armor reduces damage from every hit.
 </table>
 </div></div>
 <h2 data-name="paste-up-wall">Paste-up wall</h2>
-<p>The paste-up register (constitution §IV) sets sections as sheets pasted flat on the wall: a band of wall above and below the paper, the first heading a tag tilted over the paper’s top edge, a closing bold line a yellow sticker across its foot, one hard shadow. Write <code>.dc-paste-up</code> on a chapter (<code>@chapter rules .dc-paste-up #chapter-03 ch=&quot;3&quot;</code>) to set every section in it, or on one section. A sheet never splits: a section that must run on is split in markup, the second part <code>@section … .dc-pu-cont</code>, a sheet with no tag (the plugin keeps its first <code>###</code> a sub-head).</p>
+<p>A <code>panel</code>, <code>reference</code>, <code>lore</code>, <code>dm</code> or <code>catalog</code> section (and the gear kinds) is a sheet pasted flat on the wall (constitution §IV), with nothing extra to write: a band of wall above and below the paper, the first heading a tag tilted over the paper’s top edge, a closing bold line a yellow sticker across its foot, one hard shadow. A creature (<code>npc</code>), the Citizen File walkthrough, the <code>choose</code> sections and a fiction excerpt keep their own look. A sheet never splits: a section that must run on is split in markup, the second part <code>@section … .dc-pu-cont</code>, a sheet with no tag (the plugin keeps its first <code>###</code> a sub-head).</p>
 <p>Two sheets side by side are a row: <code>@row</code> (half and half), <code>@row-wide</code> (62/38) or <code>@row-narrow</code> (38/62), closed by <code>@end-row</code>, each sheet ending at its own last line. <code>### Title {.dc-pu-tag}</code> pastes a sub-head on as a tag mid-sheet, <code>## Title {.dc-pu-bill}</code> makes a sheet’s title a bill, and <code>![Caption](x.png){.dc-pu-plate}</code> pastes a framed print on the wall (<code>.gp-size-30</code> and the like set its width; <code>{.dc-pu-cutout}</code> pins a cut-out instead).</p>
 <pre><code class="dg-split language-markdown" data-source-range="1191:1226">@row
 
-@section panel .dc-paste-up
+@section panel
 
 ### Lucid
 
@@ -2247,7 +2247,7 @@ You see the Dream as it is. Roll as normal.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Surreal
 
@@ -2261,7 +2261,7 @@ Every ten feet you fall is one damage.
 
 @end-row
 
-@section panel .dc-paste-up .dc-pu-cont
+@section panel .dc-pu-cont
 
 ### Carrying On
 
@@ -2271,21 +2271,21 @@ A continuation sheet: the second part of a sheet split in markup. No tag, and it
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-pu-row" data-source-range="1231:1232"><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="lucid-2" data-source-range="1233:1234"><h3 data-name="lucid-2">Lucid</h3>
+<div class="dc-pu-row" data-source-range="1231:1232"><div class="section dc-section-panel" data-section="panel" data-name="lucid-2" data-source-range="1233:1234"><h3 data-name="lucid-2">Lucid</h3>
 <p>You see the Dream as it is. Roll as normal.</p>
 <p class="dc-kicker"><strong>Trust your eyes.</strong></p>
-</div><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="surreal-2" data-source-range="1243:1244"><h3 data-name="surreal-2">Surreal</h3>
+</div><div class="section dc-section-panel" data-section="panel" data-name="surreal-2" data-source-range="1243:1244"><h3 data-name="surreal-2">Surreal</h3>
 <p>The Dream bends around you. Roll twice and take the lower.</p>
 <h3 class="dc-pu-tag" data-name="fall-damage">Fall Damage</h3>
 <p>Every ten feet you fall is one damage.</p>
-</div></div><div class="section dc-section-panel dc-paste-up dc-pu-cont" data-section="panel" data-name="carrying-on" data-source-range="1257:1258"><div class="dc-pu-spacer"></div>
+</div></div><div class="section dc-section-panel dc-pu-cont" data-section="panel" data-name="carrying-on" data-source-range="1257:1258"><div class="dc-pu-spacer"></div>
 <h3 data-name="carrying-on">Carrying On</h3>
 <p>A continuation sheet: the second part of a sheet split in markup. No tag, and its first <code>###</code> stays a sub-head.</p>
 </div></div>
 <p>The two other widths:</p>
 <pre><code class="dg-split language-markdown" data-source-range="1270:1311">@row-wide
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
@@ -2293,7 +2293,7 @@ Sixty-two parts of the row: the main text of the pair.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Aside
 
@@ -2305,7 +2305,7 @@ Thirty-eight.
 
 @row-narrow
 
-@section panel .dc-paste-up
+@section panel
 
 ### Intro
 
@@ -2313,7 +2313,7 @@ A short lead-in.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
@@ -2325,13 +2325,13 @@ The other way round: thirty-eight, then sixty-two.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-pu-row dc-pu-row-wide" data-source-range="1316:1317"><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="the-long-sheet" data-source-range="1318:1319"><h3 data-name="the-long-sheet">The Long Sheet</h3>
+<div class="dc-pu-row dc-pu-row-wide" data-source-range="1316:1317"><div class="section dc-section-panel" data-section="panel" data-name="the-long-sheet" data-source-range="1318:1319"><h3 data-name="the-long-sheet">The Long Sheet</h3>
 <p>Sixty-two parts of the row: the main text of the pair.</p>
-</div><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="aside" data-source-range="1326:1327"><h3 data-name="aside">Aside</h3>
+</div><div class="section dc-section-panel" data-section="panel" data-name="aside" data-source-range="1326:1327"><h3 data-name="aside">Aside</h3>
 <p>Thirty-eight.</p>
-</div></div><div class="dc-pu-row dc-pu-row-narrow" data-source-range="1336:1337"><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="intro" data-source-range="1338:1339"><h3 data-name="intro">Intro</h3>
+</div></div><div class="dc-pu-row dc-pu-row-narrow" data-source-range="1336:1337"><div class="section dc-section-panel" data-section="panel" data-name="intro" data-source-range="1338:1339"><h3 data-name="intro">Intro</h3>
 <p>A short lead-in.</p>
-</div><div class="section dc-section-panel dc-paste-up" data-section="panel" data-name="the-long-sheet-2" data-source-range="1346:1347"><h3 data-name="the-long-sheet-2">The Long Sheet</h3>
+</div><div class="section dc-section-panel" data-section="panel" data-name="the-long-sheet-2" data-source-range="1346:1347"><h3 data-name="the-long-sheet-2">The Long Sheet</h3>
 <p>The other way round: thirty-eight, then sixty-two.</p>
 </div></div></div>
 <h2 data-name="faction">Faction</h2>

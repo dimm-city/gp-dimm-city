@@ -7,7 +7,7 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
-  /* Paste-up register (`.dc-paste-up`, section.css PASTE-UP). Band and foot are
+  /* Paste-up sheets (section.css, PASTE-UP). Band and foot are
      the wall above and below a sheet's paper (the tag and the closing sticker
      straddle them); lift is how far a tag's top rises above the paper's edge;
      inset moves the sheets in so a tag's overhang stays in the content box;

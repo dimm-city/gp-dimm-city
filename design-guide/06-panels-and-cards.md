@@ -11,7 +11,7 @@ The enclosures: the section variants and the kinds of text they hold, three bloc
 
 ## Section
 
-A `@section` groups what is inside it. Bare, it is core's plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours a panel's rail and title bar. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
+A `@section` groups what is inside it. Bare, it is core's plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). A `panel` and the kinds of text are sheets pasted on the wall ([Paste-up wall](#paste-up-wall)), each kept whole: a section that must run onto the next page is split in markup, the second part `.dc-pu-cont`. One accent knob, `--dc-section-accent`, colours a sheet's rail and title tag. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ```markdown {.dg-split}
 @section panel
@@ -65,7 +65,7 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 
 </div>
 
-`panel` is the look for rules text with a heading; `.dc-avoid-split` on it keeps a short panel on one page. For a short note set off from the text, use [`@callout`](#ch-text). Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
+`panel` is the look for rules text with a heading: a sheet pasted on the wall, its heading a tag over the paper's edge, a closing bold line a sticker. For a short note set off from the text, use [`@callout`](#ch-text). Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
 
 The components below that are sections have a marker of their own and a word on `@section`: `@npc-stat` (`npc`), `@fiction-excerpt` (`fiction`), `@citizen-walkthrough` (`walkthrough`), `@card-grid` (`cards`), `@flaws`, `@ideals` and `@dreams`.
 
@@ -1185,14 +1185,14 @@ Armor reduces damage from every hit.
 
 ## Paste-up wall
 
-The paste-up register (constitution §IV) sets sections as sheets pasted flat on the wall: a band of wall above and below the paper, the first heading a tag tilted over the paper's top edge, a closing bold line a yellow sticker across its foot, one hard shadow. Write `.dc-paste-up` on a chapter (`@chapter rules .dc-paste-up #chapter-03 ch="3"`) to set every section in it, or on one section. A sheet never splits: a section that must run on is split in markup, the second part `@section … .dc-pu-cont`, a sheet with no tag (the plugin keeps its first `###` a sub-head).
+A `panel`, `reference`, `lore`, `dm` or `catalog` section (and the gear kinds) is a sheet pasted flat on the wall (constitution §IV), with nothing extra to write: a band of wall above and below the paper, the first heading a tag tilted over the paper's top edge, a closing bold line a yellow sticker across its foot, one hard shadow. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look. A sheet never splits: a section that must run on is split in markup, the second part `@section … .dc-pu-cont`, a sheet with no tag (the plugin keeps its first `###` a sub-head).
 
 Two sheets side by side are a row: `@row` (half and half), `@row-wide` (62/38) or `@row-narrow` (38/62), closed by `@end-row`, each sheet ending at its own last line. `### Title {.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, `## Title {.dc-pu-bill}` makes a sheet's title a bill, and `![Caption](x.png){.dc-pu-plate}` pastes a framed print on the wall (`.gp-size-30` and the like set its width; `{.dc-pu-cutout}` pins a cut-out instead).
 
 ```markdown {.dg-split}
 @row
 
-@section panel .dc-paste-up
+@section panel
 
 ### Lucid
 
@@ -1202,7 +1202,7 @@ You see the Dream as it is. Roll as normal.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Surreal
 
@@ -1216,7 +1216,7 @@ Every ten feet you fall is one damage.
 
 @end-row
 
-@section panel .dc-paste-up .dc-pu-cont
+@section panel .dc-pu-cont
 
 ### Carrying On
 
@@ -1231,7 +1231,7 @@ Result {.dg-result}
 
 @row
 
-@section panel .dc-paste-up
+@section panel
 
 ### Lucid
 
@@ -1241,7 +1241,7 @@ You see the Dream as it is. Roll as normal.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Surreal
 
@@ -1255,7 +1255,7 @@ Every ten feet you fall is one damage.
 
 @end-row
 
-@section panel .dc-paste-up .dc-pu-cont
+@section panel .dc-pu-cont
 
 ### Carrying On
 
@@ -1271,7 +1271,7 @@ The two other widths:
 ```markdown {.dg-split}
 @row-wide
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
@@ -1279,7 +1279,7 @@ Sixty-two parts of the row: the main text of the pair.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Aside
 
@@ -1291,7 +1291,7 @@ Thirty-eight.
 
 @row-narrow
 
-@section panel .dc-paste-up
+@section panel
 
 ### Intro
 
@@ -1299,7 +1299,7 @@ A short lead-in.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
@@ -1316,7 +1316,7 @@ Result {.dg-result}
 
 @row-wide
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
@@ -1324,7 +1324,7 @@ Sixty-two parts of the row: the main text of the pair.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### Aside
 
@@ -1336,7 +1336,7 @@ Thirty-eight.
 
 @row-narrow
 
-@section panel .dc-paste-up
+@section panel
 
 ### Intro
 
@@ -1344,7 +1344,7 @@ A short lead-in.
 
 @end-section
 
-@section panel .dc-paste-up
+@section panel
 
 ### The Long Sheet
 
