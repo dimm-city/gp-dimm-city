@@ -95,7 +95,6 @@ Start from what you are writing, not from a class name: find it on the left and 
 | A vehicle | `@gear vehicle` |
 | A drug, elixir or consumable | `@gear drug` |
 | Deck software, a program | `@gear program` |
-| Armor | `@gear armor` |
 | A labelled line in an entry: SPECS, Traits, Effects... | `**SPECS:**` (or `@field specs`) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |

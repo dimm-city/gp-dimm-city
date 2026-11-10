@@ -7,16 +7,6 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
-### Added
-
-- **`@gear armor`: a pauldron plate pasted to the wall.** The paste-up
-  register applied to one entry: both top corners cut at 45deg (the
-  shoulders), a heavy ink frame and a 3px hard shadow in the same clipped
-  silhouette, a bolt fixing each shoulder, and an ARMOR badge on the name row
-  cut with the same shoulders. The bold protection line (`**Soak 2**`) is the
-  stat strip: a slate-steel block with a shield, then the value on ink. In a
-  catalog it is a ruled entry like every kind. Snippet `armor`.
-
 ## [1.10.2] - 2026-11-07
 
 A print-colour audit against DriveThruRPG's press profile, CGATS21_CRPC1

@@ -1,10 +1,10 @@
 @layer dc.components {
 
 /* ═════════════════════════════════════════════════════════════════════════
-   ENTRY CARDS — @gear, and its kinds @gear augment|treasure|vehicle|drug|program|armor
+   ENTRY CARDS — @gear, and its kinds @gear augment|treasure|vehicle|drug|program
    ═════════════════════════════════════════════════════════════════════════
    One item in a catalog: a name, an optional tagline, the item's prose, and
-   fields (`**SPECS:**`, `**Effects:**` …, below). The seven kinds
+   fields (`**SPECS:**`, `**Effects:**` …, below). The six kinds
    share ONE rule set, `.dc-entry` below; each kind's class is a token setter
    on it and draws nothing of its own, so a sixth kind costs one variant word
    and a block of tokens. The kinds differ in silhouette, surface value, mark,
@@ -17,7 +17,6 @@
      vehicle    a plate      riveted chamfers, a heavy ink frame, yellow rail and badge, ink name
      drug       a label      a wobbling organic outline, fungi-green head, "Rx" pill badge
      program    a cartridge  ink label strip with a PROGRAM badge, a connector comb cut in the foot, HUD-blue name
-     armor      a pauldron   shoulders cut 45deg, ink frame and hard shadow in one clip, bolted shoulders, slate stat strip
 
    Writes as the books write it:
 
@@ -282,71 +281,6 @@
   margin: 0 0 6px;
   hyphens: none;
   text-wrap: balance;
-}
-
-/* ARMOR — a pauldron plate pasted to the wall (the paste-up register, §IV).
-   One silhouette, built from two clipped layers: the card is the ink (both top
-   corners cut 12px, the shoulders, plus a 3px hard shadow down and right, in the
-   same clip), and the ::after is the white face inset 2px (the frame) and 5px
-   right and bottom (frame and shadow), cut on the same 45deg shoulders. Opaque,
-   vector, no gradient to transparent. A bolt fixes each shoulder to the wall.
-   The ARMOR badge sits on the name row at the right, cut with the plate's own
-   shoulders; the bold protection line (`**Soak 2**`, .dc-entry-cost) is the
-   stat strip: a slate block holding a shield, then the value on ink. In a
-   catalog it is a ruled entry like every kind; the stat strip stays. */
-.dc-armor {
-  --dc-entry-accent: var(--crystal-slate);
-  --dc-entry-ink: var(--ink);
-  --dc-entry-surface: var(--ink-dark);
-  --dc-entry-kind: "Armor";
-  --dc-entry-rail: 0px;
-  --dc-entry-shape: polygon(12px 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 3px 100%, 3px calc(100% - 3px), 0 calc(100% - 3px), 0 12px);
-  --dc-entry-ornament: "";
-  --dc-entry-orn-inset: 2px 5px 5px 2px;
-  --dc-entry-orn-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='4.2' fill='%23b0a89c' stroke='%231e1d1c' stroke-width='1.5'/%3E%3Cpath d='M2.6 6.7 7.4 3.3' stroke='%231e1d1c' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat left 6px top 6px / 9px 9px, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='4.2' fill='%23b0a89c' stroke='%231e1d1c' stroke-width='1.5'/%3E%3Cpath d='M3.9 2 6.1 8' stroke='%231e1d1c' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 6px top 6px / 9px 9px, var(--paper-cream);
-  --dc-entry-orn-clip: polygon(10.8px 0, calc(100% - 10.8px) 0, 100% 10.8px, 100% 100%, 0 100%, 0 10.8px);
-  --dc-entry-orn-z: -1;
-  --dc-entry-badge-bg: var(--crystal-slate);
-  --dc-entry-badge-fg: var(--paper-cream);
-  --dc-entry-badge-shape: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 0 100%, 0 4px);
-  isolation: isolate;   /* the face (z-index -1) paints over the card's ink, under the text */
-}
-.dc-card.dc-armor:not(.dc-catalog *) {
-  padding: 14pt calc(16pt + 5px) calc(12pt + 5px) calc(16pt + 2px);
-}
-/* The badge rides the name row at the right. */
-.dc-armor:not(.dc-catalog *)::before {
-  float: right;
-  margin: 1px 0 0 8pt;
-  box-shadow: none;
-}
-.dc-armor > :is(h3, h4):first-child {
-  margin-bottom: 6pt;
-}
-/* The stat strip: a slate block with a shield on the first line, then the
-   value on ink. Rules text, so level. */
-.dc-armor > p.dc-entry-cost {
-  width: fit-content;
-  max-width: 100%;
-  box-sizing: border-box;
-  margin: 0 0 5pt;
-  padding: 2pt 9pt 2pt calc(17pt + 7pt);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--paper-cream);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='M6 1 11 3v4c0 3.4-2.3 5.4-5 6.3C3.3 12.4 1 10.4 1 7V3z'/%3E%3Cpath d='M6 4v6'/%3E%3C/svg%3E") no-repeat 4.25pt 4pt / 8.5pt 10pt,
-    linear-gradient(var(--crystal-slate), var(--crystal-slate)) no-repeat left top / 17pt 100%,
-    var(--ink-dark);
-  hyphens: none;
-  text-wrap: balance;
-}
-.dc-armor > p.dc-entry-cost strong {
-  font-weight: inherit;
 }
 
 /* General gear: the italic tagline, and the bold price line stamped as a

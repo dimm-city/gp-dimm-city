@@ -63,7 +63,6 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A cybernetic or mod | `@gear augment` |
 | A magic item or relic | `@gear treasure` |
 | A vehicle | `@gear vehicle` |
-| Armor | `@gear armor` |
 | A drug, elixir or consumable | `@gear drug` |
 | A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`; `specs` is the one SPECS box) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
