@@ -15,11 +15,12 @@
  *   @specialty-intro     → div.dc-specialty-intro
  *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
  *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear [augment|treasure|vehicle|drug|program]
+ *   @gear [augment|treasure|vehicle|drug|program|armor]
  *                        → div.dc-card.dc-entry.dc-gear (general gear), or
  *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
  *                          treasure (magic items, relics), vehicle, drug (drugs,
- *                          elixirs, consumables), program (deck software: a data cartridge)
+ *                          elixirs, consumables), program (deck software: a data cartridge),
+ *                          armor (a riveted plate pasted to the wall)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
  *   @block [panel|slate|shard] label="Title"
@@ -1692,7 +1693,7 @@ function validateSkill({ blocks }) {
     }));
 }
 
-const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program', 'armor'];
 
 // A bare `@gear` (or an unrecognised word, which core reports) is general gear:
 // core added only the shared card, so the general-gear class goes right after it.
@@ -1717,7 +1718,7 @@ function dcEntryCosts(state) {
 }
 
 /**
- * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`, `program`):
+ * Entry cards (`@gear` and its kinds `augment`, `treasure`, `vehicle`, `drug`, `program`, `armor`):
  * one entry is one name. The name is the entry's first heading (`####`, or
  * `###`). An entry without one has no title bar, and one with a second heading
  * is usually two entries run together: a declared marker that opens again
