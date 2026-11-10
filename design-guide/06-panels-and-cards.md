@@ -1101,6 +1101,54 @@ A voice that is never quite yours.
 
 </div>
 
+### Armor
+
+`@section armor` is the gear section for armor: a catalog cut, rimmed and coloured as a steel plate. Both top corners are cut like a pauldron's shoulders, a steel rim runs down the left and across the top and foot, and the title takes slate steel with a *Protection* chip. Each `####` sub-head is a lame, a steel band across the sheet, and a table heads in steel. It holds an armor section as written: rules, lists and tables. In a paste-up chapter its title is the tag pasted over the sheet's edge.
+
+```markdown {.dg-split}
+@section armor
+
+### Armor
+
+Armor protects you by **soaking damage** or **canceling attack rolls**.
+
+#### Damage Soak
+
+- **Standard:** Soaks 1 damage.
+- **Heavy/Advanced:** Soaks 2 damage.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+| Riot Plating | Soak 2 | Lucid |
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section armor
+
+### Armor
+
+Armor protects you by **soaking damage** or **canceling attack rolls**.
+
+#### Damage Soak
+
+- **Standard:** Soaks 1 damage.
+- **Heavy/Advanced:** Soaks 2 damage.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+| Riot Plating | Soak 2 | Lucid |
+
+@end-section
+
+</div>
+
 ## Faction
 
 An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined rectangle (an L-shaped step out of two corners) with an ink-blue band and a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.

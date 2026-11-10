@@ -385,6 +385,44 @@
   padding-top: 0.7rem;
 }
 
+/* ARMOR — `@section armor`, the gear section for armor: a catalog cut, rimmed
+   and coloured as a steel plate. Made for the paste-up register (§IV), where
+   its title is the tag pasted over the sheet's edge; it works on a plain wall
+   too. On the catalog's own rules:
+     shape   both top corners cut 14px, the shoulders of a pauldron
+     border  a steel rim: the 7px rail down the left, 5px across the top and
+             foot (inset shadows on the sheet's surface layer, inside its cut)
+     colour  slate steel for the rim, the title and the sub-heads; the
+             PROTECTION chip in ink
+   A `####` sub-head (Damage Soak, Repairs …) is a lame: a steel band across
+   the sheet, cream type, its right end cut like the shoulders. */
+.dc-section-panel.dc-catalog.dc-section-armor {
+  --dc-section-accent: var(--crystal-slate);
+  --dc-section-rail: 7px;
+  --dc-section-clip: 14px;
+  --dc-section-cut-tl: 14px;
+  --dc-section-flag: inset 0 5px 0 var(--crystal-slate), inset 0 -5px 0 var(--crystal-slate);
+  --dc-section-bar-tone: var(--crystal-slate);
+  --dc-section-bar-fg: var(--paper-cream);
+  --dc-section-tab: "Protection";
+  --dc-section-tab-bg: var(--ink-dark);
+}
+.dc-section-armor > h4 {
+  margin: var(--space-lg) 0 var(--space-sm);
+  padding: 2pt 14pt 1pt var(--space-sm);
+  background: var(--crystal-slate);
+  color: var(--paper-cream);
+  box-shadow: inset 0 -2px 0 var(--ink-dark);
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+}
+.dc-section-armor > h4:first-child {
+  margin-top: var(--space-xs);
+}
+/* A table on the plate heads in steel too. */
+.dc-section-armor th {
+  background: var(--crystal-slate);
+}
+
 /* ═════════════════════════════════════════════════════════════════════════
    FIELD — `@field <variant>`, and `**Label:** …` inside a card
    ═════════════════════════════════════════════════════════════════════════

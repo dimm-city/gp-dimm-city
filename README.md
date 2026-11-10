@@ -66,6 +66,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A drug, elixir or consumable | `@gear drug` |
 | A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`; `specs` is the one SPECS box) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
+| An armor section: its rules and armor table | `@section armor` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |

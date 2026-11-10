@@ -1065,6 +1065,18 @@ components:
     breaks: "a panel that splits by default (--dc-catalog-break-inside: auto), between entries; .dc-avoid-split, or --dc-catalog-break-inside: avoid, keeps one whole; each entry stays whole and never splits across a column or page"
     notes: "A panel for a run of entries (@gear, of any kind). Its title bar is a ledger header (a pale aged-paper band under heavy ink rules, an ink rail, an INVENTORY chip), not an accent bar. Its entries are ruled instead of boxed: no card, no rail, a rule in the entry's own accent over each, each kept whole, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
 
+  - name: section-armor
+    status: live
+    origin: plugin
+    markers: ["@section armor"]
+    snippet: section-armor
+    recipe: "@section armor ### Title … rules, #### sub-heads, lists, tables … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-armor
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-rail, --dc-section-clip, --dc-section-cut-tl, --dc-section-flag, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear section for armor: a catalog cut, rimmed and coloured as a steel plate, made for the paste-up register (constitution §IV) and fine on a plain wall. Shape: both top corners cut 14px, a pauldron's shoulders. Border: a steel rim, the 7px rail down the left and 5px across the top and foot. Colour: slate steel (--crystal-slate) for the rim, the title (the tag over the sheet's edge in a paste-up chapter) and its PROTECTION chip in ink. A `####` sub-head is a lame, a steel band across the sheet with cream type and its right end cut like the shoulders, and a table heads in steel. Holds whatever an armor section holds as written: rules, lists, tables, entries."
+
   - name: section-flat
     status: live
     origin: plugin

@@ -434,6 +434,12 @@ describe("declared wrapper markers", () => {
     expect(render(wrap("@section", "@end-section")).html).toContain('<div class="section">');
   });
 
+  test("@section armor is the catalog with the armor class, and keeps a class written beside it", () => {
+    const { html, warnings } = render(wrap("@section armor .dc-pu-cont", "@end-section"));
+    expect(html).toContain('<div class="section dc-section-panel dc-catalog dc-section-armor dc-pu-cont"');
+    expect(warnings).toEqual([]);
+  });
+
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
     const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {
