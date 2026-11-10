@@ -9,12 +9,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Added
 
-- **`@section armor`: the gear section for armor.** A catalog cut, rimmed and
-  coloured as a steel plate, made for the paste-up register: both top corners
-  cut like a pauldron's shoulders, a steel rim (a 7px rail down the left, 5px
-  across the top and foot), a slate-steel title with a PROTECTION chip, each
-  `####` sub-head a steel lame, and a table head in steel. It wraps an armor
-  section as written (rules, lists, tables). Snippet `section-armor`.
+- **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
+  catalog in one accent and one chip label per kind of gear, so firearms,
+  grenades and armor read as one system: weapons in blood (WEAPONS),
+  explosives in deep orange (EXPLOSIVES), armor in slate steel (PROTECTION).
+  The accent is the rail, the chip, the rule over each entry inside (in place
+  of the entry kind's own) and the rule over a `####` sub-head, set like an
+  entry's name. Snippets `section-weapons`, `section-explosives`,
+  `section-armor`.
 
 ## [1.10.2] - 2026-11-07
 

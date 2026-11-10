@@ -2041,6 +2041,8 @@ export const markers = {
       dm: 'dc-section-panel dc-section-dm',
       choose: 'dc-section-panel dc-section-choose',
       catalog: 'dc-section-panel dc-catalog',
+      weapons: 'dc-section-panel dc-catalog dc-section-weapons',
+      explosives: 'dc-section-panel dc-catalog dc-section-explosives',
       armor: 'dc-section-panel dc-catalog dc-section-armor',
       npc: 'dc-section-panel dc-npc-stat',
       fiction: 'dc-fiction-excerpt',

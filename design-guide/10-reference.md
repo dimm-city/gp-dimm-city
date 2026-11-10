@@ -67,7 +67,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |
 | `.dc-sidebar` | a callout | Float it right, text wrapping on its left |
 | `.dc-catalog` | `@section` | What `@section catalog` writes (with `.dc-section-panel`) |
-| `.dc-section-armor` | `@section` | What `@section armor` writes (with `.dc-section-panel` `.dc-catalog`) |
+| `.dc-section-weapons` `.dc-section-explosives` `.dc-section-armor` | `@section` | What `@section weapons`, `explosives`, `armor` write (with `.dc-section-panel` `.dc-catalog`) |
 | `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` and its kind words | The entry card family; the kind class sets its tokens |
 | `.dc-field` · `.dc-field-<variant>` · `.dc-field-label` | `@field` | What `@field` and a `**Label:**` paragraph in a card write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |

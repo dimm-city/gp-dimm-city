@@ -144,8 +144,8 @@ This is what you type.
 <td><code>@section catalog</code> with <code>@columns 2</code></td>
 </tr>
 <tr data-source-range="99:100">
-<td>An armor section: its rules and armor table</td>
-<td><code>@section armor</code></td>
+<td>Weapons, explosives or armor: a gear section by kind</td>
+<td><code>@section weapons</code>, <code>explosives</code>, <code>armor</code></td>
 </tr>
 <tr data-source-range="100:101">
 <td>A roll-result ladder</td>
@@ -2131,60 +2131,110 @@ A voice that is never quite yours.
 <p>Change your voice at will.</p>
 </div>
 </div></div></div></div>
-<h3 data-name="armor">Armor</h3>
-<p><code>@section armor</code> is the gear section for armor: a catalog cut, rimmed and coloured as a steel plate. Both top corners are cut like a pauldron’s shoulders, a steel rim runs down the left and across the top and foot, and the title takes slate steel with a <em>Protection</em> chip. Each <code>####</code> sub-head is a lame, a steel band across the sheet, and a table heads in steel. It holds an armor section as written: rules, lists and tables. In a paste-up chapter its title is the tag pasted over the sheet’s edge.</p>
-<pre><code class="dg-split language-markdown" data-source-range="1107:1126">@section armor
+<h3 data-name="gear-sections-by-kind">Gear sections by kind</h3>
+<p><code>@section weapons</code>, <code>@section explosives</code> and <code>@section armor</code> are the catalog in one accent and one chip label per kind of gear, so a run of them reads as one system: weapons in blood with a <em>Weapons</em> chip, explosives in deep orange with <em>Explosives</em>, armor in slate steel with <em>Protection</em>. The accent is the rail, the chip, the rule over each entry inside, and the rule over a <code>####</code> sub-head, which is set like an entry’s name. Everything else is the catalog’s own.</p>
+<pre><code class="dg-split language-markdown" data-source-range="1107:1143">@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
+@section armor
 
 ### Armor
 
-Armor protects you by **soaking damage** or **canceling attack rolls**.
-
 #### Damage Soak
 
-- **Standard:** Soaks 1 damage.
-- **Heavy/Advanced:** Soaks 2 damage.
+Armor reduces damage from every hit.
 
 | Armor | Protection | Durability |
 |---|---|---|
 | Street Leathers | Soak 1 | Surreal |
-| Riot Plating | Soak 2 | Lucid |
 
 @end-section
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-catalog dc-section-armor" data-section="armor" data-name="armor" data-source-range="1131:1132"><h3 data-name="armor-2">Armor</h3>
-<p>Armor protects you by <strong>soaking damage</strong> or <strong>canceling attack rolls</strong>.</p>
-<h4 data-name="damage-soak">Damage Soak</h4>
-<ul>
-<li data-source-range="1139:1140"><strong>Standard:</strong> Soaks 1 damage.</li>
-<li data-source-range="1140:1142"><strong>Heavy/Advanced:</strong> Soaks 2 damage.</li>
-</ul>
+<div class="section dc-section-panel dc-catalog dc-section-weapons" data-section="weapons" data-name="firearms" data-source-range="1148:1149"><h3 data-name="firearms">Firearms</h3>
 <table>
-<thead data-source-range="1142:1143">
-<tr data-source-range="1142:1143">
+<thead data-source-range="1152:1153">
+<tr data-source-range="1152:1153">
+<th>Weapon</th>
+<th data-align="right">Success</th>
+<th data-align="right">Triumph</th>
+<th data-align="right">DC</th>
+</tr>
+</thead>
+<tbody data-source-range="1154:1156">
+<tr data-source-range="1154:1155">
+<td>Dentetsu Tanto</td>
+<td data-align="right">2</td>
+<td data-align="right">—</td>
+<td data-align="right">770 DC</td>
+</tr>
+<tr data-source-range="1155:1156">
+<td>Throwaway Blaster</td>
+<td data-align="right">2</td>
+<td data-align="right">4</td>
+<td data-align="right">100-ish DC</td>
+</tr>
+</tbody>
+</table>
+</div><div class="section dc-section-panel dc-catalog dc-section-explosives" data-section="explosives" data-name="grenades" data-source-range="1159:1160"><h3 data-name="grenades">Grenades</h3>
+<table>
+<thead data-source-range="1163:1164">
+<tr data-source-range="1163:1164">
+<th>Grenade</th>
+<th data-align="right">Damage</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody data-source-range="1165:1166">
+<tr data-source-range="1165:1166">
+<td>Gutter Snap</td>
+<td data-align="right">4</td>
+<td>Nearby</td>
+</tr>
+</tbody>
+</table>
+</div><div class="section dc-section-panel dc-catalog dc-section-armor" data-section="armor" data-name="armor" data-source-range="1169:1170"><h3 data-name="armor">Armor</h3>
+<h4 data-name="damage-soak">Damage Soak</h4>
+<p>Armor reduces damage from every hit.</p>
+<table>
+<thead data-source-range="1177:1178">
+<tr data-source-range="1177:1178">
 <th>Armor</th>
 <th>Protection</th>
 <th>Durability</th>
 </tr>
 </thead>
-<tbody data-source-range="1144:1146">
-<tr data-source-range="1144:1145">
+<tbody data-source-range="1179:1180">
+<tr data-source-range="1179:1180">
 <td>Street Leathers</td>
 <td>Soak 1</td>
 <td>Surreal</td>
-</tr>
-<tr data-source-range="1145:1146">
-<td>Riot Plating</td>
-<td>Soak 2</td>
-<td>Lucid</td>
 </tr>
 </tbody>
 </table>
 </div></div>
 <h2 data-name="faction">Faction</h2>
 <p>An organization’s profile: a card with a kind badge. The kind is the bare word: <code>megacorp</code>, <code>cabal</code>, <code>cult</code> or <code>enforcer</code>, and each has its own silhouette, top band, name colour and badge: megacorp a machined rectangle (an L-shaped step out of two corners) with an ink-blue band and a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. <code>label=&quot;...&quot;</code> names a badge of your own; with no word there is no badge. Write the name as a <code>####</code> heading, then the fields and prose as you would anyway.</p>
-<pre><code class="dg-split language-markdown" data-source-range="1155:1174">@faction megacorp
+<pre><code class="dg-split language-markdown" data-source-range="1189:1208">@faction megacorp
 
 #### Halcyon Reach Holdings
 
@@ -2204,24 +2254,24 @@ Sing the signal and the signal sings back.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-name="halcyon-reach-holdings" data-source-range="1179:1180"><span class="dc-faction-kind">Megacorp</span>
+<div class="dc-card dc-faction dc-faction-megacorp" data-faction="megacorp" data-name="halcyon-reach-holdings" data-source-range="1213:1214"><span class="dc-faction-kind">Megacorp</span>
 <h4 data-name="halcyon-reach-holdings">Halcyon Reach Holdings</h4>
 <p><strong>HQ:</strong> Tech District. <strong>Led by:</strong> Orla Vantine.</p>
 <p>They own the lights and the water and would like to own the rest.</p>
-</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-name="the-quiet-table" data-source-range="1189:1190"><span class="dc-faction-kind">Cabal</span>
+</div><div class="dc-card dc-faction dc-faction-cabal" data-faction="cabal" data-name="the-quiet-table" data-source-range="1223:1224"><span class="dc-faction-kind">Cabal</span>
 <h4 data-name="the-quiet-table">The Quiet Table</h4>
 <p>A back booth, a rotating guest list, and a very long memory.</p>
-</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-name="the-church-of-static" data-source-range="1197:1198"><span class="dc-faction-kind">Cult</span>
+</div><div class="dc-card dc-faction dc-faction-cult" data-faction="cult" data-name="the-church-of-static" data-source-range="1231:1232"><span class="dc-faction-kind">Cult</span>
 <h4 data-name="the-church-of-static">The Church of Static</h4>
 <p>Sing the signal and the signal sings back.</p>
-</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-name="blue-line-wardens" data-source-range="1205:1206"><span class="dc-faction-kind">Enforcer</span>
+</div><div class="dc-card dc-faction dc-faction-enforcer" data-faction="enforcer" data-name="blue-line-wardens" data-source-range="1239:1240"><span class="dc-faction-kind">Enforcer</span>
 <h4 data-name="blue-line-wardens">Blue Line Wardens</h4>
 <p>They keep the peace, for a fee.</p>
 </div></div>
 <p>Tokens: <code>--dc-faction-accent</code> (the rail and the badge fill), <code>--dc-faction-badge-fg</code>, <code>--dc-faction-shape</code>, <code>--dc-faction-surface</code>, <code>--dc-faction-band</code> (a box-shadow list: solid inset bands, so it prints as vector ink), <code>--dc-faction-band-height</code>, <code>--dc-faction-pad-bottom</code>, <code>--dc-faction-badge-shape</code>, <code>--dc-faction-title</code> (the name colour) and <code>--dc-faction-title-bg</code> / <code>-title-pad</code> (a label behind the name); a kind class sets them.</p>
 <h2 data-name="tables">Tables</h2>
 <p>Pipe tables carry every lookup: augment slots, weapon lists, roll tables, option tables, NPC statlines. No class, no macro.</p>
-<pre><code data-source-range="1221:1228" class="language-markdown">| Augment | Slot | Cost | Effect |
+<pre><code data-source-range="1255:1262" class="language-markdown">| Augment | Slot | Cost | Effect |
 |---|---|---|---|
 | **Reflex Booster** | Legs | 1,200 | +2 to initiative rolls |
 | **Subdermal Plating** | Torso | 1,800 | Reduce bludgeoning damage by 1 |
@@ -2230,28 +2280,28 @@ Sing the signal and the signal sings back.
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="1233:1234">
-<tr data-source-range="1233:1234">
+<thead data-source-range="1267:1268">
+<tr data-source-range="1267:1268">
 <th>Augment</th>
 <th>Slot</th>
 <th>Cost</th>
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="1235:1238">
-<tr data-source-range="1235:1236">
+<tbody data-source-range="1269:1272">
+<tr data-source-range="1269:1270">
 <td><strong>Reflex Booster</strong></td>
 <td>Legs</td>
 <td>1,200</td>
 <td>+2 to initiative rolls</td>
 </tr>
-<tr data-source-range="1236:1237">
+<tr data-source-range="1270:1271">
 <td><strong>Subdermal Plating</strong></td>
 <td>Torso</td>
 <td>1,800</td>
 <td>Reduce bludgeoning damage by 1</td>
 </tr>
-<tr data-source-range="1237:1238">
+<tr data-source-range="1271:1272">
 <td><strong>Optic Splice</strong></td>
 <td>Head</td>
 <td>900</td>
@@ -2263,26 +2313,26 @@ Sing the signal and the signal sings back.
 <p>A roll table is the same thing with a <code>Roll</code> column:</p>
 <div class="dg-stage">
 <table>
-<thead data-source-range="1245:1246">
-<tr data-source-range="1245:1246">
+<thead data-source-range="1279:1280">
+<tr data-source-range="1279:1280">
 <th>Roll</th>
 <th>Encounter</th>
 </tr>
 </thead>
-<tbody data-source-range="1247:1251">
-<tr data-source-range="1247:1248">
+<tbody data-source-range="1281:1285">
+<tr data-source-range="1281:1282">
 <td>1–4</td>
 <td>A patchhead swarm picks a fight over nothing</td>
 </tr>
-<tr data-source-range="1248:1249">
+<tr data-source-range="1282:1283">
 <td>5–8</td>
 <td>A fixer slides into the booth with a dirty envelope</td>
 </tr>
-<tr data-source-range="1249:1250">
+<tr data-source-range="1283:1284">
 <td>9–12</td>
 <td>A SercDog patrol sweeps the block; lie low or run</td>
 </tr>
-<tr data-source-range="1250:1251">
+<tr data-source-range="1284:1285">
 <td>13–20</td>
 <td>You find a sealed crate the corps forgot to log</td>
 </tr>
@@ -2291,7 +2341,7 @@ Sing the signal and the signal sings back.
 </div>
 <h2 data-name="npc-stat-block">NPC stat block</h2>
 <p>The narrative form a Dream Master reads aloud: <code>@npc-stat</code> with a <code>####</code> name, a <code>&gt;</code> flavor line, the stat lines, and <code>#####</code> sub-headings for traits and equipment. The flavor line is a ruled line (a rail in the block’s rule colour), not a box. The stat lines are picked by position: the first paragraph after the <code>&gt;</code> is the primary line, set as a chip (its first line 12pt bold, cream on the block’s colour), and a second line in it (or the next paragraph) is the secondary, a small-caps tag (10pt); no markup is needed, <code>2 HP --- 1 Damage</code> over <code>Fodder --- Medium</code> is the whole convention. A description belongs inside the quote, not between the quote and the stat lines.</p>
-<pre><code data-source-range="1258:1278" class="language-markdown">@npc-stat
+<pre><code data-source-range="1292:1312" class="language-markdown">@npc-stat
 
 #### Patchhead
 
@@ -2312,9 +2362,9 @@ Weighted chains, shivs, knuckle dusters; junk shields or crash helmets.
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-npc-stat" data-name="patchhead" data-source-range="1283:1284"><h4 data-name="patchhead">Patchhead</h4>
+<div class="section dc-section-panel dc-npc-stat" data-name="patchhead" data-source-range="1317:1318"><h4 data-name="patchhead">Patchhead</h4>
 <blockquote>
-<p data-source-range="1287:1288">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
+<p data-source-range="1321:1322">See a Patchhead comin’ at you, you best move. Ain’t no reasoning with 'em.</p>
 </blockquote>
 <p>2 HP — 1 Damage
 Fodder — Usually Small to Medium</p>
@@ -2325,7 +2375,7 @@ Fodder — Usually Small to Medium</p>
 </div></div>
 <p>A block with several <code>####</code> entries breaks between creatures and never inside one; the title bar stays with the first entry. A block with no <code>####</code>, or one, is one creature, and it stays on one page by itself; <code>--dc-npc-stat-break-inside: auto</code> lets one split.</p>
 <p>To set the entries in columns, put them in <code>@columns 2</code> inside the block: the bar and an optional intro stay above, full width.</p>
-<pre><code data-source-range="1308:1343" class="language-markdown">@npc-stat
+<pre><code data-source-range="1342:1377" class="language-markdown">@npc-stat
 
 ### Street Crews
 
@@ -2361,11 +2411,11 @@ Fodder --- Medium
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-npc-stat" data-name="street-crews" data-source-range="1348:1349"><h3 data-name="street-crews">Street Crews</h3>
+<div class="section dc-section-panel dc-npc-stat" data-name="street-crews" data-source-range="1382:1383"><h3 data-name="street-crews">Street Crews</h3>
 <p>Two crews that work the same block.</p>
-<div class="gp-columns gp-columns-2" data-columns="2" data-name="patchhead-2" data-source-range="1354:1355"><h4 data-name="patchhead-2">Patchhead</h4>
+<div class="gp-columns gp-columns-2" data-columns="2" data-name="patchhead-2" data-source-range="1388:1389"><h4 data-name="patchhead-2">Patchhead</h4>
 <blockquote>
-<p data-source-range="1358:1359">See a Patchhead comin’ at you, you best move.</p>
+<p data-source-range="1392:1393">See a Patchhead comin’ at you, you best move.</p>
 </blockquote>
 <p>2 HP — 1 Damage
 Fodder — Small to Medium</p>
@@ -2373,7 +2423,7 @@ Fodder — Small to Medium</p>
 <p><strong>Bloodlust:</strong> Patchheads add 1 to their Damage whenever they hit a creature that is missing Hit Points.</p>
 <h4 data-name="grease-monkey">Grease Monkey</h4>
 <blockquote>
-<p data-source-range="1369:1370">Hold still, this’ll only sting a lot.</p>
+<p data-source-range="1403:1404">Hold still, this’ll only sting a lot.</p>
 </blockquote>
 <p>3 HP — 1 Damage
 Fodder — Medium</p>
@@ -2383,7 +2433,7 @@ Fodder — Medium</p>
 <p>Tokens: <code>--dc-npc-stat-label-color</code>, <code>--dc-npc-stat-primary</code>, <code>--dc-npc-stat-secondary</code>, <code>--dc-npc-stat-rule</code>, <code>--dc-npc-stat-rule-width</code>.</p>
 <h3 data-name="compact-a-small-creature-a-companion-a-drone">Compact: a small creature, a companion, a drone</h3>
 <p><code>@npc-stat compact</code> is the same entry, packed: no panel, a framed box, a small name, and the two stat lines drawn as chips side by side. Use it for the small ones, in a run or in <code>@columns 2</code>.</p>
-<pre><code data-source-range="1390:1407" class="language-markdown">@npc-stat compact
+<pre><code data-source-range="1424:1441" class="language-markdown">@npc-stat compact
 
 #### Beacon Bug
 
@@ -2401,9 +2451,9 @@ Fodder --- Tiny
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-npc-stat dc-npc-compact" data-npc-stat="compact" data-name="beacon-bug" data-source-range="1412:1413"><h4 data-name="beacon-bug">Beacon Bug</h4>
+<div class="section dc-section-panel dc-npc-stat dc-npc-compact" data-npc-stat="compact" data-name="beacon-bug" data-source-range="1446:1447"><h4 data-name="beacon-bug">Beacon Bug</h4>
 <blockquote>
-<p data-source-range="1416:1417">A thumb-sized surveillance drone made of living glass.</p>
+<p data-source-range="1450:1451">A thumb-sized surveillance drone made of living glass.</p>
 </blockquote>
 <p>1 HP — 1 Damage</p>
 <p>Fodder — Tiny</p>
@@ -2412,23 +2462,23 @@ Fodder --- Tiny
 </div></div>
 <h3 data-name="the-stat-strip">The stat strip</h3>
 <p>A table with an <strong>HP</strong> column and a <strong>Damage</strong> column is a creature’s stat line, and it is set as a strip wherever it sits: no marker, no change to the table. A cell that holds only a number (<code>1</code>, <code>20</code>) is set large and centred. This is what to write for a creature inside a skill’s ability text, where a section marker such as <code>@npc-stat compact</code> would end the skill.</p>
-<pre><code data-source-range="1434:1439" class="language-markdown">| Name | HP | Damage | Traits |
+<pre><code data-source-range="1468:1473" class="language-markdown">| Name | HP | Damage | Traits |
 |------|:--:|:------:|--------|
 | Beacon Bug | 1 | 1 | Climb, Jump, Invisible |
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
 <table class="dc-stat-strip">
-<thead data-source-range="1444:1445">
-<tr data-source-range="1444:1445">
+<thead data-source-range="1478:1479">
+<tr data-source-range="1478:1479">
 <th>Name</th>
 <th data-align="center">HP</th>
 <th data-align="center">Damage</th>
 <th>Traits</th>
 </tr>
 </thead>
-<tbody data-source-range="1446:1447">
-<tr data-source-range="1446:1447">
+<tbody data-source-range="1480:1481">
+<tr data-source-range="1480:1481">
 <td>Beacon Bug</td>
 <td data-align="center" class="dc-stat-num">1</td>
 <td data-align="center" class="dc-stat-num">1</td>
@@ -2437,16 +2487,16 @@ Fodder --- Tiny
 </tbody>
 </table>
 <table class="dc-stat-strip">
-<thead data-source-range="1448:1449">
-<tr data-source-range="1448:1449">
+<thead data-source-range="1482:1483">
+<tr data-source-range="1482:1483">
 <th>Type</th>
 <th>Size</th>
 <th data-align="center">HP</th>
 <th data-align="center">Damage</th>
 </tr>
 </thead>
-<tbody data-source-range="1450:1451">
-<tr data-source-range="1450:1451">
+<tbody data-source-range="1484:1485">
+<tr data-source-range="1484:1485">
 <td>Operator</td>
 <td>Small/Medium</td>
 <td data-align="center" class="dc-stat-num">4</td>
@@ -2458,7 +2508,7 @@ Fodder --- Tiny
 <p>Tokens: <code>--dc-stat-strip-accent</code> (frame and label band), <code>--dc-stat-strip-value</code> (the big numbers).</p>
 <h2 data-name="stat-grid-and-at-a-glance-cards">Stat grid and at-a-glance cards</h2>
 <p>Two raw-HTML forms for numbers at a glance. The four-cell stat grid takes combat stats (HP / DEF / AP / DMG) for a creature or social stats (REP / HEAT / FEE / TURN) for a contact; the at-a-glance row is one reversed label band over one big value per tile, with an ink frame and a hard shadow. Tokens for the tile: <code>--dc-at-a-glance-accent</code> (frame and label band), <code>--dc-at-a-glance-value</code>.</p>
-<pre><code data-source-range="1460:1483" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
+<pre><code data-source-range="1494:1517" class="language-markdown">&lt;div class=&quot;dc-stat dc-flush&quot;&gt;
   &lt;div class=&quot;dc-stat-head&quot;&gt;
     &lt;div class=&quot;dc-stat-name&quot;&gt;Doc Solenn&lt;/div&gt;
     &lt;div class=&quot;dc-stat-class&quot;&gt;&amp;mdash; Contact · Ripperdoc &amp;mdash;&lt;/div&gt;
@@ -2495,13 +2545,13 @@ Fodder --- Tiny
   </div>
   <div class="dc-stat-line"><strong>Patch Job:</strong> treats wounds between scenes for FEE × severity.</div>
 </div>
-<div class="gp-columns gp-columns-3" data-columns="3" data-source-range="1502:1503"><div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
+<div class="gp-columns gp-columns-3" data-columns="3" data-source-range="1536:1537"><div class="dc-at-a-glance-card"><h4>HP</h4><p>14</p></div>
 <div class="dc-at-a-glance-card"><h4>Speed</h4><p>Near</p></div>
 <div class="dc-at-a-glance-card"><h4>Heat</h4><p>3</p></div>
 </div></div>
 <h2 data-name="npc-sidebar">NPC sidebar</h2>
 <p>A contact card floated beside prose: a <code>.dc-human-callout</code> inside a raw <code>.dc-sidebar</code>. It has a blue ID header band reading <em>Contact</em>, an ink border, a hard shadow and a solid ink strip foot.</p>
-<pre><code data-source-range="1516:1522" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
+<pre><code data-source-range="1550:1556" class="language-markdown">&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;
 &lt;p&gt;&lt;strong&gt;Vance &quot;Static&quot; Oyelaran&lt;/strong&gt; &amp;mdash; Fixer&lt;/p&gt;
 &lt;p&gt;Two cybernetic eyes, owes everyone. &lt;strong&gt;Hook:&lt;/strong&gt; the chip is real; the access tunnel on it is bait.&lt;/p&gt;
 &lt;/div&gt;&lt;/div&gt;
@@ -3844,9 +3894,9 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>What <code>@section catalog</code> writes (with <code>.dc-section-panel</code>)</td>
 </tr>
 <tr data-source-range="69:70">
-<td><code>.dc-section-armor</code></td>
+<td><code>.dc-section-weapons</code> <code>.dc-section-explosives</code> <code>.dc-section-armor</code></td>
 <td><code>@section</code></td>
-<td>What <code>@section armor</code> writes (with <code>.dc-section-panel</code> <code>.dc-catalog</code>)</td>
+<td>What <code>@section weapons</code>, <code>explosives</code>, <code>armor</code> write (with <code>.dc-section-panel</code> <code>.dc-catalog</code>)</td>
 </tr>
 <tr data-source-range="70:71">
 <td><code>.dc-entry</code> · <code>.dc-gear</code> <code>.dc-augment</code> <code>.dc-treasure</code> <code>.dc-vehicle</code> <code>.dc-drug</code></td>

@@ -1101,26 +1101,43 @@ A voice that is never quite yours.
 
 </div>
 
-### Armor
+### Gear sections by kind
 
-`@section armor` is the gear section for armor: a catalog cut, rimmed and coloured as a steel plate. Both top corners are cut like a pauldron's shoulders, a steel rim runs down the left and across the top and foot, and the title takes slate steel with a *Protection* chip. Each `####` sub-head is a lame, a steel band across the sheet, and a table heads in steel. It holds an armor section as written: rules, lists and tables. In a paste-up chapter its title is the tag pasted over the sheet's edge.
+`@section weapons`, `@section explosives` and `@section armor` are the catalog in one accent and one chip label per kind of gear, so a run of them reads as one system: weapons in blood with a *Weapons* chip, explosives in deep orange with *Explosives*, armor in slate steel with *Protection*. The accent is the rail, the chip, the rule over each entry inside, and the rule over a `####` sub-head, which is set like an entry's name. Everything else is the catalog's own.
 
 ```markdown {.dg-split}
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
 @section armor
 
 ### Armor
 
-Armor protects you by **soaking damage** or **canceling attack rolls**.
-
 #### Damage Soak
 
-- **Standard:** Soaks 1 damage.
-- **Heavy/Advanced:** Soaks 2 damage.
+Armor reduces damage from every hit.
 
 | Armor | Protection | Durability |
 |---|---|---|
 | Street Leathers | Soak 1 | Surreal |
-| Riot Plating | Soak 2 | Lucid |
 
 @end-section
 ```
@@ -1129,21 +1146,38 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
 @section armor
 
 ### Armor
 
-Armor protects you by **soaking damage** or **canceling attack rolls**.
-
 #### Damage Soak
 
-- **Standard:** Soaks 1 damage.
-- **Heavy/Advanced:** Soaks 2 damage.
+Armor reduces damage from every hit.
 
 | Armor | Protection | Durability |
 |---|---|---|
 | Street Leathers | Soak 1 | Surreal |
-| Riot Plating | Soak 2 | Lucid |
 
 @end-section
 
