@@ -1795,7 +1795,8 @@ p:has(+ .dc-kicker) {
 
 /* Stickers: street lines. A closing one straddles the paper's foot. A fiction
    excerpt's closing line (an opener's "What do you do?") is a sticker too. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
+.section.dc-fiction-excerpt > .dc-kicker {
   width: fit-content; max-width: 86%;
   margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 0 auto;   /* its foot: page-templates.css, FLOW GAP */
   padding: var(--space-xs) var(--space-md);
@@ -1805,16 +1806,10 @@ p:has(+ .dc-kicker) {
   transform: rotate(-2deg);
   position: relative; z-index: 2;
 }
-/* In a fiction excerpt the sticker keeps the excerpt's own spacing and is set upright. */
-.section.dc-fiction-excerpt .dc-kicker {
-  width: fit-content; padding: var(--space-xs) var(--space-md);
-  border: 1.5pt solid var(--ink); background: var(--brand-yellow); color: var(--ink);
-  box-shadow: 2px 2px 0 var(--ink);
-  font-size: var(--dc-pu-sticker-size); font-style: normal;
-  transform: rotate(-2deg);
-}
+/* A fiction excerpt's sticker is set upright, like any sticker. */
+.section.dc-fiction-excerpt > .dc-kicker { font-style: normal; }
 .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker::before,
-.section.dc-fiction-excerpt .dc-kicker::before { content: none; }
+.section.dc-fiction-excerpt > .dc-kicker::before { content: none; }
 
 
 /* Rows (`@row`): two sheets side by side, kept whole, each ending at its last

@@ -756,10 +756,12 @@ p.dc-die-call {
 /* A paste-up sticker seats itself (section.css, PASTE-UP): 10pt under one mid-sheet,
    across the paper's foot when it closes the sheet, and the line above a row's
    closing sticker keeps its air. All three at any paragraph gap. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
+.section.dc-fiction-excerpt > .dc-kicker {
   margin-bottom: 10pt;
 }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child,
+.section.dc-fiction-excerpt > .dc-kicker:last-child {
   margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
 }
 .dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
