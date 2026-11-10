@@ -1183,6 +1183,179 @@ Armor reduces damage from every hit.
 
 </div>
 
+## Paste-up wall
+
+The paste-up register (constitution §IV) sets sections as sheets pasted flat on the wall: a band of wall above and below the paper, the first heading a tag tilted over the paper's top edge, a closing bold line a yellow sticker across its foot, one hard shadow. Write `.dc-paste-up` on a chapter (`@chapter rules .dc-paste-up #chapter-03 ch="3"`) to set every section in it, or on one section. A sheet never splits: a section that must run on is split in markup, the second part `@section … .dc-pu-cont`, a sheet with no tag (the plugin keeps its first `###` a sub-head).
+
+Two sheets side by side are a row: `@row` (half and half), `@row-wide` (62/38) or `@row-narrow` (38/62), closed by `@end-row`, each sheet ending at its own last line. `### Title {.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, `## Title {.dc-pu-bill}` makes a sheet's title a bill, and `![Caption](x.png){.dc-pu-plate}` pastes a framed print on the wall (`.gp-size-30` and the like set its width; `{.dc-pu-cutout}` pins a cut-out instead).
+
+```markdown {.dg-split}
+@row
+
+@section panel .dc-paste-up
+
+### Lucid
+
+You see the Dream as it is. Roll as normal.
+
+**Trust your eyes.**
+
+@end-section
+
+@section panel .dc-paste-up
+
+### Surreal
+
+The Dream bends around you. Roll twice and take the lower.
+
+### Fall Damage {.dc-pu-tag}
+
+Every ten feet you fall is one damage.
+
+@end-section
+
+@end-row
+
+@section panel .dc-paste-up .dc-pu-cont
+
+### Carrying On
+
+A continuation sheet: the second part of a sheet split in markup. No tag, and its first `###` stays a sub-head.
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@row
+
+@section panel .dc-paste-up
+
+### Lucid
+
+You see the Dream as it is. Roll as normal.
+
+**Trust your eyes.**
+
+@end-section
+
+@section panel .dc-paste-up
+
+### Surreal
+
+The Dream bends around you. Roll twice and take the lower.
+
+### Fall Damage {.dc-pu-tag}
+
+Every ten feet you fall is one damage.
+
+@end-section
+
+@end-row
+
+@section panel .dc-paste-up .dc-pu-cont
+
+### Carrying On
+
+A continuation sheet: the second part of a sheet split in markup. No tag, and its first `###` stays a sub-head.
+
+@end-section
+
+</div>
+
+
+The two other widths:
+
+```markdown {.dg-split}
+@row-wide
+
+@section panel .dc-paste-up
+
+### The Long Sheet
+
+Sixty-two parts of the row: the main text of the pair.
+
+@end-section
+
+@section panel .dc-paste-up
+
+### Aside
+
+Thirty-eight.
+
+@end-section
+
+@end-row
+
+@row-narrow
+
+@section panel .dc-paste-up
+
+### Intro
+
+A short lead-in.
+
+@end-section
+
+@section panel .dc-paste-up
+
+### The Long Sheet
+
+The other way round: thirty-eight, then sixty-two.
+
+@end-section
+
+@end-row
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@row-wide
+
+@section panel .dc-paste-up
+
+### The Long Sheet
+
+Sixty-two parts of the row: the main text of the pair.
+
+@end-section
+
+@section panel .dc-paste-up
+
+### Aside
+
+Thirty-eight.
+
+@end-section
+
+@end-row
+
+@row-narrow
+
+@section panel .dc-paste-up
+
+### Intro
+
+A short lead-in.
+
+@end-section
+
+@section panel .dc-paste-up
+
+### The Long Sheet
+
+The other way round: thirty-eight, then sixty-two.
+
+@end-section
+
+@end-row
+
+</div>
+
 ## Faction
 
 An organization's profile: a card with a kind badge. The kind is the bare word: `megacorp`, `cabal`, `cult` or `enforcer`, and each has its own silhouette, top band, name colour and badge: megacorp a machined rectangle (an L-shaped step out of two corners) with an ink-blue band and a cyan edge, cabal violet with long asymmetric slashes, cult blood and torn along the top and foot with a broken rail, enforcer a sign plate (an octagon in a heavy frame) with a hazard-tape band and a yellow name label. `label="..."` names a badge of your own; with no word there is no badge. Write the name as a `####` heading, then the fields and prose as you would anyway.

@@ -25,6 +25,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Options |
 |---|---|---|
 | `@lede` | `@end-lede` | --- |
+| `@row`, `@row-wide`, `@row-narrow` | `@end-row` | two paste-up sheets side by side: half and half, 62/38, 38/62 |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `LOCATION` `VISIT` `FLAVOR` `PULLQUOTE` |
 | `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` (`@callout vibe`); `label="..."`; `.dc-sidebar` floats it |
 | `@dm-note` | `@end-dm-note` | `label="..."` (it is `@callout dm`) |

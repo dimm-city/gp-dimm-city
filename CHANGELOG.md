@@ -7,6 +7,24 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Changed
+
+- **Paste-up works like the rest of the package.** `styles/paste-up.css` is
+  gone: its rules live with the components they style (sheets, tags, bills,
+  stickers and rows in `section.css`, plates and cut-outs in `images.css`), and
+  a paste-up chapter needs no raw HTML.
+  - `@row`, `@row-wide` (62/38) and `@row-narrow` (38/62), closed by
+    `@end-row`, replace `<div class="dc-pu-row">` … `</div>`. They write the
+    same `div.dc-pu-row`; the widths are the token `--dc-pu-row-cols`.
+  - A `.dc-pu-cont` sheet that opens with a `##` or `###` gets its
+    `.dc-pu-spacer` from the plugin; drop `<div class="dc-pu-spacer"></div>`.
+  - `{.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, in the sheet's bar
+    colours.
+  - A plate takes core's `.gp-size-NN` for its width (40% without one).
+  - In a paste-up chapter the opener's `#` title is tilted -2deg and a fiction
+    excerpt's closing line is a sticker (both were the Field Guide's own CSS).
+  - The catalog has one entry per piece, and design guide chapter 6 a specimen.
+
 ### Added
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The

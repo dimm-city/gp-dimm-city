@@ -753,6 +753,18 @@ li > p {
 p.dc-die-call {
   margin-bottom: var(--space-md);
 }
+/* A paste-up sticker seats itself (section.css, PASTE-UP): 10pt under one mid-sheet,
+   across the paper's foot when it closes the sheet, and the line above a row's
+   closing sticker keeps its air. All three at any paragraph gap. */
+.section:is(.dc-paste-up .section, .section.dc-paste-up) > .dc-kicker {
+  margin-bottom: 10pt;
+}
+.section:is(.dc-paste-up .section, .section.dc-paste-up) > .dc-kicker:last-child {
+  margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
+}
+.dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
+  margin-bottom: var(--space-lg);
+}
 .dc-snug {
   --dc-flow-gap: 0.04in;
 }
