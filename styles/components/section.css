@@ -1744,7 +1744,7 @@ p:has(+ .dc-kicker) {
 .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
   --dc-section-edge: 0px;
   --dc-section-pad-bottom: var(--space-xs);
-  margin: 0 0 0 var(--dc-pu-inset);
+  margin: 0 3px 0 var(--dc-pu-inset);   /* 3px: room for the hard shadow, as on every panel (a shadow past the content box shrinks the whole book) */
   padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
   padding-bottom: calc(var(--dc-pu-foot) + var(--dc-section-pad-bottom));
   box-shadow: none;                 /* the soft lift would shade the bands */

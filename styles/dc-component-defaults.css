@@ -16,7 +16,7 @@
   --dc-pu-band:           0.18in;
   --dc-pu-foot:           0.16in;
   --dc-pu-lift:           0.1in;
-  --dc-pu-inset:          0in;
+  --dc-pu-inset:          0.08in;          /* keeps a sheet's tilted tag (it hangs about 0.07in off the sheet's edge) inside the content box; a book whose pages clip sideways may set 0 */
   --dc-pu-pair-gap:       var(--space-xl);
   --dc-pu-row-cols:       1fr 1fr;         /* a `@row`'s two widths; `@row-wide` sets 62fr 38fr, `@row-narrow` 38fr 62fr */
   --dc-pu-sticker-size:   var(--fs-h3);

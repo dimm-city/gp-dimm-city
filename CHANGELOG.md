@@ -23,6 +23,13 @@ Paste-up becomes part of the package proper, and gear sections get a kind each.
   sections and a fiction excerpt's text keep their own looks. A book whose
   long sections now run onto another page splits them in markup, the second
   part `.dc-pu-cont`.
+- **A sheet keeps its shadow inside the page.** A paste-up sheet set its right
+  margin to 0, so its 3px hard shadow reached past the content box and
+  Chromium shrank the whole book to fit (the Field Guide printed at 99.6%). It
+  keeps the 3px every panel keeps. And a sheet sits `--dc-pu-inset` (now
+  0.08in by default, was 0) in from the content edge, so its tilted tag, which
+  hangs about 0.07in off the sheet's left edge, stays inside it; a book whose
+  pages clip the overhang may set 0.
 - **Paste-up works like the rest of the package.** `styles/paste-up.css` is
   gone: its rules live with the components they style (sheets, tags, bills,
   stickers and rows in `section.css`, plates and cut-outs in `images.css`), and
