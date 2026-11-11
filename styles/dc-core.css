@@ -319,8 +319,8 @@ td {
   vertical-align: top;
 }
 
-/* A table's first column that is only a bold name (a row's label) stays on one line. */
-:is(td, th):first-child:has(> strong:only-child) {
+/* A first-column bold name (a row's label) stays on one line; text after it in the same cell wraps. */
+:is(td, th):first-child > strong:first-child {
   white-space: nowrap;
 }
 
