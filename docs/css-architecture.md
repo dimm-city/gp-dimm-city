@@ -212,7 +212,7 @@ belongs in `components/callouts.css` (`@layer dc.components`). If you are writin
 an `@page` rule — including the page background — it belongs in `page-rules.css`
 (`@layer dc.pages`). If you are writing a selector that only exists for a rendered
 design-guide example, it belongs in the design guide's own sheet.
-A `.dc-*` selector in `page-rules.css` is a bug.
+A `.dc-*` component selector in `page-rules.css` is a bug (the generated page-word selectors, `.dc-page-*` and `.dc-chapter-*`, are legitimate there).
 
 **Cascade layers, not just file order (dc#54).** Layer order decides a
 cross-layer tie **regardless of selector specificity** — a one-class rule in
