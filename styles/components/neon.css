@@ -27,7 +27,8 @@
 .dc-specialty.proxy                           { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
 .dc-specialty.gutterdruid                     { --dc-neon: var(--neon-fungi);  --dc-neon-core: var(--neon-fungi-core);  --dc-neon-ring-1: var(--neon-fungi-ring-1);  --dc-neon-ring-2: var(--neon-fungi-ring-2); }
 .dc-specialty.streetwarden                    { --dc-neon: var(--neon-civic);  --dc-neon-core: var(--neon-civic-core);  --dc-neon-ring-1: var(--neon-civic-ring-1);  --dc-neon-ring-2: var(--neon-civic-ring-2); }
-.dc-specialty:is(.cybersurgeon, .wirephreak)  { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
+.dc-specialty.cybersurgeon                    { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
+.dc-specialty.wirephreak                      { --dc-neon: var(--neon-azure);  --dc-neon-core: var(--neon-azure-core);  --dc-neon-ring-1: var(--neon-azure-ring-1);  --dc-neon-ring-2: var(--neon-azure-ring-2); }
 
 /* The plate: ink, stood off the wall (a deeper hard shadow than a sheet's),
    bolted at its two top corners (the bolt is chrome.css's, "Bolt heads"). */

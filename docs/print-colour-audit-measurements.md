@@ -57,6 +57,39 @@ token                    hex      CMYK (build)          TAC printed     dE    ok
 --crystal-amethyst       #905aa5  C45 M80 Y0 K2         127 #945da2    1.3   0.56 0.126  316
 --crystal-aqua           #4a98a8  C62 M13 Y18 K12       105 #4a99a9    0.3   0.64 0.080  213
 --crystal-slate          #52626f  C50 M31 Y22 K42       145 #546370    0.4   0.49 0.029  243
+--neon-orange            #ef713d  C0 M60 Y97 K2         159 #f0743f    0.7   0.69 0.169   42
+--neon-orange-core       #fadac6  C2 M12 Y17 K0          31 #fadac6    0.0   0.91 0.045   54
+--neon-orange-ring-1     #7b371f  C12 M62 Y64 K56       194 #7c3d2b    1.7   0.42 0.102   40
+--neon-orange-ring-2     #4d3122  C28 M42 Y47 K76       193 #4e372c    2.0   0.34 0.048   49
+--neon-cyan              #12bbd4  C67 M1 Y11 K0          79 #15bbd4    0.1   0.73 0.125  212
+--neon-cyan-core         #c5e8f0  C18 M0 Y4 K0           22 #c7e8f1    0.3   0.91 0.038  213
+--neon-cyan-ring-1       #096979  C74 M20 Y19 K38       151 #0d6a7a    0.4   0.48 0.082  213
+--neon-cyan-ring-2       #173e43  C57 M28 Y30 K71       186 #234245    2.0   0.34 0.044  207
+--neon-yellow            #fcdc2a  C0 M4 Y99 K1          104 #fce02b    1.0   0.89 0.177   98
+--neon-yellow-core       #fcf4bd  C2 M0 Y27 K0           29 #faf5bd    0.4   0.96 0.071  101
+--neon-yellow-ring-1     #8c6e1f  C13 M26 Y84 K42       165 #8e722b    1.3   0.55 0.101   87
+--neon-yellow-ring-2     #473a1f  C29 M32 Y51 K78       190 #483d28    1.3   0.36 0.045   84
+--neon-pink              #f14693  C0 M100 Y5 K1         106 #f24794    0.3   0.66 0.216  357
+--neon-pink-core         #f8c8df  C2 M22 Y0 K0           24 #f7c8df    0.1   0.88 0.062  348
+--neon-pink-ring-1       #9e2d65  C14 M96 Y13 K30       153 #9f3365    1.1   0.49 0.157  354
+--neon-pink-ring-2       #6b1345  C24 M89 Y18 K56       187 #6d1d46    1.7   0.36 0.130  351
+--neon-fungi             #ced741  C16 M0 Y93 K0         109 #d3d943    0.9   0.85 0.166  113
+--neon-fungi-core        #f2f3cc  C5 M0 Y20 K0           25 #f3f4cc    0.3   0.95 0.051  109
+--neon-fungi-ring-1      #51632d  C40 M16 Y71 K53       180 #546736    1.5   0.47 0.081  125
+--neon-fungi-ring-2      #35492b  C44 M21 Y54 K70       189 #3a4c34    1.7   0.38 0.055  136
+--neon-civic             #60b54e  C54 M0 Y98 K0         152 #6bb74f    1.3   0.70 0.163  140
+--neon-civic-core        #d4e8cc  C15 M0 Y20 K0          35 #d5e8cc    0.1   0.91 0.043  137
+--neon-civic-ring-1      #3c7c34  C57 M5 Y85 K35        182 #427f3d    1.5   0.53 0.125  142
+--neon-chrome            #a8b4b9  C29 M16 Y16 K6         67 #a8b5ba    0.3   0.76 0.015  225
+--neon-chrome-core       #e9ecee  C8 M4 Y4 K0            16 #e9edef    0.2   0.94 0.004  236
+--neon-chrome-ring-1     #536370  C50 M31 Y22 K42       145 #546471    0.4   0.49 0.029  243
+--neon-chrome-ring-2     #343b40  C45 M33 Y29 K74       181 #373d40    0.9   0.35 0.013  239
+--neon-azure             #288fc9  C76 M26 Y0 K1         103 #2b92ca    0.9   0.62 0.126  239
+--neon-azure-core        #bee3f5  C22 M2 Y0 K0           24 #bde3f6    0.2   0.90 0.046  229
+--neon-azure-ring-1      #0e527a  C81 M40 Y7 K38        166 #17557b    1.1   0.42 0.092  241
+--neon-azure-ring-2      #1b3046  C59 M42 Y22 K71       194 #263648    2.6   0.30 0.048  251
+--neon-dead              #675d51  C31 M31 Y40 K52       154 #685f53    0.6   0.48 0.023   72
+--neon-dead-core         #8a8078  C29 M28 Y32 K29       118 #8a8179    0.3   0.61 0.017   61
 --streetwarden-accent    #4db840  C58 M0 Y100 K0        158 #61b54e    2.5   0.70 0.187  142
 --cybersurgeon-accent    #a8b4b8  C28 M16 Y16 K6         66 #a9b5ba    0.4   0.76 0.015  220
 --augmerc-dark           #003a40  C60 M28 Y30 K73       191 #183f43    2.6   0.32 0.054  206
@@ -73,7 +106,7 @@ token                    hex      CMYK (build)          TAC printed     dE    ok
 --technosorcerer-mid     #7a3008  C10 M66 Y71 K59       206 #7b371f    2.0   0.41 0.114   44
 --etherlock-mid          #8a6a00  C11 M25 Y91 K45       172 #8c6e1f    1.6   0.54 0.111   88
 --generalist-mid         #3a4854  C51 M34 Y24 K61       170 #3d4a55    0.8   0.39 0.027  244
-aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --dualist-dark -> --augmerc-dark, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
+aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper-light -> --paper-cream, --paper-aged -> --concrete-pale, --hud-blue-bright -> --brand-cyan, --hud-magenta -> --brand-magenta, --hud-panel -> --concrete-pale, --border-hairline -> --ink, --tint-magenta-rose -> --brand-magenta, --tint-hud-teal -> --hud-blue, --neon-civic-ring-2 -> --neon-fungi-ring-2, --augmerc-accent -> --brand-cyan, --proxy-accent -> --brand-magenta, --gutterdruid-accent -> --fungi-glow, --wirephreak-accent -> --signal-indigo, --technosorcerer-accent -> --orange, --etherlock-accent -> --brand-yellow, --dualist-accent -> --crystal-aqua, --generalist-accent -> --crystal-slate, --proxy-dark -> --brand-magenta-deep, --streetwarden-dark -> --fungi-rot, --gutterdruid-dark -> --fungi-rot, --dualist-dark -> --augmerc-dark, --cybersurgeon-mid -> --crystal-slate, --dualist-mid -> --augmerc-mid
 ```
 
 ## mixes
@@ -93,7 +126,7 @@ components/specialty-identity.css:336  srgb --gutterdruid-mid 38% --gutterdruid-
 components/specialty-identity.css:367  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
 components/specialty-identity.css:397  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
 components/specialty-identity.css:423  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
-dc-component-defaults.css:487          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
+dc-component-defaults.css:494          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast
@@ -204,32 +237,101 @@ dc-component-defaults.css:487          srgb --brand-yellow 30% --paper-aged     
 ## dupes
 
 ```
+dE  0.1  --neon-chrome            #a8b4b9  ~  --cybersurgeon-accent    #a8b4b8
+dE  0.3  --brand-cyan             #00bcd4  ~  --neon-cyan              #12bbd4
+dE  0.4  --crystal-slate          #52626f  ~  --neon-chrome-ring-1     #536370
+dE  0.4  --neon-cyan-ring-1       #096979  ~  --augmerc-mid            #006878
+dE  0.7  --ink-dust               #665b4e  ~  --neon-dead              #675d51
+dE  1.3  --neon-chrome-ring-2     #343b40  ~  --cybersurgeon-dark      #303840
+dE  1.3  --brand-yellow           #ffd700  ~  --neon-yellow            #fcdc2a
+dE  1.6  --neon-yellow-ring-1     #8c6e1f  ~  --etherlock-mid          #8a6a00
+dE  1.7  --neon-fungi-ring-1      #51632d  ~  --gutterdruid-mid        #4d6020
+dE  1.7  --surface-tint-3         #f2f0ec  ~  --neon-chrome-core       #e9ecee
+dE  1.8  --neon-civic-ring-1      #3c7c34  ~  --streetwarden-mid       #347828
+dE  1.9  --neon-cyan-core         #c5e8f0  ~  --neon-azure-core        #bee3f5
+dE  2.0  --hud-blue-dark          #14516e  ~  --neon-azure-ring-1      #0e527a
+dE  2.0  --fungi-rot              #30461e  ~  --neon-fungi-ring-2      #35492b
+dE  2.0  --neon-orange-ring-1     #7b371f  ~  --technosorcerer-mid     #7a3008
+dE  2.1  --neon-yellow-ring-2     #473a1f  ~  --etherlock-dark         #46360c
+dE  2.2  --brand-magenta-deep     #690045  ~  --neon-pink-ring-2       #6b1345
+dE  2.2  --neon-cyan-ring-2       #173e43  ~  --augmerc-dark           #003a40
+dE  2.3  --neon-yellow-core       #fcf4bd  ~  --neon-fungi-core        #f2f3cc
+dE  2.4  --fungi-glow             #c8e040  ~  --neon-fungi             #ced741
+dE  2.4  --neon-civic             #60b54e  ~  --streetwarden-accent    #4db840
+dE  2.8  --neon-orange-ring-2     #4d3122  ~  --technosorcerer-dark    #4c290f
+dE  3.1  --neon-orange-ring-2     #4d3122  ~  --neon-yellow-ring-2     #473a1f
+dE  3.3  --neon-cyan-ring-2       #173e43  ~  --cybersurgeon-dark      #303840
 dE  3.4  --ink-dark               #2f2622  ~  --generalist-dark        #212a32
+dE  3.5  --neon-cyan-ring-2       #173e43  ~  --neon-chrome-ring-2     #343b40
+dE  3.7  --neon-pink-ring-1       #9e2d65  ~  --proxy-mid              #9c0f63
+dE  3.7  --neon-azure-ring-2      #1b3046  ~  --generalist-dark        #212a32
+dE  3.8  --neon-orange-ring-2     #4d3122  ~  --etherlock-dark         #46360c
 dE  3.8  --orange-deep            #a03808  ~  --rust                   #b23a12
 dE  4.1  --technosorcerer-dark    #4c290f  ~  --etherlock-dark         #46360c
 dE  4.2  --paper-stain            #b0a89c  ~  --cybersurgeon-accent    #a8b4b8
 dE  4.2  --bg                     #c8c5bf  ~  --surface-orange-tint    #d8cfb4
+dE  4.2  --neon-azure-ring-2      #1b3046  ~  --augmerc-dark           #003a40
+dE  4.3  --amber-dark             #5c3c10  ~  --neon-yellow-ring-2     #473a1f
+dE  4.3  --paper-stain            #b0a89c  ~  --neon-chrome            #a8b4b9
+dE  4.3  --ink-smoke              #4d4339  ~  --neon-yellow-ring-2     #473a1f
+dE  4.4  --concrete-pale          #dcdad5  ~  --neon-civic-core        #d4e8cc
 dE  4.4  --ink-smoke              #4d4339  ~  --ink-mid                #594f43
 dE  4.4  --ink-mid                #594f43  ~  --ink-dust               #665b4e
 dE  4.4  --deep-rust              #70200e  ~  --technosorcerer-mid     #7a3008
+dE  4.4  --concrete-pale          #dcdad5  ~  --neon-orange-core       #fadac6
 dE  4.5  --paper-cream            #ffffff  ~  --surface-tint-3         #f2f0ec
+dE  4.6  --neon-azure-ring-2      #1b3046  ~  --cybersurgeon-dark      #303840
 dE  4.6  --concrete-pale          #dcdad5  ~  --surface-orange-tint    #d8cfb4
+dE  4.6  --surface-tint-3         #f2f0ec  ~  --neon-fungi-core        #f2f3cc
+dE  4.7  --hud-blue               #1f6f94  ~  --neon-cyan-ring-1       #096979
 dE  4.7  --augmerc-dark           #003a40  ~  --cybersurgeon-dark      #303840
+dE  4.7  --concrete-pale          #dcdad5  ~  --neon-cyan-core         #c5e8f0
+dE  4.8  --neon-cyan-core         #c5e8f0  ~  --neon-chrome-core       #e9ecee
 dE  4.8  --ink                    #1e1d1c  ~  --ink-dark               #2f2622
+dE  4.8  --neon-yellow-ring-2     #473a1f  ~  --technosorcerer-dark    #4c290f
 dE  4.9  --amber-dark             #5c3c10  ~  --etherlock-dark         #46360c
+dE  4.9  --neon-chrome-ring-2     #343b40  ~  --generalist-mid         #3a4854
 dE  4.9  --ink-smoke              #4d4339  ~  --generalist-mid         #3a4854
 dE  5.0  --hud-blue               #1f6f94  ~  --augmerc-mid            #006878
+dE  5.0  --neon-cyan-ring-2       #173e43  ~  --neon-azure-ring-2      #1b3046
+dE  5.0  --neon-cyan-core         #c5e8f0  ~  --neon-civic-core        #d4e8cc
+dE  5.0  --ink-mid                #594f43  ~  --neon-dead              #675d51
+dE  5.1  --neon-yellow-ring-2     #473a1f  ~  --neon-fungi-ring-2      #35492b
+dE  5.1  --neon-fungi-core        #f2f3cc  ~  --neon-civic-core        #d4e8cc
+dE  5.1  --crystal-slate          #52626f  ~  --neon-dead              #675d51
+dE  5.2  --neon-chrome-ring-1     #536370  ~  --neon-dead              #675d51
 dE  5.2  --ink-smoke              #4d4339  ~  --amber-dark             #5c3c10
+dE  5.2  --concrete-pale          #dcdad5  ~  --neon-azure-core        #bee3f5
+dE  5.2  --ink-smoke              #4d4339  ~  --neon-fungi-ring-2      #35492b
+dE  5.2  --fungi-rot              #30461e  ~  --neon-yellow-ring-2     #473a1f
 dE  5.3  --hud-blue-dark          #14516e  ~  --generalist-mid         #3a4854
+dE  5.3  --neon-chrome-ring-2     #343b40  ~  --augmerc-dark           #003a40
 dE  5.3  --ink                    #1e1d1c  ~  --generalist-dark        #212a32
+dE  5.4  --amber-dark             #5c3c10  ~  --neon-orange-ring-2     #4d3122
+dE  5.4  --concrete-pale          #dcdad5  ~  --neon-chrome-core       #e9ecee
 dE  5.4  --ink-dust               #665b4e  ~  --crystal-slate          #52626f
+dE  5.4  --ink-smoke              #4d4339  ~  --neon-chrome-ring-2     #343b40
 dE  5.5  --blood                  #901a12  ~  --technosorcerer-mid     #7a3008
+dE  5.5  --ink-dust               #665b4e  ~  --neon-chrome-ring-1     #536370
+dE  5.5  --neon-civic-core        #d4e8cc  ~  --neon-chrome-core       #e9ecee
+dE  5.5  --neon-fungi-core        #f2f3cc  ~  --neon-chrome-core       #e9ecee
+dE  5.5  --ink-smoke              #4d4339  ~  --neon-orange-ring-2     #4d3122
 dE  5.6  --fungi-rot              #30461e  ~  --etherlock-dark         #46360c
 dE  5.6  --augmerc-dark           #003a40  ~  --generalist-dark        #212a32
 dE  5.7  --cybersurgeon-dark      #303840  ~  --generalist-dark        #212a32
+dE  5.7  --blood                  #901a12  ~  --neon-orange-ring-1     #7b371f
+dE  5.7  --deep-rust              #70200e  ~  --neon-orange-ring-1     #7b371f
+dE  5.8  --neon-chrome-ring-2     #343b40  ~  --neon-azure-ring-2      #1b3046
+dE  5.8  --neon-yellow-ring-2     #473a1f  ~  --neon-chrome-ring-2     #343b40
+dE  5.8  --neon-orange-core       #fadac6  ~  --neon-civic-core        #d4e8cc
+dE  5.8  --neon-orange-core       #fadac6  ~  --neon-chrome-core       #e9ecee
+dE  5.9  --hud-blue-dim           #7ab8d0  ~  --neon-chrome            #a8b4b9
 dE  5.9  --cybersurgeon-dark      #303840  ~  --generalist-mid         #3a4854
+dE  5.9  --paper-cream            #ffffff  ~  --neon-chrome-core       #e9ecee
+dE  5.9  --crystal-slate          #52626f  ~  --neon-cyan-ring-1       #096979
 dE  5.9  --hud-blue-dim           #7ab8d0  ~  --cybersurgeon-accent    #a8b4b8
 dE  5.9  --amber                  #7a5a20  ~  --etherlock-mid          #8a6a00
+dE  6.0  --neon-cyan-ring-1       #096979  ~  --neon-chrome-ring-1     #536370
 ```
 
 ## converge

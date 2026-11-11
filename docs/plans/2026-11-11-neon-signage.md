@@ -95,9 +95,8 @@ press makes; dE76 is how far that is from the screen; contrast is on the printed
 | Azure | `#0090d8` | `#288fc9` | 8 | 4.7:1 | best blue the press makes; near cyan |
 
 No blue on this press gets past about 41 chroma, so there is no bright indigo
-tube. Wirephreak takes azure (close to Augmerc's cyan: the two never share a
-spread's sign, and the plate's bolts and hardware tell them apart) or chrome;
-the owner picks.
+tube. Wirephreak takes azure (the owner's choice, 2026-11-11; close to
+Augmerc's cyan, but the two never share a spread).
 
 Under ink spread and misregistration a 1pt core goes muddy and a 1.5pt core
 stays clean; ring steps of 1.5pt stay apart. Hence the 1.5pt minimums above.
@@ -110,9 +109,11 @@ press.
 - A hot pink tube, `#f14693` (from `#f0288c`): `--brand-magenta` prints at only
   3.9:1 on ink, because its K12 dims it.
 - A brighter Rules orange tube, `#ef713d` (from `#f06a1e`).
-- Wirephreak's tube: azure `#288fc9` or chrome, the owner's choice.
-- The neon tokens (`--dc-neon`, `-core`, `-ring-1`, `-ring-2`, `-plate`), set
-  per chapter word next to `--dc-section-accent`.
+- Wirephreak's tube: azure, `#288fc9` (from `#0090d8`).
+- The ladders are `--neon-<hue>`, `-core`, `-ring-1`, `-ring-2` in
+  dc-palette.css; a sign reads `--dc-neon`, `-core`, `-ring-1`, `-ring-2`, set
+  per chapter word next to `--dc-section-accent` and per specialty in
+  components/neon.css. The plate is `--ink`.
 
 Each new hex goes through `scripts/measure-palette-crpc1.py` on Ghostscript
 10.03 or newer before it is committed.
@@ -122,10 +123,14 @@ Each new hex goes through `scripts/measure-palette-crpc1.py` on Ghostscript
 1. **Soft proof** (`proofs/neon/`): done, results above. Re-run
    `softproof.py` on every sign before it ships.
 2. **Amend the constitution** with the text above, once the owner approves it.
-3. **Prototype the opener sign on the Rules chapter**, automatic from the
-   chapter word (no new markup), with a page-count diff of the Field Guide.
-4. **Roll out** to every chapter and specialty opener, and the Dream Master's
-   dark sign.
+3. **Prototype** (done, before the amendment, at the owner's request): signs
+   on the Rules, Dream Master and Gear openers and on every specialty's art
+   page, automatic from the chapter word or specialty (no new markup). An
+   opener's sign takes no flow height: every other pixel of those chapters is
+   unchanged. An opener that starts with a sheet (the Citizen File's fiction
+   excerpt) has no headroom and gets none.
+4. **Roll out** further (the specialty gateway, lore) once the prototype is
+   approved.
 5. **Later:** location blade signs and lightboxes.
 6. **Whenever a physical proof is ordered:** include `proofs/neon/` and check it
    against the soft proof; adjust the tokens if the press disagrees.
