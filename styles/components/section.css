@@ -264,6 +264,15 @@ div[class="section"] {
   box-shadow: inset 4px 0 0 var(--dc-section-accent), var(--dc-section-drop); /* rail: see .dc-intro */
 }
 
+/* Prose held to a readable measure when a book sets `--dc-section-measure`
+   (tables stay full width); the sheets of a `@row` take the full width. */
+.dc-section-panel > :is(p, ul, ol, blockquote) {
+  max-width: var(--dc-section-measure);
+}
+.dc-pu-row > .dc-section-panel {
+  --dc-section-measure: none;
+}
+
 /* ── First-child heading inside a panel becomes a filled top bar ────────── */
 .dc-section-panel > h2:first-child,
 .dc-section-panel > h3:first-child {
@@ -1089,6 +1098,17 @@ h3 + .dc-section-panel {
   padding-top: 14pt;
   padding-bottom: 14pt;
 }
+/* A flaw table is taller than a page: it splits between rows, with its header
+   once at the top (print repeats a thead; the preview inserts a shim row). */
+.dc-flaws > table {
+  break-inside: auto;
+}
+.dc-flaws > table > thead {
+  display: table-row-group;
+}
+.dc-flaws > table tr.gp-thead-shim {
+  display: none;
+}
 
 /* Ideals: HUD blue. A steady ticket stub: symmetric V notches (14px deep) in the
    middle of both sides, nothing uneven, a rule under the name. */
@@ -1686,8 +1706,11 @@ p:has(+ .dc-kicker) {
   padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
   padding-right: var(--dc-section-pad-right);
 }
-/* Across a rung's plate, inside its hairline ring. */
+/* Across a rung's plate, inside its hairline ring, with room inside the rule and frame. */
 .dc-rung-body > .dc-kicker {
+  margin-top: var(--space-lg);
+  padding-top: 10pt;
+  padding-bottom: 5pt;
   margin-left: -8px;
   margin-right: -8px;
   padding-left: 8px;

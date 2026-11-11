@@ -246,7 +246,7 @@
   --dc-entry-shape: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 7px), 157px calc(100% - 7px), 157px 100%, 148px 100%, 148px calc(100% - 7px), 143px calc(100% - 7px), 143px 100%, 134px 100%, 134px calc(100% - 7px), 129px calc(100% - 7px), 129px 100%, 120px 100%, 120px calc(100% - 7px), 115px calc(100% - 7px), 115px 100%, 106px 100%, 106px calc(100% - 7px), 101px calc(100% - 7px), 101px 100%, 92px 100%, 92px calc(100% - 7px), 87px calc(100% - 7px), 87px 100%, 78px 100%, 78px calc(100% - 7px), 73px calc(100% - 7px), 73px 100%, 64px 100%, 64px calc(100% - 7px), 59px calc(100% - 7px), 59px 100%, 50px 100%, 50px calc(100% - 7px), 45px calc(100% - 7px), 45px 100%, 36px 100%, 36px calc(100% - 7px), 31px calc(100% - 7px), 31px 100%, 22px 100%, 22px calc(100% - 7px), 0 calc(100% - 7px));
   --dc-entry-frame: inset 0 0 0 2px var(--ink);
   --dc-entry-ornament: "";
-  --dc-entry-orn-inset: calc(100% - 9px) 0 0 0;
+  --dc-entry-orn-inset: calc(100% - 12px) 0 0 0;
   --dc-entry-orn-bg: var(--ink);
   --dc-entry-badge-bg: var(--ink);
   --dc-entry-badge-fg: var(--paper-cream);

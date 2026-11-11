@@ -297,7 +297,7 @@ th {
   font-size: var(--fs-floor);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 6px 8px;
+  padding: var(--dc-th-pad-y) 8px;
   text-align: left;
 }
 
@@ -315,7 +315,7 @@ th:empty {
 
 td {
   border-bottom: 1pt solid var(--border-hairline);
-  padding: 5px 8px;
+  padding: var(--dc-td-pad-y) 8px;
   vertical-align: top;
 }
 
