@@ -437,7 +437,10 @@ components:
     markers: ["@specialty"]
     snippet: specialty
     recipe: "@specialty augmerc|proxy|streetwarden|gutterdruid|cybersurgeon|wirephreak|technosorcerer|etherlock|dualist|generalist (or .augmerc, {.augmerc}) … @end-specialty"
-    emits: div.dc-specialty.<name>
+    emits:
+      - div.dc-specialty.<name>
+      - div.dc-specialty.<name>.dc-specialty-cont (re-opened after an @page)
+    unstyled: [dc-specialty-cont]
     css:
       - styles/components/specialty-identity.css
       - styles/components/specialty.css
@@ -461,7 +464,7 @@ components:
       - --dc-specialty-intro-title-shape
       - --dc-specialty-intro-clip
     breaks: "none on the wrapper; children carry their own"
-    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Declared marker: the word and the .class spelling give the same wrapper. A new @specialty, @end-specialty, @page, @section or @chapter closes it with every path and skill inside; a skill sitting directly in it (outside a learning path) is reported."
+    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Declared marker: the word and the .class spelling give the same wrapper. A new @specialty, @end-specialty, @section or @chapter closes it with every path and skill inside; a skill sitting directly in it (outside a learning path) is reported. An @page inside it starts a page and the specialty runs on: the plugin closes the specialty, its path and skill before the page and re-opens them after it (`-cont`), so the identity, the path's number and the skills' tiers carry on, and a card the page cuts continues like @continue. The wall is the page's: a plain @page takes the specialty's, `@page wall-N` its own. A pinned image (`{.gp-pin}`) in a skill is moved out of the cards, so the page frames it."
 
   - name: specialty-intro
     status: live
@@ -529,6 +532,7 @@ components:
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
       - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker + span.dc-path-sep
+      - div.dc-learning-path.dc-path-block.dc-path-cont (re-opened after an @page: same data-path-ref, no shell)
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)

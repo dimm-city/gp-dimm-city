@@ -3,7 +3,6 @@
 /* ── Learning path structural + path shell + title overrides ──────────── */
 .dc-learning-path.dc-path-block {
   --dc-path-accent: var(--crimson);
-  position: relative;
   /* margin-bottom here is a no-op: .dc-path-block has no padding/border, so
      this margin collapses with .dc-path-shell's own (larger) margin-bottom
      below and never renders. The shell is the value that actually controls

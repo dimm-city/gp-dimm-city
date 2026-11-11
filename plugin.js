@@ -1342,9 +1342,76 @@ function dcContinueClassifier(state) {
   }
 }
 
+// A specialty, its learning paths and their skills are logical scopes that
+// run across many sheets, but core closes every declared component at an
+// `@page` (a page root holds components, never the other way round). So that
+// an author can start a page (a new wall, a frame for pinned art) anywhere in a
+// specialty, an `@page` inside open scopes is rewritten, before core reads the
+// markers, as: close them, the page, re-open them. A re-opened scope carries its
+// original classes plus a `-cont` class, so it keeps its identity and its
+// numbering (dcScopeOrigins), opens no new path header, and a card the page cut
+// continues on the new page. The wall is the page's (see below).
+const PAGE_SCOPES = ['specialty', 'learning-path', 'skill'];
+const SCOPE_CONT = { specialty: 'dc-specialty-cont', 'learning-path': 'dc-path-cont', skill: 'dc-skill-cont' };
+
+function layoutMarker(kind, attrs = {}, line = 0) {
+  const tok = new Token('layout_marker', '', 0);
+  tok.meta = { kind, name: null, attrs, __line: line };
+  return tok;
+}
+
+function dcPageScopes(state) {
+  const open = []; // [{ kind, attrs }] innermost last
+  const out = [];
+  for (const tok of state.tokens) {
+    const kind = tok.type === 'layout_marker' ? tok.meta.kind : null;
+    if (PAGE_SCOPES.includes(kind)) {
+      if (kind !== 'skill') while (open.length && open.at(-1).kind === 'skill') open.pop();
+      open.push({ kind, attrs: tok.meta.attrs || {} });
+    } else if (kind?.startsWith('end-') && PAGE_SCOPES.includes(kind.slice(4))) {
+      const at = open.findLastIndex((s) => s.kind === kind.slice(4));
+      if (at >= 0) open.length = at;
+    } else if (kind === 'chapter' || kind === 'spread') {
+      open.length = 0;
+    } else if (kind === 'page' && open.length) {
+      const line = tok.meta.__line;
+      for (const s of [...open].reverse()) out.push(layoutMarker('end-' + s.kind, {}, line));
+      // The wall is the page's: a page that names none takes the specialty's,
+      // and the re-opened specialty carries none (a box whose children print on
+      // another named page than itself costs a blank sheet).
+      const namesWall = /^wall-\d$/.test(tok.meta.name || '') || /\bdc-page-wall-\d\b/.test(tok.meta.attrs?.class || '');
+      const specialtyWall = (open.find((s) => s.kind === 'specialty')?.attrs.class || '').match(/\bdc-page-wall-\d\b/)?.[0];
+      if (!namesWall && specialtyWall) tok.meta.attrs = { ...tok.meta.attrs, class: ((tok.meta.attrs?.class || '') + ' ' + specialtyWall).trim() };
+      out.push(tok);
+      for (const s of open) {
+        let cls = (s.attrs.class || '').split(/\s+/).filter(Boolean);
+        if (s.kind === 'specialty') cls = cls.filter((c) => !/^dc-page-wall-\d$/.test(c));
+        if (!cls.includes(SCOPE_CONT[s.kind])) cls.push(SCOPE_CONT[s.kind]);
+        out.push(layoutMarker(s.kind, { ...s.attrs, class: cls.join(' ') }, line));
+      }
+      continue;
+    }
+    out.push(tok);
+  }
+  state.tokens = out;
+}
+
+// A re-opened scope (dcPageScopes) points at the scope it continues, so the
+// numbering of paths and skills runs on across the page.
+function dcScopeOrigins(state) {
+  const last = {};
+  for (const tok of state.tokens) {
+    if (tok.type !== 'layout_component_open' || !PAGE_SCOPES.includes(tok.meta.kind)) continue;
+    if (hasClass(tok, SCOPE_CONT[tok.meta.kind])) tok.dcOrigin = last[tok.meta.kind]?.dcOrigin || last[tok.meta.kind];
+    last[tok.meta.kind] = tok;
+  }
+}
+const scopeOrigin = (tok) => tok?.dcOrigin || tok;
+
 function registerSkillContinueBridge(md) {
   // Without Gutterpress's layout_transform (bare markdown-it) there is no section @continue to share the marker with.
   if (!md.core.ruler.__rules__.some((rule) => rule.name === 'layout_transform')) return;
+  md.core.ruler.before('layout_transform', 'dc_page_scopes', dcPageScopes);
   md.core.ruler.before('layout_transform', 'dc_continue_classifier', dcContinueClassifier);
   md.block.ruler.before('layout_marker', 'dc_continue_candidate', dcContinueCandidateBlock, {
     alt: ['paragraph', 'reference', 'blockquote', 'list'],
@@ -1402,7 +1469,12 @@ function dcLearningPaths(state) {
   const numbered = new Map(); // enclosing @specialty (or null) → paths numbered so far
   forEachComponent(state.tokens, 'learning-path', (run, enclosing) => {
     const [open, close] = [run[0], run[run.length - 1]];
-    const specialty = enclosing.findLast((c) => c.meta.kind === 'specialty') || null;
+    if (open.dcOrigin) {
+      // A path re-opened after an @page: same ref, no second header.
+      open.attrSet('data-path-ref', open.dcOrigin.attrGet('data-path-ref'));
+      return run;
+    }
+    const specialty = scopeOrigin(enclosing.findLast((c) => c.meta.kind === 'specialty') || null);
     const n = (numbered.get(specialty) || 0) + 1;
     numbered.set(specialty, n);
     const ref = (specialty ? specialtyCodeFromClass(specialty) : '') + n;
@@ -1447,22 +1519,49 @@ const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-t
  */
 function dcSkillCards(state) {
   const numbered = new Map(); // learning-path open token → cards numbered so far
+  let last = null; // the previous skill's last card: a skill re-opened after an @page continues it
   forEachComponent(state.tokens, 'skill', (run, enclosing) => {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
-    const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
+    const path = scopeOrigin(enclosing.findLast((c) => c.meta.kind === 'learning-path'));
     const nextTier = () => {
       if (!path) return '';
       const n = (numbered.get(path) || 0) + 1;
       numbered.set(path, n);
       return path.attrGet('data-path-ref') + '.' + n;
     };
-    return [open, ...skillCardsHtml(run.slice(1, -1), open, state, nextTier), close];
+    const resume = open.dcOrigin ? last : null;
+    const out = skillCardsHtml(run.slice(1, -1), open, state, nextTier, resume);
+    last = out.last;
+    return [open, ...out, close];
   });
 }
 
-/** One skill's content, rewritten into its cards (the token list between its open and close). */
-function skillCardsHtml(content, open, state, nextTier) {
+// A paragraph that is only a pinned image (`{.gp-pin}`) is page furniture, not
+// card content: a card is a positioned box, so a pin inside one would be framed
+// by the card. It is moved out of the cards, to the start of the skill.
+function isPinParagraph(tokens, i) {
+  if (tokens[i].type !== 'paragraph_open' || !hasClass(tokens[i], 'dc-img-wrapper')) return false;
+  return (tokens[i + 1].children || []).some((c) => c.type === 'image' && hasClass(c, 'gp-pin'));
+}
+
+/**
+ * One skill's content, rewritten into its cards (the token list between its
+ * open and close). `resume` is the previous skill's last card when this skill
+ * was re-opened after an @page (dcPageScopes).
+ */
+function skillCardsHtml(content, open, state, nextTier, resume = null) {
+  const pins = [];
+  const rest = [];
+  for (let i = 0; i < content.length; i++) {
+    if (isPinParagraph(content, i)) {
+      pins.push(content[i], content[i + 1], content[i + 2]); // paragraph_open, inline, paragraph_close
+      i += 2;
+    } else {
+      rest.push(content[i]);
+    }
+  }
+  content = rest;
   const card = {
     content,
     open,
@@ -1481,6 +1580,16 @@ function skillCardsHtml(content, open, state, nextTier) {
     columnsDepth: 0, // how many `@columns` runs sit open inside the current card
     columnsCloses: new Set(), // their close tokens
   };
+
+  // A skill re-opened after an @page whose first block is not a new `####`:
+  // the card the page cut goes on, as after @continue.
+  const firstBlock = content.find((t) => t.type !== 'html_block' || t.content.trim());
+  if (resume?.cardTok && firstBlock && !(firstBlock.type === 'heading_open' && firstBlock.tag === 'h4')) {
+    card.title = resume.title;
+    card.cardTok = resume.cardTok;
+    card.cont = resume.cont;
+    continueCard(card, false);
+  }
 
   for (let i = 0; i < content.length; i++) {
     const tok = content[i];
@@ -1519,7 +1628,9 @@ function skillCardsHtml(content, open, state, nextTier) {
     card.out.push(tok);
   }
   endCard(card);
-  return card.out;
+  const out = [...pins, ...card.out];
+  out.last = { cardTok: card.cardTok, title: card.title, cont: card.cont };
+  return out;
 }
 
 // Push rendered card markup; any block ends the paragraph run a sign-off is read from.
@@ -1534,6 +1645,7 @@ function emitCard(card, html) {
 function cardOpenHtml(card, cont, cut = false) {
   const tok = makeToken('html_block');
   tok.attrs = card.open.attrs.map(([k, v]) => [k, v]);
+  if (hasClass(tok, SCOPE_CONT.skill)) tok.attrSet('class', classesOf(tok).filter((c) => c !== SCOPE_CONT.skill).join(' '));
   if (cont) addTokenClassAfter(tok, 'dc-skill-card', 'dc-skill-card-cont');
   if (cut) addTokenClassAfter(tok, 'dc-skill-card', 'dc-skill-card-cut');
   tok.attrs.push(['name', slugify(card.title.name)]);
@@ -1553,9 +1665,10 @@ function startCard(card, title) {
 
 // `@continue`: the part before closes straight (a foot, a bolt, a flag; the
 // specialty's cut stays the mark of a card's real end) and a continuation card
-// opens under the same title, a span rather than a new heading.
-function continueCard(card) {
-  endCard(card, true);
+// opens under the same title, a span rather than a new heading. After an
+// @page the card before is already closed (`closeOpen` false).
+function continueCard(card, closeOpen = true) {
+  if (closeOpen) endCard(card, true);
   if (card.cardTok) card.cardTok.content = cardOpenHtml(card, card.cont, true);
   card.cont = true;
   emitCard(card, cardOpenHtml(card, true));
@@ -1643,7 +1756,7 @@ function markCardParagraph(card, tok, i) {
     const inline = card.content[i + 1];
     if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
     if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
-    card.tail = { tok, len: inlineTextLength(inline), first: !card.seenBlock };
+    card.tail = hasClass(tok, 'dc-img-wrapper') ? null : { tok, len: inlineTextLength(inline), first: !card.seenBlock };
   } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
     card.tail = null;
   }
@@ -2214,6 +2327,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_outcomes', dcOutcomes);
   md.core.ruler.push('dc_roll_tables', dcRollTables);
   md.core.ruler.push('dc_procedures', dcProcedures);
+  md.core.ruler.push('dc_scope_origins', dcScopeOrigins);
   md.core.ruler.push('dc_learning_paths', dcLearningPaths);
   md.core.ruler.push('dc_skill_cards', dcSkillCards);
   md.core.ruler.push('dc_ladders', dcLadders);

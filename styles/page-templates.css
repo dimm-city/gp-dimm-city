@@ -677,6 +677,10 @@
   break-inside: auto;
   break-after: auto;
 }
+/* A path re-opened after an `@page` (plugin.js, dcPageScopes) is already on its new page. */
+.dc-specialty .dc-learning-path.dc-path-cont {
+  break-before: auto;
+}
 
 /* The learning-path BANNER (the shell: title, intro, sticker row) is never
    split and stays on the page of the first card after it. Targets the

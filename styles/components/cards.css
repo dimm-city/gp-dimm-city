@@ -195,11 +195,6 @@
   flex-shrink: 0;
 }
 
-/* ── Path block (structural section hook) ─────────────────────────────── */
-.dc-path-block {
-  position: relative;
-}
-
 /* ── Card body + decorative mark ──────────────────────────────────────── */
 .dc-card-body {
   background: var(--dc-card-surface);
