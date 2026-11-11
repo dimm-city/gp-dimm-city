@@ -483,6 +483,13 @@
   --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
   --dc-bolt-size:            10px;                /* the bolt's diameter */
 
+  /* .dc-neon public API (components/neon.css): where a sign hangs sets these; its tube colours (--dc-neon, -core, -ring-1, -ring-2) come from the chapter word or specialty */
+  --dc-neon-margin:          0;                   /* the plate's margin in the flow */
+  --dc-neon-height:          auto;                /* the plate's height (border box) */
+  --dc-neon-tilt:            none;                /* how it hangs: a transform */
+  --dc-neon-layer:           2;                   /* its z-index */
+  --dc-neon-size:            22pt;                /* the word's size; the tubes and rings scale with it (20pt at least) */
+
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */
   --dc-tape-border:          var(--ink);

@@ -36,6 +36,21 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Neon signs (prototype; not yet in the constitution).** The city's own
+  signage, placed by the plugin with no new markup: a sign spelling the
+  chapter's word hangs above the title banner of a Rules, Dream Master or Gear
+  opener, and one spelling the specialty hangs on each specialty's art page.
+  A small `--ink` plate, bolted at two corners, carries the word as four
+  stacked layers of SVG paths (outer ring, inner ring, tube, pale core) with
+  round joins: the letters are Tomorrow's capitals as path data
+  (`scripts/neon-glyphs.py` writes them into `plugin.js`), because stroked
+  text prints as a Type 3 font, which the PDF/X build flattens to an image; one letter of each sign is a dead grey tube, and the Dream Master's
+  sign is lit only at its D and M. Tube colours are the `--neon-*` ladders in
+  `dc-palette.css` (orange, cyan, yellow, hot pink, fungi, civic green,
+  chrome, azure), each the colour the press prints, so the PDF matches print.
+  An opener's sign takes no flow height; nothing else on the page moves.
+  `styles/components/neon.css`; the plan and soft proof are
+  `docs/plans/2026-11-11-neon-signage.md` and `proofs/neon/`.
 - **Grimy streets, one to contrast each wall.** The ground strip under a wall
   page is one of three streets: setts (`images/ground.png`, also under the
   plain brick), bonded flagstones (`ground-flags.png`) or cracked asphalt

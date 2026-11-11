@@ -1,0 +1,23 @@
+title: "Dimm City — Neon print proof"
+authors:
+  - "IT Lackey"
+
+# Neon tube proof pages, read as a soft proof (proofs/neon/softproof.py) and,
+# when one is ordered, as a physical print proof
+# (docs/plans/2026-11-11-neon-signage.md). Not part of the published package.
+# Regenerate the page with
+#   python3 proofs/neon/make-proof.py
+# and build the press PDF with
+#   npx gutterpress build proofs/neon --format pdfx --out .build/neon-proof.pdf
+preset: dtrpg
+
+extensions:
+  - use: ../../
+    options:
+      rawHtml: "off"
+
+styles:
+  - styles/neon-proof.css
+
+chapters:
+  - neon-proof.md
