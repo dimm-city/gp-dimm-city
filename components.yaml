@@ -89,6 +89,7 @@ components:
       - --dc-alert-shape
       - --dc-alert-frame
       - --dc-alert-frame-width
+      - --dc-alert-overflow
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
@@ -1130,7 +1131,7 @@ components:
       - div.section.dc-section-panel
       - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-measure, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "a sheet is kept whole (--dc-section-break-inside: avoid); split a section that must run on in markup, the second part `.dc-pu-cont`"
     notes: "A sheet pasted flat on the wall (section.css, PASTE-UP; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
 
