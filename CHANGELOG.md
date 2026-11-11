@@ -7,6 +7,17 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [Unreleased]
 
+### Fixed
+
+- **`@procedure` steps.** A step with a second paragraph or a nested list is one
+  step, with its extra content inside it, instead of one step per paragraph.
+- **Learning-path titles and stickers** render their inline markdown (emphasis,
+  typeset quotes) instead of printing it raw.
+- **Neon signs** hang only where they belong: a specialty's art page outside its
+  `@specialty` gets no sign, and a chapter's word does not outlive its chapter.
+- The per-row `data-ability-penultimate` and `data-ability-last` attributes are
+  gone from skill-card ability rows; no stylesheet read them.
+
 ## [1.10.3] - 2026-11-10
 
 Paste-up becomes part of the package proper, gear sections get a kind each,

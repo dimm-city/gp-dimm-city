@@ -1,119 +1,21 @@
 /**
- * Dimm City — the gp-dimm-city Gutterpress plugin (server-side markdown-it)
+ * Dimm City — the gp-dimm-city Gutterpress plugin (markdown-it).
  *
- * IMPORTANT: This plugin only transforms content marked with special markers.
- * Regular markdown content passes through unchanged.
+ * It imports nothing at runtime: it runs inside the host's markdown-it
+ * (test/conventions.test.js holds it to that).
  *
- * DECLARED MARKERS (the `markers` export at the bottom of this file — core
- * Gutterpress parses, nests, closes and source-maps these; this file only
- * names the element, classes and variants). Each also has an `@end-<name>`:
- *   @definition [lucid|surreal] → div.dc-prose-panel.dc-definition-block (a term, or a run of `####` terms); the word is the roll's state, drawn as opposites
- *   @faction [megacorp|cabal|cult|enforcer]
- *                        → div.dc-card.dc-faction[.dc-faction-<kind>] + span.dc-faction-kind
- *   @roll-table [die=d20] [label="…"]
- *                        → div.dc-roll-table + div.dc-roll-table-caption, over the author's table
- *   @specialty-intro     → div.dc-specialty-intro
- *   @specialty-art       → div.dc-specialty-art (full-bleed art panel)
- *   @specialty-card      → div.dc-specialty-card[data-position=odd|even]
- *   @gear [augment|treasure|vehicle|drug|program]
- *                        → div.dc-card.dc-entry.dc-gear (general gear), or
- *                          div.dc-card.dc-entry.dc-<kind>: augment (cybernetics, mods),
- *                          treasure (magic items, relics), vehicle, drug (drugs,
- *                          elixirs, consumables), program (deck software: a data cartridge)
- *   @toc                 → div.dc-toc
- *   @lede                → div.dc-intro
- *   @block [panel|slate|shard] label="Title"
- *                        → div.dc-block.dc-<variant> + div.dc-block-title
- *                          (`@block .dc-panel` class form works too)
+ * Most of the markup is declared in `markers` (see below): core Gutterpress
+ * parses, nests, closes and source-maps those markers, and this file names their
+ * element, classes and variants. The core rules registered in `dimmCityPlugin`
+ * rewrite what sits between the open and close token of the ones that need more,
+ * and each marker's `validate` checks its structure. docs/macros.md documents
+ * every marker.
  *
- * DECLARED, THEN TRANSFORMED (declared in `markers`, so core opens, nests and
- * closes them; core rules below rewrite what sits between the open and close
- * token — see forEachComponent):
- *   @specialty [name]    → div.dc-specialty.<name>  (`@specialty augmerc` and
- *                          `@specialty .augmerc` are the same; names in
- *                          SPECIALTIES, styled by `.dc-specialty.<name>`)
- *   @learning-path       → div.dc-learning-path.dc-path-block[data-path-ref]
- *                          > div.dc-path-shell (title, subtitle, stickers) + skills
- *   @skill               → one div.dc-skill-card per `####` heading
- *   @card                → div.dc-card > .dc-card-heading (first ####),
- *                          .dc-card-pull (a quote right after it), .dc-card-body
- *                          (the rest; its last blockquote is .dc-card-footer)
- *   @ladder              → div.dc-ladder: a run of `###` rungs whose headings end in an
- *                          outcome band, `### Triumphs (20)`; each is div.dc-rung.<tier>
- *                          > h3.dc-rung-title (the tier's chip) + div.dc-rung-body
- *   @outcome [flush]     → div.dc-outcomes[.dc-flush]: the d20 ladder, one row
- *                          per `roll | name | text` line (crit, hit, mixed, miss, fail)
- *   @procedure           → ol.dc-steps: each numbered list inside becomes the
- *                          zero-padded step list (the wrapper renders nothing)
- *   @callout [variant]   → div.dc-alert.<variant class> > span.dc-alert-label.
- *                          Variants (bare word): note, warning, dm, vibe, origin,
- *                          location, visit, example; none is a note. The label is `label="…"`,
- *                          or the variant's name. `@dm-note` is `@callout dm`
- *                          (an alias). `variant=` is gone: validate reports it.
- *   Core's nesting rule is the only one: a declared marker that is already
- *   open is closed (with everything inside it) when it opens again;
- *   `@end-<name>` closes that marker and what is inside it; `@page`,
- *   `@section`, `@chapter` and `@continue` close them all. The structure
- *   rules (a skill belongs in a path, a path in a specialty, an outcome is
- *   made of rows, a procedure of a numbered list) are the plugin's:
- *   the `validate` of each declaration.
- *
- * THE REST OF WHAT THIS FILE DOES (plain markdown-it rules, no markers):
- *   @continue           → Continuation marker — inside a skill's card it emits a
- *                          card with a "{name} ▸" tab so an oversized skill card
- *                          can be split across pages while keeping a visible link
- *                          to its origin card (dcContinueClassifier claims it
- *                          before core's layout transform; anywhere else it is
- *                          core's section continuation)
- *   `ROLL THE DIE!` (also ROLL A DIE!, ROLLS A DIE!, ROLLING THE DIE!, ROLL THE DIE TWICE!, ROLL TWO DICE!)
- *                        → span.dc-roll-the-die
- *   an image-only paragraph gets p.dc-img-wrapper
- *   the h1 under `@page intro | credits | contents` gets .dc-chevron
- *   a table of the five standard bands is the outcome ladder (it keeps the
- *                          table's `{#id .class}`); `@procedure` keeps the
- *                          attributes written on its line, on its list
- *
- * GFM ALERT SYNTAX:
- *   `> [!NOTE]` / `[!WARNING]` / `[!DM]` / `[!VIBE]` / `[!ORIGIN]` / `[!LOCATION]` / `[!VISIT]`
- *   / `[!FLAVOR]` / `[!PULLQUOTE]` blockquotes are transformed
- *   into `<div class="dc-alert dc-<type>">`.
- *
- * SPECIALTY VARIANTS:
- *   Skill card and learning-path variants are controlled by the .specialty.<name>
- *   parent container (CSS parent-selector model), not per-card attributes.
- *   Authors wrap the entire specialty section in @specialty augmerc and every
- *   card inside automatically inherits the shape and accent colors.
- *
- * ATTRIBUTE SUPPORT (core's marker grammar: .class, #id, key=value, {.class}):
- *
- *   @learning-path data-foo="bar"
- *     → <div class="dc-learning-path dc-path-block" data-foo="bar" data-path-ref="PRX1">
- *
- *   @skill {.dc-avoid-split}
- *     → every card of the skill: <div class="dc-skill-card dc-avoid-split" ...>
- *
- * LEARNING PATH FORMAT:
- *   @learning-path
- *   ### Title
- *   > Subtitle/description
- *   - Skill A
- *   - Skill B
- *   - Skill C
- *   @skill … (the skills follow, inside the path)
- *
- * SKILL FORMAT:
- *   @skill
- *   #### Skill Name
- *   > Flavor text
- *   1. **0 AP** *Ability Name:* Description
- *   2. **2 AP** *Another:* Description
- *   ##### Outcomes (optional sub-header)
- *   | Roll | Outcome |
- *   | --- | --- |
- *   | 20 | Critical |
- *
- * A skill ends at @end-skill, the next @skill, or when what holds it closes
- * (@end-learning-path, a new @learning-path, @end-specialty, @page, EOF).
+ * Rules with no marker, which read unmarked markdown: `> [!TYPE]` alerts, the
+ * ROLL THE DIE! chip and die-call paragraphs, ladder and stat-strip tables,
+ * bold-label field lines, kickers, image paragraphs, front-matter titles,
+ * numbered `##` steps, paste-up rows and continuation sheets, neon signs, the
+ * raw-HTML warnings and the skill card's `@continue`.
  */
 
 // ── Shared data ────────────────────────────────────────────────────────────
@@ -135,9 +37,10 @@ const SPECIALTY_CODES = {
 const SPECIALTIES = [...Object.keys(SPECIALTY_CODES), 'dualist', 'generalist'];
 
 const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
-
 const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
 
+// `@callout` variants: core adds the variant's class; the label is the default
+// for when the author wrote no `label="…"`.
 const CALLOUTS = {
   note: { class: 'dc-note', label: 'Note' },
   warning: { class: 'dc-note warning', label: 'Warning' },
@@ -149,13 +52,10 @@ const CALLOUTS = {
   example: { class: 'dc-example-callout', label: 'Example' },
 };
 
-/**
- * GFM-style blockquote alert types — Dimm City branded: the classes and labels
- * are DC-specific, so core does not know them.
- */
-// The callout variants that also have a `> [!TYPE]` form.
+// `> [!TYPE]` alerts: the callout variants that have a bracket form, plus
+// two blockquote-only styles. The classes and labels are Dimm City's; core does
+// not know them.
 const ALERT_CALLOUTS = ['note', 'warning', 'dm', 'vibe', 'origin', 'location', 'visit'];
-
 const DC_ALERT_TYPES = {
   ...Object.fromEntries(ALERT_CALLOUTS.map((variant) => [
     variant.toUpperCase(),
@@ -165,26 +65,14 @@ const DC_ALERT_TYPES = {
   PULLQUOTE: { classes: "dc-pullquote dc-flush" },
 };
 
-// `[!TYPE]` and the blanks after it.
+// The `[!TYPE]` that opens an alert, and the blanks after it.
 const DC_ALERT_MARKER = /^\[!([A-Z_]+)\][ \t]*/i;
 
-// ── Declared component: @field (and the bold labels that mean it) ──────────
-//
-// `@field specs` … `@end-field` is a labelled field: `div.dc-field.dc-field-specs`
-// holding `span.dc-field-label` and the author's paragraphs. The label is the
-// variant's default (below) or `label="…"`, the way `@callout` does it.
-//
-// The bold-label shortcut is the same component written shorter: a paragraph
-// that opens with a known label (`**SPECS:** …`), inside an entry card, an NPC
-// stat block or a skill card, is rewritten to exactly the markup the marker
-// gives (`dcFieldLines`), so one set of rules styles both. Everywhere else it
-// stays a paragraph, and a callout inside a card is not a card.
-//
-// FIELD_LABELS is the one table. Each line is a label as the books write it
-// (matched case-insensitively, colon inside the bold) and the variant it
-// means. A new label is a line here; a new field type is a new variant name
-// here plus a token-setter rule in styles/components/entries.css. The first
-// label listed for a variant is that variant's default label.
+// The bold labels that mean a `@field` variant (`**SPECS:** …` in a card): each
+// line is a label as the books write it (matched case-insensitively, colon inside
+// the bold) and its variant. A new label is a line here; a new field type is a new
+// variant name here plus a token-setter rule in styles/components/entries.css. The
+// first label listed for a variant is that variant's default label.
 const FIELD_LABELS = {
   'SPECS': 'specs',
   'Traits': 'traits',
@@ -200,7 +88,6 @@ const FIELD_LABELS = {
 };
 
 const FIELD_VARIANTS = [...new Set(Object.values(FIELD_LABELS))];
-
 const FIELD_DEFAULT_LABEL = Object.fromEntries(
   FIELD_VARIANTS.map((v) => [v, Object.keys(FIELD_LABELS).find((l) => FIELD_LABELS[l] === v)]),
 );
@@ -214,54 +101,31 @@ const FIELD_HOSTS = new Set(['gear', 'skill']);
 // U+2010–U+2015 (hyphen, en and em dash, bar) and the minus sign. As the inside
 // of a regex character class.
 const DASH_CLASS = '\\-\\u2010-\\u2015\\u2212';
-
 const DASH_RUN = new RegExp('-{2,3}|[' + DASH_CLASS + ']', 'g');
-
 const enDashed = (text) => text.replace(new RegExp('[' + DASH_CLASS + ']', 'g'), '\u2013');
 
 // "11 – 19" and "11--19" read as "11-19".
 const hyphenated = (text) => text.replace(DASH_RUN, '-');
 
 const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
-
 const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
 
-// ── Paste-up: rows and continuation sheets ──────────────────────────────────
-//
-// A sheet says its own width: `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
-// on its section line. Two sheets side by side are a row: when a sheet
-// with a width is followed straight away by one whose width completes it (half
-// and half, narrow and wide, wide and narrow), the plugin wraps the two in
-// `div.dc-pu-row`, and section.css reads the widths off them. There is no row
-// marker to write. A sheet with a width and no partner is reported, and prints
-// at the full width.
+// The widths a paste-up sheet can name, in percent of its row (see dcRows).
 const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
 
-// The "continued" mark on a continuation card's tab: a drawn triangle, not a
-// ▸ character. No Dimm City font has that glyph, so Chromium borrowed one
-// from a system font and printed it as a Type 3 font, which Gutterpress's
-// PDF/X preserve-text split cannot keep. It takes the tab title's colour.
+// The "continued" mark on a continuation tab: a drawn triangle, not a ▸ character.
+// No Dimm City font has the glyph, and a borrowed system one prints as Type 3 text.
 const CONTINUED_MARK =
   '<svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg>';
 
-// ── Neon signs ──────────────────────────────────────────────────────────────
-// A sign is the city's own fixture, not the pack's paper (docs/plans/
-// 2026-11-11-neon-signage.md). It is placed, never written: a chapter opener
-// (`@page chapter-start` in an `@chapter <word>`) whose title banner comes
-// first hangs one above the banner, spelling its chapter's word (an opener
-// that starts with a sheet, such as a fiction excerpt, has no headroom for
-// one), and a specialty's art page (`@specialty-art`) hangs one
-// spelling the specialty. The word is drawn four times as SVG paths, stacked
-// (outer ring, inner ring, tube, core): stroked text would print as a Type 3
-// font, which the PDF/X build flattens to an image. One letter of each sign
-// is a dead tube. The Dream Master's sign is mostly dark: only the D and the
-// M are lit.
+// Neon signs hang above a chapter opener's title (the chapter's word) and on a
+// specialty's art page (its name). A word is four stacked layers of SVG paths
+// (two rings, tube, core): stroked text would print as Type 3. One letter of each
+// sign is a dead tube; the Dream Master's lights only the D and the M.
 const NEON_CHAPTER_WORDS = { rules: 'RULES', dm: 'DREAM MASTER', gear: 'GEAR', 'citizen-file': 'CITIZEN FILE' };
-
 const NEON_LAYERS = ['dc-neon-ring-2', 'dc-neon-ring-1', 'dc-neon-tube', 'dc-neon-core'];
 
 // BEGIN NEON_FONT (generated by scripts/neon-glyphs.py; do not edit)
@@ -323,7 +187,6 @@ function makeToken(type, content = '') {
 }
 
 const classesOf = (tok) => (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
-
 const hasClass = (tok, cls) => classesOf(tok).includes(cls);
 
 // Add one class to a token's existing `class` attribute, keeping the others.
@@ -400,7 +263,9 @@ function markKickerBefore(tokens, at, firstType) {
 
 /**
  * Call `rewrite(run, enclosing)` for every declared component of `kind`, in
- * document order. `run` is the component's tokens, open token to close token;
+ * document order. A declared component is a `layout_component_open` …
+ * `layout_component_close` pair whose open token's `meta.kind` is the marker's
+ * name. `run` is the component's tokens, open token to close token;
  * `enclosing` is the open tokens of the components it sits in, outermost first.
  * Return a replacement run, or nothing to leave it as it is.
  */
@@ -846,19 +711,12 @@ function endsWithColon(inline) {
 
 // ── Document-wide rules ────────────────────────────────────────────────────
 
-/**
- * Main plugin function - the default export Gutterpress loads
- */
-// ── Raw HTML in the markdown ────────────────────────────────────────────────
-//
 // HTML an author writes into the markdown is reported, one warning per tag, on
-// its line: the package cannot check it, and a stray tag does damage far from
-// where it is written (`<small>…<small>` in one ladder row set the rest of a
-// book small). Write markdown or a marker instead. An HTML comment is not
-// reported: it renders nothing. Runs first, before any rule of this plugin
-// rewrites a table or adds HTML of its own, so only the author's is seen.
-// `rawHtml: 'off'` in the extension's options turns it off for a book that
-// means its HTML (the design guide's specimen stages).
+// its line: the package cannot check it, and a stray tag styles everything after
+// it. An HTML comment renders nothing and is not reported. It runs first, before
+// any rule of this plugin adds HTML of its own, so only the author's is seen.
+// `rawHtml: 'off'` in the extension's options turns it off for a book that means
+// its HTML (the design guide's specimen stages).
 function rawHtmlWarnings(state) {
   const report = (tok, line) => {
     const html = tok.content.trim();
@@ -1114,7 +972,9 @@ function dcRollDieTransform(state) {
  * A paragraph that is only the die call (`**ROLL THE DIE!**`, or the bare words,
  * or any form of the phrase the inline rule picks out) is the table's imperative
  * moment, not a sentence: `.dc-die-call`, a raised chip. Mid-sentence it stays the
- * inline mark. A paragraph in a list or a quote is not set apart.
+ * inline mark. A paragraph in a list item or a blockquote is not set apart; an
+ * alert is no blockquote by now (dcAlertsTransform has replaced it), so a lone
+ * die call in one is a die call.
  */
 function dcDieCalls(state) {
   const t = state.tokens;
@@ -1168,13 +1028,10 @@ function dcFrontMatterTitles(state) {
   }
 }
 
-// ── Steps: a numbered `##` standing on the page ─────────────────────────────
-//
-// A `##` that stands on the page (in no section or component) and opens with a
-// step number, `## 4. Ideal`, is a step of the book's procedure (the Citizen
-// File's 0-7). Its number, written as it is, goes in `span.dc-step-num`, which
-// the page slip sets as a chip in the chapter's colour, so the steps read as one
-// sequence. The heading keeps no class of its own, so it stays the slip.
+// A `##` standing on the page (in no section or component) that opens with a step
+// number, `## 4. Ideal`, is a step of the book's procedure: its number goes in
+// `span.dc-step-num`, which the page slip sets as a chip in the chapter's colour.
+// The heading keeps no class of its own, so it stays the slip.
 function dcSteps(state) {
   let depth = 0;
   const t = state.tokens;
@@ -1193,6 +1050,11 @@ function dcSteps(state) {
   }
 }
 
+// A sheet names its width with `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
+// on its section line. A sheet followed straight away by one whose width completes
+// it (half and half, narrow and wide, wide and narrow) is wrapped with it in a
+// `div.dc-pu-row`, and section.css reads the widths off the row. A sheet with a
+// width and no partner is reported and prints at full width.
 function widthOf(tok) {
   if (tok?.type !== 'layout_section_open') return 0;
   const cls = classesOf(tok).find((c) => c in PU_WIDTHS);
@@ -1310,9 +1172,9 @@ function dcNeonSigns(state) {
 }
 
 /**
- * A section or panel that ends in a paragraph that is only a bold run, or has one
- * right before a heading, closes on a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
- * so it never opens a page alone.
+ * A layout section that ends in a paragraph that is only a bold run, or has one
+ * right before a heading, closes on a kicker (`**Just don't confuse a good time
+ * with a safe one.**`): `.dc-kicker`, so it never opens a page alone.
  */
 function dcKickers(state) {
   const t = state.tokens;
@@ -1323,8 +1185,8 @@ function dcKickers(state) {
       depth--;
       markKickerBefore(t, i, 'layout_section_open');
     }
-    // A bold-only paragraph right before a heading in the same section also closes
-    // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
+    // Before a heading it closes its stretch of text; before ordinary text it is
+    // a run-in sub-heading, not a kicker.
     if (depth > 0 && t[i].type === 'paragraph_open' && !t[i].hidden && t[i + 3]?.type === 'heading_open' && t[i + 2]?.type === 'paragraph_close' && isBoldOnlyInline(t[i + 1])) {
       addTokenClass(t[i], 'dc-kicker');
     }
@@ -1490,6 +1352,8 @@ function registerSkillContinueBridge(md) {
 }
 
 // ── Declared-component rules ───────────────────────────────────────────────
+// Each rewrites what sits between the open and close token of its component
+// (see forEachComponent).
 
 // What sits in a learning path before its first skill — the title, the
 // subtitle and the sticker chain — rewritten into the path's header markup.
@@ -1499,12 +1363,7 @@ function pathShell(tokens, ref, md) {
   for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i];
 
-    // H3 = learning path title (banner). Emitted as an h3, the level it was
-    // written at: the outline (the app's contents panel, PDF bookmarks) nests
-    // specialty (##) > learning path (###) > skill (####). .dc-path-sep is a
-    // real space between the sticker and the title, so the heading's text
-    // reads "PRX1 Refuse Finality" (outline, bookmarks, copy, search, screen
-    // readers); chrome.css gives it the printed gap.
+    // The title stays an h3, so the outline nests specialty > learning path > skill.
     if (tok.type === 'heading_open' && tok.tag === 'h3') {
       out.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(ref) + '</span><span class="dc-path-sep"> </span>' + renderInlineChildren(tokens[i + 1], md) + '</h3>\n'));
       titled = true;
@@ -1563,15 +1422,12 @@ function dcLearningPaths(state) {
   });
 }
 
-// A card's closing paragraph shorter than this (text characters) is a sign-off: it stays with the block above it.
-const SIGNOFF_MAX = 120; // one line at the card's measure
+// A card's closing paragraph shorter than this (text characters, about a line at
+// the card's measure) is a sign-off: it stays with the block above it.
+const SIGNOFF_MAX = 120;
 
-// ── Declared components: @card, @outcome, @procedure ───────────────────────
-//
-// Declared in `markers` like the three above, rewritten by core rules that
-// run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
-// inside a skill must already be in its final form when the skill's rule
-// reads it. They stay inside the skill's card (see CARD_CONTENT).
+// The components that stay inside a skill's card. Their rules run before
+// dcSkillCards, so each is in its final form when the skill reads it.
 const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-table', 'field']);
 
 /**
@@ -1585,8 +1441,9 @@ const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-t
  *   blockquote   → flavor line
  *   ordered list → ability rows
  *   Roll | Outcome table → outcomes ladder
- *   @continue    → closes the card (`.dc-skill-card-cut`: a straight foot and a ▸ flag)
- *                  and opens a "{name} ▸" continuation card with the same ID
+ *   @continue    → closes the card (`.dc-skill-card-cut`: a straight foot and a flag)
+ *                  and opens a continuation card, titled with the name and the
+ *                  continued mark, with the same ID
  */
 function dcSkillCards(state) {
   const md = state.md;
@@ -1779,6 +1636,13 @@ function markRungBand(inline) {
   kids.splice(kids.length - 1, 1, ...(m[1] ? [text(m[1])] : []), html('<span class="dc-rung-band">'), text(m[2]), html('</span>'), ...(m[3] ? [text(m[3])] : []));
 }
 
+/**
+ * `@ladder`: one rung per `###` whose heading ends in its band in parentheses
+ * (`### Triumphs (20)`, `(11–19)`, `(6-10)`, `(2–5)`, `(1)`; any dash reads).
+ * The tier is read from the band, as the ladder table reads it, and gets the
+ * ladder's own colour. A `###` with any other ending is no rung: it is left as it
+ * is and closes the rung before it.
+ */
 function dcLadders(state) {
   forEachComponent(state.tokens, 'ladder', (run) => {
     const out = [run[0]];
@@ -1819,7 +1683,7 @@ function dcLadders(state) {
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
  * the first `####` becomes `.dc-card-heading`, a blockquote straight after it
  * becomes `.dc-card-pull`, and everything else goes in `.dc-card-body`; the
- * last blockquote in the body is tagged `.dc-card-footer` (dc#44). A card with
+ * last blockquote in the body is tagged `.dc-card-footer`. A card with
  * nothing after its heading has no body.
  */
 function dcCards(state) {
@@ -1932,6 +1796,8 @@ function dcProcedures(state) {
   });
 }
 
+// A missing or unknown variant is a plain note. The variant's class came from
+// core; the default label is added here unless the author wrote `label="…"`.
 function dcCallouts(state) {
   forEachComponent(state.tokens, 'callout', ([open, ...rest]) => {
     const variant = Object.hasOwn(CALLOUTS, open.meta.variant) ? open.meta.variant : 'note';
@@ -1941,9 +1807,7 @@ function dcCallouts(state) {
     }
     if (open.meta.labelled) return; // an explicit label="…" wins
     // An example that opens with its own heading ("### Example: Toxic Evolution")
-    // is titled by it: the heading is set as the example's label, words as
-    // written, and no default "Example" is added beside it. Every example then
-    // reads the same, a box under one label.
+    // is titled by it, as written, and gets no default "Example" beside it.
     if (variant === 'example' && rest[0]?.type === 'heading_open') {
       addTokenClass(rest[0], 'dc-alert-label');
       return;
@@ -1999,10 +1863,7 @@ function dcFields(state) {
 
 /**
  * `data-position="odd|even"` on every @specialty-card, counted across the
- * document in order so the card grid alternates its tilt/offset. The wrapper
- * itself is a declared marker (see `markers` below); this rule only numbers
- * the open tokens core produced. It never runs under bare markdown-it, which
- * has no declared markers.
+ * document in order so the card grid alternates its tilt and offset.
  */
 function dcSpecialtyCardPositions(state) {
   let count = 0;
@@ -2015,12 +1876,10 @@ function dcSpecialtyCardPositions(state) {
 }
 
 // ── Validators ─────────────────────────────────────────────────────────────
+// Structure checks that core runs on the declared markers and reports as layout
+// warnings. They are the plugin's rules: core only knows that declared markers
+// nest (a skill belongs in a path, a path in a specialty, an outcome is rows).
 
-/**
- * Structure checks (core runs these on the declared markers below and reports
- * them as layout warnings). They are the plugin's rules, not core's: core
- * only knows that declared markers nest.
- */
 function validateSpecialty({ blocks }) {
   // One problem per run of skills sitting directly in the specialty: the
   // first skill after a learning path (or at the start). The usual cause is a
@@ -2057,8 +1916,8 @@ function validateRollTable({ blocks }) {
   return ['It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table.'];
 }
 
-// `variant=` was the old way to pick one; it now reads as a plain attribute
-// and would silently render a note, so say so once, on the marker's line.
+// `variant=` reads as a plain attribute and would silently render a note, so say
+// so once, on the marker's line.
 function validateCallout({ attrs }) {
   if (attrs.variant === undefined) return [];
   return [`no longer takes variant=${attrs.variant}; write "@callout ${attrs.variant}" instead.`];
@@ -2117,32 +1976,25 @@ function validateProcedure({ blocks }) {
 // ── Declared markers ───────────────────────────────────────────────────────
 
 /**
- * Declared markers — plain data Gutterpress core reads off this module (the
- * same relationship `metadata` has). Core parses `@name … @end-name`, merges
- * author classes, threads `data-source-range`, nests containers as a stack and
- * closes them at the next `@page`/`@section`/`@chapter`, so none of this is
- * hand-written in a marker parser. A bare markdown-it instance never
- * reads this table: declared markers exist only under Gutterpress.
+ * Declared markers: plain data Gutterpress core reads off this module (as it
+ * reads `metadata`). Core parses `@name … @end-name`, merges author classes,
+ * threads `data-source-range` and nests containers as a stack, closing them at
+ * the next `@page`, `@section` or `@chapter`. A bare markdown-it instance never
+ * reads this table. To add a plain wrapper, add a line here, a snippet in
+ * `snippets/<name>.md` and the catalog and guide entries (docs/adding-macros.md).
  *
- * A `section: true` entry declares a section-styled component: core treats it
- * as a real `@section` carrying the entry's classes (see below).
+ * A bare word on the marker line picks a variant and adds its class, so class
+ * shorthand (`@block .dc-panel`) works beside it. `section: true` makes the
+ * entry a real `@section` carrying its classes.
  *
- * To add a plain wrapper, add one line here (element + classes), a snippet in
- * `snippets/<name>.md`, and the usual catalog/guide entries — see
- * docs/adding-macros.md.
- *
- * Variants are a bare word on the marker line (`@block panel`) and only add
- * a class, so class shorthand (`@block .dc-panel`) keeps working beside them.
- * `autoCloseAt: ['eof']` keeps these silent at end-of-document: they have
- * never needed an explicit `@end-…`.
+ * `autoCloseAt: ['eof']` keeps a wrapper silent when the document ends inside
+ * it, which these have never needed an `@end-…` for.
  */
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
 
 export const markers = {
-  // Specialty > learning path > skill. Core nests them as a stack; the rules
-  // above rewrite their content and `validate` checks their structure.
-  // `@specialty augmerc` and `@specialty .augmerc` both add the class the
-  // styles key on (`.dc-specialty.augmerc`).
+  // Specialty > learning path > skill. `@specialty augmerc` and `@specialty
+  // .augmerc` both add the class the styles key on (`.dc-specialty.augmerc`).
   specialty: wrapper('dc-specialty', {
     variants: Object.fromEntries(SPECIALTIES.map((name) => [name, name])),
     validate: validateSpecialty,
@@ -2150,20 +2002,17 @@ export const markers = {
   'learning-path': wrapper('dc-learning-path dc-path-block'),
   skill: wrapper('dc-skill-card', { validate: validateSkill }),
 
-  // Content components. `@card` closes silently at the end of a document.
-  // `@outcome` and `@procedure` carry no `autoCloseAt`, so one left
-  // open at the end gets core's `declared_marker_eof_close` warning: what
-  // follows an open one is read as its rows or its steps. `@procedure` has no
-  // class (its rule hides the wrapper: the step list is the element).
+  // `@outcome` and `@procedure` have no `autoCloseAt`: one left open at the end
+  // gets core's `declared_marker_eof_close` warning, because what follows is read
+  // as its rows or steps. `@procedure` has no class; its rule hides the wrapper.
   card: wrapper('dc-card'),
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
   'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
   ladder: wrapper('dc-ladder', { validate: validateLadder }),
 
-  // `@callout` takes its variant as a bare word (`@callout vibe`); `@dm-note` is
-  // the same marker with the `dm` variant preset. A default label comes from
-  // `dcCallouts`, an explicit `label="…"` from core.
+  // `@dm-note` is `@callout dm`. The default label comes from `dcCallouts`, an
+  // explicit `label="…"` from core.
   callout: wrapper('dc-alert', {
     variants: Object.fromEntries(Object.entries(CALLOUTS).map(([name, { class: cls }]) => [name, cls])),
     label: { tag: 'span', class: 'dc-alert-label', from: 'attr:label' },
@@ -2171,31 +2020,28 @@ export const markers = {
   }),
   'dm-note': { alias: 'callout', preset: { variant: 'dm' } },
 
-  // A labelled field (`@field specs`), and the target of the bold-label shortcut
-  // (`**SPECS:** …` inside a card, see FIELD_LABELS). The default label per
-  // variant comes from `dcFields`, an explicit `label="…"` from core.
+  // A labelled field, and the target of the bold-label shortcut (FIELD_LABELS).
+  // The default label comes from `dcFields`, an explicit `label="…"` from core.
   field: wrapper('dc-field', {
     variants: Object.fromEntries(FIELD_VARIANTS.map((v) => [v, 'dc-field-' + v])),
     label: { tag: 'span', class: 'dc-field-label', from: 'attr:label' },
   }),
 
   // A term, or a glossary. `lucid` and `surreal` are the two states of a roll,
-  // set as opposites (light, crisp, aligned / dark, skewed, off-register).
+  // drawn as opposites.
   definition: wrapper('dc-prose-panel dc-definition-block', {
     variants: { lucid: 'dc-definition-lucid', surreal: 'dc-definition-surreal' },
   }),
   'specialty-intro': wrapper('dc-specialty-intro'),
   'specialty-art': wrapper('dc-specialty-art'),
   'specialty-card': wrapper('dc-specialty-card'),
-  // Entry cards: one card family (`.dc-entry`); `@gear` is general gear and its
-  // bare word picks a kind, a token setter on that family
-  // (styles/components/entries.css). Each starts with the entry's name.
+  // Entry cards: one card family (`.dc-entry`). Bare `@gear` is general gear; a
+  // kind word sets tokens on the family (styles/components/entries.css).
   gear: wrapper('dc-card dc-entry', {
     variants: Object.fromEntries(GEAR_KINDS.map((kind) => [kind, `dc-${kind}`])),
     validate: validateEntry,
   }),
-  // An organization's profile: a card with a kind badge. The kind is the bare
-  // word (`@faction cult`) and the badge reads it unless `label="…"` names its own.
+  // An organization's profile: a card whose badge names the kind unless `label="…"` does.
   faction: wrapper('dc-card dc-faction', {
     variants: Object.fromEntries(Object.keys(FACTION_KINDS).map((kind) => [kind, `dc-faction-${kind}`])),
     label: { tag: 'span', class: 'dc-faction-kind', from: 'attr:label' },
@@ -2207,18 +2053,12 @@ export const markers = {
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
   }),
 
-  // Section variants: `@section panel` is `<div class="section dc-section-panel">`.
-  // A bare `@section` is core's plain box and gets no styling from this package.
-  // `panel` and `flat` are general. `reference`, `lore`, `dm` and `choose` are
-  // panels that say what kind of text they hold (a look-up, the world, advice
-  // for the Dream Master, a choice): each is `dc-section-panel` plus a class that
-  // sets the panel's tokens, and has no marker of its own. The rest are the
-  // section-styled components below, each reachable by its own marker
-  // (`@npc-stat`) or by word (`@section npc`), and both write the same classes so
-  // one CSS rule serves both. A component that is a card (npc, walkthrough, flaws,
-  // ideals, dreams) carries `dc-section-panel` beside its own class (the three
-  // choice runs are `choose` too); fiction and cards are not panels. The CSS is
-  // in styles/components/section.css.
+  // `@section <word>`: `@section panel` is `<div class="section dc-section-panel">`,
+  // and a bare `@section` is core's plain box. `panel` and `flat` are general;
+  // `reference`, `lore`, `dm` and `choose` are panels that say what kind of text
+  // they hold. The rest are the section-styled components below, reachable by
+  // their own marker (`@npc-stat`) or by word (`@section npc`), both writing the
+  // same classes. The CSS is in styles/components/section.css.
   section: {
     variants: {
       panel: 'dc-section-panel',
@@ -2241,12 +2081,11 @@ export const markers = {
     },
   },
 
-  // Locations: where the content sits. A location only adjusts components, by
-  // setting tokens (styles/page-templates.css); it never supplies chrome of its
-  // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`;
-  // `@chapter rules` is `<div class="chapter dc-chapter-rules">` (any other word
-  // after `@chapter` stays its label). Core also ships `@page blank` and
-  // `@page full-bleed`.
+  // Locations: where the content sits. A location only sets tokens on the
+  // components inside it (styles/page-templates.css) and draws no chrome of its
+  // own. `@page chapter-start` is `<div class="page dc-page-chapter-start">`; any
+  // other word after `@chapter` stays its label. Core also ships `@page blank`
+  // and `@page full-bleed`.
   page: {
     variants: {
       'chapter-start': 'dc-page-chapter-start',
@@ -2275,18 +2114,14 @@ export const markers = {
     },
   },
 
-  // Section-styled components. `section: true` makes each one a real core
-  // @section: `@npc-stat` is exactly `@section npc` (same element, same
-  // classes). None is styled per specialty (that lives on
-  // `.dc-specialty.<name>`, from `@specialty`); the only variant is
-  // `@npc-stat compact`, and modifiers such as `.dc-snug`, `.dc-avoid-split`
-  // and `.gp-columns-2` stay author classes.
+  // Section-styled components: `@npc-stat` is exactly `@section npc`. None is
+  // styled per specialty (that lives on `.dc-specialty.<name>`); modifiers such as
+  // `.dc-snug`, `.dc-avoid-split` and `.gp-columns-2` stay author classes.
   'card-grid': { section: true, class: 'dc-card-grid' },
   'citizen-walkthrough': { section: true, class: 'dc-section-panel dc-citizen-walkthrough' },
   'fiction-excerpt': { section: true, class: 'dc-fiction-excerpt' },
   'npc-stat': { section: true, class: 'dc-section-panel dc-npc-stat', variants: { compact: 'dc-npc-compact' } },
-  // Citizen-file choices: `@section choose` with the class that sets the accent
-  // of every `@card` inside (`@flaws`, `@ideals`, `@dreams` are `choose` plus their own).
+  // Citizen-file choices: `choose` plus the class that sets the accent of every `@card` inside.
   flaws: { section: true, class: 'dc-section-panel dc-section-choose dc-flaws' },
   ideals: { section: true, class: 'dc-section-panel dc-section-choose dc-ideals' },
   dreams: { section: true, class: 'dc-section-panel dc-section-choose dc-dreams' },
@@ -2294,12 +2129,27 @@ export const markers = {
 
 // ── The plugin ─────────────────────────────────────────────────────────────
 
+/**
+ * The default export Gutterpress loads. It registers the core rules, in an order
+ * that matters:
+ *   - dc_raw_html runs first, so it sees only the HTML the author wrote.
+ *   - dc_alerts replaces each `> [!TYPE]` blockquote with html_block tokens, so
+ *     the rules after it never see an alert as a quote.
+ *   - dc_roll_the_die turns the phrase into tokens that dc_die_calls reads.
+ *   - dc_callouts, dc_cards, dc_outcomes, dc_procedures and dc_roll_tables
+ *     (CARD_CONTENT) rewrite their components before dc_skill_cards reads the
+ *     card they sit in; dc_roll_tables also marks its tables so neither
+ *     dc_skill_cards nor dc_ladder_tables turns one into a ladder.
+ *   - dc_learning_paths sets data-path-ref before dc_skill_cards reads it.
+ *   - dc_ladder_tables follows dc_skill_cards (which rewrites its own tables),
+ *     and dc_stat_strips follows dc_ladder_tables (a ladder is no stat table).
+ *   - dc_field_lines is last. It replaces state.tokens,
+ *     like dc_alerts and dc_rows; the other rules edit the stream in place.
+ */
 export default function dimmCityPlugin(md, options = {}) {
   Token ??= new md.core.State('', md, {}).Token;
   registerSkillContinueBridge(md);
 
-  // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
-  // transform operates on already-parsed token streams.
   if (options.rawHtml !== 'off') md.core.ruler.push('dc_raw_html', rawHtmlWarnings);
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
   md.core.ruler.push('dc_rows', dcRows);
@@ -2307,25 +2157,18 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_continuations', dcContinuations);
   md.core.ruler.push('dc_neon_signs', dcNeonSigns);
 
-  // Transform the canonical roll instruction while it is still structured
-  // inline content. This covers every markdown context without rewriting
-  // rendered HTML, code spans, raw HTML, or partial words.
+  // The die call is turned into tokens while the text is still structured inline
+  // content, so it holds in every markdown context and never touches code spans,
+  // raw HTML or partial words.
   md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
     '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
   md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
   md.core.ruler.push('dc_die_calls', dcDieCalls);
 
   md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
-
-  // Mark image-only paragraphs so layout rules can target them without
-  // relying on p:has(img). The base CSS rule
-  // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
-  // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
   md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
   md.core.ruler.push('dc_front_matter_titles', dcFrontMatterTitles);
 
-  // Declared components. Callouts, cards, outcomes and procedures go first so
-  // one inside a skill is already rewritten when the skill's rule looks at it.
   md.core.ruler.push('dc_callouts', dcCallouts);
   md.core.ruler.push('dc_factions', dcFactions);
   md.core.ruler.push('dc_gear', dcGear);
@@ -2344,9 +2187,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_field_lines', dcFieldLines);
 }
 
-/**
- * Plugin metadata (the package version in package.json is the only version).
- */
+// The package version in package.json is the only version.
 export const metadata = {
   name: 'Dimm City',
   description: 'Dimm City TTRPG macros: specialties, learning paths, skill cards, callouts, page templates',
