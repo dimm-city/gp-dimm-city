@@ -5,19 +5,6 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
-## [Unreleased]
-
-### Fixed
-
-- **`@procedure` steps.** A step with a second paragraph or a nested list is one
-  step, with its extra content inside it, instead of one step per paragraph.
-- **Learning-path titles and stickers** render their inline markdown (emphasis,
-  typeset quotes) instead of printing it raw.
-- **Neon signs** hang only where they belong: a specialty's art page outside its
-  `@specialty` gets no sign, and a chapter's word does not outlive its chapter.
-- The per-row `data-ability-penultimate` and `data-ability-last` attributes are
-  gone from skill-card ability rows; no stylesheet read them.
-
 ## [1.10.3] - 2026-11-10
 
 Paste-up becomes part of the package proper, gear sections get a kind each,
@@ -46,6 +33,16 @@ and the styles say where a reader is and what they are reading.
   with no default "Example" tag beside it.
 
 ### Added
+
+- **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
+  catalog in one colour and one chip label per kind of gear, so firearms,
+  grenades and armor read as one system and each is told at a glance, in
+  grayscale too: weapons in blood (WEAPONS), explosives in hazard yellow with
+  ink type (EXPLOSIVES), armor in slate steel (PROTECTION). The colour is the
+  title, every table's head row, the rail, and the 3pt rule over each entry
+  inside (in place of the entry kind's own) and over a `####` sub-head, set
+  like an entry's name. Snippets `section-weapons`, `section-explosives`,
+  `section-armor`.
 
 - **Neon signs (prototype; not yet in the constitution).** The city's own
   signage, placed by the plugin with no new markup: a sign spelling the
@@ -118,17 +115,40 @@ and the styles say where a reader is and what they are reading.
     excerpt's closing line is a sticker (both were the Field Guide's own CSS).
   - The catalog has one entry per piece, and design guide chapter 6 a specimen.
 
-### Added
+### Fixed
 
-- **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
-  catalog in one colour and one chip label per kind of gear, so firearms,
-  grenades and armor read as one system and each is told at a glance, in
-  grayscale too: weapons in blood (WEAPONS), explosives in hazard yellow with
-  ink type (EXPLOSIVES), armor in slate steel (PROTECTION). The colour is the
-  title, every table's head row, the rail, and the 3pt rule over each entry
-  inside (in place of the entry kind's own) and over a `####` sub-head, set
-  like an entry's name. Snippets `section-weapons`, `section-explosives`,
-  `section-armor`.
+- **A first table cell with a bold lead and text wraps.** The rule that keeps a
+  label cell on one line now holds only the bold name (`td:first-child >
+  strong:first-child`); before, `:only-child` ignored the text, so a cell like
+  "**Tiny:** Under 1 meter tall…" ran on one line past its panel and was cut
+  off.
+- **`@procedure` steps.** A step with a second paragraph or a nested list is one
+  step, with its extra content inside it, instead of one step per paragraph.
+- **Learning-path titles and stickers** render their inline markdown (emphasis,
+  typeset quotes) instead of printing it raw.
+- **Neon signs** hang only where they belong: a specialty's art page outside its
+  `@specialty` gets no sign, and a chapter's word does not outlive its chapter.
+- The per-row `data-ability-penultimate` and `data-ability-last` attributes are
+  gone from skill-card ability rows; no stylesheet read them.
+
+### Maintenance
+
+- **Book workarounds moved into the package.** A `@flaws` table splits across
+  pages with its header once; a ladder rung's closing sticker has room inside
+  its frame; a program card's comb meets its foot. New tokens replace book
+  overrides: `--dc-td-pad-y` / `--dc-th-pad-y` (table density),
+  `--dc-section-measure` (a panel's prose width, reset inside a paste-up row),
+  `--dc-alert-overflow` (clip a warning's hazard rail at a page edge) and
+  `--dc-definition-block-style` on the Surreal definition.
+- **`section.css` is five sheets**, in the same cascade order: `section.css`,
+  `enclosures.css`, `creatures.css`, `fiction-excerpt.css`, `paste-up.css`.
+- **Removed** `--dc-pullquote-accent-soft` and `--dc-card-body-mark` (documented
+  but read by nothing), `--callout-border-width-small`, `--fw-bold` and the
+  dead `.dc-section-catalog` selector.
+- `plugin.js` is reordered (data, helpers, rules, validators, markers), its
+  duplicated helpers are unified and its comments right-sized; the stylesheets
+  lose repeated mega-selectors (now nested), history and tracker comments, and
+  component rules that sat in the template and engine sheets.
 
 ## [1.10.2] - 2026-11-07
 

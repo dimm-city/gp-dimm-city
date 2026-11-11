@@ -1053,7 +1053,7 @@ function dcSteps(state) {
 // A sheet names its width with `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
 // on its section line. A sheet followed straight away by one whose width completes
 // it (half and half, narrow and wide, wide and narrow) is wrapped with it in a
-// `div.dc-pu-row`, and section.css reads the widths off the row. A sheet with a
+// `div.dc-pu-row`, and paste-up.css reads the widths off the row. A sheet with a
 // width and no partner is reported and prints at full width.
 function widthOf(tok) {
   if (tok?.type !== 'layout_section_open') return 0;
@@ -2058,7 +2058,8 @@ export const markers = {
   // `reference`, `lore`, `dm` and `choose` are panels that say what kind of text
   // they hold. The rest are the section-styled components below, reachable by
   // their own marker (`@npc-stat`) or by word (`@section npc`), both writing the
-  // same classes. The CSS is in styles/components/section.css.
+  // same classes. Their CSS is section.css and the sheets beside it (enclosures,
+  // creatures, fiction-excerpt, paste-up) in styles/components/.
   section: {
     variants: {
       panel: 'dc-section-panel',
