@@ -1187,12 +1187,10 @@ Armor reduces damage from every hit.
 
 A `panel`, `reference`, `lore`, `dm` or `catalog` section (and the gear kinds) is a sheet pasted flat on the wall (constitution §IV), with nothing extra to write: a band of wall above and below the paper, the first heading a tag tilted over the paper's top edge, a closing bold line a yellow sticker across its foot, one hard shadow. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look. A sheet never splits: a section that must run on is split in markup, the second part `@section … .dc-pu-cont`, a sheet with no tag (the plugin keeps its first `###` a sub-head).
 
-Two sheets side by side are a row: `@row` (half and half), `@row-wide` (62/38) or `@row-narrow` (38/62), closed by `@end-row`, each sheet ending at its own last line. `### Title {.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, `## Title {.dc-pu-bill}` makes a sheet's title a bill, and `![Caption](x.png){.dc-pu-plate}` pastes a framed print on the wall (`.gp-size-30` and the like set its width; `{.dc-pu-cutout}` pins a cut-out instead).
+Two sheets side by side are a row. Each sheet says its own width on its section line, `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%), and two sheets in a row whose widths complete it (half and half, narrow and wide, wide and narrow) sit side by side, each ending at its own last line. There is no row marker; a sheet with a width and no partner is reported and prints full width. `### Title {.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, `## Title {.dc-pu-bill}` makes a sheet's title a bill, and `![Caption](x.png){.dc-pu-plate}` pastes a framed print on the wall (`.gp-size-30` and the like set its width; `{.dc-pu-cutout}` pins a cut-out instead).
 
 ```markdown {.dg-split}
-@row
-
-@section panel
+@section panel .dc-half
 
 ### Lucid
 
@@ -1202,7 +1200,7 @@ You see the Dream as it is. Roll as normal.
 
 @end-section
 
-@section panel
+@section panel .dc-half
 
 ### Surreal
 
@@ -1213,8 +1211,6 @@ The Dream bends around you. Roll twice and take the lower.
 Every ten feet you fall is one damage.
 
 @end-section
-
-@end-row
 
 @section panel .dc-pu-cont
 
@@ -1229,9 +1225,7 @@ Result {.dg-result}
 
 <div class="dg-stage">
 
-@row
-
-@section panel
+@section panel .dc-half
 
 ### Lucid
 
@@ -1241,7 +1235,7 @@ You see the Dream as it is. Roll as normal.
 
 @end-section
 
-@section panel
+@section panel .dc-half
 
 ### Surreal
 
@@ -1252,8 +1246,6 @@ The Dream bends around you. Roll twice and take the lower.
 Every ten feet you fall is one damage.
 
 @end-section
-
-@end-row
 
 @section panel .dc-pu-cont
 
@@ -1269,9 +1261,7 @@ A continuation sheet: the second part of a sheet split in markup. No tag, and it
 The two other widths:
 
 ```markdown {.dg-split}
-@row-wide
-
-@section panel
+@section panel .dc-wide
 
 ### The Long Sheet
 
@@ -1279,7 +1269,7 @@ Sixty-two parts of the row: the main text of the pair.
 
 @end-section
 
-@section panel
+@section panel .dc-narrow
 
 ### Aside
 
@@ -1287,11 +1277,7 @@ Thirty-eight.
 
 @end-section
 
-@end-row
-
-@row-narrow
-
-@section panel
+@section panel .dc-narrow
 
 ### Intro
 
@@ -1299,24 +1285,20 @@ A short lead-in.
 
 @end-section
 
-@section panel
+@section panel .dc-wide
 
 ### The Long Sheet
 
 The other way round: thirty-eight, then sixty-two.
 
 @end-section
-
-@end-row
 ```
 
 Result {.dg-result}
 
 <div class="dg-stage">
 
-@row-wide
-
-@section panel
+@section panel .dc-wide
 
 ### The Long Sheet
 
@@ -1324,7 +1306,7 @@ Sixty-two parts of the row: the main text of the pair.
 
 @end-section
 
-@section panel
+@section panel .dc-narrow
 
 ### Aside
 
@@ -1332,11 +1314,7 @@ Thirty-eight.
 
 @end-section
 
-@end-row
-
-@row-narrow
-
-@section panel
+@section panel .dc-narrow
 
 ### Intro
 
@@ -1344,15 +1322,13 @@ A short lead-in.
 
 @end-section
 
-@section panel
+@section panel .dc-wide
 
 ### The Long Sheet
 
 The other way round: thirty-eight, then sixty-two.
 
 @end-section
-
-@end-row
 
 </div>
 

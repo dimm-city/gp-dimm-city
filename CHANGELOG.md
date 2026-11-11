@@ -72,9 +72,13 @@ and the styles say where a reader is and what they are reading.
   gone: its rules live with the components they style (sheets, tags, bills,
   stickers and rows in `section.css`, plates and cut-outs in `images.css`), and
   a paste-up chapter needs no raw HTML.
-  - `@row`, `@row-wide` (62/38) and `@row-narrow` (38/62), closed by
-    `@end-row`, replace `<div class="dc-pu-row">` … `</div>`. They write the
-    same `div.dc-pu-row`; the widths are the token `--dc-pu-row-cols`.
+  - Two sheets side by side need no wrapper: each sheet says its width on
+    its section line (`.dc-half`, `.dc-narrow` 38%, `.dc-wide` 62%), and the
+    plugin wraps two adjacent sheets whose widths complete a row in the same
+    `div.dc-pu-row`, replacing `<div class="dc-pu-row">` … `</div>`. A sheet
+    with a width and no partner is reported (`row_unpaired`). The `@row`,
+    `@row-wide` and `@row-narrow` markers of 1.10.3-alpha.1 and alpha.2 are
+    retired: delete their lines and write the widths on the two sheets.
   - A `.dc-pu-cont` sheet that opens with a `##` or `###` gets its
     `.dc-pu-spacer` from the plugin; drop `<div class="dc-pu-spacer"></div>`.
   - `{.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, in the sheet's bar

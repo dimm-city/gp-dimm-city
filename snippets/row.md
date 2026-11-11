@@ -1,6 +1,4 @@
-@row
-
-@section panel
+@section panel .dc-half
 
 ### {{left-title}}
 
@@ -8,12 +6,10 @@
 
 @end-section
 
-@section panel
+@section panel .dc-half
 
 ### {{right-title}}
 
 {{right}}
 
 @end-section
-
-@end-row
