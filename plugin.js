@@ -1680,6 +1680,14 @@ function dcCallouts(state) {
       open.attrSet('class', open.attrGet('class').replace('dc-alert', 'dc-alert dc-note'));
     }
     if (open.meta.labelled) return; // an explicit label="…" wins
+    // An example that opens with its own heading ("### Example: Toxic Evolution")
+    // is titled by it: the heading is set as the example's label, words as
+    // written, and no default "Example" is added beside it. Every example then
+    // reads the same, a box under one label.
+    if (variant === 'example' && rest[0]?.type === 'heading_open') {
+      addTokenClass(rest[0], 'dc-alert-label');
+      return;
+    }
     const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
     return [open, label, ...rest];
   });
@@ -1922,6 +1930,31 @@ function validateProcedure({ blocks }) {
 /**
  * Main plugin function - the default export Gutterpress loads
  */
+// ── Steps: a numbered `##` standing on the page ─────────────────────────────
+//
+// A `##` that stands on the page (in no section or component) and opens with a
+// step number, `## 4. Ideal`, is a step of the book's procedure (the Citizen
+// File's 0-7). Its number, written as it is, goes in `span.dc-step-num`, which
+// the page slip sets as a chip in the chapter's colour, so the steps read as one
+// sequence. The heading keeps no class of its own, so it stays the slip.
+function dcSteps(state) {
+  let depth = 0;
+  const t = state.tokens;
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i];
+    if (tok.type === 'layout_section_open' || tok.type === 'layout_component_open') depth++;
+    else if (tok.type === 'layout_section_close' || tok.type === 'layout_component_close') depth--;
+    else if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h2' && !tok.attrGet('class')) {
+      const first = t[i + 1]?.children?.[0];
+      const m = first?.type === 'text' && /^(\d{1,2}\.)\s+/.exec(first.content);
+      if (!m) continue;
+      const num = makeToken('html_inline', '<span class="dc-step-num">' + esc(m[1]) + '</span> ');
+      first.content = first.content.slice(m[0].length);
+      t[i + 1].children.unshift(num);
+    }
+  }
+}
+
 // ── Paste-up: rows and continuation sheets ──────────────────────────────────
 //
 // `@row` … `@end-row` is two sheets side by side (`@row-wide` 62/38,
@@ -1965,6 +1998,7 @@ export default function dimmCityPlugin(md, options = {}) {
   // transform operates on already-parsed token streams.
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
   md.core.ruler.push('dc_rows', dcRows);
+  md.core.ruler.push('dc_steps', dcSteps);
   md.core.ruler.push('dc_continuations', dcContinuations);
 
   // Transform the canonical roll instruction while it is still structured

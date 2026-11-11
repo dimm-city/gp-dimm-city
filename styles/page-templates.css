@@ -476,6 +476,20 @@
   padding-top: 0.13in;
 }
 
+/* A step (`## 4. Ideal`, plugin.js dcSteps): its number is a chip in the
+   chapter's colour at the head of the slip, so a procedure's steps read as one
+   numbered sequence wherever they fall. */
+.dc-step-num {
+  display: inline-block;
+  min-width: 1.15em;
+  margin-right: 0.35em;
+  padding: 0 0.22em;
+  background: var(--dc-section-accent);
+  color: var(--paper-cream);
+  text-align: center;
+  box-shadow: 2px 2px 0 var(--ink-dark);
+}
+
 /* `###`: the slip again, at the full width of its column, with a thinner
    rail and foot (a tag that shrank to its words left a ragged right edge
    above the full-width sheet under it). */

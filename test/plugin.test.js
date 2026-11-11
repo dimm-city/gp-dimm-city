@@ -1924,6 +1924,22 @@ describe("paste-up: rows and continuation sheets", () => {
   });
 });
 
+describe("steps and examples", () => {
+  test("a ## standing on the page that opens with a step number gets its number chip; inside a section, or a year, it does not", () => {
+    expect(renderGp("## 4. Ideal\n\nText.").html).toContain('<h2><span class="dc-step-num">4.</span> Ideal</h2>');
+    expect(renderGp("@section panel\n\n## 4. Inside\n\nx\n\n@end-section").html).not.toContain("dc-step-num");
+    expect(renderGp("### 4. Third level").html).not.toContain("dc-step-num");
+    expect(renderGp("## 2026. A year").html).not.toContain("dc-step-num");
+  });
+  test("an example that opens with its own heading is labelled by it, with no default Example beside it", () => {
+    const own = renderGp("@callout example\n\n### Example: Toxic Evolution\n\nx\n\n@end-callout").html;
+    expect(own).toContain('<h3 class="dc-alert-label">Example: Toxic Evolution</h3>');
+    expect(own).not.toContain('<span class="dc-alert-label">');
+    expect(renderGp("@callout example\n\nJust text.\n\n@end-callout").html).toContain('<span class="dc-alert-label">Example</span>');
+    expect(renderGp("@callout note\n\n### A heading\n\nx\n\n@end-callout").html).toContain('<span class="dc-alert-label">Note</span>');
+  });
+});
+
 describe("the die call", () => {
   const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 

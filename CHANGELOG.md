@@ -9,7 +9,30 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [1.10.3] - 2026-11-10
 
-Paste-up becomes part of the package proper, and gear sections get a kind each.
+Paste-up becomes part of the package proper, gear sections get a kind each,
+and the styles say where a reader is and what they are reading.
+
+### Semantic styles
+
+- **`@chapter dm` and `@chapter gear`.** The Dream Master's chapter (ink) and
+  the armory (amber) are places of their own, not two more rust rules
+  chapters. A chapter's colour is every plain panel's tag and rail, its opener
+  and its footer chip; a section's kind (reference, lore, dm, catalog) keeps
+  its own colour and silhouette in any chapter.
+- **A specialty's pages carry chapter 2's chip.** A specialty block has no
+  `.page` of its own, so its pages showed the default magenta chip (chapter
+  1's colour). `scripts/wall-tiles.py` gives a block's children the wall's
+  chapter twin.
+- **One roll-result look.** Every two-column table of d20 results is the
+  outcome ladder: an ability's own bands (16-19 over 11-15, 1-5, 2-10, 11+),
+  labelled bands ("20: Total Wholeness", "Triumph (20)") and tier words
+  ("Success") included, each row in its band's tier colour. Bands that
+  overlap or straddle 10/11 stay a table; `@roll-table` is never a ladder.
+- **Steps.** A `##` standing on the page that opens with a step number
+  (`## 4. Ideal`) has its number set as a chip in the chapter's colour, so a
+  procedure's steps read as one sequence.
+- **Examples.** An example that opens with its own heading is labelled by it,
+  with no default "Example" tag beside it.
 
 ### Changed
 
