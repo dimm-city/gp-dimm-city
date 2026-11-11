@@ -13,7 +13,7 @@
    MUST NOT CONTAIN:
    - :root token definitions (→ dc-component-defaults.css)
    - .dc-* component styles (→ components/*.css)
-   - columns:N rules (→ page-templates.css)
+   - column layout (core's `@columns N`)
    - @page declarations or named-page assignments (→ page-rules.css)
    - Component-scoped font-size or line-height overrides — each component
      owns its own typography via its own selector
@@ -67,23 +67,9 @@ body {
    sub-section label where the outline needs a section:
      ## Useful Items {.dc-h3}
    Each look rule below sets every property any level's rule sets, so the
-   class fully replaces the tag's own look (a class outranks an element).
-   overflow-wrap: the display face is wide and set in caps, so one long word
-   (INTERDIMENSIONALISM at 16pt in a ~3.4in column) outruns its box: it ran
-   under the next column or was clipped at the edge, losing letters in print.
-   A word that cannot fit now breaks as a last resort, at every level, in every
-   context; words that fit are untouched. `break-word` (not `anywhere`) keeps
-   min-content widths intact for shrink-to-fit headings such as banners and
-   tabs. A soft hyphen (&shy;) in the source still picks a better break.
-   `hyphens: auto` (inherited from body) hyphenates where the engine has a
-   dictionary, but uppercase display words are not reliably hyphenated, so
-   the guaranteed break does not depend on it. */
-/* SUPERSEDED: a heading breaks only BETWEEN words (CYBERNETIC / S was a
-   mid-word break in a narrow column). `overflow-wrap: normal` and
-   `hyphens: manual` mean a single word wider than its column is not split:
-   it overflows its box on the trailing side instead, so an author gives it
-   room (a wider column) or a soft hyphen (&shy;) at a place of their
-   choosing, which `hyphens: manual` still honours. */
+   class fully replaces the tag's own look (a class outranks an element). */
+/* A heading breaks only between words (`overflow-wrap: normal`, `hyphens: manual`):
+   a word wider than its column overflows, and a soft hyphen (&shy;) in the source picks the break. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
@@ -103,6 +89,9 @@ h1, h2, h3, h4, h5, h6,
   overflow-wrap: normal;
   hyphens: manual;
 }
+/* A heading that wraps never splits across a page; keeping it with what follows is core's
+   `break-after: avoid` (MARKER_CSS). */
+h2, h3, h4 { break-inside: avoid; }
 
 /* A struck word in a heading or a bar ("ROLL ~~M~~OR~~E~~ DIE!": markdown's
    `~~` is <s>) is a joke the reader has to be able to read: the default hairline
@@ -353,19 +342,6 @@ dl dt:first-child { margin-top: 0; }
 dd {
   margin: 0.02in 0 0 var(--space-md);
   color: var(--ink);
-}
-
-
-/* ── Headings: never split a multi-line heading across a page ────────────────
-   Keeping a heading WITH the content that follows is core's job — MARKER_CSS
-   ships `:where(h1,h2,h3,h4,h5,h6) { break-after: avoid }`, and CSS
-   Fragmentation resolves a break opportunity as "avoid" if EITHER adjacent
-   box says so. What core does not cover is a heading that wraps to two
-   lines splitting across the page boundary. */
-h2,
-h3,
-h4 {
-  break-inside: avoid;
 }
 
 }

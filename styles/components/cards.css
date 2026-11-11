@@ -64,7 +64,11 @@
 }
 
 /* ── Card tab ─────────────────────────────────────────────────────────── */
+/* The tab chip is a separate block from its .dc-card-body, so a page break can
+   land between them and strand the tab at a page foot: the tab keeps with the
+   body, and the body's first child with the body's start. */
 .dc-card-tab {
+  break-after: avoid;
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -93,7 +97,7 @@
 /* Inside a skill card the tab's surface, accent border and clip move onto
    ::before, and ::after adds the 2px ink outline around the tab's
    silhouette. The element keeps its box
-   (the transparent 2px border preserves the metrics) but no longer clips:
+   (the transparent 2px border preserves the metrics) but does not clip:
    an element with clip-path clips its own pseudos, which is the whole reason
    the outline has to be a sibling layer and the clip has to move down one
    level. */
@@ -171,8 +175,7 @@
 /* The tier pill (AUG1.3) is the specialty's own: a chip of its bright signal
    colour (cream with a dark edge where the signal fails 4.5:1 for the type),
    set by the --dc-tier-* tokens the specialty wiring fills (specialty-identity.css).
-   Outside a specialty it is ink with cream type. It was bronze/gold/silver by
-   position, colours unrelated to the card's specialty. */
+   Outside a specialty it is ink with cream type. */
 .dc-tab-tier {
   display: inline-flex;
   align-items: center;
@@ -327,6 +330,10 @@
   border-top-width: 1.5pt;
 }
 
+.dc-card-body > :first-child {
+  break-before: avoid;
+}
+
 /* A card never opens with just its tab and a line or two at a page foot: its
    first two blocks (the flavor line and a possibly one-line ability) stay with
    the first two lines of what follows, or the card moves to the next page. */
@@ -385,11 +392,11 @@
    lead-in and the plate move together; a list or a table CAN split (below), so
    the lead-in only needs its first rows.
 
-   An ability row is otherwise NOT a lead-in. It used to be glued to the block
-   after it, so a card of N rows had no place to split at all, and a card that
-   reached a page foot split inside its one breakable paragraph instead (a row
-   or two on one page, a hand's breadth of empty cream under them, the rest on
-   the next). Rows split between rows; only the last block stays with the one
+   An ability row is otherwise NOT a lead-in: glued to the block after it, a card
+   of N rows would have no place to split at all, and a card that reached a page
+   foot would split inside its one breakable paragraph instead (a row or two on
+   one page, a hand's breadth of empty cream under them, the rest on the
+   next). Rows split between rows; only the last block stays with the one
    above it (below). */
 .dc-skill-card .dc-card-inner > p.dc-card-subhead:not(:last-child),
 .dc-skill-card .dc-card-inner > p:has(+ :is(ul, ol, table, .dc-outcomes, .dc-roll-table)),

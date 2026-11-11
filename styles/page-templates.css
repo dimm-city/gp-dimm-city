@@ -108,66 +108,31 @@
 }
 
 /* ── PAGE TEMPLATE: FRONTMATTER (TOC + CREDITS) ─────────────────────────────
-   Shared opening-spread template for any DC-branded book. Owns the full
-   visual contract for the two-page TOC + Credits frontmatter, written as:
+   The opening spread of any DC-branded book, written as `@page contents` and
+   `@page credits`, each a `#` title, an `@lede`, then `@toc` or a flat section
+   in `@columns 2` of `**Role:** Names` lines. This block is the single place
+   TOC and Credits styling lives.
 
-     @page contents
-     # Contents
-     @lede ... @end-lede
-     @toc ... @end-toc
+   Public API:
+     --frontmatter-accent    the one recolor knob: lede strip, masthead border,
+                             TOC number badges, colophon role-label underline
+                             (default --brand-magenta-deep)
+     --frontmatter-lede-bg   lede substrate (default --concrete-pale)
+   A project recolors both pages in one rule on
+   `.page.dc-page-contents, .page.dc-page-credits`.
 
-     @page credits
-     # Credits
-     @lede ... @end-lede
-     @section flat
-     @columns 2
-     **Role:** Names
-     ...
-     @end-columns
+   A colophon line's role label is positional: the FIRST `**bold**` token of a
+   paragraph (`p strong:first-child`) is set as the row's mono-caps label with
+   the accent underline. A paragraph that opens with anything else gets no
+   label and nothing warns.
 
-   ── Template public API ──────────────────────────────────────────────────
-   --frontmatter-accent    Single recolor knob. Drives the lede left-strip,
-                           masthead border, TOC number badges, and the
-                           colophon role-label underline.
-                           Default: --brand-magenta-deep (cyber signature).
-   --frontmatter-lede-bg   Lede substrate. Default: cool light grey concrete
-                           swatch lifted off the warm-grey wall.
-
-   Per-project recolor is one rule:
-     .page.dc-page-contents, .page.dc-page-credits {
-       --frontmatter-accent: var(--brand-cyan);
-     }
-
-   ── Colophon role-label convention ──────────────────────────────────────
-   Markdown-convention, not a macro: inside the credits page's flat section, whichever
-   `**bold**` token comes FIRST in a paragraph is selected positionally
-   (`p strong:first-child`) and rendered as the row's mono-caps role-label
-   chrome with the accent underline. Write every colophon line as
-   `**Role:** Names` — the bold prefix IS the label. A paragraph that opens
-   with anything else (plain text, an em, a bold token that isn't first)
-   silently gets no label chrome; nothing warns when that happens.
-
-   ── Composite contract ──────────────────────────────────────────────────
-   The masthead, lede, and primary content (TOC card OR credits colophon)
-   stack flush with no gaps and read as ONE cohesive object lifted from
-   the wall. To make that work:
-     - The masthead is full-bleed across the page and casts NO shadow of
-       its own. Its full width is part of the banner identity, not a card
-       edge that should "lift."
-     - The body column (lede + primary) carries the lift. Each child
-       keeps its own --shadow-poster; flush stacking means each child's
-       bottom shadow hides under the next sibling, so the body column
-       reads as ONE card with a continuous right + bottom shadow.
-     - The TOC's component-default 4pt magenta top/bottom rails are
-       stripped — they would show as a "seam" at the lede/TOC junction.
-     - Color contrast between the three substrates (ink-dark masthead →
-       cool light grey lede → paper-cream primary) carries the internal
-       hierarchy without dividing rules.
-     - The masthead's magenta border-bottom is the single accent cut line
-       inside the composite.
-
-   This block is the SINGLE location where TOC and Credits styling lives —
-   do not split it across the book's own sheet. */
+   The masthead, lede and primary content stack flush as one object lifted from
+   the wall. The masthead is full-bleed and casts no shadow; the body column
+   (lede + primary) carries the lift, each child keeping its own --shadow-poster
+   so the one below hides the one above's bottom shadow; the TOC's own magenta
+   rails are stripped so no seam shows at the lede/TOC junction; and the three
+   substrates (ink-dark masthead, concrete lede, paper-cream primary) carry the
+   hierarchy without dividing rules. */
 
 /* Identity tokens for the spread: --dc-intro-accent / --dc-intro-bg recolour
    the lede. */
@@ -692,7 +657,7 @@
    intro asks for a side; the plate just takes the next page, which faces
    the intro as long as the intro fits on one page (a longer intro pushes the
    plate to the next left page). A `right` on the plate as well made the PDF
-   misplace intros (dimm-city/gutterpress#421).
+   misplace intros.
    Every learning path then opens a new page. The first path's break falls
    where the plate's page ends, and the two combine into one break, so it
    adds no blank page.
@@ -749,39 +714,18 @@
    that overflows by a line or two fits; type size and leading are untouched.
    Lives in dc.templates so it outranks the dc.components and dc.base
    paragraph/list margins, and `revert-layer` hands the margin back to them
-   while the token is unset. The contents-page rows and the credits colophon,
-   which fix their own spacing here, outrank it. */
-:is(p, li) {
+   while the token is unset. A component that keeps its own gap (a numbered
+   step, a die call, a paste-up sticker) is left out by the `:where(:not())`
+   or sets `--dc-flow-gap: initial`, which reverts to its own margin. The
+   contents-page rows and the credits colophon, which fix their own spacing
+   here, outrank it. */
+:is(p, li):where(:not(.dc-steps > li, p.dc-die-call)) {
   margin-bottom: var(--dc-flow-gap, revert-layer);
 }
 /* An item's own paragraph (a loose list) has no margin of its own, so the gap
    above is the item's alone and a tight and a loose list keep one pitch. */
 li > p {
   margin-bottom: 0;
-}
-/* A numbered step is a ruled cell: its number block runs the cell's full height,
-   so the gap under a paragraph or item never opens between two rows. */
-.dc-steps > li {
-  margin-bottom: 0;
-}
-/* A die call is a stamped chip, not a line of text: it keeps its own air
-   under it at any paragraph gap. */
-p.dc-die-call {
-  margin-bottom: var(--space-md);
-}
-/* A paste-up sticker seats itself (section.css, PASTE-UP): 10pt under one mid-sheet,
-   across the paper's foot when it closes the sheet, and the line above a row's
-   closing sticker keeps its air. All three at any paragraph gap. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
-.section.dc-fiction-excerpt > .dc-kicker {
-  margin-bottom: 10pt;
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child,
-.section.dc-fiction-excerpt > .dc-kicker:last-child {
-  margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
-}
-.dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
-  margin-bottom: var(--space-lg);
 }
 .dc-snug {
   --dc-flow-gap: 0.04in;

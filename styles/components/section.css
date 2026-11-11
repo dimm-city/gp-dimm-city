@@ -1,67 +1,26 @@
 @layer dc.components {
 
 /* ── Section variants ────────────────────────────────────────────────────
-   A bare `@section` is core's plain box: this package styles NO rule that
-   matches `.section` without a `dc-` class beside it (test/conventions.test.js
-   enforces it). The look lives on the variant classes core writes for
-   `@section <word>` (plugin.js, `section.variants`):
+   A bare `@section` is core's plain box: no rule here matches `.section`
+   without a `dc-` class beside it (test/conventions.test.js). The look lives on
+   the variant classes core writes for `@section <word>` (plugin.js,
+   `section.variants`): panel (cream card, accent rail, clipped corner, shadow,
+   heading bar) and flat (cream host, rail only); npc, walkthrough, flaws,
+   ideals and dreams are a panel plus a component class.
 
-     panel   .dc-section-panel   cream card, accent rail, clipped corner,
-                                 shadow, heading bar          (this file)
-     flat    .dc-section-flat    cream host with the rail only
-     npc, walkthrough, flaws, ideals, dreams  = a panel plus the component class
-     fiction, cards              = the component class alone
+   Sections split across pages by default; `.dc-avoid-split` keeps one whole by
+   setting `--dc-section-break-inside`. The public `--dc-section-*` tokens are
+   declared and described in dc-component-defaults.css; a variant or template
+   owns its chrome by setting them on its own rule, never the properties.
 
-   Sections split across pages by default. `.dc-avoid-split` keeps one whole,
-   by setting `--dc-section-break-inside` (below).
-
-   Public tokens (defaults declared in dc-component-defaults.css :root):
-     --dc-section-break-inside — `avoid` keeps a section whole, `auto` lets it
-                            split. An `@npc-stat` with at most one `####` and a catalog
-                            have their own (`--dc-npc-stat-break-inside`,
-                            `--dc-catalog-break-inside`).
-     --dc-section-bg      — panel / flat background surface
-     --dc-section-accent  — rail and title-bar colour; the one accent knob
-     --dc-section-bar-mix / -bar-tone — the title bar's fill: the accent mixed
-                            with a tone, `mix` of it (100% = the accent itself,
-                            the default, so a chapter that sets only the accent
-                            still recolours every bar; 0% = the tone alone, 72%
-                            = a deepened accent). -bar-fg is the bar's text;
-                            -bar-rule / -bar-rule-sub the whole `border-bottom`
-                            under a `##` / a `###` bar. A kind of section sets
-                            them; it never repaints the bar's properties.
-     --dc-section-flag    — one more box-shadow in the surface layer's stack (the
-                            headless DM strip is an inset one)
-     --dc-section-surface / --dc-section-shadow — `content` of the panel's
-                            ::before / ::after layers: "" paints, `none`
-                            removes the layer
-     --dc-section-drop    — flat only: an extra box-shadow (a drop shadow)
-     --dc-section-pad-top/-right/-bottom/-left — padding; the panel's heading
-                            bar derives its negative margins from them
-     --dc-section-clip / --dc-section-rail — the panel's top-right chamfer and
-                            rail width (the ::before/::after layers read them,
-                            so a page template changes the edge without
-                            touching them)
-     --dc-section-cut-tl/-br/-bl — chamfers on the other three corners (0 by
-                            default); each kind of panel cuts its own set, and
-                            the title bar follows the top two
-     --dc-section-gap / --dc-section-grow — space below; flex-grow in a flex page
-     --dc-section-edge  — how far the panel's bottom edge hangs below the box
-                            instead of sitting in its padding. A panel splits
-                            across pages, so by default it is the bottom
-                            padding: a section that ends flush at a page foot
-                            has no padding left to spill onto the next page.
-                            Mechanism: padding-bottom shrinks by the edge, the
-                            ::before/::after layers paint it below the box (as
-                            box-shadow, never as layout), and margin-bottom
-                            grows by it. `.dc-avoid-split`
-                            and every box that paints its own surface keep it
-                            at 0px. A book that keeps one section whole from
-                            its own sheet sets both
-                            (`--dc-section-break-inside: avoid;
-                            --dc-section-edge: 0px`): the first keeps the box
-                            whole, the second keeps its padding inside it.
-   A variant or template owns its chrome by setting these on its own rule. */
+   `--dc-section-edge` is how far the panel's bottom edge hangs below the box
+   instead of sitting in its padding. A panel splits, so by default the edge is
+   the bottom padding: a section that ends flush at a page foot has none left
+   to spill onto the next page. padding-bottom shrinks by the edge, the
+   ::before/::after layers paint it below the box (box-shadow, never layout)
+   and margin-bottom grows by it. A box that paints its own surface, or is kept
+   whole, sets it to 0px (a book keeping one section whole sets both
+   `--dc-section-break-inside: avoid; --dc-section-edge: 0px`). */
 
 /* ── A bare `@section` ──────────────────────────────────────────────────────
    No variant word, no look of its own, and still never text on the brick: the
@@ -661,10 +620,9 @@ h3 + .dc-section-panel {
   --dc-section-bar-rule: 3pt double var(--dc-section-accent);
   --dc-section-bar-rule-sub: 3pt double var(--dc-section-accent);
   --dc-section-pad-bottom: 6pt;  /* the 4px perforation + 2pt */
-  /* The form's edge used to be a 2pt border (snapped by the engine to 2px,
-     1.5pt) outside the padding; the ring is paint now, so its 1.5pt is added to
+  /* The form's edge is a ring of paint (1.5pt), not a border, so it is added to
      the padding, whatever the padding tokens are: a form is as tall and as wide
-     as it was. The top is then half the stamp's height (9.1pt) plus 1.5pt. */
+     as its padding says. The top is then half the stamp's height (9.1pt) plus 1.5pt. */
   padding: calc(var(--dc-section-pad-top) + 1.5pt) calc(var(--dc-section-pad-right) + 1.5pt) calc(var(--dc-section-pad-bottom) + 1.5pt) calc(var(--dc-section-pad-left) + 1.5pt);
   background: none;
   box-shadow: none;
@@ -954,7 +912,7 @@ h3 + .dc-section-panel {
      .dc-card-pull     — pull-quote or flavor intro (first blockquote)
      .dc-card-body     — remaining content container
    Footer: the last blockquote in .dc-card-body; no wrapper div emitted. The
-   plugin tags it .dc-card-footer (dc#44).
+   plugin tags it .dc-card-footer.
 
    Plugin macro:
      @card .dc-flaws … @end-card
@@ -1277,31 +1235,11 @@ h3 + .dc-section-panel {
 /* ═════════════════════════════════════════════════════════════════════════
    CITIZEN-WALKTHROUGH — guide for filling out the Citizen File
    ═════════════════════════════════════════════════════════════════════════
-   The chapter that walks a reader through each Citizen File field (not the
-   filled-form artifact).
-
-   Applied via:
-     @page citizen-file                                  ← topic page
-     @citizen-walkthrough (or @section walkthrough)      ← a panel
-
-   This component carries minimal bespoke CSS. Styling comes primarily from
-   the standard section chassis (clipped-corner ::before with the
-   --dc-section-accent stripe + --dc-section-bg substrate + ::after fake
-   shadow) plus the dc-core.css element baselines; the rule below addresses a
-   problem the chassis does not cover.
-
-   To tune the walkthrough's accent or substrate, override the existing
-   --dc-section-accent / --dc-section-bg custom properties at the chapter
-   id scope in the book's own sheet (unlayered).
-
-   When the walkthrough's first card sits in an `@columns 2` run for an
-   internal Handle/Designation split, the longer h4 text ("What's Yr Handle?")
-   wraps to 2 lines while shorter text ("Designation") fits on 1 line at the
-   narrow column width, so the body text below each h4 starts at different
-   baselines across columns. Reserve uniform heading height inside the
-   walkthrough's column runs so both columns' body content starts at the same
-   y. Keyed on the run (`.gp-columns`, what `@columns` emits), not on the card
-   chrome: the asymmetry is caused by the narrow column measure. */
+   `@citizen-walkthrough` (or `@section walkthrough`) is a panel; the chassis
+   gives it its look. In a two-column run the longer h4 ("What's Yr Handle?")
+   wraps to two lines and a shorter one to one, so the body below each starts
+   at a different baseline. Reserve two lines of heading height inside the
+   walkthrough's column runs. */
 .dc-citizen-walkthrough .gp-columns h4 {
   min-height: calc(2 * var(--lh-tight) * 1em);
 }
@@ -1832,13 +1770,26 @@ p:has(+ .dc-kicker) {
 .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
 .section.dc-fiction-excerpt > .dc-kicker {
   width: fit-content; max-width: 86%;
-  margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 0 auto;   /* its foot: page-templates.css, FLOW GAP */
+  /* 10pt under one mid-sheet; the closing one straddles the paper's foot. Both hold at any paragraph gap (--dc-flow-gap). */
+  margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 10pt auto;
+  --dc-flow-gap: initial;
   padding: var(--space-xs) var(--space-md);
   border: 1.5pt solid var(--ink); background: var(--brand-yellow); color: var(--ink);
   box-shadow: 2px 2px 0 var(--ink);
   font-size: var(--dc-pu-sticker-size); line-height: 1.25;
   transform: rotate(-2deg);
   position: relative; z-index: 2;
+}
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child,
+.section.dc-fiction-excerpt > .dc-kicker:last-child {
+  margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
+}
+/* A line above a row's closing sticker keeps its air at any paragraph gap. */
+.dc-pu-row > .dc-section-panel > p:has(+ .dc-kicker:last-child) {
+  --dc-flow-gap: initial;
+}
+.dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
+  margin-bottom: var(--space-lg);
 }
 /* A fiction excerpt's sticker is set upright, like any sticker. */
 .section.dc-fiction-excerpt > .dc-kicker { font-style: normal; }

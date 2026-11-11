@@ -373,7 +373,7 @@ describe("art defaults leave a classed image alone", () => {
 // may set on any box. `revert-layer` hands the margin back while it is unset.
 describe("the flow gap", () => {
   test("the rule reads the token with a `revert-layer` fallback, and `.dc-snug` sets it to 0.04in", () => {
-    expect(declsOf("styles/page-templates.css", ":is(p, li)")["margin-bottom"]).toBe("var(--dc-flow-gap, revert-layer)");
+    expect(declsOf("styles/page-templates.css", ":is(p, li):where(:not(.dc-steps > li, p.dc-die-call))")["margin-bottom"]).toBe("var(--dc-flow-gap, revert-layer)");
     expect(declsOf("styles/page-templates.css", ".dc-snug")["--dc-flow-gap"]).toBe("0.04in");
   });
 
