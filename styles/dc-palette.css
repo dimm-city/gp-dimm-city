@@ -108,7 +108,6 @@
   /* ── Borders ──────────────────────────────────────────────────────────── */
   --border-hairline: var(--ink);  /* the column and table rule: hairlines are >= 1pt in --ink or a one-ink tint (was tan #c8b898, three inks) */
   --bw-thin:         1px;
-  --callout-border-width-small: 2px;  /* public; no package rule reads it */
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
@@ -145,8 +144,6 @@
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
   --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; a mono label, not a smaller h5 */
-
-  --fw-bold:     700;  /* public; no package rule reads it */
 
   --lh-display: 1.35;  /* headings. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart */
   --lh-tight:  1.35;   /* compact running text */

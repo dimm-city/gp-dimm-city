@@ -946,7 +946,7 @@ The city didn't go quiet --- it got loud. You came to Dimm City to disappear, an
 <p data-source-range="75:76">Field manual, second draft</p>
 </div>
 </div>
-<p>Tokens: <code>--dc-pullquote-accent</code>, <code>--dc-pullquote-accent-soft</code>, <code>--dc-pullquote-bg</code>.</p>
+<p>Tokens: <code>--dc-pullquote-accent</code>, <code>--dc-pullquote-bg</code>.</p>
 <h2 data-name="alerts">Alerts</h2>
 <p>One shell, eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label, so a reader knows the kind before reading a word, in colour and in grayscale. Every one is a white sheet: its colour is in the rail, the frame and the label, never in the fill. Write a GFM alert — a blockquote whose first line is <code>[!TYPE]</code>, for the first seven — and the label, colour, edge and shape come with the type. To give one its own title, write it after the marker with the body on the lines below (<code>&gt; [!NOTE] Escaping A Grapple</code>): the title replaces the default label and the alert keeps its register. Text after the marker in a one-line alert is body text. Use the blockquote form for a single paragraph; for several paragraphs, a list, or a custom label, use the <code>@callout</code> block below.</p>
 <pre><code class="dg-split language-markdown" data-source-range="86:109">&gt; [!NOTE]
@@ -4151,7 +4151,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="109:110">
 <td>Pull quote</td>
-<td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-accent-soft</code> <code>--dc-pullquote-bg</code></td>
+<td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-bg</code></td>
 </tr>
 <tr data-source-range="110:111">
 <td>Alerts, callout, DM note</td>
@@ -4255,7 +4255,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="135:136">
 <td>Skill card</td>
-<td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-body-mark</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code> <code>--dc-tier-bg</code> <code>--dc-tier-fg</code> <code>--dc-tier-edge</code></td>
+<td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code> <code>--dc-tier-bg</code> <code>--dc-tier-fg</code> <code>--dc-tier-edge</code></td>
 </tr>
 <tr data-source-range="136:137">
 <td>AP chip</td>

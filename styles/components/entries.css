@@ -76,7 +76,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   line-height: 1.3;
   hyphens: none;
@@ -487,7 +487,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
 }
 .dc-field > p {

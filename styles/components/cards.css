@@ -7,7 +7,6 @@
      --dc-card-surface         → card body background (default --paper-cream)
      --dc-card-tab-bg          → tab background (default --ink-dark)
      --dc-card-tab-title-color → tab title text color (default --paper-cream)
-     --dc-card-body-mark       → unused (kept for books that set it; the bolt is not tinted) (default --crimson)
      --dc-skill-card-break-inside → `avoid` keeps a card whole (default auto: it splits)
    Specialty themes override these via .dc-specialty.<name> .dc-skill-card { }.
    Adding a new specialty: copy a sibling block (.dc-specialty.augmerc .dc-skill-card)
@@ -366,7 +365,7 @@
 /* The card's closing sub-header (a ##### line) is reading text in mono caps:
    tracked a little less than the bare sub-header (both are at the 10pt floor). */
 .dc-skill-card .dc-sub-header {
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
 }
 
 /* An ability row (AP chip and its text) is never cut between the two. */
@@ -662,7 +661,7 @@
 .dc-ability-text {
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   color: var(--ink);
 }
 
@@ -722,7 +721,7 @@
   font-weight: 400;
   font-synthesis-weight: none;
   font-size: var(--fs-h4);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   line-height: 1.2;
   text-transform: uppercase;
   color: var(--dc-die-call-fg);

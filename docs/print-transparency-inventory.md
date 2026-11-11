@@ -25,7 +25,6 @@ All artwork: shadows, lifts, bevels and a smudge. Each darkens or tints what is 
 | Recess `--shadow-press` | `dc-palette.css`; the soft inset of anything sunk into the wall: the fiction cavity, the `lore` / `dm` / `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
 | Section hard shadow `--dc-section-hard-shadow` | `dc-component-defaults.css`; the section's offset copy (`section.css`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
 | Sticker and path-chip shadows, the spray smudge, the dashed rule | `chrome.css` | 35% and 30% ink; 8% of `--dc-spray-bg`; 50% magenta |
-| Pull-quote accent `--dc-pullquote-accent-soft` | `dc-component-defaults.css` | 15% of `--tint-magenta-rose` |
 | AP-chip and outcome-key bevels | `cards.css`, `data.css` | 8–18% ink and paper |
 
 A book that sets one of these tokens to an opaque colour loses nothing in print; one that sets a text colour translucent flattens that page whole.
@@ -76,6 +75,8 @@ Before Gutterpress had `preserve-text` (#385), Ghostscript flattened any page th
 `--wall-tone: #c1beb8` is the opaque tile's average colour. Shadows that land on the wall mix against it.
 
 ### Changes
+
+This table is historical and superseded: most of its values were later made translucent again by decision (see the table above), and some of the tokens it names no longer exist.
 
 | ID | Component | Before | After | Mixed against | What to look at |
 |---|---|---|---|---|---|

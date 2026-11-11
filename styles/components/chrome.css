@@ -12,7 +12,7 @@
   font-size: var(--fs-floor);
   line-height: 1.25;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
@@ -400,7 +400,6 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
     .dc-section-lore,
     .dc-section-dm,
     .dc-section-choose,
-    .dc-section-catalog,
     .dc-fiction-excerpt,
     .dc-card,
     .dc-skill-card,

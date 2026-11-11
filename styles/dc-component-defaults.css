@@ -161,7 +161,6 @@
   --dc-card-surface:         var(--paper-cream);
   --dc-card-tab-bg:          var(--ink-dark);       /* overridden by .dc-specialty.<name> context */
   --dc-card-tab-title-color: var(--paper-cream);
-  --dc-card-body-mark:       var(--crimson);
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
@@ -446,7 +445,6 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, transparent);
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* The text-safe ink of whatever component the prose sits in: ROLL THE DIE!

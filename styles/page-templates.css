@@ -264,7 +264,7 @@
    `@columns` run and the paragraphs and nothing else on the page. */
 .page.dc-page-credits .dc-section-flat > * {
   font-size: var(--fs-floor);
-  line-height: 1.35;
+  line-height: var(--lh-tight);
 }
 
 .page.dc-page-credits .dc-section-flat p {
@@ -301,7 +301,7 @@
   border-bottom: 1pt solid var(--hud-blue-dim);
   font-family: var(--font-body);
   font-size: var(--fs-body-sm);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
 }
 
 .page.dc-page-contents li::before {

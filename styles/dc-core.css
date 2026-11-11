@@ -295,7 +295,7 @@ th {
   color: var(--paper-cream);
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   text-transform: uppercase;
   padding: var(--dc-th-pad-y) 8px;
   text-align: left;

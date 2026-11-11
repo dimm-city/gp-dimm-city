@@ -137,7 +137,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-floor);
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--ls-display);
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
     color: var(--ink);
@@ -200,7 +200,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-floor);
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--ls-display);
     text-transform: uppercase;
     padding: 2px calc(9px - 0.1em) 0 9px;
     color: var(--ink);

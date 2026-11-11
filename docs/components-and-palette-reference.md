@@ -344,7 +344,6 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-card-surface` | `--paper-cream` | Card body background |
 | `--dc-card-tab-bg` | `--ink-dark` | Tab strip background |
 | `--dc-card-tab-title-color` | `--paper-cream` | Tab title text |
-| `--dc-card-body-mark` | `--crimson` | Unused: kept for books that set it (the card's bolt is not tinted) |
 | `--dc-bolt` / `-bolt-face` / `-bolt-size` | `--ink` / `--paper-stain` / `10px` | The bolt head on a skill card's top right and bottom left, a callout's two top corners and a `##` slip (the slip's `--dc-page-slip-bolt*` default to these): ring and slot, face, diameter |
 | `--dc-skill-foot-bolt-left` / `-bottom` | `4px` / `4px` | Where the card's bottom-left bolt sits, from the left edge and the foot; each specialty sets its own beside its body shape so the bolt clears the foot's cut |
 | `--dc-tier-bg` / `-fg` / `-edge` | `--ink-dark` / `--paper-cream` / `--paper-cream` | The tier pill on the tab; each specialty sets its own chip |

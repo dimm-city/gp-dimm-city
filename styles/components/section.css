@@ -393,8 +393,8 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0.1em;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
   background: var(--dc-section-tab-bg);
   color: var(--dc-section-tab-fg);
   box-shadow: var(--dc-label-shadow);
@@ -542,7 +542,7 @@ h3 + .dc-section-panel {
   clip-path: polygon(0 20px, 56px 0, 20% 0, 23% 4px, 27% 1px, 31% 5px, 36% 0, 41% 4px, 46% 2px, 52% 5px, 58% 0, 63% 4px, 69% 1px, 75% 5px, 81% 0, 87% 4px, 93% 2px, 100% 0, 100% 100%, 0 100%);
 }
 .dc-section-lore p {
-  line-height: 1.5;
+  line-height: var(--lh-normal);
 }
 /* Sub-heads inside read as in-world captions, not rule headings. */
 .dc-section-lore > :is(h3, h4, h5):not(:first-child) {
@@ -631,7 +631,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   line-height: 12pt;
   text-transform: uppercase;
   white-space: nowrap;
@@ -735,7 +735,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   line-height: 1.4;
   text-transform: uppercase;
   transform: translateY(var(--dc-choose-stamp-lift)) rotate(-2deg);
@@ -855,7 +855,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   line-height: 1.4;
   transform: rotate(-2deg);
 }
@@ -1059,7 +1059,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   line-height: 1.4;
   box-shadow: var(--dc-label-shadow);
 }
@@ -1194,7 +1194,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   line-height: 1.4;
   background: var(--dc-faction-accent);
@@ -1305,7 +1305,7 @@ h3 + .dc-section-panel {
    y. Keyed on the run (`.gp-columns`, what `@columns` emits), not on the card
    chrome: the asymmetry is caused by the narrow column measure. */
 .dc-citizen-walkthrough .gp-columns h4 {
-  min-height: calc(2 * 1.35em);
+  min-height: calc(2 * var(--lh-tight) * 1em);
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -1431,7 +1431,7 @@ h3 + .dc-section-panel {
   font-family: var(--font-mono);
   font-size: var(--fs-h6);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   color: var(--dc-npc-stat-label-color);
   border-left: 3pt solid var(--dc-npc-stat-label-color);
@@ -1454,7 +1454,7 @@ h3 + .dc-section-panel {
   /* The default --hud-blue-dark (#14516e) gives 7.45:1 under cream; --hud-blue
      (#1f6f94) is 3.24:1 on the wall and fails AA. */
   color: var(--dc-npc-stat-secondary);
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   white-space: pre-line;
   margin-bottom: 0.04in;
@@ -1477,7 +1477,7 @@ h3 + .dc-section-panel {
   font-size: var(--fs-floor);
   font-weight: 600;
   color: var(--dc-npc-stat-secondary);
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   border-bottom: 1pt solid var(--ink);
   padding-bottom: 0.05in;
@@ -1691,7 +1691,7 @@ p:has(+ .dc-kicker) {
   font-family: var(--font-body);
   font-size: var(--fs-body-sm);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: var(--lh-tight);
   color: var(--ink);
   text-align: left;
   text-transform: none;
