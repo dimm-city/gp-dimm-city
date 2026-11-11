@@ -2087,6 +2087,6 @@ describe("polish rules in the stylesheets", () => {
   test("an intro panel keeps with the entry under it; the roll phrase never breaks; a bold row label stays on a line", () => {
     expect(css("components/entries.css")).toMatch(/\.dc-section-panel:has\(\+ \.dc-entry\) \{\s*break-after: avoid;/);
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
-    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child:has\(> strong:only-child\) \{\s*white-space: nowrap;/);
+    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
   });
 });

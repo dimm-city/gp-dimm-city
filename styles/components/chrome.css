@@ -12,7 +12,7 @@
   font-size: var(--fs-floor);
   line-height: 1.25;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
@@ -400,7 +400,6 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
     .dc-section-lore,
     .dc-section-dm,
     .dc-section-choose,
-    .dc-section-catalog,
     .dc-fiction-excerpt,
     .dc-card,
     .dc-skill-card,
@@ -546,7 +545,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   height: 4px;
   /* crimson dashes: an ordinary gradient tiled every 10px, not a
      repeating-linear-gradient, which a preserve-text PDF/X build cannot keep
-     live and answers by flattening the whole page (#41) */
+     live and answers by flattening the whole page */
   background-color: var(--dc-tape-bg);
   background-image: linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
   background-size: 10px 100%;
@@ -569,7 +568,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   background: var(--ink-dark);
 }
 
-/* The image runs to every edge of the sheet (#54). Its paragraph wrapper
+/* The image runs to every edge of the sheet. Its paragraph wrapper
    fills the plate too: left at its content height, the image's `height: 100%`
    has nothing to resolve against and the image keeps its own aspect ratio,
    stopping short of the bottom edge. Core caps an in-flow picture 4px under

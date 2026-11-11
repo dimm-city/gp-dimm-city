@@ -7,7 +7,7 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
-  /* Paste-up sheets (section.css, PASTE-UP). Band and foot are
+  /* Paste-up sheets (paste-up.css). Band and foot are
      the wall above and below a sheet's paper (the tag and the closing sticker
      straddle them); lift is how far a tag's top rises above the paper's edge;
      inset moves the sheets in so a tag's overhang stays in the content box;
@@ -78,6 +78,9 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
+  --dc-section-measure:    none;                /* max-width of a panel's prose (p, lists, quotes); tables stay full width, a @row's sheets reset it */
+  --dc-td-pad-y:           5px;                 /* a body cell's vertical padding */
+  --dc-th-pad-y:           6px;                 /* a header cell's */
   --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */
   --dc-choose-stamp-top:   0px;                 /* where the stamp's top edge sits: 0 = on the form's top edge */
   --dc-choose-stamp-lift:  -50%;                /* how far it is lifted over that edge: half its height */
@@ -128,6 +131,7 @@
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
+  --dc-alert-overflow:       visible;             /* `clip` where a warning's rail would fragment onto the next page */
   --dc-alert-bg:             var(--paper-cream);    /* every callout reads on white: its accent is in the rail, the frame and the label */
   --dc-alert-border:         var(--hud-blue-dark);  /* the accent: left rail, frame, label chip */
   --dc-alert-fg:             var(--ink);
@@ -158,7 +162,6 @@
   --dc-card-surface:         var(--paper-cream);
   --dc-card-tab-bg:          var(--ink-dark);       /* overridden by .dc-specialty.<name> context */
   --dc-card-tab-title-color: var(--paper-cream);
-  --dc-card-body-mark:       var(--crimson);
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
@@ -443,7 +446,6 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, transparent);
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* The text-safe ink of whatever component the prose sits in: ROLL THE DIE!
