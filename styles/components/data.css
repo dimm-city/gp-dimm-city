@@ -774,7 +774,8 @@
 }
 
 /* Italic carries a short gloss, not running rules: a definition of three
-   paragraphs or more sets its body upright, as lucid and surreal always do. */
+   paragraphs or more sets its body upright. Surreal keeps its italic, which
+   is the variant's voice (lucid is upright already). */
 .dc-definition-block:not(.dc-definition-surreal):has(> p:nth-of-type(3)) {
   --dc-definition-block-style: normal;
 }
@@ -814,7 +815,7 @@
   --dc-definition-block-shape: polygon(0 12px, 100% 0, calc(100% - 9px) 46%, 100% calc(100% - 7px), 71% 100%, calc(71% - 6px) calc(100% - 6px), calc(71% - 12px) 100%, 38% calc(100% - 5px), calc(38% - 8px) 100%, 8px calc(100% - 9px), 0 62%);
   --dc-definition-block-fg: var(--paper-cream);
   --dc-definition-block-term: color-mix(in srgb, var(--brand-magenta) 38%, var(--paper-cream));
-  --dc-definition-block-style: normal;
+  --dc-definition-block-style: italic;
   --dc-definition-block-frame: inset 5px 4px 0 var(--brand-magenta-deep), inset -5px -4px 0 var(--brand-violet);
   --dc-definition-block-pad: 14pt 22pt 20pt;
   font-weight: 600; /* reversed type: semibold */
@@ -983,17 +984,17 @@
 table.dc-stat-strip {
   border: 2px solid var(--dc-stat-strip-accent);
   margin: 0.08in 0;
+  --dc-td-pad-y: 3px;
+  --dc-th-pad-y: 2px;
 }
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
   font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 2px 8px;
 }
 .dc-stat-strip td {
   background: var(--paper-cream);
-  padding: 3px 8px;
   font-size: var(--fs-floor);
   vertical-align: middle;
 }

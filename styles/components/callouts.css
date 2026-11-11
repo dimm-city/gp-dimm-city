@@ -144,6 +144,10 @@
   padding: var(--space-lg) var(--space-xl);
   margin-top: var(--dc-alert-margin-top);
   break-inside: var(--dc-alert-break-inside);
+  /* `clip` trims a warning's rail, which overshoots the box top and bottom: that
+     layout overflow can fragment onto the next page, and clip-path does not trim it. */
+  overflow: var(--dc-alert-overflow);
+  overflow-clip-margin: 0.14in;
   /* A callout that splits (in a column run) keeps its padding on each fragment:
      a continuation opens --space-lg under its edge and a fragment that goes on
      ends --space-lg above its foot. */
@@ -249,15 +253,11 @@
   border-left-color: transparent;  /* the stripe rail (::before) sits in this border box */
   position: relative;
   padding-block: 12pt;  /* 12px cuts + 2pt */
-  /* The rail overshoots the box top and bottom; clip trims that layout overflow
-     so it cannot fragment onto the next page (clip-path does not). */
-  overflow: clip;
-  overflow-clip-margin: 0.14in;
 }
 /* The hazard rail, drawn in vector (a gradient would print flat or as a bitmap
    in PDF/X): an ink rail whose two dashed yellow borders make 14px-wide dashes,
    skewed 45 degrees into stripes. The rail overshoots top and bottom so the skew
-   leaves no gap; the alert's clip-path and overflow clip trim it. */
+   leaves no gap; the alert's clip-path trims it (and `--dc-alert-overflow: clip` its overflow). */
 .dc-note.warning::before,
 .gp-alert:is(.gp-alert-warning, .gp-alert-caution)::before {
   content: "";

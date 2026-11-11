@@ -401,18 +401,7 @@
    classes that still leave a plain element plain. This sheet's layer
    (`dc.templates`) outranks `dc.components`, so without the guard these rules
    would repaint a component's own bare element.
-   test/conventions.test.js ("free-standing page text") keeps it that way. */
-
-/* TITLE BANNER. A chapter-start title was already a banner when no fiction
-   excerpt followed it; now it always is, and so is any page's `#`. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h1:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  background: var(--dc-section-accent);
-  color: var(--dc-page-title-ink);
-  border: 0;
-  padding: 0.2in 0.3in 0.16in 0.22in;
-  margin-bottom: var(--space-lg);
-  clip-path: var(--clip-banner);
-}
+   test/page-text.test.js ("free-standing page text") keeps it that way. */
 
 /* LEDE under a chapter-start title: the paragraph straight below it is the
    page's lede, on the prose sheet below, with the chapter's accent as its
@@ -424,56 +413,6 @@
   border-left: 5px solid var(--dc-section-accent);
   padding-left: var(--space-lg);
   break-after: avoid;
-}
-
-/* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
-   jams against the box above it; `--dc-page-slip-foot` is the space below it,
-   the same whatever follows. A heading never ends a page (`break-after`, which
-   the bolt pseudo-elements do not disturb: they are out of flow). */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  position: relative;
-  background: var(--dc-page-slip-bg);
-  color: var(--dc-page-slip-ink);
-  border: 0;
-  border-bottom: 3pt dashed var(--dc-page-slip-edge);
-  box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
-  padding: 0.075in 0.14in 0.07in 0.24in;
-  margin: var(--dc-page-slip-gap) 0 0;
-  break-after: avoid;
-  break-inside: avoid;
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
-  margin-top: 0;
-}
-
-/* `##`: the poster slip, bolted to the wall: a slotted bolt head in each top
-   corner. Opaque discs (an ink ring round a grey face, the slot a hard-stopped
-   band of ink, each turned to a different angle as a hand leaves them), above
-   the first line's glyphs and inside the slip's own box, so they never touch
-   a letter, never reach over the page's top edge and are out of flow. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before,
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  width: var(--dc-page-slip-bolt-size);
-  height: var(--dc-page-slip-bolt-size);
-  box-sizing: border-box;
-  border: 1.5px solid var(--dc-page-slip-bolt);
-  border-radius: 50%;
-  background: linear-gradient(35deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
-  box-shadow: 1px 1px 0 var(--dc-page-slip-bolt);
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before {
-  left: 10px; /* clear of the 7px rail */
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
-  right: 5px;
-  background: linear-gradient(-70deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
-}
-/* The first line starts clear of the left bolt. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  padding-top: 0.13in;
 }
 
 /* A step (`## 4. Ideal`, plugin.js dcSteps): its number is a chip in the
@@ -490,81 +429,6 @@
   box-shadow: 2px 2px 0 var(--ink-dark);
 }
 
-/* `###`: the slip again, at the full width of its column, with a thinner
-   rail and foot (a tag that shrank to its words left a ragged right edge
-   above the full-width sheet under it). */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  border-bottom-width: 2pt;
-  box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
-  padding: 0.06in 0.12in 0.05in 0.2in;
-}
-
-/* `####` and below: a label slip that shrinks to its words, framed in ink. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  width: fit-content;
-  max-width: 100%;
-  margin: var(--dc-page-slip-gap) 0 0;
-  border: 1.5pt solid var(--dc-page-slip-edge);
-  box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
-  padding: 0.05in 0.12in 0.04in 0.2in;
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
-  margin-top: 0;
-}
-
-/* LOOSE TEXT: one paper sheet per run. A paragraph, list or quote that is a
-   direct child of a page is on the sheet; consecutive ones join (no gap, the
-   same face and shadow, so the shadow reads as one) and the sheet ends where
-   the run ends. A picture paragraph (an image on its own line) is not text
-   and is left to the image rules. Three orphans and three widows keep a split
-   sheet from leaving a one- or two-line scrap of paper on the next page. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)) {
-  background: var(--dc-page-slip-bg);
-  box-shadow: var(--dc-page-slip-shadow);
-  padding: 0.05in var(--dc-page-sheet-pad);
-  margin: 0;
-  /* A block that splits keeps its own padding on each fragment, so a
-     continuation opens (and a fragment that goes on ends) with what the block
-     already had: 0.05in, 0.1in on the run's first and last block. */
-  box-decoration-break: clone;
-  orphans: 3;
-  widows: 3;
-}
-/* the run's first block takes the sheet's top edge, its last the sheet's foot and the gap to what follows */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child), :is(p, ul, ol, blockquote) + :is(p, ul, ol, blockquote)) {
-  padding-top: 0.1in;
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)):is(:last-child, :has(+ :not(p, ul, ol, blockquote), + .dc-img-wrapper)) {
-  padding-bottom: 0.1in;
-  margin-bottom: var(--space-md);
-}
-/* a list in the sheet hangs its marker INSIDE the sheet's padding: the sheet's
-   own padding plus the list's hang (1.1em for the », 1.6em for a numeral) */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  padding-left: calc(var(--dc-page-sheet-pad) + 1.1em);
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
-  padding-left: calc(var(--dc-page-sheet-pad) + 1.6em);
-}
-
-/* A RULE ON THE BARE WALL is never drawn: an `---` that is a direct child of a
-   page or a chapter (outside any sheet, panel or card) would be a line across
-   the brick. A rule inside a section, a card or a column run is that
-   component's and is left to it. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > hr:not([class*="dc-"]) {
-  display: none;
-}
-
-/* a bulleted list and a numbered one run together in a sheet: the seam is one
-   item pitch (--space-xs), not the two sheet paddings (the first gives up its
-   foot, the second its top) */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)))) {
-  padding-bottom: 0;
-}
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))):is(ul + ol, ol + ul) {
-  padding-top: var(--space-xs);
-}
-
 /* A `choose` form that opens a page has no wall above it for its stamp to hang
    over (the engine clips it at the page's top margin): its stamp sits just inside
    the top edge, and the first block's first lines stop short of it (tokens that
@@ -575,27 +439,165 @@
   --dc-choose-stamp-lift: 0%;
 }
 
-/* ONE GAP under a free-standing heading, whatever follows it: a panel, a
-   callout, a card, a table or a sheet of loose text (--dc-page-slip-foot).
-   After the sheet rules above, which it must override. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) + * {
-  margin-top: var(--dc-page-slip-foot);
-}
+:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) {
+  /* TITLE BANNER. A chapter-start title was already a banner when no fiction
+     excerpt followed it; now it always is, and so is any page's `#`. */
+  > h1:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    background: var(--dc-section-accent);
+    color: var(--dc-page-title-ink);
+    border: 0;
+    padding: 0.2in 0.3in 0.16in 0.22in;
+    margin-bottom: var(--space-lg);
+    clip-path: var(--clip-banner);
+  }
 
-/* A `@columns` run with nothing but prose in it is one sheet, whole. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > .gp-columns:not(:has(> :not(p, ul, ol, blockquote, hr, h2, h3, h4, h5, h6, [aria-hidden]))) {
-  background: var(--dc-page-slip-bg);
-  box-shadow: var(--dc-page-slip-shadow);
-  padding: 0.1in var(--dc-page-sheet-pad);
-  margin-bottom: var(--space-md);
-  break-inside: avoid;
-}
+  /* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
+     jams against the box above it; `--dc-page-slip-foot` is the space below it,
+     the same whatever follows. A heading never ends a page (`break-after`, which
+     the bolt pseudo-elements do not disturb: they are out of flow). */
+  > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    position: relative;
+    background: var(--dc-page-slip-bg);
+    color: var(--dc-page-slip-ink);
+    border: 0;
+    border-bottom: 3pt dashed var(--dc-page-slip-edge);
+    box-shadow: inset 7px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+    padding: 0.075in 0.14in 0.07in 0.24in;
+    margin: var(--dc-page-slip-gap) 0 0;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+  > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
+    margin-top: 0;
+  }
 
-/* A sub-head inside a prose sheet: more room above than below (proximity),
-   and it never ends a column. The head that opens a column keeps the hang line. */
-:where(.page:not(.dg-doc, .dc-page-contents, .dc-page-credits), .chapter) > .gp-columns > :is(h4, h5):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):not(:first-child, .gp-column-break + *) {
-  margin-top: var(--space-lg);
-  break-after: avoid;
+  /* `##`: the poster slip, bolted to the wall: a slotted bolt head in each top
+     corner. Opaque discs (an ink ring round a grey face, the slot a hard-stopped
+     band of ink, each turned to a different angle as a hand leaves them), above
+     the first line's glyphs and inside the slip's own box, so they never touch
+     a letter, never reach over the page's top edge and are out of flow. */
+  > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before,
+  > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    width: var(--dc-page-slip-bolt-size);
+    height: var(--dc-page-slip-bolt-size);
+    box-sizing: border-box;
+    border: 1.5px solid var(--dc-page-slip-bolt);
+    border-radius: 50%;
+    background: linear-gradient(35deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
+    box-shadow: 1px 1px 0 var(--dc-page-slip-bolt);
+  }
+  > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::before {
+    left: 10px; /* clear of the 7px rail */
+  }
+  > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))::after {
+    right: 5px;
+    background: linear-gradient(-70deg, var(--dc-page-slip-bolt-face) 0 40%, var(--dc-page-slip-bolt) 40% 60%, var(--dc-page-slip-bolt-face) 60% 100%);
+  }
+  /* The first line starts clear of the left bolt. */
+  > h2:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    padding-top: 0.13in;
+  }
+
+  /* `###`: the slip again, at the full width of its column, with a thinner
+     rail and foot (a tag that shrank to its words left a ragged right edge
+     above the full-width sheet under it). */
+  > h3:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    border-bottom-width: 2pt;
+    box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+    padding: 0.06in 0.12in 0.05in 0.2in;
+  }
+
+  /* `####` and below: a label slip that shrinks to its words, framed in ink. */
+  > :is(h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    width: fit-content;
+    max-width: 100%;
+    margin: var(--dc-page-slip-gap) 0 0;
+    border: 1.5pt solid var(--dc-page-slip-edge);
+    box-shadow: inset 5px 0 0 var(--dc-section-accent), var(--dc-page-slip-shadow);
+    padding: 0.05in 0.12in 0.04in 0.2in;
+  }
+  > :is(h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):is(:first-child, :where(gp-anchor:first-child) + *) {
+    margin-top: 0;
+  }
+
+  /* LOOSE TEXT: one paper sheet per run. A paragraph, list or quote that is a
+     direct child of a page is on the sheet; consecutive ones join (no gap, the
+     same face and shadow, so the shadow reads as one) and the sheet ends where
+     the run ends. A picture paragraph (an image on its own line) is not text
+     and is left to the image rules. Three orphans and three widows keep a split
+     sheet from leaving a one- or two-line scrap of paper on the next page. */
+  > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)) {
+    background: var(--dc-page-slip-bg);
+    box-shadow: var(--dc-page-slip-shadow);
+    padding: 0.05in var(--dc-page-sheet-pad);
+    margin: 0;
+    /* A block that splits keeps its own padding on each fragment, so a
+       continuation opens (and a fragment that goes on ends) with what the block
+       already had: 0.05in, 0.1in on the run's first and last block. */
+    box-decoration-break: clone;
+    orphans: 3;
+    widows: 3;
+  }
+  /* the run's first block takes the sheet's top edge, its last the sheet's foot and the gap to what follows */
+  > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child), :is(p, ul, ol, blockquote) + :is(p, ul, ol, blockquote)) {
+    padding-top: 0.1in;
+  }
+  > :is(p, ul, ol, blockquote):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split), :has(> img:only-child)):is(:last-child, :has(+ :not(p, ul, ol, blockquote), + .dc-img-wrapper)) {
+    padding-bottom: 0.1in;
+    margin-bottom: var(--space-md);
+  }
+  /* a list in the sheet hangs its marker INSIDE the sheet's padding: the sheet's
+     own padding plus the list's hang (1.1em for the », 1.6em for a numeral) */
+  > ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    padding-left: calc(var(--dc-page-sheet-pad) + 1.1em);
+  }
+  > ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    padding-left: calc(var(--dc-page-sheet-pad) + 1.6em);
+  }
+
+  /* A RULE ON THE BARE WALL is never drawn: an `---` that is a direct child of a
+     page or a chapter (outside any sheet, panel or card) would be a line across
+     the brick. A rule inside a section, a card or a column run is that
+     component's and is left to it. */
+  > hr:not([class*="dc-"]) {
+    display: none;
+  }
+
+  /* a bulleted list and a numbered one run together in a sheet: the seam is one
+     item pitch (--space-xs), not the two sheet paddings (the first gives up its
+     foot, the second its top) */
+  > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):has(+ ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)))) {
+    padding-bottom: 0;
+  }
+  > :is(ul:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)), ol:not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split))):is(ul + ol, ol + ul) {
+    padding-top: var(--space-xs);
+  }
+
+  /* ONE GAP under a free-standing heading, whatever follows it: a panel, a
+     callout, a card, a table or a sheet of loose text (--dc-page-slip-foot).
+     After the sheet rules above, which it must override. */
+  > :is(h2, h3, h4, h5, h6):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) + * {
+    margin-top: var(--dc-page-slip-foot);
+  }
+
+  /* A `@columns` run with nothing but prose in it is one sheet, whole. */
+  > .gp-columns:not(:has(> :not(p, ul, ol, blockquote, hr, h2, h3, h4, h5, h6, [aria-hidden]))) {
+    background: var(--dc-page-slip-bg);
+    box-shadow: var(--dc-page-slip-shadow);
+    padding: 0.1in var(--dc-page-sheet-pad);
+    margin-bottom: var(--space-md);
+    break-inside: avoid;
+  }
+
+  /* A sub-head inside a prose sheet: more room above than below (proximity),
+     and it never ends a column. The head that opens a column keeps the hang line. */
+  > .gp-columns > :is(h4, h5):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)):not(:first-child, .gp-column-break + *) {
+    margin-top: var(--space-lg);
+    break-after: avoid;
+  }
 }
 
 /* HEADING AFTER A BOX. A box (an outcome ladder, a stat grid, a callout, a

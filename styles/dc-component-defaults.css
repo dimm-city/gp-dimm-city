@@ -131,6 +131,7 @@
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
+  --dc-alert-overflow:       visible;             /* `clip` where a warning's rail would fragment onto the next page */
   --dc-alert-bg:             var(--paper-cream);    /* every callout reads on white: its accent is in the rail, the frame and the label */
   --dc-alert-border:         var(--hud-blue-dark);  /* the accent: left rail, frame, label chip */
   --dc-alert-fg:             var(--ink);

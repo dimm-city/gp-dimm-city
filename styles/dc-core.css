@@ -234,37 +234,45 @@ blockquote {
    without a fight. The two lists that draw their own look (`@procedure`'s
    .dc-steps and the contents page's .dc-toc ol) are left out: they have their
    own marker, padding and row spacing. */
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) { margin: 0 0 var(--space-sm); }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.1em; }
-:where(ol):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.6em; list-style: none; }
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li { position: relative; margin: 0 0 var(--space-xs); }
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li:last-child { margin-bottom: 0; }
+/* The three nested blocks share the one zero-specificity selector. */
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) {
+  margin: 0 0 var(--space-sm);
+  & > li { position: relative; margin: 0 0 var(--space-xs); }
+  & > li:last-child { margin-bottom: 0; }
+}
 /* a bulleted list straight before or after a numbered one: the seam is one item pitch */
 :where(ul:has(+ ol), ol:has(+ ul)) { margin-bottom: var(--space-xs); }
 li > p { margin: 0; }
 /* a second paragraph in the same item keeps a paragraph gap */
 li > p + p { margin-top: var(--space-xs); }
 li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li { list-style: none; }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li::before {
-  content: "\00bb";
-  position: absolute;
-  left: -1.1em;
-  /* The marker is the component's own ink (--dc-accent-ink is declared on
-     every surface; a callout overrides it below). */
-  color: var(--dc-accent-ink, var(--ink));
-  font-weight: 700;
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) {
+  padding-left: 1.1em;
+  & > li { list-style: none; }
+  & > li::before {
+    content: "\00bb";
+    position: absolute;
+    left: -1.1em;
+    /* The marker is the component's own ink (--dc-accent-ink is declared on
+       every surface; a callout overrides it below). */
+    color: var(--dc-accent-ink, var(--ink));
+    font-weight: 700;
+  }
 }
-/* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
-   list-item honours start= and reversed, and nests per list. */
-:where(ol):where(:not(.dc-steps, .dc-toc ol)) > li::before {
-  content: counter(list-item) ".";
-  position: absolute;
-  left: -1.6em;
-  width: 1.2em;
-  text-align: right;
-  color: var(--dc-accent-ink, var(--ink));
-  font-weight: 700;
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) {
+  padding-left: 1.6em;
+  list-style: none;
+  /* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
+     list-item honours start= and reversed, and nests per list. */
+  & > li::before {
+    content: counter(list-item) ".";
+    position: absolute;
+    left: -1.6em;
+    width: 1.2em;
+    text-align: right;
+    color: var(--dc-accent-ink, var(--ink));
+    font-weight: 700;
+  }
 }
 
 /* ── TABLES — universal default look, no class required ─────────────────────

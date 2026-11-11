@@ -451,14 +451,12 @@ h3 + .dc-section-panel {
 .dc-section-reference table {
   font-size: var(--fs-floor);
   margin: 0.06in 0;
+  --dc-td-pad-y: 3px;
+  --dc-th-pad-y: 3px;
 }
 .dc-section-reference th {
   background: var(--hud-blue-dim);
   color: var(--ink);
-  padding: 3px 8px;
-}
-.dc-section-reference td {
-  padding: 3px 8px;
 }
 .dc-section-reference tr:nth-child(odd) td {
   background: var(--paper-cream);
@@ -1761,61 +1759,72 @@ p:has(+ .dc-kicker) {
 
 /* ── Sheets ──────────────────────────────────────────────────────────────── */
 /* Every section in the chapter is kept whole and clipped above its own top edge
-   (sides and foot stay open for shadows and stickers). */
+   (sides and foot stay open for shadows and stickers). The sheet rules below
+   nest in this one selector; a creature, the walkthrough and the choose forms
+   keep their own look. */
 .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
   --dc-section-break-inside: avoid;
   clip-path: inset(0 -1in -1in -1in);
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
   --dc-section-edge: 0px;
   --dc-section-pad-bottom: var(--space-xs);
   margin: 0 3px 0 var(--dc-pu-inset);   /* 3px: room for the hard shadow, as on every panel (a shadow past the content box shrinks the whole book) */
   padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
   padding-bottom: calc(var(--dc-pu-foot) + var(--dc-section-pad-bottom));
   box-shadow: none;                 /* the soft lift would shade the bands */
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose)::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose)::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
 
-/* Tags: the first ## or ### pasted over the paper's top edge, and a `{.dc-pu-tag}`
-   sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours). */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3):first-child,
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3).dc-pu-tag:not(:first-child) {
-  width: fit-content; max-width: 88%;
-  margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
-  padding: 0.3rem var(--space-lg) 0.22rem;
-  clip-path: none; border-bottom: 0;
-  line-height: var(--lh-display);
-  transform: rotate(-1deg); transform-origin: left bottom;
-  box-shadow: 3px 3px 0 var(--ink-dark);
-  position: relative; z-index: 2;
-  break-after: avoid;
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3).dc-pu-tag:not(:first-child) {
-  margin-top: var(--space-lg);
-  border: 0;
-  background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
-  color: var(--dc-section-bar-fg);
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose):not(.dc-catalog) > :is(h2, h3):first-child::after,
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-pu-tag::after { content: none; }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > :is(h2, h3):first-child + * { break-before: avoid; }
+  &::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
+  &::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
 
-/* Bills: one per section that opens a spread or a sub-system. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2.dc-pu-bill:first-child {
-  width: auto; max-width: none;
-  margin-left: calc(-1 * var(--dc-section-pad-left));
-  margin-right: calc(-1 * var(--dc-section-pad-right));
-  margin-bottom: var(--space-lg);
-  padding: var(--space-sm) var(--space-xl) var(--space-md);
-  background: var(--ink-dark); color: var(--paper-cream);
-  font-size: calc(var(--fs-h1) * 2);
-  border-bottom: 6pt solid var(--brand-yellow);
-  box-shadow: 4px 4px 0 var(--shadow-ink);
+  /* Tags: the first ## or ### pasted over the paper's top edge, and a `{.dc-pu-tag}`
+     sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours). */
+  & > :is(h2, h3):first-child,
+  & > :is(h2, h3).dc-pu-tag:not(:first-child) {
+    width: fit-content; max-width: 88%;
+    margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
+    padding: 0.3rem var(--space-lg) 0.22rem;
+    clip-path: none; border-bottom: 0;
+    line-height: var(--lh-display);
+    transform: rotate(-1deg); transform-origin: left bottom;
+    box-shadow: 3px 3px 0 var(--ink-dark);
+    position: relative; z-index: 2;
+    break-after: avoid;
+  }
+  & > :is(h2, h3).dc-pu-tag:not(:first-child) {
+    margin-top: var(--space-lg);
+    border: 0;
+    background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
+    color: var(--dc-section-bar-fg);
+  }
+  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
+  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
+  &:not(.dc-catalog) > :is(h2, h3):first-child::after,
+  & > .dc-pu-tag::after { content: none; }
+  & > :is(h2, h3):first-child + * { break-before: avoid; }
+
+  /* Bills: one per section that opens a spread or a sub-system. */
+  & > h2.dc-pu-bill:first-child {
+    width: auto; max-width: none;
+    margin-left: calc(-1 * var(--dc-section-pad-left));
+    margin-right: calc(-1 * var(--dc-section-pad-right));
+    margin-bottom: var(--space-lg);
+    padding: var(--space-sm) var(--space-xl) var(--space-md);
+    background: var(--ink-dark); color: var(--paper-cream);
+    font-size: calc(var(--fs-h1) * 2);
+    border-bottom: 6pt solid var(--brand-yellow);
+    box-shadow: 4px 4px 0 var(--shadow-ink);
+  }
+  & > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
+
+  /* A half sheet's tag is smaller: a full-size one overran it. */
+  .dc-pu-row > & > h3:first-child { font-size: 14pt; }
+
+  /* Continuation sheets: a clean sheet top, no tag. */
+  &.dc-pu-cont {
+    --dc-pu-band: 0.06in; --dc-section-pad-top: 0.06in;
+    padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
+  }
+  &.dc-pu-cont > h3:first-child { margin-top: 0; }
 }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
 .dc-pu-bill + .dc-flavor { margin-top: calc(-1 * var(--space-lg)); }
 
 /* Stickers: street lines. A closing one straddles the paper's foot. A fiction
@@ -1852,16 +1861,10 @@ p:has(+ .dc-kicker) {
 .dc-pu-row > * { min-width: 0; }
 .dc-pu-row > .dc-section-panel { display: flex; flex-direction: column; }
 .dc-pu-row > .dc-section-panel > .dc-kicker:last-child { margin-top: auto; }
-.dc-pu-row > .section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > h3:first-child { font-size: 14pt; }   /* a full-size tag overran a half sheet */
 
 /* Continuation sheets: a clean sheet top, no tag. The plugin puts a zero-height
    `.dc-pu-spacer` ahead of a `###` that opens one, so the heading stays a sub-head. */
 .dc-pu-spacer { height: 0; }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose).dc-pu-cont {
-  --dc-pu-band: 0.06in; --dc-section-pad-top: 0.06in;
-  padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
-}
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose).dc-pu-cont > h3:first-child,
 .section.dc-pu-cont > .dc-pu-spacer + h3 { margin-top: 0; }
 
 }

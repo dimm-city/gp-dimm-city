@@ -104,8 +104,10 @@
 
 /* The intro title's register layers, the same three as the learning-path
    banner's (data.css, "The path banner"): ::before a flat plane at the right,
-   ::after the rule under the band, both read from the --dc-band-* tokens a
-   specialty sets. Solid fills, borders and a clip-path: vector in PDF/X. */
+   ::after the rule under the band (also under a specialty card's name: the
+   register, LED dots, hazard tape or a solid bar), both read from the
+   --dc-band-* tokens a specialty sets. Solid fills, borders and a clip-path:
+   vector in PDF/X. */
 .dc-specialty-intro>h2:first-of-type::before {
   content: '';
   position: absolute;
@@ -118,7 +120,8 @@
   z-index: -1;
 }
 
-.dc-specialty-intro>h2:first-of-type::after {
+.dc-specialty-intro>h2:first-of-type::after,
+.dc-specialty-card h3::after {
   content: '';
   position: absolute;
   left: calc(-1 * var(--dc-band-rule-bleed));
@@ -315,22 +318,6 @@
   white-space: nowrap;
   letter-spacing: -0.02em;
   overflow-wrap: normal;
-}
-
-/* The band's rule, as under the path banner: the register (LED dots, hazard
-   tape, a solid bar) from the --dc-band-* tokens the specialty sets. */
-.dc-specialty-card h3::after {
-  content: '';
-  position: absolute;
-  left: calc(-1 * var(--dc-band-rule-bleed));
-  right: calc(-1 * var(--dc-band-rule-bleed));
-  bottom: 0;
-  height: var(--dc-band-rule-h);
-  box-sizing: border-box;
-  background: var(--dc-band-rule);
-  border-top: var(--dc-band-tick-w) var(--dc-band-tick-style) var(--dc-band-tick);
-  box-shadow: var(--dc-band-reg);
-  transform: skewX(var(--dc-band-rule-skew));
 }
 
 /* Subtitle tagline — the specialty's "archetype label" (e.g.,
