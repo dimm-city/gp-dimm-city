@@ -227,8 +227,8 @@ function specialtyCodeFromClass(tok) {
 
 function buildStickerChain(items) {
   let html = '<div class="dc-stickers">';
-  items.forEach((name, i) => {
-    html += '<span class="dc-sticker"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
+  items.forEach((item, i) => {
+    html += '<span class="dc-sticker"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + item.html.trim() + '</span>';
     if (i < items.length - 1) {
       // The word joiner keeps the arrow with the chip after it, so a wrap never
       // leaves a » at the end of a line.
@@ -337,7 +337,7 @@ function dcRollDieTransform(state) {
 }
 
 function renderInlineChildren(inlineTok, md) {
-  if (!inlineTok || !inlineTok.children) return esc(inlineTok.content || '');
+  if (!inlineTok?.children) return esc(inlineTok?.content || '');
   return md.renderer.render(inlineTok.children, md.options, {});
 }
 
@@ -508,14 +508,16 @@ function buildLadderBlock({ head, rows }, md, table) {
   return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
-// The items of an ordered list in a skill card: each is its first line (inline
-// HTML) and `rest`, whatever else the item holds (a nested list, a second
-// paragraph), rendered as it would be anywhere else so it stays what it is.
-function collectSkillListItems(tokens, startIndex, md, env) {
+// The items of the list opening at tokens[startIndex] (ordered or bullet),
+// at that list's own level: each is its first line (inline HTML) and `rest`,
+// whatever else the item holds (a nested list, a second paragraph), rendered as
+// it would be anywhere else so it stays what it is. `endIndex` is the list's close.
+function collectListItems(tokens, startIndex, md, env) {
   const open = tokens[startIndex];
+  const closeType = open.type.replace('_open', '_close');
   const items = [];
   let i = startIndex + 1;
-  while (i < tokens.length && !(tokens[i].type === 'ordered_list_close' && tokens[i].level === open.level)) {
+  while (i < tokens.length && !(tokens[i].type === closeType && tokens[i].level === open.level)) {
     if (tokens[i].type === 'list_item_open' && tokens[i].level === open.level + 1) {
       const number = tokens[i].info || String(items.length + 1);
       let end = i + 1;
@@ -770,76 +772,13 @@ function registerSkillContinueBridge(md) {
 }
 
 
-// Collect bullet list items
-function collectBulletListItems(tokens, startIndex) {
-  const items = [];
-  let i = startIndex;
-
-  // Find bullet_list_open
-  while (i < tokens.length && tokens[i].type !== 'bullet_list_open') {
-    i++;
-  }
-  if (i >= tokens.length) return { items: [], endIndex: startIndex };
-
-  i++; // Skip bullet_list_open
-
-  while (i < tokens.length && tokens[i].type !== 'bullet_list_close') {
-    if (tokens[i].type === 'list_item_open') {
-      // Find the inline content
-      let j = i + 1;
-      while (j < tokens.length && tokens[j].type !== 'list_item_close') {
-        if (tokens[j].type === 'inline') {
-          items.push(tokens[j].content);
-        }
-        j++;
-      }
-      i = j;
-    }
-    i++;
-  }
-
-  return { items: items, endIndex: i };
-}
-
-// Collect ordered list items for abilities
-function collectOrderedListItems(tokens, startIndex, md) {
-  const items = [];
-  let i = startIndex;
-
-  // Find ordered_list_open
-  while (i < tokens.length && tokens[i].type !== 'ordered_list_open') {
-    i++;
-  }
-  if (i >= tokens.length) return { items: [], endIndex: startIndex };
-
-  i++; // Skip ordered_list_open
-
-  while (i < tokens.length && tokens[i].type !== 'ordered_list_close') {
-    if (tokens[i].type === 'list_item_open') {
-      // Find the inline content
-      let j = i + 1;
-      while (j < tokens.length && tokens[j].type !== 'list_item_close') {
-        if (tokens[j].type === 'inline') {
-          const html = renderInlineChildren(tokens[j], md);
-          items.push(html);
-        }
-        j++;
-      }
-      i = j;
-    }
-    i++;
-  }
-
-  return { items: items, endIndex: i };
-}
-
 // `attrs` are what the author wrote on the `@procedure` line: the wrapper
 // renders nothing, so the list takes them.
 function buildProcedureList(items, attrs, md) {
   let html = '<ol' + md.renderer.renderAttrs({ attrs: mergeAttrs('dc-steps', attrs) }) + '>\n';
-  items.forEach((itemHtml, idx) => {
+  items.forEach(({ html: step, rest }, idx) => {
     const stepNo = String(idx + 1).padStart(2, '0');
-    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + itemHtml.trimEnd() + '</span></li>\n';
+    html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + step.trimEnd() + rest + '</span></li>\n';
   });
   html += '</ol>\n';
   return html;
@@ -1107,8 +1046,7 @@ function pathShell(tokens, ref, md) {
     // reads "PRX1 Refuse Finality" (outline, bookmarks, copy, search, screen
     // readers); chrome.css gives it the printed gap.
     if (tok.type === 'heading_open' && tok.tag === 'h3') {
-      const titleText = tokens[i + 1].content || '';
-      out.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(ref) + '</span><span class="dc-path-sep"> </span>' + esc(titleText) + '</h3>\n'));
+      out.push(makeToken('html_block', '<h3 class="dc-spray"><span class="dc-path-sticker">' + esc(ref) + '</span><span class="dc-path-sep"> </span>' + renderInlineChildren(tokens[i + 1], md) + '</h3>\n'));
       titled = true;
       i += 2; // skip inline + heading_close
       continue;
@@ -1124,8 +1062,9 @@ function pathShell(tokens, ref, md) {
 
     // Bullet list = sticker chain.
     if (tok.type === 'bullet_list_open') {
-      const { items, endIndex } = collectBulletListItems(tokens, i);
-      if (items.length > 0) out.push(makeToken('html_block', buildStickerChain(items)));
+      const { items, endIndex } = collectListItems(tokens, i, md);
+      const stickers = items.filter((item) => item.html);
+      if (stickers.length > 0) out.push(makeToken('html_block', buildStickerChain(stickers)));
       i = endIndex;
       continue;
     }
@@ -1344,7 +1283,7 @@ function dcSkillCards(state) {
       }
 
       if (tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectSkillListItems(content, i, md, state.env);
+        const { items, endIndex } = collectListItems(content, i, md, state.env);
         emit(skillListHtml(items, md));
         i = endIndex;
         continue;
@@ -1655,7 +1594,7 @@ function dcProcedures(state) {
         out.push(run[i]);
         continue;
       }
-      const { items, endIndex } = collectOrderedListItems(run, i, state.md);
+      const { items, endIndex } = collectListItems(run, i, state.md, state.env);
       if (items.length > 0) {
         out.push(makeToken('html_block', buildProcedureList(items, attrs, state.md)));
         attrs = [];

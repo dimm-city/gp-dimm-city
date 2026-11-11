@@ -567,6 +567,15 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toMatch(/<\/span><\/div>\n<\/div>\n<div class="dc-skill-card"/);
     });
 
+    test("the title and the stickers render their inline markdown", () => {
+      const { html } = renderGp(doc("@learning-path", "", "### The *Big* \"Title\"", "", "- It's *Alpha*", "- **Beta**", "  - nested", "- Gamma", ""));
+      expect(html).toContain('</span>The <em>Big</em> “Title”</h3>');
+      expect(html).toContain('<span class="dc-sticker-ref">1</span>It’s <em>Alpha</em></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">2</span><strong>Beta</strong></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">3</span>Gamma</span>');
+      expect(count(html, /class="dc-sticker"/g)).toBe(3);
+    });
+
     test("data-path-ref comes from the enclosing specialty: variant or class, counted per specialty", () => {
       const refs = (html) => [...html.matchAll(/data-path-ref="([^"]*)"/g)].map((m) => m[1]);
       const specialty = (open, n) => doc(open, "", ...Array.from({ length: n }, (_, i) => doc("@learning-path", "", `### P${i}`, "")), "@end-specialty", "");
@@ -1382,6 +1391,22 @@ describe("declared card, outcome and procedure", () => {
     test("what is written on the @procedure line lands on the list, since the wrapper renders nothing", () => {
       const { html } = renderGp(doc("@procedure #install .tight data-kind=install", "", "1. One", "2. Two", "", "@end-procedure"));
       expect(html).toContain('<ol class="dc-steps tight" id="install" data-kind="install">');
+    });
+
+    test("a step with a second paragraph or a nested list is still one step", () => {
+      const { html } = renderGp(doc(
+        "@procedure", "",
+        "1. First.", "",
+        "   More on the first.", "",
+        "2. Second.", "   - nested one", "   - nested two", "",
+        "3. Third.", "",
+        "@end-procedure",
+      ));
+      expect(count(html, /<li><span class="dc-step-no">/g)).toBe(3);
+      expect(html).toContain('<span class="dc-step-no">01</span><span>First.<p>More on the first.</p>');
+      expect(html).toContain('<span class="dc-step-no">02</span><span>Second.<ul>');
+      expect(html).toContain('<span class="dc-step-no">03</span><span>Third.</span>');
+      expect(count(html, /<ol[\s>]/g)).toBe(1);
     });
 
     test("a procedure with two lists puts its attributes on the first only, so the id stays unique", () => {
