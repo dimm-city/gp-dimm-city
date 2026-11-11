@@ -117,6 +117,20 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **`@page` inside a specialty.** It used to close the specialty, its learning
+  path and the open skill (core closes every component at a page), so what
+  followed lost its colours, cards and numbering; books used `@page-break`
+  instead and could neither change the wall nor frame a pinned image. Now the
+  plugin closes them before the page and re-opens them after it: the
+  specialty's identity, the path's number (no second header) and the skills'
+  tiers run on, and a card the page cuts continues as after `@continue`. The
+  wall is the page's (a plain `@page` takes the specialty's).
+- **Pinned art in a specialty is framed by its page.** A `{.gp-pin}` image in a
+  skill was placed inside the card above it (a card is a positioned box), and
+  the learning path was positioned too, so a pin anchored to a card or a whole
+  multi-page path. A pinned image is moved out of the cards, and the learning
+  path is no longer positioned. An image paragraph that ends a card is no
+  longer marked as its sign-off.
 - **A first table cell with a bold lead and text wraps.** The rule that keeps a
   label cell on one line now holds only the bold name (`td:first-child >
   strong:first-child`); before, `:only-child` ignored the text, so a cell like

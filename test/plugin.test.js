@@ -2090,3 +2090,62 @@ describe("polish rules in the stylesheets", () => {
     expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
   });
 });
+
+describe("@page inside a specialty", () => {
+  // A specialty, its paths and skills run on across an @page: the plugin closes
+  // them before the page and re-opens them after it (dcPageScopes).
+  const doc = (page, between = "") => [
+    "@chapter specialty", "", "@specialty .augmerc .dc-page-wall-3", "",
+    "@learning-path", "", "### Path One", "", "@skill", "",
+    "#### Skill A", "", "Text A.", "", between, page, "", "#### Skill B", "", "Text B.", "",
+    "@end-learning-path", "", "@learning-path", "", "### Path Two", "", "@skill", "",
+    "#### Skill C", "", "Text C.", "", "@end-learning-path", "", "@end-specialty", "",
+  ].join("\n");
+
+  test("the specialty, its path and its numbering run on across the page", () => {
+    const { html, warnings } = renderGp(doc("@page"));
+    expect(warnings.filter((w) => w.type === "declared_marker_close_without_open")).toEqual([]);
+    expect(html).toContain('<div class="dc-specialty augmerc dc-specialty-cont">');
+    expect(html).toMatch(/<div class="dc-learning-path dc-path-block dc-path-cont" data-path-ref="AUG1">\n?<div class="dc-skill-card" name="skill-b">/);
+    expect(html).toContain('<span class="dc-tab-tier">AUG1.2</span>');
+    expect(html).toContain('data-path-ref="AUG2"');
+    expect(html).toContain('<span class="dc-tab-tier">AUG2.1</span>');
+    expect(html.match(/class="dc-path-shell"/g)).toHaveLength(2);
+    expect(html).not.toContain("dc-skill-cont");
+  });
+
+  test("the wall is the page's: a plain @page takes the specialty's, a named one its own", () => {
+    const plain = renderGp(doc("@page")).html;
+    expect(plain).toMatch(/<div class="page dc-page-wall-3[ "]/);
+    expect(plain).not.toMatch(/dc-specialty augmerc dc-page-wall-3 dc-specialty-cont/);
+    const named = renderGp(doc("@page wall-2")).html;
+    expect(named).toMatch(/<div class="page dc-page-wall-2[ "]/);
+    expect(named).not.toMatch(/class="page[^"]*dc-page-wall-3/);
+  });
+
+  test("a card the page cuts goes on as a continuation", () => {
+    const src = doc("@page").replace("@page\n\n#### Skill B", "@page\n\nMore of A.\n\n#### Skill B");
+    const { html } = renderGp(src);
+    expect(html).toContain('<div class="dc-skill-card dc-skill-card-cut" name="skill-a">');
+    expect(html).toMatch(/<div class="dc-skill-card dc-skill-card-cont" name="skill-a">[\s\S]*?<span class="dc-tab-tier">AUG1\.1<\/span>[\s\S]*?<p>More of A\.<\/p>/);
+    expect(html).toContain('<span class="dc-tab-tier">AUG1.2</span>');
+  });
+
+  test("an @page outside any specialty opens no continuation", () => {
+    const { html } = renderGp("@chapter rules\n\nText.\n\n@page\n\nMore.\n");
+    expect(html).not.toMatch(/-cont\b/);
+  });
+
+  test("a pinned image is page furniture, never a card's content or sign-off", () => {
+    const src = doc("@page").replace("Text B.", "Text B.\n\n![frog](f.png){.gp-pin .gp-bottom}");
+    const { html } = renderGp(src);
+    expect(html).toMatch(/<p class="dc-img-wrapper"><img src="f\.png" alt="frog" class="gp-pin gp-bottom"><\/p>\n<div class="dc-skill-card" name="skill-b">/);
+    expect(html).not.toContain("dc-card-signoff");
+  });
+
+  test("an image paragraph that ends a card is not its sign-off", () => {
+    const { html } = renderGp("@skill\n\n#### A\n\nText.\n\n![art](a.png)\n");
+    expect(html).toContain('<p class="dc-img-wrapper"><img src="a.png" alt="art"></p>');
+    expect(html).not.toContain("dc-card-signoff");
+  });
+});

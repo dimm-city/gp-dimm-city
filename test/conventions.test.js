@@ -71,10 +71,11 @@ describe("plugin.js", () => {
   });
 
   test("never mentions gutterpress core's gp- prefix in code", () => {
-    // The one legitimate reference is core's `gp-continued` class, which the
-    // @continue handler must recognise — it is core's vocabulary, read not written.
+    // The legitimate references are core's classes the plugin must recognise,
+    // read never written: `gp-continued` (the @continue handler) and `gp-pin`
+    // (a pinned image is page furniture, moved out of skill cards).
     const hits = [...code.matchAll(/["'`][^"'`]*\bgp-[a-z0-9-]+[^"'`]*["'`]/g)].map((m) => m[0]);
-    for (const h of hits) expect(h).toMatch(/gp-continued/);
+    for (const h of hits) expect(h).toMatch(/^["'`](gp-continued|gp-pin)["'`]$|gp-continued/);
   });
 });
 
