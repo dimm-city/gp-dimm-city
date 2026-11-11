@@ -1446,173 +1446,208 @@ const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-t
  *                  continued mark, with the same ID
  */
 function dcSkillCards(state) {
-  const md = state.md;
   const numbered = new Map(); // learning-path open token → cards numbered so far
   forEachComponent(state.tokens, 'skill', (run, enclosing) => {
     const [open, close] = [run[0], run[run.length - 1]];
     open.hidden = close.hidden = true;
     const path = enclosing.findLast((c) => c.meta.kind === 'learning-path');
-    const content = run.slice(1, -1);
-    const cardLevel = content.find((t) => t.type === 'heading_open' && t.tag === 'h4')?.level;
-    const out = [];
-    // The card's last block while it is still a paragraph: marked a sign-off when short (below).
-    let tail = null;
-    const emit = (html) => {
-      tail = null;
-      seenBlock = true;
-      out.push(makeToken('html_block', html));
+    const nextTier = () => {
+      if (!path) return '';
+      const n = (numbered.get(path) || 0) + 1;
+      numbered.set(path, n);
+      return path.attrGet('data-path-ref') + '.' + n;
     };
-    let inCard = false;
-    const belongsToCard = new Set(); // open/close tokens of the components that stay in the card
-    let columnsDepth = 0; // how many `@columns` runs sit open inside the current card
-    const columnsCloses = new Set(); // their close tokens
-    let title = { name: '', tier: '' }; // the current card's title, for @continue
-
-    // The card's opening markup, for the title it shows: the first card of a
-    // skill, or a continuation (`cont`); `cut` ends the card in a straight foot.
-    const cardOpen = (cont, cut = false) => {
-      const card = makeToken('html_block');
-      card.attrs = open.attrs.map(([k, v]) => [k, v]);
-      if (cont) addTokenClassAfter(card, 'dc-skill-card', 'dc-skill-card-cont');
-      if (cut) addTokenClassAfter(card, 'dc-skill-card', 'dc-skill-card-cut');
-      card.attrs.push(['name', slugify(title.name)]);
-      return '<div' + md.renderer.renderAttrs(card) + '>\n' + cardTabHtml(title, cont);
-    };
-    // A card's closing sign-off is marked only when the card truly ends there: not
-    // when it is cut for a continuation, and never its first paragraph.
-    let seenBlock = false;
-    let compDepth = 0; // how many components (callout, columns) are open inside the card
-    const endCard = (continuing = false) => {
-      if (inCard && tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
-      // .dc-card-inner, the two seam markers (cards.css, "The seam"), .dc-card-body, .dc-skill-card
-      if (inCard) emit('</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>\n');
-      inCard = false;
-    };
-    let cardTok = null; // the html token that opened the current card
-    let cardCont = false; // is the current card a continuation?
-
-    for (let i = 0; i < content.length; i++) {
-      const tok = content[i];
-
-      // An h4 inside a `@columns` run in a card is a plain heading: a card
-      // cannot start in the middle of another card's columns.
-      if (tok.type === 'heading_open' && tok.tag === 'h4' && columnsDepth === 0) {
-        endCard();
-        const parsed = parseSkillTitle(content[i + 1].content || '');
-        let autoTier = '';
-        if (path) {
-          const n = (numbered.get(path) || 0) + 1;
-          numbered.set(path, n);
-          autoTier = path.attrGet('data-path-ref') + '.' + n;
-        }
-        // The continuation card repeats the ID the card shows, written or automatic.
-        title = { name: parsed.name, tier: parsed.tier || autoTier };
-        // The skill's name is its `####` heading, kept a heading so the
-        // outline lists it under its learning path. (A continuation card's
-        // repeated title stays a span: it is not a new entry.)
-        emit(cardOpen(false));
-        cardTok = out[out.length - 1];
-        cardCont = false;
-        inCard = true;
-        seenBlock = false;
-        i += 2; // skip inline + heading_close
-        continue;
-      }
-
-      if (tok.type === 'dc_skill_continue') {
-        endCard(true);
-        // The part before an explicit continuation closes straight (a foot, a
-        // bolt, a flag); the specialty's cut stays the mark of a card's real end.
-        if (cardTok) cardTok.content = cardOpen(cardCont, true);
-        cardCont = true;
-        emit(cardOpen(true));
-        cardTok = out[out.length - 1];
-        inCard = true;
-        seenBlock = false;
-        continue;
-      }
-
-      // A @callout, @card, @outcome, @procedure or @roll-table is content of the skill's card;
-      // a break or another component (@specialty-art, @gear, …) ends it.
-      if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
-        belongsToCard.add(tok).add(content[closeIndex(content, i)]);
-      }
-      // `@columns` … `@end-columns` and the `@column-break`s between are content of
-      // the card too when they sit inside one: the columns run stays in the
-      // card's body, in place. (A run that opens before the card, around
-      // several cards, is not the card's: it ends the card as any layout token does.)
-      if (inCard && tok.type === 'layout_component_open' && tok.meta.kind === 'columns') {
-        const close = content[closeIndex(content, i)];
-        belongsToCard.add(tok).add(close);
-        columnsCloses.add(close);
-        columnsDepth++;
-      }
-      if (columnsCloses.has(tok)) columnsDepth--;
-      if (tok.type === 'layout_column_break' && columnsDepth > 0) belongsToCard.add(tok);
-      if (tok.type.startsWith('layout_') && !belongsToCard.has(tok)) endCard();
-
-      if (inCard && belongsToCard.has(tok)) {
-        if (tok.type === 'layout_component_open') compDepth++;
-        else if (tok.type === 'layout_component_close') compDepth--;
-      }
-
-      if (!inCard) {
-        out.push(tok);
-        continue;
-      }
-
-      if (tok.type === 'heading_open' && tok.tag === 'h5') {
-        const h5Text = content[i + 1].content || '';
-        if (h5Text.toLowerCase() !== 'outcomes') emit('<div class="dc-sub-header">' + esc(h5Text) + '</div>\n');
-        i += 2;
-        continue;
-      }
-
-      if (tok.type === 'blockquote_open') {
-        const quote = quoteHtml(content, i, md);
-        emit('<p class="dc-flavor">' + quote.html + '</p>\n');
-        i = quote.end;
-        continue;
-      }
-
-      if (tok.type === 'ordered_list_open') {
-        const { items, endIndex } = collectListItems(content, i, md, state.env);
-        emit(skillListHtml(items, md));
-        i = endIndex;
-        continue;
-      }
-
-      if (tok.type === 'table_open') {
-        // A table of the five standard bands is the ladder; any other table
-        // passes through untouched, thead and all.
-        const tableTokens = collectTableTokens(content, i);
-        const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(tableTokens));
-        if (ladder) {
-          emit(buildLadderBlock(ladder, md, tok));
-          i = skipToTableClose(content, i);
-          continue;
-        }
-      }
-
-      // A paragraph that is nothing but one bold run is the card's pseudo
-      // heading (`**Full Merge**`); CSS cannot see text nodes, so only the
-      // plugin can tell it from a run-in `**Shared Senses:** text`.
-      if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === cardLevel && compDepth === 0) {
-        const inline = content[i + 1];
-        if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
-        // A paragraph that ends in a colon introduces the next block.
-        if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
-        tail = { tok, len: inlineTextLength(inline), first: !seenBlock };
-      } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
-        tail = null;
-      }
-
-      if (tok.type !== 'paragraph_open') seenBlock = true;
-      out.push(tok);
-    }
-    endCard();
-    return [open, ...out, close];
+    return [open, ...skillCardsHtml(run.slice(1, -1), open, state, nextTier), close];
   });
+}
+
+/** One skill's content, rewritten into its cards (the token list between its open and close). */
+function skillCardsHtml(content, open, state, nextTier) {
+  const card = {
+    content,
+    open,
+    md: state.md,
+    env: state.env,
+    out: [],
+    cardLevel: content.find((t) => t.type === 'heading_open' && t.tag === 'h4')?.level,
+    inCard: false,
+    cardTok: null, // the html token that opened the current card
+    cont: false, // is the current card a continuation?
+    title: { name: '', tier: '' }, // the current card's title, for @continue
+    tail: null, // the card's last block while it is still a paragraph: a sign-off when short
+    seenBlock: false, // has the card had a block yet (its first paragraph is never a sign-off)
+    compDepth: 0, // how many components (callout, columns) are open inside the card
+    belongsToCard: new Set(), // open/close tokens of the components that stay in the card
+    columnsDepth: 0, // how many `@columns` runs sit open inside the current card
+    columnsCloses: new Set(), // their close tokens
+  };
+
+  for (let i = 0; i < content.length; i++) {
+    const tok = content[i];
+
+    // An h4 inside a `@columns` run in a card is a plain heading: a card
+    // cannot start in the middle of another card's columns.
+    if (tok.type === 'heading_open' && tok.tag === 'h4' && card.columnsDepth === 0) {
+      endCard(card);
+      const parsed = parseSkillTitle(content[i + 1].content || '');
+      const autoTier = nextTier();
+      // The continuation card repeats the ID the card shows, written or automatic.
+      startCard(card, { name: parsed.name, tier: parsed.tier || autoTier });
+      i += 2; // skip inline + heading_close
+      continue;
+    }
+
+    if (tok.type === 'dc_skill_continue') {
+      continueCard(card);
+      continue;
+    }
+
+    trackCardContent(card, tok, i);
+
+    if (!card.inCard) {
+      card.out.push(tok);
+      continue;
+    }
+
+    const skipTo = cardBlock(card, tok, i);
+    if (skipTo !== null) {
+      i = skipTo;
+      continue;
+    }
+
+    markCardParagraph(card, tok, i);
+    card.out.push(tok);
+  }
+  endCard(card);
+  return card.out;
+}
+
+// Push rendered card markup; any block ends the paragraph run a sign-off is read from.
+function emitCard(card, html) {
+  card.tail = null;
+  card.seenBlock = true;
+  card.out.push(makeToken('html_block', html));
+}
+
+// The card's opening markup, for the title it shows: the first card of a skill,
+// or a continuation (`cont`); `cut` ends the card in a straight foot.
+function cardOpenHtml(card, cont, cut = false) {
+  const tok = makeToken('html_block');
+  tok.attrs = card.open.attrs.map(([k, v]) => [k, v]);
+  if (cont) addTokenClassAfter(tok, 'dc-skill-card', 'dc-skill-card-cont');
+  if (cut) addTokenClassAfter(tok, 'dc-skill-card', 'dc-skill-card-cut');
+  tok.attrs.push(['name', slugify(card.title.name)]);
+  return '<div' + card.md.renderer.renderAttrs(tok) + '>\n' + cardTabHtml(card.title, cont);
+}
+
+// A new card from a `####` heading. The skill's name stays a heading, so the
+// outline lists it under its learning path.
+function startCard(card, title) {
+  card.title = title;
+  emitCard(card, cardOpenHtml(card, false));
+  card.cardTok = card.out[card.out.length - 1];
+  card.cont = false;
+  card.inCard = true;
+  card.seenBlock = false;
+}
+
+// `@continue`: the part before closes straight (a foot, a bolt, a flag; the
+// specialty's cut stays the mark of a card's real end) and a continuation card
+// opens under the same title, a span rather than a new heading.
+function continueCard(card) {
+  endCard(card, true);
+  if (card.cardTok) card.cardTok.content = cardOpenHtml(card, card.cont, true);
+  card.cont = true;
+  emitCard(card, cardOpenHtml(card, true));
+  card.cardTok = card.out[card.out.length - 1];
+  card.inCard = true;
+  card.seenBlock = false;
+}
+
+// Close the open card. Its closing paragraph is marked a sign-off only when the
+// card truly ends there: not when it is cut for a continuation, and never when
+// it is the card's first block.
+function endCard(card, continuing = false) {
+  if (!card.inCard) return;
+  const { tail } = card;
+  if (tail && !tail.first && !continuing && tail.len <= SIGNOFF_MAX) addTokenClass(tail.tok, 'dc-card-signoff');
+  // .dc-card-inner, the two seam markers (cards.css, "The seam"), .dc-card-body, .dc-skill-card
+  emitCard(card, '</div><span class="dc-card-start"></span><span class="dc-card-end"></span></div></div>\n');
+  card.inCard = false;
+}
+
+// Which layout tokens are the card's own. A @callout, @card, @outcome,
+// @procedure, @roll-table or @field is content of the card, and so is a
+// `@columns` run (with its column breaks) that opens inside it; any other
+// layout token (a break, @specialty-art, @gear, a columns run around several
+// cards) ends the card.
+function trackCardContent(card, tok, i) {
+  const { content } = card;
+  if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
+    card.belongsToCard.add(tok).add(content[closeIndex(content, i)]);
+  }
+  if (card.inCard && tok.type === 'layout_component_open' && tok.meta.kind === 'columns') {
+    const close = content[closeIndex(content, i)];
+    card.belongsToCard.add(tok).add(close);
+    card.columnsCloses.add(close);
+    card.columnsDepth++;
+  }
+  if (card.columnsCloses.has(tok)) card.columnsDepth--;
+  if (tok.type === 'layout_column_break' && card.columnsDepth > 0) card.belongsToCard.add(tok);
+  if (tok.type.startsWith('layout_') && !card.belongsToCard.has(tok)) endCard(card);
+
+  if (card.inCard && card.belongsToCard.has(tok)) {
+    if (tok.type === 'layout_component_open') card.compDepth++;
+    else if (tok.type === 'layout_component_close') card.compDepth--;
+  }
+}
+
+// A block the card renders itself: an h5 sub-header, a flavor quote, the
+// ability list, an outcome-ladder table. Returns the index of its last token,
+// or null when `tok` is none of them.
+function cardBlock(card, tok, i) {
+  const { content, md } = card;
+  if (tok.type === 'heading_open' && tok.tag === 'h5') {
+    const h5Text = content[i + 1].content || '';
+    if (h5Text.toLowerCase() !== 'outcomes') emitCard(card, '<div class="dc-sub-header">' + esc(h5Text) + '</div>\n');
+    return i + 2;
+  }
+  if (tok.type === 'blockquote_open') {
+    const quote = quoteHtml(content, i, md);
+    emitCard(card, '<p class="dc-flavor">' + quote.html + '</p>\n');
+    return quote.end;
+  }
+  if (tok.type === 'ordered_list_open') {
+    const { items, endIndex } = collectListItems(content, i, md, card.env);
+    emitCard(card, skillListHtml(items, md));
+    return endIndex;
+  }
+  if (tok.type === 'table_open') {
+    // A table of the five standard bands is the ladder; any other table
+    // passes through untouched, thead and all.
+    const ladder = tok.meta?.rollTable ? null : ladderRows(readTable(collectTableTokens(content, i)));
+    if (ladder) {
+      emitCard(card, buildLadderBlock(ladder, md, tok));
+      return skipToTableClose(content, i);
+    }
+  }
+  return null;
+}
+
+// A paragraph straight in the card: one bold run is the card's pseudo heading
+// (`**Full Merge**`; CSS cannot see text nodes, so only the plugin can tell it
+// from a run-in `**Shared Senses:** text`), one ending in a colon introduces the
+// next block, and the last one may be the sign-off.
+function markCardParagraph(card, tok, i) {
+  if (tok.type === 'paragraph_open' && !tok.hidden && tok.level === card.cardLevel && card.compDepth === 0) {
+    const inline = card.content[i + 1];
+    if (isBoldOnlyInline(inline)) addTokenClass(tok, 'dc-card-subhead');
+    if (endsWithColon(inline)) addTokenClass(tok, 'dc-lead-in');
+    card.tail = { tok, len: inlineTextLength(inline), first: !card.seenBlock };
+  } else if (tok.type !== 'inline' && tok.type !== 'paragraph_close') {
+    card.tail = null;
+  }
+  if (tok.type !== 'paragraph_open') card.seenBlock = true;
 }
 
 /** `Triumphs (20)`, `Hard Choice (6-10)`, `Success (11–19)` → 'crit' | 'hit' | 'mixed' | 'miss' | 'fail'; any other heading → null. */

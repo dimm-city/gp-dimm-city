@@ -150,6 +150,10 @@ and the styles say where a reader is and what they are reading.
   duplicated helpers are unified and its comments right-sized; the stylesheets
   lose repeated mega-selectors (now nested), history and tracker comments, and
   component rules that sat in the template and engine sheets.
+- `dcSkillCards` is split: the skill rule keeps the path numbering, and one
+  skill's cards are built by small functions over one explicit state object
+  (open, continue and end a card; which layout tokens are the card's; the
+  blocks a card renders; paragraph marks). Output is unchanged.
 
 ## [1.10.2] - 2026-11-07
 
