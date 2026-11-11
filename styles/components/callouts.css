@@ -424,6 +424,17 @@
   right: 30px;
 }
 
+/* The visit's label is lit (neon.css): civic green, the living city's colour. */
+.dc-visit-callout {
+  --dc-neon: var(--neon-civic); --dc-neon-core: var(--neon-civic-core);
+  --dc-neon-ring-1: var(--neon-civic-ring-1); --dc-neon-ring-2: var(--neon-civic-ring-2);
+}
+.dc-visit-callout .dc-alert-label {
+  background: var(--ink);
+  color: var(--dc-neon-core);
+  box-shadow: var(--dc-lit-line);
+}
+
 /* The place marker: a teardrop pin drawn in CSS (no glyph to fall back). */
 .dc-visit-callout .dc-alert-label::before {
   content: "";
@@ -456,6 +467,27 @@
   background: var(--dc-alert-bg);
   clip-path: var(--dc-alert-shape);
   z-index: -1;
+}
+
+/* LOCATION, LIT: a placard in a lightbox (neon.css): a white face in a lit ink
+   channel, square, the stamp a lit plate. Sodium yellow, a street light. After
+   the framed sheet, whose fill and white copy it drops. */
+.dc-location-callout {
+  --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core);
+  --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2);
+  --dc-alert-shape: none;
+  --dc-alert-border-width: 0px;
+  --dc-alert-frame: var(--dc-lit-slim), inset 0 0 0 11pt var(--ink), 4pt 4pt 0 var(--ink-dark);
+  background: var(--paper-cream);
+}
+.dc-location-callout::before { content: none; }
+.dc-location-callout .dc-alert-label {
+  background: var(--ink);
+  color: var(--dc-neon-core);
+  border-color: var(--ink);   /* the stamp's 2px ring, kept for its size */
+  outline: 0;
+  margin-left: 0;
+  box-shadow: var(--dc-lit-line);
 }
 
 /* Space under a callout, as over it: text that follows one sits a gap below it,

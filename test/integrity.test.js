@@ -366,6 +366,7 @@ describe("component catalog", () => {
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
     ...ENTRY_KINDS.map((w) => `@gear ${w}`),
     ...Object.keys(markers.definition.variants).map((w) => `@definition ${w}`), // the two states of a roll
+    ...Object.keys(markers.card.variants).map((w) => `@card ${w}`), // a card hung as a lightbox
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

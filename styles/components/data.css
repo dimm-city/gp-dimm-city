@@ -1072,6 +1072,21 @@ table.dc-stat-strip {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
 }
 
+/* An entry that links to a chapter (dcTocChapters) has its number lit: an ink
+   plate ringed in the chapter's tube (neon.css), the digits in its pale core. */
+.dc-toc ol > li[class*="dc-toc-"] {
+  padding-left: 62px;
+}
+.dc-toc ol > li[class*="dc-toc-"]::before {
+  top: 6px;
+  width: 48px;
+  height: 30px;
+  background: var(--ink);
+  color: var(--dc-neon-core);
+  clip-path: none;
+  box-shadow: var(--dc-lit-line), 2pt 2pt 0 var(--ink-dark);
+}
+
 .dc-toc ol>li>a {
   font-size: var(--fs-h3);
   font-weight: 700;
