@@ -116,12 +116,195 @@
  * (@end-learning-path, a new @learning-path, @end-specialty, @page, EOF).
  */
 
+// ── Shared data ────────────────────────────────────────────────────────────
+
+// The specialties and the prefix their learning paths are numbered with
+// (AUG1, AUG2, …). `dualist` and `generalist` are specialties too but have no
+// code, so their paths number as PATH1, PATH2, … like a path outside any specialty.
+const SPECIALTY_CODES = {
+  augmerc: 'AUG',
+  proxy: 'PRX',
+  streetwarden: 'STW',
+  gutterdruid: 'GDR',
+  cybersurgeon: 'CBS',
+  wirephreak: 'WPH',
+  technosorcerer: 'TNS',
+  etherlock: 'ETH',
+};
+
+const SPECIALTIES = [...Object.keys(SPECIALTY_CODES), 'dualist', 'generalist'];
+
+const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
+
+const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
+
+const CALLOUTS = {
+  note: { class: 'dc-note', label: 'Note' },
+  warning: { class: 'dc-note warning', label: 'Warning' },
+  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
+  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
+  origin: { class: 'dc-origin-callout', label: 'Origin' },
+  location: { class: 'dc-location-callout', label: 'Location' },
+  visit: { class: 'dc-visit-callout', label: 'Visit' },
+  example: { class: 'dc-example-callout', label: 'Example' },
+};
+
+/**
+ * GFM-style blockquote alert types — Dimm City branded: the classes and labels
+ * are DC-specific, so core does not know them.
+ */
+// The callout variants that also have a `> [!TYPE]` form.
+const ALERT_CALLOUTS = ['note', 'warning', 'dm', 'vibe', 'origin', 'location', 'visit'];
+
+const DC_ALERT_TYPES = {
+  ...Object.fromEntries(ALERT_CALLOUTS.map((variant) => [
+    variant.toUpperCase(),
+    { classes: 'dc-alert ' + CALLOUTS[variant].class, label: CALLOUTS[variant].label },
+  ])),
+  FLAVOR:    { classes: "dc-flavor" },
+  PULLQUOTE: { classes: "dc-pullquote dc-flush" },
+};
+
+// `[!TYPE]` and the blanks after it.
+const DC_ALERT_MARKER = /^\[!([A-Z_]+)\][ \t]*/i;
+
+// ── Declared component: @field (and the bold labels that mean it) ──────────
+//
+// `@field specs` … `@end-field` is a labelled field: `div.dc-field.dc-field-specs`
+// holding `span.dc-field-label` and the author's paragraphs. The label is the
+// variant's default (below) or `label="…"`, the way `@callout` does it.
+//
+// The bold-label shortcut is the same component written shorter: a paragraph
+// that opens with a known label (`**SPECS:** …`), inside an entry card, an NPC
+// stat block or a skill card, is rewritten to exactly the markup the marker
+// gives (`dcFieldLines`), so one set of rules styles both. Everywhere else it
+// stays a paragraph, and a callout inside a card is not a card.
+//
+// FIELD_LABELS is the one table. Each line is a label as the books write it
+// (matched case-insensitively, colon inside the bold) and the variant it
+// means. A new label is a line here; a new field type is a new variant name
+// here plus a token-setter rule in styles/components/entries.css. The first
+// label listed for a variant is that variant's default label.
+const FIELD_LABELS = {
+  'SPECS': 'specs',
+  'Traits': 'traits',
+  'Equipment': 'equipment',
+  'Effects': 'effects',
+  'Side Effects': 'side-effects',
+  'Requires': 'requires',
+  'Wirephreak Gear': 'requires',
+  'Cybersurgeon Instrument': 'requires',
+  'Cybersurgeon Instruments': 'requires',
+  'Cybersurgeon Instrument(s)': 'requires',
+  'TECHNOENHANCEMENT': 'requires',
+};
+
+const FIELD_VARIANTS = [...new Set(Object.values(FIELD_LABELS))];
+
+const FIELD_DEFAULT_LABEL = Object.fromEntries(
+  FIELD_VARIANTS.map((v) => [v, Object.keys(FIELD_LABELS).find((l) => FIELD_LABELS[l] === v)]),
+);
+
+const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
+
+// The cards whose paragraphs may be field lines.
+const FIELD_HOSTS = new Set(['gear', 'skill']);
+
+// Every dash an author may type between the ends of a range: the hyphen,
+// U+2010–U+2015 (hyphen, en and em dash, bar) and the minus sign. As the inside
+// of a regex character class.
+const DASH_CLASS = '\\-\\u2010-\\u2015\\u2212';
+
+const DASH_RUN = new RegExp('-{2,3}|[' + DASH_CLASS + ']', 'g');
+
+const enDashed = (text) => text.replace(new RegExp('[' + DASH_CLASS + ']', 'g'), '\u2013');
+
+// "11 – 19" and "11--19" read as "11-19".
+const hyphenated = (text) => text.replace(DASH_RUN, '-');
+
+const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
+
+const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
+
+const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
+
+const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
+
+// ── Paste-up: rows and continuation sheets ──────────────────────────────────
+//
+// A sheet says its own width: `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
+// on its section line. Two sheets side by side are a row: when a sheet
+// with a width is followed straight away by one whose width completes it (half
+// and half, narrow and wide, wide and narrow), the plugin wraps the two in
+// `div.dc-pu-row`, and section.css reads the widths off them. There is no row
+// marker to write. A sheet with a width and no partner is reported, and prints
+// at the full width.
+const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
+
 // The "continued" mark on a continuation card's tab: a drawn triangle, not a
 // ▸ character. No Dimm City font has that glyph, so Chromium borrowed one
 // from a system font and printed it as a Type 3 font, which Gutterpress's
 // PDF/X preserve-text split cannot keep. It takes the tab title's colour.
 const CONTINUED_MARK =
   '<svg class="dc-tab-cont-mark" viewBox="0 0 6 8" aria-hidden="true"><path d="M0 0 6 4 0 8z" fill="currentColor"/></svg>';
+
+// ── Neon signs ──────────────────────────────────────────────────────────────
+// A sign is the city's own fixture, not the pack's paper (docs/plans/
+// 2026-11-11-neon-signage.md). It is placed, never written: a chapter opener
+// (`@page chapter-start` in an `@chapter <word>`) whose title banner comes
+// first hangs one above the banner, spelling its chapter's word (an opener
+// that starts with a sheet, such as a fiction excerpt, has no headroom for
+// one), and a specialty's art page (`@specialty-art`) hangs one
+// spelling the specialty. The word is drawn four times as SVG paths, stacked
+// (outer ring, inner ring, tube, core): stroked text would print as a Type 3
+// font, which the PDF/X build flattens to an image. One letter of each sign
+// is a dead tube. The Dream Master's sign is mostly dark: only the D and the
+// M are lit.
+const NEON_CHAPTER_WORDS = { rules: 'RULES', dm: 'DREAM MASTER', gear: 'GEAR', 'citizen-file': 'CITIZEN FILE' };
+
+const NEON_LAYERS = ['dc-neon-ring-2', 'dc-neon-ring-1', 'dc-neon-tube', 'dc-neon-core'];
+
+// BEGIN NEON_FONT (generated by scripts/neon-glyphs.py; do not edit)
+// Tomorrow 400's capitals (SIL OFL, fonts/tomorrow/OFL.txt) as SVG paths:
+// font units, y down, baseline at 0.
+const NEON_FONT = {
+  upm: 1000,
+  cap: 737,
+  glyphs: {
+  'A': { w: 667, d: 'M14 0 263 -737H404L653 0H558L495 -192H172L110 0ZM199 -272H469L345 -651H322Z' },
+  'B': { w: 690, d: 'M87 0V-737H482L586 -632V-459L540 -397L625 -311V-105L520 0ZM178 -428H453L495 -485V-601L441 -657L178 -656ZM178 -81H479L534 -136V-287L476 -347H178Z' },
+  'C': { w: 647, d: 'M173 0 68 -105V-632L173 -737H506L608 -635L550 -576L470 -656H214L159 -601V-136L214 -81H478L559 -162L617 -103L513 0Z' },
+  'D': { w: 705, d: 'M87 0V-737H487L640 -582V-155L487 0ZM178 -81H446L549 -186V-551L446 -656H178Z' },
+  'E': { w: 625, d: 'M87 0V-737H573V-653H178V-429H531V-346H178V-84H573V0Z' },
+  'F': { w: 577, d: 'M87 0V-737H562V-653H178V-415H515V-332H178V0Z' },
+  'G': { w: 711, d: 'M171 0 68 -105V-632L173 -737H523L625 -635L567 -576L487 -656H214L159 -601V-136L214 -81H435L549 -187V-307H379V-387H625V0H549V-85L458 0Z' },
+  'H': { w: 720, d: 'M87 0V-737H178V-428H543V-737H634V0H543V-347H178V0Z' },
+  'I': { w: 395, d: 'M62 0V-84H152V-653H62V-737H333V-653H243V-84H333V0Z' },
+  'J': { w: 577, d: 'M154 0 50 -105V-274H141V-136L196 -81H345L400 -136V-737H491V-105L386 0Z' },
+  'K': { w: 656, d: 'M87 0V-737H178V-344L526 -737H634L358 -421L639 0H530L295 -350L178 -216V0Z' },
+  'L': { w: 559, d: 'M87 0V-737H178V-84H549V0Z' },
+  'M': { w: 887, d: 'M87 0V-737H211L443 -148L676 -737H801V0H709V-598L469 0H418L178 -597V0Z' },
+  'N': { w: 718, d: 'M87 0V-737H211L540 -144V-737H631V0H523L200 -582H178V0Z' },
+  'O': { w: 694, d: 'M173 0 68 -105V-632L173 -737H521L626 -632V-105L521 0ZM214 -81H480L535 -136V-601L480 -656H214L159 -601V-136Z' },
+  'P': { w: 610, d: 'M87 0V-737H476L580 -632V-379L476 -274H178V0ZM178 -355H435L489 -410V-601L435 -657L178 -656Z' },
+  'Q': { w: 694, d: 'M307 102V0H173L68 -105V-632L173 -737H521L626 -632V-105L521 0H387V102ZM214 -81H307V-187H387V-81H480L535 -136V-601L480 -656H214L159 -601V-136Z' },
+  'R': { w: 677, d: 'M87 0V-737H490L594 -632V-397L490 -292H487L620 0H519L388 -292H178V0ZM178 -373H449L503 -428V-601L449 -656H178Z' },
+  'S': { w: 658, d: 'M88 0V-84H451L505 -139V-286L451 -341H166L62 -445V-632L166 -737H558V-653H207L152 -598L153 -476L207 -421H492L596 -316V-105L492 0Z' },
+  'T': { w: 555, d: 'M232 0V-653H13V-737H542V-653H323V0Z' },
+  'U': { w: 703, d: 'M178 0 73 -105V-737H164V-136L219 -81H484L539 -136V-737H630V-105L525 0Z' },
+  'V': { w: 666, d: 'M263 0 13 -737H109L322 -87H344L557 -737H653L403 0Z' },
+  'W': { w: 909, d: 'M194 0 13 -737H109L254 -87H276L413 -737H496L633 -87H655L800 -737H896L715 0H572L454 -544L337 0Z' },
+  'X': { w: 632, d: 'M13 0 235 -377 15 -737H118L304 -427H328L514 -737H618L397 -377L619 0H515L328 -324H305L118 0Z' },
+  'Y': { w: 633, d: 'M271 0V-295L13 -737H117L306 -401H326L516 -737H619L362 -295V0Z' },
+  'Z': { w: 663, d: 'M72 0V-92L469 -631V-653H93V-737H587V-645L191 -106V-84H591V0Z' },
+  ' ': { w: 222, d: '' },
+  },
+};
+// END NEON_FONT
+
+const NEON_TRACKING = 160; // letter spacing, font units (0.16em)
+
+// ── Token helpers ──────────────────────────────────────────────────────────
 
 function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -140,6 +323,7 @@ function makeToken(type, content = '') {
 }
 
 const classesOf = (tok) => (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
+
 const hasClass = (tok, cls) => classesOf(tok).includes(cls);
 
 // Add one class to a token's existing `class` attribute, keeping the others.
@@ -180,162 +364,6 @@ function mergeAttrs(cls, attrs) {
   return merged;
 }
 
-// A paragraph that is one bold run and closes right before tokens[at] (and is
-// not the first thing after a `firstType` token) is a kicker: `.dc-kicker`.
-function markKickerBefore(tokens, at, firstType) {
-  if (at >= 4 && tokens[at - 1].type === 'paragraph_close' && tokens[at - 3].type === 'paragraph_open' &&
-      tokens[at - 4].type !== firstType && isBoldOnlyInline(tokens[at - 2])) {
-    addTokenClass(tokens[at - 3], 'dc-kicker');
-  }
-}
-
-function parseSkillTitle(text) {
-  // Parse "Skill Name" or "Skill Name | T0". Anything after a second "|" is
-  // not part of the title and is dropped.
-  const parts = text.split('|');
-  const name = parts[0].trim();
-  const tier = parts.length > 1 ? parts[1].trim() : '';
-  return { name, tier };
-}
-
-function slugify(text) {
-  return (text || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-// The specialties and the prefix their learning paths are numbered with
-// (AUG1, AUG2, …). `dualist` and `generalist` are specialties too but have no
-// code, so their paths number as PATH1, PATH2, … like a path outside any specialty.
-const SPECIALTY_CODES = {
-  augmerc: 'AUG',
-  proxy: 'PRX',
-  streetwarden: 'STW',
-  gutterdruid: 'GDR',
-  cybersurgeon: 'CBS',
-  wirephreak: 'WPH',
-  technosorcerer: 'TNS',
-  etherlock: 'ETH',
-};
-const SPECIALTIES = [...Object.keys(SPECIALTY_CODES), 'dualist', 'generalist'];
-
-function specialtyCodeFromClass(tok) {
-  const name = classesOf(tok).find((cls) => Object.hasOwn(SPECIALTY_CODES, cls));
-  return name ? SPECIALTY_CODES[name] : 'PATH';
-}
-
-function buildStickerChain(items) {
-  let html = '<div class="dc-stickers">';
-  items.forEach((item, i) => {
-    html += '<span class="dc-sticker"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + item.html.trim() + '</span>';
-    if (i < items.length - 1) {
-      // The word joiner keeps the arrow with the chip after it, so a wrap never
-      // leaves a » at the end of a line.
-      html += '<span class="dc-arrow">»</span>\u2060';
-    }
-  });
-  html += '</div>\n';
-  return html;
-}
-
-// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! / ROLL THE DIE TWICE! / ROLL TWO DICE! — uppercase only.
-const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/;
-
-function isWordChar(char) {
-  return /[A-Za-z0-9_]/.test(char);
-}
-
-function copyTextToken(token, content, state) {
-  const copy = new state.Token(token.type, token.tag, token.nesting);
-  Object.assign(copy, token);
-  copy.content = content;
-  return copy;
-}
-
-function splitRollDieText(token, state) {
-  const content = token.content || '';
-  const replacement = [];
-  let cursor = 0;
-  const pattern = new RegExp(ROLL_THE_DIE_PATTERN.source, 'g');
-  let match;
-
-  while ((match = pattern.exec(content)) !== null) {
-    const index = match.index;
-    const before = index > 0 ? content[index - 1] : '';
-    const end = index + match[0].length;
-    const after = end < content.length ? content[end] : '';
-    if (isWordChar(before) || isWordChar(after)) {
-      pattern.lastIndex = index + 1;
-      continue;
-    }
-
-    if (index > cursor) {
-      replacement.push(copyTextToken(token, content.slice(cursor, index), state));
-    }
-
-    const rollToken = copyTextToken(token, match[0], state);
-    rollToken.type = 'dc_roll_the_die';
-    rollToken.tag = 'span';
-    rollToken.nesting = 0;
-    replacement.push(rollToken);
-
-    cursor = end;
-  }
-
-  if (replacement.length === 0) return null;
-  if (cursor < content.length) {
-    replacement.push(copyTextToken(token, content.slice(cursor), state));
-  }
-  return replacement;
-}
-
-const VOID_HTML_TAGS = new Set([
-  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-  'link', 'meta', 'param', 'source', 'track', 'wbr',
-]);
-
-function updateRawHtmlStack(html, stack) {
-  const match = html.match(/^<\s*(\/?)\s*([A-Za-z][A-Za-z0-9:-]*)\b/);
-  if (!match) return;
-
-  const tagName = match[2].toLowerCase();
-  if (match[1]) {
-    const openIndex = stack.lastIndexOf(tagName);
-    if (openIndex !== -1) stack.length = openIndex;
-    return;
-  }
-
-  if (!VOID_HTML_TAGS.has(tagName) && !/\/\s*>$/.test(html)) {
-    stack.push(tagName);
-  }
-}
-
-function dcRollDieTransform(state) {
-  state.tokens.forEach((token, i) => {
-    if (token.type !== 'inline' || !Array.isArray(token.children)) return;
-    // A heading is already display type: its wording stays plain heading text.
-    if (i > 0 && state.tokens[i - 1].type === 'heading_open') return;
-
-    const children = [];
-    const rawHtmlStack = [];
-    token.children.forEach(child => {
-      if (child.type === 'html_inline') {
-        updateRawHtmlStack(child.content || '', rawHtmlStack);
-        children.push(child);
-        return;
-      }
-
-      const replacement = child.type === 'text' && rawHtmlStack.length === 0
-        ? splitRollDieText(child, state)
-        : null;
-      if (replacement) children.push(...replacement);
-      else children.push(child);
-    });
-    token.children = children;
-  });
-}
-
 function renderInlineChildren(inlineTok, md) {
   if (!inlineTok?.children) return esc(inlineTok?.content || '');
   return md.renderer.render(inlineTok.children, md.options, {});
@@ -353,6 +381,50 @@ function quoteHtml(tokens, i, md) {
   }
   return { html, end };
 }
+
+/** True when an inline token's whole content is one `<strong>` run. */
+function isBoldOnlyInline(inline) {
+  const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
+  return kids.length > 2 && kids[0].type === 'strong_open' && kids[kids.length - 1].type === 'strong_close' &&
+    kids.filter((k) => k.type === 'strong_open' || k.type === 'strong_close').length === 2;
+}
+
+// A paragraph that is one bold run and closes right before tokens[at] (and is
+// not the first thing after a `firstType` token) is a kicker: `.dc-kicker`.
+function markKickerBefore(tokens, at, firstType) {
+  if (at >= 4 && tokens[at - 1].type === 'paragraph_close' && tokens[at - 3].type === 'paragraph_open' &&
+      tokens[at - 4].type !== firstType && isBoldOnlyInline(tokens[at - 2])) {
+    addTokenClass(tokens[at - 3], 'dc-kicker');
+  }
+}
+
+/**
+ * Call `rewrite(run, enclosing)` for every declared component of `kind`, in
+ * document order. `run` is the component's tokens, open token to close token;
+ * `enclosing` is the open tokens of the components it sits in, outermost first.
+ * Return a replacement run, or nothing to leave it as it is.
+ */
+function forEachComponent(tokens, kind, rewrite) {
+  const enclosing = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i];
+    if (tok.type === 'layout_component_close') {
+      enclosing.pop();
+      continue;
+    }
+    if (tok.type !== 'layout_component_open') continue;
+    if (tok.meta.kind !== kind) {
+      enclosing.push(tok);
+      continue;
+    }
+    const end = closeIndex(tokens, i) + 1;
+    const run = rewrite(tokens.slice(i, end), enclosing) || tokens.slice(i, end);
+    tokens.splice(i, end - i, ...run);
+    i += run.length - 1;
+  }
+}
+
+// ── Table readers and d20 parsing ──────────────────────────────────────────
 
 function collectTableTokens(tokens, start) {
   const result = [];
@@ -395,19 +467,6 @@ function readTable(tableTokens) {
   return { head, rows };
 }
 
-// Every dash an author may type between the ends of a range: the hyphen,
-// U+2010–U+2015 (hyphen, en and em dash, bar) and the minus sign. As the inside
-// of a regex character class.
-const DASH_CLASS = '\\-\\u2010-\\u2015\\u2212';
-const DASH_RUN = new RegExp('-{2,3}|[' + DASH_CLASS + ']', 'g');
-const enDashed = (text) => text.replace(new RegExp('[' + DASH_CLASS + ']', 'g'), '\u2013');
-
-// "11 – 19" and "11--19" read as "11-19".
-const hyphenated = (text) => text.replace(DASH_RUN, '-');
-
-const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
-
 // The d20 outcome ladder is recognised by its bands, not by what its columns
 // are called: a two-column table whose first column holds a d20 result on every
 // row is the ladder, so a roll's results read the same wherever the book states
@@ -418,8 +477,6 @@ const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'M
 // carry a label ("20: Total Wholeness", "20 – Triumph", "Triumph (20)"), or be the
 // tier's word alone ("Success", "Hard Choice"). A table whose bands overlap, run
 // past 1-20 or straddle 10/11 is not a ladder.
-const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
-const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
 
 // "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
@@ -506,6 +563,43 @@ function outcomeRowsHtml(rows, md, head = []) {
 function buildLadderBlock({ head, rows }, md, table) {
   const attrs = mergeAttrs('dc-outcomes', table.attrs || []);
   return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
+}
+
+// ── List and card HTML ─────────────────────────────────────────────────────
+
+function parseSkillTitle(text) {
+  // Parse "Skill Name" or "Skill Name | T0". Anything after a second "|" is
+  // not part of the title and is dropped.
+  const parts = text.split('|');
+  const name = parts[0].trim();
+  const tier = parts.length > 1 ? parts[1].trim() : '';
+  return { name, tier };
+}
+
+function slugify(text) {
+  return (text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function specialtyCodeFromClass(tok) {
+  const name = classesOf(tok).find((cls) => Object.hasOwn(SPECIALTY_CODES, cls));
+  return name ? SPECIALTY_CODES[name] : 'PATH';
+}
+
+function buildStickerChain(items) {
+  let html = '<div class="dc-stickers">';
+  items.forEach((item, i) => {
+    html += '<span class="dc-sticker"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + item.html.trim() + '</span>';
+    if (i < items.length - 1) {
+      // The word joiner keeps the arrow with the chip after it, so a wrap never
+      // leaves a » at the end of a line.
+      html += '<span class="dc-arrow">»</span>\u2060';
+    }
+  });
+  html += '</div>\n';
+  return html;
 }
 
 // The items of the list opening at tokens[startIndex] (ordered or bullet),
@@ -659,8 +753,11 @@ function dieResultListHtml(items, md) {
 //     form kept is the variable "3-X".
 //   - anything else (a die result, a name, a sentence) is not a cost.
 const COST_LEAD = new RegExp(String.raw`^(\+?\s*(?:\d+|X|VAR)(?:\s*[${DASH_CLASS}]\s*(?:\d+|X))?\+?)\s*AP\b(.*)$`, 'i');
+
 const BARE_VARIABLE_COST = new RegExp(String.raw`^\d+\s*[${DASH_CLASS}]\s*X$`, 'i');
+
 const LEADING_DASH = new RegExp('^[' + DASH_CLASS + ']');
+
 const VARIABLE_COST = new RegExp('[' + DASH_CLASS + ']|X|VAR|\\+$', 'i'); // a range, X, VAR or a trailing +
 
 // A rendered list item's text → { apVal, apClass, text } | null (not a cost).
@@ -710,65 +807,6 @@ function parseAbilityFromListItem(html) {
   return { apVal, apClass, text, titleOnly };
 }
 
-
-// Gutterpress owns bare @continue as a generic section marker and parses it
-// before custom core rules run. Claim the exact bare marker first, then decide
-// before Gutterpress's layout transform whether it belongs to a skill card or
-// should retain the generic section-continuation behavior.
-function dcContinueCandidateBlock(state, startLine, endLine, silent) {
-  const pos = state.bMarks[startLine] + state.tShift[startLine];
-  const max = state.eMarks[startLine];
-  if (state.src.slice(pos, max).trim() !== '@continue') return false;
-  if (silent) return true;
-
-  state.env.__layoutMarkersUsed = true;
-  const token = state.push('dc_continue_candidate', '', 0);
-  token.block = true;
-  token.map = [startLine, startLine + 1];
-  token.meta = { kind: 'continue', attrs: {}, __line: startLine + 1 };
-  state.line = startLine + 1;
-  return true;
-}
-
-// Markers that end a skill: its own closer, the markers that start the next
-// path or specialty, and the layout scopes core closes every declared
-// component at. At this point core has not run yet, so each one is still a
-// `layout_marker` token carrying `meta.kind`.
-const SKILL_ENDS = new Set([
-  'end-skill', 'learning-path', 'end-learning-path', 'specialty', 'end-specialty',
-  'chapter', 'spread', 'page', 'section', 'end-section',
-]);
-
-function dcContinueClassifier(state) {
-  let inSkill = false;
-  let inCard = false;
-
-  for (const token of state.tokens) {
-    const kind = token.type === 'layout_marker' ? token.meta.kind : null;
-    if (kind === 'skill') {
-      inSkill = true;
-      inCard = false;
-    } else if (SKILL_ENDS.has(kind)) {
-      inSkill = false;
-      inCard = false;
-    } else if (inSkill && token.type === 'heading_open' && token.tag === 'h4') {
-      inCard = true;
-    } else if (token.type === 'dc_continue_candidate') {
-      token.type = inCard ? 'dc_skill_continue' : 'layout_marker';
-    }
-  }
-}
-
-function registerSkillContinueBridge(md) {
-  // Without Gutterpress's layout_transform (bare markdown-it) there is no section @continue to share the marker with.
-  if (!md.core.ruler.__rules__.some((rule) => rule.name === 'layout_transform')) return;
-  md.core.ruler.before('layout_transform', 'dc_continue_classifier', dcContinueClassifier);
-  md.block.ruler.before('layout_marker', 'dc_continue_candidate', dcContinueCandidateBlock, {
-    alt: ['paragraph', 'reference', 'blockquote', 'list'],
-  });
-}
-
-
 // `attrs` are what the author wrote on the `@procedure` line: the wrapper
 // renders nothing, so the list takes them.
 function buildProcedureList(items, attrs, md) {
@@ -781,35 +819,70 @@ function buildProcedureList(items, attrs, md) {
   return html;
 }
 
-const CALLOUTS = {
-  note: { class: 'dc-note', label: 'Note' },
-  warning: { class: 'dc-note warning', label: 'Warning' },
-  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
-  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
-  origin: { class: 'dc-origin-callout', label: 'Origin' },
-  location: { class: 'dc-location-callout', label: 'Location' },
-  visit: { class: 'dc-visit-callout', label: 'Visit' },
-  example: { class: 'dc-example-callout', label: 'Example' },
-};
+// A card's tab, body and inner wrapper openers. The first card of a skill
+// names the skill in a real heading, so the outline lists it under its learning
+// path; a continuation's repeated title is a span with the continued mark.
+function cardTabHtml({ name, tier }, cont) {
+  const title = cont
+    ? '    <span class="dc-tab-title">' + esc(name) + ' ' + CONTINUED_MARK + '</span>\n'
+    : '    <h4 class="dc-tab-title">' + esc(name) + '</h4>\n';
+  return '  <div class="dc-card-tab' + (cont ? ' dc-card-tab-cont' : '') + '">\n' +
+    title +
+    (tier ? '    <span class="dc-tab-tier">' + esc(tier) + '</span>\n' : '') +
+    '  </div>\n' +
+    '  <div class="dc-card-body">\n' +
+    '    <div class="dc-card-inner">\n';
+}
+
+/** The characters an inline token prints as plain text or code (markup and spans not counted). */
+function inlineTextLength(inline) {
+  return (inline?.children || []).reduce((n, k) => n + (k.type === 'text' || k.type === 'code_inline' ? k.content.length : 0), 0);
+}
+
+/** True when a paragraph's source ends in a colon (outside its emphasis marks): it introduces what follows. */
+function endsWithColon(inline) {
+  return inline?.type === 'inline' && /:$/.test((inline.content || '').replace(/[\s*_`]+$/, ''));
+}
+
+// ── Document-wide rules ────────────────────────────────────────────────────
 
 /**
- * GFM-style blockquote alert types — Dimm City branded: the classes and labels
- * are DC-specific, so core does not know them.
+ * Main plugin function - the default export Gutterpress loads
  */
-// The callout variants that also have a `> [!TYPE]` form.
-const ALERT_CALLOUTS = ['note', 'warning', 'dm', 'vibe', 'origin', 'location', 'visit'];
-
-const DC_ALERT_TYPES = {
-  ...Object.fromEntries(ALERT_CALLOUTS.map((variant) => [
-    variant.toUpperCase(),
-    { classes: 'dc-alert ' + CALLOUTS[variant].class, label: CALLOUTS[variant].label },
-  ])),
-  FLAVOR:    { classes: "dc-flavor" },
-  PULLQUOTE: { classes: "dc-pullquote dc-flush" },
-};
-
-// `[!TYPE]` and the blanks after it.
-const DC_ALERT_MARKER = /^\[!([A-Z_]+)\][ \t]*/i;
+// ── Raw HTML in the markdown ────────────────────────────────────────────────
+//
+// HTML an author writes into the markdown is reported, one warning per tag, on
+// its line: the package cannot check it, and a stray tag does damage far from
+// where it is written (`<small>…<small>` in one ladder row set the rest of a
+// book small). Write markdown or a marker instead. An HTML comment is not
+// reported: it renders nothing. Runs first, before any rule of this plugin
+// rewrites a table or adds HTML of its own, so only the author's is seen.
+// `rawHtml: 'off'` in the extension's options turns it off for a book that
+// means its HTML (the design guide's specimen stages).
+function rawHtmlWarnings(state) {
+  const report = (tok, line) => {
+    const html = tok.content.trim();
+    if (!html || html.startsWith('<!--')) return;
+    const tag = (/^<\/?[a-zA-Z][a-zA-Z0-9-]*/.exec(html) || [html.slice(0, 20)])[0];
+    (state.env.layoutWarnings ??= []).push({
+      line,
+      type: 'raw_html',
+      message: `Raw HTML (${tag}${html.startsWith('</') ? '' : '…'}>): write markdown or a marker instead. The package cannot check HTML, and a tag left open styles everything after it.`,
+    });
+  };
+  // Only what is written in the source counts: Gutterpress adds HTML of its own
+  // (a marker's label="…"), which is not on the author's line.
+  const lines = state.src.split('\n');
+  const written = (map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
+  let near = null; // a table cell's inline has no map of its own: its row's is the nearest
+  for (const tok of state.tokens) {
+    if (tok.map) near = tok.map;
+    if (tok.type === 'html_block' && written(tok.map, tok.content)) report(tok, tok.map[0] + 1);
+    else if (tok.type === 'inline') {
+      for (const child of tok.children || []) if (child.type === 'html_inline' && written(near, child.content)) report(child, near[0] + 1);
+    }
+  }
+}
 
 /**
  * Transform `> [!TYPE]` blockquotes into DC-branded styled divs.
@@ -940,6 +1013,123 @@ function dcAlertsTransform(state) {
   state.tokens = newTokens;
 }
 
+// ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! / ROLL THE DIE TWICE! / ROLL TWO DICE! — uppercase only.
+const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/;
+
+function isWordChar(char) {
+  return /[A-Za-z0-9_]/.test(char);
+}
+
+function copyTextToken(token, content, state) {
+  const copy = new state.Token(token.type, token.tag, token.nesting);
+  Object.assign(copy, token);
+  copy.content = content;
+  return copy;
+}
+
+function splitRollDieText(token, state) {
+  const content = token.content || '';
+  const replacement = [];
+  let cursor = 0;
+  const pattern = new RegExp(ROLL_THE_DIE_PATTERN.source, 'g');
+  let match;
+
+  while ((match = pattern.exec(content)) !== null) {
+    const index = match.index;
+    const before = index > 0 ? content[index - 1] : '';
+    const end = index + match[0].length;
+    const after = end < content.length ? content[end] : '';
+    if (isWordChar(before) || isWordChar(after)) {
+      pattern.lastIndex = index + 1;
+      continue;
+    }
+
+    if (index > cursor) {
+      replacement.push(copyTextToken(token, content.slice(cursor, index), state));
+    }
+
+    const rollToken = copyTextToken(token, match[0], state);
+    rollToken.type = 'dc_roll_the_die';
+    rollToken.tag = 'span';
+    rollToken.nesting = 0;
+    replacement.push(rollToken);
+
+    cursor = end;
+  }
+
+  if (replacement.length === 0) return null;
+  if (cursor < content.length) {
+    replacement.push(copyTextToken(token, content.slice(cursor), state));
+  }
+  return replacement;
+}
+
+const VOID_HTML_TAGS = new Set([
+  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+  'link', 'meta', 'param', 'source', 'track', 'wbr',
+]);
+
+function updateRawHtmlStack(html, stack) {
+  const match = html.match(/^<\s*(\/?)\s*([A-Za-z][A-Za-z0-9:-]*)\b/);
+  if (!match) return;
+
+  const tagName = match[2].toLowerCase();
+  if (match[1]) {
+    const openIndex = stack.lastIndexOf(tagName);
+    if (openIndex !== -1) stack.length = openIndex;
+    return;
+  }
+
+  if (!VOID_HTML_TAGS.has(tagName) && !/\/\s*>$/.test(html)) {
+    stack.push(tagName);
+  }
+}
+
+function dcRollDieTransform(state) {
+  state.tokens.forEach((token, i) => {
+    if (token.type !== 'inline' || !Array.isArray(token.children)) return;
+    // A heading is already display type: its wording stays plain heading text.
+    if (i > 0 && state.tokens[i - 1].type === 'heading_open') return;
+
+    const children = [];
+    const rawHtmlStack = [];
+    token.children.forEach(child => {
+      if (child.type === 'html_inline') {
+        updateRawHtmlStack(child.content || '', rawHtmlStack);
+        children.push(child);
+        return;
+      }
+
+      const replacement = child.type === 'text' && rawHtmlStack.length === 0
+        ? splitRollDieText(child, state)
+        : null;
+      if (replacement) children.push(...replacement);
+      else children.push(child);
+    });
+    token.children = children;
+  });
+}
+
+/**
+ * A paragraph that is only the die call (`**ROLL THE DIE!**`, or the bare words,
+ * or any form of the phrase the inline rule picks out) is the table's imperative
+ * moment, not a sentence: `.dc-die-call`, a raised chip. Mid-sentence it stays the
+ * inline mark. A paragraph in a list or a quote is not set apart.
+ */
+function dcDieCalls(state) {
+  const t = state.tokens;
+  let quoted = 0;
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'blockquote_open' || t[i].type === 'list_item_open') quoted++;
+    else if (t[i].type === 'blockquote_close' || t[i].type === 'list_item_close') quoted--;
+    else if (t[i].type === 'paragraph_open' && !quoted && !t[i].hidden && t[i + 1]?.type === 'inline') {
+      const kids = (t[i + 1].children || []).filter((k) => k.type !== 'text' || k.content.trim());
+      const types = kids.map((k) => k.type).join();
+      if (types === 'dc_roll_the_die' || types === 'strong_open,dc_roll_the_die,strong_close') addTokenClass(t[i], 'dc-die-call');
+    }
+  }
+}
+
 /**
  * Mark image-only paragraphs with `.dc-img-wrapper`, so layout rules can
  * target them without relying on `p:has(img)`.
@@ -978,55 +1168,328 @@ function dcFrontMatterTitles(state) {
   }
 }
 
-/**
- * `data-position="odd|even"` on every @specialty-card, counted across the
- * document in order so the card grid alternates its tilt/offset. The wrapper
- * itself is a declared marker (see `markers` below); this rule only numbers
- * the open tokens core produced. It never runs under bare markdown-it, which
- * has no declared markers.
- */
-function dcSpecialtyCardPositions(state) {
-  let count = 0;
-  for (const tok of state.tokens) {
-    if (tok.type !== 'layout_component_open') continue;
-    if (!hasClass(tok, 'dc-specialty-card')) continue;
-    count++;
-    tok.attrSet('data-position', count % 2 === 0 ? 'even' : 'odd');
+// ── Steps: a numbered `##` standing on the page ─────────────────────────────
+//
+// A `##` that stands on the page (in no section or component) and opens with a
+// step number, `## 4. Ideal`, is a step of the book's procedure (the Citizen
+// File's 0-7). Its number, written as it is, goes in `span.dc-step-num`, which
+// the page slip sets as a chip in the chapter's colour, so the steps read as one
+// sequence. The heading keeps no class of its own, so it stays the slip.
+function dcSteps(state) {
+  let depth = 0;
+  const t = state.tokens;
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i];
+    if (tok.type === 'layout_section_open' || tok.type === 'layout_component_open') depth++;
+    else if (tok.type === 'layout_section_close' || tok.type === 'layout_component_close') depth--;
+    else if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h2' && !tok.attrGet('class')) {
+      const first = t[i + 1]?.children?.[0];
+      const m = first?.type === 'text' && /^(\d{1,2}\.)\s+/.exec(first.content);
+      if (!m) continue;
+      const num = makeToken('html_inline', '<span class="dc-step-num">' + esc(m[1]) + '</span> ');
+      first.content = first.content.slice(m[0].length);
+      t[i + 1].children.unshift(num);
+    }
   }
 }
 
-// ── Declared components: @specialty, @learning-path, @skill ────────────────
-//
-// All three are declared in `markers` below, so core opens, nests and closes
-// them: each use is a `layout_component_open` … `layout_component_close` pair
-// whose open token's `meta.kind` is the marker name. The rules here are
-// ordinary core rules that rewrite what sits between a pair.
+function widthOf(tok) {
+  if (tok?.type !== 'layout_section_open') return 0;
+  const cls = classesOf(tok).find((c) => c in PU_WIDTHS);
+  return cls ? PU_WIDTHS[cls] : 0;
+}
+
+function dcRows(state) {
+  const t = state.tokens;
+  const ends = new Map(); // a section's open index → its close index
+  const stack = [];
+  t.forEach((tok, i) => {
+    if (tok.type === 'layout_section_open') stack.push(i);
+    else if (tok.type === 'layout_section_close') ends.set(stack.pop(), i);
+  });
+  const out = [];
+  for (let i = 0; i < t.length; i++) {
+    const width = widthOf(t[i]);
+    if (!width) {
+      out.push(t[i]);
+      continue;
+    }
+    const firstEnd = ends.get(i);
+    const next = firstEnd + 1;
+    if (firstEnd !== undefined && widthOf(t[next]) === 100 - width && ends.has(next)) {
+      const secondEnd = ends.get(next);
+      out.push(makeToken('html_block', '<div class="dc-pu-row">\n'), ...t.slice(i, secondEnd + 1), makeToken('html_block', '</div>\n'));
+      i = secondEnd;
+      continue;
+    }
+    (state.env.layoutWarnings ??= []).push({
+      line: t[i].map ? t[i].map[0] + 1 : t[i].meta?.line ?? t[i].meta?.__line ?? 0,
+      type: 'row_unpaired',
+      message: 'This sheet has a width (.dc-half, .dc-narrow or .dc-wide) but the sheet straight after it does not complete the row, so it prints full width. Give the next sheet the other half (.dc-half), or the other side of 38/62 (.dc-wide after .dc-narrow, .dc-narrow after .dc-wide).',
+    });
+    out.push(t[i]);
+  }
+  state.tokens = out;
+}
+
+// `@section … .dc-pu-cont` is a sheet that carries on from the one before it,
+// so it has no title tag. Its first `##` or `###` would otherwise be read as the
+// sheet's title (every `:first-child` heading rule in the package), so the plugin
+// puts a zero-height `.dc-pu-spacer` ahead of it and the heading stays a sub-head.
+// The author writes nothing extra.
+const PU_SPACER = '<div class="dc-pu-spacer"></div>\n';
+
+function dcContinuations(state) {
+  const t = state.tokens;
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type !== 'layout_section_open') continue;
+    if (!hasClass(t[i], 'dc-pu-cont')) continue;
+    const next = t[i + 1];
+    if (next?.type !== 'heading_open' || !['h2', 'h3'].includes(next.tag)) continue;
+    t.splice(i + 1, 0, makeToken('html_block', PU_SPACER));
+  }
+}
+
+/** Letter indexes left unlit: all but D and M on the DM's sign, else one letter picked from the word. */
+function neonDeadLetters(word) {
+  const letters = [...word].map((c, i) => (c === ' ' ? -1 : i)).filter((i) => i > 0);
+  if (word === 'DREAM MASTER') return new Set(letters.filter((i) => i !== 6));
+  const sum = [...word].reduce((n, c) => n + c.charCodeAt(0), 0);
+  return new Set([letters[sum % letters.length]]);
+}
+
+/** The sign's HTML: an ink plate and one SVG of the word's letters as paths
+ * (NEON_FONT), four layers back to front; the dead letters are a fifth. */
+function neonSign(word) {
+  const { cap, upm, glyphs } = NEON_FONT;
+  const dead = neonDeadLetters(word);
+  const letters = [];
+  let x = 0;
+  [...word].forEach((c, i) => {
+    const g = glyphs[c];
+    if (!g) return;
+    if (g.d) letters.push({ x, d: g.d, dead: dead.has(i) });
+    x += g.w + NEON_TRACKING;
+  });
+  const w = x - NEON_TRACKING;
+  const layer = (cls, set) => `<g class="${cls}">` +
+    set.map((l) => `<path transform="translate(${l.x} 0)" d="${l.d}"/>`).join('') + '</g>';
+  const lit = letters.filter((l) => !l.dead);
+  const off = letters.filter((l) => l.dead);
+  const svg = NEON_LAYERS.map((cls) => layer(cls, lit)).join('') + (off.length ? layer('dc-neon-dead', off) : '');
+  const em = (n) => +(n / upm).toFixed(3);
+  return `<div class="dc-neon" aria-hidden="true"><svg class="dc-neon-word" xmlns="http://www.w3.org/2000/svg" ` +
+    `width="${em(w)}em" height="${em(cap)}em" viewBox="0 ${-cap} ${w} ${cap}">${svg}</svg></div>\n`;
+}
+
+function dcNeonSigns(state) {
+  const t = state.tokens;
+  let chapterWord = null;
+  const components = []; // the declared components around the token: their kind, and a specialty's name
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i];
+    if (tok.type === 'layout_chapter_open') {
+      chapterWord = classesOf(tok).find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
+    } else if (tok.type === 'layout_chapter_close') {
+      chapterWord = null;
+    } else if (tok.type === 'layout_page_open' && hasClass(tok, 'dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
+               t[i + 1]?.type === 'heading_open' && t[i + 1].tag === 'h1') {
+      t.splice(++i, 0, makeToken('html_block', neonSign(NEON_CHAPTER_WORDS[chapterWord])));
+    } else if (tok.type === 'layout_component_open') {
+      const kind = tok.meta?.kind;
+      const specialty = kind === 'specialty' ? classesOf(tok).find((c) => SPECIALTIES.includes(c)) ?? null : null;
+      components.push({ kind, specialty });
+      if (kind === 'specialty-art') {
+        const name = components.findLast((c) => c.kind === 'specialty')?.specialty;
+        if (name) t.splice(++i, 0, makeToken('html_block', neonSign(name.toUpperCase())));
+      }
+    } else if (tok.type === 'layout_component_close') {
+      components.pop();
+    }
+  }
+}
 
 /**
- * Call `rewrite(run, enclosing)` for every declared component of `kind`, in
- * document order. `run` is the component's tokens, open token to close token;
- * `enclosing` is the open tokens of the components it sits in, outermost first.
- * Return a replacement run, or nothing to leave it as it is.
+ * A section or panel that ends in a paragraph that is only a bold run, or has one
+ * right before a heading, closes on a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
+ * so it never opens a page alone.
  */
-function forEachComponent(tokens, kind, rewrite) {
-  const enclosing = [];
+function dcKickers(state) {
+  const t = state.tokens;
+  let depth = 0; // sections open around the token
+  for (let i = 0; i < t.length; i++) {
+    if (t[i].type === 'layout_section_open') depth++;
+    if (t[i].type === 'layout_section_close') {
+      depth--;
+      markKickerBefore(t, i, 'layout_section_open');
+    }
+    // A bold-only paragraph right before a heading in the same section also closes
+    // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
+    if (depth > 0 && t[i].type === 'paragraph_open' && !t[i].hidden && t[i + 3]?.type === 'heading_open' && t[i + 2]?.type === 'paragraph_close' && isBoldOnlyInline(t[i + 1])) {
+      addTokenClass(t[i], 'dc-kicker');
+    }
+  }
+}
+
+/**
+ * A table of the five standard bands (see `ladderRows`) anywhere outside a skill
+ * card (the skill rule rewrites those with their card) is the same ladder, so
+ * the d20 mechanic reads the same wherever the book states it. A table inside
+ * `@roll-table` is not a ladder: its bands are the author's own.
+ */
+function dcLadderTables(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open' || tokens[i].meta?.rollTable) continue;
+    const tableTokens = collectTableTokens(tokens, i);
+    const ladder = ladderRows(readTable(tableTokens));
+    if (!ladder) continue;
+    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, tokens[i])));
+  }
+}
+
+/**
+ * A table with an HP column and a Damage column is a creature's stat line
+ * (`Name | HP | Damage | Traits`, `Type | Size | HP | Damage`): it gets
+ * `.dc-stat-strip`, the stat-strip look, wherever it sits, and each cell that
+ * holds only a number gets `.dc-stat-num` (the big figures). It is recognised by
+ * its shape, not a marker, because a creature's table lives inside a skill's
+ * ability text, and a section marker there (`@npc-stat compact`) would end
+ * the skill.
+ */
+function dcStatStrips(state) {
+  const tokens = state.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'table_open') continue;
+    const table = collectTableTokens(tokens, i);
+    const head = readTable(table).head.map((cell) => cell.replace(/[*_`]/g, '').trim().toLowerCase());
+    if (!head.includes('hp') || !head.includes('damage')) continue;
+    addTokenClass(tokens[i], 'dc-stat-strip');
+    table.forEach((tok, k) => {
+      if (tok.type === 'td_open' && /^\d+$/.test((table[k + 1]?.content || '').trim())) addTokenClass(tok, 'dc-stat-num');
+    });
+  }
+}
+
+const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
+
+function isFieldHost(open) {
+  if (FIELD_HOSTS.has(open.meta?.kind)) return true;
+  // `@npc-stat` and `@section npc` are one section; its class is the record (`@section npc` carries no kind)
+  return hasClass(open, 'dc-npc-stat');
+}
+
+/** `**Label:** …` → { label, variant }, or null when the paragraph does not open with a known label. */
+function fieldLabelOf(inline) {
+  // core leaves an empty text node ahead of a leading `**…**`
+  const lead = inline?.children?.[0]?.type === 'text' && !inline.children[0].content ? 1 : 0;
+  const [open, text, close] = inline?.children?.slice(lead) ?? [];
+  if (open?.type !== 'strong_open' || text?.type !== 'text' || close?.type !== 'strong_close') return null;
+  const written = text.content.trim();
+  if (!written.endsWith(':')) return null;
+  const label = written.slice(0, -1).trim();
+  const variant = FIELD_BY_LABEL.get(label.toLowerCase());
+  return variant ? { label, variant, lead } : null;
+}
+
+function dcFieldLines(state) {
+  const tokens = state.tokens;
+  const out = [];
+  const hosts = []; // one entry per open layout container: is its content a field host?
+  let quoted = 0; // inside a blockquote or a list item, a paragraph is not a field line
   for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i];
-    if (tok.type === 'layout_component_close') {
-      enclosing.pop();
-      continue;
+    if (/^layout_.+_open$/.test(tok.type)) {
+      // `@columns` only arranges its content: the container around it still decides
+      hosts.push(tok.meta?.kind === 'columns' ? hosts.at(-1) ?? false : isFieldHost(tok));
+    } else if (/^layout_.+_close$/.test(tok.type)) {
+      hosts.pop();
+    } else if (tok.type === 'blockquote_open' || tok.type === 'list_item_open') {
+      quoted++;
+    } else if (tok.type === 'blockquote_close' || tok.type === 'list_item_close') {
+      quoted--;
+    } else if (tok.type === 'paragraph_open' && !quoted && hosts.at(-1)) {
+      const inline = tokens[i + 1];
+      const field = fieldLabelOf(inline);
+      if (field) {
+        // Same markup as `@field <variant> label="…"`: the label is the author's own words.
+        out.push(makeToken('html_block',
+          '<div class="dc-field dc-field-' + field.variant + '" data-field="' + field.variant + '"' +
+          ' data-label="' + esc(field.label) + '">' + fieldLabelHtml(field.label)));
+        inline.children.splice(0, field.lead + 3);
+        const first = inline.children[0];
+        if (first?.type === 'text') first.content = first.content.replace(/^\s+/, '');
+        inline.content = inline.content.replace(/^\*\*[^*]+\*\*\s*/, '');
+        const bare = inline.children.every((c) => c.type === 'text' && !c.content); // the label was all there was
+        const rest = bare ? [] : tokens.slice(i, i + 3);
+        out.push(...rest, makeToken('html_block', '</div>\n'));
+        i += 2; // the paragraph's inline and close
+        continue;
+      }
     }
-    if (tok.type !== 'layout_component_open') continue;
-    if (tok.meta.kind !== kind) {
-      enclosing.push(tok);
-      continue;
+    out.push(tok);
+  }
+  state.tokens = out;
+}
+
+// Gutterpress owns bare @continue as a generic section marker and parses it
+// before custom core rules run. Claim the exact bare marker first, then decide
+// before Gutterpress's layout transform whether it belongs to a skill card or
+// should retain the generic section-continuation behavior.
+function dcContinueCandidateBlock(state, startLine, endLine, silent) {
+  const pos = state.bMarks[startLine] + state.tShift[startLine];
+  const max = state.eMarks[startLine];
+  if (state.src.slice(pos, max).trim() !== '@continue') return false;
+  if (silent) return true;
+
+  state.env.__layoutMarkersUsed = true;
+  const token = state.push('dc_continue_candidate', '', 0);
+  token.block = true;
+  token.map = [startLine, startLine + 1];
+  token.meta = { kind: 'continue', attrs: {}, __line: startLine + 1 };
+  state.line = startLine + 1;
+  return true;
+}
+
+// Markers that end a skill: its own closer, the markers that start the next
+// path or specialty, and the layout scopes core closes every declared
+// component at. At this point core has not run yet, so each one is still a
+// `layout_marker` token carrying `meta.kind`.
+const SKILL_ENDS = new Set([
+  'end-skill', 'learning-path', 'end-learning-path', 'specialty', 'end-specialty',
+  'chapter', 'spread', 'page', 'section', 'end-section',
+]);
+
+function dcContinueClassifier(state) {
+  let inSkill = false;
+  let inCard = false;
+
+  for (const token of state.tokens) {
+    const kind = token.type === 'layout_marker' ? token.meta.kind : null;
+    if (kind === 'skill') {
+      inSkill = true;
+      inCard = false;
+    } else if (SKILL_ENDS.has(kind)) {
+      inSkill = false;
+      inCard = false;
+    } else if (inSkill && token.type === 'heading_open' && token.tag === 'h4') {
+      inCard = true;
+    } else if (token.type === 'dc_continue_candidate') {
+      token.type = inCard ? 'dc_skill_continue' : 'layout_marker';
     }
-    const end = closeIndex(tokens, i) + 1;
-    const run = rewrite(tokens.slice(i, end), enclosing) || tokens.slice(i, end);
-    tokens.splice(i, end - i, ...run);
-    i += run.length - 1;
   }
 }
+
+function registerSkillContinueBridge(md) {
+  // Without Gutterpress's layout_transform (bare markdown-it) there is no section @continue to share the marker with.
+  if (!md.core.ruler.__rules__.some((rule) => rule.name === 'layout_transform')) return;
+  md.core.ruler.before('layout_transform', 'dc_continue_classifier', dcContinueClassifier);
+  md.block.ruler.before('layout_marker', 'dc_continue_candidate', dcContinueCandidateBlock, {
+    alt: ['paragraph', 'reference', 'blockquote', 'list'],
+  });
+}
+
+// ── Declared-component rules ───────────────────────────────────────────────
 
 // What sits in a learning path before its first skill — the title, the
 // subtitle and the sticker chain — rewritten into the path's header markup.
@@ -1103,37 +1566,13 @@ function dcLearningPaths(state) {
 // A card's closing paragraph shorter than this (text characters) is a sign-off: it stays with the block above it.
 const SIGNOFF_MAX = 120; // one line at the card's measure
 
-/** The characters an inline token prints as plain text or code (markup and spans not counted). */
-function inlineTextLength(inline) {
-  return (inline?.children || []).reduce((n, k) => n + (k.type === 'text' || k.type === 'code_inline' ? k.content.length : 0), 0);
-}
-
-/** True when a paragraph's source ends in a colon (outside its emphasis marks): it introduces what follows. */
-function endsWithColon(inline) {
-  return inline?.type === 'inline' && /:$/.test((inline.content || '').replace(/[\s*_`]+$/, ''));
-}
-
-/** True when an inline token's whole content is one `<strong>` run. */
-function isBoldOnlyInline(inline) {
-  const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
-  return kids.length > 2 && kids[0].type === 'strong_open' && kids[kids.length - 1].type === 'strong_close' &&
-    kids.filter((k) => k.type === 'strong_open' || k.type === 'strong_close').length === 2;
-}
-
-// A card's tab, body and inner wrapper openers. The first card of a skill
-// names the skill in a real heading, so the outline lists it under its learning
-// path; a continuation's repeated title is a span with the continued mark.
-function cardTabHtml({ name, tier }, cont) {
-  const title = cont
-    ? '    <span class="dc-tab-title">' + esc(name) + ' ' + CONTINUED_MARK + '</span>\n'
-    : '    <h4 class="dc-tab-title">' + esc(name) + '</h4>\n';
-  return '  <div class="dc-card-tab' + (cont ? ' dc-card-tab-cont' : '') + '">\n' +
-    title +
-    (tier ? '    <span class="dc-tab-tier">' + esc(tier) + '</span>\n' : '') +
-    '  </div>\n' +
-    '  <div class="dc-card-body">\n' +
-    '    <div class="dc-card-inner">\n';
-}
+// ── Declared components: @card, @outcome, @procedure ───────────────────────
+//
+// Declared in `markers` like the three above, rewritten by core rules that
+// run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
+// inside a skill must already be in its final form when the skill's rule
+// reads it. They stay inside the skill's card (see CARD_CONTENT).
+const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-table', 'field']);
 
 /**
  * `@skill`: every `####` heading inside it starts a card. The declared
@@ -1319,57 +1758,6 @@ function dcSkillCards(state) {
   });
 }
 
-/**
- * A section or panel that ends in a paragraph that is only a bold run, or has one
- * right before a heading, closes on a kicker (`**Just don't confuse a good time with a safe one.**`): `.dc-kicker`,
- * so it never opens a page alone.
- */
-function dcKickers(state) {
-  const t = state.tokens;
-  let depth = 0; // sections open around the token
-  for (let i = 0; i < t.length; i++) {
-    if (t[i].type === 'layout_section_open') depth++;
-    if (t[i].type === 'layout_section_close') {
-      depth--;
-      markKickerBefore(t, i, 'layout_section_open');
-    }
-    // A bold-only paragraph right before a heading in the same section also closes
-    // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
-    if (depth > 0 && t[i].type === 'paragraph_open' && !t[i].hidden && t[i + 3]?.type === 'heading_open' && t[i + 2]?.type === 'paragraph_close' && isBoldOnlyInline(t[i + 1])) {
-      addTokenClass(t[i], 'dc-kicker');
-    }
-  }
-}
-
-/**
- * A paragraph that is only the die call (`**ROLL THE DIE!**`, or the bare words,
- * or any form of the phrase the inline rule picks out) is the table's imperative
- * moment, not a sentence: `.dc-die-call`, a raised chip. Mid-sentence it stays the
- * inline mark. A paragraph in a list or a quote is not set apart.
- */
-function dcDieCalls(state) {
-  const t = state.tokens;
-  let quoted = 0;
-  for (let i = 0; i < t.length; i++) {
-    if (t[i].type === 'blockquote_open' || t[i].type === 'list_item_open') quoted++;
-    else if (t[i].type === 'blockquote_close' || t[i].type === 'list_item_close') quoted--;
-    else if (t[i].type === 'paragraph_open' && !quoted && !t[i].hidden && t[i + 1]?.type === 'inline') {
-      const kids = (t[i + 1].children || []).filter((k) => k.type !== 'text' || k.content.trim());
-      const types = kids.map((k) => k.type).join();
-      if (types === 'dc_roll_the_die' || types === 'strong_open,dc_roll_the_die,strong_close') addTokenClass(t[i], 'dc-die-call');
-    }
-  }
-}
-
-// ── Declared component: @ladder ─────────────────────────────────────────────
-//
-// The outcome ladder unfolded: one rung per band, each a `###` whose heading
-// ends in its band in parentheses (`### Triumphs (20)`, `(11–19)`, `(6-10)`,
-// `(2–5)`, `(1)`; a hyphen, an en dash or `--` all read). The headings stay as
-// written; the tier is read from the band, the way the ladder table reads it
-// (LADDER_TIER_OF_BAND), and gets the ladder's own colour. A `###` with any
-// other ending is not a rung: it is left as it is, and closes the rung before it.
-
 /** `Triumphs (20)`, `Hard Choice (6-10)`, `Success (11–19)` → 'crit' | 'hit' | 'mixed' | 'miss' | 'fail'; any other heading → null. */
 function rungTier(text) {
   const m = /\(([^()]*)\)\s*$/.exec(text || '');
@@ -1426,19 +1814,6 @@ function dcLadders(state) {
     return out;
   });
 }
-
-function validateLadder({ blocks }) {
-  if (blocks.some((b) => b.type === 'heading' && b.level === 3 && rungTier(b.text))) return [];
-  return ['It has no rungs. Each starts with a `###` heading that ends in its band: `### Triumphs (20)`, `(11–19)`, `(6-10)`, `(2–5)`, `(1)`.'];
-}
-
-// ── Declared components: @card, @outcome, @procedure ───────────────────────
-//
-// Declared in `markers` like the three above, rewritten by core rules that
-// run BEFORE dcLearningPaths and dcSkillCards: a card, outcome or procedure
-// inside a skill must already be in its final form when the skill's rule
-// reads it. They stay inside the skill's card (see CARD_CONTENT).
-const CARD_CONTENT = new Set(['callout', 'card', 'outcome', 'procedure', 'roll-table', 'field']);
 
 /**
  * `@card`: the wrapper is `div.dc-card` (the declared token itself). Inside it,
@@ -1512,46 +1887,6 @@ function dcOutcomes(state) {
 }
 
 /**
- * A table of the five standard bands (see `ladderRows`) anywhere outside a skill
- * card (the skill rule rewrites those with their card) is the same ladder, so
- * the d20 mechanic reads the same wherever the book states it. A table inside
- * `@roll-table` is not a ladder: its bands are the author's own.
- */
-function dcLadderTables(state) {
-  const tokens = state.tokens;
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type !== 'table_open' || tokens[i].meta?.rollTable) continue;
-    const tableTokens = collectTableTokens(tokens, i);
-    const ladder = ladderRows(readTable(tableTokens));
-    if (!ladder) continue;
-    tokens.splice(i, tableTokens.length, makeToken('html_block', buildLadderBlock(ladder, state.md, tokens[i])));
-  }
-}
-
-/**
- * A table with an HP column and a Damage column is a creature's stat line
- * (`Name | HP | Damage | Traits`, `Type | Size | HP | Damage`): it gets
- * `.dc-stat-strip`, the stat-strip look, wherever it sits, and each cell that
- * holds only a number gets `.dc-stat-num` (the big figures). It is recognised by
- * its shape, not a marker, because a creature's table lives inside a skill's
- * ability text, and a section marker there (`@npc-stat compact`) would end
- * the skill.
- */
-function dcStatStrips(state) {
-  const tokens = state.tokens;
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type !== 'table_open') continue;
-    const table = collectTableTokens(tokens, i);
-    const head = readTable(table).head.map((cell) => cell.replace(/[*_`]/g, '').trim().toLowerCase());
-    if (!head.includes('hp') || !head.includes('damage')) continue;
-    addTokenClass(tokens[i], 'dc-stat-strip');
-    table.forEach((tok, k) => {
-      if (tok.type === 'td_open' && /^\d+$/.test((table[k + 1]?.content || '').trim())) addTokenClass(tok, 'dc-stat-num');
-    });
-  }
-}
-
-/**
  * `@roll-table [die=d12] [label="Wild Magic"]`: a random table in neutral
  * colours. The wrapper is `div.dc-roll-table`; the rule adds the caption (the
  * die chip, d20 unless `die=` says otherwise, and the label) above the author's
@@ -1568,11 +1903,6 @@ function dcRollTables(state) {
     for (const tok of rest) if (tok.type === 'table_open') tok.meta = { ...tok.meta, rollTable: true };
     return [open, caption, ...rest];
   });
-}
-
-function validateRollTable({ blocks }) {
-  if (blocks.some((b) => b.type === 'table')) return [];
-  return ['It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table.'];
 }
 
 /**
@@ -1601,14 +1931,6 @@ function dcProcedures(state) {
     return [open, ...out, close];
   });
 }
-
-// ── Declared component: @callout (and its alias @dm-note) ──────────────────
-//
-// `@callout note|warning|dm|vibe|origin|location|visit|example` is a declared wrapper:
-// core adds `dc-alert`, the variant's class and any author classes. What core
-// cannot know is each variant's default label, so a rule adds it when the
-// author wrote no `label="…"`. A missing or unrecognised variant is a plain
-// note.
 
 function dcCallouts(state) {
   forEachComponent(state.tokens, 'callout', ([open, ...rest]) => {
@@ -1644,12 +1966,55 @@ function dcFactions(state) {
   });
 }
 
-// `variant=` was the old way to pick one; it now reads as a plain attribute
-// and would silently render a note, so say so once, on the marker's line.
-function validateCallout({ attrs }) {
-  if (attrs.variant === undefined) return [];
-  return [`no longer takes variant=${attrs.variant}; write "@callout ${attrs.variant}" instead.`];
+// A bare `@gear` (or an unrecognised word, which core reports) is general gear:
+// core added only the shared card, so the general-gear class goes right after it.
+function dcGear(state) {
+  forEachComponent(state.tokens, 'gear', ([open]) => {
+    if (GEAR_KINDS.includes(open.meta.variant)) return;
+    addTokenClassAfter(open, 'dc-entry', 'dc-gear');
+  });
 }
+
+// A paragraph in an entry that is only one bold run is its cost line
+// (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
+// A paragraph with a bold run and other text is body text.
+function dcEntryCosts(state) {
+  forEachComponent(state.tokens, 'gear', (run) => {
+    let depth = 0;
+    run.forEach((tok, i) => {
+      if (depth === 1 && tok.type === 'paragraph_open' && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
+      depth += tok.nesting;
+    });
+  });
+}
+
+// An explicit `@field specs` with no `label="…"` gets the variant's default label.
+function dcFields(state) {
+  forEachComponent(state.tokens, 'field', ([open, ...rest]) => {
+    const label = FIELD_DEFAULT_LABEL[open.meta.variant];
+    if (open.meta.labelled || !label) return; // an explicit label wins; a bare @field has none
+    return [open, makeToken('html_block', fieldLabelHtml(label)), ...rest];
+  });
+}
+
+/**
+ * `data-position="odd|even"` on every @specialty-card, counted across the
+ * document in order so the card grid alternates its tilt/offset. The wrapper
+ * itself is a declared marker (see `markers` below); this rule only numbers
+ * the open tokens core produced. It never runs under bare markdown-it, which
+ * has no declared markers.
+ */
+function dcSpecialtyCardPositions(state) {
+  let count = 0;
+  for (const tok of state.tokens) {
+    if (tok.type !== 'layout_component_open') continue;
+    if (!hasClass(tok, 'dc-specialty-card')) continue;
+    count++;
+    tok.attrSet('data-position', count % 2 === 0 ? 'even' : 'odd');
+  }
+}
+
+// ── Validators ─────────────────────────────────────────────────────────────
 
 /**
  * Structure checks (core runs these on the declared markers below and reports
@@ -1682,28 +2047,21 @@ function validateSkill({ blocks }) {
     }));
 }
 
-const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
-
-// A bare `@gear` (or an unrecognised word, which core reports) is general gear:
-// core added only the shared card, so the general-gear class goes right after it.
-function dcGear(state) {
-  forEachComponent(state.tokens, 'gear', ([open]) => {
-    if (GEAR_KINDS.includes(open.meta.variant)) return;
-    addTokenClassAfter(open, 'dc-entry', 'dc-gear');
-  });
+function validateLadder({ blocks }) {
+  if (blocks.some((b) => b.type === 'heading' && b.level === 3 && rungTier(b.text))) return [];
+  return ['It has no rungs. Each starts with a `###` heading that ends in its band: `### Triumphs (20)`, `(11–19)`, `(6-10)`, `(2–5)`, `(1)`.'];
 }
 
-// A paragraph in an entry that is only one bold run is its cost line
-// (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
-// A paragraph with a bold run and other text is body text.
-function dcEntryCosts(state) {
-  forEachComponent(state.tokens, 'gear', (run) => {
-    let depth = 0;
-    run.forEach((tok, i) => {
-      if (depth === 1 && tok.type === 'paragraph_open' && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
-      depth += tok.nesting;
-    });
-  });
+function validateRollTable({ blocks }) {
+  if (blocks.some((b) => b.type === 'table')) return [];
+  return ['It has no table, so nothing is drawn. Write the random table as a pipe table between @roll-table and @end-roll-table.'];
+}
+
+// `variant=` was the old way to pick one; it now reads as a plain attribute
+// and would silently render a note, so say so once, on the marker's line.
+function validateCallout({ attrs }) {
+  if (attrs.variant === undefined) return [];
+  return [`no longer takes variant=${attrs.variant}; write "@callout ${attrs.variant}" instead.`];
 }
 
 /**
@@ -1722,115 +2080,6 @@ function validateEntry({ name, blocks }) {
     line: b.line,
     message: `"${b.text}" is a second name inside this @${name}. Put each entry under its own @${name} line.`,
   }));
-}
-
-// ── Declared component: @field (and the bold labels that mean it) ──────────
-//
-// `@field specs` … `@end-field` is a labelled field: `div.dc-field.dc-field-specs`
-// holding `span.dc-field-label` and the author's paragraphs. The label is the
-// variant's default (below) or `label="…"`, the way `@callout` does it.
-//
-// The bold-label shortcut is the same component written shorter: a paragraph
-// that opens with a known label (`**SPECS:** …`), inside an entry card, an NPC
-// stat block or a skill card, is rewritten to exactly the markup the marker
-// gives (`dcFieldLines`), so one set of rules styles both. Everywhere else it
-// stays a paragraph, and a callout inside a card is not a card.
-//
-// FIELD_LABELS is the one table. Each line is a label as the books write it
-// (matched case-insensitively, colon inside the bold) and the variant it
-// means. A new label is a line here; a new field type is a new variant name
-// here plus a token-setter rule in styles/components/entries.css. The first
-// label listed for a variant is that variant's default label.
-const FIELD_LABELS = {
-  'SPECS': 'specs',
-  'Traits': 'traits',
-  'Equipment': 'equipment',
-  'Effects': 'effects',
-  'Side Effects': 'side-effects',
-  'Requires': 'requires',
-  'Wirephreak Gear': 'requires',
-  'Cybersurgeon Instrument': 'requires',
-  'Cybersurgeon Instruments': 'requires',
-  'Cybersurgeon Instrument(s)': 'requires',
-  'TECHNOENHANCEMENT': 'requires',
-};
-const FIELD_VARIANTS = [...new Set(Object.values(FIELD_LABELS))];
-const FIELD_DEFAULT_LABEL = Object.fromEntries(
-  FIELD_VARIANTS.map((v) => [v, Object.keys(FIELD_LABELS).find((l) => FIELD_LABELS[l] === v)]),
-);
-const FIELD_BY_LABEL = new Map(Object.entries(FIELD_LABELS).map(([label, v]) => [label.toLowerCase(), v]));
-
-// The cards whose paragraphs may be field lines.
-const FIELD_HOSTS = new Set(['gear', 'skill']);
-
-const fieldLabelHtml = (label) => '<span class="dc-field-label">' + esc(label) + '</span>\n';
-
-// An explicit `@field specs` with no `label="…"` gets the variant's default label.
-function dcFields(state) {
-  forEachComponent(state.tokens, 'field', ([open, ...rest]) => {
-    const label = FIELD_DEFAULT_LABEL[open.meta.variant];
-    if (open.meta.labelled || !label) return; // an explicit label wins; a bare @field has none
-    return [open, makeToken('html_block', fieldLabelHtml(label)), ...rest];
-  });
-}
-
-function isFieldHost(open) {
-  if (FIELD_HOSTS.has(open.meta?.kind)) return true;
-  // `@npc-stat` and `@section npc` are one section; its class is the record (`@section npc` carries no kind)
-  return hasClass(open, 'dc-npc-stat');
-}
-
-/** `**Label:** …` → { label, variant }, or null when the paragraph does not open with a known label. */
-function fieldLabelOf(inline) {
-  // core leaves an empty text node ahead of a leading `**…**`
-  const lead = inline?.children?.[0]?.type === 'text' && !inline.children[0].content ? 1 : 0;
-  const [open, text, close] = inline?.children?.slice(lead) ?? [];
-  if (open?.type !== 'strong_open' || text?.type !== 'text' || close?.type !== 'strong_close') return null;
-  const written = text.content.trim();
-  if (!written.endsWith(':')) return null;
-  const label = written.slice(0, -1).trim();
-  const variant = FIELD_BY_LABEL.get(label.toLowerCase());
-  return variant ? { label, variant, lead } : null;
-}
-
-function dcFieldLines(state) {
-  const tokens = state.tokens;
-  const out = [];
-  const hosts = []; // one entry per open layout container: is its content a field host?
-  let quoted = 0; // inside a blockquote or a list item, a paragraph is not a field line
-  for (let i = 0; i < tokens.length; i++) {
-    const tok = tokens[i];
-    if (/^layout_.+_open$/.test(tok.type)) {
-      // `@columns` only arranges its content: the container around it still decides
-      hosts.push(tok.meta?.kind === 'columns' ? hosts.at(-1) ?? false : isFieldHost(tok));
-    } else if (/^layout_.+_close$/.test(tok.type)) {
-      hosts.pop();
-    } else if (tok.type === 'blockquote_open' || tok.type === 'list_item_open') {
-      quoted++;
-    } else if (tok.type === 'blockquote_close' || tok.type === 'list_item_close') {
-      quoted--;
-    } else if (tok.type === 'paragraph_open' && !quoted && hosts.at(-1)) {
-      const inline = tokens[i + 1];
-      const field = fieldLabelOf(inline);
-      if (field) {
-        // Same markup as `@field <variant> label="…"`: the label is the author's own words.
-        out.push(makeToken('html_block',
-          '<div class="dc-field dc-field-' + field.variant + '" data-field="' + field.variant + '"' +
-          ' data-label="' + esc(field.label) + '">' + fieldLabelHtml(field.label)));
-        inline.children.splice(0, field.lead + 3);
-        const first = inline.children[0];
-        if (first?.type === 'text') first.content = first.content.replace(/^\s+/, '');
-        inline.content = inline.content.replace(/^\*\*[^*]+\*\*\s*/, '');
-        const bare = inline.children.every((c) => c.type === 'text' && !c.content); // the label was all there was
-        const rest = bare ? [] : tokens.slice(i, i + 3);
-        out.push(...rest, makeToken('html_block', '</div>\n'));
-        i += 2; // the paragraph's inline and close
-        continue;
-      }
-    }
-    out.push(tok);
-  }
-  state.tokens = out;
 }
 
 function validateOutcome({ blocks }) {
@@ -1865,300 +2114,7 @@ function validateProcedure({ blocks }) {
   return ['It has no numbered list, so no steps are drawn. Write the steps as `1.`, `2.`, `3.` between @procedure and @end-procedure.'];
 }
 
-/**
- * Main plugin function - the default export Gutterpress loads
- */
-// ── Raw HTML in the markdown ────────────────────────────────────────────────
-//
-// HTML an author writes into the markdown is reported, one warning per tag, on
-// its line: the package cannot check it, and a stray tag does damage far from
-// where it is written (`<small>…<small>` in one ladder row set the rest of a
-// book small). Write markdown or a marker instead. An HTML comment is not
-// reported: it renders nothing. Runs first, before any rule of this plugin
-// rewrites a table or adds HTML of its own, so only the author's is seen.
-// `rawHtml: 'off'` in the extension's options turns it off for a book that
-// means its HTML (the design guide's specimen stages).
-function rawHtmlWarnings(state) {
-  const report = (tok, line) => {
-    const html = tok.content.trim();
-    if (!html || html.startsWith('<!--')) return;
-    const tag = (/^<\/?[a-zA-Z][a-zA-Z0-9-]*/.exec(html) || [html.slice(0, 20)])[0];
-    (state.env.layoutWarnings ??= []).push({
-      line,
-      type: 'raw_html',
-      message: `Raw HTML (${tag}${html.startsWith('</') ? '' : '…'}>): write markdown or a marker instead. The package cannot check HTML, and a tag left open styles everything after it.`,
-    });
-  };
-  // Only what is written in the source counts: Gutterpress adds HTML of its own
-  // (a marker's label="…"), which is not on the author's line.
-  const lines = state.src.split('\n');
-  const written = (map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
-  let near = null; // a table cell's inline has no map of its own: its row's is the nearest
-  for (const tok of state.tokens) {
-    if (tok.map) near = tok.map;
-    if (tok.type === 'html_block' && written(tok.map, tok.content)) report(tok, tok.map[0] + 1);
-    else if (tok.type === 'inline') {
-      for (const child of tok.children || []) if (child.type === 'html_inline' && written(near, child.content)) report(child, near[0] + 1);
-    }
-  }
-}
-
-// ── Steps: a numbered `##` standing on the page ─────────────────────────────
-//
-// A `##` that stands on the page (in no section or component) and opens with a
-// step number, `## 4. Ideal`, is a step of the book's procedure (the Citizen
-// File's 0-7). Its number, written as it is, goes in `span.dc-step-num`, which
-// the page slip sets as a chip in the chapter's colour, so the steps read as one
-// sequence. The heading keeps no class of its own, so it stays the slip.
-function dcSteps(state) {
-  let depth = 0;
-  const t = state.tokens;
-  for (let i = 0; i < t.length; i++) {
-    const tok = t[i];
-    if (tok.type === 'layout_section_open' || tok.type === 'layout_component_open') depth++;
-    else if (tok.type === 'layout_section_close' || tok.type === 'layout_component_close') depth--;
-    else if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h2' && !tok.attrGet('class')) {
-      const first = t[i + 1]?.children?.[0];
-      const m = first?.type === 'text' && /^(\d{1,2}\.)\s+/.exec(first.content);
-      if (!m) continue;
-      const num = makeToken('html_inline', '<span class="dc-step-num">' + esc(m[1]) + '</span> ');
-      first.content = first.content.slice(m[0].length);
-      t[i + 1].children.unshift(num);
-    }
-  }
-}
-
-// ── Paste-up: rows and continuation sheets ──────────────────────────────────
-//
-// A sheet says its own width: `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
-// on its section line. Two sheets side by side are a row: when a sheet
-// with a width is followed straight away by one whose width completes it (half
-// and half, narrow and wide, wide and narrow), the plugin wraps the two in
-// `div.dc-pu-row`, and section.css reads the widths off them. There is no row
-// marker to write. A sheet with a width and no partner is reported, and prints
-// at the full width.
-const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
-
-function widthOf(tok) {
-  if (tok?.type !== 'layout_section_open') return 0;
-  const cls = classesOf(tok).find((c) => c in PU_WIDTHS);
-  return cls ? PU_WIDTHS[cls] : 0;
-}
-
-function dcRows(state) {
-  const t = state.tokens;
-  const ends = new Map(); // a section's open index → its close index
-  const stack = [];
-  t.forEach((tok, i) => {
-    if (tok.type === 'layout_section_open') stack.push(i);
-    else if (tok.type === 'layout_section_close') ends.set(stack.pop(), i);
-  });
-  const out = [];
-  for (let i = 0; i < t.length; i++) {
-    const width = widthOf(t[i]);
-    if (!width) {
-      out.push(t[i]);
-      continue;
-    }
-    const firstEnd = ends.get(i);
-    const next = firstEnd + 1;
-    if (firstEnd !== undefined && widthOf(t[next]) === 100 - width && ends.has(next)) {
-      const secondEnd = ends.get(next);
-      out.push(makeToken('html_block', '<div class="dc-pu-row">\n'), ...t.slice(i, secondEnd + 1), makeToken('html_block', '</div>\n'));
-      i = secondEnd;
-      continue;
-    }
-    (state.env.layoutWarnings ??= []).push({
-      line: t[i].map ? t[i].map[0] + 1 : t[i].meta?.line ?? t[i].meta?.__line ?? 0,
-      type: 'row_unpaired',
-      message: 'This sheet has a width (.dc-half, .dc-narrow or .dc-wide) but the sheet straight after it does not complete the row, so it prints full width. Give the next sheet the other half (.dc-half), or the other side of 38/62 (.dc-wide after .dc-narrow, .dc-narrow after .dc-wide).',
-    });
-    out.push(t[i]);
-  }
-  state.tokens = out;
-}
-
-// `@section … .dc-pu-cont` is a sheet that carries on from the one before it,
-// so it has no title tag. Its first `##` or `###` would otherwise be read as the
-// sheet's title (every `:first-child` heading rule in the package), so the plugin
-// puts a zero-height `.dc-pu-spacer` ahead of it and the heading stays a sub-head.
-// The author writes nothing extra.
-const PU_SPACER = '<div class="dc-pu-spacer"></div>\n';
-
-function dcContinuations(state) {
-  const t = state.tokens;
-  for (let i = 0; i < t.length; i++) {
-    if (t[i].type !== 'layout_section_open') continue;
-    if (!hasClass(t[i], 'dc-pu-cont')) continue;
-    const next = t[i + 1];
-    if (next?.type !== 'heading_open' || !['h2', 'h3'].includes(next.tag)) continue;
-    t.splice(i + 1, 0, makeToken('html_block', PU_SPACER));
-  }
-}
-
-// ── Neon signs ──────────────────────────────────────────────────────────────
-// A sign is the city's own fixture, not the pack's paper (docs/plans/
-// 2026-11-11-neon-signage.md). It is placed, never written: a chapter opener
-// (`@page chapter-start` in an `@chapter <word>`) whose title banner comes
-// first hangs one above the banner, spelling its chapter's word (an opener
-// that starts with a sheet, such as a fiction excerpt, has no headroom for
-// one), and a specialty's art page (`@specialty-art`) hangs one
-// spelling the specialty. The word is drawn four times as SVG paths, stacked
-// (outer ring, inner ring, tube, core): stroked text would print as a Type 3
-// font, which the PDF/X build flattens to an image. One letter of each sign
-// is a dead tube. The Dream Master's sign is mostly dark: only the D and the
-// M are lit.
-const NEON_CHAPTER_WORDS = { rules: 'RULES', dm: 'DREAM MASTER', gear: 'GEAR', 'citizen-file': 'CITIZEN FILE' };
-const NEON_LAYERS = ['dc-neon-ring-2', 'dc-neon-ring-1', 'dc-neon-tube', 'dc-neon-core'];
-
-/** Letter indexes left unlit: all but D and M on the DM's sign, else one letter picked from the word. */
-function neonDeadLetters(word) {
-  const letters = [...word].map((c, i) => (c === ' ' ? -1 : i)).filter((i) => i > 0);
-  if (word === 'DREAM MASTER') return new Set(letters.filter((i) => i !== 6));
-  const sum = [...word].reduce((n, c) => n + c.charCodeAt(0), 0);
-  return new Set([letters[sum % letters.length]]);
-}
-
-// BEGIN NEON_FONT (generated by scripts/neon-glyphs.py; do not edit)
-// Tomorrow 400's capitals (SIL OFL, fonts/tomorrow/OFL.txt) as SVG paths:
-// font units, y down, baseline at 0.
-const NEON_FONT = {
-  upm: 1000,
-  cap: 737,
-  glyphs: {
-  'A': { w: 667, d: 'M14 0 263 -737H404L653 0H558L495 -192H172L110 0ZM199 -272H469L345 -651H322Z' },
-  'B': { w: 690, d: 'M87 0V-737H482L586 -632V-459L540 -397L625 -311V-105L520 0ZM178 -428H453L495 -485V-601L441 -657L178 -656ZM178 -81H479L534 -136V-287L476 -347H178Z' },
-  'C': { w: 647, d: 'M173 0 68 -105V-632L173 -737H506L608 -635L550 -576L470 -656H214L159 -601V-136L214 -81H478L559 -162L617 -103L513 0Z' },
-  'D': { w: 705, d: 'M87 0V-737H487L640 -582V-155L487 0ZM178 -81H446L549 -186V-551L446 -656H178Z' },
-  'E': { w: 625, d: 'M87 0V-737H573V-653H178V-429H531V-346H178V-84H573V0Z' },
-  'F': { w: 577, d: 'M87 0V-737H562V-653H178V-415H515V-332H178V0Z' },
-  'G': { w: 711, d: 'M171 0 68 -105V-632L173 -737H523L625 -635L567 -576L487 -656H214L159 -601V-136L214 -81H435L549 -187V-307H379V-387H625V0H549V-85L458 0Z' },
-  'H': { w: 720, d: 'M87 0V-737H178V-428H543V-737H634V0H543V-347H178V0Z' },
-  'I': { w: 395, d: 'M62 0V-84H152V-653H62V-737H333V-653H243V-84H333V0Z' },
-  'J': { w: 577, d: 'M154 0 50 -105V-274H141V-136L196 -81H345L400 -136V-737H491V-105L386 0Z' },
-  'K': { w: 656, d: 'M87 0V-737H178V-344L526 -737H634L358 -421L639 0H530L295 -350L178 -216V0Z' },
-  'L': { w: 559, d: 'M87 0V-737H178V-84H549V0Z' },
-  'M': { w: 887, d: 'M87 0V-737H211L443 -148L676 -737H801V0H709V-598L469 0H418L178 -597V0Z' },
-  'N': { w: 718, d: 'M87 0V-737H211L540 -144V-737H631V0H523L200 -582H178V0Z' },
-  'O': { w: 694, d: 'M173 0 68 -105V-632L173 -737H521L626 -632V-105L521 0ZM214 -81H480L535 -136V-601L480 -656H214L159 -601V-136Z' },
-  'P': { w: 610, d: 'M87 0V-737H476L580 -632V-379L476 -274H178V0ZM178 -355H435L489 -410V-601L435 -657L178 -656Z' },
-  'Q': { w: 694, d: 'M307 102V0H173L68 -105V-632L173 -737H521L626 -632V-105L521 0H387V102ZM214 -81H307V-187H387V-81H480L535 -136V-601L480 -656H214L159 -601V-136Z' },
-  'R': { w: 677, d: 'M87 0V-737H490L594 -632V-397L490 -292H487L620 0H519L388 -292H178V0ZM178 -373H449L503 -428V-601L449 -656H178Z' },
-  'S': { w: 658, d: 'M88 0V-84H451L505 -139V-286L451 -341H166L62 -445V-632L166 -737H558V-653H207L152 -598L153 -476L207 -421H492L596 -316V-105L492 0Z' },
-  'T': { w: 555, d: 'M232 0V-653H13V-737H542V-653H323V0Z' },
-  'U': { w: 703, d: 'M178 0 73 -105V-737H164V-136L219 -81H484L539 -136V-737H630V-105L525 0Z' },
-  'V': { w: 666, d: 'M263 0 13 -737H109L322 -87H344L557 -737H653L403 0Z' },
-  'W': { w: 909, d: 'M194 0 13 -737H109L254 -87H276L413 -737H496L633 -87H655L800 -737H896L715 0H572L454 -544L337 0Z' },
-  'X': { w: 632, d: 'M13 0 235 -377 15 -737H118L304 -427H328L514 -737H618L397 -377L619 0H515L328 -324H305L118 0Z' },
-  'Y': { w: 633, d: 'M271 0V-295L13 -737H117L306 -401H326L516 -737H619L362 -295V0Z' },
-  'Z': { w: 663, d: 'M72 0V-92L469 -631V-653H93V-737H587V-645L191 -106V-84H591V0Z' },
-  ' ': { w: 222, d: '' },
-  },
-};
-// END NEON_FONT
-
-const NEON_TRACKING = 160; // letter spacing, font units (0.16em)
-
-/** The sign's HTML: an ink plate and one SVG of the word's letters as paths
- * (NEON_FONT), four layers back to front; the dead letters are a fifth. */
-function neonSign(word) {
-  const { cap, upm, glyphs } = NEON_FONT;
-  const dead = neonDeadLetters(word);
-  const letters = [];
-  let x = 0;
-  [...word].forEach((c, i) => {
-    const g = glyphs[c];
-    if (!g) return;
-    if (g.d) letters.push({ x, d: g.d, dead: dead.has(i) });
-    x += g.w + NEON_TRACKING;
-  });
-  const w = x - NEON_TRACKING;
-  const layer = (cls, set) => `<g class="${cls}">` +
-    set.map((l) => `<path transform="translate(${l.x} 0)" d="${l.d}"/>`).join('') + '</g>';
-  const lit = letters.filter((l) => !l.dead);
-  const off = letters.filter((l) => l.dead);
-  const svg = NEON_LAYERS.map((cls) => layer(cls, lit)).join('') + (off.length ? layer('dc-neon-dead', off) : '');
-  const em = (n) => +(n / upm).toFixed(3);
-  return `<div class="dc-neon" aria-hidden="true"><svg class="dc-neon-word" xmlns="http://www.w3.org/2000/svg" ` +
-    `width="${em(w)}em" height="${em(cap)}em" viewBox="0 ${-cap} ${w} ${cap}">${svg}</svg></div>\n`;
-}
-
-function dcNeonSigns(state) {
-  const t = state.tokens;
-  let chapterWord = null;
-  const components = []; // the declared components around the token: their kind, and a specialty's name
-  for (let i = 0; i < t.length; i++) {
-    const tok = t[i];
-    if (tok.type === 'layout_chapter_open') {
-      chapterWord = classesOf(tok).find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
-    } else if (tok.type === 'layout_chapter_close') {
-      chapterWord = null;
-    } else if (tok.type === 'layout_page_open' && hasClass(tok, 'dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
-               t[i + 1]?.type === 'heading_open' && t[i + 1].tag === 'h1') {
-      t.splice(++i, 0, makeToken('html_block', neonSign(NEON_CHAPTER_WORDS[chapterWord])));
-    } else if (tok.type === 'layout_component_open') {
-      const kind = tok.meta?.kind;
-      const specialty = kind === 'specialty' ? classesOf(tok).find((c) => SPECIALTIES.includes(c)) ?? null : null;
-      components.push({ kind, specialty });
-      if (kind === 'specialty-art') {
-        const name = components.findLast((c) => c.kind === 'specialty')?.specialty;
-        if (name) t.splice(++i, 0, makeToken('html_block', neonSign(name.toUpperCase())));
-      }
-    } else if (tok.type === 'layout_component_close') {
-      components.pop();
-    }
-  }
-}
-
-export default function dimmCityPlugin(md, options = {}) {
-  Token ??= new md.core.State('', md, {}).Token;
-  registerSkillContinueBridge(md);
-
-  // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
-  // transform operates on already-parsed token streams.
-  if (options.rawHtml !== 'off') md.core.ruler.push('dc_raw_html', rawHtmlWarnings);
-  md.core.ruler.push('dc_alerts', dcAlertsTransform);
-  md.core.ruler.push('dc_rows', dcRows);
-  md.core.ruler.push('dc_steps', dcSteps);
-  md.core.ruler.push('dc_continuations', dcContinuations);
-  md.core.ruler.push('dc_neon_signs', dcNeonSigns);
-
-  // Transform the canonical roll instruction while it is still structured
-  // inline content. This covers every markdown context without rewriting
-  // rendered HTML, code spans, raw HTML, or partial words.
-  md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
-    '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
-  md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
-  md.core.ruler.push('dc_die_calls', dcDieCalls);
-
-  md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
-
-  // Mark image-only paragraphs so layout rules can target them without
-  // relying on p:has(img). The base CSS rule
-  // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
-  // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
-  md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
-  md.core.ruler.push('dc_front_matter_titles', dcFrontMatterTitles);
-
-  // Declared components. Callouts, cards, outcomes and procedures go first so
-  // one inside a skill is already rewritten when the skill's rule looks at it.
-  md.core.ruler.push('dc_callouts', dcCallouts);
-  md.core.ruler.push('dc_factions', dcFactions);
-  md.core.ruler.push('dc_gear', dcGear);
-  md.core.ruler.push('dc_entry_costs', dcEntryCosts);
-  md.core.ruler.push('dc_fields', dcFields);
-  md.core.ruler.push('dc_cards', dcCards);
-  md.core.ruler.push('dc_outcomes', dcOutcomes);
-  md.core.ruler.push('dc_roll_tables', dcRollTables);
-  md.core.ruler.push('dc_procedures', dcProcedures);
-  md.core.ruler.push('dc_learning_paths', dcLearningPaths);
-  md.core.ruler.push('dc_skill_cards', dcSkillCards);
-  md.core.ruler.push('dc_ladders', dcLadders);
-  md.core.ruler.push('dc_kickers', dcKickers);
-  md.core.ruler.push('dc_ladder_tables', dcLadderTables);
-  md.core.ruler.push('dc_stat_strips', dcStatStrips);
-  md.core.ruler.push('dc_field_lines', dcFieldLines);
-}
+// ── Declared markers ───────────────────────────────────────────────────────
 
 /**
  * Declared markers — plain data Gutterpress core reads off this module (the
@@ -2181,8 +2137,6 @@ export default function dimmCityPlugin(md, options = {}) {
  * never needed an explicit `@end-…`.
  */
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
-
-const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
 
 export const markers = {
   // Specialty > learning path > skill. Core nests them as a stack; the rules
@@ -2337,6 +2291,58 @@ export const markers = {
   ideals: { section: true, class: 'dc-section-panel dc-section-choose dc-ideals' },
   dreams: { section: true, class: 'dc-section-panel dc-section-choose dc-dreams' },
 };
+
+// ── The plugin ─────────────────────────────────────────────────────────────
+
+export default function dimmCityPlugin(md, options = {}) {
+  Token ??= new md.core.State('', md, {}).Token;
+  registerSkillContinueBridge(md);
+
+  // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
+  // transform operates on already-parsed token streams.
+  if (options.rawHtml !== 'off') md.core.ruler.push('dc_raw_html', rawHtmlWarnings);
+  md.core.ruler.push('dc_alerts', dcAlertsTransform);
+  md.core.ruler.push('dc_rows', dcRows);
+  md.core.ruler.push('dc_steps', dcSteps);
+  md.core.ruler.push('dc_continuations', dcContinuations);
+  md.core.ruler.push('dc_neon_signs', dcNeonSigns);
+
+  // Transform the canonical roll instruction while it is still structured
+  // inline content. This covers every markdown context without rewriting
+  // rendered HTML, code spans, raw HTML, or partial words.
+  md.renderer.rules.dc_roll_the_die = (tokens, idx) =>
+    '<span class="dc-roll-the-die">' + esc(tokens[idx].content) + '</span>';
+  md.core.ruler.push('dc_roll_the_die', dcRollDieTransform);
+  md.core.ruler.push('dc_die_calls', dcDieCalls);
+
+  md.core.ruler.push('dc_specialty_card_positions', dcSpecialtyCardPositions);
+
+  // Mark image-only paragraphs so layout rules can target them without
+  // relying on p:has(img). The base CSS rule
+  // (p.dc-img-wrapper { padding:0; margin:0 }) lives in components/data.css.
+  // Per-page rules can further refine position via .page.my-class p.dc-img-wrapper.
+  md.core.ruler.push('dc_image_paragraphs', dcImageParagraphs);
+  md.core.ruler.push('dc_front_matter_titles', dcFrontMatterTitles);
+
+  // Declared components. Callouts, cards, outcomes and procedures go first so
+  // one inside a skill is already rewritten when the skill's rule looks at it.
+  md.core.ruler.push('dc_callouts', dcCallouts);
+  md.core.ruler.push('dc_factions', dcFactions);
+  md.core.ruler.push('dc_gear', dcGear);
+  md.core.ruler.push('dc_entry_costs', dcEntryCosts);
+  md.core.ruler.push('dc_fields', dcFields);
+  md.core.ruler.push('dc_cards', dcCards);
+  md.core.ruler.push('dc_outcomes', dcOutcomes);
+  md.core.ruler.push('dc_roll_tables', dcRollTables);
+  md.core.ruler.push('dc_procedures', dcProcedures);
+  md.core.ruler.push('dc_learning_paths', dcLearningPaths);
+  md.core.ruler.push('dc_skill_cards', dcSkillCards);
+  md.core.ruler.push('dc_ladders', dcLadders);
+  md.core.ruler.push('dc_kickers', dcKickers);
+  md.core.ruler.push('dc_ladder_tables', dcLadderTables);
+  md.core.ruler.push('dc_stat_strips', dcStatStrips);
+  md.core.ruler.push('dc_field_lines', dcFieldLines);
+}
 
 /**
  * Plugin metadata (the package version in package.json is the only version).
