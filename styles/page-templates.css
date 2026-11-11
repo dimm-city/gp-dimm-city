@@ -854,4 +854,23 @@ p.dc-die-call {
 .chapter.dc-chapter-dm           { --dc-section-accent: var(--ink-dark); }
 .chapter.dc-chapter-gear         { --dc-section-accent: var(--amber-dark); }
 
+/* NEON SIGNS (components/neon.css). A chapter word picks its sign's tube. */
+.chapter.dc-chapter-rules         { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }
+.chapter.dc-chapter-dm            { --dc-neon: var(--neon-cyan);   --dc-neon-core: var(--neon-cyan-core);   --dc-neon-ring-1: var(--neon-cyan-ring-1);   --dc-neon-ring-2: var(--neon-cyan-ring-2); }
+.chapter.dc-chapter-gear          { --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core); --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2); }
+.chapter.dc-chapter-citizen-file  { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
+
+/* Chapter opener: hung above the banner. The page clips anything in its
+   margin, so the sign is in the flow, but it gives its whole height back and
+   nothing on the page moves: it hangs in the banner's 24pt of headroom
+   ("Chapter-start page" above), its 35pt plate's foot bolted over the top of the
+   banner's padding, clear of the title's letters. */
+.page.dc-page-chapter-start {
+  --dc-neon-layer: 3;                       /* over the banner (z-index 2) */
+  --dc-neon-size: 20pt;
+  --dc-neon-height: 35pt;                   /* the 20pt word + 15pt padding */
+  --dc-neon-margin: 0 0 -35pt 0.3in;
+  --dc-neon-tilt: rotate(1deg);
+}
+
 }

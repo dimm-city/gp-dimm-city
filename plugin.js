@@ -2056,6 +2056,56 @@ function dcContinuations(state) {
   }
 }
 
+// ── Neon signs ──────────────────────────────────────────────────────────────
+// A sign is the city's own fixture, not the pack's paper (docs/plans/
+// 2026-11-11-neon-signage.md). It is placed, never written: a chapter opener
+// (`@page chapter-start` in an `@chapter <word>`) whose title banner comes
+// first hangs one above the banner, spelling its chapter's word (an opener
+// that starts with a sheet, such as a fiction excerpt, has no headroom for
+// one), and a specialty's art page (`@specialty-art`) hangs one
+// spelling the specialty. The word is drawn four times, stacked (outer ring,
+// inner ring, tube, core); one letter of each sign is a dead tube. The Dream
+// Master's sign is mostly dark: only the D and the M are lit.
+const NEON_CHAPTER_WORDS = { rules: 'RULES', dm: 'DREAM MASTER', gear: 'GEAR', 'citizen-file': 'CITIZEN FILE' };
+const NEON_LAYERS = ['dc-neon-ring-2', 'dc-neon-ring-1', 'dc-neon-tube', 'dc-neon-core'];
+
+/** Letter indexes left unlit: all but D and M on the DM's sign, else one letter picked from the word. */
+function neonDeadLetters(word) {
+  const letters = [...word].map((c, i) => (c === ' ' ? -1 : i)).filter((i) => i > 0);
+  if (word === 'DREAM MASTER') return new Set(letters.filter((i) => i !== 6));
+  const sum = [...word].reduce((n, c) => n + c.charCodeAt(0), 0);
+  return new Set([letters[sum % letters.length]]);
+}
+
+/** The sign's HTML: a hidden copy of the word sizes the plate; the tubes are SVG text over it (SVG strokes take round joins, HTML text strokes do not). */
+function neonSign(word) {
+  const dead = neonDeadLetters(word);
+  const run = [...word].map((c, i) => (dead.has(i) ? `<tspan class="dc-neon-dead">${c}</tspan>` : c)).join('');
+  const layers = NEON_LAYERS.map((cls) => `<text class="${cls}" x="0" y="0.86em">${run}</text>`).join('');
+  return `<div class="dc-neon" aria-hidden="true"><div class="dc-neon-word"><span class="dc-neon-size">${word}</span>` +
+    `<svg class="dc-neon-tubes" xmlns="http://www.w3.org/2000/svg">${layers}</svg></div></div>\n`;
+}
+
+function dcNeonSigns(state) {
+  const t = state.tokens;
+  let chapterWord = null;
+  const specialties = [];
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i];
+    const cls = (tok.attrGet?.('class') || '').split(/\s+/);
+    if (tok.type === 'layout_chapter_open') {
+      chapterWord = cls.find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
+    } else if (tok.type === 'layout_page_open' && cls.includes('dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
+               t[i + 1]?.type === 'heading_open' && t[i + 1].tag === 'h1') {
+      t.splice(++i, 0, makeToken('html_block', neonSign(NEON_CHAPTER_WORDS[chapterWord])));
+    } else if (tok.type === 'layout_component_open' && tok.meta?.kind === 'specialty') {
+      specialties.push(cls.find((c) => SPECIALTIES.includes(c)) ?? null);
+    } else if (tok.type === 'layout_component_open' && tok.meta?.kind === 'specialty-art' && specialties.at(-1)) {
+      t.splice(++i, 0, makeToken('html_block', neonSign(specialties.at(-1).toUpperCase())));
+    }
+  }
+}
+
 export default function dimmCityPlugin(md, options = {}) {
   registerSkillContinueBridge(md);
 
@@ -2066,6 +2116,7 @@ export default function dimmCityPlugin(md, options = {}) {
   md.core.ruler.push('dc_rows', dcRows);
   md.core.ruler.push('dc_steps', dcSteps);
   md.core.ruler.push('dc_continuations', dcContinuations);
+  md.core.ruler.push('dc_neon_signs', dcNeonSigns);
 
   // Transform the canonical roll instruction while it is still structured
   // inline content. This covers every markdown context without rewriting

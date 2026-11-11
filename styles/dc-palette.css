@@ -224,6 +224,42 @@
   --crystal-aqua:     #4a98a8;  /* pale crystalline aquamarine (consumed: --dualist-accent) · TAC 105% (C62 M13 Y18 K12) */
   --crystal-slate:    #52626f;  /* cool slate stone, the common rock under the arcane (consumed: --generalist-accent); cream on it 6.3:1 · TAC 145% (C50 M31 Y22 K42) */
 
+  /* ── Neon tubes (prototype, docs/plans/2026-11-11-neon-signage.md) ──────
+     A sign's tube ladders (styles/components/neon.css): tube, pale core,
+     inner ring, outer ring. Each hex is the colour the press makes of the
+     tube (sRGB -> CRPC1 -> sRGB), so the PDF shows what prints. The TAC
+     figures are LittleCMS estimates until measured on Ghostscript 10.03+. */
+  --neon-orange:        #ef713d;  /* orange tube (Rules chapter; Technosorcerer) · TAC 158% (C0 M60 Y96 K2) */
+  --neon-orange-core:   #fadac6;  /* orange core · TAC 33% (C2 M13 Y18 K0) */
+  --neon-orange-ring-1: #7b371f;  /* orange inner ring · TAC 196% (C13 M63 Y64 K56) */
+  --neon-orange-ring-2: #4d3122;  /* orange outer ring · TAC 192% (C27 M42 Y47 K76) */
+  --neon-cyan:          #12bbd4;  /* cyan tube (Dream Master chapter; Augmerc) · TAC 80% (C67 M1 Y11 K1) */
+  --neon-cyan-core:     #c5e8f0;  /* cyan core · TAC 23% (C19 M0 Y4 K0) */
+  --neon-cyan-ring-1:   #096979;  /* cyan inner ring · TAC 153% (C75 M20 Y20 K38) */
+  --neon-cyan-ring-2:   #173e43;  /* cyan outer ring · TAC 187% (C57 M29 Y30 K71) */
+  --neon-yellow:        #fcdc2a;  /* yellow tube (Gear chapter; Etherlock) · TAC 106% (C1 M4 Y99 K2) */
+  --neon-yellow-core:   #fcf4bd;  /* yellow core · TAC 29% (C2 M0 Y27 K0) */
+  --neon-yellow-ring-1: #8c6e1f;  /* yellow inner ring · TAC 165% (C14 M25 Y84 K42) */
+  --neon-yellow-ring-2: #473a1f;  /* yellow outer ring · TAC 191% (C30 M32 Y51 K78) */
+  --neon-pink:          #f14693;  /* pink tube (Citizen File chapter; Proxy) · TAC 106% (C0 M100 Y5 K1) */
+  --neon-pink-core:     #f8c8df;  /* pink core · TAC 26% (C3 M22 Y1 K0) */
+  --neon-pink-ring-1:   #9e2d65;  /* pink inner ring · TAC 153% (C14 M96 Y13 K30) */
+  --neon-pink-ring-2:   #6b1345;  /* pink outer ring · TAC 187% (C24 M89 Y18 K56) */
+  --neon-fungi:         #ced741;  /* fungi tube (Gutterdruid) · TAC 110% (C16 M0 Y93 K1) */
+  --neon-fungi-core:    #f2f3cc;  /* fungi core · TAC 25% (C5 M0 Y20 K0) */
+  --neon-fungi-ring-1:  #51632d;  /* fungi inner ring · TAC 180% (C40 M16 Y71 K53) */
+  --neon-fungi-ring-2:  #35492b;  /* fungi outer ring · TAC 192% (C45 M21 Y55 K71) */
+  --neon-civic:         #60b54e;  /* civic tube (Streetwarden) · TAC 154% (C55 M0 Y98 K1) */
+  --neon-civic-core:    #d4e8cc;  /* civic core · TAC 36% (C15 M1 Y20 K0) */
+  --neon-civic-ring-1:  #3c7c34;  /* civic inner ring · TAC 182% (C57 M5 Y85 K35) */
+  --neon-civic-ring-2:  #35492b;  /* civic outer ring · TAC 192% (C45 M21 Y55 K71) */
+  --neon-chrome:        #a8b4b9;  /* chrome tube (Cybersurgeon; Wirephreak until its tube is chosen) · TAC 67% (C29 M16 Y16 K6) */
+  --neon-chrome-core:   #e9ecee;  /* chrome core · TAC 15% (C7 M4 Y4 K0) */
+  --neon-chrome-ring-1: #536370;  /* chrome inner ring · TAC 147% (C51 M32 Y22 K42) */
+  --neon-chrome-ring-2: #343b40;  /* chrome outer ring · TAC 183% (C45 M34 Y29 K75) */
+  --neon-dead:          #675d51;  /* an unlit tube: grey glass · TAC 154% (C31 M31 Y40 K52) */
+  --neon-dead-core:     #8a8078;  /* an unlit tube's core · TAC 119% (C29 M28 Y33 K29) */
+
 }
 
 }
