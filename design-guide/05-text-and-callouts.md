@@ -77,7 +77,7 @@ Result {.dg-result}
 
 </div>
 
-Tokens: `--dc-pullquote-accent`, `--dc-pullquote-accent-soft`, `--dc-pullquote-bg`.
+Tokens: `--dc-pullquote-accent`, `--dc-pullquote-bg`.
 
 
 ## Alerts

@@ -22,7 +22,7 @@
    wobbly (gutterdruid: no straight long edge); civic hazard = a sign-plate
    octagon (streetwarden).
 
-   Title-covered corners (dc#28): the path-shell and specialty-intro ink
+   Title-covered corners: the path-shell and specialty-intro ink
    outlines are the panel polygon on a 2px-larger box, and the titles are
    in-flow children with a clip of their own and no outline. So the band is
    cut from the SAME point list as its frame (--spec-edge-top: the top-left
@@ -442,8 +442,7 @@
    a down triangle; increased = blood and an up triangle; VAR = deep magenta (the
    display punch); special = amber; free = an UNLIT LED: the grey lens of a dead
    indicator with an ink edge and a hollow lamp, the quietest chip, so "0 AP" is
-   no longer a blood-red flag on every card (and no longer the same blood as
-   increased). The marks are CSS shapes (borders, a radius), vector in PDF/X and
+   not a blood-red flag on every card (nor the same blood as increased). The marks are CSS shapes (borders, a radius), vector in PDF/X and
    independent of any font. */
 
 /* Standard action point — explicit class for documentation clarity */

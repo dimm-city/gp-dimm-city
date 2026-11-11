@@ -567,6 +567,15 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toMatch(/<\/span><\/div>\n<\/div>\n<div class="dc-skill-card"/);
     });
 
+    test("the title and the stickers render their inline markdown", () => {
+      const { html } = renderGp(doc("@learning-path", "", "### The *Big* \"Title\"", "", "- It's *Alpha*", "- **Beta**", "  - nested", "- Gamma", ""));
+      expect(html).toContain('</span>The <em>Big</em> “Title”</h3>');
+      expect(html).toContain('<span class="dc-sticker-ref">1</span>It’s <em>Alpha</em></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">2</span><strong>Beta</strong></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">3</span>Gamma</span>');
+      expect(count(html, /class="dc-sticker"/g)).toBe(3);
+    });
+
     test("data-path-ref comes from the enclosing specialty: variant or class, counted per specialty", () => {
       const refs = (html) => [...html.matchAll(/data-path-ref="([^"]*)"/g)].map((m) => m[1]);
       const specialty = (open, n) => doc(open, "", ...Array.from({ length: n }, (_, i) => doc("@learning-path", "", `### P${i}`, "")), "@end-specialty", "");
@@ -654,8 +663,7 @@ describe("declared specialty, learning path and skill", () => {
       );
       const { html } = renderGp(src);
       expect(html).toContain('<p class="dc-flavor">Flavor.</p>');
-      expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
-      expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
+      expect(html).toContain('<div class="dc-ability">');
       expect(html).toContain('<span class="dc-ap variable">2–X AP</span>');
       expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
@@ -1385,6 +1393,22 @@ describe("declared card, outcome and procedure", () => {
       expect(html).toContain('<ol class="dc-steps tight" id="install" data-kind="install">');
     });
 
+    test("a step with a second paragraph or a nested list is still one step", () => {
+      const { html } = renderGp(doc(
+        "@procedure", "",
+        "1. First.", "",
+        "   More on the first.", "",
+        "2. Second.", "   - nested one", "   - nested two", "",
+        "3. Third.", "",
+        "@end-procedure",
+      ));
+      expect(count(html, /<li><span class="dc-step-no">/g)).toBe(3);
+      expect(html).toContain('<span class="dc-step-no">01</span><span>First.<p>More on the first.</p>');
+      expect(html).toContain('<span class="dc-step-no">02</span><span>Second.<ul>');
+      expect(html).toContain('<span class="dc-step-no">03</span><span>Third.</span>');
+      expect(count(html, /<ol[\s>]/g)).toBe(1);
+    });
+
     test("a procedure with two lists puts its attributes on the first only, so the id stays unique", () => {
       const { html } = renderGp(doc("@procedure #steps", "", "1. One", "", "Between.", "", "1. Again", "", "@end-procedure"));
       expect(html.match(/<ol [^>]*id="steps"/g)).toHaveLength(1);
@@ -1970,6 +1994,44 @@ describe("steps and examples", () => {
   });
 });
 
+describe("neon signs", () => {
+  const doc = (...lines) => lines.join("\n");
+  const signs = (html) => count(html, /class="dc-neon"/g);
+  const count = (html, re) => (html.match(re) ?? []).length;
+  /** The word a sign spells: its letters are the glyph paths, so tell signs apart by their width. */
+  const widths = (html) => [...html.matchAll(/class="dc-neon-word"[^>]* width="([^"]*)"/g)].map((m) => m[1]);
+
+  test("a chapter opener of a neon chapter hangs the chapter's word above its title", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Rules", ""));
+    expect(signs(html)).toBe(1);
+    expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
+  });
+
+  test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
+    expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
+    expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
+  });
+
+  test("the chapter's word does not carry over to a chapter that has none", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("a specialty's art page hangs a sign spelling the specialty", () => {
+    const { html } = renderGp(doc("@specialty augmerc", "", "@specialty-art", "", "x", "", "@end-specialty-art", "", "@end-specialty", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("art outside its specialty gets no sign, and the next specialty spells its own name", () => {
+    const art = doc("@specialty-art", "", "x", "", "@end-specialty-art", "");
+    const first = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", art)).html;
+    expect(signs(first)).toBe(1);
+    const both = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", "@specialty etherlock", "", art, "@end-specialty", ""));
+    expect(signs(both.html)).toBe(2);
+    expect(new Set(widths(both.html)).size).toBe(2);
+  });
+});
+
 describe("the die call", () => {
   const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 
@@ -2025,6 +2087,6 @@ describe("polish rules in the stylesheets", () => {
   test("an intro panel keeps with the entry under it; the roll phrase never breaks; a bold row label stays on a line", () => {
     expect(css("components/entries.css")).toMatch(/\.dc-section-panel:has\(\+ \.dc-entry\) \{\s*break-after: avoid;/);
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
-    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child:has\(> strong:only-child\) \{\s*white-space: nowrap;/);
+    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
   });
 });

@@ -13,14 +13,14 @@
   --paper-form:   var(--paper-cream);  /* alias: the choose form and definition sheets print on the white stock */
   --paper-zine:   var(--concrete-pale);  /* alias: the grey printed page; kept for books, no package rule reads it */
   --paper-light:  var(--paper-cream);  /* alias: white, the unprinted stock */
-  --paper-aged:   var(--concrete-pale);  /* alias: label and chip grounds (field chips, code, outcome rows); dE 6.4 off the wall, where #c8c2b8 was 1.0 */
+  --paper-aged:   var(--concrete-pale);  /* alias: label and chip grounds (field chips, code, outcome rows); dE 6.4 off the wall */
   --paper-stain:  #b0a89c;  /* deep stain — dark inset wells, smoke-grey · TAC 81% (C23 M20 Y27 K11) */
   /* Poster-wall shadow — a hard offset that pins paper-register components to
      the wall as physical objects ("stuck on the wall", not "embedded in the
      page"), over a soft lift (below).
      Translucent, so the wall's texture darkens under it. A PDF/X build
      flattens the pages that use transparency and keeps their text live
-     (Gutterpress #385; see docs/print-transparency-inventory.md). */
+     (see docs/print-transparency-inventory.md). */
   --shadow-ink: color-mix(in srgb, var(--ink) 28%, transparent);
   /* Depth (PDF/X preserve-text keeps text live over soft effects; see
      docs/constitution.md §II "Depth"). Anything hung on the wall casts two
@@ -38,7 +38,7 @@
   --shadow-press: color-mix(in srgb, var(--ink-dark) 42%, transparent);
   /* Light: a soft highlight across the top of a digital-display fill (a band,
      a tab, a chip): the LED panel's sheen, layered over its colour. Kept for
-     books that read it; the package's own bands and tabs no longer layer it.
+     books that read it; the package's own bands and tabs do not layer it.
      A gradient with transparent stops makes the page transparent in a PDF/X
      build and writes a type-1 (function) shading PDF.js cannot read, so each
      component pre-mixes the same 30% / 62% sheen into its opaque fill instead
@@ -52,13 +52,10 @@
      intent, relative colorimetric with black-point compensation. The
      figures are the build's to the digit: scripts/measure-palette-crpc1.py
      runs a swatch of each token through the same conversion and reads the
-     operands back out of the PDF. (Until 1.10.2-alpha.2 they were LittleCMS
-     at perceptual intent, which the build never used: 10-30% TAC under the
-     build's on the purples, 15-20% under on the inks.) They need a Ghostscript that honours
+     operands back out of the PDF. They need a Ghostscript that honours
      the profile: 10.03 and newer do; 10.02.1 (Ubuntu 24.04's) ignores it
-     and separates through its default CMYK profile (#000 = 295%, the
-     figures here before 1.10.2); gutterpress #495 warns when a build did
-     that. The profile caps TAC at 240%, the vendors' limit; no token
+     and separates through its default CMYK profile (#000 = 295%); the
+     build warns when it did that. The profile caps TAC at 240%, the vendors' limit; no token
      exceeds 211% (--ink).
      Small text takes --ink: the k-only pass prints it in black alone.
      -------------------------------------------------------------------- */
@@ -66,7 +63,7 @@
   --ink-dark:   #2f2622;  /* fills and rules, not small text (prints on four plates) · TAC 202% (C39 M38 Y38 K87) */
   --ink-smoke:  #4d4339;  /* sepia mid-tone — fills (fiction cavity, block accents) · TAC 175% (C32 M33 Y39 K71) */
   --ink-mid:    #594f43;  /* between smoke and dust; public; no package rule reads it · TAC 166% (C32 M32 Y40 K62) */
-  --ink-dust:   #665b4e;  /* the outcome row's fallback rail; no longer a text colour · TAC 156% (C31 M31 Y41 K53) */
+  --ink-dust:   #665b4e;  /* the outcome row's fallback rail; not a text colour · TAC 156% (C31 M31 Y41 K53) */
 
   /* ── Accents — creaturepunk fire + blood ─────────────────────────────── */
   --crimson:    #e1261c;  /* PMS Red 032; survives POD · TAC 206% (C0 M100 Y100 K6) */
@@ -83,8 +80,7 @@
      The purples sit inside the CRPC1 gamut (each prints within dE 4.2 of
      the screen, measured through the build's own separation) and stay
      >= 11.6 apart once printed: magenta h355 (pink), the deep magenta h349,
-     amethyst h316, violet h311, indigo h258 (print colour audit, finding 2A
-     and its 1.10.2-alpha.2 correction). HUD + signal tokens below alias
+     amethyst h316, violet h311, indigo h258 (print colour audit, finding 2A). HUD + signal tokens below alias
      these — touch the brand layer first. */
   --brand-magenta: #cf217e;  /* dimm.city cyber-magenta (web #d946ef), pulled pink into the press gamut; cream on it 5.0:1 · TAC 115% (C2 M100 Y1 K12) */
   --brand-magenta-deep: #690045;  /* jewel-deep magenta — 12.5:1 with paper either way (small-text-on-fill safe) · TAC 189% (C24 M94 Y15 K56) */
@@ -106,9 +102,8 @@
   --surface-orange-tint: #d8cfb4;  /* warmer gold tint on aged paper · TAC 52% (C13 M12 Y26 K1) */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  --border-hairline: var(--ink);  /* the column and table rule: hairlines are >= 1pt in --ink or a one-ink tint (was tan #c8b898, three inks) */
+  --border-hairline: var(--ink);  /* the column and table rule: hairlines are >= 1pt in --ink or a one-ink tint */
   --bw-thin:         1px;
-  --callout-border-width-small: 2px;  /* public; no package rule reads it */
 
   /* ── Mix sources — exact colours blended by color-mix() into opaque tints
      (PDF/X-1a: no alpha). Not general-purpose palette colours. ───────────── */
@@ -119,7 +114,7 @@
   /* Lixdu has one face, regular. Every rule that sets --font-display sets
      font-weight: 400 (a test enforces it): a bold weight makes Chromium
      synthesize a bold, which prints as a Type 3 font that Gutterpress's
-     PDF/X preserve-text split cannot keep (gutterpress#385). */
+     PDF/X preserve-text split cannot keep. */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
   --font-tab:     'Tomorrow', 'lixdu', sans-serif;
   --font-body:    'Titillium Web', Georgia, sans-serif;
@@ -137,7 +132,7 @@
   --fs-floor:   10pt;    /* THE type floor: no glyph the package prints is smaller — chips, tabs, tier pills, labels, stamps, folios included */
   --fs-body:    12pt;
   --fs-body-sm: 11pt;    /* smallest running prose in a component */
-  --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books: was 11.5pt, a step no reader sees */
+  --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books */
   --fs-sm:      var(--fs-body-sm);  /* alias: small body */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
   --fs-h2:      20pt;    /* section headers; 1.30× below h1 */
@@ -145,8 +140,6 @@
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
   --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; a mono label, not a smaller h5 */
-
-  --fw-bold:     700;  /* public; no package rule reads it */
 
   --lh-display: 1.35;  /* headings. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart */
   --lh-tight:  1.35;   /* compact running text */
@@ -189,8 +182,7 @@
        outside 0.625in  = 0.5in from the trim
        binding 0.5in    = 0.5in from the spine (no bleed on that edge):
                           DriveThruRPG's minimum for text and non-bleeding
-                          art, the same as the dtrpg preset's page.gutter.
-                          It was 0.75in until 1.8.2 with no rule behind it. */
+                          art, the same as the dtrpg preset's page.gutter. */
   --page-margin:   0.625in;
   --bottom-margin: 0.95in;  /* a plain length: the engine reads no calc() in @page margins (0.85in + 0.10in). Not deeper: at 0.97in the Field Guide runs two pages longer and the preset then pads it by a whole signature */
   --chip-gap:      0.10in;  /* the chips' tops below the text block: --bottom-margin - 0.85in */

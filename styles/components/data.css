@@ -32,9 +32,7 @@
   padding-bottom: var(--dc-path-shell-padding-bottom);
   /* No right padding: the title band spans the shell's full width, so the
      band's clip and the shell's clip (the same point list, specialty-identity.css)
-     meet at the right as well as the left. (It was 12px, for a skewed tab on
-     .dc-spray::before that the band no longer draws: the band stopped 12px short
-     of the frame's top-right cut.) */
+     meet at the right as well as the left. */
   padding-right: 0;
   position: relative;
   /* Both pseudos sit at negative z-index; this is the stacking context that
@@ -243,6 +241,8 @@
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 0;
+  /* a ruled cell: its number block runs the cell's full height, so no gap opens between rows */
+  margin-bottom: 0;
   padding: 0;
   border-top: 1pt solid var(--ink);
   font-family: var(--font-body);
@@ -311,7 +311,7 @@
        .dc-outcome-row        the ground, the frame's sides, the hairline's right side
        .dc-outcome-row:last-child   the frame's foot, the bottom chamfers and the
                               one tiny chip out of the foot, the only grit.
-     Unsplit, the parts add up to the box this used to be: a 2px frame, a 4px
+     Unsplit, the parts add up to one box: a 2px frame, a 4px
      ring of ground over a 5px ring of the hairline colour (1px line, 4px in),
      four even 45-degree chamfers. The ring is a shadow, not an absolutely
      positioned `::after` box: such a box inside a multicol run stops Chromium
@@ -941,7 +941,7 @@
 .dc-stat-cell-key {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   text-transform: uppercase;
   color: var(--hud-blue);
   margin-bottom: 2px;
@@ -984,17 +984,17 @@
 table.dc-stat-strip {
   border: 2px solid var(--dc-stat-strip-accent);
   margin: 0.08in 0;
+  --dc-td-pad-y: 3px;
+  --dc-th-pad-y: 2px;
 }
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
   font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 2px 8px;
 }
 .dc-stat-strip td {
   background: var(--paper-cream);
-  padding: 3px 8px;
   font-size: var(--fs-floor);
   vertical-align: middle;
 }
@@ -1115,10 +1115,10 @@ table.dc-stat-strip {
 
 /* The card's last block (an ability row or the closing line) stays with the one
    above it (cards.css, "the closing line of a card"): a tail is never a lone
-   row. `data-ability-penultimate` / `-last` no longer glue the last TWO rows
-   too: with the closing line's glue they made one unsplittable chain of three
-   blocks, which left a skill card on a page with one row and a hand's breadth
-   of empty cream under it (Pain Compliance, p.148 of the guide). */
+   row. `data-ability-penultimate` / `-last` do not glue the last TWO rows
+   too: with the closing line's glue they would make one unsplittable chain of
+   three blocks, leaving a skill card on a page with one row and a hand's
+   breadth of empty cream under it. */
 
 /* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
 p.dc-img-wrapper {
@@ -1168,7 +1168,7 @@ p.dc-img-wrapper {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   line-height: 1.4;
   /* A cut top-right corner (HUD chamfer), on the band only so the tile keeps

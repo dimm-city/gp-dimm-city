@@ -88,7 +88,11 @@ describe("coverage", () => {
 
   test("the guide demonstrates every alert type the plugin handles", () => {
     const table = code.match(/DC_ALERT_TYPES = \{([\s\S]*?)\n\};/)?.[1] ?? "";
-    const types = [...table.matchAll(/^\s*([A-Z_]+):/gm)].map((m) => m[1]);
+    const shared = code.match(/ALERT_CALLOUTS = \[([^\]]*)\]/)?.[1] ?? "";
+    const types = [
+      ...[...shared.matchAll(/'([a-z]+)'/g)].map((m) => m[1].toUpperCase()),
+      ...[...table.matchAll(/^\s*([A-Z_]+):/gm)].map((m) => m[1]),
+    ];
     expect(types.length).toBeGreaterThan(5);
     const missing = types.filter((t) => !source.includes(`[!${t}]`));
     expect(missing).toEqual([]);
