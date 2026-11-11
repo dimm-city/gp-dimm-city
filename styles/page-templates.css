@@ -820,18 +820,24 @@ p.dc-die-call {
   --dc-section-drop: var(--shadow-poster);
 }
 
-/* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty` ───
-   A chapter word sets the tokens the sections in that chapter read, so every
-   panel in it takes the chapter's colour without a rule per book. A book's
-   own unlayered rule (`#chapter-03 { --dc-section-accent: var(--rust); }`)
-   still wins over it.
+/* ── CHAPTER REGISTERS: `@chapter rules | lore | citizen-file | specialty | dm | gear`
+   A chapter word says WHERE the reader is, in colour: every plain panel in the
+   chapter, its opener and its footer chip (page-rules.css) take the chapter's
+   colour, without a rule per book. WHAT a section is stays the kind's: a
+   reference, lore, dm or catalog sheet keeps its own colour and silhouette in
+   any chapter. A book's own unlayered rule
+   (`#chapter-03 { --dc-section-accent: var(--rust); }`) still wins.
      citizen-file   magenta-deep   identity: who you dream to be
      specialty      hud-blue-dark  the specialty gateway
-     rules          rust           the rules chapters
+     rules          rust           how to play
+     dm             ink            behind the screen: the Dream Master's chapter
+     gear           amber-dark     cybernetics, weapons, gear: the armory
      lore           violet, the lore section's colour */
 .chapter.dc-chapter-citizen-file { --dc-section-accent: var(--brand-magenta-deep); }
 .chapter.dc-chapter-specialty    { --dc-section-accent: var(--hud-blue-dark); }
 .chapter.dc-chapter-rules        { --dc-section-accent: var(--rust); }
 .chapter.dc-chapter-lore         { --dc-section-accent: var(--brand-violet); }
+.chapter.dc-chapter-dm           { --dc-section-accent: var(--ink-dark); }
+.chapter.dc-chapter-gear         { --dc-section-accent: var(--amber-dark); }
 
 }

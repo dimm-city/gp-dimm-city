@@ -2130,6 +2130,8 @@ export const markers = {
       lore: 'dc-chapter-lore',
       'citizen-file': 'dc-chapter-citizen-file',
       specialty: 'dc-chapter-specialty',
+      dm: 'dc-chapter-dm',
+      gear: 'dc-chapter-gear',
     },
   },
 

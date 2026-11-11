@@ -839,7 +839,7 @@ components:
     emits: div.chapter.dc-chapter-rules
     css: styles/page-templates.css
     tokens: [--dc-section-accent]
-    notes: "Rust section accent for every panel in the chapter. A word that is not declared stays the chapter's label."
+    notes: "How to play: rust. Every plain panel's tag and rail, the opener and the footer chip are rust. A word that is not declared stays the chapter's label."
 
   - name: chapter-lore
     status: live
@@ -851,6 +851,28 @@ components:
     css: styles/page-templates.css
     tokens: [--dc-section-accent, --dc-section-bg]
     notes: "Violet title bars (the lore section's colour) on the panels' own cream."
+
+  - name: chapter-dm
+    status: live
+    origin: plugin
+    markers: ["@chapter dm"]
+    snippet: dm-chapter
+    recipe: "@chapter dm #id ch=\"N\""
+    emits: div.chapter.dc-chapter-dm
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-section-accent]
+    notes: "The Dream Master's chapter: ink. Every plain panel's tag and rail, the opener and the footer chip are ink (the chip through the dc-chip-ink page, and each wall's ink twin). Reference, lore and dm sections keep their own colours and shapes inside it."
+
+  - name: chapter-gear
+    status: live
+    origin: plugin
+    markers: ["@chapter gear"]
+    snippet: gear-chapter
+    recipe: "@chapter gear #id ch=\"N\""
+    emits: div.chapter.dc-chapter-gear
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-section-accent]
+    notes: "The armory: cybernetics, weapons and gear, in amber (brass). Every plain panel's tag and rail, the opener and the footer chip are amber (the chip through the dc-chip-amber page, and each wall's amber twin). The gear kinds (weapons, explosives, armor) and reference sheets keep their own colours inside it."
 
   - name: chapter-citizen-file
     status: live

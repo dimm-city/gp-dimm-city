@@ -74,7 +74,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
@@ -106,7 +106,7 @@ Also in the box:
   build time.
 - **Page and chapter words** every Dimm City book writes: `@page contents`,
   `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
-  `@chapter rules`, `lore`, `citizen-file`, `specialty` for a chapter's section
+  `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` for a chapter's section
   colour, plus the folio/chapter-chip chrome driven by `@chapter #id ch="N"`.
 - **Snippets** for the app's snippet picker (`snippets/`): one per macro, per
   section, page and chapter word, and per modifier (`.dc-avoid-split`,

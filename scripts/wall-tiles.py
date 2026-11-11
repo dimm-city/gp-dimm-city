@@ -94,8 +94,8 @@ GROUND_SHADE = 0.9                  # the ground's tone against the wall's
 # The hue faces and the chapter words that wire them are page-rules.css's and
 # dc-native.css's (2c); a book wires its own chapters the same way.
 HUES = {"blue": "--hud-blue-dark", "rust": "--rust", "violet": "--brand-violet",
-        "amethyst": "--crystal-amethyst", "amber": "--amber-dark"}
-CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet"}
+        "amethyst": "--crystal-amethyst", "amber": "--amber-dark", "ink": "--ink-dark"}
+CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet", "dm": "ink", "gear": "amber"}
 # pages that keep their own named page (and so the brick) whatever wall they name
 KEEPS = ".gp-page-full-bleed, .dc-full-page, .dc-page-contents, .dc-page-credits, .dc-page-intro, .dc-page-citizen-file"
 # and inside a block that names a wall, the children that keep their own page
@@ -514,9 +514,14 @@ def write_css(walls):
         # its children, never itself: the app's viewer lays a block that has a
         # page name as one run on that page and never looks inside it, so the
         # art plate in it (page: full) was set inside the wall's margins.
-        # Every child but a plate names the wall; print gives the same sheets
-        # the same pages, and its chip is what it was (the hue wiring is a .page's)
-        wiring.append(f":where(.dc-page-wall-{n}:not(.page, {KEEPS})) > :not({PLATES}) {{ page: dc-wall-{n}; }}")
+        # Every child but a plate names the wall. In a chapter with a colour it
+        # names that wall's twin, so the chip keeps the chapter's colour (a
+        # specialty's pages had shown the default magenta chip): the twins
+        # come first and outrank the plain rule, as for a .page
+        block = f":where(.dc-page-wall-{n}:not(.page, {KEEPS})) > :not({PLATES})"
+        for chapter, hue in CHAPTER_HUES.items():
+            wiring.append(f".chapter.dc-chapter-{chapter} {block} {{ page: dc-wall-{n}-{hue}; }}")
+        wiring.append(f"{block} {{ page: dc-wall-{n}; }}")
         # and its art plate takes this wall too, on a page like `@page full`
         # (no margins, no chips): the specialty art is transparent, so the
         # wall and its ground show through it. The selector outranks

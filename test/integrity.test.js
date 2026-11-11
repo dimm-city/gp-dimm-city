@@ -227,7 +227,8 @@ describe("file contracts", () => {
   // `@specialty .augmerc .dc-page-wall-3`) names its wall on its children, and
   // never on the art plate among them: named on the block, the plate was set
   // inside the wall's margins in the app (print was right). The plate takes
-  // the wall's own margin-free page, dc-wall-N-full.
+  // the wall's own margin-free page, dc-wall-N-full. In a chapter with a colour
+  // the children take the wall's twin instead, so the chapter chip keeps its hue.
   test("a wall a block names goes on its children, and its art plate takes the wall's full page", () => {
     const bad = [];
     const walls = new Set();
@@ -241,7 +242,8 @@ describe("file contracts", () => {
           plates.add(plate[1]);
           continue;
         }
-        const kids = selector.match(/^:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
+        // in a chapter with a colour, the children take that wall's twin (dc-wall-N-<hue>), so the chip keeps it
+        const kids = selector.match(/^(?:\.chapter\.dc-chapter-[a-z-]+ )?:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
         if (kids && kids[2].split(/,\s*/).includes(".dc-specialty-art")) walls.add(kids[1]);
         else bad.push(selector);
       }

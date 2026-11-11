@@ -100,8 +100,12 @@ A **chapter word** sets the colour register of every panel in the chapter. It re
 |---|---|---|
 | `@chapter citizen-file` | magenta-deep | Who you dream to be |
 | `@chapter specialty` | blue-dark | The specialty gateway |
-| `@chapter rules` | rust | Rules chapters |
+| `@chapter rules` | rust | How to play |
+| `@chapter dm` | ink | Behind the screen: the Dream Master's chapter |
+| `@chapter gear` | amber | The armory: cybernetics, weapons, gear |
 | `@chapter lore` | violet | Setting and history |
+
+The chapter's colour says where the reader is: it is every plain panel's tag and rail, the opener's and the footer chip's. What a section is stays its kind's: a reference, lore, dm or catalog sheet keeps its own colour and silhouette in any chapter, so a lore sheet in the Dream Master's chapter still reads as lore.
 
 ```markdown
 @chapter rules #ch-rules ch="3"
