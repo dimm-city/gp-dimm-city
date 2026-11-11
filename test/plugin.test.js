@@ -805,12 +805,13 @@ describe("declared specialty, learning path and skill", () => {
         expect(html).not.toContain(" AP");
       });
 
-      test("any other set of die results is a roll table; a name stays bold in the cell", () => {
+      test("an ability's own set of die results is the ladder too, each band in its tier; a name stays bold", () => {
         const html = skill("1. **1-10** Low.", "2. **11–15: Mid** Middle.", "3. **16–19** High.", "4. **20** Top.");
         expect(chip(html)).toEqual([]);
-        expect(html).toContain('<div class="dc-roll-table">');
-        expect(html).toContain("<td>11–15</td><td><strong>Mid</strong> Middle.</td>");
-        expect(html).not.toContain("dc-outcomes");
+        expect(html).toContain('<div class="dc-outcomes">');
+        expect([...html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1])).toEqual(["miss", "hit", "hit", "crit"]);
+        expect(html).toContain('<span class="dc-outcome-roll">11–15</span></span>\n    <span class="dc-outcome-text"><strong>Mid</strong> Middle.</span>');
+        expect(html).not.toContain("dc-roll-table");
       });
 
       test("a name lead is a bulleted option with its colon in the bold", () => {
@@ -1266,14 +1267,37 @@ describe("declared card, outcome and procedure", () => {
       expect(out).toMatch(/dc-outcome-text">worst<[\s\S]*dc-outcome-text">best</);
     });
 
-    test("any other set of bands is a plain table, even under a Roll | Outcome header", () => {
+    test("an ability's own set of bands is the ladder too, each row in its band's tier", () => {
+      for (const [bands, want] of [
+        [["20", "16-19", "11-15", "6-10", "2-5", "1"], ["crit", "hit", "hit", "mixed", "miss", "fail"]], // six bands
+        [["20", "11-19", "2-10", "1"], ["crit", "hit", "miss", "fail"]], // a split at 10
+        [["1-5", "6-10", "11-19", "20"], ["miss", "mixed", "hit", "crit"]], // four
+        [["1", "2\u20135", "6\u201310", "11+"], ["fail", "miss", "mixed", "hit"]], // 11 and up
+      ]) {
+        const out = ladder(...bandTable(["Roll", "Outcome"], bands, bands.map((b) => `r${b}`)));
+        expect(tiers(out), bands.join(",")).toEqual(want);
+      }
+    });
+
+    test("a band may carry its label, or be the tier's word alone; the label is the row's name", () => {
+      const named = ladder(...bandTable(["Roll", "Result"], ["20: Total Wholeness", "11\u201319 \u2013 Success", "Hard Choice (6\u201310)", "On 2-5", "1"]));
+      expect(tiers(named)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+      expect(named).toContain('<span class="dc-outcome-name">Total Wholeness</span><span class="dc-outcome-roll">20</span>');
+      expect(named).toContain('<span class="dc-outcome-name">Hard Choice</span><span class="dc-outcome-roll">6\u201310</span>');
+      expect(named).toContain('<span class="dc-outcome-name">Miss</span><span class="dc-outcome-roll">2\u20135</span>');
+      const words = ladder(...bandTable(["Result", "Outcome"], ["Success", "Hard Choice", "Failure"]));
+      expect(tiers(words)).toEqual(["hit", "mixed", "miss"]);
+      expect(words).toContain('<span class="dc-outcome-name">Success</span><span class="dc-outcome-roll"></span>');
+    });
+
+    test("bands that overlap, leave 1-20, straddle 10/11 or are not results stay a plain table", () => {
       const others = [
-        ["20", "16-19", "11-15", "6-10", "2-5", "1"], // six bands
-        ["20", "11-19", "2-10", "1"], // a split at 10
-        ["1-5", "6-10", "11-19", "20"], // four
         ["20", "11-19", "6-10", "2-5", "2-5"], // a repeated band
         ["20", "11-19", "6-10", "2-5", "0"], // a wrong band
         ["20", "11-19", "6-10", "2-5", "one"], // not numbers
+        ["6-14", "15-23", "24+"], // abilities known, not a roll
+        ["1-4", "5-8", "9-12"], // a random table's bands
+        ["1", "2", "3"], // too few tiers to be a ladder
       ];
       for (const bands of others) {
         const out = ladder(...bandTable(["Roll", "Outcome"], bands));
@@ -1897,6 +1921,41 @@ describe("paste-up: rows and continuation sheets", () => {
     expect(cont("#### Sub\n\nx")).not.toContain("dc-pu-spacer");
     expect(cont("Text.")).not.toContain("dc-pu-spacer");
     expect(renderGp("@section panel\n\n### Title\n\nx\n\n@end-section").html).not.toContain("dc-pu-spacer");
+  });
+});
+
+describe("raw HTML in the markdown", () => {
+  const types = (src, options) => {
+    const env = {};
+    createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: options ?? {}, markers }]).render(src, env);
+    return (env.layoutWarnings ?? []).filter((w) => w.type === "raw_html");
+  };
+  test("each tag an author writes is reported on its line, in a block, inline and inside a table cell", () => {
+    expect(types("<div>\nx\n</div>").map((w) => w.line)).toEqual([1]);
+    expect(types("Text\n\nA <span>b</span> c").map((w) => w.line)).toEqual([3, 3]);
+    const cell = types("| Roll | Result |\n|---|---|\n| 20 | a <small>b<small> |\n| 11-19 | b |\n| 6-10 | c |\n| 2-5 | d |\n| 1 | e |");
+    expect(cell.map((w) => w.message.slice(0, 18))).toEqual(["Raw HTML (<small…>", "Raw HTML (<small…>"]);
+  });
+  test("a comment, the plugin's own HTML and a book that turns it off are not reported", () => {
+    expect(types("<!-- a note -->\n\nText.")).toEqual([]);
+    expect(types("## 4. Ideal\n\n@callout example\n\nx\n\n@end-callout")).toEqual([]);
+    expect(types("<div>x</div>", { rawHtml: "off" })).toEqual([]);
+  });
+});
+
+describe("steps and examples", () => {
+  test("a ## standing on the page that opens with a step number gets its number chip; inside a section, or a year, it does not", () => {
+    expect(renderGp("## 4. Ideal\n\nText.").html).toContain('<h2><span class="dc-step-num">4.</span> Ideal</h2>');
+    expect(renderGp("@section panel\n\n## 4. Inside\n\nx\n\n@end-section").html).not.toContain("dc-step-num");
+    expect(renderGp("### 4. Third level").html).not.toContain("dc-step-num");
+    expect(renderGp("## 2026. A year").html).not.toContain("dc-step-num");
+  });
+  test("an example that opens with its own heading is labelled by it, with no default Example beside it", () => {
+    const own = renderGp("@callout example\n\n### Example: Toxic Evolution\n\nx\n\n@end-callout").html;
+    expect(own).toContain('<h3 class="dc-alert-label">Example: Toxic Evolution</h3>');
+    expect(own).not.toContain('<span class="dc-alert-label">');
+    expect(renderGp("@callout example\n\nJust text.\n\n@end-callout").html).toContain('<span class="dc-alert-label">Example</span>');
+    expect(renderGp("@callout note\n\n### A heading\n\nx\n\n@end-callout").html).toContain('<span class="dc-alert-label">Note</span>');
   });
 });
 

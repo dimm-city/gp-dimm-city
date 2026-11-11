@@ -29,7 +29,8 @@ const manifest = read("manifest.yaml").replace(/^[ \t]*#.*\n/gm, "");
 const chapters = [...manifest.matchAll(/^\s*-\s*(\S+\.md)\s*$/gm)].map((m) => m[1]);
 
 function render(rel) {
-  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: {}, markers }]);
+  // the guide's own manifest turns the raw-HTML warning off (its specimen stages are HTML)
+  const md = createMarkdownRenderer([{ name: "gp-dimm-city", plugin, options: { rawHtml: "off" }, markers }]);
   const env = {};
   const html = md.render(read(rel), env);
   return { html, warnings: env.layoutWarnings ?? [] };
@@ -40,8 +41,8 @@ const stripSourceLines = (html) => html.replace(/ data-source-range="[^"]*" data
 
 describe("the manifest", () => {
   test("loads the package from this repository, not a published version", () => {
-    const extensions = manifest.match(/^extensions:\n((?:[ \t]+-.*\n)+)/m)?.[1] ?? "";
-    expect(extensions.trim()).toBe("- ../");
+    const extensions = manifest.match(/^extensions:\n((?:[ \t]+.*\n)+)/m)?.[1] ?? "";
+    expect(extensions.trim().split("\n")[0].trim()).toBe("- use: ../");
     expect(manifest).not.toMatch(/gp-dimm-city@/);
   });
 

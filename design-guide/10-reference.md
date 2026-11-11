@@ -62,7 +62,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
 | `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-6` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
-| `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
+| `.dc-chapter-rules` · `.dc-chapter-dm` · `.dc-chapter-gear` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
 | `.dc-section-panel` · `.dc-section-flat` | `@section` | What `@section panel` and `flat` write |
 | `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |
 | `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |

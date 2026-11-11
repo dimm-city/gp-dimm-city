@@ -3,6 +3,7 @@
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
     python3 scripts/wall-tiles.py --css     # rewrite the CSS only, from images/
     python3 scripts/wall-tiles.py --ground  # redraw the ground only
+    python3 scripts/wall-tiles.py --grounds # each wall's own street (walls 1-5), and the CSS
 
 Python 3 with Pillow; the six walls bake in parallel, in a couple of minutes.
 Reads the sheet (six square-ish stone panels on a transparent ground, two
@@ -80,7 +81,11 @@ SETT_WALLS = {6}                    # regular grids: laid sett by sett instead o
 SETT, SETTS = 136, 8                # the sett cell, px, and cells a side
 JOINT = 6                           # half-width of the drawn joint, px
 BEDDED = {5: 0.62}                  # walls squashed into beds first: flagstones laid flat read as a wall
-GROUND = "images/ground.png"        # the pavement at the foot of every walled page
+GROUND = "images/ground.png"        # the pavement at the foot of the brick, and of wall 6 (its setts)
+# Every other wall stands on a street of its own stone: images/ground-N.png,
+# drawn from wall N's baked tile (`--grounds`), so the street under a page
+# matches the wall behind it.
+OWN_GROUND = (1, 2, 3, 4, 5)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
@@ -94,8 +99,8 @@ GROUND_SHADE = 0.9                  # the ground's tone against the wall's
 # The hue faces and the chapter words that wire them are page-rules.css's and
 # dc-native.css's (2c); a book wires its own chapters the same way.
 HUES = {"blue": "--hud-blue-dark", "rust": "--rust", "violet": "--brand-violet",
-        "amethyst": "--crystal-amethyst", "amber": "--amber-dark"}
-CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet"}
+        "amethyst": "--crystal-amethyst", "amber": "--amber-dark", "ink": "--ink-dark"}
+CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet", "dm": "ink", "gear": "amber"}
 # pages that keep their own named page (and so the brick) whatever wall they name
 KEEPS = ".gp-page-full-bleed, .dc-full-page, .dc-page-contents, .dc-page-credits, .dc-page-intro, .dc-page-citizen-file"
 # and inside a block that names a wall, the children that keep their own page
@@ -400,12 +405,13 @@ def lay_setts(panel, seed, bond=False):
     return out
 
 
-def ground(panel, tones):
-    """The pavement at the wall's foot: the panel's setts in a grid, its rows receding
-    as seen from EYE above it and its joints all leaning LEAN the same way (a vanishing
+def ground(panel, tones, grid=None):
+    """The pavement at the wall's foot: the panel's setts in a grid (or `grid`, a
+    seamless stone tile, dark stone on light joints), its rows receding as seen
+    from EYE above it and its joints all leaning LEAN the same way (a vanishing
     point at each sheet's middle mirrored the two pages of a spread), GROUND_SHADE
     darker than the wall, with the wall's shadow along its top edge."""
-    grid = lay_setts(panel, seed=60)
+    grid = grid if grid is not None else lay_setts(panel, seed=60)
     src = Image.new("L", (grid.width * 3, grid.height))
     for k in range(3):
         src.paste(grid, (k * grid.width, 0))
@@ -471,7 +477,19 @@ def replace_block(path, name, body):
         fh.write(new)
 
 
-def ground_layer(deeper="", sheet=False):
+def ground_of(n):
+    """The ground a wall's pages stand on."""
+    return f"images/ground-{n}.png" if n in OWN_GROUND else GROUND
+
+
+def wall_ground(n, tones):
+    """Wall n's street: its baked tile (light stone, grey joints) turned back to dark
+    stone on light joints, laid in the ground's perspective and tinted as the ground."""
+    tile = ImageOps.invert(Image.open(f"images/wall-{n}.png").convert("L"))
+    return ground(None, tones, grid=tile)
+
+
+def ground_layer(deeper="", sheet=False, n=None):
     """The ground's background layer, as dc-native.css §1 writes it for the brick.
     Print measures an @page background from the top of the text area, and
     gutterpress publishes that area's height (--gp-content-h) to print only, so
@@ -487,7 +505,7 @@ def ground_layer(deeper="", sheet=False):
          f"+ var(--bottom-margin) - {GROUND_IN}in{back})")
     if sheet:
         y = f"calc(var(--gp-page-height, 11.25in) - {GROUND_IN}in)"
-    return f'url("../{GROUND}") 50% {y} / {GROUND_W / GROUND_DPI:g}in {GROUND_IN}in no-repeat'
+    return f'url("../{ground_of(n) if n else GROUND}") 50% {y} / {GROUND_W / GROUND_DPI:g}in {GROUND_IN}in no-repeat'
 
 
 def write_css(walls):
@@ -495,7 +513,7 @@ def write_css(walls):
     for n, (w, h) in walls.items():
         # the ground over the foot of the sheet, then the wall: both opaque
         stone = f'url("../images/wall-{n}.png") 0 0 / {w / DPI:.2f}in auto repeat var(--bg)'
-        bg = f"{ground_layer()}, {stone}"
+        bg = f"{ground_layer(n=n)}, {stone}"
 
         for name in [f"dc-wall-{n}"] + [f"dc-wall-{n}-{hue}" for hue in HUES]:
             pages.append(f"@page {name} {{ background: {bg}; }}")
@@ -514,15 +532,20 @@ def write_css(walls):
         # its children, never itself: the app's viewer lays a block that has a
         # page name as one run on that page and never looks inside it, so the
         # art plate in it (page: full) was set inside the wall's margins.
-        # Every child but a plate names the wall; print gives the same sheets
-        # the same pages, and its chip is what it was (the hue wiring is a .page's)
-        wiring.append(f":where(.dc-page-wall-{n}:not(.page, {KEEPS})) > :not({PLATES}) {{ page: dc-wall-{n}; }}")
+        # Every child but a plate names the wall. In a chapter with a colour it
+        # names that wall's twin, so the chip keeps the chapter's colour (a
+        # specialty's pages had shown the default magenta chip): the twins
+        # come first and outrank the plain rule, as for a .page
+        block = f":where(.dc-page-wall-{n}:not(.page, {KEEPS})) > :not({PLATES})"
+        for chapter, hue in CHAPTER_HUES.items():
+            wiring.append(f".chapter.dc-chapter-{chapter} {block} {{ page: dc-wall-{n}-{hue}; }}")
+        wiring.append(f"{block} {{ page: dc-wall-{n}; }}")
         # and its art plate takes this wall too, on a page like `@page full`
         # (no margins, no chips): the specialty art is transparent, so the
         # wall and its ground show through it. The selector outranks
         # `.dc-specialty-art { page: full }` in print and comes before it for
         # the viewer
-        wiring.append(f"@page dc-wall-{n}-full {{ margin: 0; background: {ground_layer(sheet=True)}, {stone}; "
+        wiring.append(f"@page dc-wall-{n}-full {{ margin: 0; background: {ground_layer(sheet=True, n=n)}, {stone}; "
                       "@bottom-left { content: none; } @bottom-right { content: none; } }")
         wiring.append(f".dc-page-wall-{n}:not(.page, {KEEPS}) > .dc-specialty-art {{ page: dc-wall-{n}-full; }}")
     replace_block("styles/dc-native.css", "page-walls", "\n".join(pages))
@@ -557,6 +580,13 @@ def main():
         box = opaque_boxes(Image.open(SHEET).convert("RGBA"))[GROUND_FROM - 1]
         panel = Image.open(SHEET).convert("RGBA").crop(box).convert("L")
         ground(panel, brick_tones()).save(GROUND, optimize=True)
+        return
+    if "--grounds" in sys.argv:             # each wall's own street, from its baked tile
+        tones = brick_tones()
+        for n in OWN_GROUND:
+            wall_ground(n, tones).save(ground_of(n), optimize=True)
+            print(ground_of(n), flush=True)
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
         return
     if "--css" in sys.argv:                 # the CSS alone, from the tiles already baked
         write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})

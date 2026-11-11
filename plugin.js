@@ -386,35 +386,76 @@ const LADDER_BANDS_COUNT = OUTCOME_TIERS.length;
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
 // The d20 outcome ladder is recognised by its bands, not by what its columns
-// are called: a two-column table whose first column holds exactly the five
-// standard bands (20, 11-19, 6-10, 2-5, 1), in either order, is the ladder. A
-// band is typed any way an author types one ("11-19", "11 – 19", "**20**").
-// Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
+// are called: a two-column table whose first column holds a d20 result on every
+// row is the ladder, so a roll's results read the same wherever the book states
+// them. The five standard bands (20, 11-19, 6-10, 2-5, 1) are the usual set; an
+// ability's own set is a ladder too (six bands, 16-19 over 11-15, 1-5 or 2-10,
+// 11+), each row in the colour of the tier its band falls in. A band is typed any
+// way an author types one ("11-19", "11 – 19", "**20**", "On 11–19", "11+"), may
+// carry a label ("20: Total Wholeness", "20 – Triumph", "Triumph (20)"), or be the
+// tier's word alone ("Success", "Hard Choice"). A table whose bands overlap, run
+// past 1-20 or straddle 10/11 is not a ladder.
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
+const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
 
 // "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
-  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]|-{2,3}/g, '-');
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[‐-―−]|-{2,3}/g, '-');
   const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
   if (!m) return null;
   const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
   return lo <= hi ? [lo, hi] : null;
 }
 
+// The tier a band falls in, or null when it straddles two (6-14) or is no d20 result.
+function tierOfBand(lo, hi) {
+  if (lo < 1 || hi > 20) return null;
+  if (lo === 20) return 'crit';
+  if (lo === 1 && hi === 1) return 'fail';
+  if (lo >= 11) return 'hit';
+  if (lo >= 6 && hi <= 10) return 'mixed';
+  if (hi <= 10 && lo <= 5) return 'miss';
+  return null;
+}
+
+// One result cell of a ladder → { tier, lo, hi, roll, label }, or null.
+function parseResultCell(cell) {
+  const text = cell.replace(/[*_`]/g, '').replace(/[‐-―−]|-{2,3}/g, '-').replace(/\s+/g, ' ').trim();
+  const word = TIER_OF_WORD[text.toLowerCase()];
+  if (word) return { tier: word, lo: null, hi: null, roll: '', label: text };
+  let m = /^(?:on )?(\d{1,2})(?: ?- ?(\d{1,2}))?(\+)?(?: ?[:-] ?(.+))?$/i.exec(text);
+  let label = m?.[4] || '';
+  if (!m) {
+    m = /^(.+?) ?\((\d{1,2})(?: ?- ?(\d{1,2}))?\)$/.exec(text);
+    if (!m) return null;
+    m = [m[0], m[2], m[3], undefined, m[1]];
+    label = m[4];
+  }
+  const lo = Number(m[1]);
+  const hi = m[3] ? 20 : Number(m[2] ?? m[1]);
+  if (lo > hi) return null;
+  const tier = tierOfBand(lo, hi);
+  if (!tier) return null;
+  const roll = m[3] ? lo + '+' : lo === hi ? String(lo) : lo + '–' + hi;
+  return { tier, lo, hi, roll, label: label.trim() };
+}
+
 // The ladder of a table — its header cells and its rows — or null when it is
-// not a ladder.
+// not a ladder: two columns, at least three rows, every first cell a result,
+// three tiers or more, no two bands overlapping.
 function ladderRows(table) {
   const { head, rows } = table;
-  if (head.length !== 2 || rows.length !== LADDER_BANDS_COUNT || rows.some((r) => r.length !== 2)) return null;
-  const bands = rows.map((r) => parseBand(r[0]));
-  if (bands.some((b) => !b)) return null;
-  const keys = bands.map(([lo, hi]) => (lo === hi ? String(lo) : lo + '-' + hi));
-  if (new Set(keys).size !== LADDER_BANDS_COUNT || keys.some((k) => !Object.hasOwn(LADDER_TIER_OF_BAND, k))) return null;
+  if (head.length !== 2 || rows.length < 3 || rows.some((r) => r.length !== 2)) return null;
+  const cells = rows.map((r) => parseResultCell(r[0]));
+  if (cells.some((c) => !c)) return null;
+  if (new Set(cells.map((c) => c.tier)).size < 3) return null;
+  const banded = cells.filter((c) => c.lo !== null).sort((x, y) => x.lo - y.lo);
+  for (let i = 1; i < banded.length; i++) if (banded[i].lo <= banded[i - 1].hi) return null;
   return {
     head,
     rows: rows.map((r, i) => {
-      const tier = LADDER_TIER_OF_BAND[keys[i]];
-      return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
+      const { tier, roll, label } = cells[i];
+      return { tier, name: label || OUTCOME_NAMES[tier], roll, text: r[1].trim() };
     }),
   };
 }
@@ -1639,6 +1680,14 @@ function dcCallouts(state) {
       open.attrSet('class', open.attrGet('class').replace('dc-alert', 'dc-alert dc-note'));
     }
     if (open.meta.labelled) return; // an explicit label="…" wins
+    // An example that opens with its own heading ("### Example: Toxic Evolution")
+    // is titled by it: the heading is set as the example's label, words as
+    // written, and no default "Example" is added beside it. Every example then
+    // reads the same, a box under one label.
+    if (variant === 'example' && rest[0]?.type === 'heading_open') {
+      addTokenClass(rest[0], 'dc-alert-label');
+      return;
+    }
     const label = makeToken('html_block', '<span class="dc-alert-label">' + esc(CALLOUTS[variant].label) + '</span>\n');
     return [open, label, ...rest];
   });
@@ -1881,6 +1930,67 @@ function validateProcedure({ blocks }) {
 /**
  * Main plugin function - the default export Gutterpress loads
  */
+// ── Raw HTML in the markdown ────────────────────────────────────────────────
+//
+// HTML an author writes into the markdown is reported, one warning per tag, on
+// its line: the package cannot check it, and a stray tag does damage far from
+// where it is written (`<small>…<small>` in one ladder row set the rest of a
+// book small). Write markdown or a marker instead. An HTML comment is not
+// reported: it renders nothing. Runs first, before any rule of this plugin
+// rewrites a table or adds HTML of its own, so only the author's is seen.
+// `rawHtml: 'off'` in the extension's options turns it off for a book that
+// means its HTML (the design guide's specimen stages).
+function rawHtmlWarnings(state) {
+  const report = (tok, line) => {
+    const html = tok.content.trim();
+    if (!html || html.startsWith('<!--')) return;
+    const tag = (/^<\/?[a-zA-Z][a-zA-Z0-9-]*/.exec(html) || [html.slice(0, 20)])[0];
+    const env = state.env;
+    (env.layoutWarnings ??= []).push({
+      line,
+      type: 'raw_html',
+      message: `Raw HTML (${tag}${html.startsWith('</') ? '' : '…'}>): write markdown or a marker instead. The package cannot check HTML, and a tag left open styles everything after it.`,
+    });
+  };
+  // Only what is written in the source counts: Gutterpress adds HTML of its own
+  // (a marker's label="…"), which is not on the author's line.
+  const lines = state.src.split('\n');
+  const written = (tok, map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
+  let near = null; // a table cell's inline has no map of its own: its row's is the nearest
+  for (const tok of state.tokens) {
+    if (tok.map) near = tok.map;
+    if (tok.type === 'html_block' && written(tok, tok.map, tok.content)) report(tok, tok.map[0] + 1);
+    else if (tok.type === 'inline') {
+      for (const child of tok.children || []) if (child.type === 'html_inline' && written(child, near, child.content)) report(child, near[0] + 1);
+    }
+  }
+}
+
+// ── Steps: a numbered `##` standing on the page ─────────────────────────────
+//
+// A `##` that stands on the page (in no section or component) and opens with a
+// step number, `## 4. Ideal`, is a step of the book's procedure (the Citizen
+// File's 0-7). Its number, written as it is, goes in `span.dc-step-num`, which
+// the page slip sets as a chip in the chapter's colour, so the steps read as one
+// sequence. The heading keeps no class of its own, so it stays the slip.
+function dcSteps(state) {
+  let depth = 0;
+  const t = state.tokens;
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i];
+    if (tok.type === 'layout_section_open' || tok.type === 'layout_component_open') depth++;
+    else if (tok.type === 'layout_section_close' || tok.type === 'layout_component_close') depth--;
+    else if (depth === 0 && tok.type === 'heading_open' && tok.tag === 'h2' && !tok.attrGet('class')) {
+      const first = t[i + 1]?.children?.[0];
+      const m = first?.type === 'text' && /^(\d{1,2}\.)\s+/.exec(first.content);
+      if (!m) continue;
+      const num = makeToken('html_inline', '<span class="dc-step-num">' + esc(m[1]) + '</span> ');
+      first.content = first.content.slice(m[0].length);
+      t[i + 1].children.unshift(num);
+    }
+  }
+}
+
 // ── Paste-up: rows and continuation sheets ──────────────────────────────────
 //
 // `@row` … `@end-row` is two sheets side by side (`@row-wide` 62/38,
@@ -1922,8 +2032,10 @@ export default function dimmCityPlugin(md, options = {}) {
 
   // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
   // transform operates on already-parsed token streams.
+  if (options.rawHtml !== 'off') md.core.ruler.push('dc_raw_html', rawHtmlWarnings);
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
   md.core.ruler.push('dc_rows', dcRows);
+  md.core.ruler.push('dc_steps', dcSteps);
   md.core.ruler.push('dc_continuations', dcContinuations);
 
   // Transform the canonical roll instruction while it is still structured
@@ -2130,6 +2242,8 @@ export const markers = {
       lore: 'dc-chapter-lore',
       'citizen-file': 'dc-chapter-citizen-file',
       specialty: 'dc-chapter-specialty',
+      dm: 'dc-chapter-dm',
+      gear: 'dc-chapter-gear',
     },
   },
 

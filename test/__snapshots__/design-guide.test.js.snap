@@ -181,7 +181,7 @@ This is what you type.
 </tr>
 <tr data-source-range="108:109">
 <td>Where it sits</td>
-<td><code>@page chapter-start</code>, <code>intro</code>, <code>credits</code>, <code>contents</code>, <code>citizen-file</code> (and core’s <code>blank</code>, <code>full-bleed</code>); <code>@chapter rules</code>, <code>lore</code>, <code>citizen-file</code>, <code>specialty</code></td>
+<td><code>@page chapter-start</code>, <code>intro</code>, <code>credits</code>, <code>contents</code>, <code>citizen-file</code> (and core’s <code>blank</code>, <code>full-bleed</code>); <code>@chapter rules</code>, <code>dm</code>, <code>gear</code>, <code>lore</code>, <code>citizen-file</code>, <code>specialty</code></td>
 </tr>
 </tbody>
 </table>
@@ -1650,7 +1650,7 @@ Roll 2d20, take the lower. Reality pushes back.
 <p>The chip column is a quarter of the ladder wide (never under 130px), so a long band name wraps on two or three lines instead of cramping; band names are 10pt semibold, centred.</p>
 <p>Tokens: <code>--dc-outcomes-surface</code>, <code>--dc-outcomes-border</code>, <code>--dc-outcomes-label-bg</code>, <code>--dc-outcomes-label-color</code>, <code>--dc-outcome-key-color</code>, <code>--dc-outcome-name-color</code>, <code>--dc-outcome-key-col</code> (the chip column’s width).</p>
 <h3 data-name="a-table-of-the-five-bands-is-the-ladder">A table of the five bands is the ladder</h3>
-<p>Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (<code>20</code>, <code>11-19</code>, <code>6-10</code>, <code>2-5</code>, <code>1</code>, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (<code>Roll | Result</code>, <code>Result | Effect</code>, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads “Outcomes”. A band is read however it is typed: <code>11-19</code>, <code>11 -- 19</code>, <code>**20**</code>. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use <code>@roll-table</code> below.</p>
+<p>Write the result table you would write anyway. A two-column pipe table whose first column holds a d20 result on every row is drawn as the same ladder, in a skill card or anywhere else, so a roll’s results read the same wherever the book states them. The usual set is the five standard bands (<code>20</code>, <code>11-19</code>, <code>6-10</code>, <code>2-5</code>, <code>1</code>, in either order); an ability’s own set is a ladder too (six bands with <code>16-19</code> over <code>11-15</code>, <code>1-5</code>, <code>2-10</code>, <code>11+</code>), every row in the colour of the tier its band falls in. A band may carry its label (<code>20: Total Wholeness</code>, <code>20 – Triumph</code>, <code>Triumph (20)</code>, <code>On 11-19</code>), which becomes the row’s name, or be the tier’s word alone (<code>Success</code>, <code>Hard Choice</code>). The headers do not decide it (<code>Roll | Result</code>, <code>Result | Effect</code>, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads “Outcomes”. A band is read however it is typed: <code>11-19</code>, <code>11 -- 19</code>, <code>**20**</code>. Bands that overlap, run past 1-20 or straddle 10/11 (abilities known, a random table’s <code>1-4</code>, <code>5-8</code>) stay a plain table; for a random table, use <code>@roll-table</code> below.</p>
 <pre><code data-source-range="538:547" class="language-markdown">| Roll | Result |
 | --- | --- |
 | 20 | The jammed door gives. Something comes with it. |
@@ -3338,7 +3338,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <th>It prints as</th>
 </tr>
 </thead>
-<tbody data-source-range="83:88">
+<tbody data-source-range="83:89">
 <tr data-source-range="83:84">
 <td><code># Title</code></td>
 <td>A banner in the chapter’s accent colour with cream type</td>
@@ -3356,6 +3356,10 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <td>A label slip that shrinks to its words, framed in ink</td>
 </tr>
 <tr data-source-range="87:88">
+<td><code>## 4. Heading</code></td>
+<td>A step: the slip, its number set as a chip in the chapter’s colour, so a procedure’s steps (the Citizen File’s 0–7) read as one sequence</td>
+</tr>
+<tr data-source-range="88:89">
 <td>Paragraphs, lists, quotes</td>
 <td>One paper sheet per run; the sheet ends where the run does. A list hangs its marker in a 1.1em indent (1.6em for numerals) inside the padding of the sheet, so wrapped lines align under the first word. A run of prose in <code>@columns</code> is one sheet and does not split across a page</td>
 </tr>
@@ -3366,51 +3370,62 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <p>A location is the page template or the chapter a section sits in. It draws nothing: it sets tokens, and the components read them. That is how one <code>@section panel</code> looks right in an opener, in a rules chapter and in a lore chapter without a rule per book.</p>
 <p>A <strong>chapter word</strong> sets the colour register of every panel in the chapter. It recolours a panel’s accent and nothing else: an alert, a faction, a choice card or a gear entry keeps its own identity in every chapter, so a warning is a hazard sign and a Dream Master note is a file under an ink bar wherever they sit:</p>
 <table>
-<thead data-source-range="98:99">
-<tr data-source-range="98:99">
+<thead data-source-range="99:100">
+<tr data-source-range="99:100">
 <th>You write</th>
 <th>Section accent</th>
 <th>Use for</th>
 </tr>
 </thead>
-<tbody data-source-range="100:104">
-<tr data-source-range="100:101">
+<tbody data-source-range="101:107">
+<tr data-source-range="101:102">
 <td><code>@chapter citizen-file</code></td>
 <td>magenta-deep</td>
 <td>Who you dream to be</td>
 </tr>
-<tr data-source-range="101:102">
+<tr data-source-range="102:103">
 <td><code>@chapter specialty</code></td>
 <td>blue-dark</td>
 <td>The specialty gateway</td>
 </tr>
-<tr data-source-range="102:103">
+<tr data-source-range="103:104">
 <td><code>@chapter rules</code></td>
 <td>rust</td>
-<td>Rules chapters</td>
+<td>How to play</td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="104:105">
+<td><code>@chapter dm</code></td>
+<td>ink</td>
+<td>Behind the screen: the Dream Master’s chapter</td>
+</tr>
+<tr data-source-range="105:106">
+<td><code>@chapter gear</code></td>
+<td>amber</td>
+<td>The armory: cybernetics, weapons, gear</td>
+</tr>
+<tr data-source-range="106:107">
 <td><code>@chapter lore</code></td>
 <td>violet</td>
 <td>Setting and history</td>
 </tr>
 </tbody>
 </table>
-<pre><code data-source-range="105:112" class="language-markdown">@chapter rules #ch-rules ch=&quot;3&quot;
+<p>The chapter’s colour says where the reader is: it is every plain panel’s tag and rail, the opener’s and the footer chip’s. What a section is stays its kind’s: a reference, lore, dm or catalog sheet keeps its own colour and silhouette in any chapter, so a lore sheet in the Dream Master’s chapter still reads as lore.</p>
+<pre><code data-source-range="110:117" class="language-markdown">@chapter rules #ch-rules ch=&quot;3&quot;
 
 @page chapter-start
 
 # Are You Lucid Yet?
 </code></pre>
 <p>Any other word after <code>@chapter</code> is the chapter’s label, as before. A book adjusts a location with the same selectors and tokens, in its own sheet, and never with a component’s background, shadow or pseudo-elements:</p>
-<pre><code data-source-range="115:119" class="language-css">.chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
+<pre><code data-source-range="120:124" class="language-css">.chapter.dc-chapter-rules { --dc-section-accent: var(--blood); }
 .page.dc-page-chapter-start .dc-fiction-excerpt { --dc-fiction-art-width: 2.5in; }
 </code></pre>
 <p>A panel’s edge has tokens of its own, <code>--dc-section-clip</code> (the top-right cut, 18px), <code>--dc-section-cut-tl</code>, <code>--dc-section-cut-br</code> and <code>--dc-section-cut-bl</code> (the other three corners, 0) and <code>--dc-section-rail</code> (the rail, 5px), so a template changes the silhouette without touching the panel’s layers.</p>
 <p>The old raw spellings (<code>@page .page-chapter-start .dc-chapter-start</code>, <code>.page-toc</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.dc-citizen-file-page</code>) are no longer styled. Write the word.</p>
 <h2 data-name="contents-page">Contents page</h2>
 <p><code>@toc</code> turns an ordered list into the contents rows; a <code>[link](#id)</code> on an item resolves to its page number at build time.</p>
-<pre><code data-source-range="128:147" class="language-markdown">@page contents
+<pre><code data-source-range="133:152" class="language-markdown">@page contents
 
 # Contents
 
@@ -3431,7 +3446,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2 data-name="credits-page">Credits page</h2>
 <p>A chevron title, a lede for thanks and dedications, and the colophon, a <code>@section flat</code> with its names in <code>@columns 2</code>: bold lead-ins become role labels. The title of the contents, credits and intro pages is a chevron banner because of the page word; write <code>{.dc-chevron}</code> only on a heading anywhere else.</p>
-<pre><code class="dg-split language-markdown" data-source-range="154:179">@page credits
+<pre><code class="dg-split language-markdown" data-source-range="159:184">@page credits
 
 # Credits
 
@@ -3458,7 +3473,7 @@ Twelve chapters of dreams, dirt, and what bites back.
 <p>Rendered: <a href="#ch-example-front-matter" data-gp-source-token="[Front Matter](#ch-example-front-matter)" data-gp-source-occurrence="0">Front Matter</a>.</p>
 <h2 data-name="chapter-opener">Chapter opener</h2>
 <p>A chapter opens on <code>@page chapter-start</code> with its <code># Title</code> (a banner in the chapter’s accent). Its pages carry the folio and chapter chip like any other page, so an opener that runs onto a second page stays numbered. A fiction excerpt can open the chapter: <code>@fiction-excerpt</code> sets narrative typography and floats the first image in the flow.</p>
-<pre><code class="dg-split language-markdown" data-source-range="187:214">@chapter #ch-citizen ch=&quot;1&quot;
+<pre><code class="dg-split language-markdown" data-source-range="192:219">@chapter #ch-citizen ch=&quot;1&quot;
 
 @page chapter-start
 
@@ -3488,7 +3503,7 @@ Thump is a PC created for dreams in Dimm City by an actual dreamer.
 <p>The snippet picker’s <em>Chapter Start Page</em> inserts this opener.</p>
 <h2 data-name="citizen-file-walkthrough">Citizen File walkthrough</h2>
 <p><code>@citizen-walkthrough</code> is the chassis for a character-creation step: a <code>####</code> field name and the prose that walks through it. Put two short fields side by side in <code>@columns 2</code> inside it. Pair it with <code>@page citizen-file</code> for the running header.</p>
-<pre><code data-source-range="223:242" class="language-markdown">@page citizen-file
+<pre><code data-source-range="228:247" class="language-markdown">@page citizen-file
 
 @citizen-walkthrough
 
@@ -3508,14 +3523,14 @@ Let others know how to refer to you. She/her, he/him, they/them, or something el
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="247:248"><div class="gp-columns gp-columns-2" data-columns="2" data-name="whats-yr-handle" data-source-range="249:250"><h4 data-name="whats-yr-handle">What’s Yr Handle?</h4>
+<div class="section dc-section-panel dc-citizen-walkthrough" data-source-range="252:253"><div class="gp-columns gp-columns-2" data-columns="2" data-name="whats-yr-handle" data-source-range="254:255"><h4 data-name="whats-yr-handle">What’s Yr Handle?</h4>
 <p>Choose a name. Pull it from a book, a show, a half-remembered dream.</p>
 <h4 data-name="designation">Designation</h4>
 <p>Let others know how to refer to you. She/her, he/him, they/them, or something else entirely.</p>
 </div></div></div>
 <h2 data-name="specialty-catalog-page">Specialty catalog page</h2>
 <p><code>@page specialty-catalog</code> plus a <code>@card-grid</code> of specialty cards, each in its own <code>@specialty</code>. The word makes the catalog a designed two-page spread: it opens on a left page, so the two pages face each other (the word forces no blank page when the chapter opener before it is on the facing right page, as it is meant to be; an opener that lands on a left page makes the engine insert one, so keep the opener on a right page); the title, four cards and Dualist fill the left page and the other four cards and Generalist the right (list Dualist fifth and Generalist last, and put a short <code>@lede</code> right after Dualist to open the right page; Dualist and Generalist span both columns; every one-column card is one size and both full-width cards another), in aligned rows, each card a poster with its portrait on top, its name, its tagline and its pitch. Whatever follows starts the next page: write a plain <code>@page</code> after <code>@end-card-grid</code>. Keep the cards uniform — identical chrome is what makes the choices comparable. The same <code>@card-grid</code> on no such page (as in the Variant Gallery) is the dense card with a small floated thumbnail.</p>
-<pre><code class="dg-split language-markdown" data-source-range="270:305">@page specialty-catalog
+<pre><code class="dg-split language-markdown" data-source-range="275:310">@page specialty-catalog
 
 ## Choose Your Specialty {.dc-chevron}
 
@@ -3552,7 +3567,7 @@ Heavily armed and wired for war.
 <p>Rendered with all ten cards: <a href="#ch-example-specialty-overview" data-gp-source-token="[Specialty Overview](#ch-example-specialty-overview)" data-gp-source-occurrence="0">Specialty Overview</a>.</p>
 <h2 data-name="specialty-profile">Specialty profile</h2>
 <p>Intro, art plate, then learning paths with their skill cards, all inside one <code>@specialty</code>. Write the intro first: it opens a left-hand page and the art plate faces it on the right. Each learning path opens a page of its own. The plate keeps no fill behind its picture, so transparent art stands on the page’s brick, or on the specialty’s wall when it names one.</p>
-<pre><code class="dg-split language-markdown" data-source-range="312:350">@specialty .augmerc
+<pre><code class="dg-split language-markdown" data-source-range="317:355">@specialty .augmerc
 
 @specialty-intro
 
@@ -3592,7 +3607,7 @@ Heavily armed and wired for war.
 <p>Rendered: <a href="#ch-example-specialty-profile" data-gp-source-token="[Specialty Profile](#ch-example-specialty-profile)" data-gp-source-occurrence="0">Specialty Profile</a>.</p>
 <h2 data-name="choice-page">Choice page</h2>
 <p>Flaws, ideals, and dreams: a <code>@flaws</code> (or <code>@ideals</code>, <code>@dreams</code>) of <code>@card</code> blocks. The section class sets each card’s colour, silhouette and chip (Flaw: blood, a cracked edge; Ideal: HUD blue, a steady tablet; Dream: violet, a rising edge). Cards stack in one column; use a tape divider between runs rather than columns.</p>
-<pre><code data-source-range="357:376" class="language-markdown">@ideals
+<pre><code data-source-range="362:381" class="language-markdown">@ideals
 
 ## 4. Ideal
 
@@ -3971,7 +3986,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>What the page words write. The old raw pairs (<code>.page-chapter-start .dc-chapter-start</code>, <code>.page-credits .dc-credits</code>, <code>.page-intro</code>, <code>.page-toc</code>, <code>.dc-citizen-file-page</code>) are no longer styled</td>
 </tr>
 <tr data-source-range="64:65">
-<td><code>.dc-chapter-rules</code> · <code>.dc-chapter-lore</code> · <code>.dc-chapter-citizen-file</code> · <code>.dc-chapter-specialty</code></td>
+<td><code>.dc-chapter-rules</code> · <code>.dc-chapter-dm</code> · <code>.dc-chapter-gear</code> · <code>.dc-chapter-lore</code> · <code>.dc-chapter-citizen-file</code> · <code>.dc-chapter-specialty</code></td>
 <td><code>@chapter</code></td>
 <td>What the chapter words write</td>
 </tr>
