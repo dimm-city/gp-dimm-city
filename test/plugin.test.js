@@ -1924,6 +1924,25 @@ describe("paste-up: rows and continuation sheets", () => {
   });
 });
 
+describe("raw HTML in the markdown", () => {
+  const types = (src, options) => {
+    const env = {};
+    createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: options ?? {}, markers }]).render(src, env);
+    return (env.layoutWarnings ?? []).filter((w) => w.type === "raw_html");
+  };
+  test("each tag an author writes is reported on its line, in a block, inline and inside a table cell", () => {
+    expect(types("<div>\nx\n</div>").map((w) => w.line)).toEqual([1]);
+    expect(types("Text\n\nA <span>b</span> c").map((w) => w.line)).toEqual([3, 3]);
+    const cell = types("| Roll | Result |\n|---|---|\n| 20 | a <small>b<small> |\n| 11-19 | b |\n| 6-10 | c |\n| 2-5 | d |\n| 1 | e |");
+    expect(cell.map((w) => w.message.slice(0, 18))).toEqual(["Raw HTML (<small…>", "Raw HTML (<small…>"]);
+  });
+  test("a comment, the plugin's own HTML and a book that turns it off are not reported", () => {
+    expect(types("<!-- a note -->\n\nText.")).toEqual([]);
+    expect(types("## 4. Ideal\n\n@callout example\n\nx\n\n@end-callout")).toEqual([]);
+    expect(types("<div>x</div>", { rawHtml: "off" })).toEqual([]);
+  });
+});
+
 describe("steps and examples", () => {
   test("a ## standing on the page that opens with a step number gets its number chip; inside a section, or a year, it does not", () => {
     expect(renderGp("## 4. Ideal\n\nText.").html).toContain('<h2><span class="dc-step-num">4.</span> Ideal</h2>');

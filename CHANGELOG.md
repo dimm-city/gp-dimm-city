@@ -34,6 +34,15 @@ and the styles say where a reader is and what they are reading.
 - **Examples.** An example that opens with its own heading is labelled by it,
   with no default "Example" tag beside it.
 
+### Added
+
+- **A warning on raw HTML.** Every HTML tag written into the markdown is
+  reported on its line (`raw_html`), in a table cell too: the package cannot
+  check it, and a tag left open styles everything after it (a
+  `<small>…<small>` in one ladder row set the rest of the Field Guide small).
+  HTML comments are not reported. `rawHtml: "off"` in the extension's options
+  turns it off; the design guide does, since its specimen stages are HTML.
+
 ### Changed
 
 - **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or

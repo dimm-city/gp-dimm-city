@@ -18,8 +18,12 @@ preset: dtrpg
 # A book outside this repo consumes the same package the usual way, pinned:
 #   extensions:
 #     - gp-dimm-city@1.0.1
+# rawHtml: off, because this guide's raw HTML is deliberate: every specimen
+# sits on a `<div class="dg-stage">`. A book keeps the default (warn).
 extensions:
-  - ../
+  - use: ../
+    options:
+      rawHtml: "off"
 
 # This book's own chrome only, unlayered like every book sheet: code
 # specimens, the palette swatch grid, the #ch-example-* demo-chapter accent

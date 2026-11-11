@@ -38,6 +38,21 @@ the book works offline.
 
 `gutterpress ext list my-book` shows `gp-dimm-city@1.9.0 [npm; markdown, styles, snippets, components]`.
 
+## Raw HTML warning
+
+The package reports every HTML tag written into a book's markdown as a
+warning on its line (`raw_html`): it cannot check HTML, and a tag left open
+styles everything after it. Write markdown or a marker instead. HTML comments
+are not reported. A book whose HTML is deliberate turns the warning off in its
+manifest:
+
+```yaml
+extensions:
+  - use: gp-dimm-city@1.10.3
+    options:
+      rawHtml: "off"
+```
+
 ## What you get
 
 Pick by what you are writing. Every row is a marker (or a word on one) that the

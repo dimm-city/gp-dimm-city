@@ -1930,6 +1930,42 @@ function validateProcedure({ blocks }) {
 /**
  * Main plugin function - the default export Gutterpress loads
  */
+// ── Raw HTML in the markdown ────────────────────────────────────────────────
+//
+// HTML an author writes into the markdown is reported, one warning per tag, on
+// its line: the package cannot check it, and a stray tag does damage far from
+// where it is written (`<small>…<small>` in one ladder row set the rest of a
+// book small). Write markdown or a marker instead. An HTML comment is not
+// reported: it renders nothing. Runs first, before any rule of this plugin
+// rewrites a table or adds HTML of its own, so only the author's is seen.
+// `rawHtml: 'off'` in the extension's options turns it off for a book that
+// means its HTML (the design guide's specimen stages).
+function rawHtmlWarnings(state) {
+  const report = (tok, line) => {
+    const html = tok.content.trim();
+    if (!html || html.startsWith('<!--')) return;
+    const tag = (/^<\/?[a-zA-Z][a-zA-Z0-9-]*/.exec(html) || [html.slice(0, 20)])[0];
+    const env = state.env;
+    (env.layoutWarnings ??= []).push({
+      line,
+      type: 'raw_html',
+      message: `Raw HTML (${tag}${html.startsWith('</') ? '' : '…'}>): write markdown or a marker instead. The package cannot check HTML, and a tag left open styles everything after it.`,
+    });
+  };
+  // Only what is written in the source counts: Gutterpress adds HTML of its own
+  // (a marker's label="…"), which is not on the author's line.
+  const lines = state.src.split('\n');
+  const written = (tok, map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
+  let near = null; // a table cell's inline has no map of its own: its row's is the nearest
+  for (const tok of state.tokens) {
+    if (tok.map) near = tok.map;
+    if (tok.type === 'html_block' && written(tok, tok.map, tok.content)) report(tok, tok.map[0] + 1);
+    else if (tok.type === 'inline') {
+      for (const child of tok.children || []) if (child.type === 'html_inline' && written(child, near, child.content)) report(child, near[0] + 1);
+    }
+  }
+}
+
 // ── Steps: a numbered `##` standing on the page ─────────────────────────────
 //
 // A `##` that stands on the page (in no section or component) and opens with a
@@ -1996,6 +2032,7 @@ export default function dimmCityPlugin(md, options = {}) {
 
   // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
   // transform operates on already-parsed token streams.
+  if (options.rawHtml !== 'off') md.core.ruler.push('dc_raw_html', rawHtmlWarnings);
   md.core.ruler.push('dc_alerts', dcAlertsTransform);
   md.core.ruler.push('dc_rows', dcRows);
   md.core.ruler.push('dc_steps', dcSteps);
