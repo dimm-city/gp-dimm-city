@@ -2,12 +2,13 @@
 
     python3 proofs/neon/make-proof.py     (from the package root; needs Pillow)
 
-A one-off proof for ordering a physical DriveThruRPG print proof before any neon
-reaches the package. Every swatch is flat, opaque vector (SVG strokes on an ink
-plate): no blur, no gradient, no transparency. Each is labelled with its tube's
-CMYK and total ink through the press profile (CGATS21_CRPC1, relative
-colorimetric with black-point compensation, as the build converts) and its
-contrast on the plate. Read the printed proof against this page."""
+A one-off proof page for neon tube colours, read on screen as a soft proof
+(proofs/neon/softproof.py) and, whenever one is ordered, as a physical print.
+Every swatch is flat, opaque vector (SVG strokes on an ink plate): no blur, no
+gradient, no transparency. Each is labelled with its tube's CMYK and total ink
+through the press profile (CGATS21_CRPC1, relative colorimetric with black-point
+compensation, as the build converts), the colour it prints as and how far that
+is from the screen colour (dE76), and its contrast on the printed plate."""
 from pathlib import Path
 
 from PIL import Image, ImageCms
@@ -20,6 +21,8 @@ WHITE = "#ffffff"
 _srgb = ImageCms.createProfile("sRGB")
 _cmyk = ImageCms.getOpenProfile(str(ICC))
 _fwd = ImageCms.buildTransform(_srgb, _cmyk, "RGB", "CMYK", renderingIntent=1, flags=ImageCms.Flags.BLACKPOINTCOMPENSATION)
+_back = ImageCms.buildTransform(_cmyk, _srgb, "CMYK", "RGB", renderingIntent=1, flags=ImageCms.Flags.BLACKPOINTCOMPENSATION)
+_lab = ImageCms.buildTransform(_srgb, ImageCms.createProfile("LAB"), "RGB", "LAB")
 
 
 def rgb(h):
@@ -30,6 +33,14 @@ def cmyk(h):
     c = ImageCms.applyTransform(Image.new("RGB", (1, 1), rgb(h)), _fwd).getpixel((0, 0))
     pct = [round(v / 2.55) for v in c]
     return "C%d M%d Y%d K%d" % tuple(pct), sum(pct)
+
+
+def printed(h):
+    """The colour the press makes of h (sRGB -> CRPC1 -> sRGB), and dE76 between them."""
+    c = ImageCms.applyTransform(Image.new("RGB", (1, 1), rgb(h)), _fwd)
+    out = "#%02x%02x%02x" % ImageCms.applyTransform(c, _back).getpixel((0, 0))
+    a, b = (ImageCms.applyTransform(Image.new("RGB", (1, 1), rgb(x)), _lab).getpixel((0, 0)) for x in (h, out))
+    return out, ((a[0] - b[0]) ** 2 / 2.55 ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
 
 
 def lum(h):
@@ -54,14 +65,16 @@ def mix(a, b, t):
 LADDERS = [
     ("Cyan", "#00bcd4", "#006878", "#003a40", "Dream Master chapter; Augmerc"),
     ("Yellow", "#ffd700", "#8a6a00", "#46360c", "Gear chapter; Etherlock"),
-    ("Orange", "#d4500a", "#7a3008", "#4c290f", "Rules chapter; Technosorcerer"),
+    ("Orange (control)", "#d4500a", "#7a3008", "#4c290f", "Rules chapter; Technosorcerer"),
+    ("Orange, brighter (candidate)", "#f06a1e", "#7a3008", "#4c290f", "Rules chapter candidate"),
     ("Hot pink (proposed)", "#f0288c", "#9c0f63", "#690045", "Citizen File, lore; Proxy"),
     ("Brand magenta (control)", "#cf217e", "#9c0f63", "#690045", "today's magenta, for comparison"),
     ("Fungi green", "#c8e040", "#4d6020", "#30461e", "Gutterdruid"),
     ("Civic green", "#4db840", "#347828", "#30461e", "Streetwarden"),
     ("Chrome", "#a8b4b8", "#52626f", "#303840", "Cybersurgeon"),
     ("Indigo (control)", "#396cb7", "#093c81", "#181b45", "Wirephreak today: expected dull"),
-    ("Indigo, brighter (candidate)", "#4f8cf0", "#093c81", "#181b45", "Wirephreak candidate"),
+    ("Indigo, brighter (rejected)", "#4f8cf0", "#093c81", "#181b45", "out of gamut: prints dusty"),
+    ("Azure (candidate)", "#0090d8", "#004f7a", "#0d2a45", "Wirephreak candidate"),
 ]
 
 PT = 1.333  # CSS px per pt
@@ -84,9 +97,10 @@ def tube_svg(tube, r1, r2, core, w_core=1.2, w_tube=3, w_r1=6, w_r2=9, dead=Fals
 def swatch(name, tube, r1, r2, use):
     core = mix(tube, WHITE, 0.25)
     ink, tac = cmyk(tube)
+    out, de = printed(tube)
     return (f'<figure class="np-swatch">{tube_svg(tube, r1, r2, core)}'
             f'<figcaption><b>{name}</b> {tube}<br>{ink} = {tac}%<br>'
-            f'{contrast(tube, PLATE):.1f}:1 on the plate · {use}</figcaption></figure>')
+            f'prints {out} (dE {de:.0f}) · {contrast(out, printed(PLATE)[0]):.1f}:1 on the plate<br>{use}</figcaption></figure>')
 
 
 def strip(label, items):
@@ -95,12 +109,12 @@ def strip(label, items):
 
 def main():
     out = ["# Neon print proof {.np-title}", "",
-           '<p class="np-lede">Order this page as a DriveThruRPG print proof before any neon reaches the package. '
+           '<p class="np-lede">Read this page as a soft proof (proofs/neon/softproof.py) and, when one is ordered, as a print proof. '
            "Every swatch is flat, opaque vector on an ink plate (--ink): a 1.2pt core (25% of the tube into white), "
            "a 3pt tube, a 6pt and a 9pt ring. Check: does it read as lit? Does the core fringe? Do the rings stay "
            "apart? CMYK is the tube's, through CGATS21_CRPC1.</p>", ""]
     out.append(strip("1. Tube ladders", [swatch(*l) for l in LADDERS]))
-    pink, cyan = LADDERS[3], LADDERS[0]
+    pink, cyan = LADDERS[4], LADDERS[0]
     cores = []
     for nm, t, a, b, _ in (pink, cyan):
         for w in (1.0, 1.5, 2.0):
