@@ -3,7 +3,7 @@
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
     python3 scripts/wall-tiles.py --css     # rewrite the CSS only, from images/
     python3 scripts/wall-tiles.py --ground  # redraw the ground only
-    python3 scripts/wall-tiles.py --grounds # each wall's own street (walls 1-5), and the CSS
+    python3 scripts/wall-tiles.py --grounds # the three streets (setts, flags, asphalt), grimed, and the CSS
 
 Python 3 with Pillow; the six walls bake in parallel, in a couple of minutes.
 Reads the sheet (six square-ish stone panels on a transparent ground, two
@@ -63,7 +63,7 @@ import math
 import random
 import sys
 from multiprocessing import Pool
-from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps, ImageStat
 
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 SHEET = ARGS[0] if ARGS else "source-art/wall-sheet.png"
@@ -81,11 +81,13 @@ SETT_WALLS = {6}                    # regular grids: laid sett by sett instead o
 SETT, SETTS = 136, 8                # the sett cell, px, and cells a side
 JOINT = 6                           # half-width of the drawn joint, px
 BEDDED = {5: 0.62}                  # walls squashed into beds first: flagstones laid flat read as a wall
-GROUND = "images/ground.png"        # the pavement at the foot of the brick, and of wall 6 (its setts)
-# Every other wall stands on a street of its own stone: images/ground-N.png,
-# drawn from wall N's baked tile (`--grounds`), so the street under a page
-# matches the wall behind it.
-OWN_GROUND = (1, 2, 3, 4, 5)
+GROUND = "images/ground.png"        # the setts: the street under the brick
+# Three streets, none a copy of a wall (a street of the wall's own stone read as
+# the wall carrying on, not as ground): setts, bonded flagstones cut from the
+# same stone, and cracked, patched asphalt. Each wall stands on one that
+# contrasts with it. All of them are grimed (`grime`). `--grounds` draws them.
+STREETS = {"setts": GROUND, "flags": "images/ground-flags.png", "asphalt": "images/ground-asphalt.png"}
+WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt"}
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
@@ -478,15 +480,86 @@ def replace_block(path, name, body):
 
 
 def ground_of(n):
-    """The ground a wall's pages stand on."""
-    return f"images/ground-{n}.png" if n in OWN_GROUND else GROUND
+    """The street a wall's pages stand on."""
+    return STREETS[WALL_STREET[n]]
 
 
-def wall_ground(n, tones):
-    """Wall n's street: its baked tile (light stone, grey joints) turned back to dark
-    stone on light joints, laid in the ground's perspective and tinted as the ground."""
-    tile = ImageOps.invert(Image.open(f"images/wall-{n}.png").convert("L"))
-    return ground(None, tones, grid=tile)
+def asphalt(seed, size=SETT * SETTS):
+    """Cracked asphalt, flat, as the ground's source: high values come out dark. A
+    fine grain and cracks that wander and branch. (Cut-in patches were tried: in
+    the strip's shallow perspective their seams stretched into long lines.)"""
+    rnd = random.Random(seed)
+    grain = Image.effect_noise((size, size), 46).filter(ImageFilter.GaussianBlur(0.8))
+    out = ImageChops.multiply(grain, Image.new("L", grain.size, 190))
+    draw = ImageDraw.Draw(out)
+    for _ in range(14):                                  # cracks: random walks that branch
+        # mostly across the street: a crack running toward the viewer is stretched
+        # into a long straight line by the strip's shallow perspective
+        x, y, a = rnd.randrange(size), rnd.randrange(size), rnd.choice((0, math.pi)) + rnd.uniform(-0.5, 0.5)
+        stack = [(x, y, a, rnd.randint(50, 120))]
+        while stack:
+            x, y, a, n = stack.pop()
+            for _ in range(n):
+                a += rnd.uniform(-0.45, 0.45)
+                a += (round(a / math.pi) * math.pi - a) * 0.15   # drawn back toward across
+                nx, ny = x + 4 * math.cos(a), y + 4 * math.sin(a)
+                a0, a1 = (x % size, y % size), (nx % size, ny % size)
+                if abs(a0[0] - a1[0]) < 8 and abs(a0[1] - a1[1]) < 8:   # not across the wrap: that line spans the tile
+                    draw.line((*a0, *a1), fill=255, width=rnd.choice((2, 2, 3)))
+                x, y = nx, ny
+                if rnd.random() < 0.025:
+                    stack.append((x, y, a + rnd.choice((-1, 1)) * rnd.uniform(0.4, 0.8), rnd.randint(12, 35)))
+    return out
+
+
+def grime(rgb, seed, base=1.0, grain=0):
+    """Street dirt over a drawn ground, in the book's flat, drawn look: hard-edged
+    tone steps, never a soft blur, and darkening only, so it stays in the brick's
+    greys. Ragged stains in two flat tones, soot pooled along the wall's foot,
+    grit specks and chips, and a ragged gutter edge at the sheet's foot.
+    `base` darkens the whole surface (asphalt), `grain` adds its speckle."""
+    import numpy as np
+    rng = np.random.default_rng(seed)
+    a = np.asarray(rgb).astype(float) * base
+    H, W = a.shape[:2]
+
+    def noise(sx, sy):                                   # smooth noise, cells sx by sy px
+        cells = rng.random((H // sy + 3, W // sx + 3))
+        im = Image.fromarray((cells * 255).astype("uint8")).resize((W + 3 * sx, H + 3 * sy), Image.BICUBIC)
+        return np.asarray(im.crop((sx, sy, sx + W, sy + H))).astype(float) / 255
+
+    rough = noise(3, 3) * 0.10                           # ragged edges: a fine jitter on every threshold
+    blot = noise(80, 24) + rough
+    stains = 0.13 * (blot > 0.70) + 0.11 * (blot > 0.84)  # two flat tones, hard edges
+    spots = noise(22, 9) + rough
+    stains += 0.12 * (spots > 0.86)
+    y = np.arange(H)[:, None] / H
+    # soot pooled along the wall's foot: a ragged band, deepest where the noise says
+    reach = 0.10 + 0.22 * noise(26, H)[:1, :] ** 2 + 0.05 * noise(5, H)[:1, :]   # ragged in 5px steps, not per pixel
+    foot = 0.16 * (y < reach) + 0.08 * (y < reach * 0.45)
+    gutter = 0.12 * (y > 0.84 + (noise(18, H)[:1, :] - 0.5) * 0.10 + (noise(5, H)[:1, :] - 0.5) * 0.04)
+    specks = rng.random((H, W))
+    grit = 0.40 * (specks < 0.004) + 0.22 * ((specks >= 0.004) & (specks < 0.010))
+    chips = Image.fromarray(((rng.random((H, W)) < 0.0008) * 255).astype("uint8")).filter(ImageFilter.MaxFilter(3))
+    grit = np.maximum(grit, 0.30 * (np.asarray(chips) > 0))
+    if grain:
+        grit = np.maximum(grit, grain * (rng.random((H, W)) < 0.12))
+    k = (1 - np.minimum(stains, 0.36)) * (1 - foot) * (1 - gutter) * (1 - grit)
+    return Image.fromarray(np.clip(a * k[..., None], 0, 255).astype("uint8"))
+
+
+def street(kind, tones):
+    """One of the three streets, drawn and grimed."""
+    panel = Image.open(SHEET).convert("RGBA").crop(opaque_boxes(Image.open(SHEET).convert("RGBA"))[GROUND_FROM - 1]).convert("L")
+    if kind == "setts":
+        grid = lay_setts(panel, seed=60)
+    elif kind == "flags":                               # bigger slabs, every other row half along
+        grid = lay_setts(panel, seed=61, bond=True)
+        grid = grid.resize((round(grid.width * 1.7), round(grid.height * 1.7)), Image.LANCZOS)
+    else:
+        grid = asphalt(seed=62)
+    asph = kind == "asphalt"
+    return grime(ground(None, tones, grid=grid), seed=sum(map(ord, kind)), base=0.80 if asph else 1.0, grain=0.14 if asph else 0)
 
 
 def ground_layer(deeper="", sheet=False, n=None):
@@ -581,11 +654,11 @@ def main():
         panel = Image.open(SHEET).convert("RGBA").crop(box).convert("L")
         ground(panel, brick_tones()).save(GROUND, optimize=True)
         return
-    if "--grounds" in sys.argv:             # each wall's own street, from its baked tile
+    if "--grounds" in sys.argv:             # the three streets, grimed, and the CSS
         tones = brick_tones()
-        for n in OWN_GROUND:
-            wall_ground(n, tones).save(ground_of(n), optimize=True)
-            print(ground_of(n), flush=True)
+        for kind, path in STREETS.items():
+            street(kind, tones).save(path, optimize=True)
+            print(path, flush=True)
         write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
         return
     if "--css" in sys.argv:                 # the CSS alone, from the tiles already baked

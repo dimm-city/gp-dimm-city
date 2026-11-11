@@ -36,12 +36,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
-- **Each wall stands on its own street.** A page on `wall-1` … `wall-5` has a
-  ground strip drawn from that wall's own stone (`images/ground-1.png` …
-  `ground-5.png`), in the same perspective, tint and shadow as the setts;
-  `wall-6` and the plain brick keep the setts (`images/ground.png`). Nothing
-  to write: the page's wall picks its street. `scripts/wall-tiles.py --grounds`
-  redraws them.
+- **Grimy streets, one to contrast each wall.** The ground strip under a wall
+  page is one of three streets: setts (`images/ground.png`, also under the
+  plain brick), bonded flagstones (`ground-flags.png`) or cracked asphalt
+  (`ground-asphalt.png`), each wall paired with one that contrasts with it
+  (walls 1 and 4 flagstones, 2 and 6 asphalt, 3 and 5 setts). All three are
+  grimed in the book's flat, drawn look: ragged stains in two tones, soot
+  pooled at the wall's foot, grit and chips, a ragged gutter. Nothing to
+  write: the wall a page names picks its street. `scripts/wall-tiles.py
+  --grounds` redraws them. (1.10.3-alpha.2 had a street of each wall's own
+  stone, `ground-1.png` … `ground-5.png`; it read as the wall carrying on.)
 - **A warning on raw HTML.** Every HTML tag written into the markdown is
   reported on its line (`raw_html`), in a table cell too: the package cannot
   check it, and a tag left open styles everything after it (a
