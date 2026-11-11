@@ -128,11 +128,11 @@ function esc(s) {
           .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function makeToken(type, content, nesting) {
+function makeToken(type, content) {
   return {
     type: type,
     tag: '',
-    nesting: nesting || 0,
+    nesting: 0,
     attrs: null,
     map: null,
     level: 0,
@@ -210,8 +210,7 @@ function specialtyCodeFromClass(className) {
 function buildStickerChain(items) {
   let html = '<div class="dc-stickers">';
   items.forEach((name, i) => {
-    const cls = 'dc-sticker';
-    html += '<span class="' + cls + '"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
+    html += '<span class="dc-sticker"><span class="dc-sticker-ref">' + esc(String(i + 1)) + '</span>' + esc(name.trim()) + '</span>';
     if (i < items.length - 1) {
       // The word joiner keeps the arrow with the chip after it, so a wrap never
       // leaves a » at the end of a line.
@@ -223,10 +222,10 @@ function buildStickerChain(items) {
 }
 
 // ROLL THE DIE! / ROLL A DIE! / ROLLS A DIE! / ROLLING THE DIE! / ROLL THE DIE TWICE! / ROLL TWO DICE! — uppercase only.
-const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/g;
+const ROLL_THE_DIE_PATTERN = /ROLL(?:S|ING)? (?:(?:A|THE) DIE(?: TWICE)?|(?:TWO|THREE) DICE)!/;
 
 function isWordChar(char) {
-  return char !== '' && /[A-Za-z0-9_]/.test(char);
+  return /[A-Za-z0-9_]/.test(char);
 }
 
 function copyTextToken(token, content, state) {
@@ -379,7 +378,6 @@ function readTable(tableTokens) {
 }
 
 const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
-const LADDER_BANDS_COUNT = OUTCOME_TIERS.length;
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
 // The d20 outcome ladder is recognised by its bands, not by what its columns
@@ -531,7 +529,6 @@ function skillListHtml(items, md) {
   const parsed = items.map((item) => ({ ...item, ability: parseAbilityFromListItem(item.html) }));
   const costs = parsed.filter((p) => p.ability).length;
   let html = '';
-  let costIdx = 0;
   let plain = [];
   const flush = () => {
     if (!plain.length) return;
@@ -552,15 +549,9 @@ function skillListHtml(items, md) {
       return;
     }
     flush();
-    let posAttrs = '';
-    if (costs > 1) {
-      if (costIdx === costs - 1) posAttrs = ' data-ability-last="true"';
-      if (costIdx === costs - 2) posAttrs = ' data-ability-penultimate="true"';
-    }
-    costIdx++;
     const text = '<p class="dc-ability-text">' + ability.text + '</p>\n';
     const leadIn = /:$/.test(ability.text.replace(/<[^>]*>/g, '').trim()); // "…the restoration:": the row introduces the block after it
-    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + (leadIn ? ' dc-lead-in' : '') + '"' + posAttrs + '>\n' +
+    html += '<div class="dc-ability' + (ability.titleOnly && !item.rest ? ' dc-ability-title' : '') + (leadIn ? ' dc-lead-in' : '') + '">\n' +
       '  <span class="' + ability.apClass + '">' + esc(ability.apVal) + '</span>\n' +
       (item.rest ? '  <div class="dc-ability-body">\n' + text + item.rest + '  </div>\n' : '  ' + text) +
       '</div>\n';
@@ -864,7 +855,7 @@ function dcAlertsTransform(state) {
 
   for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i];
-    if (!tok || tok.type !== 'blockquote_open') {
+    if (tok.type !== 'blockquote_open') {
       newTokens.push(tok);
       continue;
     }
@@ -874,7 +865,6 @@ function dcAlertsTransform(state) {
     let depth = 0;
     for (let j = i; j < tokens.length; j++) {
       const jt = tokens[j];
-      if (!jt) continue;
       if (jt.type === 'blockquote_open') depth++;
       if (jt.type === 'blockquote_close') {
         depth--;
@@ -883,11 +873,11 @@ function dcAlertsTransform(state) {
       if (firstInlineIdx === -1 && jt.type === 'inline') firstInlineIdx = j;
     }
 
-    if (closeIdx === -1 || firstInlineIdx === -1) { newTokens.push(tok); continue; }
+    if (firstInlineIdx === -1) { newTokens.push(tok); continue; }
 
     const inlineTok = tokens[firstInlineIdx];
-    const lead = inlineTok && inlineTok.children && inlineTok.children[0];
-    const match = lead && lead.type === 'text' && inlineTok.content.match(DC_ALERT_PATTERN);
+    const lead = inlineTok.children?.[0];
+    const match = lead?.type === 'text' && inlineTok.content.match(DC_ALERT_PATTERN);
     if (!match) { newTokens.push(tok); continue; }
 
     const alertType = match[1].toUpperCase();
@@ -941,12 +931,11 @@ function dcAlertsTransform(state) {
     const paragraphCloseIdx = firstInlineIdx + 1;
     const wrapsInParagraph =
       paragraphOpenIdx > i &&
-      tokens[paragraphOpenIdx] && tokens[paragraphOpenIdx].type === 'paragraph_open' &&
-      tokens[paragraphCloseIdx] && tokens[paragraphCloseIdx].type === 'paragraph_close';
+      tokens[paragraphOpenIdx].type === 'paragraph_open' &&
+      tokens[paragraphCloseIdx].type === 'paragraph_close';
 
     for (let j = i + 1; j < closeIdx; j++) {
       const t = tokens[j];
-      if (!t) continue;
       if (j === firstInlineIdx) {
         if (stripped === '') continue;
         // The core rules have already typeset the children, so take the marker
@@ -1942,8 +1931,7 @@ function rawHtmlWarnings(state) {
     const html = tok.content.trim();
     if (!html || html.startsWith('<!--')) return;
     const tag = (/^<\/?[a-zA-Z][a-zA-Z0-9-]*/.exec(html) || [html.slice(0, 20)])[0];
-    const env = state.env;
-    (env.layoutWarnings ??= []).push({
+    (state.env.layoutWarnings ??= []).push({
       line,
       type: 'raw_html',
       message: `Raw HTML (${tag}${html.startsWith('</') ? '' : '…'}>): write markdown or a marker instead. The package cannot check HTML, and a tag left open styles everything after it.`,
@@ -1952,13 +1940,13 @@ function rawHtmlWarnings(state) {
   // Only what is written in the source counts: Gutterpress adds HTML of its own
   // (a marker's label="…"), which is not on the author's line.
   const lines = state.src.split('\n');
-  const written = (tok, map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
+  const written = (map, html) => map && lines.slice(map[0], map[1]).join('\n').includes(html.trim().slice(0, 12));
   let near = null; // a table cell's inline has no map of its own: its row's is the nearest
   for (const tok of state.tokens) {
     if (tok.map) near = tok.map;
-    if (tok.type === 'html_block' && written(tok, tok.map, tok.content)) report(tok, tok.map[0] + 1);
+    if (tok.type === 'html_block' && written(tok.map, tok.content)) report(tok, tok.map[0] + 1);
     else if (tok.type === 'inline') {
-      for (const child of tok.children || []) if (child.type === 'html_inline' && written(child, near, child.content)) report(child, near[0] + 1);
+      for (const child of tok.children || []) if (child.type === 'html_inline' && written(near, child.content)) report(child, near[0] + 1);
     }
   }
 }

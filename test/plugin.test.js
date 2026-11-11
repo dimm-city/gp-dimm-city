@@ -654,8 +654,7 @@ describe("declared specialty, learning path and skill", () => {
       );
       const { html } = renderGp(src);
       expect(html).toContain('<p class="dc-flavor">Flavor.</p>');
-      expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
-      expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
+      expect(html).toContain('<div class="dc-ability">');
       expect(html).toContain('<span class="dc-ap variable">2–X AP</span>');
       expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');

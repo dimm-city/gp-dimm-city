@@ -2836,11 +2836,11 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">See an opening, ya take it.</p>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach rolls a hard choice or worse on a basic attack, knock it off line. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Bullet to Blood:</em> Slip a ranged shot as it screams past, surge forward, and <span class="dc-roll-the-die">ROLL THE DIE!</span> to make a basic attack.</p>
 </div>
@@ -2854,11 +2854,11 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">Risk it, swing wild, an hit hard!</p>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Full Send:</em> Throw everything into a reckless attack. Describe the chaos and <span class="dc-roll-the-die">ROLL THE DIE!</span></p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>All Gas, No Brakes:</em> Two basic attacks against one target. If either roll is a 1, both fail.</p>
 </div>
@@ -2912,11 +2912,11 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap variable">VAR AP</span>
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
@@ -2977,11 +2977,11 @@ Once per round, outside your turn, you exploit a target in reach:
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Salvage the Choice:</em> A Hard Choice becomes a Success.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>Make It Legend:</em> A Success becomes a Triumph.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
@@ -3042,11 +3042,11 @@ Once per round, outside your turn, you exploit a target in reach:
   </div>
   <div class="dc-card-body">
     <div class="dc-card-inner">
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Applied Leverage:</em> Each round you sustain control, choose <em>Break Them</em> (disable one limb) or <em>Strip Them</em> (pry one item free).</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>Lights Out:</em> The target goes unconscious at the end of your turn.</p>
 </div>
@@ -4506,11 +4506,11 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Salvage the Choice:</em> A Hard Choice becomes a Success.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>Make It Legend:</em> A Success becomes a Triumph.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">4 AP</span>
   <p class="dc-ability-text"><em>Drag It Up:</em> A Catastrophe becomes a Hard Choice.</p>
 </div>
@@ -4578,11 +4578,11 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Off-Hand Insurance:</em> Slip in a hidden strike that deals 1 damage.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Street Tricks:</em> Snag their balance. Gain Lucidity on your next roll against the target.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap variable">VAR AP</span>
   <p class="dc-ability-text"><em>Break the Read:</em> <span class="dc-roll-the-die">ROLL THE DIE!</span> On a hit the target is Dazed; extend it for 1 AP per round.</p>
 </div>
@@ -4598,11 +4598,11 @@ exports[`rendered output 11-variants.md matches its snapshot 1`] = `
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">For a moment, suffering looks elsewhere.</p>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text">You invoke your devotion: whether to a deity, an ideal, or a personal creed. Project sustaining force into the fray. You and all nearby allies immediately heal 2 HP.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap variable">3–X AP</span>
   <p class="dc-ability-text">You may commit more of yourself to the cause when invoking this ability. For each AP spent, increase the healing by +1 HP.</p>
 </div>
@@ -5403,11 +5403,11 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Steel Says No:</em> When an enemy in reach makes a basic attack and rolls a hard choice or worse, your Backbiters knock the strike off line. No damage. On a Failure or worse, try to drive steel into their liver. <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> and make a basic attack. Free counter once per round.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Bullet to Blood:</em> When an enemy you can see makes a ranged basic attack and rolls a hard choice or worse, you slip the shot as it screams past. No damage. On a failure or worse, you surge forward through the smoke and muzzle flash. Close to get in reach if a clear path exists and <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> to make a basic attack. Free counter once per round.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Bad Timing:</em> When an enemy in reach rolls a Hard Choice or worse on a basic attack against you, your Backbiters snap out and steal the moment. No damage and you have their weapon. On a Failure or worse, <span class="dc-roll-the-die">ROLL THE DIE!</span> and make a basic attack using your weapon or theirs. On a Catastrophe, your hit deals double damage, and against a Master you can take their weapon. Free counter once per round.</p>
 </div>
@@ -5421,11 +5421,11 @@ exports[`rendered output 304-example-specialty-profile.md matches its snapshot 1
   <div class="dc-card-body">
     <div class="dc-card-inner">
 <p class="dc-flavor">In some situations, it’s best to risk it, swing wild, an hit hard!</p>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Full Send:</em> You throw everything into a reckless attack. Make it your signature. Describe the chaos and <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> Resolve the outcome below.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><strong><span class="dc-roll-the-die">ROLL THE DIE TWICE!</span></strong> <em>All Gas, No Brakes:</em> Make two basic attacks against one target. If either roll is a 1, both attacks catastrophically fail as your movement snags on gear, armor, or the environment at the worst possible moment. DM’s call on how bad it gets.</p>
 </div>
@@ -5516,11 +5516,11 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Joint Lock:</em> Grab a limb and apply pressure. The target is <strong>Immobilized</strong> until the end of your next turn, or until they spend 1 AP to break free. On a Catastrophe, the limb is damaged — they take a <strong>−1 penalty</strong> to rolls using it until treated.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Nerve Strike:</em> Hit a pressure point. <strong><span class="dc-roll-the-die">ROLL THE DIE!</span></strong> On a 6 or better, the target drops whatever they’re holding and loses their next action. On a 10 or better, they also stumble prone.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">2 AP</span>
   <p class="dc-ability-text"><em>Throat Control:</em> Get a grip on throat or collar. The target is <strong>Silenced</strong> and <strong>Slowed</strong> until the end of their next turn. If they try to cast, activate tech, or call for help, they fail automatically.</p>
 </div>
@@ -5539,11 +5539,11 @@ Never fight clean. Fight to finish.</p>
   <span class="dc-ap free">0 AP</span>
   <p class="dc-ability-text"><em>Fixate:</em> Declare the target. You gain <strong>Lucidity</strong> on all rolls against them for the rest of the scene. You cannot Fixate a second target while the first is still standing.</p>
 </div>
-<div class="dc-ability" data-ability-penultimate="true">
+<div class="dc-ability">
   <span class="dc-ap">1 AP</span>
   <p class="dc-ability-text"><em>Don’t Look Away:</em> While Fixated, if the target tries to disengage, flee, or break line of sight, you can immediately move up to your full speed as a free action. No opportunity cost.</p>
 </div>
-<div class="dc-ability" data-ability-last="true">
+<div class="dc-ability">
   <span class="dc-ap">3 AP</span>
   <p class="dc-ability-text"><em>End It:</em> Make a basic attack against your Fixated target. If it hits, deal <strong>double damage</strong>. If it downs them, you immediately clear any negative conditions affecting you and regain 2 AP on your next turn.</p>
 </div>
