@@ -1994,6 +1994,44 @@ describe("steps and examples", () => {
   });
 });
 
+describe("neon signs", () => {
+  const doc = (...lines) => lines.join("\n");
+  const signs = (html) => count(html, /class="dc-neon"/g);
+  const count = (html, re) => (html.match(re) ?? []).length;
+  /** The word a sign spells: its letters are the glyph paths, so tell signs apart by their width. */
+  const widths = (html) => [...html.matchAll(/class="dc-neon-word"[^>]* width="([^"]*)"/g)].map((m) => m[1]);
+
+  test("a chapter opener of a neon chapter hangs the chapter's word above its title", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Rules", ""));
+    expect(signs(html)).toBe(1);
+    expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
+  });
+
+  test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
+    expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
+    expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
+  });
+
+  test("the chapter's word does not carry over to a chapter that has none", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("a specialty's art page hangs a sign spelling the specialty", () => {
+    const { html } = renderGp(doc("@specialty augmerc", "", "@specialty-art", "", "x", "", "@end-specialty-art", "", "@end-specialty", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("art outside its specialty gets no sign, and the next specialty spells its own name", () => {
+    const art = doc("@specialty-art", "", "x", "", "@end-specialty-art", "");
+    const first = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", art)).html;
+    expect(signs(first)).toBe(1);
+    const both = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", "@specialty etherlock", "", art, "@end-specialty", ""));
+    expect(signs(both.html)).toBe(2);
+    expect(new Set(widths(both.html)).size).toBe(2);
+  });
+});
+
 describe("the die call", () => {
   const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 

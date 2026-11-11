@@ -596,7 +596,7 @@ function optionHtml(html) {
   if (/^:/.test(rest)) {
     rest = rest.slice(1);
     if (!name.endsWith(':')) name += ':';
-  } else if (!/[:.!?]$|:/.test(name)) {
+  } else if (!/[:.!?]$/.test(name) && !name.includes(':')) {
     name += ':';
   }
   return m[1] + '<strong>' + name + '</strong>' + rest;
@@ -760,12 +760,9 @@ function dcContinueClassifier(state) {
 }
 
 function registerSkillContinueBridge(md) {
-  try {
-    md.core.ruler.before('layout_transform', 'dc_continue_classifier', dcContinueClassifier);
-  } catch (error) {
-    if (/Parser rule not found/.test(String(error))) return;
-    throw error;
-  }
+  // Without Gutterpress's layout_transform (bare markdown-it) there is no section @continue to share the marker with.
+  if (!md.core.ruler.__rules__.some((rule) => rule.name === 'layout_transform')) return;
+  md.core.ruler.before('layout_transform', 'dc_continue_classifier', dcContinueClassifier);
   md.block.ruler.before('layout_marker', 'dc_continue_candidate', dcContinueCandidateBlock, {
     alt: ['paragraph', 'reference', 'blockquote', 'list'],
   });
@@ -2089,19 +2086,26 @@ function neonSign(word) {
 function dcNeonSigns(state) {
   const t = state.tokens;
   let chapterWord = null;
-  const specialties = [];
+  const components = []; // the declared components around the token: their kind, and a specialty's name
   for (let i = 0; i < t.length; i++) {
     const tok = t[i];
-    const cls = classesOf(tok);
     if (tok.type === 'layout_chapter_open') {
-      chapterWord = cls.find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
-    } else if (tok.type === 'layout_page_open' && cls.includes('dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
+      chapterWord = classesOf(tok).find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
+    } else if (tok.type === 'layout_chapter_close') {
+      chapterWord = null;
+    } else if (tok.type === 'layout_page_open' && hasClass(tok, 'dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
                t[i + 1]?.type === 'heading_open' && t[i + 1].tag === 'h1') {
       t.splice(++i, 0, makeToken('html_block', neonSign(NEON_CHAPTER_WORDS[chapterWord])));
-    } else if (tok.type === 'layout_component_open' && tok.meta?.kind === 'specialty') {
-      specialties.push(cls.find((c) => SPECIALTIES.includes(c)) ?? null);
-    } else if (tok.type === 'layout_component_open' && tok.meta?.kind === 'specialty-art' && specialties.at(-1)) {
-      t.splice(++i, 0, makeToken('html_block', neonSign(specialties.at(-1).toUpperCase())));
+    } else if (tok.type === 'layout_component_open') {
+      const kind = tok.meta?.kind;
+      const specialty = kind === 'specialty' ? classesOf(tok).find((c) => SPECIALTIES.includes(c)) ?? null : null;
+      components.push({ kind, specialty });
+      if (kind === 'specialty-art') {
+        const name = components.findLast((c) => c.kind === 'specialty')?.specialty;
+        if (name) t.splice(++i, 0, makeToken('html_block', neonSign(name.toUpperCase())));
+      }
+    } else if (tok.type === 'layout_component_close') {
+      components.pop();
     }
   }
 }
