@@ -199,7 +199,7 @@ components:
     snippet: block
     recipe: "@block panel|slate|shard label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg, --dc-block-title-rule, --dc-block-tag, --dc-block-tag-edge]
     breaks: "break-inside: avoid"
     notes: "A declared marker: the variant word (or the .dc-* class) selects the treatment (see block-variants). The old variant=panel attribute form was dropped; no book used it. Design guide only."
@@ -210,7 +210,7 @@ components:
     description: "The three looks of a @block: panel (HUD blue), slate (ink body, blood band) and shard (white paper, torn foot)."
     recipe: "@block panel | slate | shard"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     notes: "Three clip-path/surface treatments (the fourth, codex, is retired: see block-codex) on .dc-block: panel is a HUD-blue band with hex corners; slate an ink body under a blood band with a crimson rule and a stamped Binding tag (not magenta, not cyan); shard white paper with a torn foot and a taupe label strip, no accent hue. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
 
   - name: roll-table
@@ -234,7 +234,7 @@ components:
     emits:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-card-shape, --dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail]
     breaks: "break-inside: avoid"
     notes: "Declared marker, no variants: author classes (@card .dc-flaws), #id and key=value attributes ride on the wrapper. The heading is the first `####` (core converts only a `####` to .dc-card-heading; write `####`, not `###`). A card reads its kind from the enclosing @flaws, @ideals or @dreams through the --dc-choice-* tokens (it is not styled by `.section.dc-flaws > .dc-card`); outside them it is plain ink. Inside a skill it stays in the skill's card. Left open at the end of the file it closes silently."
@@ -246,7 +246,7 @@ components:
     snippet: [flaws, ideals, dreams]
     recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
     emits: div.section.dc-section-panel.dc-section-choose.dc-flaws|.dc-ideals|.dc-dreams
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail, --dc-card-shape]
     notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks. The kind sets the --dc-choice-* tokens and the card shape, and the cards read them: flaws = blood, a cracked jagged foot and a nicked corner; ideals = HUD blue, a symmetric tablet with a rule under the name; dreams = violet, a top edge rising to the right. Each card has a rail, a top band, a one-word kind chip (FLAW, IDEAL, DREAM) and the closing quote in ink on the card's white, ruled down its left in the kind colour. All three are white sheets: they differ in edge weight and silhouette. With no heading the section draws nothing around the cards."
 
@@ -443,7 +443,7 @@ components:
       - styles/components/specialty.css
       - styles/components/cards.css
       - styles/components/data.css
-      - styles/components/section.css
+      - styles/components/creatures.css
       - styles/page-templates.css
     tokens:
       - --spec-accent
@@ -495,7 +495,7 @@ components:
     css:
       - styles/components/specialty.css
       - styles/components/specialty-identity.css
-      - styles/components/section.css
+      - styles/components/creatures.css
       - styles/page-templates.css
     tokens:
       - --dc-specialty-card-bg
@@ -677,7 +677,7 @@ components:
     snippet: card-grid
     recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section cards)"
     emits: div.section.dc-card-grid > div.gp-columns.gp-columns-2
-    css: [styles/components/section.css, styles/page-templates.css]
+    css: [styles/components/creatures.css, styles/page-templates.css]
     breaks: "each specialty card avoid; the grid itself may span pages"
     notes: "Sets no columns of its own: the cards go in `@columns 2` inside it."
 
@@ -688,7 +688,7 @@ components:
     snippet: citizen-walkthrough
     recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section walkthrough)"
     emits: div.section.dc-section-panel.dc-citizen-walkthrough
-    css: [styles/components/section.css, styles/dc-native.css]
+    css: [styles/components/creatures.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
 
   - name: page-citizen-file
@@ -728,7 +728,7 @@ components:
     snippet: fiction-excerpt
     recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section fiction)"
     emits: div.section.dc-fiction-excerpt
-    css: [styles/components/section.css]
+    css: [styles/components/fiction-excerpt.css, styles/components/paste-up.css]
     tokens:
       - --dc-fiction-bg
       - --dc-fiction-cavity
@@ -750,7 +750,7 @@ components:
     snippet: npc-stat
     recipe: "@npc-stat [compact] [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
     emits: div.section.dc-section-panel.dc-npc-stat
-    css: [styles/components/section.css]
+    css: [styles/components/creatures.css]
     tokens:
       - --dc-npc-stat-primary
       - --dc-npc-stat-secondary
@@ -767,7 +767,7 @@ components:
     snippet: npc-stat-compact
     recipe: "@npc-stat compact / #### Name / > flavor / stat line / stat line / ##### Traits … @end-npc-stat"
     emits: div.section.dc-section-panel.dc-npc-stat.dc-npc-compact
-    css: [styles/components/section.css]
+    css: [styles/components/creatures.css]
     tokens: [--dc-npc-stat-primary, --dc-npc-stat-secondary, --dc-npc-stat-rule]
     notes: "A variant of @npc-stat for a small creature, a companion or a drone: no panel layers (the panel's surface and shadow tokens are switched off), a framed cream box, a small name, and the two stat lines drawn as chips side by side. It is a section, so it ends an enclosing @skill: inside a skill card write the creature's table alone (see stat-strip)."
 
@@ -1006,7 +1006,7 @@ components:
     replaced_by: "nothing: a panel, reference, lore, dm or catalog section is a pasted sheet with no class"
     recipe: "@chapter rules .dc-paste-up  /  @section reference .dc-paste-up"
     emits: .dc-paste-up
-    notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (section.css, PASTE-UP). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
+    notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (paste-up.css). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
 
   - name: paste-up-width
     status: live
@@ -1016,7 +1016,7 @@ components:
     snippet: row
     recipe: "@section panel .dc-half … @end-section / @section panel .dc-half … @end-section  |  .dc-narrow then .dc-wide (38/62), .dc-wide then .dc-narrow (62/38)"
     emits: div.dc-pu-row (the plugin's, around the two sheets)
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     tokens: [--dc-pu-row-cols, --dc-pu-pair-gap]
     breaks: "a row is kept whole (break-inside: avoid)"
     notes: "Two paste-up sheets side by side, each ending at its own last line, closing stickers at the foot. A sheet says its own width on its section line; when it is followed straight away by a sheet whose width completes the row (half and half, narrow and wide, wide and narrow), the plugin wraps the two in `div.dc-pu-row`, a grid whose columns are read off the first sheet (--dc-pu-row-cols). There is no row marker. A sheet with a width and no partner is reported (`row_unpaired`) and prints at the full width."
@@ -1039,7 +1039,7 @@ components:
     emits:
       - .dc-pu-cont (on the section it is written on)
       - "div.dc-pu-spacer (the plugin's, ahead of a ## or ### that opens the sheet)"
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     tokens: [--dc-pu-band]
     notes: "The second part of a section split in markup because a sheet is never split. Its band is shallow and it has no tag. When it opens with a ## or ###, the plugin puts a zero-height `div.dc-pu-spacer` ahead of the heading so it stays a sub-head (every first-child heading rule would otherwise read it as the sheet's title); the author writes nothing extra."
 
@@ -1050,7 +1050,7 @@ components:
     description: "A ## that shouts: cream display type on ink at twice h1 (1.5x with .dc-pu-bill-mid)."
     recipe: "## Title {.dc-pu-bill}  /  ## Title {.dc-pu-bill .dc-pu-bill-mid}  (the first heading of a paste-up sheet)"
     emits: h2.dc-pu-bill
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     notes: "One bill per section that opens a spread or a sub-system (constitution §IV): the full width of the sheet, a yellow foot rule, a hard shadow. The two display steps outside the type scale besides §VI's."
 
   - name: paste-up-tag
@@ -1060,7 +1060,7 @@ components:
     description: "A sub-head pasted on mid-sheet as a tag, like the sheet's own title."
     recipe: "### Fall Damage {.dc-pu-tag}  (a ## or ### inside a paste-up sheet, not its first)"
     emits: h3.dc-pu-tag
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     notes: "The title tag's look (tilted -1deg, hard shadow, the sheet's bar colours) on a heading further down a sheet, with room above it. For a sub-system inside one sheet that should read as pasted on."
 
   - name: paste-up-plate
@@ -1133,7 +1133,7 @@ components:
     css: [styles/components/section.css, styles/dc-component-defaults.css]
     tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-measure, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
     breaks: "a sheet is kept whole (--dc-section-break-inside: avoid); split a section that must run on in markup, the second part `.dc-pu-cont`"
-    notes: "A sheet pasted flat on the wall (section.css, PASTE-UP; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
+    notes: "A sheet pasted flat on the wall (paste-up.css; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
 
 
   - name: street-line
@@ -1141,7 +1141,7 @@ components:
     origin: plugin
     recipe: "**A closing line.** as the last paragraph of a section panel (or before a heading in it); automatic, no markup"
     emits: p.dc-kicker
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     breaks: "break-before: avoid; the paragraph above it breaks after: avoid"
     notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour."
 
@@ -1256,7 +1256,7 @@ components:
     snippet: faction
     recipe: "@faction [megacorp|cabal|cult|enforcer] [label=\"…\"] / #### Name / fields and prose … @end-faction"
     emits: [div.dc-card.dc-faction.dc-faction-megacorp|.dc-faction-cabal|.dc-faction-cult|.dc-faction-enforcer, span.dc-faction-kind]
-    css: [styles/components/section.css]
+    css: [styles/components/enclosures.css]
     tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside, --dc-faction-shape, --dc-faction-surface, --dc-faction-band, --dc-faction-band-height, --dc-faction-pad-bottom, --dc-faction-badge-shape, --dc-faction-title, --dc-faction-title-bg, --dc-faction-title-pad]
     breaks: "splits between paragraphs by default (--dc-faction-break-inside: auto); .dc-avoid-split keeps one whole"
     notes: "An organization's profile: a card whose silhouette, top band, name colour and badge all say the kind: megacorp a hard-edged rectangle with an ink-blue, cyan-edged band, cabal violet with long corner cuts, cult blood and torn along the top and foot, enforcer an octagon with a hazard-stripe band and a yellow name label. Every kind is a white sheet. The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."

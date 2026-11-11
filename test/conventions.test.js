@@ -319,7 +319,7 @@ describe("keep-whole tokens", () => {
   });
 
   test("a creature (an @npc-stat with at most one `####`) reads --dc-npc-stat-break-inside", () => {
-    const creature = declsOf("styles/components/section.css", ".dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4))");
+    const creature = declsOf("styles/components/creatures.css", ".dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4))");
     expect(creature["break-inside"]).toBe("var(--dc-npc-stat-break-inside)");
   });
 });
@@ -343,7 +343,7 @@ describe("skill cards split by default", () => {
 // pages through a chapter of factions. It splits like an entry.
 describe("faction cards split by default", () => {
   test("a faction card overrides .dc-card's avoid with its token, which defaults to auto", () => {
-    const css = read("styles/components/section.css");
+    const css = read("styles/components/enclosures.css");
     expect(css).toMatch(/\.dc-card\.dc-faction \{[^}]*break-inside: var\(--dc-faction-break-inside\);/);
     expect(css).toMatch(/\.dc-card\.dc-faction > :is\(h3, h4\):first-of-type \{[^}]*break-after: avoid;/);
   });

@@ -88,7 +88,7 @@
    and the token is the hook core reads. */
 
 
-/* ── Paste-up art (section.css, PASTE-UP) ────────────────────────────────
+/* ── Paste-up art (paste-up.css) ────────────────────────────────
    Art pasted to the wall. A cut-out is pinned; a plate is a framed print: a
    cream frame, one hard shadow, a tilt (constitution §IV). A plate is 40% of
    the column unless core's `.gp-size-NN` on the image sets its width. */
