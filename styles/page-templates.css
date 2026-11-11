@@ -868,7 +868,7 @@ p.dc-die-call {
 .page.dc-page-chapter-start {
   --dc-neon-layer: 3;                       /* over the banner (z-index 2) */
   --dc-neon-size: 20pt;
-  --dc-neon-height: 35pt;                   /* the 20pt word + 15pt padding */
+  --dc-neon-height: 35pt;                   /* the 20pt word's capitals (14.7pt) and 10pt padding each side */
   --dc-neon-margin: 0 0 -35pt 0.3in;
   --dc-neon-tilt: rotate(1deg);
 }

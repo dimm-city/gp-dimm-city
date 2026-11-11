@@ -6,15 +6,17 @@
    (dcNeonSigns); authors write nothing.
 
    Print. Ink cannot emit light, so a tube is four flat, opaque layers of the
-   same word, SVG text stacked back to front: an outer ring (the hue's dark),
-   an inner ring (its mid), the tube (the hue) and a pale core (the glyph
-   itself, about 25% of the hue in white). Each ring is a stroke centred on the
-   glyph's outline with round joins, so a 3pt tube stroke shows 1.5pt of hue
-   round the core and each ring steps 1.5pt further out: the soft proof's
-   minimums. No blur, no gradient, no transparency, no text-shadow. Every
-   colour is the value the press makes (sRGB -> CGATS21_CRPC1 -> sRGB), so the
-   PDF shows what prints. The word stays live text, aria-hidden: the chapter or
-   specialty title is still the real heading.
+   same word drawn as SVG paths (plugin.js, NEON_FONT), back to front: an
+   outer ring (the hue's dark), an inner ring (its mid), the tube (the hue)
+   and a pale core (the letter itself, about 25% of the hue in white). Each
+   ring is a stroke centred on the letter's outline with round joins, so at a
+   20pt word a 3pt tube stroke shows 1.5pt of hue round the core and each ring
+   steps 1.5pt further out:
+   the soft proof's minimums (no sign is set smaller). No blur, no gradient,
+   no transparency, no text-shadow. Every colour is the value the press makes
+   (sRGB -> CGATS21_CRPC1 -> sRGB), so the PDF shows what prints. The word is
+   drawing, not text (aria-hidden): the chapter or specialty title is still
+   the real heading.
 
    The tube colours are dc-palette.css's `--neon-*` ladders; a sign takes
    `--dc-neon*` from where it hangs: a specialty below, a chapter word and the
@@ -41,37 +43,32 @@
   margin: var(--dc-neon-margin);
   transform: var(--dc-neon-tilt);
   background: var(--ink);
-  padding: 8pt 15pt 7pt;
+  display: flex;
+  align-items: center;
+  padding: 10pt 15pt;
   box-shadow: 4pt 4pt 0 var(--ink-dark);
 }
 .dc-neon::before { top: 3pt; left: 3pt; }
 .dc-neon::after { top: 3pt; right: 3pt; }
 
 .dc-neon-word {
-  position: relative;
-  font-family: 'Tomorrow', sans-serif;
-  font-weight: 400;
-  font-size: var(--dc-neon-size);
-  line-height: 1;
-  letter-spacing: 0.16em;
-  white-space: nowrap;
+  display: block;
+  overflow: visible;                        /* the rings reach past the letters */
+  font-size: var(--dc-neon-size);           /* the SVG is sized in em */
 }
-.dc-neon-size { display: block; visibility: hidden; margin-right: -0.16em; }  /* sizes the plate; the last letter's spacing trimmed */
-.dc-neon-tubes { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.dc-neon-tubes text { stroke-linejoin: round; stroke-linecap: round; }
-.dc-neon-ring-2 { fill: var(--dc-neon-ring-2); stroke: var(--dc-neon-ring-2); stroke-width: 9pt; }
-.dc-neon-ring-1 { fill: var(--dc-neon-ring-1); stroke: var(--dc-neon-ring-1); stroke-width: 6pt; }
-.dc-neon-tube   { fill: var(--dc-neon);        stroke: var(--dc-neon);        stroke-width: 3pt; }
+/* Stroke widths are font units (1000 to the em), so the tubes scale with the
+   word: at a 20pt word the rings are 9pt, 6pt and 3pt (1.5pt steps, the soft
+   proof's minimum); a bigger sign has fatter tubes. */
+.dc-neon-word path { stroke-linejoin: round; }
+.dc-neon-ring-2 { fill: var(--dc-neon-ring-2); stroke: var(--dc-neon-ring-2); stroke-width: 450; }
+.dc-neon-ring-1 { fill: var(--dc-neon-ring-1); stroke: var(--dc-neon-ring-1); stroke-width: 300; }
+.dc-neon-tube   { fill: var(--dc-neon);        stroke: var(--dc-neon);        stroke-width: 150; }
 .dc-neon-core   { fill: var(--dc-neon-core); }
-
-/* A dead tube: grey glass, no rings, no light. */
-:is(.dc-neon-ring-2, .dc-neon-ring-1) > .dc-neon-dead { visibility: hidden; }
-.dc-neon-tube > .dc-neon-dead { fill: var(--neon-dead); stroke: var(--neon-dead); }
-.dc-neon-core > .dc-neon-dead { fill: var(--neon-dead-core); }
+.dc-neon-dead   { fill: var(--neon-dead-core); stroke: var(--neon-dead); stroke-width: 150; }  /* grey glass, no rings, no light */
 
 /* Specialty art page: high on the wall, in front of what is painted on it,
    behind nothing. */
 .dc-specialty-art:has(> .dc-neon)             { position: relative; }
-.dc-specialty-art > .dc-neon                  { position: absolute; top: 0.5in; left: 50%; --dc-neon-tilt: translateX(-50%); --dc-neon-size: 28pt; }
+.dc-specialty-art > .dc-neon                  { position: absolute; top: 0.5in; left: 0; right: 0; --dc-neon-margin: 0 auto; --dc-neon-size: 28pt; }
 
 }
