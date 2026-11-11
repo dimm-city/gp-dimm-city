@@ -128,46 +128,64 @@ function esc(s) {
           .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function makeToken(type, content) {
-  return {
-    type: type,
-    tag: '',
-    nesting: 0,
-    attrs: null,
-    map: null,
-    level: 0,
-    children: null,
-    content: typeof content === 'string' ? content : '',
-    markup: '',
-    info: '',
-    meta: null,
-    block: true,
-    hidden: false,
-    attrSet: function(name, value) {
-      if (!this.attrs) this.attrs = [];
-      const idx = this.attrIndex(name);
-      if (idx < 0) {
-        this.attrs.push([name, value]);
-      } else {
-        this.attrs[idx][1] = value;
-      }
-    },
-    attrIndex: function(name) {
-      if (!this.attrs) return -1;
-      for (let j = 0; j < this.attrs.length; j++) {
-        if (this.attrs[j][0] === name) return j;
-      }
-      return -1;
-    }
-  };
+// markdown-it's Token class, taken from a parser state when the plugin is
+// installed: a plugin cannot import it, and rules need real tokens.
+let Token;
+
+function makeToken(type, content = '') {
+  const tok = new Token(type, '', 0);
+  tok.block = true;
+  tok.content = content;
+  return tok;
 }
+
+const classesOf = (tok) => (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
+const hasClass = (tok, cls) => classesOf(tok).includes(cls);
 
 // Add one class to a token's existing `class` attribute, keeping the others.
 function addTokenClass(tok, cls) {
-  const current = (tok.attrGet('class') || '').split(/\s+/).filter(Boolean);
+  const current = classesOf(tok);
   if (!current.includes(cls)) {
     current.push(cls);
     tok.attrSet('class', current.join(' '));
+  }
+}
+
+// Add `cls` to a token's classes right after `anchor`, so a state class keeps
+// its place beside the class core wrote first.
+function addTokenClassAfter(tok, anchor, cls) {
+  const current = classesOf(tok);
+  current.splice(current.indexOf(anchor) + 1, 0, cls);
+  tok.attrSet('class', current.join(' '));
+}
+
+// The index of the token that closes the one opening at tokens[i].
+function closeIndex(tokens, i) {
+  let depth = 0;
+  for (let j = i; j < tokens.length; j++) {
+    depth += tokens[j].nesting;
+    if (depth <= 0) return j;
+  }
+  return tokens.length - 1;
+}
+
+// The attributes of an element that replaces a token: `cls` first, then what the
+// token carried (its classes join `cls`; the rest follow in order).
+function mergeAttrs(cls, attrs) {
+  const merged = [['class', cls]];
+  for (const [name, value] of attrs) {
+    if (name === 'class') merged[0][1] += ' ' + value;
+    else merged.push([name, value]);
+  }
+  return merged;
+}
+
+// A paragraph that is one bold run and closes right before tokens[at] (and is
+// not the first thing after a `firstType` token) is a kicker: `.dc-kicker`.
+function markKickerBefore(tokens, at, firstType) {
+  if (at >= 4 && tokens[at - 1].type === 'paragraph_close' && tokens[at - 3].type === 'paragraph_open' &&
+      tokens[at - 4].type !== firstType && isBoldOnlyInline(tokens[at - 2])) {
+    addTokenClass(tokens[at - 3], 'dc-kicker');
   }
 }
 
@@ -187,24 +205,24 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '');
 }
 
-function specialtyCodeFromClass(className) {
-  const classList = (className || '').split(/\s+/).filter(Boolean);
-  const specialtyMap = {
-    augmerc: 'AUG',
-    proxy: 'PRX',
-    streetwarden: 'STW',
-    gutterdruid: 'GDR',
-    cybersurgeon: 'CBS',
-    wirephreak: 'WPH',
-    technosorcerer: 'TNS',
-    etherlock: 'ETH',
-  };
+// The specialties and the prefix their learning paths are numbered with
+// (AUG1, AUG2, …). `dualist` and `generalist` are specialties too but have no
+// code, so their paths number as PATH1, PATH2, … like a path outside any specialty.
+const SPECIALTY_CODES = {
+  augmerc: 'AUG',
+  proxy: 'PRX',
+  streetwarden: 'STW',
+  gutterdruid: 'GDR',
+  cybersurgeon: 'CBS',
+  wirephreak: 'WPH',
+  technosorcerer: 'TNS',
+  etherlock: 'ETH',
+};
+const SPECIALTIES = [...Object.keys(SPECIALTY_CODES), 'dualist', 'generalist'];
 
-  for (const cls of classList) {
-    if (specialtyMap[cls]) return specialtyMap[cls];
-  }
-
-  return 'PATH';
+function specialtyCodeFromClass(tok) {
+  const name = classesOf(tok).find((cls) => Object.hasOwn(SPECIALTY_CODES, cls));
+  return name ? SPECIALTY_CODES[name] : 'PATH';
 }
 
 function buildStickerChain(items) {
@@ -377,6 +395,16 @@ function readTable(tableTokens) {
   return { head, rows };
 }
 
+// Every dash an author may type between the ends of a range: the hyphen,
+// U+2010–U+2015 (hyphen, en and em dash, bar) and the minus sign. As the inside
+// of a regex character class.
+const DASH_CLASS = '\\-\\u2010-\\u2015\\u2212';
+const DASH_RUN = new RegExp('-{2,3}|[' + DASH_CLASS + ']', 'g');
+const enDashed = (text) => text.replace(new RegExp('[' + DASH_CLASS + ']', 'g'), '\u2013');
+
+// "11 – 19" and "11--19" read as "11-19".
+const hyphenated = (text) => text.replace(DASH_RUN, '-');
+
 const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
@@ -395,7 +423,7 @@ const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success:
 
 // "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
-  const text = cell.replace(/[*_`\s]/g, '').replace(/[‐-―−]|-{2,3}/g, '-');
+  const text = hyphenated(cell.replace(/[*_`\s]/g, ''));
   const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
   if (!m) return null;
   const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
@@ -415,7 +443,7 @@ function tierOfBand(lo, hi) {
 
 // One result cell of a ladder → { tier, lo, hi, roll, label }, or null.
 function parseResultCell(cell) {
-  const text = cell.replace(/[*_`]/g, '').replace(/[‐-―−]|-{2,3}/g, '-').replace(/\s+/g, ' ').trim();
+  const text = hyphenated(cell.replace(/[*_`]/g, '')).replace(/\s+/g, ' ').trim();
   const word = TIER_OF_WORD[text.toLowerCase()];
   if (word) return { tier: word, lo: null, hi: null, roll: '', label: text };
   let m = /^(?:on )?(\d{1,2})(?: ?- ?(\d{1,2}))?(\+)?(?: ?[:-] ?(.+))?$/i.exec(text);
@@ -476,11 +504,7 @@ function outcomeRowsHtml(rows, md, head = []) {
 // ladder replaces the table, so what the author wrote on the table (`{#id
 // .class}`) and what the renderer threaded on it move to the ladder.
 function buildLadderBlock({ head, rows }, md, table) {
-  const attrs = [['class', 'dc-outcomes']];
-  for (const [name, value] of table.attrs || []) {
-    if (name === 'class') attrs[0][1] += ' ' + value;
-    else attrs.push([name, value]);
-  }
+  const attrs = mergeAttrs('dc-outcomes', table.attrs || []);
   return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n' + outcomeRowsHtml(rows, md, head) + '</div>\n';
 }
 
@@ -577,7 +601,7 @@ function optionHtml(html) {
 }
 
 // A bold die result in markdown: **20**, **11-19**, **6–10:**, **16–19: Name**.
-const DIE_RESULT_MD = /^\*\*\s*(\d{1,3}(?:\s*[-\u2010-\u2015\u2212]\s*\d{1,3})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*/;
+const DIE_RESULT_MD = new RegExp(String.raw`^\*\*\s*(\d{1,3}(?:\s*[${DASH_CLASS}]\s*\d{1,3})?)\s*(?::|(?::|\s[\u2013\u2014-])\s*([^*]+?))?\s*\*\*\s*`);
 
 // The die a set of results is the faces of: ranges that do not overlap and
 // cover 1 to N with no gap (any order), N one of the usual dice. Else 0.
@@ -616,7 +640,7 @@ function dieResultListHtml(items, md) {
   if (!die) return '';
   const ladder = ladderRows({ head: ['Roll', 'Outcome'], rows });
   if (ladder) return buildLadderBlock(ladder, md, { attrs: [] });
-  const cell = (c) => md.renderInline(c.trim()).replace(/\s*[-‐-―−]\s*/, '–');
+  const cell = (c) => md.renderInline(c.trim()).replace(new RegExp(String.raw`\s*[${DASH_CLASS}]\s*`), '–');
   return '<div class="dc-roll-table">\n<div class="dc-roll-table-caption"><span class="dc-roll-table-die">d' + die + '</span></div>\n<table>\n<thead>\n<tr><th>Roll</th><th>Outcome</th></tr>\n</thead>\n<tbody>\n' +
     rows.map(([r, t]) => '<tr><td>' + cell(r) + '</td><td>' + md.renderInline(t.trim()) + '</td></tr>\n').join('') +
     '</tbody>\n</table>\n</div>\n';
@@ -632,8 +656,10 @@ function dieResultListHtml(items, md) {
 //     "/"-qualifier keeps its cost: "1 AP/100 DC Per Ego Point…:"). The one bare
 //     form kept is the variable "3-X".
 //   - anything else (a die result, a name, a sentence) is not a cost.
-const COST_LEAD = /^(\+?\s*(?:\d+|X|VAR)(?:\s*[-‐-―−]\s*(?:\d+|X))?\+?)\s*AP\b(.*)$/i;
-const BARE_VARIABLE_COST = /^\d+\s*[-‐-―−]\s*X$/i;
+const COST_LEAD = new RegExp(String.raw`^(\+?\s*(?:\d+|X|VAR)(?:\s*[${DASH_CLASS}]\s*(?:\d+|X))?\+?)\s*AP\b(.*)$`, 'i');
+const BARE_VARIABLE_COST = new RegExp(String.raw`^\d+\s*[${DASH_CLASS}]\s*X$`, 'i');
+const LEADING_DASH = new RegExp('^[' + DASH_CLASS + ']');
+const VARIABLE_COST = new RegExp('[' + DASH_CLASS + ']|X|VAR|\\+$', 'i'); // a range, X, VAR or a trailing +
 
 // A rendered list item's text → { apVal, apClass, text } | null (not a cost).
 function parseAbilityFromListItem(html) {
@@ -649,16 +675,16 @@ function parseAbilityFromListItem(html) {
   const cost = COST_LEAD.exec(label);
   if (cost) {
     costPart = cost[1].replace(/\s+/g, '');
-    apVal = cost[1].replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
+    apVal = enDashed(costPart) + ' AP';
     let tail = cost[2].replace(/^\s*[:,]\s*/, '').trim();
     // a per-unit rate ("per passenger", "/100 DC Per Ego Point") makes the cost one you choose;
     // a parenthetical ("(once per scene)") is a qualifier, not a rate
-    perUnit = !/^[(\u2010-\u2015\u2212-]/.test(tail) && /^\/?.*\bper\b/i.test(tail);
+    perUnit = !(tail.startsWith('(') || LEADING_DASH.test(tail)) && /^\/?.*\bper\b/i.test(tail);
     if (tail.startsWith('(')) {
       text = tail + ' ' + text;
     } else if (tail) {
       let runIn;
-      if (/^[‐-―−-]/.test(tail)) runIn = tail.replace(/^[‐-―−-]\s*/, '');
+      if (LEADING_DASH.test(tail)) runIn = tail.slice(1).trimStart();
       else if (tail.startsWith('/')) runIn = apVal + tail;
       else runIn = tail.charAt(0).toUpperCase() + tail.slice(1);
       runIn = runIn.replace(/[.:]+$/, '').trim();
@@ -666,7 +692,7 @@ function parseAbilityFromListItem(html) {
     }
   } else if (BARE_VARIABLE_COST.test(label)) {
     costPart = label.replace(/\s+/g, '');
-    apVal = label.replace(/\s+/g, '').replace(/[-\u2010-\u2015\u2212]/g, '\u2013') + ' AP';
+    apVal = enDashed(costPart) + ' AP';
   } else {
     return null;
   }
@@ -674,7 +700,7 @@ function parseAbilityFromListItem(html) {
   const bare = costPart.replace(/^\+/, '');
   let apClass = 'dc-ap';
   if (/^0+$/.test(bare)) apClass += ' free';
-  else if (/[-‐-―−]|X|VAR|\+$/i.test(bare) || perUnit) apClass += ' variable';
+  else if (VARIABLE_COST.test(bare) || perUnit) apClass += ' variable';
 
   // A row that is only a name (`**3 AP — Butcher Roach**`, its text in the
   // paragraphs that follow) is the title of what follows: `titleOnly`.
@@ -810,12 +836,7 @@ function collectOrderedListItems(tokens, startIndex, md) {
 // `attrs` are what the author wrote on the `@procedure` line: the wrapper
 // renders nothing, so the list takes them.
 function buildProcedureList(items, attrs, md) {
-  const list = [['class', 'dc-steps']];
-  for (const [name, value] of attrs) {
-    if (name === 'class') list[0][1] += ' ' + value;
-    else list.push([name, value]);
-  }
-  let html = '<ol' + md.renderer.renderAttrs({ attrs: list }) + '>\n';
+  let html = '<ol' + md.renderer.renderAttrs({ attrs: mergeAttrs('dc-steps', attrs) }) + '>\n';
   items.forEach((itemHtml, idx) => {
     const stepNo = String(idx + 1).padStart(2, '0');
     html += '  <li><span class="dc-step-no">' + esc(stepNo) + '</span><span>' + itemHtml.trimEnd() + '</span></li>\n';
@@ -824,23 +845,35 @@ function buildProcedureList(items, attrs, md) {
   return html;
 }
 
+const CALLOUTS = {
+  note: { class: 'dc-note', label: 'Note' },
+  warning: { class: 'dc-note warning', label: 'Warning' },
+  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
+  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
+  origin: { class: 'dc-origin-callout', label: 'Origin' },
+  location: { class: 'dc-location-callout', label: 'Location' },
+  visit: { class: 'dc-visit-callout', label: 'Visit' },
+  example: { class: 'dc-example-callout', label: 'Example' },
+};
+
 /**
  * GFM-style blockquote alert types — Dimm City branded: the classes and labels
  * are DC-specific, so core does not know them.
  */
+// The callout variants that also have a `> [!TYPE]` form.
+const ALERT_CALLOUTS = ['note', 'warning', 'dm', 'vibe', 'origin', 'location', 'visit'];
+
 const DC_ALERT_TYPES = {
-  NOTE:      { classes: "dc-alert dc-note",                 label: "Note" },
-  WARNING:   { classes: "dc-alert dc-note warning",         label: "Warning" },
-  DM:        { classes: "dc-alert dc-dm-note",              label: "Dream Master Note" },
-  VIBE:      { classes: "dc-alert dc-vibe-callout",         label: "Vibe" },
-  ORIGIN:    { classes: "dc-alert dc-origin-callout",       label: "Origin" },
-  LOCATION:  { classes: "dc-alert dc-location-callout",     label: "Location" },
-  VISIT:     { classes: "dc-alert dc-visit-callout",        label: "Visit" },
+  ...Object.fromEntries(ALERT_CALLOUTS.map((variant) => [
+    variant.toUpperCase(),
+    { classes: 'dc-alert ' + CALLOUTS[variant].class, label: CALLOUTS[variant].label },
+  ])),
   FLAVOR:    { classes: "dc-flavor" },
   PULLQUOTE: { classes: "dc-pullquote dc-flush" },
 };
 
-const DC_ALERT_PATTERN = /^\[!([A-Z_]+)\]/i;
+// `[!TYPE]` and the blanks after it.
+const DC_ALERT_MARKER = /^\[!([A-Z_]+)\][ \t]*/i;
 
 /**
  * Transform `> [!TYPE]` blockquotes into DC-branded styled divs.
@@ -877,7 +910,7 @@ function dcAlertsTransform(state) {
 
     const inlineTok = tokens[firstInlineIdx];
     const lead = inlineTok.children?.[0];
-    const match = lead?.type === 'text' && inlineTok.content.match(DC_ALERT_PATTERN);
+    const match = lead?.type === 'text' && inlineTok.content.match(DC_ALERT_MARKER);
     if (!match) { newTokens.push(tok); continue; }
 
     const alertType = match[1].toUpperCase();
@@ -892,7 +925,7 @@ function dcAlertsTransform(state) {
     let titleCount = 0;
     if (config.label) {
       const kids = inlineTok.children;
-      const afterMarker = lead.content.replace(DC_ALERT_PATTERN, '').replace(/^\s+/, '');
+      const afterMarker = lead.content.replace(DC_ALERT_MARKER, '').replace(/^\s+/, '');
       const brk = kids.findIndex((c) => c.type === 'softbreak' || c.type === 'hardbreak');
       if (brk > 0 && (afterMarker !== '' || brk > 1)) {
         const titleKids = kids.slice(0, brk)
@@ -916,11 +949,7 @@ function dcAlertsTransform(state) {
     newTokens.push(openTok);
 
     // Strip [!TYPE] prefix from first inline; suppress its paragraph wrapper if empty.
-    const markerPrefix = /^\[![A-Z_]+\][ \t]*/i;
-    const prefixMatch = inlineTok.content.match(markerPrefix);
-    let stripped = prefixMatch
-      ? inlineTok.content.slice(prefixMatch[0].length).trim()
-      : inlineTok.content;
+    let stripped = inlineTok.content.slice(match[0].length).trim();
     if (titleHtml) {
       // the title line leaves the paragraph: what is left is the text after its line break
       const nl = stripped.search(/\r?\n/);
@@ -947,7 +976,7 @@ function dcAlertsTransform(state) {
           const next = inlineTok.children[0];
           if (next && (next.type === 'softbreak' || next.type === 'hardbreak')) inlineTok.children.shift();
         } else {
-          lead.content = lead.content.replace(markerPrefix, '');
+          lead.content = lead.content.replace(DC_ALERT_MARKER, '');
         }
         if (lead.content === '' && !titleCount) {
           inlineTok.children.shift();
@@ -999,7 +1028,7 @@ function dcFrontMatterTitles(state) {
   let depth = 0; // layout containers open inside the page: a heading in one is not the page's title
   for (const tok of state.tokens) {
     if (tok.type === 'layout_page_open') {
-      front = (tok.attrGet('class') || '').split(/\s+/).some((c) => FRONT_MATTER_PAGES.includes(c));
+      front = classesOf(tok).some((c) => FRONT_MATTER_PAGES.includes(c));
       depth = 0;
     } else if (tok.type === 'layout_page_close') {
       front = false;
@@ -1024,7 +1053,7 @@ function dcSpecialtyCardPositions(state) {
   let count = 0;
   for (const tok of state.tokens) {
     if (tok.type !== 'layout_component_open') continue;
-    if (!(tok.attrGet('class') || '').split(/\s+/).includes('dc-specialty-card')) continue;
+    if (!hasClass(tok, 'dc-specialty-card')) continue;
     count++;
     tok.attrSet('data-position', count % 2 === 0 ? 'even' : 'odd');
   }
@@ -1056,9 +1085,7 @@ function forEachComponent(tokens, kind, rewrite) {
       enclosing.push(tok);
       continue;
     }
-    let end = i;
-    let depth = 0;
-    do depth += tokens[end++].nesting; while (depth > 0);
+    const end = closeIndex(tokens, i) + 1;
     const run = rewrite(tokens.slice(i, end), enclosing) || tokens.slice(i, end);
     tokens.splice(i, end - i, ...run);
     i += run.length - 1;
@@ -1120,7 +1147,7 @@ function dcLearningPaths(state) {
     const specialty = enclosing.findLast((c) => c.meta.kind === 'specialty') || null;
     const n = (numbered.get(specialty) || 0) + 1;
     numbered.set(specialty, n);
-    const ref = (specialty ? specialtyCodeFromClass(specialty.attrGet('class')) : '') + n;
+    const ref = (specialty ? specialtyCodeFromClass(specialty) : '') + n;
     open.attrSet('data-path-ref', ref);
 
     const body = run.slice(1, -1);
@@ -1155,6 +1182,21 @@ function isBoldOnlyInline(inline) {
   const kids = (inline?.type === 'inline' ? inline.children || [] : []).filter((k) => k.type !== 'text' || k.content);
   return kids.length > 2 && kids[0].type === 'strong_open' && kids[kids.length - 1].type === 'strong_close' &&
     kids.filter((k) => k.type === 'strong_open' || k.type === 'strong_close').length === 2;
+}
+
+// A card's tab, body and inner wrapper openers. The first card of a skill
+// names the skill in a real heading, so the outline lists it under its learning
+// path; a continuation's repeated title is a span with the continued mark.
+function cardTabHtml({ name, tier }, cont) {
+  const title = cont
+    ? '    <span class="dc-tab-title">' + esc(name) + ' ' + CONTINUED_MARK + '</span>\n'
+    : '    <h4 class="dc-tab-title">' + esc(name) + '</h4>\n';
+  return '  <div class="dc-card-tab' + (cont ? ' dc-card-tab-cont' : '') + '">\n' +
+    title +
+    (tier ? '    <span class="dc-tab-tier">' + esc(tier) + '</span>\n' : '') +
+    '  </div>\n' +
+    '  <div class="dc-card-body">\n' +
+    '    <div class="dc-card-inner">\n';
 }
 
 /**
@@ -1194,10 +1236,15 @@ function dcSkillCards(state) {
     const columnsCloses = new Set(); // their close tokens
     let title = { name: '', tier: '' }; // the current card's title, for @continue
 
-    const cardOpen = (cont) => {
-      const attrs = open.attrs.map(([k, v]) => [k, k === 'class' && cont ? v.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cont') : v]);
-      attrs.push(['name', slugify(title.name)]);
-      return '<div' + md.renderer.renderAttrs({ attrs }) + '>\n';
+    // The card's opening markup, for the title it shows: the first card of a
+    // skill, or a continuation (`cont`); `cut` ends the card in a straight foot.
+    const cardOpen = (cont, cut = false) => {
+      const card = makeToken('html_block');
+      card.attrs = open.attrs.map(([k, v]) => [k, v]);
+      if (cont) addTokenClassAfter(card, 'dc-skill-card', 'dc-skill-card-cont');
+      if (cut) addTokenClassAfter(card, 'dc-skill-card', 'dc-skill-card-cut');
+      card.attrs.push(['name', slugify(title.name)]);
+      return '<div' + md.renderer.renderAttrs(card) + '>\n' + cardTabHtml(title, cont);
     };
     // A card's closing sign-off is marked only when the card truly ends there: not
     // when it is cut for a continuation, and never its first paragraph.
@@ -1210,6 +1257,7 @@ function dcSkillCards(state) {
       inCard = false;
     };
     let cardTok = null; // the html token that opened the current card
+    let cardCont = false; // is the current card a continuation?
 
     for (let i = 0; i < content.length; i++) {
       const tok = content[i];
@@ -1230,16 +1278,9 @@ function dcSkillCards(state) {
         // The skill's name is its `####` heading, kept a heading so the
         // outline lists it under its learning path. (A continuation card's
         // repeated title stays a span: it is not a new entry.)
-        emit(
-          cardOpen(false) +
-          '  <div class="dc-card-tab">\n' +
-          '    <h4 class="dc-tab-title">' + esc(parsed.name) + '</h4>\n' +
-          ((parsed.tier || autoTier) ? '    <span class="dc-tab-tier">' + esc(parsed.tier || autoTier) + '</span>\n' : '') +
-          '  </div>\n' +
-          '  <div class="dc-card-body">\n' +
-          '    <div class="dc-card-inner">\n'
-        );
+        emit(cardOpen(false));
         cardTok = out[out.length - 1];
+        cardCont = false;
         inCard = true;
         seenBlock = false;
         i += 2; // skip inline + heading_close
@@ -1250,16 +1291,9 @@ function dcSkillCards(state) {
         endCard(true);
         // The part before an explicit continuation closes straight (a foot, a
         // bolt, a flag); the specialty's cut stays the mark of a card's real end.
-        if (cardTok) cardTok.content = cardTok.content.replace('dc-skill-card', 'dc-skill-card dc-skill-card-cut');
-        emit(
-          cardOpen(true) +
-          '  <div class="dc-card-tab dc-card-tab-cont">\n' +
-          '    <span class="dc-tab-title">' + esc(title.name) + ' ' + CONTINUED_MARK + '</span>\n' +
-          (title.tier ? '    <span class="dc-tab-tier">' + esc(title.tier) + '</span>\n' : '') +
-          '  </div>\n' +
-          '  <div class="dc-card-body">\n' +
-          '    <div class="dc-card-inner">\n'
-        );
+        if (cardTok) cardTok.content = cardOpen(cardCont, true);
+        cardCont = true;
+        emit(cardOpen(true));
         cardTok = out[out.length - 1];
         inCard = true;
         seenBlock = false;
@@ -1269,21 +1303,16 @@ function dcSkillCards(state) {
       // A @callout, @card, @outcome, @procedure or @roll-table is content of the skill's card;
       // a break or another component (@specialty-art, @gear, …) ends it.
       if (tok.type === 'layout_component_open' && CARD_CONTENT.has(tok.meta.kind)) {
-        let end = i;
-        let depth = 0;
-        do depth += content[end++].nesting; while (depth > 0);
-        belongsToCard.add(tok).add(content[end - 1]);
+        belongsToCard.add(tok).add(content[closeIndex(content, i)]);
       }
       // `@columns` … `@end-columns` and the `@column-break`s between are content of
       // the card too when they sit inside one: the columns run stays in the
       // card's body, in place. (A run that opens before the card, around
       // several cards, is not the card's: it ends the card as any layout token does.)
       if (inCard && tok.type === 'layout_component_open' && tok.meta.kind === 'columns') {
-        let end = i;
-        let depth = 0;
-        do depth += content[end++].nesting; while (depth > 0);
-        belongsToCard.add(tok).add(content[end - 1]);
-        columnsCloses.add(content[end - 1]);
+        const close = content[closeIndex(content, i)];
+        belongsToCard.add(tok).add(close);
+        columnsCloses.add(close);
         columnsDepth++;
       }
       if (columnsCloses.has(tok)) columnsDepth--;
@@ -1366,9 +1395,7 @@ function dcKickers(state) {
     if (t[i].type === 'layout_section_open') depth++;
     if (t[i].type === 'layout_section_close') {
       depth--;
-      if (i >= 4 && t[i - 1].type === 'paragraph_close' && t[i - 3].type === 'paragraph_open' && t[i - 4].type !== 'layout_section_open' && isBoldOnlyInline(t[i - 2])) {
-        addTokenClass(t[i - 3], 'dc-kicker');
-      }
+      markKickerBefore(t, i, 'layout_section_open');
     }
     // A bold-only paragraph right before a heading in the same section also closes
     // its stretch of text. Before ordinary text it is a run-in sub-heading: not a kicker.
@@ -1436,8 +1463,7 @@ function dcLadders(state) {
     const endRung = () => {
       if (!rung) return;
       // a rung's closing bold line is the rung's kicker
-      const k = out.length;
-      if (out[k - 1].type === 'paragraph_close' && out[k - 3].type === 'paragraph_open' && out[k - 4].type !== 'html_block' && isBoldOnlyInline(out[k - 2])) addTokenClass(out[k - 3], 'dc-kicker');
+      markKickerBefore(out, out.length, 'html_block');
       out.push(makeToken('html_block', '</div>\n</div>\n'));
       rung = false;
     };
@@ -1647,23 +1673,13 @@ function dcProcedures(state) {
 // cannot know is each variant's default label, so a rule adds it when the
 // author wrote no `label="…"`. A missing or unrecognised variant is a plain
 // note.
-const CALLOUTS = {
-  note: { class: 'dc-note', label: 'Note' },
-  warning: { class: 'dc-note warning', label: 'Warning' },
-  dm: { class: 'dc-dm-note', label: 'Dream Master Note' },
-  vibe: { class: 'dc-vibe-callout', label: 'Vibe' },
-  origin: { class: 'dc-origin-callout', label: 'Origin' },
-  location: { class: 'dc-location-callout', label: 'Location' },
-  visit: { class: 'dc-visit-callout', label: 'Visit' },
-  example: { class: 'dc-example-callout', label: 'Example' },
-};
 
 function dcCallouts(state) {
   forEachComponent(state.tokens, 'callout', ([open, ...rest]) => {
     const variant = Object.hasOwn(CALLOUTS, open.meta.variant) ? open.meta.variant : 'note';
     if (variant !== open.meta.variant) {
       // no variant class came from core: the default note keeps its place right after dc-alert
-      open.attrSet('class', open.attrGet('class').replace('dc-alert', 'dc-alert dc-note'));
+      addTokenClassAfter(open, 'dc-alert', 'dc-note');
     }
     if (open.meta.labelled) return; // an explicit label="…" wins
     // An example that opens with its own heading ("### Example: Toxic Evolution")
@@ -1737,7 +1753,7 @@ const GEAR_KINDS = ['augment', 'treasure', 'vehicle', 'drug', 'program'];
 function dcGear(state) {
   forEachComponent(state.tokens, 'gear', ([open]) => {
     if (GEAR_KINDS.includes(open.meta.variant)) return;
-    open.attrSet('class', open.attrGet('class').replace('dc-entry', 'dc-entry dc-gear'));
+    addTokenClassAfter(open, 'dc-entry', 'dc-gear');
   });
 }
 
@@ -1825,7 +1841,7 @@ function dcFields(state) {
 function isFieldHost(open) {
   if (FIELD_HOSTS.has(open.meta?.kind)) return true;
   // `@npc-stat` and `@section npc` are one section; its class is the record (`@section npc` carries no kind)
-  return (open.attrGet('class') || '').split(/\s+/).includes('dc-npc-stat');
+  return hasClass(open, 'dc-npc-stat');
 }
 
 /** `**Label:** …` → { label, variant }, or null when the paragraph does not open with a known label. */
@@ -1989,7 +2005,7 @@ const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
 
 function widthOf(tok) {
   if (tok?.type !== 'layout_section_open') return 0;
-  const cls = (tok.attrGet('class') || '').split(/\s+/).find((c) => c in PU_WIDTHS);
+  const cls = classesOf(tok).find((c) => c in PU_WIDTHS);
   return cls ? PU_WIDTHS[cls] : 0;
 }
 
@@ -2037,7 +2053,7 @@ function dcContinuations(state) {
   const t = state.tokens;
   for (let i = 0; i < t.length; i++) {
     if (t[i].type !== 'layout_section_open') continue;
-    if (!(t[i].attrGet('class') || '').split(/\s+/).includes('dc-pu-cont')) continue;
+    if (!hasClass(t[i], 'dc-pu-cont')) continue;
     const next = t[i + 1];
     if (next?.type !== 'heading_open' || !['h2', 'h3'].includes(next.tag)) continue;
     t.splice(i + 1, 0, makeToken('html_block', PU_SPACER));
@@ -2137,7 +2153,7 @@ function dcNeonSigns(state) {
   const specialties = [];
   for (let i = 0; i < t.length; i++) {
     const tok = t[i];
-    const cls = (tok.attrGet?.('class') || '').split(/\s+/);
+    const cls = classesOf(tok);
     if (tok.type === 'layout_chapter_open') {
       chapterWord = cls.find((c) => c.startsWith('dc-chapter-'))?.slice('dc-chapter-'.length) ?? null;
     } else if (tok.type === 'layout_page_open' && cls.includes('dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
@@ -2152,6 +2168,7 @@ function dcNeonSigns(state) {
 }
 
 export default function dimmCityPlugin(md, options = {}) {
+  Token ??= new md.core.State('', md, {}).Token;
   registerSkillContinueBridge(md);
 
   // GFM-style `> [!NOTE]` alerts. Registered on the core ruler since the
@@ -2223,11 +2240,6 @@ export default function dimmCityPlugin(md, options = {}) {
 const wrapper = (cls, extra = {}) => ({ class: cls, autoCloseAt: ['eof'], ...extra });
 
 const FACTION_KINDS = { megacorp: 'Megacorp', cabal: 'Cabal', cult: 'Cult', enforcer: 'Enforcer' };
-
-const SPECIALTIES = [
-  'augmerc', 'proxy', 'streetwarden', 'gutterdruid', 'cybersurgeon',
-  'wirephreak', 'technosorcerer', 'etherlock', 'dualist', 'generalist',
-];
 
 export const markers = {
   // Specialty > learning path > skill. Core nests them as a stack; the rules
