@@ -138,7 +138,8 @@ and the styles say where a reader is and what they are reading.
   its frame; a program card's comb meets its foot. New tokens replace book
   overrides: `--dc-td-pad-y` / `--dc-th-pad-y` (table density),
   `--dc-section-measure` (a panel's prose width, reset inside a paste-up row),
-  `--dc-alert-overflow` (clip a warning's hazard rail at a page edge) and
+  `--dc-alert-overflow` (a warning clips its hazard rail by default, so it never
+  spills onto the next page; `visible` turns that off) and
   `--dc-definition-block-style` on the Surreal definition.
 - **`section.css` is five sheets**, in the same cascade order: `section.css`,
   `enclosures.css`, `creatures.css`, `fiction-excerpt.css`, `paste-up.css`.

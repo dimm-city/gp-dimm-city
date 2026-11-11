@@ -16,16 +16,20 @@ So translucency is allowed in artwork and forbidden in text. The package's style
 
 ## Translucent today
 
-All artwork: shadows, lifts, bevels and a smudge. Each darkens or tints what is under it, so the wall's texture reads through.
+All artwork: shadows, lifts, bevels and a smudge. Each darkens or tints what is under it, so the wall's texture reads through. Two of them are blurred (the soft lift and the AP chip's outer shadow); a blur is translucent by nature and prints, like the rest, in the page's 300 DPI artwork.
 
 | What | Where | Value |
 |---|---|---|
-| Poster shadow `--shadow-ink` | `dc-palette.css`; the hard offset in `--shadow-poster`: every lede, the contents and credits panels, specialty cards, stat grids | `color-mix(in srgb, var(--ink) 28%, transparent)` |
-| Soft lift `--shadow-soft` / `--shadow-lift` | `dc-palette.css`; under anything hung on the wall: sections (`--dc-section-lift`), cards, the outcome ladder, the specialty card | `color-mix(in srgb, var(--ink) 34%, transparent)` |
-| Recess `--shadow-press` | `dc-palette.css`; the soft inset of anything sunk into the wall: the fiction cavity, the `lore` / `dm` / `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
-| Section hard shadow `--dc-section-hard-shadow` | `dc-component-defaults.css`; the section's offset copy (`section.css`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
-| Sticker and path-chip shadows, the spray smudge, the dashed rule | `chrome.css` | 35% and 30% ink; 8% of `--dc-spray-bg`; 50% magenta |
-| AP-chip and outcome-key bevels | `cards.css`, `data.css` | 8–18% ink and paper |
+| Hard ink shadow `--shadow-ink` (`dc-palette.css`) | Alone: the credits colophon, the skill-card body and cut-card shadows, a paste-up plate and bill. In the poster shadow below | `color-mix(in srgb, var(--ink) 28%, transparent)` |
+| Soft lift `--shadow-lift` / `--shadow-soft` (`dc-palette.css`) | The skill-card body, the learning-path shell, the specialty card; every section panel through `--dc-section-lift` | `3pt 7pt 12pt -5pt` of `color-mix(in srgb, var(--ink) 34%, transparent)` (blurred) |
+| Poster shadow `--shadow-poster` (`dc-palette.css`): the hard ink shadow plus the soft lift | Ledes (`--dc-intro-drop`), `##` slips (`--dc-page-slip-shadow`), the contents panel and table (`--dc-toc-shadow`), the intro page's sheet, definition cards, `@procedure` steps, at-a-glance cards, the human callout | as above |
+| Recess `--shadow-press` (`dc-palette.css`) | The `lore` and `dm` sheets and their title, the `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
+| Section hard shadow `--dc-section-hard-shadow` (`dc-component-defaults.css`) | Every section panel's offset copy (`section.css`, `.dc-section-panel::after`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
+| Sticker and path-title shadows (`chrome.css`) | `.dc-sticker`, `.dc-path-sticker` | 35% and 30% ink |
+| Spray smudge (`chrome.css`) | `.dc-spray::after` | 8% of `--dc-spray-bg` |
+| AP chip (`cards.css`, `.dc-ap`) | Every AP chip: a top bevel, a hard 2px shadow and a soft outer shadow | 15% paper; 10% ink; `3px 3px 6px` of 8% ink (blurred) |
+| Outcome key bevel (`data.css`, `.dc-outcome-key`) | Every roll key in an outcome ladder | 12% paper and 18% ink insets |
+| Gloss `--light-gloss` (`dc-palette.css`) | Read by nothing in the package; kept for books | a gradient from 30% paper to transparent |
 
 A book that sets one of these tokens to an opaque colour loses nothing in print; one that sets a text colour translucent flattens that page whole.
 
@@ -34,10 +38,11 @@ A book that sets one of these tokens to an opaque colour loses nothing in print;
 | What | Why |
 |---|---|
 | Every text colour | A translucent glyph flattens its page whole (above). |
-| The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the ground `images/ground.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
+| The brick wall `images/brick-wall.png`, the six stone walls `images/wall-N.png`, the three streets `images/ground.png`, `ground-flags.png`, `ground-asphalt.png` | An `@page` background with alpha would put every page through the split, text-only pages included; an opaque tile leaves a page vector unless it carries other translucent artwork. Each is an opaque tile baked by `scripts/wall-tiles.py` or from `source-art/` (see *The wall* below); `--wall-tone`, the old tile average that shadows were mixed against, is gone. |
 | The band and tab gloss | `--light-gloss`, a gradient with transparent stops, made Chromium write a type-1 shading PDF.js cannot read (1.10.2). The path banner, the card tab and the specialty card band pre-mix the same sheen into their opaque fills; the token stays for books that read it. |
 | The tape divider's crimson dashes (`.dc-tape::before/::after`) | An ordinary gradient with opaque stops, tiled by `background-size`: a `repeating-linear-gradient` cannot be kept live and flattens the page whole. |
 | The bolt heads on a `##` slip, every callout and a skill card (`page-templates.css`, `chrome.css`) | Opaque discs: an ink ring round a `--paper-stain` face, the slot a hard-stopped band of ink (an ordinary gradient with opaque stops). They replaced the slip's translucent tape. |
+| Neon signs (`neon.css`) | Every ring, tube and core is a flat, opaque path in the colour the press prints; no glow, blur or translucency, and the letters are paths, not text, so no Type 3 font. |
 | The paper tints that remain (the tape's tan, the specialty mixes, the accent inks of the slate block and the Surreal definition) | `color-mix()` into the surface they sit on, at a share that holds a printable dot (1.10.2). Callout, section, faction, choice and entry surfaces are no longer tinted: they are white. |
 
 ## How to verify a book
@@ -50,7 +55,7 @@ A book that sets one of these tokens to an opaque colour loses nothing in print;
 
 ## Remaining transparency: the books' own art
 
-The Field Guide (dc-op-manual) places cutout art with a real alpha channel (25 of its 30 images; its own stylesheets use no transparency). With `preserve-text` that costs nothing: the art is rasterised with the page's other artwork at 300 DPI and the text stays live. Only a `flatten-page` build loses the page's text to it. A page that is nothing but art (a plate) is flattened whole in either mode, and loses nothing. The two fixes that used to be needed, flattening each image onto its background or exporting PDF/X-4, are no longer.
+The Field Guide (dc-op-manual) places cutout art with a real alpha channel (most of its images; its own stylesheet uses no transparency). With `preserve-text` that costs nothing: the art is rasterised with the page's other artwork at 300 DPI and the text stays live. Only a `flatten-page` build loses the page's text to it. A page that is nothing but art (a plate) is flattened whole in either mode, and loses nothing: in the 248-page Field Guide those are seven of its eight specialty art pages. The two fixes that used to be needed, flattening each image onto its background or exporting PDF/X-4, are no longer.
 
 ## Checklist
 
@@ -76,7 +81,7 @@ Before Gutterpress had `preserve-text` (#385), Ghostscript flattened any page th
 
 ### Changes
 
-This table is historical and superseded: most of its values were later made translucent again by decision (see the table above), and some of the tokens it names no longer exist.
+This table is historical and superseded: most of its values were later made translucent again by decision (see *Translucent today*), and some of the tokens it names no longer exist (`--wall-tone`, `--dc-pullquote-accent-soft`, `--dc-card-body-mark`).
 
 | ID | Component | Before | After | Mixed against | What to look at |
 |---|---|---|---|---|---|
@@ -100,7 +105,7 @@ This table is historical and superseded: most of its values were later made tran
 | O3 | Pull-quote mark (`.dc-pullquote::before`) (`components/data.css`) | `color: var(--hud-magenta); opacity: 0.55;` | `color: color-mix(in srgb, var(--hud-magenta) 55%, var(--dc-pullquote-bg));` | the pull-quote panel | Pull quotes: the large magenta quotation mark. |
 | N1 | Credits colophon shadow (`dc-native.css`) | `box-shadow: 2pt 0 0 rgba(0, 0, 0, 0.28);` | `box-shadow: 2pt 0 0 color-mix(in srgb, #000 28%, var(--wall-tone));` | the brick wall | Credits page: the colophon panel's right-edge shadow. |
 
-**Removed outright:** the AP chip's soft `3px 3px 6px` shadow (K4). A blur fades to transparent by definition, so it has no opaque equivalent. The chip keeps its hard 2px shadow.
+**Removed outright at the time:** the AP chip's soft `3px 3px 6px` shadow (K4). It came back with the translucent artwork and is in *Translucent today*.
 
 ### Not converted
 
