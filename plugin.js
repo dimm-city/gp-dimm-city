@@ -386,35 +386,76 @@ const LADDER_BANDS_COUNT = OUTCOME_TIERS.length;
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
 // The d20 outcome ladder is recognised by its bands, not by what its columns
-// are called: a two-column table whose first column holds exactly the five
-// standard bands (20, 11-19, 6-10, 2-5, 1), in either order, is the ladder. A
-// band is typed any way an author types one ("11-19", "11 – 19", "**20**").
-// Any other set of bands (six bands, three, a split at 10) is NOT a ladder.
+// are called: a two-column table whose first column holds a d20 result on every
+// row is the ladder, so a roll's results read the same wherever the book states
+// them. The five standard bands (20, 11-19, 6-10, 2-5, 1) are the usual set; an
+// ability's own set is a ladder too (six bands, 16-19 over 11-15, 1-5 or 2-10,
+// 11+), each row in the colour of the tier its band falls in. A band is typed any
+// way an author types one ("11-19", "11 – 19", "**20**", "On 11–19", "11+"), may
+// carry a label ("20: Total Wholeness", "20 – Triumph", "Triumph (20)"), or be the
+// tier's word alone ("Success", "Hard Choice"). A table whose bands overlap, run
+// past 1-20 or straddle 10/11 is not a ladder.
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
+const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
 
 // "11 – 19" → [11, 19], "11--19" → [11, 19], "**20**" → [20, 20]; anything that is not a number or a range → null.
 function parseBand(cell) {
-  const text = cell.replace(/[*_`\s]/g, '').replace(/[\u2010-\u2015\u2212]|-{2,3}/g, '-');
+  const text = cell.replace(/[*_`\s]/g, '').replace(/[‐-―−]|-{2,3}/g, '-');
   const m = /^(\d{1,3})(?:-(\d{1,3}))?$/.exec(text);
   if (!m) return null;
   const [lo, hi] = [Number(m[1]), Number(m[2] ?? m[1])];
   return lo <= hi ? [lo, hi] : null;
 }
 
+// The tier a band falls in, or null when it straddles two (6-14) or is no d20 result.
+function tierOfBand(lo, hi) {
+  if (lo < 1 || hi > 20) return null;
+  if (lo === 20) return 'crit';
+  if (lo === 1 && hi === 1) return 'fail';
+  if (lo >= 11) return 'hit';
+  if (lo >= 6 && hi <= 10) return 'mixed';
+  if (hi <= 10 && lo <= 5) return 'miss';
+  return null;
+}
+
+// One result cell of a ladder → { tier, lo, hi, roll, label }, or null.
+function parseResultCell(cell) {
+  const text = cell.replace(/[*_`]/g, '').replace(/[‐-―−]|-{2,3}/g, '-').replace(/\s+/g, ' ').trim();
+  const word = TIER_OF_WORD[text.toLowerCase()];
+  if (word) return { tier: word, lo: null, hi: null, roll: '', label: text };
+  let m = /^(?:on )?(\d{1,2})(?: ?- ?(\d{1,2}))?(\+)?(?: ?[:-] ?(.+))?$/i.exec(text);
+  let label = m?.[4] || '';
+  if (!m) {
+    m = /^(.+?) ?\((\d{1,2})(?: ?- ?(\d{1,2}))?\)$/.exec(text);
+    if (!m) return null;
+    m = [m[0], m[2], m[3], undefined, m[1]];
+    label = m[4];
+  }
+  const lo = Number(m[1]);
+  const hi = m[3] ? 20 : Number(m[2] ?? m[1]);
+  if (lo > hi) return null;
+  const tier = tierOfBand(lo, hi);
+  if (!tier) return null;
+  const roll = m[3] ? lo + '+' : lo === hi ? String(lo) : lo + '–' + hi;
+  return { tier, lo, hi, roll, label: label.trim() };
+}
+
 // The ladder of a table — its header cells and its rows — or null when it is
-// not a ladder.
+// not a ladder: two columns, at least three rows, every first cell a result,
+// three tiers or more, no two bands overlapping.
 function ladderRows(table) {
   const { head, rows } = table;
-  if (head.length !== 2 || rows.length !== LADDER_BANDS_COUNT || rows.some((r) => r.length !== 2)) return null;
-  const bands = rows.map((r) => parseBand(r[0]));
-  if (bands.some((b) => !b)) return null;
-  const keys = bands.map(([lo, hi]) => (lo === hi ? String(lo) : lo + '-' + hi));
-  if (new Set(keys).size !== LADDER_BANDS_COUNT || keys.some((k) => !Object.hasOwn(LADDER_TIER_OF_BAND, k))) return null;
+  if (head.length !== 2 || rows.length < 3 || rows.some((r) => r.length !== 2)) return null;
+  const cells = rows.map((r) => parseResultCell(r[0]));
+  if (cells.some((c) => !c)) return null;
+  if (new Set(cells.map((c) => c.tier)).size < 3) return null;
+  const banded = cells.filter((c) => c.lo !== null).sort((x, y) => x.lo - y.lo);
+  for (let i = 1; i < banded.length; i++) if (banded[i].lo <= banded[i - 1].hi) return null;
   return {
     head,
     rows: rows.map((r, i) => {
-      const tier = LADDER_TIER_OF_BAND[keys[i]];
-      return { tier, name: OUTCOME_NAMES[tier], roll: keys[i].replace('-', '\u2013'), text: r[1].trim() };
+      const { tier, roll, label } = cells[i];
+      return { tier, name: label || OUTCOME_NAMES[tier], roll, text: r[1].trim() };
     }),
   };
 }
