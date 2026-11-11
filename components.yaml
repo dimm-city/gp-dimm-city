@@ -1008,41 +1008,27 @@ components:
     emits: .dc-paste-up
     notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (section.css, PASTE-UP). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
 
-  - name: row
+  - name: paste-up-width
     status: live
-    origin: plugin
-    markers: ["@row"]
+    origin: author
+    modifier: [dc-half, dc-narrow, dc-wide]
+    description: "A sheet's width in a row: half, narrow (38%) or wide (62%); two adjacent sheets whose widths complete a row sit side by side."
     snippet: row
-    recipe: "@row / @section … @end-section / @section … @end-section / @end-row"
-    emits: div.dc-pu-row
+    recipe: "@section panel .dc-half … @end-section / @section panel .dc-half … @end-section  |  .dc-narrow then .dc-wide (38/62), .dc-wide then .dc-narrow (62/38)"
+    emits: div.dc-pu-row (the plugin's, around the two sheets)
     css: styles/components/section.css
     tokens: [--dc-pu-row-cols, --dc-pu-pair-gap]
     breaks: "a row is kept whole (break-inside: avoid)"
-    notes: "Two paste-up sheets side by side, half and half, each ending at its own last line, closing stickers at the foot. An alias of core's `@columns 2` (the one frame that may hold sections), which the plugin writes as `div.dc-pu-row`, a grid, with core's column classes taken off. `@row-wide` is 62/38 and `@row-narrow` 38/62, the register's other widths. Closed by `@end-row`."
+    notes: "Two paste-up sheets side by side, each ending at its own last line, closing stickers at the foot. A sheet says its own width on its section line; when it is followed straight away by a sheet whose width completes the row (half and half, narrow and wide, wide and narrow), the plugin wraps the two in `div.dc-pu-row`, a grid whose columns are read off the first sheet (--dc-pu-row-cols). There is no row marker. A sheet with a width and no partner is reported (`row_unpaired`) and prints at the full width."
 
-  - name: row-wide
-    status: live
+  - name: row
+    status: retired
     origin: plugin
-    markers: ["@row-wide"]
-    snippet: row-wide
-    recipe: "@row-wide / @section … @end-section / @section … @end-section / @end-row"
-    emits: div.dc-pu-row.dc-pu-row-wide
-    css: styles/components/section.css
-    tokens: [--dc-pu-row-cols]
-    breaks: "a row is kept whole (break-inside: avoid)"
-    notes: "A `@row` whose first sheet is the wider: 62/38 (sets --dc-pu-row-cols). Closed by `@end-row`."
-
-  - name: row-narrow
-    status: live
-    origin: plugin
-    markers: ["@row-narrow"]
-    snippet: row-narrow
-    recipe: "@row-narrow / @section … @end-section / @section … @end-section / @end-row"
-    emits: div.dc-pu-row.dc-pu-row-narrow
-    css: styles/components/section.css
-    tokens: [--dc-pu-row-cols]
-    breaks: "a row is kept whole (break-inside: avoid)"
-    notes: "A `@row` whose first sheet is the narrower: 38/62, a short intro beside a longer sheet (sets --dc-pu-row-cols). Closed by `@end-row`."
+    markers: ["@row", "@row-wide", "@row-narrow"]
+    replaced_by: "a width on each sheet: .dc-half twice, .dc-narrow then .dc-wide, or .dc-wide then .dc-narrow"
+    recipe: "@row | @row-wide | @row-narrow … @end-row"
+    emits: "nothing: the markers are no longer declared"
+    notes: "Retired in 1.10.3 (it shipped in 1.10.3-alpha.1 and alpha.2). A row was a wrapper marker around two sheets; now each sheet says its width and the plugin pairs them. Delete the @row and @end-row lines and write the widths on the two @section lines."
 
   - name: paste-up-continuation
     status: live

@@ -1723,8 +1723,10 @@ p:has(+ .dc-kicker) {
    page is split in markup, the second part a `.dc-pu-cont` sheet.
 
    The pieces of a paste-up wall (all of them the plugin's):
-     @row [wide|narrow] … @end-row   two sheets side by side, kept whole
-                                      (half and half; 62/38; 38/62)
+     @section … .dc-half / .dc-narrow / .dc-wide
+                                      a sheet's width: two in a row whose widths
+                                      complete it sit side by side (half and
+                                      half; 38/62; 62/38), the plugin's div.dc-pu-row
      @section … .dc-pu-cont           a continuation sheet: a clean top, no tag
                                       (the plugin keeps its first `###` a sub-head)
      ## Title {.dc-pu-bill}           a `##` that shouts (`.dc-pu-bill-mid` at 1.5x)
@@ -1812,15 +1814,18 @@ p:has(+ .dc-kicker) {
 .section.dc-fiction-excerpt > .dc-kicker::before { content: none; }
 
 
-/* Rows (`@row`): two sheets side by side, kept whole, each ending at its last
-   line, closing stickers at the foot. Half and half; `wide` is 62/38 and
-   `narrow` 38/62 (the register's three widths). */
+/* Rows: two sheets side by side, kept whole, each ending at its last line,
+   closing stickers at the foot. The plugin wraps two adjacent sheets whose
+   widths complete a row (`.dc-half` twice, `.dc-narrow` and `.dc-wide` either
+   way) in `div.dc-pu-row`; the widths are read off the first sheet (the
+   register's three widths). */
 .dc-pu-row {
   display: grid; grid-template-columns: var(--dc-pu-row-cols); gap: 0 var(--dc-pu-pair-gap);
   align-items: start; break-inside: avoid;
 }
-.dc-pu-row-wide   { --dc-pu-row-cols: 62fr 38fr; }
-.dc-pu-row-narrow { --dc-pu-row-cols: 38fr 62fr; }
+.dc-pu-row:has(> .dc-half:first-child)   { --dc-pu-row-cols: 1fr 1fr; }
+.dc-pu-row:has(> .dc-wide:first-child)   { --dc-pu-row-cols: 62fr 38fr; }
+.dc-pu-row:has(> .dc-narrow:first-child) { --dc-pu-row-cols: 38fr 62fr; }
 .dc-pu-row > * { min-width: 0; }
 .dc-pu-row > .dc-section-panel { display: flex; flex-direction: column; }
 .dc-pu-row > .dc-section-panel > .dc-kicker:last-child { margin-top: auto; }

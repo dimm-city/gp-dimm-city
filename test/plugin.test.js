@@ -364,7 +364,7 @@ describe("declared wrapper markers", () => {
       lede: "dc-intro",
       block: "dc-block",
     };
-    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction", "ladder", "row", "row-wide", "row-narrow"]; // declared too, but their content is rewritten: see the next describe blocks
+    const rewritten = ["specialty", "learning-path", "skill", "card", "outcome", "procedure", "callout", "dm-note", "roll-table", "faction", "ladder"]; // declared too, but their content is rewritten: see the next describe blocks
     expect(Object.keys(markers).filter((k) => k !== "specialty-card" && !rewritten.includes(k) && !markers[k].section && !["section", "page", "chapter"].includes(k)).sort()).toEqual(Object.keys(expected).sort());
     for (const [name, cls] of Object.entries(expected)) {
       const { html, warnings } = render(wrap(`@${name}`, `@end-${name}`, "#### Name")); // an entry card needs its name
@@ -1899,17 +1899,28 @@ describe("@gear program", () => {
 });
 
 describe("paste-up: rows and continuation sheets", () => {
-  const sheet = (t) => `@section panel\n\n### ${t}\n\nx\n\n@end-section`;
-  test("@row, @row-wide and @row-narrow hold two sheets in div.dc-pu-row, with none of core's column classes", () => {
-    for (const [marker, cls] of [["@row", "dc-pu-row"], ["@row-wide", "dc-pu-row dc-pu-row-wide"], ["@row-narrow", "dc-pu-row dc-pu-row-narrow"]]) {
-      const { html, warnings } = renderGp(`${marker}\n\n${sheet("A")}\n\n${sheet("B")}\n\n@end-row\n\nafter`);
-      expect(warnings, marker).toEqual([]);
-      expect(html, marker).toMatch(new RegExp(`^<div class="${cls}"><div class="section dc-section-panel"[^>]*><h3>A</h3>[\\s\\S]*<h3>B</h3>[\\s\\S]*</div></div>\\n?<p>after</p>`));
-      expect(html, marker).not.toContain("columns");
+  const sheet = (t, w = "") => `@section panel${w}\n\n### ${t}\n\nx\n\n@end-section`;
+  const rowWarnings = (src) => renderGp(src).warnings.filter((w) => w.type === "row_unpaired");
+  test("two adjacent sheets whose widths complete a row are wrapped in div.dc-pu-row, widths kept on the sheets", () => {
+    for (const [a, b] of [[" .dc-half", " .dc-half"], [" .dc-narrow", " .dc-wide"], [" .dc-wide", " .dc-narrow"]]) {
+      const { html, warnings } = renderGp(`${sheet("A", a)}\n\n${sheet("B", b)}\n\nafter`);
+      expect(warnings, a + b).toEqual([]);
+      expect(html, a + b).toMatch(new RegExp(`^<div class="dc-pu-row">\\n<div class="section dc-section-panel dc-${a.slice(5)}"[^>]*><h3>A</h3>[\\s\\S]*<div class="section dc-section-panel dc-${b.slice(5)}"[^>]*><h3>B</h3>[\\s\\S]*</div></div>\\n<p>after</p>`));
     }
   });
-  test("a class written on @row stays", () => {
-    expect(renderGp(`@row .fg-x\n\n${sheet("A")}\n\n@end-row`).html).toContain('<div class="dc-pu-row fg-x">');
+  test("a run of four halves is two rows; a sheet with no partner is reported and left alone", () => {
+    const four = renderGp([1, 2, 3, 4].map((n) => sheet(`S${n}`, " .dc-half")).join("\n\n")).html;
+    expect(four.match(/<div class="dc-pu-row">/g)).toHaveLength(2);
+    for (const src of [sheet("A", " .dc-half"), `${sheet("A", " .dc-half")}\n\n${sheet("B", " .dc-wide")}`, `${sheet("A", " .dc-narrow")}\n\ntext\n\n${sheet("B", " .dc-wide")}`]) {
+      expect(renderGp(src).html, src).not.toContain("dc-pu-row");
+      expect(rowWarnings(src).length, src).toBeGreaterThan(0);
+    }
+    expect(rowWarnings(`${sheet("A")}\n\n${sheet("B")}`)).toEqual([]);
+  });
+  test("@row is no longer a marker", () => {
+    expect(markers).not.toHaveProperty("row");
+    expect(markers).not.toHaveProperty("row-wide");
+    expect(markers).not.toHaveProperty("row-narrow");
   });
   test("a plain @columns is still core's", () => {
     expect(renderGp("@columns 2\n\na\n\n@end-columns").html).toContain("columns-2");

@@ -11,14 +11,14 @@
      the wall above and below a sheet's paper (the tag and the closing sticker
      straddle them); lift is how far a tag's top rises above the paper's edge;
      inset moves the sheets in so a tag's overhang stays in the content box;
-     pair-gap is the gap between sheets in a `@row`; the sticker tokens
+     pair-gap is the gap between two sheets in a row; the sticker tokens
      size and seat a closing street line. A chapter sets them on its id. */
   --dc-pu-band:           0.18in;
   --dc-pu-foot:           0.16in;
   --dc-pu-lift:           0.1in;
   --dc-pu-inset:          0.08in;          /* keeps a sheet's tilted tag (it hangs about 0.07in off the sheet's edge) inside the content box; a book whose pages clip sideways may set 0 */
   --dc-pu-pair-gap:       var(--space-xl);
-  --dc-pu-row-cols:       1fr 1fr;         /* a `@row`'s two widths; `@row-wide` sets 62fr 38fr, `@row-narrow` 38fr 62fr */
+  --dc-pu-row-cols:       1fr 1fr;         /* a row's two widths; a .dc-wide first sheet sets 62fr 38fr, a .dc-narrow one 38fr 62fr */
   --dc-pu-sticker-size:   var(--fs-h3);
   --dc-pu-sticker-gap:    var(--space-lg);
   --dc-pu-sticker-drop:   calc(0.1in + 2pt);

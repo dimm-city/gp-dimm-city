@@ -22,9 +22,6 @@
  *                          elixirs, consumables), program (deck software: a data cartridge)
  *   @toc                 → div.dc-toc
  *   @lede                → div.dc-intro
- *   @row, @row-wide, @row-narrow
- *                        → div.dc-pu-row[.dc-pu-row-wide|-narrow]: two paste-up sheets
- *                          side by side (half and half, 62/38, 38/62); closed by @end-row
  *   @block [panel|slate|shard] label="Title"
  *                        → div.dc-block.dc-<variant> + div.dc-block-title
  *                          (`@block .dc-panel` class form works too)
@@ -1993,20 +1990,52 @@ function dcSteps(state) {
 
 // ── Paste-up: rows and continuation sheets ──────────────────────────────────
 //
-// `@row` … `@end-row` is two sheets side by side (`@row-wide` 62/38,
-// `@row-narrow` 38/62). It is an alias of core's `@columns 2`, because only a
-// columns frame may hold sections; this rule then makes it the row: the open
-// token becomes `div.dc-pu-row` (plus the width's class) with core's column
-// classes and data taken off, so no column rule applies to it.
-const PU_ROWS = { row: '', 'row-wide': 'dc-pu-row-wide', 'row-narrow': 'dc-pu-row-narrow' };
+// A sheet says its own width: `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%)
+// on its section line. Two sheets side by side are a row: when a sheet
+// with a width is followed straight away by one whose width completes it (half
+// and half, narrow and wide, wide and narrow), the plugin wraps the two in
+// `div.dc-pu-row`, and section.css reads the widths off them. There is no row
+// marker to write. A sheet with a width and no partner is reported, and prints
+// at the full width.
+const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
+
+function widthOf(tok) {
+  if (tok?.type !== 'layout_section_open') return 0;
+  const cls = (tok.attrGet('class') || '').split(/\s+/).find((c) => c in PU_WIDTHS);
+  return cls ? PU_WIDTHS[cls] : 0;
+}
 
 function dcRows(state) {
-  for (const tok of state.tokens) {
-    if (tok.type !== 'layout_component_open' || !(tok.meta?.component in PU_ROWS)) continue;
-    const written = (tok.meta.attrs?.class || '').split(/\s+/);
-    tok.attrs = (tok.attrs || []).filter(([k]) => k !== 'class' && k !== 'data-columns');
-    tok.attrSet('class', ['dc-pu-row', PU_ROWS[tok.meta.component], ...written].filter(Boolean).join(' '));
+  const t = state.tokens;
+  const ends = new Map(); // a section's open index → its close index
+  const stack = [];
+  t.forEach((tok, i) => {
+    if (tok.type === 'layout_section_open') stack.push(i);
+    else if (tok.type === 'layout_section_close') ends.set(stack.pop(), i);
+  });
+  const out = [];
+  for (let i = 0; i < t.length; i++) {
+    const width = widthOf(t[i]);
+    if (!width) {
+      out.push(t[i]);
+      continue;
+    }
+    const firstEnd = ends.get(i);
+    const next = firstEnd + 1;
+    if (firstEnd !== undefined && widthOf(t[next]) === 100 - width && ends.has(next)) {
+      const secondEnd = ends.get(next);
+      out.push(makeToken('html_block', '<div class="dc-pu-row">\n'), ...t.slice(i, secondEnd + 1), makeToken('html_block', '</div>\n'));
+      i = secondEnd;
+      continue;
+    }
+    (state.env.layoutWarnings ??= []).push({
+      line: t[i].map ? t[i].map[0] + 1 : t[i].meta?.line ?? t[i].meta?.__line ?? 0,
+      type: 'row_unpaired',
+      message: 'This sheet has a width (.dc-half, .dc-narrow or .dc-wide) but the sheet straight after it does not complete the row, so it prints full width. Give the next sheet the other half (.dc-half), or the other side of 38/62 (.dc-wide after .dc-narrow, .dc-narrow after .dc-wide).',
+    });
+    out.push(t[i]);
   }
+  state.tokens = out;
 }
 
 // `@section … .dc-pu-cont` is a sheet that carries on from the one before it,
@@ -2168,12 +2197,6 @@ export const markers = {
   }),
   toc: wrapper('dc-toc'),
   lede: wrapper('dc-intro'),
-  // Paste-up: two sheets side by side, kept whole (section.css, PASTE-UP).
-  // Aliases of core's columns, the one frame that may hold sections; `dcRows`
-  // makes each a `div.dc-pu-row`. Half and half, 62/38, 38/62.
-  row: { alias: 'columns', preset: { variant: '2' } },
-  'row-wide': { alias: 'columns', preset: { variant: '2' } },
-  'row-narrow': { alias: 'columns', preset: { variant: '2' } },
   block: wrapper('dc-block', {
     variants: { panel: 'dc-panel', slate: 'dc-slate', shard: 'dc-shard' },
     label: { tag: 'div', class: 'dc-block-title', from: 'attr:label' },
