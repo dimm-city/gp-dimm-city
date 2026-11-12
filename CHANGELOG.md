@@ -40,6 +40,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Creaturepunk, a graffiti display face.** Caps traced from the
+  CREATUREPUNK lettering (C, R, E, A, T, U, P, N, K), with the rest of A-Z,
+  0-9 and common punctuation built from pieces of those letters; lowercase
+  maps to the caps. `font-family: 'Creaturepunk'` (declared in
+  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's tall C and
+  long-legged K. Not assigned to any token yet. Licensed CC BY 4.0
+  (`fonts/creaturepunk/LICENSE.txt`). Demo page:
+  `docs/creaturepunk-font-demo.html`; source and build scripts:
+  `source-art/creaturepunk/`.
+
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
   catalog in one colour and one chip label per kind of gear, so firearms,
   grenades and armor read as one system and each is told at a glance, in
