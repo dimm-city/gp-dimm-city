@@ -46,9 +46,13 @@ and the styles say where a reader is and what they are reading.
   maps to the caps. `font-family: 'Creaturepunk'` (declared in
   `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's own C, U
   and K (tall C, short-stemmed U, long-legged K). Licensed CC BY 4.0
-  (`fonts/creaturepunk/LICENSE.txt`). Demo page:
-  `docs/creaturepunk-font-demo.html`; source and build scripts:
-  `source-art/creaturepunk/`.
+  (`fonts/creaturepunk/LICENSE.txt`). `Creaturepunk.ttf` is the source: edit
+  it in `docs/creaturepunk-font-demo.html`, which, served locally, loads the
+  file, lets you drag outline points and set side bearings with the whole
+  specimen redrawing live, and downloads the edited `.ttf`. The generator in
+  `source-art/creaturepunk/` (with the lettering it traces) stays as the
+  deterministic reset: it rebuilds the same `.ttf` every time, overwriting
+  hand edits.
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
   catalog in one colour and one chip label per kind of gear, so firearms,
@@ -197,8 +201,10 @@ and the styles say where a reader is and what they are reading.
   "J": its left stem now runs to cap height. G, built on the old C, is now
   the blocky C with a spur and an inward bar. M read as "H": its V now drops
   to a third of the height with the middle open below it. "…" fell back to
-  another font: the font now has its own ellipsis. The logo's C and U stay
-  as `swsh` alternates. C, G, U and M change width, so a heading set with them
+  another font: the font now has its own ellipsis. J's stub of a hook read
+  as a foot: the hook is now a bowl. & was a small B with a tail: it is now
+  drawn as strokes, a loop over crossing diagonals with an arm and a tail. The logo's C and U stay
+  as `swsh` alternates. C, G, U, M and & change width, so a heading set with them
   can rewrap.
 
 - **A paste-up tag widens to its longest word.** A word wider than the tag's

@@ -99,7 +99,7 @@ languagesystem latn dflt;
 feature swsh { sub @plain by @swash; } swsh;
 feature ss01 { featureNames { name "Logo forms: tall C, short-stemmed U, long-legged K"; }; sub @plain by @swash; } ss01;
 ''')
-out='../../fonts/creaturepunk/'
-fb.save(out+'Creaturepunk.ttf')
-fb.font.flavor='woff2'; fb.font.save(out+'Creaturepunk.woff2')
+out=sys.argv[1] if len(sys.argv)>1 else '../../fonts/creaturepunk/Creaturepunk.ttf'
+fb.save(out)
+print('wrote',out)
 print('ymax',ymax,'ymin',ymin)

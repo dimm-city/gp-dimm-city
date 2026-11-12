@@ -110,3 +110,22 @@ amp=scale(G['B'],0.8,0.8,0,0)
 G['ampersand']=amp | sh(tail,8,-4)
 G['ellipsis']=dot | sh(dot,15,0) | sh(dot,30,0)
 G['space']=np.zeros_like(E)
+
+# ---- Print review, round 2: J and &.
+# Defined last, overriding the earlier J and ampersand: P() draws from one
+# seeded random stream, so editing them in place would shift the noise of
+# every glyph defined after them.
+# J: the logo U with its left stem cut to a hook and the inside of the hook
+# opened, so the bowl reads (the old J's stub read as a foot).
+j = U & ~P([(-5,15),(9.5,17.5),(9.5,60),(-5,60)],rough=0.3,soft=0)
+j = j & ~P([(8.6,17.5),(17,18),(15.6,7.5),(10.4,7.2)],rough=0.3,soft=0.25)
+G['J'] = j & ~P([(7,16.5),(12,16.5),(12,24),(7,24)],soft=0)
+# &: drawn as strokes, a small loop, two diagonals crossing under it, a lower
+# bowl, an arm kicked up off the bowl and K's swept leg as the tail (the old &
+# was a scaled B with a tail and read as "B\").
+loop = P([(11,29),(29,29.5),(31,44.5),(12,44)],rough=0.45) & ~P([(17,34.5),(24.5,34.5),(25,39.5),(17.5,39.5)],rough=0.3,soft=0.25)
+dA = P([(11,33),(20,30),(42,0),(32,-1.5)],rough=0.45)
+dB = P([(21,30.5),(30,33),(9,12),(0.5,14.5)],rough=0.45)
+bowl = P([(0.5,16),(9,13),(10,8.5),(27,8.5),(27,-1),(4,-1.5),(0,6)],rough=0.45)
+arm = P([(22,0),(30,-0.5),(45,23),(37,24)],rough=0.45)
+G['ampersand'] = loop | dA | dB | bowl | arm | sh(clip(tail,[(28,-15),(70,-15),(70,20),(28,20)]),6,-12)
