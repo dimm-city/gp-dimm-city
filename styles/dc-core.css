@@ -273,6 +273,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--fs-body-sm);   /* the cells; a header row keeps its own 10pt label size */
+  line-height: var(--lh-tight);   /* compact rows: a table is scanned, not read */
   margin: 0.1in 0;
   break-inside: avoid;
 }
