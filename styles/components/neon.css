@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   padding: 10pt 15pt;
-  box-shadow: 4pt 4pt 0 var(--ink-dark);
+  box-shadow: 0 0 0 1.5pt var(--neon-dead), 4pt 4pt 0 var(--ink-dark);   /* a grey bezel: the plate's edge shows on an ink banner */
 }
 .dc-neon::before { top: 3pt; left: 3pt; }
 .dc-neon::after { top: 3pt; right: 3pt; }
@@ -116,9 +116,17 @@
 .section.dc-section-panel.dc-lit > :is(h2, h3):first-child {
   background: var(--ink);
   color: var(--dc-neon-core);
-  padding: 4.5pt calc(4.5pt + var(--space-lg));
-  --dc-pu-tag-top: calc(var(--dc-pu-lift) - 2.76pt);   /* paste-up.css sets the margin and the tilt's pivot from it */
+  padding: 6pt calc(6pt + var(--space-lg));   /* 1.5pt of ink between the text and the 4.5pt tube */
+  --dc-pu-tag-top: calc(var(--dc-pu-lift) - 5.76pt);   /* the 5.76pt over the paper tag's padding, taken from above; paste-up.css sets the margin and the tilt's pivot from it */
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
+}
+
+/* A lit panel's details (rail, bullets, flavour rule, die call) take its hue's
+   inner ring, not the chapter's accent. A lore sheet (a district) keeps its
+   violet: that is its kind's colour. */
+.section.dc-section-panel.dc-lit:not(.dc-section-lore) {
+  --dc-section-accent: var(--dc-neon-ring-1);
+  --dc-accent-ink: var(--dc-neon-ring-1);
 }
 
 /* A lit sheet's sub-heads: the hue's dark ring for the words (it reads on

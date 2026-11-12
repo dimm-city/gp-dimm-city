@@ -247,8 +247,9 @@
 }
 .dc-program::before {
   display: block;
-  margin: -16pt -18pt 8px;
-  padding: 4.5pt 18pt;   /* clear of the 4.5pt tube; line-height 1 keeps the strip's height */
+  margin: -16pt -18pt calc(8px - 3pt);   /* the strip's 3pt more padding, given back under it */
+  padding: 6pt 18pt;   /* 1.5pt of plate between the text and the 4.5pt tube */
+  background: var(--dc-neon-ring-2);   /* a navy screen, not the Dream Master's ink */
   line-height: 1;
   letter-spacing: 0.18em;
   color: var(--dc-neon-core);

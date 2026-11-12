@@ -371,7 +371,7 @@ h3 + .dc-section-panel {
      panel      the default card, a solid accent bar      top right   chapter accent (magenta by default)
      reference  look it up, a PALE bar                    all four, small   HUD blue
      lore       the world, not the rules                  top left + bottom right, long   violet
-     dm         behind the screen                         top right + bottom left   ink bar, cyan rule and rail, DM chip
+     dm         behind the screen: a lit booth            none (square)   ink head, cyan neon frame, DREAM MASTER sign
      choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Choose" stamp
      catalog    a run of entries (entries.css)            both top
      npc-stat   a creature (below)                        both right
@@ -435,7 +435,7 @@ h3 + .dc-section-panel {
    the panel chassis), so the bottom lip is the foot of that edge: the sheet's
    copy stops --dc-section-recess-foot short of it and the lip shows under it.
    `choose` paints its own surface (edge 0), so its lip is the inset one. */
-:is(.dc-section-lore, .dc-section-dm) {
+.dc-section-lore {
   --dc-section-recess:
     inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
     inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press),
@@ -523,7 +523,7 @@ h3 + .dc-section-panel {
   --dc-neon: var(--neon-cyan); --dc-neon-core: var(--neon-cyan-core);
   --dc-neon-ring-1: var(--neon-cyan-ring-1); --dc-neon-ring-2: var(--neon-cyan-ring-2);
   --dc-section-accent: var(--brand-cyan);
-  --dc-section-top: 30pt;   /* the sign's band */
+  --dc-section-top: 22pt;   /* the sign's band: the sign under the title's weight */
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 0px;
   --dc-section-cut-bl: 0px;
@@ -553,14 +553,14 @@ h3 + .dc-section-panel {
 }
 .dc-section-dm::after {
   content: var(--dc-dm-sign);
-  top: 7.5pt;
-  left: 7.5pt;
-  right: 7.5pt;
+  top: 6pt;
+  left: 6pt;
+  right: 6pt;
   bottom: auto;
-  height: var(--dc-section-top);
+  height: calc(var(--dc-section-top) + 1.5pt);   /* from the frame's inner ink ring: ink on ink, no seam */
   box-sizing: border-box;
   padding: 3pt 8pt;
-  background: var(--ink-dark) url("../../images/neon-dream-master.svg") no-repeat;
+  background: var(--ink) url("../../images/neon-dream-master.svg") no-repeat;
   background-origin: content-box;
   background-position: left center;
   background-size: contain;
@@ -571,9 +571,9 @@ h3 + .dc-section-panel {
 /* The title carries on the ink head under the sign, in the tube's pale core,
    and a lit line closes the head off from the face. */
 .dc-section-dm > :is(h2, h3):first-child {
-  margin: var(--dc-section-top) calc(7.5pt - var(--dc-section-pad-right)) var(--space-md) calc(7.5pt - var(--dc-section-pad-left));
-  padding: 0 var(--space-lg) calc(var(--space-sm) + 4.5pt);
-  background: var(--ink-dark);
+  margin: var(--dc-section-top) calc(6pt - var(--dc-section-pad-right)) var(--space-md) calc(6pt - var(--dc-section-pad-left));
+  padding: 0 calc(1.5pt + var(--space-lg)) calc(var(--space-sm) + 4.5pt);
+  background: var(--ink);
   color: var(--dc-neon-core);
   clip-path: none;
   border: 0;
