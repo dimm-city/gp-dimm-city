@@ -107,6 +107,11 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **Bigger reading type.** Specialty intro prose is 11pt (was the 10pt floor)
+  on compact leading (1.35), and table text is 11pt: every table's cells,
+  reference and roll tables, and the outcome ladder's text. Header rows and
+  label chips stay at the 10pt floor. Tables use compact leading too (a table
+  is scanned, not read), which keeps most of the growth off the page count.
 - **No rule between columns by default.** `@columns 2 .dc-column-rule` draws
   the hairline where a run wants it (snippet `column-rule`).
 - **The gear chapter is signal indigo**, not charred amber (brown): its
