@@ -107,6 +107,15 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **No rule between columns by default.** `@columns 2 .dc-column-rule` draws
+  the hairline where a run wants it (snippet `column-rule`).
+- **The gear chapter is signal indigo**, not charred amber (brown): its
+  opener, plain sheet tags and footer chip (`dc-chip-indigo`).
+- **`.dc-snug` closes up table rows too** (3px cell padding), so a page that
+  overflows by a line or two fits.
+- **Outcome rungs are tighter.** A rung's closing strip takes a rung's own
+  gap, its plate opens 15px under the top, rungs sit 6px apart and a callout
+  inside one sits a paragraph's gap under the text.
 - **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or
   `catalog` section (and the gear kinds) is a sheet pasted on the wall with
   nothing to write: tag over the paper's edge, closing line a sticker, one hard
@@ -146,6 +155,10 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **A paste-up tag widens to its longest word.** A word wider than the tag's
+  88% cap (QUICKSTART) ran past the tag in cream on the white paper.
+- **A catalog entry's picture paints above the next entry**, whose rule was
+  drawn across it (the Gutter Snap grenade).
 - **`@page` inside a specialty.** It used to close the specialty, its learning
   path and the open skill (core closes every component at a page), so what
   followed lost its colours, cards and numbering; books used `@page-break`
