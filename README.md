@@ -117,7 +117,7 @@ Also in the box:
   tokens, the element baseline, nine component sheets, page templates,
   paged-media rules, and `dc-native.css` — the engine-specific page chrome
   (brick-wall background, folios, chapter chips) that must stay last.
-- **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
+- **Fonts**: Titillium Web, Tomorrow, Lixdu and Creaturepunk, embedded into the PDF at
   build time.
 - **Page and chapter words** every Dimm City book writes: `@page contents`,
   `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
@@ -292,7 +292,8 @@ paragraph inside an entry needs no change.
 
 Code, stylesheets, catalog and docs: [MIT](LICENSE). Fonts carry their own
 licences beside the files — `fonts/titillium-web/OFL.txt`,
-`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`. The Dimm City name, logo,
+`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`,
+`fonts/creaturepunk/LICENSE.txt`. The Dimm City name, logo,
 artwork and game text are not licensed by this package.
 
 ## Development

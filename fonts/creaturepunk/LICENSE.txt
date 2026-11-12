@@ -1,0 +1,14 @@
+Creaturepunk — licence and provenance notice
+============================================
+
+Font:     Creaturepunk (Creaturepunk.ttf, Creaturepunk.woff2, "Creaturepunk Regular", version 1.000)
+Source:   the CREATUREPUNK lettering, source-art/creaturepunk/creaturepunk-logo.png
+          in this repository. C, R, E, A, T, U, P, N and K are traced from it;
+          every other glyph is assembled from pieces of those letters
+          (source-art/creaturepunk/defs.py).
+
+Copyright (c) 2026 Dimm City.
+
+The font is derived from Dimm City artwork. As the package README says, the
+Dimm City name, logo, artwork and game text are not licensed by this
+package: the font ships so Dimm City books can set their headings in it.
