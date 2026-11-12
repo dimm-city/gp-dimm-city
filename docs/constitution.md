@@ -77,14 +77,14 @@ A reader flipping pages should know **what kind of content a box holds from its 
 |---|---|---|---|
 | **Display punch** | Magenta (`--brand-magenta`, `--brand-magenta-deep`) | Style, not content: the loudest thing on the page, never a category | Chapter chevrons, spray titles, pull quotes, `ROLL THE DIE!`, the VAR AP chip, the default `panel` accent (chapters re-theme it), the Augmerc |
 | **Player-facing rules and look-ups** | HUD blue / light cyan (`--hud-blue*`) | A rule or a thing to look up | Note alert, reference section, `@panel` block, definitions, megacorp faction, ideals, standard AP |
-| **Dream-Master-only** | Cyan on ink (`--brand-cyan` on `--ink-dark`) | Behind the screen; used nowhere else | `dm` alert, `dm` section, the Dream Master chip |
+| **Dream-Master-only** | Cyan neon on ink (`--neon-cyan` and its pale core on `--ink`) | Behind the screen. A lit cyan head or frame belongs to the Dream Master alone; the Augmerc's cyan sign and pills are its specialty colour, not a lit plate | `dm` note, `dm` section (the lit booth and its DREAM MASTER sign), the Dream Master chapter's opener sign |
 | **Danger, consequence, a choice you must make** | Hazard yellow + ink (`--brand-yellow`, `--ink`) | Stop and read | Warning alert (hazard-stripe rail), enforcer faction, the `choose` "Choose" stamp, the vehicle gear's yellow rail and badge, the SPECS strip |
 | **Harm, cost, cult, flaws, binding rulings** | Blood / rust / crimson (`--blood`, `--rust`, `--crimson`) | Something is taken from you, or it is final | Slate block ("Binding"), flaws, cult faction, origin alert's stamp, increased AP, side effects, general gear |
 | **The world and the arcane** | Violet / amethyst (`--brand-violet`, `--crystal-amethyst`) | Lore, dreams, treasure | Vibe alert, lore section, dreams, cabal faction, treasure gear |
 | **Organic, biological, toxic** | Fungi green (`--fungi-*`) | The living city | Visit alert, drug gear, gutterdruid, streetwarden's toxic green |
 | **Value** | Paper / ink | Reading surface or display element | White paper = every surface that holds reading text, whoever it is for; ink-dark fill = a display element (title bars, tabs, badges, label chips, the slate block, the Surreal definition). Who a box is for is said by its rail, frame, title bar and label, never by its fill |
 
-Two registers never share the same hue **and** edge: if two variants must share a hue (the dm note and the example both carry a cyan rail), their silhouette, frame and label differ (a file folder under an ink bar that carries the label in cyan, in an ink ring; a ticket with a cyan ring and a taped-on tag).
+Two registers never share the same hue **and** edge: if two variants must share a hue (the dm note and the example both carry a cyan rail), their silhouette, frame and label differ (a file folder under an ink bar that carries the label lit in cyan, in an ink ring; a ticket with a cyan ring and a taped-on tag).
 
 ---
 
@@ -186,7 +186,7 @@ The mistake to avoid: confusing **chaotic** with **hard to use**. Creaturepunk p
 
 ### The paste-up register
 
-The paste-up wall is how the Dimm City design language sets its sections (owner decisions, 2026-11-07 and 2026-11-10): a `panel`, `reference`, `lore`, `dm` or `catalog` section, and the gear kinds, is a sheet pasted flat on the wall, with nothing extra to write; the column of hung panels it replaced is retired. A creature stat block (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own looks (a fiction excerpt's closing line is a sticker). The Field Guide's rules chapter (chapter 3) is the reference, and its gear catalog (chapter 5) the second example. a width on each sheet (`.dc-half`, `.dc-narrow`, `.dc-wide`) sets two sheets side by side, `.dc-pu-cont` a continuation sheet, and `.dc-pu-tag`, `.dc-pu-bill`, `.dc-pu-plate` and `.dc-pu-cutout` the pieces below (`components.yaml`, design guide chapter 6). Its rules live with the components they style (`paste-up.css`, `images.css`, the opener title in `page-templates.css`); a project's own sheet sets only its tokens and its one-off fixes. These amendments hold:
+The paste-up wall is how the Dimm City design language sets its sections (owner decisions, 2026-11-07 and 2026-11-10): a `panel`, `reference`, `lore` or `catalog` section, and the gear kinds, is a sheet pasted flat on the wall, with nothing extra to write; the column of hung panels it replaced is retired. A creature stat block (`npc`), the Citizen File walkthrough, the `choose` sections, the Dream Master's lit booth (`dm`) and a fiction excerpt keep their own looks (a fiction excerpt's closing line is a sticker). The Field Guide's rules chapter (chapter 3) is the reference, and its gear catalog (chapter 5) the second example. a width on each sheet (`.dc-half`, `.dc-narrow`, `.dc-wide`) sets two sheets side by side, `.dc-pu-cont` a continuation sheet, and `.dc-pu-tag`, `.dc-pu-bill`, `.dc-pu-plate` and `.dc-pu-cutout` the pieces below (`components.yaml`, design guide chapter 6). Its rules live with the components they style (`paste-up.css`, `images.css`, the opener title in `page-templates.css`); a project's own sheet sets only its tokens and its one-off fixes. These amendments hold:
 
 - **Sheets vary.** Sheets come in full, half and 62/38 widths, paired side by side in grid rows (never floats), each row kept whole. A row does not stretch a shorter sheet to its neighbour's height: each sheet ends at its last line. A sheet that ends early shows wall, not blank paper.
 - **No sheet breaks inside itself.** Every sheet is kept whole. Where a section must run onto the next page, the markup splits it into two sheets at that point: the first ends at its last line, the second opens the next page with the same rail and paper and no title tag. A sheet's paper never runs blank to a page foot.
@@ -232,7 +232,7 @@ Three substrates: white paper, one light grey (`--concrete-pale`) and the wall. 
 | `--paper-aged` | alias of `--concrete-pale` | — | Label and chip grounds — field chips, `code`, the outcomes ladder rows, the `reference` section's alternate table rows, the catalog ledger band, three specialty cards. Not a sheet for running text. (Was `#c8c2b8`, dE 1.0 from the wall: no separation.) |
 | `--paper-stain` | `#b0a89c` | C23 M20 Y27 K11 = 81% | Dark inset wells and label strips (the shard's label strip). **No body text on it**, and none on any fill darker than the wall. |
 | `--ink` | `#1e1d1c` | C44 M38 Y37 K92 = 211% | Body text, **all small text** (labels, slips, tags, h4–h6, flavour lines), key rules, every hairline. The one dark the k-only pass prints in black alone. |
-| `--ink-dark` | `#2f2622` | C39 M38 Y38 K87 = 202% | Heavy fills (the dm section's bar and tab, the dm note's label bar, chips, tabs), border anchors and rules ≥ 1.5pt. Not small text: it prints on four plates. |
+| `--ink-dark` | `#2f2622` | C39 M38 Y38 K87 = 202% | Heavy fills (chips, tabs, bills), border anchors and rules ≥ 1.5pt. Not small text: it prints on four plates. A lit plate (a neon sign, the Dream Master's booth and note label, a lit tag) is `--ink`. |
 | `--ink-smoke` | `#4d4339` | C32 M33 Y39 K71 = 175% | Fills and heavy rules: the fiction cavity, the shard's accent rail. |
 | `--ink-mid` | `#594f43` | C32 M32 Y40 K62 = 166% | No package rule reads it; kept for books. |
 | `--ink-dust` | `#665b4e` | C31 M31 Y41 K53 = 156% | The outcome row's fallback rail. No longer a text colour. |
@@ -276,8 +276,8 @@ The dimm.city web-palette analogs, pulled inside the CRPC1 gamut. The purples ar
 
 | Token | Hex | CRPC1 CMYK = TAC | Use |
 |---|---|---|---|
-| `--fungi-glow` | `#c8e040` | C19 M0 Y95 K0 = 114% | Bioluminescent yellow-green — gutterdruid accent, outcome-row.hit (with ink text). Prints duller (dE 6.5): proof it. |
-| `--fungi-rot` | `#30461e` | C44 M20 Y60 K73 = 197% | Deep moldering green — outcome-row.fail; the streetwarden and gutterdruid darks alias it. |
+| `--fungi-glow` | `#c8e040` | C19 M0 Y95 K0 = 114% | Bioluminescent yellow-green — gutterdruid accent. Prints duller (dE 6.5): proof it. |
+| `--fungi-rot` | `#30461e` | C44 M20 Y60 K73 = 197% | Deep moldering green — the streetwarden and gutterdruid darks alias it. |
 | `--fungi-mid` | `#6aa030` | not a token; not measured | Luminous lichen mid — reserved for a future fungi-faction signal |
 
 ### Ancient crystals layer (magic)
@@ -406,10 +406,10 @@ A section kind is read from its bar, its edge and its silhouette before its word
 | `panel` | solid accent bar | cream | one larger chamfer (top right), a chipped bottom-left corner | the chapter accent (magenta by default; the only kind chapters re-theme) |
 | `reference` | pale HUD band ruled in ink above and below (a machined spec-sheet header) | white, alternate table rows in `--paper-aged`, tight 10pt rows | four small even machined chamfers | HUD blue: a look-up |
 | `lore` | deep violet bar, torn along the top | white, recessed | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | violet: the world |
-| `dm` | ink bar with a cyan rule, a cyan rail | white, recessed | a file-folder tab in the box's own top band (it carries *Dream Master*, cyan on ink; its own layer, so a page break cannot strand it) and one opposite corner cut, bottom right | cyan on ink: Dream Master only. The tab is drawn with or without a heading |
+| `dm` | a lit booth: an ink head with the title in the cyan tube's pale core, closed by a lit line | white, in a cyan neon frame (ink both sides of the tube) | square, flat, no tilt: the one sheet that glows. Among the players' pages its head also carries the DREAM MASTER neon sign (D and M lit); in the Dream Master's own chapter, whose opener hangs the sign, it does not repeat it | cyan neon on ink: Dream Master only. The head is in the box's own top band, so a page break cannot strand it |
 | `choose` | none: a form | a white paper sheet (`--paper-form`) | a ticket: a V punched in the middle of each side, a perforated foot, an ink edge, recessed (sunk into the wall: a cast shadow along the top, a light lip on the bottom and right), no drop shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Choose* stamp; dotted write-in rules. A printed, stamped form, not a web control |
 
-**Hung or sunk.** `panel` and `reference` hang on the wall like posters (a hard drop shadow). `lore`, `dm` and `choose` are recessed, sunk into the wall: no drop shadow, the wall's top edge casting a hard shadow down over the sheet's top and its title bar (the rail stays clear), and a light lip along the bottom and right (`--dc-section-recess`, `-recess-depth`, `-shade`, `-lip`). All vector, opaque inset shadows.
+**Hung or sunk.** `panel` and `reference` hang on the wall like posters (a hard drop shadow). `lore` and `choose` are recessed, sunk into the wall (the `dm` booth is lit, neither hung nor sunk): no drop shadow, the wall's top edge casting a hard shadow down over the sheet's top and its title bar (the rail stays clear), and a light lip along the bottom and right (`--dc-section-recess`, `-recess-depth`, `-shade`, `-lip`). All vector, opaque inset shadows.
 
 **Edges carry the kind by shape and colour.** Clip-path silhouettes and border colour are the primary way a kind is told apart; dashed and dotted borders are kept for the few places where the dash is the object itself: the warning's hazard-stripe rail and the enforcer's hazard band, stencil lines (the `##` slip foot, `.dc-spray`), write-in rules on a form, the origin stamp's worn ring, the side-effect field frame, link and ROLL THE DIE! underlines, and the tech specialties' LED tick rules. Everything else is a solid edge.
 
@@ -462,7 +462,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 ### Outcome ladder chips (digital display)
 
 - **Surface**: digital display register (saturated chip + LED-rim highlight)
-- 5-row creaturepunk gradient: crit (brand-magenta-deep) → hit (fungi-glow + ink text) → mixed (orange-deep) → miss (rust) → fail (fungi-rot).
+- A traffic light, best to worst, each tier its own lightness so the ladder reads in grey: crit / Triumph (`--neon-civic-ring-1`, deep green) → hit / Success (`--neon-civic` + ink text) → mixed / Hard Choice (`--brand-yellow` + ink text, caution) → miss / Failure (`--blood`) → fail / Catastrophe (`--ink-dark`).
 - Each chip has tonal gradient + inset top-highlight + inset bottom-shadow ("pressed/stamped" LED-display register).
 - Each row's text-cell has `border-left: 2px solid var(--row-color)` tethering the result text to the band colour.
 - The chip column is 26% of the ladder (min 130px, `--dc-outcome-key-col`) so a long band name wraps on two or three lines, not a cramped one. Band names are 10pt semibold (the floor), centred, balanced; result text 10pt. The frame is a machined HUD plate (four even 6px chamfers, one chip out of the foot); a roll table is a die-faced plate (two opposite 14px cuts, a die chip stuck a little off square). Both set `--dc-accent-ink`.
@@ -484,11 +484,11 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 |---|---|---|---|
 | `note` | machined 6px chamfers on all four corners, one chipped notch (player rules) | 8px blue rail, a 2pt blue ring; a bolt head in each top corner | blue chip with paper type |
 | `warning` | sign plate: octagon, 12px cuts (danger) | 14px yellow/ink hazard-stripe rail, 3px ink frame with a 2px crimson second pass out of register; a bolt head in each top corner | yellow caution-tape chip with ink type, rotated -1.5deg |
-| `dm` | file folder: a tab rising 9px over the left 42% and one cut corner, bottom right (classified) | an ink bar across the top over a cyan rule, its left end the folder tab; under it a 6px cyan rail and a 2pt ink ring; a bolt head in each top corner of the white body | the bar itself: cyan type on ink (Dream Master only) |
+| `dm` | file folder: a tab rising 9px over the left 42% and one cut corner, bottom right (classified) | an ink bar across the top, its left end the folder tab, closed by the booth's lit line (a cyan tube and its pale core); under it a 6px cyan rail and a 2pt ink ring; a bolt head in each top corner of the white body | the bar itself: the label lit in the cyan core on ink (Dream Master only) |
 | `vibe` | long shallow diagonals at two opposite corners (the world) | a 3pt violet frame all round, along the diagonals too, its left side a 4px rail; a bolt head in each top corner | violet chip with paper type; italic voice |
 | `origin` | torn bottom edge, square corners (backstory) | a 3pt rust frame along the torn foot, its left side a 6px rail; a bolt head in each top corner | crimson double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg; italic second-person voice |
 | `location` | torn bottom edge, square corners, as origin (a place written up) | a 3pt teal frame along the torn foot, its left side a 6px rail; a bolt head in each top corner | deep-teal double-bordered rubber stamp with a worn (dashed) outer ring, rotated -2deg |
-| `visit` | wobbly organic polygon ending in a signpost point (a place) | a 3pt fungi-green frame along the wobbling edge and the signpost point, its left side an 8px rail; a bolt head in each top corner | fungi-green chip with paper type and a map-pin glyph |
+| `visit` | wobbly organic polygon ending in a signpost point (a place) | a 3pt fungi-green frame along the wobbling edge and the signpost point, its left side an 8px rail; a bolt head in each top corner | a lit plate: civic-green core type on ink inside a civic tube, with a map-pin glyph |
 | `example` | ticket: a V notch in the right edge (a sample) | 6px cyan rail, a 2pt cyan ring; a bolt head in each top corner | taped-on tag |
 
 - A flat white sheet — no tint, no tonal gradient, no inset cream stroke (the Pass 6 attempt stays reverted). A frame is one hard line, not a double stroke on a fill. On the square-edged registers it is an inset ring (`--dc-alert-frame`: 2pt in the accent by default, ink on the warning and the dm note). Vibe, origin, location and visit have an outline a ring cannot follow, so their frame runs along every cut (`--dc-alert-frame-width`, 3pt): the box is filled with the accent and a white copy of its silhouette sits inside it, with the text on the white copy; the left side of the frame is the rail. All edge art (the hazard rail, the dog-ear fold) is drawn in vector, never a gradient: a skewed dashed-border rail and a clip-path triangle.
@@ -585,7 +585,7 @@ These are non-negotiable. Violations rate the work AWKWARD or BROKEN regardless 
 
 - `.page` / `.chapter` selectors are reserved for **counters, page-templates, TOC IDs, and per-instance positioning**.
 - Component visuals live exclusively in `components/*.css` under the `.dc-*` namespace (kebab-case).
-- The package owns no column layout: columns are core's `@columns N`. The package sets only `--gp-column-gap` and `--gp-column-rule`, once, at `:root` (column-ownership rule).
+- The package owns no column layout: columns are core's `@columns N`. The package sets only core's two hooks: `--gp-column-gap`, once, at `:root`, and `--gp-column-rule`, on a run that opts in with `.dc-column-rule` (no rule between columns by default) (column-ownership rule).
 - `@page` and `@chapter` take the **declared words** (`@page chapter-start`, `@chapter rules`); a book never invents a page class of its own.
 
 ### Naming

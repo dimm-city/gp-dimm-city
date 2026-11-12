@@ -99,7 +99,7 @@
 
 /* The ring stacks, computed where the hue is known. */
 :is(.dc-lit > :is(h2, h3):first-child, .dc-card-lightbox, .dc-lit-value, .dc-section-dm,
-    .dc-program, :is(.dc-location-callout, .dc-visit-callout) .dc-alert-label,
+    .dc-program, .dc-visit-callout .dc-alert-label,
     .dc-toc ol > li[class*="dc-toc-"]) {
   --dc-lit-line:
     inset 0 0 0 1.5pt var(--dc-neon), inset 0 0 0 3pt var(--dc-neon-core), inset 0 0 0 4.5pt var(--dc-neon);

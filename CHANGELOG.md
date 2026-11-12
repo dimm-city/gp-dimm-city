@@ -96,8 +96,8 @@ and the styles say where a reader is and what they are reading.
   - **Programs** have a lit azure PROGRAM strip.
   - **The contents**: a chapter line that ends with its chapter's word
     (`{.dc-toc-rules}`) has its number lit in that chapter's tube colour.
-  - **Location and visit callouts**: their stamps are lit, location in azure
-    and visit in civic green.
+  - **Visit callouts**: their stamp is lit in civic green. A location keeps
+    the origin's paper stamp, so the two read as a pair.
 - **Grimy streets, one to contrast each wall.** The ground strip under a wall
   page is one of three streets: setts (`images/ground.png`, also under the
   plain brick), bonded flagstones (`ground-flags.png`) or cracked asphalt
