@@ -408,7 +408,7 @@ h3 + .dc-section-panel {
 }
 /* Rows are tight and the column heads are the pale band again. */
 .dc-section-reference table {
-  font-size: var(--fs-floor);
+  font-size: var(--fs-body-sm);
   margin: 0.06in 0;
   --dc-td-pad-y: 3px;
   --dc-th-pad-y: 3px;
