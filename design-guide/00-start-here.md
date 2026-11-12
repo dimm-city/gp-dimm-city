@@ -97,6 +97,7 @@ Start from what you are writing, not from a class name: find it on the left and 
 | Deck software, a program | `@gear program` |
 | A labelled line in an entry: SPECS, Traits, Effects... | `**SPECS:**` (or `@field specs`) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
+| Weapons, explosives or armor: a gear section by kind | `@section weapons`, `explosives`, `armor` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | One rule per roll result, a paragraph each | `@ladder` with `###` headings ending in a band |
 | A random table with equal bands (1-4, 5-8, ...) | `@roll-table` |
@@ -105,7 +106,7 @@ Start from what you are writing, not from a class name: find it on the left and 
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file` (and core's `blank`, `full-bleed`); `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling renders the same. `reference`, `lore`, `dm` and `choose` are words only: panels that say what kind of text they hold. Write the content and the marker that says what it is: the defaults set how it looks and where it breaks (sections split across pages, a creature and a callout stay whole, a catalog never does). A page or chapter word never draws a box of its own: it re-tunes the colour and spacing of the sections inside it. To change how one block sits (keep it on one page, tighten it, float a callout), see the author overrides in [Layout](#ch-layout). [Writing a Page](#ch-writing) covers the grammar, [Panels & Cards](#ch-panels) the sections, and [Page Templates](#ch-templates) the page and chapter words.
 

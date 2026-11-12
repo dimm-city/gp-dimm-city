@@ -38,6 +38,21 @@ the book works offline.
 
 `gutterpress ext list my-book` shows `gp-dimm-city@1.9.0 [npm; markdown, styles, snippets, components]`.
 
+## Raw HTML warning
+
+The package reports every HTML tag written into a book's markdown as a
+warning on its line (`raw_html`): it cannot check HTML, and a tag left open
+styles everything after it. Write markdown or a marker instead. HTML comments
+are not reported. A book whose HTML is deliberate turns the warning off in its
+manifest:
+
+```yaml
+extensions:
+  - use: gp-dimm-city@1.10.3
+    options:
+      rawHtml: "off"
+```
+
 ## What you get
 
 Pick by what you are writing. Every row is a marker (or a word on one) that the
@@ -66,6 +81,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A drug, elixir or consumable | `@gear drug` |
 | A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`; `specs` is the one SPECS box) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
+| Weapons, explosives or armor: a gear section by kind | `@section weapons`, `explosives`, `armor` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
@@ -73,7 +89,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
@@ -105,7 +121,7 @@ Also in the box:
   build time.
 - **Page and chapter words** every Dimm City book writes: `@page contents`,
   `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
-  `@chapter rules`, `lore`, `citizen-file`, `specialty` for a chapter's section
+  `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` for a chapter's section
   colour, plus the folio/chapter-chip chrome driven by `@chapter #id ch="N"`.
 - **Snippets** for the app's snippet picker (`snippets/`): one per macro, per
   section, page and chapter word, and per modifier (`.dc-avoid-split`,

@@ -89,10 +89,11 @@ components:
       - --dc-alert-shape
       - --dc-alert-frame
       - --dc-alert-frame-width
+      - --dc-alert-overflow
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
-    notes: "One shell, eight registers, told apart by silhouette, edge and label (in colour and in grayscale). Every one is a white sheet (--dc-alert-bg): its colour is in the rail, the frame and the label, never in the fill: note (heavy blue rail, 2pt blue ring, blue chip with paper type, machined chamfers), warning (sign-plate octagon, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the tab; an ink ring, a cyan rail, one cut corner; Dream Master only), vibe (long shallow diagonals, a violet frame that follows them, violet chip, italic), origin (torn bottom edge, square corners, a rust frame along the tear, a heavy rust rail, worn crimson stamp label), location (origin's document in map teal: teal frame and rail, deep-teal stamp), visit (wobbly signpost, a fungi-green frame along the wobble and the point, a heavy green rail, green map-pin chip), example (ticket V notch, cyan rail and 2pt cyan ring, taped-on tag). The ring is --dc-alert-frame (an inset box-shadow); vibe, origin, location and visit, whose outline a ring cannot follow, are filled with the accent under a white copy of their silhouette, --dc-alert-frame-width (3pt) in from the top, right and foot. Every register is bolted to the wall: a bolt head in each top corner, on the white body under the rule on the Dream Master note (--dc-bolt tokens; first fragment only). Every label is a raised chip (--dc-alert-label-shadow), except the dm note's, which is its ink bar. A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
+    notes: "One shell, eight registers, told apart by silhouette, edge and label (in colour and in grayscale). Every one is a white sheet (--dc-alert-bg): its colour is in the rail, the frame and the label, never in the fill: note (heavy blue rail, 2pt blue ring, blue chip with paper type, machined chamfers), warning (sign-plate octagon, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the tab; an ink ring, a cyan rail, one cut corner; Dream Master only), vibe (long shallow diagonals, a violet frame that follows them, violet chip, italic), origin (torn bottom edge, square corners, a rust frame along the tear, a heavy rust rail, worn crimson stamp label), location (origin's document in map teal: teal frame and rail, deep-teal stamp), visit (wobbly signpost, a fungi-green frame along the wobble and the point, a heavy green rail, green map-pin chip), example (ticket V notch, cyan rail and 2pt cyan ring, taped-on tag; an example that opens with its own heading is labelled by it, words as written, and gets no default Example tag). The ring is --dc-alert-frame (an inset box-shadow); vibe, origin, location and visit, whose outline a ring cannot follow, are filled with the accent under a white copy of their silhouette, --dc-alert-frame-width (3pt) in from the top, right and foot. Every register is bolted to the wall: a bolt head in each top corner, on the white body under the rule on the Dream Master note (--dc-bolt tokens; first fragment only). Every label is a raised chip (--dc-alert-label-shadow), except the dm note's, which is its ink bar. A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
     status: live
@@ -140,7 +141,7 @@ components:
     recipe: "> [!PULLQUOTE]"
     emits: div.dc-pullquote.dc-flush
     css: styles/components/data.css
-    tokens: [--dc-pullquote-accent, --dc-pullquote-accent-soft, --dc-pullquote-bg]
+    tokens: [--dc-pullquote-accent, --dc-pullquote-bg]
     breaks: "break-inside: avoid"
 
   - name: definition
@@ -198,7 +199,7 @@ components:
     snippet: block
     recipe: "@block panel|slate|shard label=\"Title\" … @end-block  (`.dc-panel` class form works too)"
     emits: div.dc-block > div.dc-block-title
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-block-bg, --dc-block-fg, --dc-block-accent, --dc-block-title-bg, --dc-block-title-fg, --dc-block-title-rule, --dc-block-tag, --dc-block-tag-edge]
     breaks: "break-inside: avoid"
     notes: "A declared marker: the variant word (or the .dc-* class) selects the treatment (see block-variants). The old variant=panel attribute form was dropped; no book used it. Design guide only."
@@ -209,7 +210,7 @@ components:
     description: "The three looks of a @block: panel (HUD blue), slate (ink body, blood band) and shard (white paper, torn foot)."
     recipe: "@block panel | slate | shard"
     emits: div.dc-block.dc-panel|.dc-slate|.dc-shard
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     notes: "Three clip-path/surface treatments (the fourth, codex, is retired: see block-codex) on .dc-block: panel is a HUD-blue band with hex corners; slate an ink body under a blood band with a crimson rule and a stamped Binding tag (not magenta, not cyan); shard white paper with a torn foot and a taupe label strip, no accent hue. The variant word maps to the class in the plugin's `markers` table; `@block .dc-panel` passes the class straight through."
 
   - name: roll-table
@@ -224,6 +225,30 @@ components:
     breaks: "the caption stays with the table (break-after: avoid); the table does not split (table break-inside: avoid)"
     notes: "A random table that is not the outcome ladder: neutral colours, one die, equal-weight rows. The die is d20 unless `die=` names another; `label` is optional. Its table is never read as a ladder, whatever its bands. Inside a skill it stays in the skill's card. (The @roll-table of 1.1 and earlier was retired in 1.2.0; this one is new.)"
 
+  - name: neon-sign-heading
+    status: live
+    origin: plugin
+    modifier: dc-neon-sign
+    description: "Draw a heading's word as a neon sign, in tubes, at the heading's own size."
+    snippet: neon-sign-heading
+    recipe: "@section panel .dc-neon-azure / ## Hacking {.dc-pu-bill .dc-neon-sign} … @end-section"
+    emits: "h2.dc-neon-sign > span.dc-neon-text (the words, unseen) + span.dc-neon-glow > svg.dc-neon-word"
+    css: styles/components/neon.css
+    tokens: [--dc-neon, --dc-neon-core, --dc-neon-ring-1, --dc-neon-ring-2]
+    notes: "Best on a heading that is already an ink plate (a paste-up bill). The word is the sign font's capitals (A to Z; other characters are left out of the drawing), one letter a dead tube. The heading's text stays in the page for search and links, and the heading keeps its height. The hue is a .dc-neon-<hue> class on the section."
+
+  - name: card-lightbox
+    status: live
+    origin: plugin
+    markers: ["@card lightbox"]
+    snippet: card-lightbox
+    recipe: "@card lightbox .dc-neon-azure / #### BODY TAX: 2 / body … @end-card"
+    emits:
+      - div.dc-card.dc-card-lightbox > div.dc-card-heading > span.dc-lit-value (a trailing number in the title)
+    css: [styles/components/enclosures.css, styles/components/neon.css]
+    tokens: [--dc-neon, --dc-neon-core]
+    notes: "A card hung as a lightbox: a white face in an ink channel with a neon tube running round it, the title a lit plate across the top, and a number that ends the title (a price, a tax, a level) lit at the plate's right end, in a window set off by an upright tube. The text stays dark on white. The hue is a .dc-neon-<hue> class on the marker line."
+
   - name: card
     status: live
     origin: plugin
@@ -233,7 +258,7 @@ components:
     emits:
       - div.dc-card > div.dc-card-heading + div.dc-card-pull + div.dc-card-body
       - div.dc-card-body > blockquote.dc-card-footer (the last body blockquote, dc#44)
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-card-shape, --dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail]
     breaks: "break-inside: avoid"
     notes: "Declared marker, no variants: author classes (@card .dc-flaws), #id and key=value attributes ride on the wrapper. The heading is the first `####` (core converts only a `####` to .dc-card-heading; write `####`, not `###`). A card reads its kind from the enclosing @flaws, @ideals or @dreams through the --dc-choice-* tokens (it is not styled by `.section.dc-flaws > .dc-card`); outside them it is plain ink. Inside a skill it stays in the skill's card. Left open at the end of the file it closes silently."
@@ -245,7 +270,7 @@ components:
     snippet: [flaws, ideals, dreams]
     recipe: "@flaws | @ideals | @dreams … @end-flaws | @end-ideals | @end-dreams  (or @section flaws | ideals | dreams)"
     emits: div.section.dc-section-panel.dc-section-choose.dc-flaws|.dc-ideals|.dc-dreams
-    css: styles/components/section.css
+    css: styles/components/enclosures.css
     tokens: [--dc-choice-accent, --dc-choice-surface, --dc-choice-tint, --dc-choice-kind, --dc-choice-edge, --dc-choice-band, --dc-choice-rail, --dc-card-shape]
     notes: "Citizen-file choices: each is a `choose` section (see section-choose) of @card blocks. The kind sets the --dc-choice-* tokens and the card shape, and the cards read them: flaws = blood, a cracked jagged foot and a nicked corner; ideals = HUD blue, a symmetric tablet with a rule under the name; dreams = violet, a top edge rising to the right. Each card has a rail, a top band, a one-word kind chip (FLAW, IDEAL, DREAM) and the closing quote in ink on the card's white, ruled down its left in the kind colour. All three are white sheets: they differ in edge weight and silhouette. With no heading the section draws nothing around the cards."
 
@@ -381,15 +406,16 @@ components:
     snippet: toc
     recipe: "@toc … @end-toc  (also authored as raw <div class=\"dc-toc\">)"
     emits: div.dc-toc
-    css: [styles/components/data.css, styles/page-templates.css]
+    css: [styles/components/data.css, styles/page-templates.css, styles/components/neon.css]
     breaks: "list items break-inside: avoid"
+    notes: "A chapter line that ends with its chapter's word as a class (`{.dc-toc-rules}`: citizen-file, specialty, rules, dm, gear, lore) gets its number lit in that chapter's tube colour. The plugin can't add it: each chapter file renders on its own, so the contents never sees the chapter ids."
 
   - name: outcome
     status: live
     origin: plugin
     markers: ["@outcome"]
     snippet: outcome
-    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column is exactly the five bands 20, 11-19, 6-10, 2-5, 1 (any headers, either order), in a skill card or outside one"
+    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column holds a d20 result on every row (any headers, any order), in a skill card or outside one: the five standard bands 20, 11-19, 6-10, 2-5, 1, or an ability's own set (six bands, 16-19 over 11-15, 1-5, 2-10, 11+), a band with a label (\"20: Total Wholeness\", \"20 – Triumph\", \"Triumph (20)\", \"On 11–19\") or a tier's word alone (\"Success\"); each row takes the colour of the tier its band falls in, and a label is the row's name. Bands that overlap, leave 1-20 or straddle 10/11 stay a table; @roll-table is never a ladder"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
@@ -436,13 +462,16 @@ components:
     markers: ["@specialty"]
     snippet: specialty
     recipe: "@specialty augmerc|proxy|streetwarden|gutterdruid|cybersurgeon|wirephreak|technosorcerer|etherlock|dualist|generalist (or .augmerc, {.augmerc}) … @end-specialty"
-    emits: div.dc-specialty.<name>
+    emits:
+      - div.dc-specialty.<name>
+      - div.dc-specialty.<name>.dc-specialty-cont (re-opened after an @page)
+    unstyled: [dc-specialty-cont]
     css:
       - styles/components/specialty-identity.css
       - styles/components/specialty.css
       - styles/components/cards.css
       - styles/components/data.css
-      - styles/components/section.css
+      - styles/components/creatures.css
       - styles/page-templates.css
     tokens:
       - --spec-accent
@@ -460,7 +489,7 @@ components:
       - --dc-specialty-intro-title-shape
       - --dc-specialty-intro-clip
     breaks: "none on the wrapper; children carry their own"
-    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Declared marker: the word and the .class spelling give the same wrapper. A new @specialty, @end-specialty, @page, @section or @chapter closes it with every path and skill inside; a skill sitting directly in it (outside a learning path) is reported."
+    notes: "Parent-selector model: every card, path and intro inside inherits shape and colour from .dc-specialty.<name>. Declared marker: the word and the .class spelling give the same wrapper. A new @specialty, @end-specialty, @section or @chapter closes it with every path and skill inside; a skill sitting directly in it (outside a learning path) is reported. An @page inside it starts a page and the specialty runs on: the plugin closes the specialty, its path and skill before the page and re-opens them after it (`-cont`), so the identity, the path's number and the skills' tiers carry on, and a card the page cuts continues like @continue. The wall is the page's: a plain @page takes the specialty's, `@page wall-N` its own. A pinned image (`{.gp-pin}`) in a skill is moved out of the cards, so the page frames it."
 
   - name: specialty-intro
     status: live
@@ -494,7 +523,7 @@ components:
     css:
       - styles/components/specialty.css
       - styles/components/specialty-identity.css
-      - styles/components/section.css
+      - styles/components/creatures.css
       - styles/page-templates.css
     tokens:
       - --dc-specialty-card-bg
@@ -528,6 +557,7 @@ components:
     recipe: "@learning-path / ### Title / > subtitle / - Skill A / - Skill B … @end-learning-path"
     emits:
       - div.dc-learning-path.dc-path-block > div.dc-path-shell > h3.dc-spray > span.dc-path-sticker + span.dc-path-sep
+      - div.dc-learning-path.dc-path-block.dc-path-cont (re-opened after an @page: same data-path-ref, no shell)
       - div.dc-path-shell > div.dc-intro
       - div.dc-stickers > span.dc-sticker > span.dc-sticker-ref
       - span.dc-arrow (between stickers)
@@ -582,7 +612,6 @@ components:
       - --dc-card-surface
       - --dc-card-tab-bg
       - --dc-card-tab-title-color
-      - --dc-card-body-mark
       - --dc-bolt
       - --dc-bolt-face
       - --dc-bolt-size
@@ -619,7 +648,7 @@ components:
   - name: ap-chip
     status: live
     origin: plugin
-    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, a single number → standard, a range, X, VAR or N+ → .variable; also authored as raw <span class=\"dc-ap\">). Only a real cost is a chip, and the chip holds only the readout (\"3 AP\", no name, no stop): number, range (hyphen or dash), X or VAR, then AP; bare **3-X** is accepted. What follows the cost moves into the row text as an italic run-in with a colon: **3 AP — Butcher Roach** → chip 3 AP + \"Butcher Roach:\"; **+1 AP per passenger.** → chip +1 AP + \"Per passenger:\"; **1 AP/100 DC Per Ego Point:** → chip 1 AP + \"1 AP/100 DC Per Ego Point:\". Variable is decided by the cost token only, plus a per-unit rate in the qualifier (per passenger, /100 DC Per …); every range prints with an en dash. Rows share one text column: a chip is at least the free chip's width. A list whose items ALL lead with a bold die result (**20**, **11-19**, **16–19: Name**) is a roll list: the five standard bands are the outcome ladder, any other set a .dc-roll-table plate. Any other bold lead (**Prefrontal Chaos**) is an option: a bulleted item with the name in bold and a colon; a run that does not start at 1 or sits among cost rows is bulleted too, and only a plain list from 1 stays numbered."
+    recipe: "1. **N AP** *Ability:* text  (inside @skill; 0 AP → .free, a single number → standard, a range, X, VAR or N+ → .variable; also authored as raw <span class=\"dc-ap\">). Only a real cost is a chip, and the chip holds only the readout (\"3 AP\", no name, no stop): number, range (hyphen or dash), X or VAR, then AP; bare **3-X** is accepted. What follows the cost moves into the row text as an italic run-in with a colon: **3 AP — Butcher Roach** → chip 3 AP + \"Butcher Roach:\"; **+1 AP per passenger.** → chip +1 AP + \"Per passenger:\"; **1 AP/100 DC Per Ego Point:** → chip 1 AP + \"1 AP/100 DC Per Ego Point:\". Variable is decided by the cost token only, plus a per-unit rate in the qualifier (per passenger, /100 DC Per …); every range prints with an en dash. Rows share one text column: a chip is at least the free chip's width. A list whose items ALL lead with a bold die result (**20**, **11-19**, **16–19: Name**) is a roll list: the outcome ladder when its bands read as one (see outcome), a .dc-roll-table plate otherwise. Any other bold lead (**Prefrontal Chaos**) is an option: a bulleted item with the name in bold and a colon; a run that does not start at 1 or sits among cost rows is bulleted too, and only a plain list from 1 stays numbered."
     emits: span.dc-ap[.free|.variable]
     css: [styles/components/cards.css, styles/components/specialty-identity.css]
     tokens: [--dc-ap-bg, --dc-ap-fg, --dc-ap-border]
@@ -677,7 +706,7 @@ components:
     snippet: card-grid
     recipe: "@card-grid / @columns 2 / @specialty … / @end-columns / @end-card-grid  (or @section cards)"
     emits: div.section.dc-card-grid > div.gp-columns.gp-columns-2
-    css: [styles/components/section.css, styles/page-templates.css]
+    css: [styles/components/creatures.css, styles/page-templates.css]
     breaks: "each specialty card avoid; the grid itself may span pages"
     notes: "Sets no columns of its own: the cards go in `@columns 2` inside it."
 
@@ -688,7 +717,7 @@ components:
     snippet: citizen-walkthrough
     recipe: "@citizen-walkthrough [@columns 2 … @end-columns] … @end-citizen-walkthrough  (or @section walkthrough)"
     emits: div.section.dc-section-panel.dc-citizen-walkthrough
-    css: [styles/components/section.css, styles/dc-native.css]
+    css: [styles/components/creatures.css, styles/dc-native.css]
     notes: "Themed through the section chassis tokens --dc-section-accent / --dc-section-bg (see section), which the design guide documents."
 
   - name: page-citizen-file
@@ -728,7 +757,7 @@ components:
     snippet: fiction-excerpt
     recipe: "@fiction-excerpt … @end-fiction-excerpt  (or @section fiction)"
     emits: div.section.dc-fiction-excerpt
-    css: [styles/components/section.css]
+    css: [styles/components/fiction-excerpt.css, styles/components/paste-up.css]
     tokens:
       - --dc-fiction-bg
       - --dc-fiction-cavity
@@ -750,7 +779,7 @@ components:
     snippet: npc-stat
     recipe: "@npc-stat [compact] [### bar] [@columns 2 … @end-columns] … @end-npc-stat  (or @section npc)"
     emits: div.section.dc-section-panel.dc-npc-stat
-    css: [styles/components/section.css]
+    css: [styles/components/creatures.css]
     tokens:
       - --dc-npc-stat-primary
       - --dc-npc-stat-secondary
@@ -767,7 +796,7 @@ components:
     snippet: npc-stat-compact
     recipe: "@npc-stat compact / #### Name / > flavor / stat line / stat line / ##### Traits … @end-npc-stat"
     emits: div.section.dc-section-panel.dc-npc-stat.dc-npc-compact
-    css: [styles/components/section.css]
+    css: [styles/components/creatures.css]
     tokens: [--dc-npc-stat-primary, --dc-npc-stat-secondary, --dc-npc-stat-rule]
     notes: "A variant of @npc-stat for a small creature, a companion or a drone: no panel layers (the panel's surface and shadow tokens are switched off), a framed cream box, a small name, and the two stat lines drawn as chips side by side. It is a section, so it ends an enclosing @skill: inside a skill card write the creature's table alone (see stat-strip)."
 
@@ -839,7 +868,7 @@ components:
     emits: div.chapter.dc-chapter-rules
     css: styles/page-templates.css
     tokens: [--dc-section-accent]
-    notes: "Rust section accent for every panel in the chapter. A word that is not declared stays the chapter's label."
+    notes: "How to play: rust. Every plain panel's tag and rail, the opener and the footer chip are rust. A word that is not declared stays the chapter's label."
 
   - name: chapter-lore
     status: live
@@ -851,6 +880,28 @@ components:
     css: styles/page-templates.css
     tokens: [--dc-section-accent, --dc-section-bg]
     notes: "Violet title bars (the lore section's colour) on the panels' own cream."
+
+  - name: chapter-dm
+    status: live
+    origin: plugin
+    markers: ["@chapter dm"]
+    snippet: dm-chapter
+    recipe: "@chapter dm #id ch=\"N\""
+    emits: div.chapter.dc-chapter-dm
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-section-accent]
+    notes: "The Dream Master's chapter: ink. Every plain panel's tag and rail, the opener and the footer chip are ink (the chip through the dc-chip-ink page, and each wall's ink twin). Reference, lore and dm sections keep their own colours and shapes inside it."
+
+  - name: chapter-gear
+    status: live
+    origin: plugin
+    markers: ["@chapter gear"]
+    snippet: gear-chapter
+    recipe: "@chapter gear #id ch=\"N\""
+    emits: div.chapter.dc-chapter-gear
+    css: [styles/page-templates.css, styles/page-rules.css, styles/dc-native.css]
+    tokens: [--dc-section-accent]
+    notes: "The armory: cybernetics, weapons and gear, in amber (brass). Every plain panel's tag and rail, the opener and the footer chip are amber (the chip through the dc-chip-amber page, and each wall's amber twin). The gear kinds (weapons, explosives, armor) and reference sheets keep their own colours inside it."
 
   - name: chapter-citizen-file
     status: live
@@ -975,21 +1026,103 @@ components:
     recipe: "@section .dc-snug  /  @page .dc-snug  |  from a book's sheet: #id { --dc-flow-gap: 0.04in; }"
     emits: .dc-snug (on the section or page it is written on)
     css: styles/page-templates.css
-    tokens: [--dc-flow-gap]
-    notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
+    tokens: [--dc-flow-gap, --dc-td-pad-y, --dc-th-pad-y]
+    notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in, and of a table's cell padding (3px top and bottom). Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
 
-  - name: paste-up
+  - name: column-rule
     status: live
     origin: author
-    modifier: [dc-paste-up, dc-pu-row, dc-pu-cont, dc-pu-spacer, dc-pu-bill, dc-pu-bill-mid, dc-pu-cutout, dc-pu-plate]
-    description: "Set a chapter or a section as a paste-up wall: sheets pasted flat, title tags over the paper's edge, yellow stickers."
-    snippet: paste-up
-    recipe: "@chapter rules .dc-paste-up #id ch=\"N\"  (every section a sheet)  |  @section reference .dc-paste-up  (one sheet).  Helpers: <div class=\"dc-pu-row\"> two sheets side by side; @section panel .dc-pu-cont a continuation sheet (with <div class=\"dc-pu-spacer\"></div> before a sub-head); ## Title {.dc-pu-bill} (or .dc-pu-bill .dc-pu-bill-mid) a bill; ![](x.png){.dc-pu-cutout} a pinned cut-out; ![](x.png){.dc-pu-plate} a framed plate."
-    emits: .dc-paste-up (on the chapter or section it is written on)
-    css: styles/paste-up.css
-    tokens: [--dc-pu-band, --dc-pu-foot, --dc-pu-lift, --dc-pu-inset, --dc-pu-pair-gap, --dc-pu-sticker-size, --dc-pu-sticker-gap, --dc-pu-sticker-drop]
-    breaks: "a sheet is never split (break-inside: avoid); split a long section in markup into a sheet and a `.dc-pu-cont` sheet"
-    notes: "The paste-up register of docs/constitution.md section IV. Opt-in: nothing changes without the class. On a chapter it sets every section in it (except a fiction excerpt) as a sheet: a top band and a foot band of wall around the paper, the first ## or ### a tag tilted -1deg across the paper's top edge, a `.dc-kicker` last in a sheet a yellow sticker tilted -2deg across its foot, the soft lift dropped for the hard contact shadow, the sheet clipped above its top edge so a tilted corner never paints on the page before. The geometry is tokens, set on the chapter's id (a book whose sheets sit at the content edge sets --dc-pu-inset: 0.06in so the tags' overhang stays inside the box). Individual sheet splits, widths and fixes stay in the book's sheet."
+    modifier: dc-column-rule
+    description: "Draw a hairline between the columns of this run; runs have none by default."
+    snippet: column-rule
+    recipe: "@columns 2 .dc-column-rule … @column-break … @end-columns"
+    emits: .dc-column-rule (on core's column run)
+    css: styles/page-templates.css
+    tokens: [--gp-column-rule]
+    notes: "A setter of core's --gp-column-rule hook to a 1pt hairline, on the run it is written on. Without it a run has no rule between its columns."
+
+  - name: paste-up
+    status: retired
+    origin: author
+    replaced_by: "nothing: a panel, reference, lore, dm or catalog section is a pasted sheet with no class"
+    recipe: "@chapter rules .dc-paste-up  /  @section reference .dc-paste-up"
+    emits: .dc-paste-up
+    notes: "Retired in 1.10.3: the paste-up sheet is how those sections look, not a register a chapter opts into (paste-up.css). Delete `.dc-paste-up` from the marker lines. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look."
+
+  - name: paste-up-width
+    status: live
+    origin: author
+    modifier: [dc-half, dc-narrow, dc-wide]
+    description: "A sheet's width in a row: half, narrow (38%) or wide (62%); two adjacent sheets whose widths complete a row sit side by side."
+    snippet: row
+    recipe: "@section panel .dc-half … @end-section / @section panel .dc-half … @end-section  |  .dc-narrow then .dc-wide (38/62), .dc-wide then .dc-narrow (62/38)"
+    emits: div.dc-pu-row (the plugin's, around the two sheets)
+    css: styles/components/paste-up.css
+    tokens: [--dc-pu-row-cols, --dc-pu-pair-gap]
+    breaks: "a row is kept whole (break-inside: avoid)"
+    notes: "Two paste-up sheets side by side, each ending at its own last line, closing stickers at the foot. A sheet says its own width on its section line; when it is followed straight away by a sheet whose width completes the row (half and half, narrow and wide, wide and narrow), the plugin wraps the two in `div.dc-pu-row`, a grid whose columns are read off the first sheet (--dc-pu-row-cols). There is no row marker. A sheet with a width and no partner is reported (`row_unpaired`) and prints at the full width."
+
+  - name: row
+    status: retired
+    origin: plugin
+    markers: ["@row", "@row-wide", "@row-narrow"]
+    replaced_by: "a width on each sheet: .dc-half twice, .dc-narrow then .dc-wide, or .dc-wide then .dc-narrow"
+    recipe: "@row | @row-wide | @row-narrow … @end-row"
+    emits: "nothing: the markers are no longer declared"
+    notes: "Retired in 1.10.3 (it shipped in 1.10.3-alpha.1 and alpha.2). A row was a wrapper marker around two sheets; now each sheet says its width and the plugin pairs them. Delete the @row and @end-row lines and write the widths on the two @section lines."
+
+  - name: paste-up-continuation
+    status: live
+    origin: author
+    modifier: dc-pu-cont
+    description: "A paste-up sheet that carries on from the one before it: a clean top, no title tag."
+    recipe: "@section panel .dc-pu-cont"
+    emits:
+      - .dc-pu-cont (on the section it is written on)
+      - "div.dc-pu-spacer (the plugin's, ahead of a ## or ### that opens the sheet)"
+    css: styles/components/paste-up.css
+    tokens: [--dc-pu-band]
+    notes: "The second part of a section split in markup because a sheet is never split. Its band is shallow and it has no tag. When it opens with a ## or ###, the plugin puts a zero-height `div.dc-pu-spacer` ahead of the heading so it stays a sub-head (every first-child heading rule would otherwise read it as the sheet's title); the author writes nothing extra."
+
+  - name: paste-up-bill
+    status: live
+    origin: author
+    modifier: [dc-pu-bill, dc-pu-bill-mid]
+    description: "A ## that shouts: cream display type on ink at twice h1 (1.5x with .dc-pu-bill-mid)."
+    recipe: "## Title {.dc-pu-bill}  /  ## Title {.dc-pu-bill .dc-pu-bill-mid}  (the first heading of a paste-up sheet)"
+    emits: h2.dc-pu-bill
+    css: styles/components/paste-up.css
+    notes: "One bill per section that opens a spread or a sub-system (constitution §IV): the full width of the sheet, a yellow foot rule, a hard shadow. The two display steps outside the type scale besides §VI's."
+
+  - name: paste-up-tag
+    status: live
+    origin: author
+    modifier: dc-pu-tag
+    description: "A sub-head pasted on mid-sheet as a tag, like the sheet's own title."
+    recipe: "### Fall Damage {.dc-pu-tag}  (a ## or ### inside a paste-up sheet, not its first)"
+    emits: h3.dc-pu-tag
+    css: styles/components/paste-up.css
+    notes: "The title tag's look (tilted -1deg, hard shadow, the sheet's bar colours) on a heading further down a sheet, with room above it. For a sub-system inside one sheet that should read as pasted on."
+
+  - name: paste-up-plate
+    status: live
+    origin: author
+    modifier: dc-pu-plate
+    description: "A framed print pasted on the wall: a cream frame, a hard shadow, a tilt."
+    recipe: "![Caption](x.png){.dc-pu-plate}  /  {.dc-pu-plate .gp-size-30} (core's size classes set its width)"
+    emits: img.dc-pu-plate
+    css: styles/components/images.css
+    notes: "For a self-contained picture between sheets where a page would leave about a quarter or more bare (constitution §IV): opaque, never translucent, one per page. 40% of the column unless core's `.gp-size-NN` is on the image."
+
+  - name: paste-up-cutout
+    status: live
+    origin: author
+    modifier: dc-pu-cutout
+    description: "A cut-out pinned to the wall: transparent art, tilted."
+    recipe: "![Caption](x.png){.dc-pu-cutout}"
+    emits: img.dc-pu-cutout
+    css: styles/components/images.css
+    notes: "Transparent art set as an object pinned to the wall, 55% wide and tilted 5deg. Give it a hard shadow or a die-cut outline in the art (constitution §IV: never a bare cut-out with no shadow)."
 
   - name: heading-look
     status: live
@@ -1039,9 +1172,9 @@ components:
       - div.section.dc-section-panel
       - p.dc-kicker (a section's last paragraph, or a paragraph right before a heading in it, when it is only a bold run: it never opens a page alone)
     css: [styles/components/section.css, styles/dc-component-defaults.css]
-    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
-    breaks: "splits by default; add .dc-avoid-split to keep it whole (it sets --dc-section-break-inside: avoid and --dc-section-edge: 0px, which a book can set from its own sheet)"
-    notes: "The card: cream substrate, accent rail, one larger chamfer (top right) and a chipped bottom-left corner, shadow, and the first ## or ### as a solid accent bar (magenta by default; the one kind a chapter re-themes). The bar's fill, text and under-rule are tokens (--dc-section-bar-*): a kind of section sets them (reference, lore, dm, choose, catalog) and never repaints the bar. @npc-stat, @citizen-walkthrough, @flaws, @ideals and @dreams are panels carrying their own class."
+    tokens: [--dc-section-bg, --dc-section-accent, --dc-section-surface, --dc-section-shadow, --dc-section-clip, --dc-section-cut-tl, --dc-section-cut-br, --dc-section-cut-bl, --dc-section-rail, --dc-section-gap, --dc-section-edge, --dc-section-break-inside, --dc-section-measure, --dc-section-pad-top, --dc-section-pad-right, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-bar-mix, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-flag, --dc-section-shadow-y, --dc-section-ink-mix, --dc-section-ink-tone, --dc-section-top]
+    breaks: "a sheet is kept whole (--dc-section-break-inside: avoid); split a section that must run on in markup, the second part `.dc-pu-cont`"
+    notes: "A sheet pasted flat on the wall (paste-up.css; constitution §IV): a band of wall above and below white paper with the accent rail and one hard shadow, the first ## or ### a tag tilted -1deg over the paper's top edge (its fill, text and under-rule are the --dc-section-bar-* tokens, which each kind sets), and a closing bold line a yellow sticker across its foot. The kinds reference, lore, dm and catalog are the same sheet with their own bar and accent. A creature (npc), the walkthrough and the choose sections are panels that keep their own card look."
 
 
   - name: street-line
@@ -1049,7 +1182,7 @@ components:
     origin: plugin
     recipe: "**A closing line.** as the last paragraph of a section panel (or before a heading in it); automatic, no markup"
     emits: p.dc-kicker
-    css: styles/components/section.css
+    css: styles/components/paste-up.css
     breaks: "break-before: avoid; the paragraph above it breaks after: avoid"
     notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour."
 
@@ -1064,6 +1197,42 @@ components:
     tokens: [--dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-catalog-break-inside]
     breaks: "a panel that splits by default (--dc-catalog-break-inside: auto), between entries; .dc-avoid-split, or --dc-catalog-break-inside: avoid, keeps one whole; each entry stays whole and never splits across a column or page"
     notes: "A panel for a run of entries (@gear, of any kind). Its title bar is a ledger header (a pale aged-paper band under heavy ink rules, an ink rail, an INVENTORY chip), not an accent bar. Its entries are ruled instead of boxed: no card, no rail, a rule in the entry's own accent over each, each kept whole, so no `---` is needed between entries (a `---` left in draws nothing). Columns are core's: write `@columns 2` under the intro."
+
+  - name: section-weapons
+    status: live
+    origin: plugin
+    markers: ["@section weapons"]
+    snippet: section-weapons
+    recipe: "@section weapons ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-weapons
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is blood, its chip WEAPONS in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
+
+  - name: section-explosives
+    status: live
+    origin: plugin
+    markers: ["@section explosives"]
+    snippet: section-explosives
+    recipe: "@section explosives ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-explosives
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is hazard yellow (ink type on it), its chip EXPLOSIVES in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
+
+  - name: section-armor
+    status: live
+    origin: plugin
+    markers: ["@section armor"]
+    snippet: section-armor
+    recipe: "@section armor ### Title … tables, entries, #### sub-heads … @end-section"
+    emits: div.section.dc-section-panel.dc-catalog.dc-section-armor
+    css: styles/components/entries.css
+    tokens: [--dc-section-accent, --dc-section-bar-mix, --dc-section-bar-fg, --dc-section-tab, --dc-section-tab-bg]
+    breaks: "as a catalog: splits by default; in a paste-up chapter every sheet is kept whole (split it in markup, the second part `.dc-pu-cont`)"
+    notes: "The gear sections by kind (`weapons`, `explosives`, `armor`) are one style, the catalog's, told apart by colour and chip label: this one is slate steel, its chip PROTECTION in ink. The kind's colour is the title (the tag over the sheet's edge in a paste-up chapter), every table's head row, the rail, and the 3pt rule over each entry inside (in place of the entry kind's own) and over a `####` sub-head, which is set like an entry's name. The three read apart in grayscale (dark, light, mid)."
 
   - name: section-flat
     status: live
@@ -1099,6 +1268,18 @@ components:
     tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail]
     notes: "A panel for the world, not the rules: a deep violet bar over a white sheet, a violet rule, long asymmetric slashes (shallow top-left, steep bottom-right), italic sub-heads. `@chapter lore` colours a whole chapter the same way; this is for lore inside a rules or DM chapter."
 
+  - name: section-district
+    status: live
+    origin: plugin
+    markers: ["@section district"]
+    snippet: section-district
+    recipe: "@section district .dc-neon-pink … @end-section  (a place: a district, a venue)"
+    emits: div.section.dc-section-panel.dc-section-lore.dc-section-district.dc-lit
+    unstyled: [dc-section-district]
+    css: [styles/components/section.css, styles/components/neon.css]
+    tokens: [--dc-neon, --dc-neon-core]
+    notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange; .dc-neon-off is a dead tube, grey glass, for a place that went dark."
+
   - name: section-dm
     status: live
     origin: plugin
@@ -1128,7 +1309,7 @@ components:
     snippet: faction
     recipe: "@faction [megacorp|cabal|cult|enforcer] [label=\"…\"] / #### Name / fields and prose … @end-faction"
     emits: [div.dc-card.dc-faction.dc-faction-megacorp|.dc-faction-cabal|.dc-faction-cult|.dc-faction-enforcer, span.dc-faction-kind]
-    css: [styles/components/section.css]
+    css: [styles/components/enclosures.css]
     tokens: [--dc-faction-accent, --dc-faction-badge-fg, --dc-faction-break-inside, --dc-faction-shape, --dc-faction-surface, --dc-faction-band, --dc-faction-band-height, --dc-faction-pad-bottom, --dc-faction-badge-shape, --dc-faction-title, --dc-faction-title-bg, --dc-faction-title-pad]
     breaks: "splits between paragraphs by default (--dc-faction-break-inside: auto); .dc-avoid-split keeps one whole"
     notes: "An organization's profile: a card whose silhouette, top band, name colour and badge all say the kind: megacorp a hard-edged rectangle with an ink-blue, cyan-edged band, cabal violet with long corner cuts, cult blood and torn along the top and foot, enforcer an octagon with a hazard-stripe band and a yellow name label. Every kind is a white sheet. The kind is the bare word; the badge reads it unless label=\"…\" names its own; with neither there is no badge."

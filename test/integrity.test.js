@@ -227,7 +227,8 @@ describe("file contracts", () => {
   // `@specialty .augmerc .dc-page-wall-3`) names its wall on its children, and
   // never on the art plate among them: named on the block, the plate was set
   // inside the wall's margins in the app (print was right). The plate takes
-  // the wall's own margin-free page, dc-wall-N-full.
+  // the wall's own margin-free page, dc-wall-N-full. In a chapter with a colour
+  // the children take the wall's twin instead, so the chapter chip keeps its hue.
   test("a wall a block names goes on its children, and its art plate takes the wall's full page", () => {
     const bad = [];
     const walls = new Set();
@@ -241,7 +242,8 @@ describe("file contracts", () => {
           plates.add(plate[1]);
           continue;
         }
-        const kids = selector.match(/^:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
+        // in a chapter with a colour, the children take that wall's twin (dc-wall-N-<hue>), so the chip keeps it
+        const kids = selector.match(/^(?:\.chapter\.dc-chapter-[a-z-]+ )?:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
         if (kids && kids[2].split(/,\s*/).includes(".dc-specialty-art")) walls.add(kids[1]);
         else bad.push(selector);
       }
@@ -281,7 +283,7 @@ describe("file contracts", () => {
     expect([...found].filter((x) => !APPROVED.has(x)), "a grid is not a way to lay out columns of content; use `@columns N`").toEqual([]);
   });
 
-  test("`--gp-column-gap` and `--gp-column-rule` are set once, at :root, in dc-component-defaults.css", () => {
+  test("`--gp-column-gap` is set once, at :root; `--gp-column-rule` only by the `.dc-column-rule` opt-in", () => {
     const sets = [];
     for (const s of PKG) {
       s.root.walkDecls(/^--gp-column-(gap|rule)$/, (d) => {
@@ -289,13 +291,11 @@ describe("file contracts", () => {
         sets.push({ label: s.label, prop: d.prop, sels, value: d.value });
       });
     }
-    for (const prop of ["--gp-column-gap", "--gp-column-rule"]) {
-      const atRoot = sets.filter((x) => x.prop === prop && x.sels.includes(":root"));
-      expect(atRoot.map((x) => x.label), `${prop} at :root`).toEqual(["styles/dc-component-defaults.css"]);
-    }
-    // Anywhere else it may only be reset to `none` (a component that wants no hairline).
-    const elsewhere = sets.filter((x) => !x.sels.includes(":root") && x.value !== "none");
-    expect(elsewhere, "only `--gp-column-rule: none` may be set on a component").toEqual([]);
+    const gaps = sets.filter((x) => x.prop === "--gp-column-gap");
+    expect(gaps.map((x) => `${x.label} ${x.sels.join(",")}`), "--gp-column-gap").toEqual(["styles/dc-component-defaults.css :root"]);
+    // No rule between columns by default (core's none); a run opts in with the class.
+    const rules = sets.filter((x) => x.prop === "--gp-column-rule");
+    expect(rules.map((x) => `${x.label} ${x.sels.join(",")}`), "--gp-column-rule").toEqual(["styles/page-templates.css .dc-column-rule"]);
   });
 
   // dc#34 (callouts.css TOKEN CONVENTION) + css-architecture.md "Tokens flow downward only":
@@ -364,6 +364,7 @@ describe("component catalog", () => {
     ...WORD_MARKERS.flatMap((k) => Object.keys(markers[k]?.variants ?? {}).map((w) => `@${k} ${w}`)),
     ...ENTRY_KINDS.map((w) => `@gear ${w}`),
     ...Object.keys(markers.definition.variants).map((w) => `@definition ${w}`), // the two states of a roll
+    ...Object.keys(markers.card.variants).map((w) => `@card ${w}`), // a card hung as a lightbox
   ];
 
   test("plugin.js declares markers and variant words to check", () => {

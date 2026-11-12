@@ -29,6 +29,7 @@ const CORE_HOOKS_READ_BY_CSS = [
   ".gp-bleed",
   ".gp-behind",
   ".gp-page-break",
+  ".gp-thead-shim", // the row core inserts in the preview to repeat a table header; a split table hides it
   ".gp-column-break", // what `@column-break` emits: the box after one opens a column, so it takes the column's hang line
   ".gp-page-full-bleed", // core's `@page full-bleed`, which shares the plate geometry and named page of `.dc-full-page`
   "--gp-column-gap", // the two core hooks this package is allowed to SET, once, at :root (dc-component-defaults.css)
@@ -70,10 +71,11 @@ describe("plugin.js", () => {
   });
 
   test("never mentions gutterpress core's gp- prefix in code", () => {
-    // The one legitimate reference is core's `gp-continued` class, which the
-    // @continue handler must recognise — it is core's vocabulary, read not written.
+    // The legitimate references are core's classes the plugin must recognise,
+    // read never written: `gp-continued` (the @continue handler) and `gp-pin`
+    // (a pinned image is page furniture, moved out of skill cards).
     const hits = [...code.matchAll(/["'`][^"'`]*\bgp-[a-z0-9-]+[^"'`]*["'`]/g)].map((m) => m[0]);
-    for (const h of hits) expect(h).toMatch(/gp-continued/);
+    for (const h of hits) expect(h).toMatch(/^["'`](gp-continued|gp-pin)["'`]$|gp-continued/);
   });
 });
 
@@ -194,13 +196,13 @@ describe("stylesheets", () => {
   // text-free ::before/::after layer.
   test("put a filter only on a ::before or ::after layer", () => {
     const found = [];
+    // Parsed, not scanned: a regex over the whole sheet backtracked past the test's timeout.
     for (const rel of sheets) {
-      const css = stripComments(read(rel));
-      for (const [, selectors] of css.matchAll(/([^{}]*)\{[^{}]*(?:^|[;{\s])(?:-webkit-)?filter\s*:[^;}]*/g)) {
-        for (const sel of selectors.split(",")) {
+      postcss.parse(read(rel)).walkDecls(/^(-webkit-)?filter$/, (d) => {
+        for (const sel of d.parent.selectors ?? []) {
           if (!/::?(before|after)\s*$/.test(sel.trim())) found.push(`${rel}: ${sel.trim()}`);
         }
-      }
+      });
     }
     expect(found).toEqual([]);
   });
@@ -318,7 +320,7 @@ describe("keep-whole tokens", () => {
   });
 
   test("a creature (an @npc-stat with at most one `####`) reads --dc-npc-stat-break-inside", () => {
-    const creature = declsOf("styles/components/section.css", ".dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4))");
+    const creature = declsOf("styles/components/creatures.css", ".dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4))");
     expect(creature["break-inside"]).toBe("var(--dc-npc-stat-break-inside)");
   });
 });
@@ -342,7 +344,7 @@ describe("skill cards split by default", () => {
 // pages through a chapter of factions. It splits like an entry.
 describe("faction cards split by default", () => {
   test("a faction card overrides .dc-card's avoid with its token, which defaults to auto", () => {
-    const css = read("styles/components/section.css");
+    const css = read("styles/components/enclosures.css");
     expect(css).toMatch(/\.dc-card\.dc-faction \{[^}]*break-inside: var\(--dc-faction-break-inside\);/);
     expect(css).toMatch(/\.dc-card\.dc-faction > :is\(h3, h4\):first-of-type \{[^}]*break-after: avoid;/);
   });
@@ -372,7 +374,7 @@ describe("art defaults leave a classed image alone", () => {
 // may set on any box. `revert-layer` hands the margin back while it is unset.
 describe("the flow gap", () => {
   test("the rule reads the token with a `revert-layer` fallback, and `.dc-snug` sets it to 0.04in", () => {
-    expect(declsOf("styles/page-templates.css", ":is(p, li)")["margin-bottom"]).toBe("var(--dc-flow-gap, revert-layer)");
+    expect(declsOf("styles/page-templates.css", ":is(p, li):where(:not(.dc-steps > li, p.dc-die-call))")["margin-bottom"]).toBe("var(--dc-flow-gap, revert-layer)");
     expect(declsOf("styles/page-templates.css", ".dc-snug")["--dc-flow-gap"]).toBe("0.04in");
   });
 

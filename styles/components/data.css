@@ -3,7 +3,6 @@
 /* ── Learning path structural + path shell + title overrides ──────────── */
 .dc-learning-path.dc-path-block {
   --dc-path-accent: var(--crimson);
-  position: relative;
   /* margin-bottom here is a no-op: .dc-path-block has no padding/border, so
      this margin collapses with .dc-path-shell's own (larger) margin-bottom
      below and never renders. The shell is the value that actually controls
@@ -32,9 +31,7 @@
   padding-bottom: var(--dc-path-shell-padding-bottom);
   /* No right padding: the title band spans the shell's full width, so the
      band's clip and the shell's clip (the same point list, specialty-identity.css)
-     meet at the right as well as the left. (It was 12px, for a skewed tab on
-     .dc-spray::before that the band no longer draws: the band stopped 12px short
-     of the frame's top-right cut.) */
+     meet at the right as well as the left. */
   padding-right: 0;
   position: relative;
   /* Both pseudos sit at negative z-index; this is the stacking context that
@@ -243,6 +240,8 @@
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 0;
+  /* a ruled cell: its number block runs the cell's full height, so no gap opens between rows */
+  margin-bottom: 0;
   padding: 0;
   border-top: 1pt solid var(--ink);
   font-family: var(--font-body);
@@ -311,7 +310,7 @@
        .dc-outcome-row        the ground, the frame's sides, the hairline's right side
        .dc-outcome-row:last-child   the frame's foot, the bottom chamfers and the
                               one tiny chip out of the foot, the only grit.
-     Unsplit, the parts add up to the box this used to be: a 2px frame, a 4px
+     Unsplit, the parts add up to one box: a 2px frame, a 4px
      ring of ground over a 5px ring of the hairline colour (1px line, 4px in),
      four even 45-degree chamfers. The ring is a shadow, not an absolutely
      positioned `::after` box: such a box inside a multicol run stops Chromium
@@ -419,10 +418,10 @@
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, transparent),
     inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, transparent);
-  /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
-     to --ink because the fungi-glow fill is too light for cream text: 1.24:1)
-     propagates to the chip element itself, not just to its children. Default
-     stays cream for the dark-fill outcomes (crit/miss/fail). */
+  /* Use the token so the light rows (hit and mixed set --dc-outcome-key-color
+     to --ink: cream on green or yellow is under 3:1) carry it to the chip
+     element itself, not just to its children. Default stays cream for the
+     dark-fill outcomes (crit/miss/fail). */
   color: var(--dc-outcome-key-color);
   padding: 6px 10px;
   display: flex;
@@ -477,47 +476,42 @@
 }
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
-   Creaturepunk pillar gradient across the 5-band outcome ladder:
-     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 12.5:1)
-     hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 11.4:1)
-     mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 6.9:1)
-     miss  → blood               (GUTTER deep — paper-cream 9.0:1)
-     fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 10.4:1)
-   All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
-   for the 10pt outcome-name and 12pt roll-number text (measured with
-   scripts/measure-palette-crpc1.py contrast).
-
-   The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
-   (below) because fungi-glow is too light to carry paper-cream text. Bright
-   row + dark text preserves the bioluminescent signal while keeping labels
-   press-legible. */
+   Semantic, a traffic light from best to worst; the five lightnesses differ,
+   so the tiers part in grayscale too:
+     crit  → neon-civic-ring-1   (deep green: the best there is — paper-cream 5.1:1)
+     hit   → neon-civic + ink    (green: it works              — ink 6.6:1)
+     mixed → brand-yellow + ink  (yellow: caution, it costs you — ink 12.0:1)
+     miss  → blood               (red: it fails                — paper-cream 9.0:1)
+     fail  → ink-dark            (black: the lights go out     — paper-cream 14.8:1)
+   The two light rows carry ink text (--dc-outcome-key-color and
+   --dc-outcome-name-color); the three dark rows keep the cream default. */
 .dc-outcome-row.crit,
 .dc-rung.crit {
-  --row-color: var(--brand-magenta-deep);
+  --row-color: var(--neon-civic-ring-1);
 }
 
 .dc-outcome-row.hit,
 .dc-rung.hit {
-  --row-color: var(--fungi-glow);
+  --row-color: var(--neon-civic);
   --dc-outcome-name-color: var(--ink);
   --dc-outcome-key-color: var(--ink);
 }
 
 .dc-outcome-row.mixed,
 .dc-rung.mixed {
-  --row-color: var(--orange-deep);
+  --row-color: var(--brand-yellow);
+  --dc-outcome-name-color: var(--ink);
+  --dc-outcome-key-color: var(--ink);
 }
 
 .dc-outcome-row.miss,
 .dc-rung.miss {
-  /* --rust + cream = 6.0:1; --blood + cream = 9.0:1, the safer margin at
-     10pt chip text. Still warm red, still reads as "miss/fail" semantic. */
   --row-color: var(--blood);
 }
 
 .dc-outcome-row.fail,
 .dc-rung.fail {
-  --row-color: var(--fungi-rot);
+  --row-color: var(--ink-dark);
 }
 
 /* ── Ladder rungs (`@ladder`) ─────────────────────────────────────────────
@@ -537,7 +531,7 @@
 .dc-rung {
   position: relative;
   break-inside: avoid;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   padding-top: 11px; /* half the tab's height: the tab straddles the plate's top edge */
 }
 .dc-rung-title {
@@ -566,7 +560,7 @@
 .dc-rung-body {
   position: relative;
   box-sizing: border-box;
-  padding: 18px 14px 6px 20px;
+  padding: 15px 14px 6px 20px;   /* top: clear of the tab, which hangs 11px into the plate */
   background: var(--dc-outcomes-surface);
   border: 2px solid var(--dc-outcomes-border);
   box-shadow:
@@ -586,6 +580,11 @@
 }
 .dc-rung-body > :last-child {
   margin-bottom: 0;
+}
+/* A callout inside a rung (an example) sits a paragraph's gap under the text,
+   not a section's: the rung is one plate. */
+.dc-rung-body > :is(.dc-alert, .gp-alert) {
+  --dc-alert-margin-top: var(--space-sm);
 }
 
 /* ── Roll table (`@roll-table`) ───────────────────────────────────────────
@@ -860,9 +859,6 @@
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
 }
-:is(.gp-columns, [class*="gp-columns-"]):has(> .dc-definition-block) {
-  --gp-column-rule: none; /* a pair of framed cards needs no rule between them */
-}
 .dc-definition-block hr {
   border: none;
   border-top: 1pt solid var(--dc-definition-block-accent);
@@ -941,7 +937,7 @@
 .dc-stat-cell-key {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   text-transform: uppercase;
   color: var(--hud-blue);
   margin-bottom: 2px;
@@ -984,17 +980,17 @@
 table.dc-stat-strip {
   border: 2px solid var(--dc-stat-strip-accent);
   margin: 0.08in 0;
+  --dc-td-pad-y: 3px;
+  --dc-th-pad-y: 2px;
 }
 .dc-stat-strip th {
   background: var(--dc-stat-strip-accent);
   color: var(--paper-cream);
   font-size: var(--fs-floor);
   font-weight: 600;
-  padding: 2px 8px;
 }
 .dc-stat-strip td {
   background: var(--paper-cream);
-  padding: 3px 8px;
   font-size: var(--fs-floor);
   vertical-align: middle;
 }
@@ -1073,6 +1069,22 @@ table.dc-stat-strip {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
 }
 
+/* An entry that links to a chapter (dcTocChapters) has its number lit: an ink
+   plate ringed in the chapter's tube (neon.css), the digits in its pale core. */
+.dc-toc ol > li[class*="dc-toc-"] {
+  padding-left: 62px;
+}
+.dc-toc ol > li[class*="dc-toc-"]::before {
+  top: 6px;
+  width: 48px;
+  height: 30px;
+  background: var(--ink);
+  color: var(--dc-neon-core);
+  clip-path: none;
+  line-height: 1;
+  box-shadow: var(--dc-lit-line), 0 0 0 1pt var(--ink), 2pt 2pt 0 var(--ink-dark);   /* an ink rim: a tube glows against dark */
+}
+
 .dc-toc ol>li>a {
   font-size: var(--fs-h3);
   font-weight: 700;
@@ -1115,10 +1127,10 @@ table.dc-stat-strip {
 
 /* The card's last block (an ability row or the closing line) stays with the one
    above it (cards.css, "the closing line of a card"): a tail is never a lone
-   row. `data-ability-penultimate` / `-last` no longer glue the last TWO rows
-   too: with the closing line's glue they made one unsplittable chain of three
-   blocks, which left a skill card on a page with one row and a hand's breadth
-   of empty cream under it (Pain Compliance, p.148 of the guide). */
+   row. `data-ability-penultimate` / `-last` do not glue the last TWO rows
+   too: with the closing line's glue they would make one unsplittable chain of
+   three blocks, leaving a skill card on a page with one row and a hand's
+   breadth of empty cream under it. */
 
 /* .dc-img-wrapper: the plugin replaces p:has(img) with an explicit class */
 p.dc-img-wrapper {
@@ -1168,7 +1180,7 @@ p.dc-img-wrapper {
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--ls-display);
   text-transform: uppercase;
   line-height: 1.4;
   /* A cut top-right corner (HUD chamfer), on the band only so the tile keeps

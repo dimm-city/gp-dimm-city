@@ -72,7 +72,10 @@ describe("free-standing page text", () => {
     const unguarded = [];
     let seen = 0;
     postcss.parse(read("styles/page-templates.css")).walkRules((rule) => {
-      for (const selector of rule.selectors) {
+      // a nested rule is read as its full selector: the parent's, then the nested one (`&` replaced, or a descendant/child combinator)
+      const parents = rule.parent?.type === "rule" ? rule.parent.selectors : [null];
+      const full = parents.flatMap((p) => rule.selectors.map((sel) => (p === null ? sel : sel.includes("&") ? sel.replaceAll("&", p) : `${p} ${sel}`)));
+      for (const selector of full) {
         const positive = selector.replace(/:not\((?:[^()]|\([^()]*\))*\)/g, ""); // what the rule selects, without its exclusions
         if (!/\.page|\.chapter/.test(positive) || /dc-page-|dc-chapter-/.test(positive)) continue; // a location rule keys on a page word
         const subject = subjectOf(selector);

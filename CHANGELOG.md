@@ -5,7 +5,211 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
-## [Unreleased]
+## [1.10.3] - 2026-11-10
+
+Paste-up becomes part of the package proper, gear sections get a kind each,
+and the styles say where a reader is and what they are reading.
+
+### Semantic styles
+
+- **`@chapter dm` and `@chapter gear`.** The Dream Master's chapter (ink) and
+  the armory (amber) are places of their own, not two more rust rules
+  chapters. A chapter's colour is every plain panel's tag and rail, its opener
+  and its footer chip; a section's kind (reference, lore, dm, catalog) keeps
+  its own colour and silhouette in any chapter.
+- **A specialty's pages carry chapter 2's chip.** A specialty block has no
+  `.page` of its own, so its pages showed the default magenta chip (chapter
+  1's colour). `scripts/wall-tiles.py` gives a block's children the wall's
+  chapter twin.
+- **One roll-result look.** Every two-column table of d20 results is the
+  outcome ladder: an ability's own bands (16-19 over 11-15, 1-5, 2-10, 11+),
+  labelled bands ("20: Total Wholeness", "Triumph (20)") and tier words
+  ("Success") included, each row in its band's tier colour. Bands that
+  overlap or straddle 10/11 stay a table; `@roll-table` is never a ladder.
+- **Semantic tier colours.** The outcome ladder and its rungs read as a
+  traffic light, best to worst: Triumph deep green (`--neon-civic-ring-1`),
+  Success green (`--neon-civic`), Hard Choice yellow (`--brand-yellow`),
+  Failure red (`--blood`), Catastrophe black (`--ink-dark`). Each tier has its
+  own lightness, so they part in grayscale; the light tiers carry ink text,
+  and every chip clears 5.1:1.
+- **Steps.** A `##` standing on the page that opens with a step number
+  (`## 4. Ideal`) has its number set as a chip in the chapter's colour, so a
+  procedure's steps read as one sequence.
+- **Examples.** An example that opens with its own heading is labelled by it,
+  with no default "Example" tag beside it.
+
+### Added
+
+- **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
+  catalog in one colour and one chip label per kind of gear, so firearms,
+  grenades and armor read as one system and each is told at a glance, in
+  grayscale too: weapons in blood (WEAPONS), explosives in hazard yellow with
+  ink type (EXPLOSIVES), armor in slate steel (PROTECTION). The colour is the
+  title, every table's head row, the rail, and the 3pt rule over each entry
+  inside (in place of the entry kind's own) and over a `####` sub-head, set
+  like an entry's name. Snippets `section-weapons`, `section-explosives`,
+  `section-armor`.
+
+- **Neon signs (prototype; not yet in the constitution).** The city's own
+  signage, placed by the plugin with no new markup: a sign spelling the
+  chapter's word hangs above the title banner of a Rules, Dream Master or Gear
+  opener, and one spelling the specialty hangs on each specialty's art page.
+  A small `--ink` plate, bolted at two corners, carries the word as four
+  stacked layers of SVG paths (outer ring, inner ring, tube, pale core) with
+  round joins: the letters are Tomorrow's capitals as path data
+  (`scripts/neon-glyphs.py` writes them into `plugin.js`), because stroked
+  text prints as a Type 3 font, which the PDF/X build flattens to an image; one letter of each sign is a dead grey tube, and the Dream Master's
+  sign is lit only at its D and M. Tube colours are the `--neon-*` ladders in
+  `dc-palette.css` (orange, cyan, yellow, hot pink, fungi, civic green,
+  chrome, azure), each the colour the press prints, so the PDF matches print.
+  An opener's sign takes no flow height; nothing else on the page moves.
+  `styles/components/neon.css`; the plan and soft proof are
+  `docs/plans/2026-11-11-neon-signage.md` and `proofs/neon/`.
+- **Lit plates and lightboxes.** Neon for words that must stay live text: an
+  ink plate with the text in the tube's pale core and the tube drawn round its
+  edge as stepped, opaque inset rings (no blur, prints as vector). Each takes
+  a `.dc-neon-<hue>` class on its marker line (orange, cyan, yellow, pink,
+  fungi, civic, chrome, azure, or `off`, a dead tube in grey glass). None
+  changes an element's height.
+  - **`@card lightbox`**: a white face in a lit frame (ink on both sides of
+    the tube), the title a lit plate, and a number that ends the title
+    (`#### BODY TAX: 2`) lit in a window at the plate's right end. Snippet
+    `card-lightbox`.
+  - **`@section district`**: a place's lore sheet with a lit name tag.
+    Snippet `section-district`.
+  - **`.dc-lit` on any sheet**: its tag is a lit plate, its sub-heads take a
+    tube bar and the hue's dark ring, and its tables' head rows are lit.
+  - **`{.dc-neon-sign}` on a heading**: its word drawn as a neon sign, in
+    tubes, at the heading's own size (a paste-up bill's ink is the plate). The
+    text stays in the page, unseen, for search and links. Snippet
+    `neon-sign-heading`.
+  - **Programs** have a lit azure PROGRAM strip.
+  - **The contents**: a chapter line that ends with its chapter's word
+    (`{.dc-toc-rules}`) has its number lit in that chapter's tube colour.
+  - **Location and visit callouts**: their stamps are lit, location in azure
+    and visit in civic green.
+- **Grimy streets, one to contrast each wall.** The ground strip under a wall
+  page is one of three streets: setts (`images/ground.png`, also under the
+  plain brick), bonded flagstones (`ground-flags.png`) or cracked asphalt
+  (`ground-asphalt.png`), each wall paired with one that contrasts with it
+  (walls 1 and 4 flagstones, 2 and 6 asphalt, 3 and 5 setts). All three are
+  grimed in the book's flat, drawn look: ragged stains in two tones, soot
+  pooled at the wall's foot, grit and chips, a ragged gutter. Nothing to
+  write: the wall a page names picks its street. `scripts/wall-tiles.py
+  --grounds` redraws them. (1.10.3-alpha.2 had a street of each wall's own
+  stone, `ground-1.png` … `ground-5.png`; it read as the wall carrying on.)
+- **A warning on raw HTML.** Every HTML tag written into the markdown is
+  reported on its line (`raw_html`), in a table cell too: the package cannot
+  check it, and a tag left open styles everything after it (a
+  `<small>…<small>` in one ladder row set the rest of the Field Guide small).
+  HTML comments are not reported. `rawHtml: "off"` in the extension's options
+  turns it off; the design guide does, since its specimen stages are HTML.
+
+### Changed
+
+- **No rule between columns by default.** `@columns 2 .dc-column-rule` draws
+  the hairline where a run wants it (snippet `column-rule`).
+- **The gear chapter is signal indigo**, not charred amber (brown): its
+  opener, plain sheet tags and footer chip (`dc-chip-indigo`).
+- **`.dc-snug` closes up table rows too** (3px cell padding), so a page that
+  overflows by a line or two fits.
+- **Outcome rungs are tighter.** A rung's closing strip takes a rung's own
+  gap, its plate opens 15px under the top, rungs sit 6px apart and a callout
+  inside one sits a paragraph's gap under the text.
+- **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or
+  `catalog` section (and the gear kinds) is a sheet pasted on the wall with
+  nothing to write: tag over the paper's edge, closing line a sticker, one hard
+  shadow, kept whole. A chapter opener's `#` title is tilted, and a fiction
+  excerpt's closing line is a sticker. The hung-panel look those replace is
+  retired, and so is `.dc-paste-up`: delete it from marker lines (it styles
+  nothing now). A creature (`npc`), the Citizen File walkthrough, the `choose`
+  sections and a fiction excerpt's text keep their own looks. A book whose
+  long sections now run onto another page splits them in markup, the second
+  part `.dc-pu-cont`.
+- **A sheet keeps its shadow inside the page.** A paste-up sheet set its right
+  margin to 0, so its 3px hard shadow reached past the content box and
+  Chromium shrank the whole book to fit (the Field Guide printed at 99.6%). It
+  keeps the 3px every panel keeps. And a sheet sits `--dc-pu-inset` (now
+  0.08in by default, was 0) in from the content edge, so its tilted tag, which
+  hangs about 0.07in off the sheet's left edge, stays inside it; a book whose
+  pages clip the overhang may set 0.
+- **Paste-up works like the rest of the package.** `styles/paste-up.css` is
+  gone: its rules live with the components they style (sheets, tags, bills,
+  stickers and rows in `section.css`, plates and cut-outs in `images.css`), and
+  a paste-up chapter needs no raw HTML.
+  - Two sheets side by side need no wrapper: each sheet says its width on
+    its section line (`.dc-half`, `.dc-narrow` 38%, `.dc-wide` 62%), and the
+    plugin wraps two adjacent sheets whose widths complete a row in the same
+    `div.dc-pu-row`, replacing `<div class="dc-pu-row">` … `</div>`. A sheet
+    with a width and no partner is reported (`row_unpaired`). The `@row`,
+    `@row-wide` and `@row-narrow` markers of 1.10.3-alpha.1 and alpha.2 are
+    retired: delete their lines and write the widths on the two sheets.
+  - A `.dc-pu-cont` sheet that opens with a `##` or `###` gets its
+    `.dc-pu-spacer` from the plugin; drop `<div class="dc-pu-spacer"></div>`.
+  - `{.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, in the sheet's bar
+    colours.
+  - A plate takes core's `.gp-size-NN` for its width (40% without one).
+  - In a paste-up chapter the opener's `#` title is tilted -2deg and a fiction
+    excerpt's closing line is a sticker (both were the Field Guide's own CSS).
+  - The catalog has one entry per piece, and design guide chapter 6 a specimen.
+
+### Fixed
+
+- **A paste-up tag widens to its longest word.** A word wider than the tag's
+  88% cap (QUICKSTART) ran past the tag in cream on the white paper.
+- **A catalog entry's picture paints above the next entry**, whose rule was
+  drawn across it (the Gutter Snap grenade).
+- **`@page` inside a specialty.** It used to close the specialty, its learning
+  path and the open skill (core closes every component at a page), so what
+  followed lost its colours, cards and numbering; books used `@page-break`
+  instead and could neither change the wall nor frame a pinned image. Now the
+  plugin closes them before the page and re-opens them after it: the
+  specialty's identity, the path's number (no second header) and the skills'
+  tiers run on, and a card the page cuts continues as after `@continue`. The
+  wall is the page's (a plain `@page` takes the specialty's).
+- **Pinned art in a specialty is framed by its page.** A `{.gp-pin}` image in a
+  skill was placed inside the card above it (a card is a positioned box), and
+  the learning path was positioned too, so a pin anchored to a card or a whole
+  multi-page path. A pinned image is moved out of the cards, and the learning
+  path is no longer positioned. An image paragraph that ends a card is no
+  longer marked as its sign-off.
+- **A first table cell with a bold lead and text wraps.** The rule that keeps a
+  label cell on one line now holds only the bold name (`td:first-child >
+  strong:first-child`); before, `:only-child` ignored the text, so a cell like
+  "**Tiny:** Under 1 meter tall…" ran on one line past its panel and was cut
+  off.
+- **`@procedure` steps.** A step with a second paragraph or a nested list is one
+  step, with its extra content inside it, instead of one step per paragraph.
+- **Learning-path titles and stickers** render their inline markdown (emphasis,
+  typeset quotes) instead of printing it raw.
+- **Neon signs** hang only where they belong: a specialty's art page outside its
+  `@specialty` gets no sign, and a chapter's word does not outlive its chapter.
+- The per-row `data-ability-penultimate` and `data-ability-last` attributes are
+  gone from skill-card ability rows; no stylesheet read them.
+
+### Maintenance
+
+- **Book workarounds moved into the package.** A `@flaws` table splits across
+  pages with its header once; a ladder rung's closing sticker has room inside
+  its frame; a program card's comb meets its foot. New tokens replace book
+  overrides: `--dc-td-pad-y` / `--dc-th-pad-y` (table density),
+  `--dc-section-measure` (a panel's prose width, reset inside a paste-up row),
+  `--dc-alert-overflow` (a warning clips its hazard rail by default, so it never
+  spills onto the next page; `visible` turns that off) and
+  `--dc-definition-block-style` on the Surreal definition.
+- **`section.css` is five sheets**, in the same cascade order: `section.css`,
+  `enclosures.css`, `creatures.css`, `fiction-excerpt.css`, `paste-up.css`.
+- **Removed** `--dc-pullquote-accent-soft` and `--dc-card-body-mark` (documented
+  but read by nothing), `--callout-border-width-small`, `--fw-bold` and the
+  dead `.dc-section-catalog` selector.
+- `plugin.js` is reordered (data, helpers, rules, validators, markers), its
+  duplicated helpers are unified and its comments right-sized; the stylesheets
+  lose repeated mega-selectors (now nested), history and tracker comments, and
+  component rules that sat in the template and engine sheets.
+- `dcSkillCards` is split: the skill rule keeps the path numbering, and one
+  skill's cards are built by small functions over one explicit state object
+  (open, continue and end a card; which layout tokens are the card's; the
+  blocks a card renders; paragraph marks). Output is unchanged.
 
 ## [1.10.2] - 2026-11-07
 

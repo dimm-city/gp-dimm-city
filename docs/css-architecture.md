@@ -39,7 +39,7 @@ which pins the exact version and vendors a copy under the book's
 ≥0.11.0 wraps every extension's CSS in its own cascade layer, `@layer
 ext.<name>` (this package is `ext.gp-dimm-city`), in `extensions:` list
 order — so the cascade a consuming book gets is core (layered) → each
-extension in its own layer, this package's seventeen sheets among them in
+extension in its own layer, this package's twenty-two sheets among them in
 `gutterpress.styles` order → the book's own `styles:` last, which stay
 UNLAYERED (gutterpress#265, gutterpress#227). Anything a single book needs —
 a design guide's demo scaffolding, a field guide's chapter-specific art —
@@ -79,6 +79,11 @@ silently flip which sheet wins a shared selector.
 "styles/components/images.css",               // @layer dc.components
 "styles/components/entries.css",              // @layer dc.components
 "styles/components/section.css",              // @layer dc.components
+"styles/components/enclosures.css",           // @layer dc.components
+"styles/components/creatures.css",            // @layer dc.components
+"styles/components/fiction-excerpt.css",      // @layer dc.components
+"styles/components/paste-up.css",             // @layer dc.components
+"styles/components/neon.css",                 // @layer dc.components
 "styles/page-templates.css",                  // @layer dc.templates
 "styles/page-rules.css",                      // @layer dc.pages
 "styles/dc-native.css"                        // UNLAYERED, last — see below
@@ -117,7 +122,7 @@ be pointless — font-family lookup is not a cascade contest.
 |---|---|---|---|
 | `dc.tokens` | `dc-palette.css`, `dc-identity.css`, `dc-component-defaults.css` | `:root` token blocks (palette primitives, specialty-identity aliases, component public-token defaults) | `@page` rules, `.dc-*` components, `.page.*` layout rules, html/body baseline |
 | `dc.base` | `dc-core.css` | html/body baseline, global element resets, heading defaults, `* { print-color-adjust }` | `@page` rules, `.dc-*` components, `.page.*` layout rules |
-| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,entries,section}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides, and the section variants (`.dc-section-panel`, `-flat`, `-aside` and the section components, all in `section.css`) | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
+| `dc.components` | `components/{callouts,specialty-identity,chrome,cards,specialty,data,images,entries,section,enclosures,creatures,fiction-excerpt,paste-up,neon}.css` | Every `.dc-*` component class (base + token contracts + thin variants), specialty parent-container overrides, and the section variants (`.dc-section-panel`, `-flat`, `-reference`, `-lore`, `-dm`, `-choose` in `section.css`; the block, card and faction enclosures in `enclosures.css`; the walkthrough, NPC stat block and card grid in `creatures.css`; the fiction excerpt in `fiction-excerpt.css`; the paste-up sheet, its tags, bills, stickers and rows in `paste-up.css`) | any column layout (`columns`, `column-count`, `column-gap`, `column-fill`, `column-rule`), `@page` declarations, `div.chapter` scaffolding |
 | `dc.templates` | `page-templates.css` | `.page.*` content layout including the front-matter pages every Dimm City book writes (contents, credits, chapter start), the location rules for the page and chapter words (tokens only), page wrapper scaffolding, print utilities, `.dc-specialty` break control | `@page` declarations, `.dc-*` component styles, `:root` tokens, any column layout |
 | `dc.pages` | `page-rules.css` | Every `@page` declaration, named-page geometry, margin-box content (folio + chapter footers), the `string-set` producer for the chapter footer label | Component styles, token definitions, column layout |
 | *(unlayered, within this package)* | `dc-fonts.css`, `dc-native.css` | `@font-face` and the `@layer` statement (`dc-fonts.css`); engine-specific native-print chrome that must beat every `dc.*` sublayer (`dc-native.css`) | Anything that should lose to the book's own `styles:` — every sheet here sits inside `ext.gp-dimm-city`, which the book's unlayered sheets always outrank |
@@ -168,13 +173,13 @@ markdown: `@columns 2` inside `@skill`, `@card-grid`, `@npc-stat`,
 
 So no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`,
 `column-fill` or `column-rule` (`test/integrity.test.js` enforces it). What the
-package says about a column run is two author hooks, set **once**, at `:root`
-in `dc-component-defaults.css`, with no column selector:
+package says about a column run is core's two author hooks, with no column
+selector:
 
-| Hook | Value | A component that wants none |
+| Hook | Value | Where |
 |---|---|---|
-| `--gp-column-gap` | `var(--gutter)` | — |
-| `--gp-column-rule` | `1pt solid var(--border-hairline)` | `--gp-column-rule: none` (`.dc-card-grid`, the credits colophon) |
+| `--gp-column-gap` | `var(--gutter)` | once, at `:root` in `dc-component-defaults.css` |
+| `--gp-column-rule` | `1pt solid var(--border-hairline)` | only on a run that opts in: `@columns 2 .dc-column-rule` (`page-templates.css`); otherwise none, core's default |
 
 `--gp-column-rule` needs a Gutterpress that reads it; older ones ignore it and
 draw no hairline. `column-fill` is not set anywhere: `balance` is the CSS
@@ -185,7 +190,7 @@ What the package still owns around a run:
 | Concern | Owner | Selector |
 |---|---|---|
 | How many columns, the gap, the rule, the fill | Gutterpress core | `@columns N` |
-| Components reacting to sitting inside a run (a `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `dc-native.css` §5, `components/section.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
+| Components reacting to sitting inside a run (a `.dc-alert` may fragment; an `@npc-stat`'s entries break between creatures; a walkthrough's `h4` keeps a two-line height) | `components/callouts.css`, `components/creatures.css` | rules keyed on the run: `:is(.gp-columns, [class*="gp-columns-"])` or `.gp-columns` |
 | Grids inside ONE component (not column layout) | `components/data.css` | `.dc-stat-grid`, `.dc-steps`, `.dc-outcome-row` |
 
 A column run is `@columns 2`; a card around one is a `@section panel` with the
@@ -212,7 +217,7 @@ belongs in `components/callouts.css` (`@layer dc.components`). If you are writin
 an `@page` rule — including the page background — it belongs in `page-rules.css`
 (`@layer dc.pages`). If you are writing a selector that only exists for a rendered
 design-guide example, it belongs in the design guide's own sheet.
-A `.dc-*` selector in `page-rules.css` is a bug.
+A `.dc-*` component selector in `page-rules.css` is a bug (the generated page-word selectors, `.dc-page-*` and `.dc-chapter-*`, are legitimate there).
 
 **Cascade layers, not just file order (dc#54).** Layer order decides a
 cross-layer tie **regardless of selector specificity** — a one-class rule in

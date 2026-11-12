@@ -13,7 +13,7 @@
    MUST NOT CONTAIN:
    - :root token definitions (→ dc-component-defaults.css)
    - .dc-* component styles (→ components/*.css)
-   - columns:N rules (→ page-templates.css)
+   - column layout (core's `@columns N`)
    - @page declarations or named-page assignments (→ page-rules.css)
    - Component-scoped font-size or line-height overrides — each component
      owns its own typography via its own selector
@@ -67,23 +67,9 @@ body {
    sub-section label where the outline needs a section:
      ## Useful Items {.dc-h3}
    Each look rule below sets every property any level's rule sets, so the
-   class fully replaces the tag's own look (a class outranks an element).
-   overflow-wrap: the display face is wide and set in caps, so one long word
-   (INTERDIMENSIONALISM at 16pt in a ~3.4in column) outruns its box: it ran
-   under the next column or was clipped at the edge, losing letters in print.
-   A word that cannot fit now breaks as a last resort, at every level, in every
-   context; words that fit are untouched. `break-word` (not `anywhere`) keeps
-   min-content widths intact for shrink-to-fit headings such as banners and
-   tabs. A soft hyphen (&shy;) in the source still picks a better break.
-   `hyphens: auto` (inherited from body) hyphenates where the engine has a
-   dictionary, but uppercase display words are not reliably hyphenated, so
-   the guaranteed break does not depend on it. */
-/* SUPERSEDED: a heading breaks only BETWEEN words (CYBERNETIC / S was a
-   mid-word break in a narrow column). `overflow-wrap: normal` and
-   `hyphens: manual` mean a single word wider than its column is not split:
-   it overflows its box on the trailing side instead, so an author gives it
-   room (a wider column) or a soft hyphen (&shy;) at a place of their
-   choosing, which `hyphens: manual` still honours. */
+   class fully replaces the tag's own look (a class outranks an element). */
+/* A heading breaks only between words (`overflow-wrap: normal`, `hyphens: manual`):
+   a word wider than its column overflows, and a soft hyphen (&shy;) in the source picks the break. */
 h1, h2, h3, h4, h5, h6,
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   font-family: var(--font-display);
@@ -103,6 +89,9 @@ h1, h2, h3, h4, h5, h6,
   overflow-wrap: normal;
   hyphens: manual;
 }
+/* A heading that wraps never splits across a page; keeping it with what follows is core's
+   `break-after: avoid` (MARKER_CSS). */
+h2, h3, h4 { break-inside: avoid; }
 
 /* A struck word in a heading or a bar ("ROLL ~~M~~OR~~E~~ DIE!": markdown's
    `~~` is <s>) is a joke the reader has to be able to read: the default hairline
@@ -234,37 +223,45 @@ blockquote {
    without a fight. The two lists that draw their own look (`@procedure`'s
    .dc-steps and the contents page's .dc-toc ol) are left out: they have their
    own marker, padding and row spacing. */
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) { margin: 0 0 var(--space-sm); }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.1em; }
-:where(ol):where(:not(.dc-steps, .dc-toc ol)) { padding-left: 1.6em; list-style: none; }
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li { position: relative; margin: 0 0 var(--space-xs); }
-:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) > li:last-child { margin-bottom: 0; }
+/* The three nested blocks share the one zero-specificity selector. */
+:where(ul, ol):where(:not(.dc-steps, .dc-toc ol)) {
+  margin: 0 0 var(--space-sm);
+  & > li { position: relative; margin: 0 0 var(--space-xs); }
+  & > li:last-child { margin-bottom: 0; }
+}
 /* a bulleted list straight before or after a numbered one: the seam is one item pitch */
 :where(ul:has(+ ol), ol:has(+ ul)) { margin-bottom: var(--space-xs); }
 li > p { margin: 0; }
 /* a second paragraph in the same item keeps a paragraph gap */
 li > p + p { margin-top: var(--space-xs); }
 li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li { list-style: none; }
-:where(ul):where(:not(.dc-steps, .dc-toc ol)) > li::before {
-  content: "\00bb";
-  position: absolute;
-  left: -1.1em;
-  /* The marker is the component's own ink (--dc-accent-ink is declared on
-     every surface; a callout overrides it below). */
-  color: var(--dc-accent-ink, var(--ink));
-  font-weight: 700;
+:where(ul):where(:not(.dc-steps, .dc-toc ol)) {
+  padding-left: 1.1em;
+  & > li { list-style: none; }
+  & > li::before {
+    content: "\00bb";
+    position: absolute;
+    left: -1.1em;
+    /* The marker is the component's own ink (--dc-accent-ink is declared on
+       every surface; a callout overrides it below). */
+    color: var(--dc-accent-ink, var(--ink));
+    font-weight: 700;
+  }
 }
-/* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
-   list-item honours start= and reversed, and nests per list. */
-:where(ol):where(:not(.dc-steps, .dc-toc ol)) > li::before {
-  content: counter(list-item) ".";
-  position: absolute;
-  left: -1.6em;
-  width: 1.2em;
-  text-align: right;
-  color: var(--dc-accent-ink, var(--ink));
-  font-weight: 700;
+:where(ol):where(:not(.dc-steps, .dc-toc ol)) {
+  padding-left: 1.6em;
+  list-style: none;
+  /* Numerals right-aligned in the 1.6em hang, ending 0.4em before the text.
+     list-item honours start= and reversed, and nests per list. */
+  & > li::before {
+    content: counter(list-item) ".";
+    position: absolute;
+    left: -1.6em;
+    width: 1.2em;
+    text-align: right;
+    color: var(--dc-accent-ink, var(--ink));
+    font-weight: 700;
+  }
 }
 
 /* ── TABLES — universal default look, no class required ─────────────────────
@@ -295,9 +292,9 @@ th {
   color: var(--paper-cream);
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   text-transform: uppercase;
-  padding: 6px 8px;
+  padding: var(--dc-th-pad-y) 8px;
   text-align: left;
 }
 
@@ -315,12 +312,12 @@ th:empty {
 
 td {
   border-bottom: 1pt solid var(--border-hairline);
-  padding: 5px 8px;
+  padding: var(--dc-td-pad-y) 8px;
   vertical-align: top;
 }
 
-/* A table's first column that is only a bold name (a row's label) stays on one line. */
-:is(td, th):first-child:has(> strong:only-child) {
+/* A first-column bold name (a row's label) stays on one line; text after it in the same cell wraps. */
+:is(td, th):first-child > strong:first-child {
   white-space: nowrap;
 }
 
@@ -345,19 +342,6 @@ dl dt:first-child { margin-top: 0; }
 dd {
   margin: 0.02in 0 0 var(--space-md);
   color: var(--ink);
-}
-
-
-/* ── Headings: never split a multi-line heading across a page ────────────────
-   Keeping a heading WITH the content that follows is core's job — MARKER_CSS
-   ships `:where(h1,h2,h3,h4,h5,h6) { break-after: avoid }`, and CSS
-   Fragmentation resolves a break opportunity as "avoid" if EITHER adjacent
-   box says so. What core does not cover is a heading that wraps to two
-   lines splitting across the page boundary. */
-h2,
-h3,
-h4 {
-  break-inside: avoid;
 }
 
 }

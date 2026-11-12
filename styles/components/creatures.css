@@ -1,0 +1,294 @@
+@layer dc.components {
+
+/* ═════════════════════════════════════════════════════════════════════════
+   CITIZEN-WALKTHROUGH — guide for filling out the Citizen File
+   ═════════════════════════════════════════════════════════════════════════
+   `@citizen-walkthrough` (or `@section walkthrough`) is a panel; the chassis
+   gives it its look. In a two-column run the longer h4 ("What's Yr Handle?")
+   wraps to two lines and a shorter one to one, so the body below each starts
+   at a different baseline. Reserve two lines of heading height inside the
+   walkthrough's column runs. */
+.dc-citizen-walkthrough .gp-columns h4 {
+  min-height: calc(2 * var(--lh-tight) * 1em);
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   NPC STAT BLOCK — DM/NPC entries (Patchhead, Grease Monkey, Undertow, ...)
+   ═════════════════════════════════════════════════════════════════════════
+   Apply via @npc-stat (or @section npc) in markdown. Inside the wrapper:
+     #### Name              → labeled NPC entry (rust top-rule)
+     > "flavor quote"
+     2 HP — 1 Damage        → primary stat line (mono, hud-blue)
+     Fodder — Medium        → secondary stat line (mono, ink-smoke)
+     ##### Traits           → subsection label (mono caps, hud-blue)
+     ##### Equipment        → ditto
+
+   AUTHOR-FACING CONTRACT: the stat lines are a markdown CONVENTION, not
+   markup the plugin writes (plugin.js only declares the section). The
+   "primary" and "secondary" stat lines below are selected POSITIONALLY —
+   `blockquote + p` and `blockquote + p + p` — by counting the plain
+   paragraphs that immediately follow the flavor quote, so the convention
+   above IS the API: write exactly one stat-line paragraph, then exactly one
+   more, directly after the `>` quote, with nothing else between them. An
+   extra paragraph, a blank aside, or reordering those two lines silently
+   reassigns which line prints as primary vs. secondary — the build gives no
+   warning. */
+
+/* Token contract for .dc-npc-stat:
+     --dc-npc-stat-rule         → name top-rule color (default --rust)
+     --dc-npc-stat-rule-width   → name top-rule weight (default 2pt)
+     --dc-npc-stat-label-color  → h5 subsection-label color (default --hud-blue-dark)
+     --dc-npc-stat-primary      → primary stat-line color, e.g. "2 HP — 1 Damage" (default --hud-blue-dark)
+     --dc-npc-stat-secondary    → secondary stat-line color (default --ink)
+     --dc-npc-stat-break-inside → `avoid` (default) keeps a block with no `####`, or one, whole
+   Override per chapter / per faction in the book's own sheet selector chains. */
+/* Its shape: both right corners cut, a dossier's edge. */
+.dc-section-panel.dc-npc-stat {
+  --dc-section-clip: 14px;
+  --dc-section-cut-br: 14px;
+  /* Padding right and bottom clear the 14px (10.5pt) cuts by more than 2pt. */
+  --dc-section-pad-right: 0.2in;
+  --dc-section-pad-bottom: 0.2in;
+  --dc-accent-ink: var(--dc-npc-stat-primary);
+}
+/* The citizen walkthrough's shape: the top-left corner only. */
+.dc-section-panel.dc-citizen-walkthrough {
+  --dc-section-clip: 0px;
+  --dc-section-cut-tl: 20px;
+}
+/* Page breaks. A section splits across pages by default. A block with `####`
+   entries is a RUN of creatures: it may break between entries and never inside
+   one. An entry has no wrapper — it is an `h4` and the siblings that follow it
+   up to the next `h4` — so "never inside" is a keep-with-next chain: every
+   child but the last of its entry takes `break-after: avoid`, and each block of
+   an entry is itself unbreakable so a paragraph cannot split between columns.
+   Chromium keeps a chain together when it fits a page and lets it break only
+   when it cannot. The title bar (h3) and its intro chain on to the first entry,
+   so the bar is never alone at a page foot. A block with no `h4`, or one, is
+   ONE creature (the bar names it), read at one glance, so it stays whole:
+   `--dc-npc-stat-break-inside: auto` lets one split.
+
+   The entries are either direct children of the section (one column) or the
+   children of the `@columns` run inside it (`.gp-columns`); the rules below take
+   both. */
+.section.dc-npc-stat:has(> h4) > :not(:last-child, :has(+ h4:not(:first-of-type))) {
+  break-after: avoid;
+}
+/* In an `@columns` run only the entries are chained. Text before the first `####`
+   (a lead) is not chained to that entry: a lead of several paragraphs chained to a
+   whole entry is one unbreakable run, and when it cannot fit at a page foot Chromium
+   ends the page with the run's first row EMPTY (the bar and a blank box), the
+   content starting overleaf. A lead above the run is chained as before. */
+.section.dc-npc-stat > .gp-columns:has(> h4) > :is(h4, h4 ~ *):not(:last-child, :has(+ h4:not(:first-of-type))) {
+  break-after: avoid;
+}
+:is(.section.dc-npc-stat, .section.dc-npc-stat > .gp-columns):has(> h4) > :is(h4 ~ p, h4 ~ blockquote) {
+  break-inside: avoid;
+}
+
+/* One creature, one glance: a block with no `####`, or with one (a species and
+   its one variant), stays whole, with its padding inside the box as
+   `.dc-avoid-split` leaves it. `h4 ~ h4` is a second entry beside the first. */
+.dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4)) {
+  break-inside: var(--dc-npc-stat-break-inside);
+  --dc-section-edge: 0px;
+}
+
+/* The `@columns` run of an entries block is glued to the bar and intro above it,
+   as a direct entry list is (the h3's own `break-after: avoid` plus the chain
+   above). Without this, Chromium can end a page with the bar and an EMPTY first
+   row of the run, and the first entry starts the next page. */
+.section.dc-npc-stat > .gp-columns {
+  break-before: avoid;
+}
+
+.dc-npc-stat h4 {
+  border-top: var(--dc-npc-stat-rule-width) solid var(--dc-npc-stat-rule);
+  padding-top: 0.05in;
+  margin-top: 0.1in;
+}
+/* The names are lixdu, the widest face in the book: in a two-column run a name
+   such as GREASE MONKEY has to fit the column on one line. */
+.dc-npc-stat .gp-columns > h4 {
+  font-size: var(--fs-h5);
+  letter-spacing: 0.03em;
+}
+
+/* The flavor line: a ruled line of voice, not a box. The rail is the block's
+   rule colour; no well, no pale-blue bar (dc-core's blockquote), ink-smoke on
+   the paper itself (7.4:1). */
+.dc-npc-stat blockquote {
+  background: none;
+  border-width: 0 0 0 4px;
+  border-color: var(--dc-npc-stat-rule);
+  padding: 2pt 0 2pt 10pt;
+  margin: 0.06in 0;
+  color: var(--ink);
+}
+
+.dc-npc-stat h5 {
+  /* TRAITS / EQUIPMENT / CYBERNETICS section-anchor labels — must read
+     as CATEGORICALLY DIFFERENT from body text, not just heavier.
+     Triple-cue treatment: bold mono-caps tracked + 1pt accent underline
+     + 3pt accent left-border pip. The pip is the anchor — scannable at
+     reading distance, unmistakable as a section start. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-h6);
+  font-weight: 700;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--dc-npc-stat-label-color);
+  border-left: 3pt solid var(--dc-npc-stat-label-color);
+  border-bottom: 1pt solid var(--dc-npc-stat-label-color);
+  padding: 1pt 0 1.5pt 6pt;
+  margin-top: 0.08in;
+  margin-bottom: 0.04in;
+}
+
+/* Primary stat line — "2 HP — 1 Damage" sits directly after the flavor quote, and
+   is the first thing a reader scans for: set as a chip (the first LINE, in the
+   block's primary colour, 12pt bold, cream on it; `::first-line` is how one
+   paragraph gives one line a fill, with no markup). `pre-line` turns the soft
+   break between the two lines the author wrote into a line break, so the second
+   ("Fodder — Medium") falls under the chip as a small caps tag. Written as two
+   paragraphs, the second is the same tag. */
+.dc-npc-stat:not(.dc-npc-compact) blockquote + p {
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  /* The default --hud-blue-dark (#14516e) gives 7.45:1 under cream; --hud-blue
+     (#1f6f94) is 3.24:1 on the wall and fails AA. */
+  color: var(--dc-npc-stat-secondary);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  white-space: pre-line;
+  margin-bottom: 0.04in;
+}
+.dc-npc-stat:not(.dc-npc-compact) blockquote + p::first-line {
+  background: var(--dc-npc-stat-primary);
+  color: var(--paper-cream);
+  font-size: var(--fs-body-sm);  /* never larger than the name over it (13pt, 11pt in a column run) */
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+/* Secondary stat line — "Fodder — Medium" type+size, as a tag. Carries the
+   stat-summary divider: an ink hairline AFTER this line and
+   BEFORE the TRAITS h5 creates the visible skeleton
+   (header → flavor quote → meta-stats → SEPARATOR → ability sections). */
+.dc-npc-stat blockquote + p + p {
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  font-weight: 600;
+  color: var(--dc-npc-stat-secondary);
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  border-bottom: 1pt solid var(--ink);
+  padding-bottom: 0.05in;
+  margin-bottom: 0.06in;
+}
+
+
+/* `@npc-stat compact` — a small creature, a companion, a drone: the same entry,
+   packed. No panel (no surface, shadow or rail layer), a framed cream box, the
+   name small, and the two stat lines drawn as a strip of chips beside each
+   other. A table of HP and Damage inside it is the stat strip (data.css). The
+   panel tokens below switch the chassis off; the rest is the box. A section
+   marker ends an enclosing @skill, so inside a skill card write the creature's
+   table alone: it is the strip wherever it sits. */
+.dc-npc-compact {
+  --dc-section-surface: none;
+  --dc-section-shadow: none;
+  --dc-section-pad-top: 0.06in;
+  --dc-section-pad-bottom: 0.06in;
+  --dc-section-pad-left: 0.12in;
+  --dc-section-pad-right: 0.1in;
+  --dc-section-gap: 8pt;
+  background: var(--paper-cream);
+  border: 1.5px solid var(--dc-npc-stat-rule);
+  border-left-width: 5px;
+}
+.dc-npc-compact h4 {
+  border-top: 0;
+  padding-top: 0;
+  margin: 0 0 3pt;
+  font-size: var(--fs-h5);
+}
+.dc-npc-compact blockquote {
+  margin: 0 0 4pt;
+  padding: 0 0 0 8pt;
+  border-width: 0 0 0 3px;
+  border-color: var(--dc-npc-stat-rule);
+  background: none;
+  font-size: var(--fs-floor);
+}
+.dc-npc-compact blockquote + p,
+.dc-npc-compact blockquote + p + p {
+  display: inline-block;
+  margin: 0 6pt 3pt 0;
+  padding: 1pt 7pt;
+  border-bottom: 0;
+  color: var(--paper-cream);
+  font-size: var(--fs-floor);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.dc-npc-compact blockquote + p {
+  background: var(--dc-npc-stat-primary);
+}
+.dc-npc-compact blockquote + p + p {
+  background: var(--dc-npc-stat-secondary);
+}
+.dc-npc-compact h5 {
+  margin-top: 0.04in;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   CARD-GRID — compact specialty-card display in a 2-column layout
+   ═════════════════════════════════════════════════════════════════════════
+   Apply via `@card-grid` (or `@section cards`) — same architectural split as
+   .dc-citizen-walkthrough: the @page directive identifies the page template,
+   the @section provides the layout + component-tweak context.
+
+     @page chapter-start
+     @card-grid
+     @specialty augmerc
+     @specialty-card ... @end-specialty-card
+     @end-specialty
+     [repeat for each specialty]
+     @end-card-grid
+
+   The grid sets no columns of its own: the author puts the cards in
+   `@columns 2` … `@end-columns` inside it, like any other columned run. Here
+   we own the chrome-reset (the .dc-card-grid section has no card
+   background/shadow — it's a pure layout wrapper) plus the per-card density
+   tweaks so the specialty cards fit comfortably on one page. */
+
+/* Card grid: a layout wrapper, no panel and no padding; the cards carry the
+   visuals, and it may span pages when they exceed one. */
+.section.dc-card-grid {
+  margin: var(--space-md) 0 0;
+}
+
+/* ── DENSITY: CARD GRID (.dc-card-grid section) ────────────────────────────── */
+/* The first specialty of the grid never forces a break: it is the first child
+   of the section, or of the `@columns` run inside it. */
+.dc-card-grid .dc-specialty:first-child { break-before: avoid; }
+
+/* Compact specialty card density: 10 cards on one page in 2 columns */
+.dc-card-grid .dc-specialty-card {
+  --dc-specialty-card-media-height: 0.42in;
+  --dc-specialty-card-media-width: 0.38in;
+  --dc-specialty-card-name-size: var(--fs-body-sm);
+  /* Padding clears the deepest cut (14px) by 2pt: no glyph meets a corner. */
+  --dc-specialty-card-pad-x: 0.14in;
+  padding-bottom: 0.22in;
+  margin: 0;
+}
+.dc-card-grid .dc-specialty-card img { margin-bottom: 0; }
+.dc-card-grid .dc-specialty-card p { line-height: 1.25; font-size: var(--fs-floor); }
+.dc-card-grid .dc-specialty-card h3 { line-height: 1.3; }
+.dc-card-grid .dc-specialty-card blockquote { font-size: var(--fs-floor); margin: 0; line-height: 1.3; }
+
+}

@@ -82,9 +82,21 @@
    DIFFERENT goes in a `@section` variant, so the section class is the styling
    handle, not the table itself. */
 
-/* The hairline between columns is `--gp-column-rule`, set once at `:root` in
-   dc-component-defaults.css. There is no column selector here: a rule on
-   core's column classes would outrank core's own (this package's layer wins),
-   and the token is the hook core reads. */
+/* The hairline between columns is `--gp-column-rule`, none unless a run opts
+   in with `.dc-column-rule` (page-templates.css). There is no column selector
+   here: a rule on core's column classes would outrank core's own (this
+   package's layer wins), and the token is the hook core reads. */
+
+
+/* ── Paste-up art (paste-up.css) ────────────────────────────────
+   Art pasted to the wall. A cut-out is pinned; a plate is a framed print: a
+   cream frame, one hard shadow, a tilt (constitution §IV). A plate is 40% of
+   the column unless core's `.gp-size-NN` on the image sets its width. */
+.dc-pu-cutout { display: block; width: 55%; height: auto; margin: var(--space-sm) 8% 0 auto; transform: rotate(5deg); }
+.dc-pu-plate {
+  display: block; width: 40%; height: auto; margin: var(--space-lg) auto 0; box-sizing: border-box;
+  border: 6px solid var(--paper-cream); box-shadow: 3px 3px 0 var(--shadow-ink); transform: rotate(-1.5deg);
+}
+.dc-pu-plate[class*="gp-size-"] { width: revert-layer; }
 
 }

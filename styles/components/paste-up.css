@@ -1,0 +1,217 @@
+@layer dc.components {
+
+/* A section's closing bold line (the plugin marks it `.dc-kicker`) stays with
+   the paragraph above it, so it never opens a page alone. */
+.dc-kicker {
+  break-before: avoid;
+}
+/* ...and the paragraph above it holds it: the pair moves together, taking at
+   least the last two lines (a long paragraph still splits inside). */
+p:has(+ .dc-kicker) {
+  break-after: avoid;
+}
+
+/* The street line: a section's closing slogan set as the tear-off strip at a
+   flyer's foot. A dotted ink perforation crosses the panel; under it the line
+   in the body face, 11pt bold, ink and level, with a short stub of the panel's
+   accent at its left. No capitals and no loud colour: a chapter holds a dozen
+   of them. A rung of a `@ladder` closes the same way, over its plate, with a
+   stub in the tier's colour. */
+.dc-section-panel > .dc-kicker,
+.dc-rung-body > .dc-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  color: var(--ink);
+  text-align: left;
+  text-transform: none;
+  border-top: 2px dotted var(--ink);
+  padding-top: 6px;
+  margin-top: var(--space-md);
+}
+/* Across the panel, from its rail to its right edge. */
+.dc-section-panel > .dc-kicker {
+  margin-left: calc(var(--dc-section-rail) - var(--dc-section-pad-left));
+  margin-right: calc(-1 * var(--dc-section-pad-right));
+  padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
+  padding-right: var(--dc-section-pad-right);
+}
+/* Across a rung's plate, inside its hairline ring, a rung's own tighter gap
+   above the rule, with room above the frame. */
+.dc-rung-body > .dc-kicker {
+  margin-top: var(--space-sm);
+  padding-bottom: 3pt;
+  margin-left: -8px;
+  margin-right: -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+:is(.dc-section-panel, .dc-rung-body) > .dc-kicker::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 0.95em;
+  margin-right: 8px;
+  vertical-align: -0.12em;
+  background: var(--dc-section-accent);
+}
+.dc-rung-body > .dc-kicker::before {
+  background: var(--row-color);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════
+   PASTE-UP — the sheet: how a panel looks (constitution §IV)
+   ═════════════════════════════════════════════════════════════════════════
+   A section of the kinds that are sheets is a sheet pasted flat on the wall,
+   with nothing to write: `panel`, `reference`, `lore`, `dm`, and `catalog` with
+   its gear kinds. A creature (`npc`), the Citizen File walkthrough and the
+   `choose` sections keep their own look, and so does a fiction excerpt (only
+   its closing line is a sticker). The chapter opener's `#` title is tilted.
+
+   A sheet's box = a top band (wall) + the paper + a foot band (wall). The title
+   tag straddles the paper's top edge, a closing sticker its foot, and nothing
+   paints above the sheet's own top edge (a tilted corner would print on the page
+   before). A sheet is always kept whole: a section that must run onto the next
+   page is split in markup, the second part a `.dc-pu-cont` sheet.
+
+   The pieces of a paste-up wall (all of them the plugin's):
+     @section … .dc-half / .dc-narrow / .dc-wide
+                                      a sheet's width: two in a row whose widths
+                                      complete it sit side by side (half and
+                                      half; 38/62; 62/38), the plugin's div.dc-pu-row
+     @section … .dc-pu-cont           a continuation sheet: a clean top, no tag
+                                      (the plugin keeps its first `###` a sub-head)
+     ## Title {.dc-pu-bill}           a `##` that shouts (`.dc-pu-bill-mid` at 1.5x)
+     ### Title {.dc-pu-tag}           a sub-head pasted on as a tag, mid-sheet
+     ![](x.png){.dc-pu-plate}         a framed print on the wall (images.css;
+                                      `.gp-size-NN` sets its width)
+     ![](x.png){.dc-pu-cutout}        a cut-out pinned to the wall (images.css)
+   Tokens (declared in dc-component-defaults.css) tune the geometry. */
+
+/* ── Sheets ──────────────────────────────────────────────────────────────── */
+/* Every section in the chapter is kept whole and clipped above its own top edge
+   (sides and foot stay open for shadows and stickers). The sheet rules below
+   nest in this one selector; a creature, the walkthrough and the choose forms
+   keep their own look. */
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
+  --dc-section-break-inside: avoid;
+  clip-path: inset(0 -1in -1in -1in);
+  --dc-section-edge: 0px;
+  --dc-section-pad-bottom: var(--space-xs);
+  margin: 0 3px 0 var(--dc-pu-inset);   /* 3px: room for the hard shadow, as on every panel (a shadow past the content box shrinks the whole book) */
+  padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
+  padding-bottom: calc(var(--dc-pu-foot) + var(--dc-section-pad-bottom));
+  box-shadow: none;                 /* the soft lift would shade the bands */
+
+  &::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
+  &::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
+
+  /* Tags: the first ## or ### pasted over the paper's top edge, and a `{.dc-pu-tag}`
+     sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours). */
+  & > :is(h2, h3):first-child,
+  & > :is(h2, h3).dc-pu-tag:not(:first-child) {
+    width: fit-content; max-width: 88%;
+    min-width: min-content;   /* a word wider than 88% (QUICKSTART) widens the tag; it never runs off it */
+    margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
+    padding: 0.3rem var(--space-lg) 0.22rem;
+    clip-path: none; border-bottom: 0;
+    line-height: var(--lh-display);
+    transform: rotate(-1deg); transform-origin: left bottom;
+    box-shadow: 3px 3px 0 var(--ink-dark);
+    position: relative; z-index: 2;
+    break-after: avoid;
+  }
+  & > :is(h2, h3).dc-pu-tag:not(:first-child) {
+    margin-top: var(--space-lg);
+    border: 0;
+    background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
+    color: var(--dc-section-bar-fg);
+  }
+  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
+  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
+  &:not(.dc-catalog) > :is(h2, h3):first-child::after,
+  & > .dc-pu-tag::after { content: none; }
+  & > :is(h2, h3):first-child + * { break-before: avoid; }
+
+  /* Bills: one per section that opens a spread or a sub-system. */
+  & > h2.dc-pu-bill:first-child {
+    width: auto; max-width: none;
+    margin-left: calc(-1 * var(--dc-section-pad-left));
+    margin-right: calc(-1 * var(--dc-section-pad-right));
+    margin-bottom: var(--space-lg);
+    padding: var(--space-sm) var(--space-xl) var(--space-md);
+    background: var(--ink-dark); color: var(--paper-cream);
+    font-size: calc(var(--fs-h1) * 2);
+    border-bottom: 6pt solid var(--brand-yellow);
+    box-shadow: 4px 4px 0 var(--shadow-ink);
+  }
+  & > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
+
+  /* A half sheet's tag is smaller: a full-size one overran it. */
+  .dc-pu-row > & > h3:first-child { font-size: 14pt; }
+
+  /* Continuation sheets: a clean sheet top, no tag. */
+  &.dc-pu-cont {
+    --dc-pu-band: 0.06in; --dc-section-pad-top: 0.06in;
+    padding-top: calc(var(--dc-pu-band) + var(--dc-section-pad-top));
+  }
+  &.dc-pu-cont > h3:first-child { margin-top: 0; }
+}
+.dc-pu-bill + .dc-flavor { margin-top: calc(-1 * var(--space-lg)); }
+
+/* Stickers: street lines. A closing one straddles the paper's foot. A fiction
+   excerpt's closing line (an opener's "What do you do?") is a sticker too. */
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
+.section.dc-fiction-excerpt > .dc-kicker {
+  width: fit-content; max-width: 86%;
+  /* 10pt under one mid-sheet; the closing one straddles the paper's foot. Both hold at any paragraph gap (--dc-flow-gap). */
+  margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 10pt auto;
+  --dc-flow-gap: initial;
+  padding: var(--space-xs) var(--space-md);
+  border: 1.5pt solid var(--ink); background: var(--brand-yellow); color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: var(--dc-pu-sticker-size); line-height: 1.25;
+  transform: rotate(-2deg);
+  position: relative; z-index: 2;
+}
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child,
+.section.dc-fiction-excerpt > .dc-kicker:last-child {
+  margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
+}
+/* A line above a row's closing sticker keeps its air at any paragraph gap. */
+.dc-pu-row > .dc-section-panel > p:has(+ .dc-kicker:last-child) {
+  --dc-flow-gap: initial;
+}
+.dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
+  margin-bottom: var(--space-lg);
+}
+/* A fiction excerpt's sticker is set upright, like any sticker. */
+.section.dc-fiction-excerpt > .dc-kicker { font-style: normal; }
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker::before,
+.section.dc-fiction-excerpt > .dc-kicker::before { content: none; }
+
+
+/* Rows: two sheets side by side, kept whole, each ending at its last line,
+   closing stickers at the foot. The plugin wraps two adjacent sheets whose
+   widths complete a row (`.dc-half` twice, `.dc-narrow` and `.dc-wide` either
+   way) in `div.dc-pu-row`; the widths are read off the first sheet (the
+   register's three widths). */
+.dc-pu-row {
+  display: grid; grid-template-columns: var(--dc-pu-row-cols); gap: 0 var(--dc-pu-pair-gap);
+  align-items: start; break-inside: avoid;
+}
+.dc-pu-row:has(> .dc-half:first-child)   { --dc-pu-row-cols: 1fr 1fr; }
+.dc-pu-row:has(> .dc-wide:first-child)   { --dc-pu-row-cols: 62fr 38fr; }
+.dc-pu-row:has(> .dc-narrow:first-child) { --dc-pu-row-cols: 38fr 62fr; }
+.dc-pu-row > * { min-width: 0; }
+.dc-pu-row > .dc-section-panel { display: flex; flex-direction: column; }
+.dc-pu-row > .dc-section-panel > .dc-kicker:last-child { margin-top: auto; }
+
+/* Continuation sheets: a clean sheet top, no tag. The plugin puts a zero-height
+   `.dc-pu-spacer` ahead of a `###` that opens one, so the heading stays a sub-head. */
+.dc-pu-spacer { height: 0; }
+.section.dc-pu-cont > .dc-pu-spacer + h3 { margin-top: 0; }
+
+}

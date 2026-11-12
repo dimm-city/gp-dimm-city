@@ -7,17 +7,18 @@
      regardless of specificity) and win via the parent-context cascade —
      typically by setting --dc-section-accent at the chapter's id
      (`#chapter-03 { --dc-section-accent: var(--rust); }`). */
-  /* Paste-up register (`.dc-paste-up`, styles/paste-up.css). Band and foot are
+  /* Paste-up sheets (paste-up.css). Band and foot are
      the wall above and below a sheet's paper (the tag and the closing sticker
      straddle them); lift is how far a tag's top rises above the paper's edge;
      inset moves the sheets in so a tag's overhang stays in the content box;
-     pair-gap is the gap between sheets in a `.dc-pu-row`; the sticker tokens
+     pair-gap is the gap between two sheets in a row; the sticker tokens
      size and seat a closing street line. A chapter sets them on its id. */
   --dc-pu-band:           0.18in;
   --dc-pu-foot:           0.16in;
   --dc-pu-lift:           0.1in;
-  --dc-pu-inset:          0in;
+  --dc-pu-inset:          0.08in;          /* keeps a sheet's tilted tag (it hangs about 0.07in off the sheet's edge) inside the content box; a book whose pages clip sideways may set 0 */
   --dc-pu-pair-gap:       var(--space-xl);
+  --dc-pu-row-cols:       1fr 1fr;         /* a row's two widths; a .dc-wide first sheet sets 62fr 38fr, a .dc-narrow one 38fr 62fr */
   --dc-pu-sticker-size:   var(--fs-h3);
   --dc-pu-sticker-gap:    var(--space-lg);
   --dc-pu-sticker-drop:   calc(0.1in + 2pt);
@@ -26,12 +27,11 @@
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
 
-  /* Column runs (`@columns N`). Core owns every column property; these are its
-     two author hooks, set once, with no column selector. Gap: the book's
-     structural gutter. Rule: the hairline between columns (needs a Gutterpress
-     that reads `--gp-column-rule`; older ones ignore it). */
+  /* Column runs (`@columns N`). Core owns every column property; this is its
+     gap hook, set once, with no column selector: the book's structural gutter.
+     No rule between columns by default (core's own); a run that wants the
+     hairline takes `.dc-column-rule` (page-templates.css). */
   --gp-column-gap:  var(--gutter);
-  --gp-column-rule: 1pt solid var(--border-hairline);
 
   /* Section chrome. A variant sets these on its own rule. Surface/shadow are
      the `content` of the panel's ::before/::after layers ("" paints, `none`
@@ -77,6 +77,9 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
+  --dc-section-measure:    none;                /* max-width of a panel's prose (p, lists, quotes); tables stay full width, a @row's sheets reset it */
+  --dc-td-pad-y:           5px;                 /* a body cell's vertical padding */
+  --dc-th-pad-y:           6px;                 /* a header cell's */
   --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */
   --dc-choose-stamp-top:   0px;                 /* where the stamp's top edge sits: 0 = on the form's top edge */
   --dc-choose-stamp-lift:  -50%;                /* how far it is lifted over that edge: half its height */
@@ -127,6 +130,7 @@
 
   /* .dc-alert public API */
   --dc-alert-break-inside:   avoid;               /* `auto` where a callout may fragment (multicol sections, dc-native.css) */
+  --dc-alert-overflow:       visible;             /* a warning clips (its rail overshoots the box and would fragment onto the next page) */
   --dc-alert-bg:             var(--paper-cream);    /* every callout reads on white: its accent is in the rail, the frame and the label */
   --dc-alert-border:         var(--hud-blue-dark);  /* the accent: left rail, frame, label chip */
   --dc-alert-fg:             var(--ink);
@@ -157,7 +161,6 @@
   --dc-card-surface:         var(--paper-cream);
   --dc-card-tab-bg:          var(--ink-dark);       /* overridden by .dc-specialty.<name> context */
   --dc-card-tab-title-color: var(--paper-cream);
-  --dc-card-body-mark:       var(--crimson);
 
   /* .dc-specialty-intro public API */
   --dc-specialty-intro-title-bg:    var(--hud-magenta);  /* overridden by .dc-specialty.<name> context */
@@ -442,7 +445,6 @@
 
   /* .dc-pullquote public API */
   --dc-pullquote-accent:      var(--hud-magenta);
-  --dc-pullquote-accent-soft: color-mix(in srgb, var(--tint-magenta-rose) 15%, transparent);
   --dc-pullquote-bg:          var(--concrete-pale);
 
   /* The text-safe ink of whatever component the prose sits in: ROLL THE DIE!
@@ -481,6 +483,18 @@
   --dc-bolt:                 var(--ink);          /* the bolt's ring, slot and shadow */
   --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
   --dc-bolt-size:            10px;                /* the bolt's diameter */
+
+  /* A lit piece's tube where nothing sets one (neon.css): orange */
+  --dc-neon:                 var(--neon-orange);
+  --dc-neon-core:            var(--neon-orange-core);
+  --dc-neon-ring-1:          var(--neon-orange-ring-1);
+  --dc-neon-ring-2:          var(--neon-orange-ring-2);
+  /* .dc-neon public API (components/neon.css): where a sign hangs sets these; its tube colours (--dc-neon, -core, -ring-1, -ring-2) come from the chapter word or specialty */
+  --dc-neon-margin:          0;                   /* the plate's margin in the flow */
+  --dc-neon-height:          auto;                /* the plate's height (border box) */
+  --dc-neon-tilt:            none;                /* how it hangs: a transform */
+  --dc-neon-layer:           2;                   /* its z-index */
+  --dc-neon-size:            22pt;                /* the word's size; the tubes and rings scale with it (20pt at least) */
 
   /* .dc-tape public API */
   --dc-tape-bg:              color-mix(in srgb, var(--brand-yellow) 30%, var(--paper-aged));  /* masking tape */

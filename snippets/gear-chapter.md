@@ -1,4 +1,4 @@
-@chapter rules .dc-paste-up #{{id}} ch="{{number}}"
+@chapter gear #{{id}} ch="{{number}}"
 
 @page chapter-start
 

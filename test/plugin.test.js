@@ -434,6 +434,14 @@ describe("declared wrapper markers", () => {
     expect(render(wrap("@section", "@end-section")).html).toContain('<div class="section">');
   });
 
+  test("@section weapons, explosives and armor are the catalog with their kind's class, and keep a class written beside them", () => {
+    for (const word of ["weapons", "explosives", "armor"]) {
+      const { html, warnings } = render(wrap(`@section ${word} .dc-pu-cont`, "@end-section"));
+      expect(html, word).toContain(`<div class="section dc-section-panel dc-catalog dc-section-${word} dc-pu-cont"`);
+      expect(warnings, word).toEqual([]);
+    }
+  });
+
   test("@page and @chapter take the location words, and a class or the raw spelling beside them", () => {
     const pages = { "chapter-start": "dc-page-chapter-start", intro: "dc-page-intro", credits: "dc-page-credits", contents: "dc-page-contents", "citizen-file": "dc-page-citizen-file", "specialty-catalog": "dc-page-specialty-catalog" };
     for (const [word, cls] of Object.entries(pages)) {
@@ -559,6 +567,15 @@ describe("declared specialty, learning path and skill", () => {
       expect(html).toMatch(/<\/span><\/div>\n<\/div>\n<div class="dc-skill-card"/);
     });
 
+    test("the title and the stickers render their inline markdown", () => {
+      const { html } = renderGp(doc("@learning-path", "", "### The *Big* \"Title\"", "", "- It's *Alpha*", "- **Beta**", "  - nested", "- Gamma", ""));
+      expect(html).toContain('</span>The <em>Big</em> “Title”</h3>');
+      expect(html).toContain('<span class="dc-sticker-ref">1</span>It’s <em>Alpha</em></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">2</span><strong>Beta</strong></span>');
+      expect(html).toContain('<span class="dc-sticker-ref">3</span>Gamma</span>');
+      expect(count(html, /class="dc-sticker"/g)).toBe(3);
+    });
+
     test("data-path-ref comes from the enclosing specialty: variant or class, counted per specialty", () => {
       const refs = (html) => [...html.matchAll(/data-path-ref="([^"]*)"/g)].map((m) => m[1]);
       const specialty = (open, n) => doc(open, "", ...Array.from({ length: n }, (_, i) => doc("@learning-path", "", `### P${i}`, "")), "@end-specialty", "");
@@ -646,8 +663,7 @@ describe("declared specialty, learning path and skill", () => {
       );
       const { html } = renderGp(src);
       expect(html).toContain('<p class="dc-flavor">Flavor.</p>');
-      expect(html).toContain('<div class="dc-ability" data-ability-penultimate="true">');
-      expect(html).toContain('<div class="dc-ability" data-ability-last="true">');
+      expect(html).toContain('<div class="dc-ability">');
       expect(html).toContain('<span class="dc-ap variable">2–X AP</span>');
       expect(html).toContain('<div class="dc-outcomes">');
       expect(html).toContain('<div class="dc-outcomes-label dc-outcomes-head"><span>Roll</span><span>Outcome</span></div>');
@@ -797,12 +813,13 @@ describe("declared specialty, learning path and skill", () => {
         expect(html).not.toContain(" AP");
       });
 
-      test("any other set of die results is a roll table; a name stays bold in the cell", () => {
+      test("an ability's own set of die results is the ladder too, each band in its tier; a name stays bold", () => {
         const html = skill("1. **1-10** Low.", "2. **11–15: Mid** Middle.", "3. **16–19** High.", "4. **20** Top.");
         expect(chip(html)).toEqual([]);
-        expect(html).toContain('<div class="dc-roll-table">');
-        expect(html).toContain("<td>11–15</td><td><strong>Mid</strong> Middle.</td>");
-        expect(html).not.toContain("dc-outcomes");
+        expect(html).toContain('<div class="dc-outcomes">');
+        expect([...html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1])).toEqual(["miss", "hit", "hit", "crit"]);
+        expect(html).toContain('<span class="dc-outcome-roll">11–15</span></span>\n    <span class="dc-outcome-text"><strong>Mid</strong> Middle.</span>');
+        expect(html).not.toContain("dc-roll-table");
       });
 
       test("a name lead is a bulleted option with its colon in the bold", () => {
@@ -1258,14 +1275,37 @@ describe("declared card, outcome and procedure", () => {
       expect(out).toMatch(/dc-outcome-text">worst<[\s\S]*dc-outcome-text">best</);
     });
 
-    test("any other set of bands is a plain table, even under a Roll | Outcome header", () => {
+    test("an ability's own set of bands is the ladder too, each row in its band's tier", () => {
+      for (const [bands, want] of [
+        [["20", "16-19", "11-15", "6-10", "2-5", "1"], ["crit", "hit", "hit", "mixed", "miss", "fail"]], // six bands
+        [["20", "11-19", "2-10", "1"], ["crit", "hit", "miss", "fail"]], // a split at 10
+        [["1-5", "6-10", "11-19", "20"], ["miss", "mixed", "hit", "crit"]], // four
+        [["1", "2\u20135", "6\u201310", "11+"], ["fail", "miss", "mixed", "hit"]], // 11 and up
+      ]) {
+        const out = ladder(...bandTable(["Roll", "Outcome"], bands, bands.map((b) => `r${b}`)));
+        expect(tiers(out), bands.join(",")).toEqual(want);
+      }
+    });
+
+    test("a band may carry its label, or be the tier's word alone; the label is the row's name", () => {
+      const named = ladder(...bandTable(["Roll", "Result"], ["20: Total Wholeness", "11\u201319 \u2013 Success", "Hard Choice (6\u201310)", "On 2-5", "1"]));
+      expect(tiers(named)).toEqual(["crit", "hit", "mixed", "miss", "fail"]);
+      expect(named).toContain('<span class="dc-outcome-name">Total Wholeness</span><span class="dc-outcome-roll">20</span>');
+      expect(named).toContain('<span class="dc-outcome-name">Hard Choice</span><span class="dc-outcome-roll">6\u201310</span>');
+      expect(named).toContain('<span class="dc-outcome-name">Miss</span><span class="dc-outcome-roll">2\u20135</span>');
+      const words = ladder(...bandTable(["Result", "Outcome"], ["Success", "Hard Choice", "Failure"]));
+      expect(tiers(words)).toEqual(["hit", "mixed", "miss"]);
+      expect(words).toContain('<span class="dc-outcome-name">Success</span><span class="dc-outcome-roll"></span>');
+    });
+
+    test("bands that overlap, leave 1-20, straddle 10/11 or are not results stay a plain table", () => {
       const others = [
-        ["20", "16-19", "11-15", "6-10", "2-5", "1"], // six bands
-        ["20", "11-19", "2-10", "1"], // a split at 10
-        ["1-5", "6-10", "11-19", "20"], // four
         ["20", "11-19", "6-10", "2-5", "2-5"], // a repeated band
         ["20", "11-19", "6-10", "2-5", "0"], // a wrong band
         ["20", "11-19", "6-10", "2-5", "one"], // not numbers
+        ["6-14", "15-23", "24+"], // abilities known, not a roll
+        ["1-4", "5-8", "9-12"], // a random table's bands
+        ["1", "2", "3"], // too few tiers to be a ladder
       ];
       for (const bands of others) {
         const out = ladder(...bandTable(["Roll", "Outcome"], bands));
@@ -1351,6 +1391,22 @@ describe("declared card, outcome and procedure", () => {
     test("what is written on the @procedure line lands on the list, since the wrapper renders nothing", () => {
       const { html } = renderGp(doc("@procedure #install .tight data-kind=install", "", "1. One", "2. Two", "", "@end-procedure"));
       expect(html).toContain('<ol class="dc-steps tight" id="install" data-kind="install">');
+    });
+
+    test("a step with a second paragraph or a nested list is still one step", () => {
+      const { html } = renderGp(doc(
+        "@procedure", "",
+        "1. First.", "",
+        "   More on the first.", "",
+        "2. Second.", "   - nested one", "   - nested two", "",
+        "3. Third.", "",
+        "@end-procedure",
+      ));
+      expect(count(html, /<li><span class="dc-step-no">/g)).toBe(3);
+      expect(html).toContain('<span class="dc-step-no">01</span><span>First.<p>More on the first.</p>');
+      expect(html).toContain('<span class="dc-step-no">02</span><span>Second.<ul>');
+      expect(html).toContain('<span class="dc-step-no">03</span><span>Third.</span>');
+      expect(count(html, /<ol[\s>]/g)).toBe(1);
     });
 
     test("a procedure with two lists puts its attributes on the first only, so the id stays unique", () => {
@@ -1866,6 +1922,122 @@ describe("@gear program", () => {
   });
 });
 
+describe("paste-up: rows and continuation sheets", () => {
+  const sheet = (t, w = "") => `@section panel${w}\n\n### ${t}\n\nx\n\n@end-section`;
+  const rowWarnings = (src) => renderGp(src).warnings.filter((w) => w.type === "row_unpaired");
+  test("two adjacent sheets whose widths complete a row are wrapped in div.dc-pu-row, widths kept on the sheets", () => {
+    for (const [a, b] of [[" .dc-half", " .dc-half"], [" .dc-narrow", " .dc-wide"], [" .dc-wide", " .dc-narrow"]]) {
+      const { html, warnings } = renderGp(`${sheet("A", a)}\n\n${sheet("B", b)}\n\nafter`);
+      expect(warnings, a + b).toEqual([]);
+      expect(html, a + b).toMatch(new RegExp(`^<div class="dc-pu-row">\\n<div class="section dc-section-panel dc-${a.slice(5)}"[^>]*><h3>A</h3>[\\s\\S]*<div class="section dc-section-panel dc-${b.slice(5)}"[^>]*><h3>B</h3>[\\s\\S]*</div></div>\\n<p>after</p>`));
+    }
+  });
+  test("a run of four halves is two rows; a sheet with no partner is reported and left alone", () => {
+    const four = renderGp([1, 2, 3, 4].map((n) => sheet(`S${n}`, " .dc-half")).join("\n\n")).html;
+    expect(four.match(/<div class="dc-pu-row">/g)).toHaveLength(2);
+    for (const src of [sheet("A", " .dc-half"), `${sheet("A", " .dc-half")}\n\n${sheet("B", " .dc-wide")}`, `${sheet("A", " .dc-narrow")}\n\ntext\n\n${sheet("B", " .dc-wide")}`]) {
+      expect(renderGp(src).html, src).not.toContain("dc-pu-row");
+      expect(rowWarnings(src).length, src).toBeGreaterThan(0);
+    }
+    expect(rowWarnings(`${sheet("A")}\n\n${sheet("B")}`)).toEqual([]);
+  });
+  test("@row is no longer a marker", () => {
+    expect(markers).not.toHaveProperty("row");
+    expect(markers).not.toHaveProperty("row-wide");
+    expect(markers).not.toHaveProperty("row-narrow");
+  });
+  test("a plain @columns is still core's", () => {
+    expect(renderGp("@columns 2\n\na\n\n@end-columns").html).toContain("columns-2");
+  });
+  test("a continuation sheet that opens with a ## or ### gets the spacer ahead of it; any other does not", () => {
+    const cont = (body) => renderGp(`@section panel .dc-pu-cont\n\n${body}\n\n@end-section`).html;
+    expect(cont("### Sub\n\nx")).toContain('<div class="dc-pu-spacer"></div>\n<h3>Sub</h3>');
+    expect(cont("## Sub\n\nx")).toContain('<div class="dc-pu-spacer"></div>\n<h2>Sub</h2>');
+    expect(cont("#### Sub\n\nx")).not.toContain("dc-pu-spacer");
+    expect(cont("Text.")).not.toContain("dc-pu-spacer");
+    expect(renderGp("@section panel\n\n### Title\n\nx\n\n@end-section").html).not.toContain("dc-pu-spacer");
+  });
+});
+
+describe("raw HTML in the markdown", () => {
+  const types = (src, options) => {
+    const env = {};
+    createMarkdownRenderer([{ name: "gp-dimm-city", plugin: dimmCityPlugin, options: options ?? {}, markers }]).render(src, env);
+    return (env.layoutWarnings ?? []).filter((w) => w.type === "raw_html");
+  };
+  test("each tag an author writes is reported on its line, in a block, inline and inside a table cell", () => {
+    expect(types("<div>\nx\n</div>").map((w) => w.line)).toEqual([1]);
+    expect(types("Text\n\nA <span>b</span> c").map((w) => w.line)).toEqual([3, 3]);
+    const cell = types("| Roll | Result |\n|---|---|\n| 20 | a <small>b<small> |\n| 11-19 | b |\n| 6-10 | c |\n| 2-5 | d |\n| 1 | e |");
+    expect(cell.map((w) => w.message.slice(0, 18))).toEqual(["Raw HTML (<small…>", "Raw HTML (<small…>"]);
+  });
+  test("a comment, the plugin's own HTML and a book that turns it off are not reported", () => {
+    expect(types("<!-- a note -->\n\nText.")).toEqual([]);
+    expect(types("## 4. Ideal\n\n@callout example\n\nx\n\n@end-callout")).toEqual([]);
+    expect(types("<div>x</div>", { rawHtml: "off" })).toEqual([]);
+  });
+});
+
+describe("steps and examples", () => {
+  test("a ## standing on the page that opens with a step number gets its number chip; inside a section, or a year, it does not", () => {
+    expect(renderGp("## 4. Ideal\n\nText.").html).toContain('<h2><span class="dc-step-num">4.</span> Ideal</h2>');
+    expect(renderGp("@section panel\n\n## 4. Inside\n\nx\n\n@end-section").html).not.toContain("dc-step-num");
+    expect(renderGp("### 4. Third level").html).not.toContain("dc-step-num");
+    expect(renderGp("## 2026. A year").html).not.toContain("dc-step-num");
+  });
+  test("an example that opens with its own heading is labelled by it, with no default Example beside it", () => {
+    const own = renderGp("@callout example\n\n### Example: Toxic Evolution\n\nx\n\n@end-callout").html;
+    expect(own).toContain('<h3 class="dc-alert-label">Example: Toxic Evolution</h3>');
+    expect(own).not.toContain('<span class="dc-alert-label">');
+    expect(renderGp("@callout example\n\nJust text.\n\n@end-callout").html).toContain('<span class="dc-alert-label">Example</span>');
+    expect(renderGp("@callout note\n\n### A heading\n\nx\n\n@end-callout").html).toContain('<span class="dc-alert-label">Note</span>');
+  });
+});
+
+describe("neon signs", () => {
+  const doc = (...lines) => lines.join("\n");
+  const signs = (html) => count(html, /class="dc-neon"/g);
+  const count = (html, re) => (html.match(re) ?? []).length;
+  /** The word a sign spells: its letters are the glyph paths, so tell signs apart by their width. */
+  const widths = (html) => [...html.matchAll(/class="dc-neon-word"[^>]* width="([^"]*)"/g)].map((m) => m[1]);
+
+  test("a chapter opener of a neon chapter hangs the chapter's word above its title", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Rules", ""));
+    expect(signs(html)).toBe(1);
+    expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
+  });
+
+  test("`{.dc-neon-sign}` draws a heading's word in tubes and keeps its text, unseen, in the heading", () => {
+    const { html } = renderGp(doc("@section panel .dc-neon-azure", "", "## Hacking {.dc-neon-sign}", "", "Text.", "", "@end-section", ""));
+    expect(html).toMatch(/<h2[^>]*class="dc-neon-sign"[^>]*><span class="dc-neon-text">Hacking<\/span><span class="dc-neon-glow" aria-hidden="true"><svg class="dc-neon-word"/);
+    expect(signs(html)).toBe(0); // no plate of its own: the heading is the plate
+  });
+
+  test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
+    expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
+    expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
+  });
+
+  test("the chapter's word does not carry over to a chapter that has none", () => {
+    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("a specialty's art page hangs a sign spelling the specialty", () => {
+    const { html } = renderGp(doc("@specialty augmerc", "", "@specialty-art", "", "x", "", "@end-specialty-art", "", "@end-specialty", ""));
+    expect(signs(html)).toBe(1);
+  });
+
+  test("art outside its specialty gets no sign, and the next specialty spells its own name", () => {
+    const art = doc("@specialty-art", "", "x", "", "@end-specialty-art", "");
+    const first = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", art)).html;
+    expect(signs(first)).toBe(1);
+    const both = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", "@specialty etherlock", "", art, "@end-specialty", ""));
+    expect(signs(both.html)).toBe(2);
+    expect(new Set(widths(both.html)).size).toBe(2);
+  });
+});
+
 describe("the die call", () => {
   const callOf = (src) => [...renderGp(src).html.matchAll(/<p class="dc-die-call">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 
@@ -1921,6 +2093,65 @@ describe("polish rules in the stylesheets", () => {
   test("an intro panel keeps with the entry under it; the roll phrase never breaks; a bold row label stays on a line", () => {
     expect(css("components/entries.css")).toMatch(/\.dc-section-panel:has\(\+ \.dc-entry\) \{\s*break-after: avoid;/);
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
-    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child:has\(> strong:only-child\) \{\s*white-space: nowrap;/);
+    expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
+  });
+});
+
+describe("@page inside a specialty", () => {
+  // A specialty, its paths and skills run on across an @page: the plugin closes
+  // them before the page and re-opens them after it (dcPageScopes).
+  const doc = (page, between = "") => [
+    "@chapter specialty", "", "@specialty .augmerc .dc-page-wall-3", "",
+    "@learning-path", "", "### Path One", "", "@skill", "",
+    "#### Skill A", "", "Text A.", "", between, page, "", "#### Skill B", "", "Text B.", "",
+    "@end-learning-path", "", "@learning-path", "", "### Path Two", "", "@skill", "",
+    "#### Skill C", "", "Text C.", "", "@end-learning-path", "", "@end-specialty", "",
+  ].join("\n");
+
+  test("the specialty, its path and its numbering run on across the page", () => {
+    const { html, warnings } = renderGp(doc("@page"));
+    expect(warnings.filter((w) => w.type === "declared_marker_close_without_open")).toEqual([]);
+    expect(html).toContain('<div class="dc-specialty augmerc dc-specialty-cont">');
+    expect(html).toMatch(/<div class="dc-learning-path dc-path-block dc-path-cont" data-path-ref="AUG1">\n?<div class="dc-skill-card" name="skill-b">/);
+    expect(html).toContain('<span class="dc-tab-tier">AUG1.2</span>');
+    expect(html).toContain('data-path-ref="AUG2"');
+    expect(html).toContain('<span class="dc-tab-tier">AUG2.1</span>');
+    expect(html.match(/class="dc-path-shell"/g)).toHaveLength(2);
+    expect(html).not.toContain("dc-skill-cont");
+  });
+
+  test("the wall is the page's: a plain @page takes the specialty's, a named one its own", () => {
+    const plain = renderGp(doc("@page")).html;
+    expect(plain).toMatch(/<div class="page dc-page-wall-3[ "]/);
+    expect(plain).not.toMatch(/dc-specialty augmerc dc-page-wall-3 dc-specialty-cont/);
+    const named = renderGp(doc("@page wall-2")).html;
+    expect(named).toMatch(/<div class="page dc-page-wall-2[ "]/);
+    expect(named).not.toMatch(/class="page[^"]*dc-page-wall-3/);
+  });
+
+  test("a card the page cuts goes on as a continuation", () => {
+    const src = doc("@page").replace("@page\n\n#### Skill B", "@page\n\nMore of A.\n\n#### Skill B");
+    const { html } = renderGp(src);
+    expect(html).toContain('<div class="dc-skill-card dc-skill-card-cut" name="skill-a">');
+    expect(html).toMatch(/<div class="dc-skill-card dc-skill-card-cont" name="skill-a">[\s\S]*?<span class="dc-tab-tier">AUG1\.1<\/span>[\s\S]*?<p>More of A\.<\/p>/);
+    expect(html).toContain('<span class="dc-tab-tier">AUG1.2</span>');
+  });
+
+  test("an @page outside any specialty opens no continuation", () => {
+    const { html } = renderGp("@chapter rules\n\nText.\n\n@page\n\nMore.\n");
+    expect(html).not.toMatch(/-cont\b/);
+  });
+
+  test("a pinned image is page furniture, never a card's content or sign-off", () => {
+    const src = doc("@page").replace("Text B.", "Text B.\n\n![frog](f.png){.gp-pin .gp-bottom}");
+    const { html } = renderGp(src);
+    expect(html).toMatch(/<p class="dc-img-wrapper"><img src="f\.png" alt="frog" class="gp-pin gp-bottom"><\/p>\n<div class="dc-skill-card" name="skill-b">/);
+    expect(html).not.toContain("dc-card-signoff");
+  });
+
+  test("an image paragraph that ends a card is not its sign-off", () => {
+    const { html } = renderGp("@skill\n\n#### A\n\nText.\n\n![art](a.png)\n");
+    expect(html).toContain('<p class="dc-img-wrapper"><img src="a.png" alt="art"></p>');
+    expect(html).not.toContain("dc-card-signoff");
   });
 });
