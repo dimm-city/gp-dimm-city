@@ -1120,9 +1120,9 @@ function neonDeadLetters(word) {
   return new Set([letters[sum % letters.length]]);
 }
 
-/** The sign's HTML: an ink plate and one SVG of the word's letters as paths
- * (NEON_FONT), four layers back to front; the dead letters are a fifth. */
-function neonSign(word) {
+/** The word in tubes: one SVG of its letters as paths (NEON_FONT), four layers
+ * back to front; the dead letters are a fifth. */
+function neonWord(word) {
   const { cap, upm, glyphs } = NEON_FONT;
   const dead = neonDeadLetters(word);
   const letters = [];
@@ -1140,8 +1140,13 @@ function neonSign(word) {
   const off = letters.filter((l) => l.dead);
   const svg = NEON_LAYERS.map((cls) => layer(cls, lit)).join('') + (off.length ? layer('dc-neon-dead', off) : '');
   const em = (n) => +(n / upm).toFixed(3);
-  return `<div class="dc-neon" aria-hidden="true"><svg class="dc-neon-word" xmlns="http://www.w3.org/2000/svg" ` +
-    `width="${em(w)}em" height="${em(cap)}em" viewBox="0 ${-cap} ${w} ${cap}">${svg}</svg></div>\n`;
+  return `<svg class="dc-neon-word" xmlns="http://www.w3.org/2000/svg" ` +
+    `width="${em(w)}em" height="${em(cap)}em" viewBox="0 ${-cap} ${w} ${cap}">${svg}</svg>`;
+}
+
+/** The sign: an ink plate holding the word. */
+function neonSign(word) {
+  return `<div class="dc-neon" aria-hidden="true">${neonWord(word)}</div>\n`;
 }
 
 function dcNeonSigns(state) {
@@ -1167,6 +1172,12 @@ function dcNeonSigns(state) {
       }
     } else if (tok.type === 'layout_component_close') {
       components.pop();
+    } else if (tok.type === 'heading_open' && hasClass(tok, 'dc-neon-sign')) {
+      // `{.dc-neon-sign}`: the heading's word drawn in tubes; its text stays, unseen, for search and links.
+      const inline = t[i + 1];
+      const word = inline.children.filter((c) => c.type === 'text').map((c) => c.content).join('').trim().toUpperCase();
+      const html = (content) => Object.assign(makeToken('html_inline', content), { level: inline.level });
+      inline.children = [html('<span class="dc-neon-text">'), ...inline.children, html('</span>'), html(`<span class="dc-neon-glow" aria-hidden="true">${neonWord(word)}</span>`)];
     }
   }
 }

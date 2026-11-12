@@ -101,8 +101,9 @@ GROUND_SHADE = 0.9                  # the ground's tone against the wall's
 # The hue faces and the chapter words that wire them are page-rules.css's and
 # dc-native.css's (2c); a book wires its own chapters the same way.
 HUES = {"blue": "--hud-blue-dark", "rust": "--rust", "violet": "--brand-violet",
-        "amethyst": "--crystal-amethyst", "amber": "--amber-dark", "ink": "--ink-dark"}
-CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet", "dm": "ink", "gear": "amber"}
+        "amethyst": "--crystal-amethyst", "amber": "--amber-dark", "indigo": "--signal-indigo",
+        "ink": "--ink-dark"}
+CHAPTER_HUES = {"specialty": "blue", "rules": "rust", "lore": "violet", "dm": "ink", "gear": "indigo"}
 # pages that keep their own named page (and so the brick) whatever wall they name
 KEEPS = ".gp-page-full-bleed, .dc-full-page, .dc-page-contents, .dc-page-credits, .dc-page-intro, .dc-page-citizen-file"
 # and inside a block that names a wall, the children that keep their own page

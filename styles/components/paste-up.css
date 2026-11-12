@@ -37,11 +37,11 @@ p:has(+ .dc-kicker) {
   padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
   padding-right: var(--dc-section-pad-right);
 }
-/* Across a rung's plate, inside its hairline ring, with room inside the rule and frame. */
+/* Across a rung's plate, inside its hairline ring, a rung's own tighter gap
+   above the rule, with room above the frame. */
 .dc-rung-body > .dc-kicker {
-  margin-top: var(--space-lg);
-  padding-top: 10pt;
-  padding-bottom: 5pt;
+  margin-top: var(--space-sm);
+  padding-bottom: 3pt;
   margin-left: -8px;
   margin-right: -8px;
   padding-left: 8px;
@@ -113,6 +113,7 @@ p:has(+ .dc-kicker) {
   & > :is(h2, h3):first-child,
   & > :is(h2, h3).dc-pu-tag:not(:first-child) {
     width: fit-content; max-width: 88%;
+    min-width: min-content;   /* a word wider than 88% (QUICKSTART) widens the tag; it never runs off it */
     margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
     padding: 0.3rem var(--space-lg) 0.22rem;
     clip-path: none; border-bottom: 0;

@@ -283,7 +283,7 @@ describe("file contracts", () => {
     expect([...found].filter((x) => !APPROVED.has(x)), "a grid is not a way to lay out columns of content; use `@columns N`").toEqual([]);
   });
 
-  test("`--gp-column-gap` and `--gp-column-rule` are set once, at :root, in dc-component-defaults.css", () => {
+  test("`--gp-column-gap` is set once, at :root; `--gp-column-rule` only by the `.dc-column-rule` opt-in", () => {
     const sets = [];
     for (const s of PKG) {
       s.root.walkDecls(/^--gp-column-(gap|rule)$/, (d) => {
@@ -291,13 +291,11 @@ describe("file contracts", () => {
         sets.push({ label: s.label, prop: d.prop, sels, value: d.value });
       });
     }
-    for (const prop of ["--gp-column-gap", "--gp-column-rule"]) {
-      const atRoot = sets.filter((x) => x.prop === prop && x.sels.includes(":root"));
-      expect(atRoot.map((x) => x.label), `${prop} at :root`).toEqual(["styles/dc-component-defaults.css"]);
-    }
-    // Anywhere else it may only be reset to `none` (a component that wants no hairline).
-    const elsewhere = sets.filter((x) => !x.sels.includes(":root") && x.value !== "none");
-    expect(elsewhere, "only `--gp-column-rule: none` may be set on a component").toEqual([]);
+    const gaps = sets.filter((x) => x.prop === "--gp-column-gap");
+    expect(gaps.map((x) => `${x.label} ${x.sels.join(",")}`), "--gp-column-gap").toEqual(["styles/dc-component-defaults.css :root"]);
+    // No rule between columns by default (core's none); a run opts in with the class.
+    const rules = sets.filter((x) => x.prop === "--gp-column-rule");
+    expect(rules.map((x) => `${x.label} ${x.sels.join(",")}`), "--gp-column-rule").toEqual(["styles/page-templates.css .dc-column-rule"]);
   });
 
   // dc#34 (callouts.css TOKEN CONVENTION) + css-architecture.md "Tokens flow downward only":

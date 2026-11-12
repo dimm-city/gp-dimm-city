@@ -75,9 +75,14 @@ and the styles say where a reader is and what they are reading.
     the tube), the title a lit plate, and a number that ends the title
     (`#### BODY TAX: 2`) lit in a window at the plate's right end. Snippet
     `card-lightbox`.
-  - **`@section district`**: a place's lore sheet with a lit name tag; a
-    title word wider than the tag widens the plate. Snippet
-    `section-district`.
+  - **`@section district`**: a place's lore sheet with a lit name tag.
+    Snippet `section-district`.
+  - **`.dc-lit` on any sheet**: its tag is a lit plate, its sub-heads take a
+    tube bar and the hue's dark ring, and its tables' head rows are lit.
+  - **`{.dc-neon-sign}` on a heading**: its word drawn as a neon sign, in
+    tubes, at the heading's own size (a paste-up bill's ink is the plate). The
+    text stays in the page, unseen, for search and links. Snippet
+    `neon-sign-heading`.
   - **Programs** have a lit azure PROGRAM strip.
   - **The contents**: a chapter line that ends with its chapter's word
     (`{.dc-toc-rules}`) has its number lit in that chapter's tube colour.
@@ -102,6 +107,15 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **No rule between columns by default.** `@columns 2 .dc-column-rule` draws
+  the hairline where a run wants it (snippet `column-rule`).
+- **The gear chapter is signal indigo**, not charred amber (brown): its
+  opener, plain sheet tags and footer chip (`dc-chip-indigo`).
+- **`.dc-snug` closes up table rows too** (3px cell padding), so a page that
+  overflows by a line or two fits.
+- **Outcome rungs are tighter.** A rung's closing strip takes a rung's own
+  gap, its plate opens 15px under the top, rungs sit 6px apart and a callout
+  inside one sits a paragraph's gap under the text.
 - **Paste-up is how a section looks.** A `panel`, `reference`, `lore`, `dm` or
   `catalog` section (and the gear kinds) is a sheet pasted on the wall with
   nothing to write: tag over the paper's edge, closing line a sticker, one hard
@@ -141,6 +155,10 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **A paste-up tag widens to its longest word.** A word wider than the tag's
+  88% cap (QUICKSTART) ran past the tag in cream on the white paper.
+- **A catalog entry's picture paints above the next entry**, whose rule was
+  drawn across it (the Gutter Snap grenade).
 - **`@page` inside a specialty.** It used to close the specialty, its learning
   path and the open skill (core closes every component at a page), so what
   followed lost its colours, cards and numbering; books used `@page-break`

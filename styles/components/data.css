@@ -531,7 +531,7 @@
 .dc-rung {
   position: relative;
   break-inside: avoid;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   padding-top: 11px; /* half the tab's height: the tab straddles the plate's top edge */
 }
 .dc-rung-title {
@@ -560,7 +560,7 @@
 .dc-rung-body {
   position: relative;
   box-sizing: border-box;
-  padding: 18px 14px 6px 20px;
+  padding: 15px 14px 6px 20px;   /* top: clear of the tab, which hangs 11px into the plate */
   background: var(--dc-outcomes-surface);
   border: 2px solid var(--dc-outcomes-border);
   box-shadow:
@@ -580,6 +580,11 @@
 }
 .dc-rung-body > :last-child {
   margin-bottom: 0;
+}
+/* A callout inside a rung (an example) sits a paragraph's gap under the text,
+   not a section's: the rung is one plate. */
+.dc-rung-body > :is(.dc-alert, .gp-alert) {
+  --dc-alert-margin-top: var(--space-sm);
 }
 
 /* ── Roll table (`@roll-table`) ───────────────────────────────────────────
@@ -853,9 +858,6 @@
 }
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
-}
-:is(.gp-columns, [class*="gp-columns-"]):has(> .dc-definition-block) {
-  --gp-column-rule: none; /* a pair of framed cards needs no rule between them */
 }
 .dc-definition-block hr {
   border: none;
