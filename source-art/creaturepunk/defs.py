@@ -45,8 +45,8 @@ G['D']=d & ~P([(30,50),(60,50),(60,14)],rough=0.4,soft=0) & ~P([(30,-6),(60,-6),
 # Q: O + K's swept leg as the tail
 tail=clip(G['K'],[(21,-15),(70,-15),(70,20),(21,17)])
 G['Q']=G['O'] | sh(tail,-2,-11)
-# G: C with a spur rising off the bottom bar
-G['G']=C | P([(41,8),(51.5,8),(52,25),(31,24.5),(31.5,17),(41.5,17)],rough=0.4)
+# G: the blocky C with a spur rising off its bottom arm and a short bar turned in
+G['G']=G['C'] | P([(38,9),(47,9),(47.5,30.5),(29,30),(29.5,23),(38.5,23.3)],rough=0.4)
 # V: blocky V with N-style spiked tips and a deep top notch
 vb=P([(0,46.5),(4,43),(17,42),(23,42),(36,43),(41,47),(31,-1),(12,-1.5)],rough=0.45)
 G['V']=vb & ~P([(12.5,49),(28.5,49),(21,12)],rough=0.4,soft=0.3)

@@ -194,10 +194,11 @@ and the styles say where a reader is and what they are reading.
 
 - **Creaturepunk letters that read as other characters, from print review.**
   C read as "<": it is now a blocky C (stem, top and bottom arms). U read as
-  "J": its left stem now runs to cap height. M read as "H": its V now drops
+  "J": its left stem now runs to cap height. G, built on the old C, is now
+  the blocky C with a spur and an inward bar. M read as "H": its V now drops
   to a third of the height with the middle open below it. "…" fell back to
   another font: the font now has its own ellipsis. The logo's C and U stay
-  as `swsh` alternates. C, U and M change width, so a heading set with them
+  as `swsh` alternates. C, G, U and M change width, so a heading set with them
   can rewrap.
 
 - **A paste-up tag widens to its longest word.** A word wider than the tag's
