@@ -129,7 +129,7 @@ components/specialty-identity.css:336  srgb --gutterdruid-mid 38% --gutterdruid-
 components/specialty-identity.css:367  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
 components/specialty-identity.css:397  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
 components/specialty-identity.css:423  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
-dc-component-defaults.css:502          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
+dc-component-defaults.css:503          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast

@@ -1001,7 +1001,7 @@ table.dc-stat-strip {
   text-align: center;
   font-family: var(--font-tab);
   font-weight: 700;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-stat);
   line-height: 1.1;
   color: var(--dc-stat-strip-value);
 }
@@ -1086,7 +1086,7 @@ table.dc-stat-strip {
 }
 
 .dc-toc ol>li>a {
-  font-size: var(--fs-h3);
+  font-size: var(--fs-lead);
   font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--ink);

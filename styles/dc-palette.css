@@ -124,10 +124,11 @@
   --font-quote:   'Titillium Web', 'Tomorrow', serif;
 
   /* ── Type Scale — 12pt body anchor ─────────────────────────────────────
-     Headings step down by about a quarter: h1/h2 1.30×, h2/h3 1.25×,
-     h3/h4 1.23×. Below h4 the sizes are a point apart (13, 12, 11, 10), too
-     close to tell levels apart by size, so each differs in kind: h4 and h5
-     are display caps (h5 == body-sm), h6 is a mono label on the 10pt floor.
+     h1 and h2 are Creaturepunk, whose caps are 0.75em tall; h3 to h6 are
+     Lixdu, whose caps fill the em, so the ladder steps by cap height (see
+     below). Below h3 the sizes are a point apart (12, 11, 10), too close to
+     tell levels apart by size alone: h4 and h5 also differ in colour and
+     spacing, and h6 is set tight on the 10pt floor.
      Every size a rule sets is one of these tokens: no literal sizes.
      ────────────────────────────────────────────────────────────────────── */
   --fs-floor:   10pt;    /* THE type floor: no glyph the package prints is smaller — chips, tabs, tier pills, labels, stamps, folios included */
@@ -135,18 +136,24 @@
   --fs-body-sm: 11pt;    /* smallest running prose in a component */
   --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books */
   --fs-sm:      var(--fs-body-sm);  /* alias: small body */
+  /* h1 and h2 are Creaturepunk (caps 0.75em tall), h3 to h6 Lixdu (caps the
+     full em): by cap height the ladder reads 19.5 / 16.5 / 14 / 12 / 11 / 10pt. */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
-  --fs-h2:      22pt;    /* section headers; 1.18× below h1 */
-  --fs-h3:      13pt;    /* sub-section, gear card titles; told from h4 by colour and spacing */
-  --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
-  --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
-  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; a mono label, not a smaller h5 */
+  --fs-h2:      22pt;    /* section headers */
+  --fs-h2-bar:  20pt;    /* an h2 on a sheet's title bar (caps about 15pt) */
+  --fs-h3:      14pt;    /* sub-section, sheet tags */
+  --fs-h4:      12pt;    /* skill card names, stat block NPC names */
+  --fs-h5:      11pt;    /* field labels, stat-block sublabels */
+  --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor */
+  --fs-stat:    16pt;    /* a stat strip's numbers (HP, Damage) */
+  --fs-lead:    16pt;    /* the larger display lines that are not headings: contents entries, a path's spray title, a sticker */
 
   --lh-display: 1.35;  /* headings. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart */
   --lh-tight:  1.35;   /* compact running text */
   --lh-normal: 1.5;
 
   --ls-display: 0.1em;
+  --ls-title:   0.04em;  /* Creaturepunk (h1, h2): its wide caps fall apart at the display tracking */
   --ls-heading: 0.08em;
 
   /* ── Spacing — print units ────────────────────────────────────────────── */

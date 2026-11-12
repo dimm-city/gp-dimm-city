@@ -94,7 +94,7 @@ h1.dc-chevron {
 .dc-spray {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-lead);
   color: var(--dc-spray-color);
   text-transform: uppercase;
   line-height: var(--lh-display);

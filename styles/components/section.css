@@ -253,7 +253,8 @@ div[class="section"] {
    the h3 look (`{.dc-h3}`, see dc-core.css) takes the subordinate bar below
    instead; `:where()` keeps this rule's specificity where it was. */
 .dc-section-panel > h2:where(:not(.dc-h3)):first-child {
-  font-size: var(--fs-h3);
+  font-size: var(--fs-h2-bar);
+  letter-spacing: var(--ls-title);
   padding-top: 0.55rem;
   padding-bottom: 0.40rem;
   /* The bar follows the panel's two top corners. */
@@ -300,13 +301,13 @@ div[class="section"] {
    bar's own size, an `###` under a `{.dc-h3}` bar was bigger than it, and an
    `####` anywhere in a panel was the size of a `###` bar: each read as a
    second title. Books stepped them down by hand (`{.dc-h4}`, `{.dc-h5}`);
-   this does it for every panel: under a 16pt bar an `###` is 13pt, and every
-   other sub-heading is 11pt. A panel with no bar (its first child is not an
+   this does it for every panel: under an `##` bar an `###` steps down, and
+   every other sub-heading is 11pt. A panel with no bar (its first child is not an
    `##` or `###`) is left alone: there the first heading is the title.
    A heading with a look class (`{.dc-h4}`) keeps the look it asks for.
    `:where()` keeps the specificity low, so a kind with its own sub-head
    (lore's italic caption, a creature's name) keeps it. Use one sub-level per
-   panel: under a 13pt bar an `###` and an `####` are both 11pt, told apart
+   panel: under an `###` bar an `###` and an `####` are both 11pt, told apart
    only by the `###`'s rail and colour. */
 :where(.dc-section-panel:has(> h2:not(.dc-h3):first-child)) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)):not(:first-child),
 :where(.dc-section-panel:has(> h2:not(.dc-h3):first-child)) > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6)) {
@@ -572,7 +573,7 @@ h3 + .dc-section-panel {
    and a lit line closes the head off from the face. */
 .dc-section-dm > :is(h2, h3):first-child {
   margin: var(--dc-section-top) calc(6pt - var(--dc-section-pad-right)) var(--space-md) calc(6pt - var(--dc-section-pad-left));
-  padding: 0 calc(1.5pt + var(--space-lg)) calc(var(--space-sm) + 4.5pt);
+  padding: var(--dc-dm-head-pad-top) calc(1.5pt + var(--space-lg)) calc(var(--space-sm) + 4.5pt);
   background: var(--ink);
   color: var(--dc-neon-core);
   clip-path: none;
@@ -582,6 +583,9 @@ h3 + .dc-section-panel {
 .dc-section-dm > :is(h2, h3):first-child::after {
   content: none;
 }
+/* A bill keeps its size on the booth's head. */
+.dc-section-dm > h2.dc-pu-bill:first-child { font-size: calc(var(--fs-h1) * 2); }
+.dc-section-dm > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
 /* With no title, the lit line closes the sign's band itself. */
 .dc-section-dm > :first-child:not(h2, h3) {
   margin-top: calc(var(--dc-section-top) + var(--space-md));

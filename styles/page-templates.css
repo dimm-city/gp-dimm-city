@@ -840,6 +840,7 @@ li > p {
 .chapter.dc-chapter-dm .dc-section-dm {
   --dc-dm-sign: none;
   --dc-section-top: 0px;
+  --dc-dm-head-pad-top: var(--space-sm);   /* with no sign above, the title clears the frame */
 }
 
 }
