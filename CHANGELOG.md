@@ -26,11 +26,12 @@ and the styles say where a reader is and what they are reading.
   labelled bands ("20: Total Wholeness", "Triumph (20)") and tier words
   ("Success") included, each row in its band's tier colour. Bands that
   overlap or straddle 10/11 stay a table; `@roll-table` is never a ladder.
-- **Semantic tier colours.** The outcome ladder and its rungs run best to
-  worst and light to dark: Triumph gold (`--brand-yellow`), Success green
-  (`--neon-civic`), Hard Choice orange (`--orange-deep`), Failure red
-  (`--blood`), Catastrophe black (`--ink-dark`). The two light tiers carry
-  ink text; every chip clears 6.6:1.
+- **Semantic tier colours.** The outcome ladder and its rungs read as a
+  traffic light, best to worst: Triumph deep green (`--neon-civic-ring-1`),
+  Success green (`--neon-civic`), Hard Choice yellow (`--brand-yellow`),
+  Failure red (`--blood`), Catastrophe black (`--ink-dark`). Each tier has its
+  own lightness, so they part in grayscale; the light tiers carry ink text,
+  and every chip clears 5.1:1.
 - **Steps.** A `##` standing on the page that opens with a step number
   (`## 4. Ideal`) has its number set as a chip in the chapter's colour, so a
   procedure's steps read as one sequence.

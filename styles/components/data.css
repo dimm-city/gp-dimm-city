@@ -418,10 +418,10 @@
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, transparent),
     inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, transparent);
-  /* Use the token so the light rows (crit and hit set --dc-outcome-key-color
-     to --ink: cream on gold or green is under 3:1) carry it to the chip
+  /* Use the token so the light rows (hit and mixed set --dc-outcome-key-color
+     to --ink: cream on green or yellow is under 3:1) carry it to the chip
      element itself, not just to its children. Default stays cream for the
-     dark-fill outcomes (mixed/miss/fail). */
+     dark-fill outcomes (crit/miss/fail). */
   color: var(--dc-outcome-key-color);
   padding: 6px 10px;
   display: flex;
@@ -476,19 +476,18 @@
 }
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
-   Semantic, best to worst, and light to dark so the tiers part in grayscale:
-     crit  → brand-yellow + ink  (gold: the jackpot      — ink 12.0:1)
-     hit   → neon-civic + ink    (green: it works         — ink 6.6:1)
-     mixed → orange-deep         (orange: it costs you    — paper-cream 6.9:1)
-     miss  → blood               (red: it fails           — paper-cream 9.0:1)
-     fail  → ink-dark            (black: the lights go out — paper-cream 14.8:1)
+   Semantic, a traffic light from best to worst; the five lightnesses differ,
+   so the tiers part in grayscale too:
+     crit  → neon-civic-ring-1   (deep green: the best there is — paper-cream 5.1:1)
+     hit   → neon-civic + ink    (green: it works              — ink 6.6:1)
+     mixed → brand-yellow + ink  (yellow: caution, it costs you — ink 12.0:1)
+     miss  → blood               (red: it fails                — paper-cream 9.0:1)
+     fail  → ink-dark            (black: the lights go out     — paper-cream 14.8:1)
    The two light rows carry ink text (--dc-outcome-key-color and
    --dc-outcome-name-color); the three dark rows keep the cream default. */
 .dc-outcome-row.crit,
 .dc-rung.crit {
-  --row-color: var(--brand-yellow);
-  --dc-outcome-name-color: var(--ink);
-  --dc-outcome-key-color: var(--ink);
+  --row-color: var(--neon-civic-ring-1);
 }
 
 .dc-outcome-row.hit,
@@ -500,7 +499,9 @@
 
 .dc-outcome-row.mixed,
 .dc-rung.mixed {
-  --row-color: var(--orange-deep);
+  --row-color: var(--brand-yellow);
+  --dc-outcome-name-color: var(--ink);
+  --dc-outcome-key-color: var(--ink);
 }
 
 .dc-outcome-row.miss,
