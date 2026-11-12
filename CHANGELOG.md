@@ -119,8 +119,10 @@ and the styles say where a reader is and what they are reading.
 
 - **The Dream Master's sheet is a lit booth.** `@section dm` is no longer a
   paste-up sheet with a folder tab: it is a lightbox (a white face in a cyan
-  neon frame) whose ink head carries the DREAM MASTER neon sign, lit at its D
-  and M, with the sheet's title under it in the tube's pale core.
+  neon frame) whose ink head carries its title in the tube's pale core. Among
+  the players' pages it also carries the DREAM MASTER neon sign, lit at its D
+  and M; in the Dream Master's own chapter, whose opener hangs the sign, it
+  does not repeat it.
 - **No neon sign on a specialty's art page.** Chapter openers keep theirs.
 - **Bigger reading type.** Specialty intro prose is 11pt (was the 10pt floor)
   on compact leading (1.35), and table text is 11pt: every table's cells,

@@ -552,7 +552,7 @@ h3 + .dc-section-panel {
   margin-top: var(--dc-section-top);
 }
 .dc-section-dm::after {
-  content: "";
+  content: var(--dc-dm-sign);
   top: 7.5pt;
   left: 7.5pt;
   right: 7.5pt;
