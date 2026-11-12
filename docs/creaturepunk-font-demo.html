@@ -401,6 +401,7 @@ function writeFont(font) {
 const FONT_URL = '../fonts/creaturepunk/Creaturepunk.ttf';
 const statusEl = document.getElementById('f-status'), dlBtn = document.getElementById('f-download');
 let font = null, original = null, face = null, edited = new Set();
+const undoStack = [];
 
 async function applyFont() {
   const bytes = writeFont(font);
@@ -446,7 +447,6 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('ed-svg');
 const lsbIn = document.getElementById('ed-lsb'), rsbIn = document.getElementById('ed-rsb'), advIn = document.getElementById('ed-adv');
 const undoBtn = document.getElementById('ed-undo'), resetBtn = document.getElementById('ed-reset');
-const undoStack = [];
 let gid = -1, sel = new Set(), drag = null;
 
 const label = i => font.chars[i] || font.names[i] || '#' + i;
