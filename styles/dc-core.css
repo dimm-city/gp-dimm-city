@@ -89,6 +89,16 @@ h1, h2, h3, h4, h5, h6,
   overflow-wrap: normal;
   hyphens: manual;
 }
+/* h1 and h2 are the graffiti caps, Creaturepunk; a look class (`{.dc-h3}`)
+   puts an h2 back in the display face with the rest of its look. */
+h1, h2 {
+  font-family: var(--font-title);
+  word-spacing: 0.12em;
+}
+h2:is(.dc-h3, .dc-h4, .dc-h5, .dc-h6) {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
 /* A heading that wraps never splits across a page; keeping it with what follows is core's
    `break-after: avoid` (MARKER_CSS). */
 h2, h3, h4 { break-inside: avoid; }
@@ -117,7 +127,7 @@ h2, h3, h4 { break-inside: avoid; }
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
 h1 {
   font-size: var(--fs-h1);
-  letter-spacing: 0.2em;
+  letter-spacing: var(--ls-title);
   margin-bottom: 0.75em;
   color: var(--hud-magenta);
   border-bottom: 2px solid var(--hud-magenta);
@@ -128,7 +138,7 @@ h1 {
 h2 {
   font-size: var(--fs-h2);
   color: var(--hud-blue-dark);
-  letter-spacing: var(--ls-heading);
+  letter-spacing: var(--ls-title);
   border-bottom: 2.5pt solid var(--hud-blue-dark);
   padding-bottom: 0.1em;
 }
@@ -138,10 +148,8 @@ h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-
 /* H4–H6 — grim dark ramp: body labels */
 h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink);  letter-spacing: 0.06em; }
 h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
-/* H6 is a label, not a smaller H5: one point apart, the two were told apart
-   by nothing else. It takes the label face (mono, bold), as every other 10pt
-   label in the package does. */
-h6, .dc-h6 { font-family: var(--font-mono); font-size: var(--fs-h6); font-weight: 700; margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
+/* H6, the 10pt label size, in the display face like every heading below h2. */
+h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink); letter-spacing: 0.04em; }   /* Lixdu at 10pt reads large: tight, so it sits under a tag */
 /* What h1/h2 add that no lower look has: clear it when a look class is on
    one of those tags. */
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {

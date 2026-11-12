@@ -95,7 +95,7 @@ p:has(+ .dc-kicker) {
    (sides and foot stay open for shadows and stickers). The sheet rules below
    nest in this one selector; a creature, the walkthrough and the choose forms
    keep their own look. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose, .dc-section-dm) {
   --dc-section-break-inside: avoid;
   clip-path: inset(0 -1in -1in -1in);
   --dc-section-edge: 0px;
@@ -128,6 +128,7 @@ p:has(+ .dc-kicker) {
     padding: 0.3rem var(--space-lg) 0.22rem;
     clip-path: none; border-bottom: 0;
     line-height: var(--lh-display);
+    text-wrap: pretty;   /* balance pulled wrapped lines in and left a slab of empty tag at the right */
     transform: rotate(-1deg);
     transform-origin: max(0px, 100% - (var(--dc-pu-tag-top) - 0.5px) / sin(1deg)) 0;
     box-shadow: 3px 3px 0 var(--ink-dark);
@@ -140,7 +141,7 @@ p:has(+ .dc-kicker) {
     background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
     color: var(--dc-section-bar-fg);
   }
-  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); }
+  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); letter-spacing: var(--ls-title); }
   & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
   &:not(.dc-catalog) > :is(h2, h3):first-child::after,
   & > .dc-pu-tag::after { content: none; }
@@ -159,13 +160,11 @@ p:has(+ .dc-kicker) {
     padding: var(--space-sm) var(--space-xl) var(--space-md);
     background: var(--ink-dark); color: var(--paper-cream);
     font-size: calc(var(--fs-h1) * 2);
+    letter-spacing: var(--ls-title);
     border-bottom: 6pt solid var(--brand-yellow);
     box-shadow: 4px 4px 0 var(--shadow-ink);
   }
   & > h2.dc-pu-bill.dc-pu-bill-mid:first-child { font-size: calc(var(--fs-h1) * 1.5); }
-
-  /* A half sheet's tag is smaller: a full-size one overran it. */
-  .dc-pu-row > & > h3:first-child { font-size: 14pt; }
 
   /* Continuation sheets: a clean sheet top, no tag. */
   &.dc-pu-cont {

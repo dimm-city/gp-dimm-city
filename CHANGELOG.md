@@ -117,6 +117,25 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **Headings.** `h1` and `h2` are set in Creaturepunk (`--font-title`), with
+  their own tracking (`--ls-title`, 0.04em); `h3` to `h6` stay in Lixdu, `h6`
+  included (it was the mono label face). Sizes step by cap height (Creaturepunk
+  caps are 0.75em, Lixdu's the full em): `--fs-h2` 22pt, a sheet's `##` bar
+  `--fs-h2-bar` 20pt, `--fs-h3` 14pt, `--fs-h4` 12pt. Stat numbers
+  (`--fs-stat`) and contents entries, spray titles and stickers (`--fs-lead`)
+  keep their 16pt. A paste-up tag wraps with `text-wrap: pretty`.
+- **Design pass.** Neon sign plates have a grey bezel; a lit panel's rail and
+  details take its hue; lit tags and PROGRAM strips keep 1.5pt of ink between
+  text and tube (the PROGRAM plate is navy, so it does not read as the Dream
+  Master's); the Dream Master note's label is lit; origin and location stamps
+  clear their bolt.
+- **The Dream Master's sheet is a lit booth.** `@section dm` is no longer a
+  paste-up sheet with a folder tab: it is a lightbox (a white face in a cyan
+  neon frame) whose ink head carries its title in the tube's pale core. Among
+  the players' pages it also carries the DREAM MASTER neon sign, lit at its D
+  and M; in the Dream Master's own chapter, whose opener hangs the sign, it
+  does not repeat it.
+- **No neon sign on a specialty's art page.** Chapter openers keep theirs.
 - **Bigger reading type.** Specialty intro prose is 11pt (was the 10pt floor)
   on compact leading (1.35), and table text is 11pt: every table's cells,
   reference and roll tables, and the outcome ladder's text. Header rows and

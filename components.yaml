@@ -1287,9 +1287,9 @@ components:
     snippet: section-dm
     recipe: "@section dm … @end-section  (advice for the Dream Master, behind the screen)"
     emits: div.section.dc-section-panel.dc-section-dm
-    css: [styles/components/section.css]
-    tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-tab, --dc-section-tab-bg, --dc-section-tab-fg]
-    notes: "A panel for behind-the-screen text, drawn as a classified file folder: an ink tab rising from the top edge carries the words Dream Master (cyan on ink; drawn with or without a heading), an ink title bar with a cyan rule, a cyan rail, a white body, one opposite corner cut (bottom right). The accent is cyan (cyan on ink is the Dream Master's pair, used nowhere else); --dc-accent-ink is HUD blue."
+    css: [styles/components/section.css, styles/components/neon.css]
+    tokens: [--dc-section-accent, --dc-section-top, --dc-dm-sign]
+    notes: "The Dream Master's booth, for behind-the-screen text: a lightbox, not a pasted-on sheet. A white face in an ink channel with a cyan neon tube round it, and one ink head across the top: the sheet's title in the tube's pale core, closed by a lit line, and above it, among the players' pages, the DREAM MASTER neon sign (its D and M lit; images/neon-dream-master.svg, written by scripts/neon-glyphs.py). In a @chapter dm the sheets hang no sign (the opener does): --dc-dm-sign: none. Square, no tilt. With no title, the lit line closes the sign's band. Cyan on ink is the Dream Master's pair, used nowhere else; --dc-accent-ink is HUD blue."
 
   - name: section-choose
     status: live

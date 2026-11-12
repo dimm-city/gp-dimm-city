@@ -265,16 +265,16 @@
    folder tab; under it a white sheet in an ink ring with the cyan rail. Cyan
    on ink is the Dream Master's pair, used nowhere else. */
 .dc-dm-note {
-  --dc-alert-border: var(--hud-blue-bright);
+  --dc-alert-border: var(--neon-cyan);
   --dc-alert-border-width: 6px;
   --dc-alert-frame: inset 0 0 0 2pt var(--ink-dark);
   /* a file folder: a tab rising 9px over the left 42%, one cut corner opposite */
   --dc-alert-shape: polygon(0 0, calc(42% - 6px) 0, 42% 9px, 100% 9px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
   --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet (cyan itself is a rail colour, not a text one) */
-  --dc-alert-label-color: var(--hud-blue-bright);  /* 6.7:1 on the ink bar */
-  --dc-alert-label-bg: var(--ink-dark);
+  --dc-alert-label-color: var(--neon-cyan-core);  /* the booth's lit title colour */
+  --dc-alert-label-bg: var(--ink);
   --dc-alert-label-shadow: none;
-  --dc-alert-label-pad: 13px var(--space-xl) 4px;  /* the top clears the 9px tab rise */
+  --dc-alert-label-pad: 13px var(--space-xl) calc(4px + 3pt);  /* the top clears the 9px tab rise; the foot holds the lit line */
   --dc-alert-label-margin: var(--space-md);
   --dc-alert-body-size: var(--fs-floor);   /* insider small print, at the reading-text floor */
   --dc-alert-label-weight: 700;
@@ -286,7 +286,7 @@
 .dc-dm-note .dc-alert-label {
   width: auto;
   margin-inline: calc(-1 * var(--space-xl));
-  border-bottom: 3pt solid var(--hud-blue-bright);
+  box-shadow: inset 0 -1.5pt 0 var(--neon-cyan), inset 0 -3pt 0 var(--neon-cyan-core);   /* the booth's lit line, in the 3pt the rule took */
 }
 
 /* The Dream Master's bolts hang on its first body block, on the white body 2pt
@@ -393,7 +393,7 @@
   border: 2px solid currentColor;
   outline: 1pt dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
-  margin-left: 3px;
+  margin-left: calc(5px + var(--dc-bolt-size) + 2pt);   /* clear of the top-left bolt (5px in, --dc-bolt-size wide) */
   /* A stamp is ink on the sheet: no chip shadow, which ran 2px under the
      dashed ring and turned its right and bottom edges into a ragged slab. */
   box-shadow: none;

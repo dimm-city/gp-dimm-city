@@ -834,5 +834,13 @@ li > p {
   --dc-neon-tilt: rotate(1deg);
   --dc-neon-pivot: left top;                /* hung from its left bolt: the tilt drops the right end; a lifted left corner rose past the page's top edge, cut flat there and printed a sliver on the page before */
 }
+/* In the Dream Master's own chapter every sheet is the Dream Master's and the
+   opener hangs the sign: a sheet there does not repeat DREAM MASTER. The sign
+   marks a Dream Master's sheet among the players' pages. */
+.chapter.dc-chapter-dm .dc-section-dm {
+  --dc-dm-sign: none;
+  --dc-section-top: 0px;
+  --dc-dm-head-pad-top: var(--space-sm);   /* with no sign above, the title clears the frame */
+}
 
 }

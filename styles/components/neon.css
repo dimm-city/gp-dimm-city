@@ -2,8 +2,9 @@
 
 /* ── NEON SIGNS ─────────────────────────────────────────────────────────────
    The city's own signage: a small ink plate hung on the wall, a word in tubes.
-   The plugin places one on each chapter opener and each specialty art page
-   (dcNeonSigns); authors write nothing.
+   The plugin places one on each chapter opener (dcNeonSigns); authors write
+   nothing. The Dream Master's sheet hangs the same sign in its tab, as an image
+   (section.css, `.dc-section-dm::after`).
 
    Print. Ink cannot emit light, so a tube is four flat, opaque layers of the
    same word drawn as SVG paths (plugin.js, NEON_FONT), back to front: an
@@ -15,22 +16,12 @@
    the soft proof's minimums (no sign is set smaller). No blur, no gradient,
    no transparency, no text-shadow. Every colour is the value the press makes
    (sRGB -> CGATS21_CRPC1 -> sRGB), so the PDF shows what prints. The word is
-   drawing, not text (aria-hidden): the chapter or specialty title is still
-   the real heading.
+   drawing, not text (aria-hidden): the chapter title is still the real
+   heading.
 
    The tube colours are dc-palette.css's `--neon-*` ladders; a sign takes
-   `--dc-neon*` from where it hangs: a specialty below, a chapter word and the
-   opener's placement in page-templates.css ("NEON SIGNS"). */
-
-/* Where it hangs sets the hue. */
-.dc-specialty.technosorcerer                  { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }
-.dc-specialty.augmerc                         { --dc-neon: var(--neon-cyan);   --dc-neon-core: var(--neon-cyan-core);   --dc-neon-ring-1: var(--neon-cyan-ring-1);   --dc-neon-ring-2: var(--neon-cyan-ring-2); }
-.dc-specialty.etherlock                       { --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core); --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2); }
-.dc-specialty.proxy                           { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
-.dc-specialty.gutterdruid                     { --dc-neon: var(--neon-fungi);  --dc-neon-core: var(--neon-fungi-core);  --dc-neon-ring-1: var(--neon-fungi-ring-1);  --dc-neon-ring-2: var(--neon-fungi-ring-2); }
-.dc-specialty.streetwarden                    { --dc-neon: var(--neon-civic);  --dc-neon-core: var(--neon-civic-core);  --dc-neon-ring-1: var(--neon-civic-ring-1);  --dc-neon-ring-2: var(--neon-civic-ring-2); }
-.dc-specialty.cybersurgeon                    { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
-.dc-specialty.wirephreak                      { --dc-neon: var(--neon-azure);  --dc-neon-core: var(--neon-azure-core);  --dc-neon-ring-1: var(--neon-azure-ring-1);  --dc-neon-ring-2: var(--neon-azure-ring-2); }
+   `--dc-neon*` from where it hangs: a chapter word and the opener's placement
+   in page-templates.css ("NEON SIGNS"). */
 
 /* The plate: ink, stood off the wall (a deeper hard shadow than a sheet's),
    bolted at its two top corners (the bolt is chrome.css's, "Bolt heads"). */
@@ -47,7 +38,7 @@
   display: flex;
   align-items: center;
   padding: 10pt 15pt;
-  box-shadow: 4pt 4pt 0 var(--ink-dark);
+  box-shadow: 0 0 0 1.5pt var(--neon-dead), 4pt 4pt 0 var(--ink-dark);   /* a grey bezel: the plate's edge shows on an ink banner */
 }
 .dc-neon::before { top: 3pt; left: 3pt; }
 .dc-neon::after { top: 3pt; right: 3pt; }
@@ -67,10 +58,6 @@
 .dc-neon-core   { fill: var(--dc-neon-core); }
 .dc-neon-dead   { fill: var(--neon-dead-core); stroke: var(--neon-dead); stroke-width: 150; }  /* grey glass, no rings, no light */
 
-/* Specialty art page: high on the wall, in front of what is painted on it,
-   behind nothing. */
-.dc-specialty-art:has(> .dc-neon)             { position: relative; }
-.dc-specialty-art > .dc-neon                  { position: absolute; top: 0.5in; left: 0; right: 0; --dc-neon-margin: 0 auto; --dc-neon-size: 28pt; }
 
 /* A heading drawn as a sign (`## Hacking {.dc-neon-sign}`): its word in tubes
    at the heading's own size, in the plate the heading already is (a bill's
@@ -111,7 +98,7 @@
 .dc-neon-off    { --dc-neon: var(--neon-dead);   --dc-neon-core: var(--neon-dead-core);   --dc-neon-ring-1: var(--neon-dead);          --dc-neon-ring-2: var(--neon-dead); }  /* an unlit tube: grey glass (The Dark) */
 
 /* The ring stacks, computed where the hue is known. */
-:is(.dc-lit > :is(h2, h3):first-child, .dc-card-lightbox, .dc-lit-value,
+:is(.dc-lit > :is(h2, h3):first-child, .dc-card-lightbox, .dc-lit-value, .dc-section-dm,
     .dc-program, :is(.dc-location-callout, .dc-visit-callout) .dc-alert-label,
     .dc-toc ol > li[class*="dc-toc-"]) {
   --dc-lit-line:
@@ -129,9 +116,17 @@
 .section.dc-section-panel.dc-lit > :is(h2, h3):first-child {
   background: var(--ink);
   color: var(--dc-neon-core);
-  padding: 4.5pt calc(4.5pt + var(--space-lg));
-  --dc-pu-tag-top: calc(var(--dc-pu-lift) - 2.76pt);   /* paste-up.css sets the margin and the tilt's pivot from it */
+  padding: 6pt calc(6pt + var(--space-lg));   /* 1.5pt of ink between the text and the 4.5pt tube */
+  --dc-pu-tag-top: calc(var(--dc-pu-lift) - 5.76pt);   /* the 5.76pt over the paper tag's padding, taken from above; paste-up.css sets the margin and the tilt's pivot from it */
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
+}
+
+/* A lit panel's details (rail, bullets, flavour rule, die call) take its hue's
+   inner ring, not the chapter's accent. A lore sheet (a district) keeps its
+   violet: that is its kind's colour. */
+.section.dc-section-panel.dc-lit:not(.dc-section-lore) {
+  --dc-section-accent: var(--dc-neon-ring-1);
+  --dc-accent-ink: var(--dc-neon-ring-1);
 }
 
 /* A lit sheet's sub-heads: the hue's dark ring for the words (it reads on
