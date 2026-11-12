@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creaturepunk Font</title>
+<style>
+@font-face {
+  font-family: 'Creaturepunk';
+  src: url(data:font/woff2;base64,__WOFF2__) format('woff2');
+  font-display: block;
+}
+:root {
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --ink: #1b1b1b;
+  --muted: #5f5d58;
+  --line: #dcd9d2;
+  --accent: #ffc700;
+  --outline: #111111;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161616; --surface: #202020; --ink: #ecebe7; --muted: #a3a19b; --line: #34332f;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161616; --surface: #202020; --ink: #ecebe7; --muted: #a3a19b; --line: #34332f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+h2 { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 48px 0 12px; font-weight: 600; }
+p { margin: 0 0 12px; color: var(--muted); max-width: 70ch; }
+code, pre { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.cp { font-family: 'Creaturepunk', sans-serif; font-weight: normal; }
+.swsh { font-feature-settings: "swsh" 1; }
+/* The logo look: yellow fill, heavy black outline painted behind the fill. */
+.logo-style {
+  color: var(--accent);
+  -webkit-text-stroke: .1em var(--outline);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 .06em rgba(0,0,0,.25));
+}
+
+/* Brick wall like the source art: 120x60 tile, offset vertical joints. */
+.wall {
+  background: #c7c5c0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M0 1H120M0 31H120M1 0V30M61 30V60' stroke='%23a3a19c' stroke-width='2'/%3E%3C/svg%3E");
+  border-radius: 6px; overflow: hidden;
+}
+
+/* Logo lines are ~11.5em wide: size them from the box so they never overflow. */
+.hero { padding: 40px 16px 48px; text-align: center; container-type: inline-size; }
+.hero .cp { font-size: min(96px, 7.9cqi); line-height: 1.25; white-space: nowrap; display: inline-block; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.compare figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.compare figcaption { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.compare img { width: 100%; height: auto; display: block; border-radius: 4px; }
+.compare .rebuilt { aspect-ratio: 690 / 99; container-type: inline-size; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+.compare .rebuilt .cp { font-size: 7.6cqi; white-space: nowrap; }
+@media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 16px; }
+.controls label { font-size: 14px; display: flex; gap: 8px; align-items: center; }
+.controls input[type=text] { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); width: min(420px, 100%); }
+.controls input[type=range] { width: 160px; }
+.tester { min-height: 1.4em; padding: 8px 4px; font-size: min(96px, 16vw); line-height: 1.35; overflow-wrap: anywhere; outline: none; }
+.tester.on-wall { padding: 24px 16px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.cell { background: var(--surface); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.cell .cp { font-size: 46px; line-height: 1; }
+.cell small { position: absolute; left: 6px; top: 4px; font: 11px ui-monospace, monospace; color: var(--muted); }
+
+.waterfall div { white-space: nowrap; overflow: hidden; text-overflow: clip; border-bottom: 1px solid var(--line); padding: 6px 0; line-height: 1.3; }
+.waterfall span.sz { font: 12px ui-monospace, monospace; color: var(--muted); display: inline-block; width: 48px; }
+
+pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; overflow-x: auto; margin: 0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="wall hero">
+    <span class="cp swsh logo-style">CREATUREPUNK</span>
+  </div>
+
+  <div class="compare">
+    <figure>
+      <figcaption>Source lettering</figcaption>
+      <img src="data:image/png;base64,__SRC__" alt="The original CREATUREPUNK lettering on a brick wall">
+    </figure>
+    <figure>
+      <figcaption>Set in Creaturepunk, swashes on, outline added in CSS</figcaption>
+      <div class="wall rebuilt"><span class="cp swsh logo-style">CREATUREPUNK</span></div>
+    </figure>
+  </div>
+
+  <h2>Type tester</h2>
+  <div class="panel">
+    <div class="controls">
+      <input id="t-text" type="text" value="Dimm City Underground" aria-label="Sample text">
+      <label>Size <input id="t-size" type="range" min="24" max="200" value="96"></label>
+      <label><input id="t-logo" type="checkbox" checked> Logo outline</label>
+      <label><input id="t-swsh" type="checkbox"> Swash C &amp; K</label>
+    </div>
+    <div id="tester" class="tester cp logo-style wall on-wall" contenteditable="true" spellcheck="false">Dimm City Underground</div>
+  </div>
+
+  <h2>Character set</h2>
+  <p>Caps only: lowercase keys map to the same letters. C, R, E, A, T, U, P, N and K are traced from the source; every other glyph is built from pieces of those.</p>
+  <div class="grid" id="grid"></div>
+
+  <h2>Swash alternates</h2>
+  <p>The logo's tall C and long-legged K are kept as alternates. Turn them on with <code>font-feature-settings: "swsh"</code> (or <code>"ss01"</code>).</p>
+  <div class="panel" style="display:flex;flex-wrap:wrap;gap:24px 48px;align-items:baseline">
+    <div><small style="color:var(--muted)">default</small><div class="cp" style="font-size:88px;line-height:1.3">CK</div></div>
+    <div><small style="color:var(--muted)">swsh</small><div class="cp swsh" style="font-size:88px;line-height:1.3">CK</div></div>
+  </div>
+
+  <h2>Sizes</h2>
+  <div class="panel waterfall" id="waterfall"></div>
+
+  <h2>Use it</h2>
+<pre>@font-face {
+  font-family: 'Creaturepunk';
+  src: url('fonts/creaturepunk/Creaturepunk.woff2') format('woff2'),
+       url('fonts/creaturepunk/Creaturepunk.ttf') format('truetype');
+}
+.logo {
+  font-family: 'Creaturepunk';
+  font-feature-settings: "swsh";        /* tall C, long K */
+  color: #ffc700;
+  -webkit-text-stroke: .1em #111;       /* the black outline */
+  paint-order: stroke fill;             /* keep the stroke behind the fill */
+}</pre>
+</main>
+<script>
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?\'"-_/\\()[]<>+=*#%|$&';
+const grid = document.getElementById('grid');
+for (const ch of chars) {
+  const c = document.createElement('div'); c.className = 'cell';
+  c.innerHTML = '<small></small><span class="cp"></span>';
+  c.querySelector('small').textContent = ch;
+  c.querySelector('.cp').textContent = ch;
+  grid.appendChild(c);
+}
+const wf = document.getElementById('waterfall');
+for (const s of [14, 18, 24, 36, 48, 72]) {
+  const d = document.createElement('div');
+  d.innerHTML = '<span class="sz">' + s + 'px</span><span class="cp" style="font-size:' + s + 'px">Rust never sleeps in Dimm City 2099</span>';
+  wf.appendChild(d);
+}
+const t = document.getElementById('tester');
+const txt = document.getElementById('t-text');
+txt.addEventListener('input', () => { t.textContent = txt.value; });
+t.addEventListener('input', () => { txt.value = t.textContent; });
+document.getElementById('t-size').addEventListener('input', e => { t.style.fontSize = e.target.value + 'px'; });
+document.getElementById('t-logo').addEventListener('change', e => {
+  t.classList.toggle('logo-style', e.target.checked);
+  t.classList.toggle('wall', e.target.checked);
+  t.classList.toggle('on-wall', e.target.checked);
+});
+document.getElementById('t-swsh').addEventListener('change', e => { t.classList.toggle('swsh', e.target.checked); });
+</script>
+</body>
+</html>
