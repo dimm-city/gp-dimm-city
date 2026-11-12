@@ -75,9 +75,14 @@ and the styles say where a reader is and what they are reading.
     the tube), the title a lit plate, and a number that ends the title
     (`#### BODY TAX: 2`) lit in a window at the plate's right end. Snippet
     `card-lightbox`.
-  - **`@section district`**: a place's lore sheet with a lit name tag; a
-    title word wider than the tag widens the plate. Snippet
-    `section-district`.
+  - **`@section district`**: a place's lore sheet with a lit name tag.
+    Snippet `section-district`.
+  - **`.dc-lit` on any sheet**: its tag is a lit plate, its sub-heads take a
+    tube bar and the hue's dark ring, and its tables' head rows are lit.
+  - **`{.dc-neon-sign}` on a heading**: its word drawn as a neon sign, in
+    tubes, at the heading's own size (a paste-up bill's ink is the plate). The
+    text stays in the page, unseen, for search and links. Snippet
+    `neon-sign-heading`.
   - **Programs** have a lit azure PROGRAM strip.
   - **The contents**: a chapter line that ends with its chapter's word
     (`{.dc-toc-rules}`) has its number lit in that chapter's tube colour.

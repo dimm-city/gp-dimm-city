@@ -71,6 +71,22 @@
 .dc-specialty-art:has(> .dc-neon)             { position: relative; }
 .dc-specialty-art > .dc-neon                  { position: absolute; top: 0.5in; left: 0; right: 0; --dc-neon-margin: 0 auto; --dc-neon-size: 28pt; }
 
+/* A heading drawn as a sign (`## Hacking {.dc-neon-sign}`): its word in tubes
+   at the heading's own size, in the plate the heading already is (a bill's
+   ink), sitting on the text's baseline so the heading keeps its height. The
+   text stays in the page, unseen, for search and links. The hue is the
+   sheet's `.dc-neon-<hue>`. */
+.dc-neon-sign > .dc-neon-glow { display: inline-block; line-height: 0; vertical-align: baseline; }
+.dc-neon-sign > .dc-neon-glow > .dc-neon-word { font-size: 1em; }
+.dc-neon-sign > .dc-neon-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ── LIT PLATES AND LIGHTBOXES ───────────────────────────────────────────────
    The live-text form of neon, for things whose words must stay text (a title,
    a number): an ink plate with pale core-coloured text, and the tube drawn
@@ -106,14 +122,34 @@
 
 /* A lit sheet's tag: the paper tag becomes a lit plate, same tilt and place, a
    tube round its edge. The tube takes the tag's padding (4.5pt a side, 2.76pt
-   more than the paper tag's) and the space under the tag gives it back, so a
-   lit sheet keeps its height. */
+   more than the paper tag's 0.52rem) and the plate rises that much higher over
+   the paper's edge, so a lit sheet keeps its height whatever the space under
+   its tag. */
 .section.dc-section-panel.dc-lit > :is(h2, h3):first-child {
   background: var(--ink);
   color: var(--dc-neon-core);
   padding: 4.5pt calc(4.5pt + var(--space-lg));
-  margin-bottom: calc(var(--space-sm) - 2.76pt);   /* the 2.76pt the tube adds over the paper tag's 0.52rem */
+  margin-top: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top) - 2.76pt);
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
+}
+
+/* A lit sheet's sub-heads: the hue's dark ring for the words (it reads on
+   white), the accent bar a tube. The tube takes the bar's 3px and 3px of the
+   padding beside it, so the words stay where they were. */
+.section.dc-section-panel.dc-lit > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)):not(:first-child),
+.section.dc-section-panel.dc-lit > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)) {
+  color: var(--dc-neon-ring-1);
+  border-left-width: 0;
+  padding-left: calc(var(--space-sm) + 3px);
+  box-shadow: inset 1.5pt 0 0 var(--dc-neon), inset 3pt 0 0 var(--dc-neon-core), inset 4.5pt 0 0 var(--dc-neon);
+}
+
+/* A lit sheet's table: the head row is lit, the hue's core on ink over a tube
+   (inset, so the row keeps its height). */
+.section.dc-section-panel.dc-lit th {
+  background: var(--ink);
+  color: var(--dc-neon-core);
+  box-shadow: inset 0 -1.5pt 0 var(--dc-neon), inset 0 -3pt 0 var(--dc-neon-core);
 }
 
 /* LIGHTBOX CARD (`@card lightbox`): a white face in a lit frame (an ink edge and

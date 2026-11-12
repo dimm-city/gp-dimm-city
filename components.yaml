@@ -225,6 +225,18 @@ components:
     breaks: "the caption stays with the table (break-after: avoid); the table does not split (table break-inside: avoid)"
     notes: "A random table that is not the outcome ladder: neutral colours, one die, equal-weight rows. The die is d20 unless `die=` names another; `label` is optional. Its table is never read as a ladder, whatever its bands. Inside a skill it stays in the skill's card. (The @roll-table of 1.1 and earlier was retired in 1.2.0; this one is new.)"
 
+  - name: neon-sign-heading
+    status: live
+    origin: plugin
+    modifier: dc-neon-sign
+    description: "Draw a heading's word as a neon sign, in tubes, at the heading's own size."
+    snippet: neon-sign-heading
+    recipe: "@section panel .dc-neon-azure / ## Hacking {.dc-pu-bill .dc-neon-sign} … @end-section"
+    emits: "h2.dc-neon-sign > span.dc-neon-text (the words, unseen) + span.dc-neon-glow > svg.dc-neon-word"
+    css: styles/components/neon.css
+    tokens: [--dc-neon, --dc-neon-core, --dc-neon-ring-1, --dc-neon-ring-2]
+    notes: "Best on a heading that is already an ink plate (a paste-up bill). The word is the sign font's capitals (A to Z; other characters are left out of the drawing), one letter a dead tube. The heading's text stays in the page for search and links, and the heading keeps its height. The hue is a .dc-neon-<hue> class on the section."
+
   - name: card-lightbox
     status: live
     origin: plugin

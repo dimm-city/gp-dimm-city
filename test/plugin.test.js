@@ -2007,6 +2007,12 @@ describe("neon signs", () => {
     expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
   });
 
+  test("`{.dc-neon-sign}` draws a heading's word in tubes and keeps its text, unseen, in the heading", () => {
+    const { html } = renderGp(doc("@section panel .dc-neon-azure", "", "## Hacking {.dc-neon-sign}", "", "Text.", "", "@end-section", ""));
+    expect(html).toMatch(/<h2[^>]*class="dc-neon-sign"[^>]*><span class="dc-neon-text">Hacking<\/span><span class="dc-neon-glow" aria-hidden="true"><svg class="dc-neon-word"/);
+    expect(signs(html)).toBe(0); // no plate of its own: the heading is the plate
+  });
+
   test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
     expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
     expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
