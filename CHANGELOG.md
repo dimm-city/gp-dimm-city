@@ -46,9 +46,11 @@ and the styles say where a reader is and what they are reading.
   maps to the caps. `font-family: 'Creaturepunk'` (declared in
   `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's own C, U
   and K (tall C, short-stemmed U, long-legged K). Licensed CC BY 4.0
-  (`fonts/creaturepunk/LICENSE.txt`). Demo page:
-  `docs/creaturepunk-font-demo.html`; source and build scripts:
-  `source-art/creaturepunk/`.
+  (`fonts/creaturepunk/LICENSE.txt`). `Creaturepunk.ttf` is the source: edit
+  it in `docs/creaturepunk-font-demo.html`, which, served locally, loads the
+  file, lets you drag outline points and set side bearings with the whole
+  specimen redrawing live, and downloads the edited `.ttf`. The lettering it
+  was traced from is `source-art/creaturepunk/creaturepunk-logo.png`.
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
   catalog in one colour and one chip label per kind of gear, so firearms,

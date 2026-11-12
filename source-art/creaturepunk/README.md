@@ -1,18 +1,17 @@
-# Creaturepunk font source
+# Creaturepunk source lettering
 
-`creaturepunk-logo.png` is the lettering the font is traced from. C, R, E, A,
-T, U, P, N and K are traced from it; every other glyph is assembled in
-`defs.py` from pieces of those letters, so the cut edges stay hand-made.
+`creaturepunk-logo.png` is the lettering the Creaturepunk font was traced
+from. The font file, `fonts/creaturepunk/Creaturepunk.ttf`, is the source
+now: edit it in `docs/creaturepunk-font-demo.html`.
 
-Rebuild the font (writes `fonts/creaturepunk/Creaturepunk.ttf` and `.woff2`)
-and the demo page (`docs/creaturepunk-font-demo.html`):
+1. Serve the repo root with any static server (for example `bunx serve .`)
+   and open `/docs/creaturepunk-font-demo.html`. The page loads the font from
+   `fonts/creaturepunk/`. Opened straight from disk, it asks you to open the
+   `.ttf` instead.
+2. Under *Edit glyphs*, pick a glyph, drag its points and set its side
+   bearings. The whole page redraws in the edited font.
+3. Click *Download Creaturepunk.ttf* and replace
+   `fonts/creaturepunk/Creaturepunk.ttf` with the download.
 
-```sh
-pip install fonttools brotli numpy pillow scipy potracer
-python3 extract.py
-python3 build.py
-python3 mkdemo.py ../../docs/creaturepunk-font-demo.html
-```
-
-`python3 preview.py out.preview.png A,B,C` draws glyphs on the design grid
-(units: cap height 44, baseline 0, slant removed) for checking edits.
+The editor changes outlines and spacing only; names, licence, swash features
+and line metrics are copied unchanged.
