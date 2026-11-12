@@ -127,4 +127,7 @@
   src: url("../fonts/creaturepunk/Creaturepunk.woff2") format('woff2'),
        url("../fonts/creaturepunk/Creaturepunk.ttf") format('truetype');
   font-weight: normal; font-style: normal; font-display: swap;
+  /* Its caps are 0.75em, Lixdu's the full em: drawn 10% larger, every
+     Creaturepunk heading gains size at the same font-size and line box. */
+  size-adjust: 110%;
 }

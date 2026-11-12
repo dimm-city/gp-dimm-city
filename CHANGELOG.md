@@ -124,6 +124,9 @@ and the styles say where a reader is and what they are reading.
   `--fs-h2-bar` 20pt, `--fs-h3` 14pt, `--fs-h4` 12pt. Stat numbers
   (`--fs-stat`) and contents entries, spray titles and stickers (`--fs-lead`)
   keep their 16pt. A paste-up tag wraps with `text-wrap: pretty`.
+  Creaturepunk is drawn 10% larger (`size-adjust: 110%` on its
+  `@font-face`), so its short caps hold their own beside Lixdu at the same
+  font size and line box.
 - **Design pass.** Neon sign plates have a grey bezel; a lit panel's rail and
   details take its hue; lit tags and PROGRAM strips keep 1.5pt of ink between
   text and tube (the PROGRAM plate is navy, so it does not read as the Dream
