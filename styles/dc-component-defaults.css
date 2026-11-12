@@ -485,6 +485,11 @@
   --dc-bolt-face:            var(--paper-stain);  /* the bolt's face, either side of the slot */
   --dc-bolt-size:            10px;                /* the bolt's diameter */
 
+  /* A lit piece's tube where nothing sets one (neon.css): orange */
+  --dc-neon:                 var(--neon-orange);
+  --dc-neon-core:            var(--neon-orange-core);
+  --dc-neon-ring-1:          var(--neon-orange-ring-1);
+  --dc-neon-ring-2:          var(--neon-orange-ring-2);
   /* .dc-neon public API (components/neon.css): where a sign hangs sets these; its tube colours (--dc-neon, -core, -ring-1, -ring-2) come from the chapter word or specialty */
   --dc-neon-margin:          0;                   /* the plate's margin in the flow */
   --dc-neon-height:          auto;                /* the plate's height (border box) */

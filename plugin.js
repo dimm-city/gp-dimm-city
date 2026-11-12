@@ -1851,7 +1851,10 @@ function dcCards(state) {
     for (let i = 0; i < content.length; i++) {
       const tok = content[i];
       if (tok.type === 'heading_open' && tok.tag === 'h4' && !headed) {
-        out.push(html('<div class="dc-card-heading">' + renderInlineChildren(content[i + 1], md) + '</div>\n'));
+        let title = renderInlineChildren(content[i + 1], md);
+        // A lightbox's title that ends in a number ("BODY TAX: 2") lights it as a value.
+        if (hasClass(run[0], 'dc-card-lightbox')) title = title.replace(/(\d+)\s*$/, '<span class="dc-lit-value">$1</span>');
+        out.push(html('<div class="dc-card-heading">' + title + '</div>\n'));
         headed = true;
         i += 2; // skip inline + heading_close
         continue;
@@ -2153,7 +2156,7 @@ export const markers = {
   // `@outcome` and `@procedure` have no `autoCloseAt`: one left open at the end
   // gets core's `declared_marker_eof_close` warning, because what follows is read
   // as its rows or steps. `@procedure` has no class; its rule hides the wrapper.
-  card: wrapper('dc-card'),
+  card: wrapper('dc-card', { variants: { lightbox: 'dc-card-lightbox' } }),
   outcome: { class: 'dc-outcomes', variants: { flush: 'dc-flush' }, validate: validateOutcome },
   procedure: { validate: validateProcedure },
   'roll-table': wrapper('dc-roll-table', { validate: validateRollTable }),
@@ -2216,6 +2219,8 @@ export const markers = {
       lore: 'dc-section-panel dc-section-lore',
       dm: 'dc-section-panel dc-section-dm',
       choose: 'dc-section-panel dc-section-choose',
+      // A lore sheet for a place: its tag is lit (styles/components/neon.css).
+      district: 'dc-section-panel dc-section-lore dc-section-district dc-lit',
       catalog: 'dc-section-panel dc-catalog',
       weapons: 'dc-section-panel dc-catalog dc-section-weapons',
       explosives: 'dc-section-panel dc-catalog dc-section-explosives',
