@@ -475,25 +475,6 @@
   z-index: -1;
 }
 
-/* The location's stamp is lit (neon.css) in azure, the blue of its own frame
-   (yellow on ink is the warning's). After the stamp rule above, whose ring and
-   outline it replaces. */
-.dc-location-callout {
-  --dc-neon: var(--neon-azure); --dc-neon-core: var(--neon-azure-core);
-  --dc-neon-ring-1: var(--neon-azure-ring-1); --dc-neon-ring-2: var(--neon-azure-ring-2);
-}
-.dc-location-callout .dc-alert-label {
-  background: var(--ink);
-  color: var(--dc-neon-core);
-  /* The tube (--dc-lit-line's tube | core | tube) starts in the stamp's 2px
-     ring, and its ink edge hangs 1.5pt outside as ink overflow. Three inset
-     rings inside the 1px padding left the caps 0.3px of room, so they ran into
-     the inner tube; this way they clear it by 2px, and the box keeps its size. */
-  border-color: var(--dc-neon);
-  outline: 0;
-  box-shadow: inset 0 0 0 1.5pt var(--dc-neon-core), inset 0 0 0 3pt var(--dc-neon), 0 0 0 1.5pt var(--ink);
-}
-
 /* Space under a callout, as over it: text that follows one sits a gap below it,
    not against its foot. */
 :is(.dc-alert, .gp-alert):has(+ :is(p, ul, ol, h3, h4, .gp-columns, [class*="gp-columns-"])) {
