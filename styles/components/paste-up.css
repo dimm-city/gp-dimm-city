@@ -37,11 +37,11 @@ p:has(+ .dc-kicker) {
   padding-left: calc(var(--dc-section-pad-left) - var(--dc-section-rail));
   padding-right: var(--dc-section-pad-right);
 }
-/* Across a rung's plate, inside its hairline ring, with room inside the rule and frame. */
+/* Across a rung's plate, inside its hairline ring, a rung's own tighter gap
+   above the rule, with room above the frame. */
 .dc-rung-body > .dc-kicker {
-  margin-top: var(--space-lg);
-  padding-top: 10pt;
-  padding-bottom: 5pt;
+  margin-top: var(--space-sm);
+  padding-bottom: 3pt;
   margin-left: -8px;
   margin-right: -8px;
   padding-left: 8px;
