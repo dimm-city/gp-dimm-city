@@ -59,6 +59,24 @@ and the styles say where a reader is and what they are reading.
   An opener's sign takes no flow height; nothing else on the page moves.
   `styles/components/neon.css`; the plan and soft proof are
   `docs/plans/2026-11-11-neon-signage.md` and `proofs/neon/`.
+- **Lit plates and lightboxes.** Neon for words that must stay live text: an
+  ink plate with the text in the tube's pale core and the tube drawn round its
+  edge as stepped, opaque inset rings (no blur, prints as vector). Each takes
+  a `.dc-neon-<hue>` class on its marker line (orange, cyan, yellow, pink,
+  fungi, civic, chrome, azure, or `off`, a dead tube in grey glass). None
+  changes an element's height.
+  - **`@card lightbox`**: a white face in a lit frame (ink on both sides of
+    the tube), the title a lit plate, and a number that ends the title
+    (`#### BODY TAX: 2`) lit in a window at the plate's right end. Snippet
+    `card-lightbox`.
+  - **`@section district`**: a place's lore sheet with a lit name tag; a
+    title word wider than the tag widens the plate. Snippet
+    `section-district`.
+  - **Programs** have a lit azure PROGRAM strip.
+  - **The contents**: a chapter line that ends with its chapter's word
+    (`{.dc-toc-rules}`) has its number lit in that chapter's tube colour.
+  - **Location and visit callouts**: their stamps are lit, location in azure
+    and visit in civic green.
 - **Grimy streets, one to contrast each wall.** The ground strip under a wall
   page is one of three streets: setts (`images/ground.png`, also under the
   plain brick), bonded flagstones (`ground-flags.png`) or cracked asphalt

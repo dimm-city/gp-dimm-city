@@ -469,11 +469,12 @@
   z-index: -1;
 }
 
-/* The location's stamp is lit (neon.css): sodium yellow, a street light. After
-   the stamp rule above, whose ring and outline it replaces. */
+/* The location's stamp is lit (neon.css) in azure, the blue of its own frame
+   (yellow on ink is the warning's). After the stamp rule above, whose ring and
+   outline it replaces. */
 .dc-location-callout {
-  --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core);
-  --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2);
+  --dc-neon: var(--neon-azure); --dc-neon-core: var(--neon-azure-core);
+  --dc-neon-ring-1: var(--neon-azure-ring-1); --dc-neon-ring-2: var(--neon-azure-ring-2);
 }
 .dc-location-callout .dc-alert-label {
   background: var(--ink);
