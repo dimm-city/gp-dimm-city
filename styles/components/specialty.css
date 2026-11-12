@@ -152,15 +152,16 @@
   border-bottom: 2px solid var(--dc-specialty-intro-h3-color);
 }
 
-/* The intro's reading text is the 10pt floor on 1.5 leading; lists take the
+/* The intro's reading text is 11pt on compact leading (1.35, so it keeps to
+   its page); lists take the
    book's list style (dc-core.css: padding and hung marker), set at the same
    size. A block straight under a band or heading adds no margin of its own, so
    every such gap is exactly the heading's 0.3rem. */
 .dc-specialty-intro>p,
 .dc-specialty-intro>:is(ul, ol) {
   margin-block: 0.3rem;
-  font-size: var(--fs-floor);
-  line-height: var(--lh-normal);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-tight);
 }
 
 .dc-specialty-intro>:is(h2, h3, h4)+:is(p, ul, ol) {

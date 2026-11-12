@@ -462,7 +462,7 @@
 .dc-outcome-text {
   padding: 8px 14px;
   font-family: var(--font-body);
-  font-size: var(--fs-floor);
+  font-size: var(--fs-body-sm);
   line-height: 1.4;
   color: var(--ink);
   align-self: center;
@@ -652,7 +652,7 @@
 
 /* Range column: mono, centred, ruled off from the results. */
 .dc-roll-table td {
-  font-size: var(--fs-floor);
+  font-size: var(--fs-body-sm);
 }
 .dc-roll-table tr:last-child td:first-child {
   padding-left: 18px;

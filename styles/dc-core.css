@@ -272,7 +272,7 @@ li > :is(ul, ol) { margin: var(--space-xs) 0 0; }
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--fs-floor);
+  font-size: var(--fs-body-sm);   /* the cells; a header row keeps its own 10pt label size */
   margin: 0.1in 0;
   break-inside: avoid;
 }
