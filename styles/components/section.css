@@ -451,7 +451,7 @@ h3 + .dc-section-panel {
     inset -2px -2px 0 0 var(--dc-section-recess-lip);
   --dc-section-lift: transparent;
 }
-:is(.dc-section-lore, .dc-section-dm) > :is(h2, h3):first-child {
+:is(.dc-section-lore) > :is(h2, h3):first-child {
   box-shadow:
     inset 0 var(--dc-section-recess-depth) 0 0 var(--dc-section-recess-shade),
     inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press);
@@ -510,88 +510,84 @@ h3 + .dc-section-panel {
 }
 
 /* ── dm — behind the screen ───────────────────────────────────────────────────
-   A classified file folder: a tab rising from the top edge (it carries the words
-   "Dream Master", cyan on ink) and one opposite corner cut, bottom right. Cyan on
-   ink is the Dream Master's colour pair, used nowhere else: the tab and bar are
-   ink with a cyan rule, the rail cyan, the body white. With or without a
-   heading the tab is drawn, so the kind never goes unmarked. The accent is cyan
-   (rail, sub-heading ticks); the bar keeps the ink.
-   The tab lives INSIDE the box: the box's top 15pt (`--dc-section-top`, added to
-   the padding) is the folder's tab band; the tab is its own small layer there and
-   the surface starts below it, so right of the tab the wall shows. Nothing hangs
-   above the box and nothing is notched by clip-path, so a page break can never
-   strand the tab, leave its text without its ink fill, or notch a continuation:
-   the first fragment holds the tab and the heading under it (the heading keeps
-   with what follows) and a continuation is plain paper. Padding right and bottom
-   are the cut + 2pt. */
+   The Dream Master's booth: a lightbox, not paper pasted on the wall. A white
+   face in an ink channel with the cyan tube run round it (neon.css,
+   `--dc-lit-frame`), and one ink head across the top: the DREAM MASTER sign
+   (its D and M lit; an image, scripts/neon-glyphs.py, since the band is the
+   box's own layer and holds no markup) and, under it, the sheet's title in the
+   tube's pale core, closed by a lit line. Cyan on ink is the Dream Master's
+   pair, used nowhere else. Square and flat: the one sheet in a chapter that
+   glows. The head is in the box's own top band, so a page break never strands
+   it; a continuation fragment is the plain lightbox. */
 .dc-section-dm {
+  --dc-neon: var(--neon-cyan); --dc-neon-core: var(--neon-cyan-core);
+  --dc-neon-ring-1: var(--neon-cyan-ring-1); --dc-neon-ring-2: var(--neon-cyan-ring-2);
   --dc-section-accent: var(--brand-cyan);
-  --dc-section-top: 15pt;
+  --dc-section-top: 30pt;   /* the sign's band */
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 0px;
   --dc-section-cut-bl: 0px;
-  --dc-section-cut-br: 14px;
-  --dc-section-rail: 6px;
-  --dc-section-pad-right: 14pt;
-  --dc-section-pad-bottom: 14pt;
-  --dc-section-tab: none;
-  --dc-section-bar-mix: 0%;
-  --dc-section-bar-tone: var(--ink-dark);
-  --dc-section-bar-rule: 3pt solid var(--brand-cyan);
-  --dc-section-bar-rule-sub: 3pt solid var(--brand-cyan);
+  --dc-section-cut-br: 0px;
+  --dc-section-rail: 0px;
+  --dc-section-edge: 0px;
+  --dc-section-shadow: none;
+  --dc-section-pad-top: 7.5pt;                                /* the frame */
+  --dc-section-pad-right: calc(7.5pt + var(--space-lg));
+  --dc-section-pad-bottom: calc(7.5pt + var(--space-md));
+  --dc-section-pad-left: calc(7.5pt + var(--space-lg));
   --dc-accent-ink: var(--hud-blue-dark);
 }
 .dc-section-dm :is(.dc-section-panel, .dc-section-flat) {
-  --dc-section-top: 0px; /* the tab band is the folder's, not its nested sections' */
+  --dc-section-top: 0px; /* the band is the booth's, not its nested sections' */
 }
-/* The tab band is the first block's margin, not padding: the padding is cloned
-   onto a continuation (`box-decoration-break: clone`), the margin is not, so a
-   continuation opens --dc-section-pad-top under its edge and no tab band. The
-   heading bar's own negative margin gives the pad back. */
+/* The face and its frame, and the hard shadow the booth stands off the wall by. */
+.dc-section-dm::before {
+  background: var(--paper-cream);
+  box-shadow: var(--dc-lit-frame), 3pt 3pt 0 var(--ink-dark);
+  clip-path: none;
+}
+/* The sign's band, inside the frame. Its margin, not padding, so a continuation
+   (padding is cloned onto it, `box-decoration-break: clone`) has no band. */
 .dc-section-dm > :first-child {
   margin-top: var(--dc-section-top);
 }
-.dc-section-dm > :is(h4, .dc-h4):first-child {
-  margin-top: calc(var(--dc-section-top) + 0.05in); /* the heading's own 0.05in */
-}
-.dc-section-dm > :is(h2, h3):first-child {
-  margin-top: calc(var(--dc-section-top) - var(--dc-section-pad-top));
-}
-/* The surface starts below the tab band and keeps only the bottom-right cut. */
-.dc-section-dm::before {
-  top: var(--dc-section-top);
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% + var(--dc-section-edge) - var(--dc-section-cut-br)),
-    calc(100% - var(--dc-section-cut-br)) calc(100% + var(--dc-section-edge)),
-    0 calc(100% + var(--dc-section-edge))
-  );
-}
-/* The tab: a small ink layer in the box's own top band (it never spans a page
-   break, so it cannot be left without its fill, and the surface under it is not
-   notched, so a continuation fragment keeps its paper). */
 .dc-section-dm::after {
-  content: "Dream Master";
-  top: 0;
-  left: 0;
-  right: auto;
+  content: "";
+  top: 7.5pt;
+  left: 7.5pt;
+  right: 7.5pt;
   bottom: auto;
-  width: calc(1.6in + 10px);
   height: var(--dc-section-top);
-  background: var(--ink-dark);
+  box-sizing: border-box;
+  padding: 3pt 8pt;
+  background: var(--ink-dark) url("../../images/neon-dream-master.svg") no-repeat;
+  background-origin: content-box;
+  background-position: left center;
+  background-size: contain;
   box-shadow: none;
-  clip-path: polygon(0 6px, 6px 0, 1.6in 0, 100% 100%, 0 100%);
+  clip-path: none;
   z-index: -1;
-  padding: 2pt 0 0 14px;
-  color: var(--brand-cyan);
-  font-family: var(--font-mono);
-  font-size: var(--fs-floor);
-  font-weight: 700;
-  letter-spacing: var(--ls-display);
-  line-height: 12pt;
-  text-transform: uppercase;
-  white-space: nowrap;
+}
+/* The title carries on the ink head under the sign, in the tube's pale core,
+   and a lit line closes the head off from the face. */
+.dc-section-dm > :is(h2, h3):first-child {
+  margin: var(--dc-section-top) calc(7.5pt - var(--dc-section-pad-right)) var(--space-md) calc(7.5pt - var(--dc-section-pad-left));
+  padding: 0 var(--space-lg) calc(var(--space-sm) + 4.5pt);
+  background: var(--ink-dark);
+  color: var(--dc-neon-core);
+  clip-path: none;
+  border: 0;
+  box-shadow: inset 0 -1.5pt 0 var(--dc-neon), inset 0 -3pt 0 var(--dc-neon-core), inset 0 -4.5pt 0 var(--dc-neon);
+}
+.dc-section-dm > :is(h2, h3):first-child::after {
+  content: none;
+}
+/* With no title, the lit line closes the sign's band itself. */
+.dc-section-dm > :first-child:not(h2, h3) {
+  margin-top: calc(var(--dc-section-top) + var(--space-md));
+}
+.dc-section-dm:not(:has(> :is(h2, h3):first-child))::after {
+  box-shadow: inset 0 -1.5pt 0 var(--dc-neon), inset 0 -3pt 0 var(--dc-neon-core), inset 0 -4.5pt 0 var(--dc-neon);
 }
 
 /* ── choose — a form the player fills in ──────────────────────────────────────

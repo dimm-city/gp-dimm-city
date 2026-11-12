@@ -1152,7 +1152,6 @@ function neonSign(word) {
 function dcNeonSigns(state) {
   const t = state.tokens;
   let chapterWord = null;
-  const components = []; // the declared components around the token: their kind, and a specialty's name
   for (let i = 0; i < t.length; i++) {
     const tok = t[i];
     if (tok.type === 'layout_chapter_open') {
@@ -1162,16 +1161,6 @@ function dcNeonSigns(state) {
     } else if (tok.type === 'layout_page_open' && hasClass(tok, 'dc-page-chapter-start') && NEON_CHAPTER_WORDS[chapterWord] &&
                t[i + 1]?.type === 'heading_open' && t[i + 1].tag === 'h1') {
       t.splice(++i, 0, makeToken('html_block', neonSign(NEON_CHAPTER_WORDS[chapterWord])));
-    } else if (tok.type === 'layout_component_open') {
-      const kind = tok.meta?.kind;
-      const specialty = kind === 'specialty' ? classesOf(tok).find((c) => SPECIALTIES.includes(c)) ?? null : null;
-      components.push({ kind, specialty });
-      if (kind === 'specialty-art') {
-        const name = components.findLast((c) => c.kind === 'specialty')?.specialty;
-        if (name) t.splice(++i, 0, makeToken('html_block', neonSign(name.toUpperCase())));
-      }
-    } else if (tok.type === 'layout_component_close') {
-      components.pop();
     } else if (tok.type === 'heading_open' && hasClass(tok, 'dc-neon-sign')) {
       // `{.dc-neon-sign}`: the heading's word drawn in tubes; its text stays, unseen, for search and links.
       const inline = t[i + 1];

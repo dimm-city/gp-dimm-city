@@ -47,3 +47,36 @@ src = plugin.read_text()
 i, j = src.index(BEGIN), src.index(END) + len(END)
 plugin.write_text(src[:i] + block + src[j:])
 print("wrote NEON_FONT into plugin.js:", upm, cap, len(block), "bytes")
+
+# The Dream Master's tab (styles/components/section.css, `.dc-section-dm::after`):
+# the same sign as plugin.js's neonSign("DREAM MASTER"), lit only at the D and
+# the M, as an SVG image the tab draws. A tab is CSS chrome with no element of
+# its own, so it cannot hold the sign's markup. The colours are the press values
+# of the cyan ladder and the dead tube, read from styles/dc-palette.css.
+import re
+
+palette = (ROOT / "styles/dc-palette.css").read_text()
+def colour(name):
+    return re.search(rf"--{name}:\s*(#[0-9a-fA-F]{{6}})", palette).group(1)
+
+WORD, TRACK, LIT = "DREAM MASTER", 160, {0, 6}   # the D and the M
+x, lit, dead = 0, [], []
+for i, ch in enumerate(WORD):
+    g = glyphs[cmap[ord(ch)]]
+    if ch != " ":
+        pen = SVGPathPen(glyphs, ntos=lambda v: "%d" % round(v))
+        g.draw(TransformPen(pen, (1, 0, 0, -1, x, 0)))
+        (lit if i in LIT else dead).append(pen.getCommands())
+    x += g.width + TRACK
+width, pad = x - TRACK, 225                           # the outer ring's half-stroke
+def layer(fill, stroke, w, paths):
+    return f'<path fill="{fill}" stroke="{stroke}" stroke-width="{w}" stroke-linejoin="round" d="{" ".join(paths)}"/>'
+svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{-pad} {-cap - pad} {width + 2 * pad} {cap + 2 * pad}">'
+       + layer(colour("neon-cyan-ring-2"), colour("neon-cyan-ring-2"), 450, lit)
+       + layer(colour("neon-cyan-ring-1"), colour("neon-cyan-ring-1"), 300, lit)
+       + layer(colour("neon-cyan"), colour("neon-cyan"), 150, lit)
+       + layer(colour("neon-cyan-core"), "none", 0, lit)
+       + layer(colour("neon-dead-core"), colour("neon-dead"), 150, dead)
+       + "</svg>\n")
+(ROOT / "images/neon-dream-master.svg").write_text(svg)
+print("wrote images/neon-dream-master.svg:", width + 2 * pad, "x", cap + 2 * pad, "units")

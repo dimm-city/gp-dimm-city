@@ -2023,18 +2023,9 @@ describe("neon signs", () => {
     expect(signs(html)).toBe(1);
   });
 
-  test("a specialty's art page hangs a sign spelling the specialty", () => {
+  test("a specialty's art page hangs no sign", () => {
     const { html } = renderGp(doc("@specialty augmerc", "", "@specialty-art", "", "x", "", "@end-specialty-art", "", "@end-specialty", ""));
-    expect(signs(html)).toBe(1);
-  });
-
-  test("art outside its specialty gets no sign, and the next specialty spells its own name", () => {
-    const art = doc("@specialty-art", "", "x", "", "@end-specialty-art", "");
-    const first = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", art)).html;
-    expect(signs(first)).toBe(1);
-    const both = renderGp(doc("@specialty proxy", "", art, "@end-specialty", "", "@specialty etherlock", "", art, "@end-specialty", ""));
-    expect(signs(both.html)).toBe(2);
-    expect(new Set(widths(both.html)).size).toBe(2);
+    expect(signs(html)).toBe(0);
   });
 });
 

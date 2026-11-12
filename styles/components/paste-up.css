@@ -95,7 +95,7 @@ p:has(+ .dc-kicker) {
    (sides and foot stay open for shadows and stickers). The sheet rules below
    nest in this one selector; a creature, the walkthrough and the choose forms
    keep their own look. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) {
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose, .dc-section-dm) {
   --dc-section-break-inside: avoid;
   clip-path: inset(0 -1in -1in -1in);
   --dc-section-edge: 0px;
