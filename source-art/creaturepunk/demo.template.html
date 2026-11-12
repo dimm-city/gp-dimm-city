@@ -106,20 +106,20 @@ pre { background: var(--surface); border: 1px solid var(--line); border-radius: 
       <input id="t-text" type="text" value="Dimm City Underground" aria-label="Sample text">
       <label>Size <input id="t-size" type="range" min="24" max="200" value="96"></label>
       <label><input id="t-logo" type="checkbox" checked> Logo outline</label>
-      <label><input id="t-swsh" type="checkbox"> Swash C &amp; K</label>
+      <label><input id="t-swsh" type="checkbox"> Logo C, U &amp; K</label>
     </div>
     <div id="tester" class="tester cp logo-style wall on-wall" contenteditable="true" spellcheck="false">Dimm City Underground</div>
   </div>
 
   <h2>Character set</h2>
-  <p>Caps only: lowercase keys map to the same letters. C, R, E, A, T, U, P, N and K are traced from the source; every other glyph is built from pieces of those.</p>
+  <p>Caps only: lowercase keys map to the same letters. R, E, A, T, P, N and K are traced from the source, and C and U are traced then reworked so they read in running text; every other glyph is built from pieces of those.</p>
   <div class="grid" id="grid"></div>
 
   <h2>Swash alternates</h2>
-  <p>The logo's tall C and long-legged K are kept as alternates. Turn them on with <code>font-feature-settings: "swsh"</code> (or <code>"ss01"</code>).</p>
+  <p>The logo's own C, U and K (the tall C, the short-stemmed U, the long-legged K) are kept as alternates. Turn them on with <code>font-feature-settings: "swsh"</code> (or <code>"ss01"</code>).</p>
   <div class="panel" style="display:flex;flex-wrap:wrap;gap:24px 48px;align-items:baseline">
-    <div><small style="color:var(--muted)">default</small><div class="cp" style="font-size:88px;line-height:1.3">CK</div></div>
-    <div><small style="color:var(--muted)">swsh</small><div class="cp swsh" style="font-size:88px;line-height:1.3">CK</div></div>
+    <div><small style="color:var(--muted)">default</small><div class="cp" style="font-size:88px;line-height:1.3">CUK</div></div>
+    <div><small style="color:var(--muted)">swsh</small><div class="cp swsh" style="font-size:88px;line-height:1.3">CUK</div></div>
   </div>
 
   <h2>Sizes</h2>
@@ -133,14 +133,14 @@ pre { background: var(--surface); border: 1px solid var(--line); border-radius: 
 }
 .logo {
   font-family: 'Creaturepunk';
-  font-feature-settings: "swsh";        /* tall C, long K */
+  font-feature-settings: "swsh";        /* the logo's C, U and K */
   color: #ffc700;
   -webkit-text-stroke: .1em #111;       /* the black outline */
   paint-order: stroke fill;             /* keep the stroke behind the fill */
 }</pre>
 </main>
 <script>
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?\'"-_/\\()[]<>+=*#%|$&';
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?\'"-_/\\()[]<>+=*#%|$&…';
 const grid = document.getElementById('grid');
 for (const ch of chars) {
   const c = document.createElement('div'); c.className = 'cell';

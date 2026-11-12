@@ -19,7 +19,7 @@ punct={'space':[0x20,0xA0],'period':[0x2E],'comma':[0x2C],'colon':[0x3A],'semico
  'question':[0x3F],'hyphen':[0x2D,0x2010,0x2011,0x2012,0x2013,0x2014],'underscore':[0x5F],'quotesingle':[0x27,0x2018,0x2019],
  'quotedbl':[0x22,0x201C,0x201D],'slash':[0x2F],'backslash':[0x5C],'parenleft':[0x28],'parenright':[0x29],
  'bracketleft':[0x5B],'bracketright':[0x5D],'less':[0x3C],'greater':[0x3E],'plus':[0x2B],'equal':[0x3D],
- 'asterisk':[0x2A],'numbersign':[0x23],'percent':[0x25],'bar':[0x7C],'dollar':[0x24],'ampersand':[0x26]}
+ 'asterisk':[0x2A],'numbersign':[0x23],'percent':[0x25],'bar':[0x7C],'dollar':[0x24],'ampersand':[0x26],'ellipsis':[0x2026]}
 for n,cps in punct.items():
     for cp in cps: CMAP[cp]=n
 
@@ -49,7 +49,7 @@ def draw(contours,pen,dx):
             else: pen.curveTo(t(s[1]),t(s[2]),t(s[3]))
         pen.closePath()
 
-order=['.notdef']+[c for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']+digits+list(punct)+['C.swsh','K.swsh']
+order=['.notdef']+[c for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']+digits+list(punct)+['C.swsh','U.swsh','K.swsh']
 glyphs={}; metrics={}
 t0=time.time()
 for n in order:
@@ -95,9 +95,9 @@ fb.setupHead(unitsPerEm=UPM,created=timestampNow(),modified=timestampNow())
 addOpenTypeFeaturesFromString(fb.font,'''
 languagesystem DFLT dflt;
 languagesystem latn dflt;
-@plain=[C K]; @swash=[C.swsh K.swsh];
+@plain=[C U K]; @swash=[C.swsh U.swsh K.swsh];
 feature swsh { sub @plain by @swash; } swsh;
-feature ss01 { featureNames { name "Logo swashes: tall C, long-legged K"; }; sub @plain by @swash; } ss01;
+feature ss01 { featureNames { name "Logo forms: tall C, short-stemmed U, long-legged K"; }; sub @plain by @swash; } ss01;
 ''')
 out='../../fonts/creaturepunk/'
 fb.save(out+'Creaturepunk.ttf')

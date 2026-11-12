@@ -1,6 +1,13 @@
 from glyphs import *
 E,A,R,T,U,N,Pp,C,K=(src(n) for n in ['E','A','R','T','U','N','P','C','K'])
-G['C']=C; G['R']=R; G['E']=E; G['A']=A; G['T']=T; G['U']=U; G['P']=Pp; G['N']=N
+G['R']=R; G['E']=E; G['A']=A; G['T']=T; G['P']=Pp; G['N']=N
+# C: the logo's C is a diagonal and reads as '<' in running text, so the default
+# C is E with its middle arm cut out (stem, top arm, bottom arm); the logo C is C.swsh.
+G['C']=E & ~P([(13.2,18.2),(70,20.2),(70,33.8),(13.2,33.6)],rough=0.35,soft=0.2)
+# U: the logo's U has a short left stem and reads as 'J'; the default U carries the
+# left stem up to cap height. The logo U is U.swsh.
+G['U']=U | P([(0.2,18),(8.6,18),(9.6,44.2),(5,44.6),(0.9,43.8)],rough=0.4)
+G['U.swsh']=U
 # swash forms straight from the logo: the tall C and the long-legged K
 G['C.swsh']=canon('C',k=1.1,base=77); G['K.swsh']=K
 # K: logo K with the arm spike and the leg tail cut back to cap-height proportions
@@ -38,14 +45,15 @@ G['D']=d & ~P([(30,50),(60,50),(60,14)],rough=0.4,soft=0) & ~P([(30,-6),(60,-6),
 # Q: O + K's swept leg as the tail
 tail=clip(G['K'],[(21,-15),(70,-15),(70,20),(21,17)])
 G['Q']=G['O'] | sh(tail,-2,-11)
-# G: C with a spur rising off the bottom bar
-G['G']=C | P([(41,8),(51.5,8),(52,25),(31,24.5),(31.5,17),(41.5,17)],rough=0.4)
+# G: the blocky C with a spur rising off its bottom arm and a short bar turned in
+G['G']=G['C'] | P([(38,9),(47,9),(47.5,30.5),(29,30),(29.5,23),(38.5,23.3)],rough=0.4)
 # V: blocky V with N-style spiked tips and a deep top notch
 vb=P([(0,46.5),(4,43),(17,42),(23,42),(36,43),(41,47),(31,-1),(12,-1.5)],rough=0.45)
 G['V']=vb & ~P([(12.5,49),(28.5,49),(21,12)],rough=0.4,soft=0.3)
-# M: N's left stem + diagonal, mirrored about the middle
-nl2=clip(N,[(-5,-15),(21,-15),(21,60),(-5,60)],rough=0.3)
-G['M']=nl2 | flip(nl2,21)
+# M: two stems with N's spiked tips and a deep V between them, open below the V
+# (a shallow notch over a filled middle read as 'H').
+m=P([(0,46.5),(4,43),(11.5,42.5),(21,27),(30.5,42.5),(38,43),(42,46.5),(41.5,-1),(31,-1),(31,23.5),(21,9),(11,23.5),(11,-1),(0.5,-1.5)],rough=0.45)
+G['M']=m
 # W: two Vs overlapped
 G['W']=G['V'] | sh(G['V'],23,0)
 # Y: top of V on R's stem
@@ -100,4 +108,5 @@ G['bar']=clip(R,[(-5,-15),(11.2,-15),(11.4,50),(-5,50)],rough=0.25) & ~P([(-5,-1
 G['dollar']=G['S'] | P([(22,-7),(29,-7),(29,51),(22,51)],rough=0.35)
 amp=scale(G['B'],0.8,0.8,0,0)
 G['ampersand']=amp | sh(tail,8,-4)
+G['ellipsis']=dot | sh(dot,15,0) | sh(dot,30,0)
 G['space']=np.zeros_like(E)

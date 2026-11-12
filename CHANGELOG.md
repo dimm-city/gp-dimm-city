@@ -44,8 +44,8 @@ and the styles say where a reader is and what they are reading.
   CREATUREPUNK lettering (C, R, E, A, T, U, P, N, K), with the rest of A-Z,
   0-9 and common punctuation built from pieces of those letters; lowercase
   maps to the caps. `font-family: 'Creaturepunk'` (declared in
-  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's tall C and
-  long-legged K. Not assigned to any token yet. Licensed CC BY 4.0
+  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's own C, U
+  and K (tall C, short-stemmed U, long-legged K). Licensed CC BY 4.0
   (`fonts/creaturepunk/LICENSE.txt`). Demo page:
   `docs/creaturepunk-font-demo.html`; source and build scripts:
   `source-art/creaturepunk/`.
@@ -191,6 +191,15 @@ and the styles say where a reader is and what they are reading.
   - The catalog has one entry per piece, and design guide chapter 6 a specimen.
 
 ### Fixed
+
+- **Creaturepunk letters that read as other characters, from print review.**
+  C read as "<": it is now a blocky C (stem, top and bottom arms). U read as
+  "J": its left stem now runs to cap height. G, built on the old C, is now
+  the blocky C with a spur and an inward bar. M read as "H": its V now drops
+  to a third of the height with the middle open below it. "…" fell back to
+  another font: the font now has its own ellipsis. The logo's C and U stay
+  as `swsh` alternates. C, G, U and M change width, so a heading set with them
+  can rewrap.
 
 - **A paste-up tag widens to its longest word.** A word wider than the tag's
   88% cap (QUICKSTART) ran past the tag in cream on the white paper.

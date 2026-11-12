@@ -118,10 +118,11 @@
   src: url("../fonts/tomorrow/tomorrow-700.ttf") format('truetype');
   font-weight: normal; font-style: normal; font-display: swap;
   unicode-range: U+2018-2019, U+201C-201D, U+2013-2014, U+2026;
-}/* Creaturepunk: graffiti display caps traced from the CREATUREPUNK lettering
+}
+/* Creaturepunk: graffiti display caps traced from the CREATUREPUNK lettering
    (source and build scripts in source-art/creaturepunk/). Caps only — lowercase
    maps to the same letters. `font-feature-settings: "swsh"` swaps in the
-   logo's tall C and long-legged K. */
+   logo's own C, U and K (tall C, short-stemmed U, long-legged K). */
 @font-face {
   font-family: 'Creaturepunk';
   src: url("../fonts/creaturepunk/Creaturepunk.woff2") format('woff2'),
