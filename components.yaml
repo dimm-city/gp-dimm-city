@@ -1251,6 +1251,7 @@ components:
     snippet: section-district
     recipe: "@section district .dc-neon-pink … @end-section  (a place: a district, a venue)"
     emits: div.section.dc-section-panel.dc-section-lore.dc-section-district.dc-lit
+    unstyled: [dc-section-district]
     css: [styles/components/section.css, styles/components/neon.css]
     tokens: [--dc-neon, --dc-neon-core]
     notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange; .dc-neon-off is a dead tube, grey glass, for a place that went dark. A title word wider than the tag widens the plate."

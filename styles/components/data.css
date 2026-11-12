@@ -418,10 +418,10 @@
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 12%, transparent),
     inset 0 -1px 0 color-mix(in srgb, var(--ink) 18%, transparent);
-  /* Use the token so .dc-outcome-row.hit (which sets --dc-outcome-key-color
-     to --ink because the fungi-glow fill is too light for cream text: 1.24:1)
-     propagates to the chip element itself, not just to its children. Default
-     stays cream for the dark-fill outcomes (crit/miss/fail). */
+  /* Use the token so the light rows (hit and mixed set --dc-outcome-key-color
+     to --ink: cream on green or yellow is under 3:1) carry it to the chip
+     element itself, not just to its children. Default stays cream for the
+     dark-fill outcomes (crit/miss/fail). */
   color: var(--dc-outcome-key-color);
   padding: 6px 10px;
   display: flex;
@@ -476,47 +476,42 @@
 }
 
 /* ── Outcome row color modifiers ──────────────────────────────────────────
-   Creaturepunk pillar gradient across the 5-band outcome ladder:
-     crit  → brand-magenta-deep  (NEON peak, jewel-deep — paper-cream 12.5:1)
-     hit   → fungi-glow + ink    (FLUORESCENT FUNGI alive — ink-on-glow 11.4:1)
-     mixed → orange-deep         (GUTTER warm, burnt-deep — paper-cream 6.9:1)
-     miss  → blood               (GUTTER deep — paper-cream 9.0:1)
-     fail  → fungi-rot           (FLUORESCENT FUNGI dark — paper-cream 10.4:1)
-   All four creaturepunk pillars present; all 5 rows clear WCAG AA 4.5:1
-   for the 10pt outcome-name and 12pt roll-number text (measured with
-   scripts/measure-palette-crpc1.py contrast).
-
-   The hit row overrides --dc-outcome-key-color / --dc-outcome-name-color
-   (below) because fungi-glow is too light to carry paper-cream text. Bright
-   row + dark text preserves the bioluminescent signal while keeping labels
-   press-legible. */
+   Semantic, a traffic light from best to worst; the five lightnesses differ,
+   so the tiers part in grayscale too:
+     crit  → neon-civic-ring-1   (deep green: the best there is — paper-cream 5.1:1)
+     hit   → neon-civic + ink    (green: it works              — ink 6.6:1)
+     mixed → brand-yellow + ink  (yellow: caution, it costs you — ink 12.0:1)
+     miss  → blood               (red: it fails                — paper-cream 9.0:1)
+     fail  → ink-dark            (black: the lights go out     — paper-cream 14.8:1)
+   The two light rows carry ink text (--dc-outcome-key-color and
+   --dc-outcome-name-color); the three dark rows keep the cream default. */
 .dc-outcome-row.crit,
 .dc-rung.crit {
-  --row-color: var(--brand-magenta-deep);
+  --row-color: var(--neon-civic-ring-1);
 }
 
 .dc-outcome-row.hit,
 .dc-rung.hit {
-  --row-color: var(--fungi-glow);
+  --row-color: var(--neon-civic);
   --dc-outcome-name-color: var(--ink);
   --dc-outcome-key-color: var(--ink);
 }
 
 .dc-outcome-row.mixed,
 .dc-rung.mixed {
-  --row-color: var(--orange-deep);
+  --row-color: var(--brand-yellow);
+  --dc-outcome-name-color: var(--ink);
+  --dc-outcome-key-color: var(--ink);
 }
 
 .dc-outcome-row.miss,
 .dc-rung.miss {
-  /* --rust + cream = 6.0:1; --blood + cream = 9.0:1, the safer margin at
-     10pt chip text. Still warm red, still reads as "miss/fail" semantic. */
   --row-color: var(--blood);
 }
 
 .dc-outcome-row.fail,
 .dc-rung.fail {
-  --row-color: var(--fungi-rot);
+  --row-color: var(--ink-dark);
 }
 
 /* ── Ladder rungs (`@ladder`) ─────────────────────────────────────────────
