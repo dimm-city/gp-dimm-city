@@ -82,10 +82,10 @@
    DIFFERENT goes in a `@section` variant, so the section class is the styling
    handle, not the table itself. */
 
-/* The hairline between columns is `--gp-column-rule`, set once at `:root` in
-   dc-component-defaults.css. There is no column selector here: a rule on
-   core's column classes would outrank core's own (this package's layer wins),
-   and the token is the hook core reads. */
+/* The hairline between columns is `--gp-column-rule`, none unless a run opts
+   in with `.dc-column-rule` (page-templates.css). There is no column selector
+   here: a rule on core's column classes would outrank core's own (this
+   package's layer wins), and the token is the hook core reads. */
 
 
 /* ── Paste-up art (paste-up.css) ────────────────────────────────

@@ -854,9 +854,6 @@
 .dc-definition-block:has(> h4 ~ h4) {
   break-inside: auto;
 }
-:is(.gp-columns, [class*="gp-columns-"]):has(> .dc-definition-block) {
-  --gp-column-rule: none; /* a pair of framed cards needs no rule between them */
-}
 .dc-definition-block hr {
   border: none;
   border-top: 1pt solid var(--dc-definition-block-accent);

@@ -269,8 +269,6 @@
    visuals, and it may span pages when they exceed one. */
 .section.dc-card-grid {
   margin: var(--space-md) 0 0;
-  /* The cards carry the visuals; no hairline between their columns. */
-  --gp-column-rule: none;
 }
 
 /* ── DENSITY: CARD GRID (.dc-card-grid section) ────────────────────────────── */

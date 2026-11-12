@@ -173,13 +173,13 @@ markdown: `@columns 2` inside `@skill`, `@card-grid`, `@npc-stat`,
 
 So no stylesheet sets `columns`, `column-count`, `column-width`, `column-gap`,
 `column-fill` or `column-rule` (`test/integrity.test.js` enforces it). What the
-package says about a column run is two author hooks, set **once**, at `:root`
-in `dc-component-defaults.css`, with no column selector:
+package says about a column run is core's two author hooks, with no column
+selector:
 
-| Hook | Value | A component that wants none |
+| Hook | Value | Where |
 |---|---|---|
-| `--gp-column-gap` | `var(--gutter)` | — |
-| `--gp-column-rule` | `1pt solid var(--border-hairline)` | `--gp-column-rule: none` (`.dc-card-grid`, the credits colophon) |
+| `--gp-column-gap` | `var(--gutter)` | once, at `:root` in `dc-component-defaults.css` |
+| `--gp-column-rule` | `1pt solid var(--border-hairline)` | only on a run that opts in: `@columns 2 .dc-column-rule` (`page-templates.css`); otherwise none, core's default |
 
 `--gp-column-rule` needs a Gutterpress that reads it; older ones ignore it and
 draw no hairline. `column-fill` is not set anywhere: `balance` is the CSS

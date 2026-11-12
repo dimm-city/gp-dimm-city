@@ -113,7 +113,6 @@
   color: var(--dc-neon-core);
   padding: 4.5pt calc(4.5pt + var(--space-lg));
   margin-bottom: calc(var(--space-sm) - 2.76pt);   /* the 2.76pt the tube adds over the paper tag's 0.52rem */
-  min-width: min-content;   /* a word wider than the tag (ENTERTAINMENT) widens the plate, not crosses the tube */
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
 }
 

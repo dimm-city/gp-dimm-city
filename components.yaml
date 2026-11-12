@@ -1014,8 +1014,20 @@ components:
     recipe: "@section .dc-snug  /  @page .dc-snug  |  from a book's sheet: #id { --dc-flow-gap: 0.04in; }"
     emits: .dc-snug (on the section or page it is written on)
     css: styles/page-templates.css
-    tokens: [--dc-flow-gap]
-    notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in. Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
+    tokens: [--dc-flow-gap, --dc-td-pad-y, --dc-th-pad-y]
+    notes: "A setter of --dc-flow-gap, the margin-bottom of a paragraph or list item inside it, to 0.04in, and of a table's cell padding (3px top and bottom). Unset, each component keeps its own spacing; set on a box or anything above it, it is the space under every paragraph and list item in it. Type size and leading are untouched."
+
+  - name: column-rule
+    status: live
+    origin: author
+    modifier: dc-column-rule
+    description: "Draw a hairline between the columns of this run; runs have none by default."
+    snippet: column-rule
+    recipe: "@columns 2 .dc-column-rule … @column-break … @end-columns"
+    emits: .dc-column-rule (on core's column run)
+    css: styles/page-templates.css
+    tokens: [--gp-column-rule]
+    notes: "A setter of core's --gp-column-rule hook to a 1pt hairline, on the run it is written on. Without it a run has no rule between its columns."
 
   - name: paste-up
     status: retired
@@ -1254,7 +1266,7 @@ components:
     unstyled: [dc-section-district]
     css: [styles/components/section.css, styles/components/neon.css]
     tokens: [--dc-neon, --dc-neon-core]
-    notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange; .dc-neon-off is a dead tube, grey glass, for a place that went dark. A title word wider than the tag widens the plate."
+    notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange; .dc-neon-off is a dead tube, grey glass, for a place that went dark."
 
   - name: section-dm
     status: live

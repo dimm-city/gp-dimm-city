@@ -344,6 +344,12 @@
   /* Whole: a column that cannot hold an entry moves it to the next. */
   break-inside: avoid;
 }
+/* An entry's picture can hang below its own entry; the next entry (positioned,
+   so painted later) would draw its rule over it. The picture paints above. */
+.dc-catalog .dc-entry img {
+  position: relative;
+  z-index: 1;
+}
 .dc-catalog hr {
   display: none;
 }

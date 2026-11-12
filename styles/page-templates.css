@@ -35,7 +35,8 @@
    to put content in columns, and it is Gutterpress core's: `@columns N` …
    `@column-break` … `@end-columns` (N from 1 to 5). Core owns the count, the
    gap (`--gp-column-gap`, set once at `:root` in dc-component-defaults.css),
-   the rule (`--gp-column-rule`, same place) and `column-fill`. No sheet here
+   the rule (`--gp-column-rule`, none unless a run opts in with
+   `.dc-column-rule`, below) and `column-fill`. No sheet here
    sets `columns`, `column-count`, `column-gap`, `column-fill` or `column-rule`
    (test/integrity.test.js enforces it). What this package may still own is
    component rules that react to sitting inside a run (dc-native.css §5). The
@@ -222,7 +223,6 @@
   --dc-section-drop: 2pt 0 0 var(--shadow-ink);
   --dc-section-gap: 0pt;   /* the colophon reaches the sheet foot... */
   --dc-section-grow: 1;    /* ...so it fills the flex-column page */
-  --gp-column-rule: none;  /* the names run in two plain columns, as they always have */
 }
 
 /* The colophon's type: set on what the flat section holds, so it reaches the
@@ -714,7 +714,7 @@
    The space under a paragraph or list item. Unset, each keeps the spacing its
    own component gives it; set (on a box, or on anything above it, from a
    sheet or by `.dc-snug`), it is the space under every one of them in that
-   box. `.dc-snug` halves it, so a section or page
+   box. `.dc-snug` halves it and closes up table rows, so a section or page
    that overflows by a line or two fits; type size and leading are untouched.
    Lives in dc.templates so it outranks the dc.components and dc.base
    paragraph/list margins, and `revert-layer` hands the margin back to them
@@ -731,8 +731,17 @@
 li > p {
   margin-bottom: 0;
 }
+/* ── COLUMN RULE — `.dc-column-rule`, opt-in ──────────────────────────────
+   A hairline between a run's columns: `@columns 2 .dc-column-rule`. Off by
+   default. It sets core's hook (`--gp-column-rule`), not the property. */
+.dc-column-rule {
+  --gp-column-rule: 1pt solid var(--border-hairline);
+}
+
 .dc-snug {
   --dc-flow-gap: 0.04in;
+  --dc-td-pad-y: 3px;   /* and a table's rows close up */
+  --dc-th-pad-y: 3px;
 }
 
 /* ── CHAPTER OPENER TITLE ─────────────────────────────────────────────────
@@ -795,14 +804,14 @@ li > p {
      specialty      hud-blue-dark  the specialty gateway
      rules          rust           how to play
      dm             ink            behind the screen: the Dream Master's chapter
-     gear           amber-dark     cybernetics, weapons, gear: the armory
+     gear           signal-indigo  cybernetics, weapons, gear: the tech
      lore           violet, the lore section's colour */
 .chapter.dc-chapter-citizen-file { --dc-section-accent: var(--brand-magenta-deep); }
 .chapter.dc-chapter-specialty    { --dc-section-accent: var(--hud-blue-dark); }
 .chapter.dc-chapter-rules        { --dc-section-accent: var(--rust); }
 .chapter.dc-chapter-lore         { --dc-section-accent: var(--brand-violet); }
 .chapter.dc-chapter-dm           { --dc-section-accent: var(--ink-dark); }
-.chapter.dc-chapter-gear         { --dc-section-accent: var(--amber-dark); }
+.chapter.dc-chapter-gear         { --dc-section-accent: var(--signal-indigo); }
 
 /* NEON SIGNS (components/neon.css). A chapter word picks its sign's tube. */
 .chapter.dc-chapter-rules         { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }

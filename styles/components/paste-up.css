@@ -113,6 +113,7 @@ p:has(+ .dc-kicker) {
   & > :is(h2, h3):first-child,
   & > :is(h2, h3).dc-pu-tag:not(:first-child) {
     width: fit-content; max-width: 88%;
+    min-width: min-content;   /* a word wider than 88% (QUICKSTART) widens the tag; it never runs off it */
     margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
     padding: 0.3rem var(--space-lg) 0.22rem;
     clip-path: none; border-bottom: 0;
