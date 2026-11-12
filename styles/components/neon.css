@@ -79,8 +79,7 @@
    inside its ring channel, so long text stays dark on white.
 
    --dc-lit-line   tube | core | tube, on the plate's edge, no halo         (4.5pt)
-   --dc-lit-frame  ink edge | tube | core | tube, round a white face        (6pt)
-   --dc-lit-slim   ink edge | inner ring | tube | core | tube | inner ring   (9pt)
+   --dc-lit-frame  ink | tube | core | tube | ink, round a white face       (7.5pt)
    Each step is 1.5pt, the soft proof's minimum. The hue is --dc-neon*, set by
    a .dc-neon-<hue> class, a chapter word or a specialty; orange by default
    (dc-component-defaults.css). */
@@ -92,18 +91,17 @@
 .dc-neon-civic  { --dc-neon: var(--neon-civic);  --dc-neon-core: var(--neon-civic-core);  --dc-neon-ring-1: var(--neon-civic-ring-1);  --dc-neon-ring-2: var(--neon-civic-ring-2); }
 .dc-neon-chrome { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
 .dc-neon-azure  { --dc-neon: var(--neon-azure);  --dc-neon-core: var(--neon-azure-core);  --dc-neon-ring-1: var(--neon-azure-ring-1);  --dc-neon-ring-2: var(--neon-azure-ring-2); }
+.dc-neon-off    { --dc-neon: var(--neon-dead);   --dc-neon-core: var(--neon-dead-core);   --dc-neon-ring-1: var(--neon-dead);          --dc-neon-ring-2: var(--neon-dead); }  /* an unlit tube: grey glass (The Dark) */
 
 /* The ring stacks, computed where the hue is known. */
 :is(.dc-lit > :is(h2, h3):first-child, .dc-card-lightbox, .dc-lit-value,
-    .dc-program, .dc-location-callout, :is(.dc-location-callout, .dc-visit-callout) .dc-alert-label,
+    .dc-program, :is(.dc-location-callout, .dc-visit-callout) .dc-alert-label,
     .dc-toc ol > li[class*="dc-toc-"]) {
-  --dc-lit-slim:
-    inset 0 0 0 1.5pt var(--ink), inset 0 0 0 3pt var(--dc-neon-ring-1), inset 0 0 0 4.5pt var(--dc-neon),
-    inset 0 0 0 6pt var(--dc-neon-core), inset 0 0 0 7.5pt var(--dc-neon), inset 0 0 0 9pt var(--dc-neon-ring-1);
   --dc-lit-line:
     inset 0 0 0 1.5pt var(--dc-neon), inset 0 0 0 3pt var(--dc-neon-core), inset 0 0 0 4.5pt var(--dc-neon);
   --dc-lit-frame:
-    inset 0 0 0 1.5pt var(--ink), inset 0 0 0 3pt var(--dc-neon), inset 0 0 0 4.5pt var(--dc-neon-core), inset 0 0 0 6pt var(--dc-neon);
+    inset 0 0 0 1.5pt var(--ink), inset 0 0 0 3pt var(--dc-neon), inset 0 0 0 4.5pt var(--dc-neon-core), inset 0 0 0 6pt var(--dc-neon),
+    inset 0 0 0 7.5pt var(--ink);   /* ink on both sides, or the tube reads as a keyline on white */
 }
 
 /* A lit sheet's tag: the paper tag becomes a lit plate, same tilt and place, a
@@ -121,9 +119,9 @@
 
 /* LIGHTBOX CARD (`@card lightbox`): a white face in a lit frame (an ink edge and
    a tube round it), its title a lit plate inside the frame's top, and a number
-   that ends the title lit as a round value badge hanging off the plate's corner.
-   The frame sits in the card's own padding and the badge is out of the flow, so
-   a lightbox keeps a plain card's measure and nearly its height. */
+   that ends the title set off in a lit window at the plate's right end.
+   The frame sits in the card's own padding and the window is out of the flow, so
+   a lightbox keeps a plain card's measure and height. */
 .dc-card.dc-card-lightbox {
   position: relative;
   clip-path: none;
@@ -134,25 +132,27 @@
 }
 .dc-card-lightbox > .dc-card-heading {
   position: relative;
-  margin: calc(6pt - var(--space-sm)) calc(6pt - var(--space-md)) calc(var(--space-xs) - 1.2pt) calc(6pt - var(--space-md) - 3px);
-  padding: 1pt calc(2.3em + 10pt) 0 calc(var(--space-md) + 3px - 6pt);
+  /* Inside the 7.5pt frame on three sides. The negative foot gives back the top
+     margin and the 1pt padding (it collapses with the body's top margin), so a
+     lightbox is exactly a plain card's height. */
+  margin: calc(7.5pt - var(--space-sm)) calc(7.5pt - var(--space-md)) calc(var(--space-sm) - 8.5pt) calc(7.5pt - var(--space-md) - 3px);
+  padding: 1pt calc(1.6em + 8pt) 0 calc(var(--space-md) + 3px - 7.5pt);   /* right: the value window */
   background: var(--ink);
   color: var(--dc-neon-core);
 }
 .dc-lit-value {
   position: absolute;
-  right: 4pt;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1.6em;
+  padding-left: 4.5pt;   /* clear of the tube down its left edge */
   display: grid;
   place-items: center;
-  width: 2.3em;
-  height: 2.3em;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--dc-neon-core);
   line-height: 1;
-  box-shadow: var(--dc-lit-line), 2pt 2pt 0 var(--ink-dark);
+  color: var(--dc-neon-core);
+  /* a price window: one upright tube between the title and the number */
+  box-shadow: inset 1.5pt 0 0 var(--dc-neon), inset 3pt 0 0 var(--dc-neon-core), inset 4.5pt 0 0 var(--dc-neon);
 }
 
 /* The contents list: an entry that ends with its chapter's word as a class

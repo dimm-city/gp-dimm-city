@@ -1,4 +1,4 @@
-@card lightbox .dc-neon-civic
+@card lightbox .dc-neon-azure
 
 #### {{title}}: 2
 

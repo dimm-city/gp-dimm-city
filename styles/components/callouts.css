@@ -469,24 +469,17 @@
   z-index: -1;
 }
 
-/* LOCATION, LIT: a placard in a lightbox (neon.css): a white face in a lit ink
-   channel, square, the stamp a lit plate. Sodium yellow, a street light. After
-   the framed sheet, whose fill and white copy it drops. */
+/* The location's stamp is lit (neon.css): sodium yellow, a street light. After
+   the stamp rule above, whose ring and outline it replaces. */
 .dc-location-callout {
   --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core);
   --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2);
-  --dc-alert-shape: none;
-  --dc-alert-border-width: 0px;
-  --dc-alert-frame: var(--dc-lit-slim), inset 0 0 0 11pt var(--ink), 4pt 4pt 0 var(--ink-dark);
-  background: var(--paper-cream);
 }
-.dc-location-callout::before { content: none; }
 .dc-location-callout .dc-alert-label {
   background: var(--ink);
   color: var(--dc-neon-core);
   border-color: var(--ink);   /* the stamp's 2px ring, kept for its size */
   outline: 0;
-  margin-left: 0;
   box-shadow: var(--dc-lit-line);
 }
 

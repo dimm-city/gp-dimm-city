@@ -230,12 +230,12 @@ components:
     origin: plugin
     markers: ["@card lightbox"]
     snippet: card-lightbox
-    recipe: "@card lightbox .dc-neon-civic / #### BODY TAX: 2 / body … @end-card"
+    recipe: "@card lightbox .dc-neon-azure / #### BODY TAX: 2 / body … @end-card"
     emits:
       - div.dc-card.dc-card-lightbox > div.dc-card-heading > span.dc-lit-value (a trailing number in the title)
     css: [styles/components/enclosures.css, styles/components/neon.css]
-    tokens: [--dc-neon, --dc-neon-core, --dc-neon-ring-1, --dc-neon-ring-2]
-    notes: "A card hung as a lightbox: a white face in an ink channel with a neon tube running round it, the title a lit plate across the top, and a number that ends the title (a price, a tax, a level) lit as a round value badge. The text stays dark on white. The hue is a .dc-neon-<hue> class on the marker line."
+    tokens: [--dc-neon, --dc-neon-core]
+    notes: "A card hung as a lightbox: a white face in an ink channel with a neon tube running round it, the title a lit plate across the top, and a number that ends the title (a price, a tax, a level) lit at the plate's right end, in a window set off by an upright tube. The text stays dark on white. The hue is a .dc-neon-<hue> class on the marker line."
 
   - name: card
     status: live
@@ -1252,8 +1252,8 @@ components:
     recipe: "@section district .dc-neon-pink … @end-section  (a place: a district, a venue)"
     emits: div.section.dc-section-panel.dc-section-lore.dc-section-district.dc-lit
     css: [styles/components/section.css, styles/components/neon.css]
-    tokens: [--dc-neon, --dc-neon-core, --dc-neon-ring-1, --dc-neon-ring-2]
-    notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange. Any sheet takes the same tag with the .dc-lit modifier."
+    tokens: [--dc-neon, --dc-neon-core]
+    notes: "A lore sheet for a place: its title tag is lit, an ink plate ringed by a neon tube with the title in the tube's pale core (live text). The hue is a .dc-neon-<hue> class on the marker line (orange, cyan, yellow, pink, fungi, civic, chrome, azure), else the chapter's or orange; .dc-neon-off is a dead tube, grey glass, for a place that went dark. A title word wider than the tag widens the plate."
 
   - name: section-dm
     status: live

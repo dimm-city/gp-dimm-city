@@ -1084,7 +1084,8 @@ table.dc-stat-strip {
   background: var(--ink);
   color: var(--dc-neon-core);
   clip-path: none;
-  box-shadow: var(--dc-lit-line), 2pt 2pt 0 var(--ink-dark);
+  line-height: 1;
+  box-shadow: var(--dc-lit-line), 0 0 0 1pt var(--ink), 2pt 2pt 0 var(--ink-dark);   /* an ink rim: a tube glows against dark */
 }
 
 .dc-toc ol>li>a {

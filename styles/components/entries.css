@@ -248,7 +248,8 @@
 .dc-program::before {
   display: block;
   margin: -16pt -18pt 8px;
-  padding: 3pt 18pt;
+  padding: 4.5pt 18pt;   /* clear of the 4.5pt tube; line-height 1 keeps the strip's height */
+  line-height: 1;
   letter-spacing: 0.18em;
   color: var(--dc-neon-core);
   box-shadow: var(--dc-lit-line);
