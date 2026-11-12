@@ -108,17 +108,28 @@ p:has(+ .dc-kicker) {
   &::before { top: var(--dc-pu-band); bottom: var(--dc-pu-foot); }
   &::after  { top: calc(var(--dc-pu-band) + 3px); bottom: var(--dc-pu-foot); }
 
+  /* How far a tag hangs off the sheet's left edge: never past the sheet's inset,
+     so it stays inside the content box (the page clips a tag past it to a flat
+     edge). A row's second sheet has the gap to hang into. */
+  --dc-pu-hang: min(0.06in, var(--dc-pu-inset));
+
   /* Tags: the first ## or ### pasted over the paper's top edge, and a `{.dc-pu-tag}`
-     sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours). */
+     sub-head pasted on the same way mid-sheet (it takes the sheet's bar colours).
+     The tilt pivots on the tag's top edge, so no corner swings left of the box.
+     A tag wider than (top - 0.5px) / sin(1deg) pivots that far in from its right
+     end: its raised corner stops 0.5px under the sheet's top edge, which clips it
+     (above that edge it would print on the page before). */
   & > :is(h2, h3):first-child,
   & > :is(h2, h3).dc-pu-tag:not(:first-child) {
+    --dc-pu-tag-top: var(--dc-pu-lift);   /* the tag's top, under the sheet's top edge */
     width: fit-content; max-width: 88%;
     min-width: min-content;   /* a word wider than 88% (QUICKSTART) widens the tag; it never runs off it */
-    margin: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-0.06in - var(--dc-section-pad-left));
+    margin: calc(var(--dc-pu-tag-top) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-1 * var(--dc-pu-hang) - var(--dc-section-pad-left));
     padding: 0.3rem var(--space-lg) 0.22rem;
     clip-path: none; border-bottom: 0;
     line-height: var(--lh-display);
-    transform: rotate(-1deg); transform-origin: left bottom;
+    transform: rotate(-1deg);
+    transform-origin: max(0px, 100% - (var(--dc-pu-tag-top) - 0.5px) / sin(1deg)) 0;
     box-shadow: 3px 3px 0 var(--ink-dark);
     position: relative; z-index: 2;
     break-after: avoid;
@@ -139,7 +150,11 @@ p:has(+ .dc-kicker) {
   & > h2.dc-pu-bill:first-child {
     width: auto; max-width: none;
     margin-left: calc(-1 * var(--dc-section-pad-left));
-    margin-right: calc(-1 * var(--dc-section-pad-right));
+    /* Short of the sheet's right edge by the tilt's swing: pivoting on its top
+       edge, a bill's foot swings right by its height x sin(1deg) (0.05em at two
+       lines), and its 4px shadow has only the sheet's 3px margin. Past the content
+       box the page clips both to a flat edge. */
+    margin-right: calc(0.06em + 2px - var(--dc-section-pad-right));
     margin-bottom: var(--space-lg);
     padding: var(--space-sm) var(--space-xl) var(--space-md);
     background: var(--ink-dark); color: var(--paper-cream);
@@ -206,6 +221,7 @@ p:has(+ .dc-kicker) {
 .dc-pu-row:has(> .dc-wide:first-child)   { --dc-pu-row-cols: 62fr 38fr; }
 .dc-pu-row:has(> .dc-narrow:first-child) { --dc-pu-row-cols: 38fr 62fr; }
 .dc-pu-row > * { min-width: 0; }
+.dc-pu-row > .section.dc-section-panel + .section.dc-section-panel { --dc-pu-hang: 0.06in; }
 .dc-pu-row > .dc-section-panel { display: flex; flex-direction: column; }
 .dc-pu-row > .dc-section-panel > .dc-kicker:last-child { margin-top: auto; }
 

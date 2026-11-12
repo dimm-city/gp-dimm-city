@@ -129,7 +129,7 @@
   background: var(--ink);
   color: var(--dc-neon-core);
   padding: 4.5pt calc(4.5pt + var(--space-lg));
-  margin-top: calc(var(--dc-pu-lift) - var(--dc-pu-band) - var(--dc-section-pad-top) - 2.76pt);
+  --dc-pu-tag-top: calc(var(--dc-pu-lift) - 2.76pt);   /* paste-up.css sets the margin and the tilt's pivot from it */
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
 }
 
