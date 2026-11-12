@@ -205,8 +205,8 @@
      bio-organic green family. Distinct from the gutter pillar (rust/blood)
      and the neon pillar (brand-magenta/cyan/yellow) — this is "alive and
      glowing" rather than "signal" or "decay". */
-  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: .dc-outcome-row.hit, --gutterdruid-accent) · TAC 114% (C19 M0 Y95 K0) */
-  --fungi-rot:   #30461e;  /* deep moldering green — rot in dark places (consumed: .dc-outcome-row.fail, and the streetwarden and gutterdruid darks) · TAC 197% (C44 M20 Y60 K73) */
+  --fungi-glow:  #c8e040;  /* bioluminescent yellow-green — UV spore-light (consumed: --gutterdruid-accent) · TAC 114% (C19 M0 Y95 K0) */
+  --fungi-rot:   #30461e;  /* deep moldering green — rot in dark places (consumed: the streetwarden and gutterdruid darks) · TAC 197% (C44 M20 Y60 K73) */
 
   /* ── Ancient Crystal Pillar (creaturepunk: faceted mineral refraction) ───
      The mineral-magic register: amethyst and aquamarine — geometric and
