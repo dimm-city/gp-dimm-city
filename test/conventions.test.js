@@ -196,13 +196,13 @@ describe("stylesheets", () => {
   // text-free ::before/::after layer.
   test("put a filter only on a ::before or ::after layer", () => {
     const found = [];
+    // Parsed, not scanned: a regex over the whole sheet backtracked past the test's timeout.
     for (const rel of sheets) {
-      const css = stripComments(read(rel));
-      for (const [, selectors] of css.matchAll(/([^{}]*)\{[^{}]*(?:^|[;{\s])(?:-webkit-)?filter\s*:[^;}]*/g)) {
-        for (const sel of selectors.split(",")) {
+      postcss.parse(read(rel)).walkDecls(/^(-webkit-)?filter$/, (d) => {
+        for (const sel of d.parent.selectors ?? []) {
           if (!/::?(before|after)\s*$/.test(sel.trim())) found.push(`${rel}: ${sel.trim()}`);
         }
-      }
+      });
     }
     expect(found).toEqual([]);
   });
