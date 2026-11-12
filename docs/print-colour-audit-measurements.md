@@ -113,6 +113,9 @@ aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
+components/cards.css:802               srgb --ink 14% --paper-cream                     #dfdfdf  C11 M8 Y8 K0         27   11    8
+components/cards.css:803               srgb --ink 6% --paper-cream                      #f2f1f1  C4 M3 Y3 K0          10    4    3
+components/chrome.css:208              srgb --ink 35% --paper-cream                     #b0b0b0  C24 M18 Y18 K8       68   24    8
 components/data.css:816                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
 components/enclosures.css:121          srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
 components/enclosures.css:433          srgb --brand-violet 72% --ink                    #522969  C58 M92 Y2 K38      190   92    2
@@ -126,7 +129,7 @@ components/specialty-identity.css:336  srgb --gutterdruid-mid 38% --gutterdruid-
 components/specialty-identity.css:367  srgb --paper-cream 38% --etherlock-accent        #ffe661  C1 M2 Y71 K0         74   71    1
 components/specialty-identity.css:397  srgb --paper-cream 34% --dualist-accent          #88bbc6  C41 M9 Y14 K4        68   41    4
 components/specialty-identity.css:423  srgb --ink 26% --generalist-accent               #445059  C48 M32 Y25 K57     162   57   25
-dc-component-defaults.css:500          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
+dc-component-defaults.css:501          srgb --brand-yellow 30% --paper-aged             #e6d995  C9 M7 Y43 K1         60   43    1
 ```
 
 ## contrast

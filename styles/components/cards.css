@@ -789,13 +789,18 @@
      at chip scale (38px wide, ~0.5in on press). */
   border: 1pt solid var(--dc-ap-border);
   transform: rotate(-1deg);
-  /* Layered shadow: an inset highlight plus a hard offset, so the chip reads
-     as lifted off the card. */
+  /* The fill stays inside the border: tilted, a fill under it shows past
+     the hairline's anti-aliased outer edge. */
+  background-clip: padding-box;
+  /* Layered shadow: an inset highlight plus a two-step hard offset, so the
+     chip reads as lifted off the card. Opaque, pre-composited on the sheet,
+     and unblurred: a blurred or translucent shadow under a tilted chip prints
+     as a soft-masked 300 DPI bitmap with a fuzzy edge. No text-shadow (print
+     rule): its offset copy doubled the glyphs' lower edges. */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 15%, transparent),
-    2px 2px 0 color-mix(in srgb, var(--ink) 10%, transparent),
-    3px 3px 6px color-mix(in srgb, var(--ink) 8%, transparent);
-  text-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 20%, var(--dc-ap-bg));
+    inset 0 1px 0 color-mix(in srgb, var(--paper-cream) 15%, var(--dc-ap-bg)),
+    2px 2px 0 color-mix(in srgb, var(--ink) 14%, var(--paper-cream)),
+    3px 3px 0 color-mix(in srgb, var(--ink) 6%, var(--paper-cream));
   letter-spacing: 0.06em;
   flex-shrink: 0;
   align-self: flex-start;

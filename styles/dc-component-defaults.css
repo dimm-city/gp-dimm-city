@@ -16,7 +16,7 @@
   --dc-pu-band:           0.18in;
   --dc-pu-foot:           0.16in;
   --dc-pu-lift:           0.1in;
-  --dc-pu-inset:          0.08in;          /* keeps a sheet's tilted tag (it hangs about 0.07in off the sheet's edge) inside the content box; a book whose pages clip sideways may set 0 */
+  --dc-pu-inset:          0.08in;          /* room for a sheet's tilted tag to hang 0.06in off the sheet's edge inside the content box; at less, the tag hangs only that far (0: flush with the sheet) */
   --dc-pu-pair-gap:       var(--space-xl);
   --dc-pu-row-cols:       1fr 1fr;         /* a row's two widths; a .dc-wide first sheet sets 62fr 38fr, a .dc-narrow one 38fr 62fr */
   --dc-pu-sticker-size:   var(--fs-h3);
@@ -493,6 +493,7 @@
   --dc-neon-margin:          0;                   /* the plate's margin in the flow */
   --dc-neon-height:          auto;                /* the plate's height (border box) */
   --dc-neon-tilt:            none;                /* how it hangs: a transform */
+  --dc-neon-pivot:           center;              /* the point it hangs from: the tilt's transform-origin */
   --dc-neon-layer:           2;                   /* its z-index */
   --dc-neon-size:            22pt;                /* the word's size; the tubes and rings scale with it (20pt at least) */
 
