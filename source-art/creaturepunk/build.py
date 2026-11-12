@@ -84,7 +84,9 @@ ymax=max(getattr(gs[n],'yMax',0) for n in order); ymin=min(getattr(gs[n],'yMin',
 fb.setupHorizontalHeader(ascent=900,descent=-250,caretSlopeRise=2,caretSlopeRun=1)
 fb.setupNameTable({'familyName':'Creaturepunk','styleName':'Regular','uniqueFontIdentifier':'Creaturepunk-Regular-1.000',
     'fullName':'Creaturepunk Regular','psName':'Creaturepunk-Regular','version':'Version 1.000',
-    'description':'Graffiti display caps traced from the CREATUREPUNK logo lettering; the missing letters, digits and punctuation are built from pieces of the traced ones.'})
+    'description':'Graffiti display caps traced from the CREATUREPUNK logo lettering; the missing letters, digits and punctuation are built from pieces of the traced ones.',
+    'copyright':'Copyright (c) 2026 Dimm City','licenseDescription':'This font is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).',
+    'licenseInfoURL':'https://creativecommons.org/licenses/by/4.0/'})
 fb.setupOS2(sTypoAscender=900,sTypoDescender=-250,sTypoLineGap=0,usWinAscent=max(1050,ymax),usWinDescent=max(250,-ymin),
     sxHeight=700,sCapHeight=700,achVendID='NONE',fsSelection=0x80|0x40,usWeightClass=400,version=4)
 fb.setupPost(italicAngle=-math.degrees(math.atan(SLANT)))

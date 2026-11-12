@@ -292,8 +292,9 @@ paragraph inside an entry needs no change.
 
 Code, stylesheets, catalog and docs: [MIT](LICENSE). Fonts carry their own
 licences beside the files — `fonts/titillium-web/OFL.txt`,
-`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`,
-`fonts/creaturepunk/LICENSE.txt`. The Dimm City name, logo,
+`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`, and
+`fonts/creaturepunk/LICENSE.txt` (Creaturepunk © 2026 Dimm City,
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)). The Dimm City name, logo,
 artwork and game text are not licensed by this package.
 
 ## Development

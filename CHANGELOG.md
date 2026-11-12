@@ -45,7 +45,8 @@ and the styles say where a reader is and what they are reading.
   0-9 and common punctuation built from pieces of those letters; lowercase
   maps to the caps. `font-family: 'Creaturepunk'` (declared in
   `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's tall C and
-  long-legged K. Not assigned to any token yet. Demo page:
+  long-legged K. Not assigned to any token yet. Licensed CC BY 4.0
+  (`fonts/creaturepunk/LICENSE.txt`). Demo page:
   `docs/creaturepunk-font-demo.html`; source and build scripts:
   `source-art/creaturepunk/`.
 
