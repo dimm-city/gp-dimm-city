@@ -116,6 +116,7 @@
      synthesize a bold, which prints as a Type 3 font that Gutterpress's
      PDF/X preserve-text split cannot keep. */
   --font-display: 'lixdu', 'Tomorrow', sans-serif;
+  --font-title:   'Creaturepunk', 'lixdu', 'Tomorrow', sans-serif;  /* h1 and h2: the graffiti caps */
   --font-tab:     'Tomorrow', 'lixdu', sans-serif;
   --font-body:    'Titillium Web', Georgia, sans-serif;
   --font-sans:    'Titillium Web', 'Inter', system-ui, sans-serif;  /* public; no package rule reads it (the design guide's own sheet does) */
@@ -135,8 +136,8 @@
   --fs-body-xs: var(--fs-body-sm);  /* alias, kept for books */
   --fs-sm:      var(--fs-body-sm);  /* alias: small body */
   --fs-h1:      26pt;    /* anchor — chapter/page-level titles */
-  --fs-h2:      20pt;    /* section headers; 1.30× below h1 */
-  --fs-h3:      16pt;    /* sub-section, gear card titles; 1.25× below h2 */
+  --fs-h2:      22pt;    /* section headers; 1.18× below h1 */
+  --fs-h3:      13pt;    /* sub-section, gear card titles; told from h4 by colour and spacing */
   --fs-h4:      13pt;    /* skill card names, stat block NPC names; 1.23× below h3 */
   --fs-h5:      11pt;    /* field labels, stat-block sublabels; 1.18× below h4 */
   --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor; a mono label, not a smaller h5 */

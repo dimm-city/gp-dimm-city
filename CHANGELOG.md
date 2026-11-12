@@ -117,6 +117,10 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **Headings.** `h1` and `h2` are set in Creaturepunk (`--font-title`); `h3`
+  to `h6` stay in Lixdu, `h6` included (it was the mono label face). `--fs-h2`
+  is 22pt (was 20pt) and `--fs-h3` 13pt (was 16pt). A look class
+  (`{.dc-h3}`) puts an `h2` back in Lixdu.
 - **The Dream Master's sheet is a lit booth.** `@section dm` is no longer a
   paste-up sheet with a folder tab: it is a lightbox (a white face in a cyan
   neon frame) whose ink head carries its title in the tube's pale core. Among
