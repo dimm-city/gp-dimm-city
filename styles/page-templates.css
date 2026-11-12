@@ -746,8 +746,10 @@ li > p {
 
 /* ── CHAPTER OPENER TITLE ─────────────────────────────────────────────────
    The chapter's `#` title is a bill pasted on the wall (constitution §IV):
-   tilted, over whatever it overlaps. */
-.dc-page-chapter-start h1 { transform: rotate(-2deg); position: relative; z-index: 2; }
+   tilted, over whatever it overlaps. It pivots on its top edge: about its
+   centre, its top-left corner swung 2px past the content box and the page
+   clipped the banner there to a flat edge. */
+.dc-page-chapter-start h1 { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
 
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────
    KEEPS the default .dc-chevron heading styling (magenta banner with its
@@ -830,6 +832,7 @@ li > p {
   --dc-neon-height: 35pt;                   /* the 20pt word's capitals (14.7pt) and 10pt padding each side */
   --dc-neon-margin: 0 0 -35pt 0.3in;
   --dc-neon-tilt: rotate(1deg);
+  --dc-neon-pivot: left top;                /* hung from its left bolt: the tilt drops the right end; a lifted left corner rose past the page's top edge, cut flat there and printed a sliver on the page before */
 }
 
 }

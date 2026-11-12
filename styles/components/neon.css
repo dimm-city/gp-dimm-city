@@ -42,6 +42,7 @@
   height: var(--dc-neon-height);
   margin: var(--dc-neon-margin);
   transform: var(--dc-neon-tilt);
+  transform-origin: var(--dc-neon-pivot);
   background: var(--ink);
   display: flex;
   align-items: center;
