@@ -162,6 +162,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **The stone walls (1 to 6) are drawn at 300 DPI.** They were cut from a
+  painted sheet and printed at 240 DPI with about 110 DPI of real detail, so
+  they printed soft. They are now drawn, like walls 7 to 13, by
+  `scripts/wall-stone-rubble.py` (1 coursed rubble, 3 random rubble, 5
+  flagstone) and `scripts/wall-stone-coursed.py` (2 ashlar, 4 running bond, 6
+  square setts): the same stone types and block sizes, their tones ranked onto
+  the brick tile's (each tile's average and contrast as before), 6in tiles so
+  a page repeats less. `scripts/wall-tiles.py` now only writes the CSS (every
+  wall at 300 DPI) and draws the streets; the sheet-quilting bake is gone.
+
 - **The drawn walls (7 to 13) are drawn at 300 DPI.** Each script draws at
   `DPI = 300` with every length scaled from its 240 DPI design (never
   upsampled), so the walls carry print-resolution detail at the same size in
