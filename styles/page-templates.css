@@ -143,10 +143,8 @@
   --dc-intro-accent: var(--frontmatter-accent);
   --dc-intro-ink: var(--frontmatter-accent);  /* deep magenta: 8.9:1 on the concrete lede */
   --dc-intro-bg: var(--frontmatter-lede-bg);
-  /* The lede stacks flush on the box below it (see "Lede flush-attaches"). */
+  /* The lede stacks flush on the box below it. */
   --dc-intro-gap: 0;
-  --dc-intro-pad-bottom: 0;
-  --dc-intro-rule: 0px;     /* flush stack: no foot rule, it would show as a seam */
 }
 /* Credits and contents ledes are thanks and dedications, not an opening
    statement: body size, regular weight. */
@@ -183,16 +181,6 @@
   font-weight: 400;
 }
 
-/* Lede flush-attaches to the masthead and passes straight into the next
-   element — no gap on either side (`--dc-intro-gap` / `--dc-intro-pad-bottom`
-   above, and its last child's margin below). Shadow inherited from .dc-intro
-   base component (--shadow-poster) — its bottom edge is hidden under
-   the flush primary, leaving only the right-side shadow which lines up
-   continuously with the primary's own right shadow. */
-.page:is(.dc-page-contents, .dc-page-credits,
-         .dc-page-intro) .dc-intro > :last-child {
-  margin-bottom: 0;
-}
 
 /* TOC card — strip the dc-toc base component's 4pt top/bottom rust
    rails + 1.5pt ink side rails (`--dc-toc-rail-y/-x`), which would show as a
@@ -776,8 +764,6 @@ li > p {
   --dc-intro-ink: var(--intro-accent);
   --dc-chevron-bg: var(--brand-magenta-deep);
   --dc-intro-gap: 0;           /* the lede attaches flush to the chevron above and the section below */
-  --dc-intro-pad-bottom: 0;
-  --dc-intro-rule: 0px;
 }
 
 /* The chevron on the standalone intro page is the standard .dc-chevron at

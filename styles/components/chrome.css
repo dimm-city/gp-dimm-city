@@ -311,42 +311,50 @@ h1.dc-chevron {
 
 
 /* ── Intro / Lede line ──────────────────────────────────────────────────
-   The chapter's opening statement: larger, upright, semibold ink type on a
-   light substrate with a heavy accent rail and an ink foot rule. (Flavor is the
-   opposite register: small italic voice with a rail and no box at all.)
-   Single-direction margin: top: 0, bottom: standard gap. This gives the
-   lede flush attachment to a chevron heading above and natural
-   spacing to whatever comes below. When a lede follows body text (rare),
-   the paragraph's bottom margin provides the gap above the lede.
+   The chapter's opening statement, drawn as a callout with no label: a white
+   sheet with the note's machined chamfers, a heavy accent rail, an inset
+   accent ring and a bolt in each top corner (callouts.css, chrome.css "Bolt
+   heads"). Its type stays its own: larger, upright, semibold ink. (Flavor is
+   the opposite register: small italic voice with a rail and no box at all.)
+   Single-direction margin: top: 0, bottom: --dc-intro-gap.
 
    Token contract:
-     --dc-intro-accent → left-rail color (default --orange)
-     --dc-intro-bg     → substrate color right of the rail (default --paper-light)
-     --dc-intro-color / -size / -weight / -style → the type (ink, 13pt, 600, normal)
-     --dc-intro-rail   → rail width; --dc-intro-rule → foot rule (the pages that
-                         stack it flush set it 0)
-     --dc-intro-drop   → the outer shadow (default the poster shadow)
-     --dc-intro-gap / --dc-intro-pad-bottom → space below, inside and out (the
-                         front-matter pages set both to 0 to stack the lede flush) */
+     --dc-intro-accent → rail, ring colour (default --orange)
+     --dc-intro-bg     → the sheet (default --paper-cream, as every callout)
+     --dc-intro-color / -size / -weight / -style → the type (ink, 12pt, 600, normal)
+     --dc-intro-rail   → rail width
+     --dc-intro-ring   → the inset ring's width (0 for a lede on paper)
+     --dc-intro-shape  → the silhouette (a clip-path; `none` for a lede on paper)
+     --dc-intro-gap    → space below (the front-matter pages set 0 to stack the
+                         lede flush) */
 .dc-intro {
+  position: relative;  /* the host of its bolts */
   font-family: var(--font-body);
   font-size: var(--dc-intro-size);
   font-weight: var(--dc-intro-weight);
   font-style: var(--dc-intro-style);
   color: var(--dc-intro-color);
-  /* The accent rail is an inset shadow, not a hard-stop gradient: in a PDF/X
-     build Ghostscript turns a gradient into a 45 ppi bitmap, which printed
-     the rail's edge soft. */
   background: var(--dc-intro-bg);
+  clip-path: var(--dc-intro-shape);
+  border-left: var(--dc-intro-rail) solid var(--dc-intro-accent);
+  box-shadow: inset 0 0 0 var(--dc-intro-ring) var(--dc-intro-accent);
   line-height: 1.45;
-  padding: 0 14px var(--dc-intro-pad-bottom) 20px;
+  padding: var(--space-lg) var(--space-xl);
   margin: 0 0 var(--dc-intro-gap) 0;
-  box-shadow: inset var(--dc-intro-rail) 0 0 var(--dc-intro-accent), inset 0 calc(-1 * var(--dc-intro-rule)) 0 var(--ink), var(--dc-intro-drop);
   /* A lede is one to three short paragraphs: never split it. Split, its
-     panel paints on to the page foot with the last paragraph overleaf. */
+     sheet paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
   --dc-accent-ink: var(--dc-intro-ink);
 }
+.dc-intro > :last-child { margin-bottom: 0; }
+/* Its bolts (host A, as the note's): 2pt ring + 3px in. A learning path's
+   subtitle is a lede on the shell's own paper, with no bolts ("Bolt heads"). */
+.dc-intro::before,
+.dc-intro::after {
+  top: calc(2pt + 3px);
+}
+.dc-intro::before { left: calc(2pt + 3px); }
+.dc-intro::after { right: calc(2pt + 4px); }
 .dc-intro p,
 .dc-intro em,
 .dc-intro strong {
@@ -484,15 +492,15 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
    right-hand one -70deg, as a hand leaves them. Tokens --dc-bolt / -face /
    -size.
    Hosts. A: the callout's own ::before (left) and ::after (right), free on the
-   note, the GFM note/tip/important alerts and the example. B: where ::before
+   note, the GFM note/tip/important alerts, the example and the lede. B: where ::before
    is taken (the warning's rail, a framed sheet's white copy) the left bolt is
    on the first body block's ::before and the right one on the callout's
    ::after. The Dream Master note hangs both on its first body block. The first
    block is static, so its pseudo is placed against the callout. A rotated
    label (the warning chip, the origin and location stamps) cannot host a bolt:
    the transform would make it the containing block. */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before,
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::before,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
 :is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
 :is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
 .dc-dm-note > .dc-alert-label + *::after,
@@ -511,7 +519,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   box-shadow: 1px 1px 0 var(--dc-bolt);
 }
 /* The right-hand bolts (a callout's ::after, a card's top right). */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
 :is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
 .dc-dm-note > .dc-alert-label + *::after,
 .dc-skill-card > .dc-card-body::before,

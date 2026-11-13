@@ -126,6 +126,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **The lede is a callout with no label.** `@lede` (`.dc-intro`) is now drawn
+  as a callout: a white sheet cut to the note's chamfers, an 8px accent rail, a
+  2pt inset ring in the accent and a bolt in each top corner, around its own
+  upright semibold type. New tokens `--dc-intro-ring` and `--dc-intro-shape`;
+  `--dc-intro-rule`, `--dc-intro-drop` and `--dc-intro-pad-bottom` are retired
+  (no foot rule, and a clipped sheet has no outer shadow). A learning path's
+  subtitle keeps its look.
+- **Fiction headings have no underline.** A fiction excerpt's `#` and `##`
+  (`@section fiction`, `@fiction-excerpt`) drop the h1/h2 rule under them.
+
 - **Headings.** `h1` and `h2` are set in Creaturepunk (`--font-title`), with
   their own tracking (`--ls-title`, 0.04em); `h3` to `h6` stay in Lixdu, `h6`
   included (it was the mono label face). Sizes step by cap height (Creaturepunk
@@ -200,6 +210,14 @@ and the styles say where a reader is and what they are reading.
   - The catalog has one entry per piece, and design guide chapter 6 a specimen.
 
 ### Fixed
+
+- **Blank preview pages after a fiction excerpt at a page foot.** The
+  excerpt's broken wall reaches 16px past its box; at a page foot that reach
+  overflowed onto the next page, and the HTML preview gave it a page of its
+  own (Field Guide pages 5 and 13: the second a spacer, as every page after
+  the first blank had shifted by one and the specialty catalog must open on
+  a left page). The excerpt now clips at that reach (`overflow: clip`,
+  `overflow-clip-margin: 16px`), so the wall still paints and nothing spills.
 
 - **Creaturepunk letters that read as other characters, from print review.**
   C read as "<": it is now a blocky C (stem, top and bottom arms). U read as

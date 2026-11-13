@@ -33,7 +33,7 @@ The city didn't go quiet --- it got loud. You came to Dimm City to disappear, an
 
 </div>
 
-Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-rule`, `--dc-intro-ink` (the lede's text-safe accent ink).
+Tokens: `--dc-intro-bg`, `--dc-intro-accent`, `--dc-intro-color`, `--dc-intro-size`, `--dc-intro-weight`, `--dc-intro-style`, `--dc-intro-rail`, `--dc-intro-ring`, `--dc-intro-shape`, `--dc-intro-ink` (the lede's text-safe accent ink).
 
 ## Flavor
 

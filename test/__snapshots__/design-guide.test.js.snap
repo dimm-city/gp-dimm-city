@@ -919,7 +919,7 @@ The city didn't go quiet --- it got loud. You came to Dimm City to disappear, an
 <div class="dg-stage">
 <div class="dc-intro" data-source-range="27:28"><p>The city didn’t go quiet — it got loud. You came to Dimm City to disappear, and instead the whole block learned your name.</p>
 </div></div>
-<p>Tokens: <code>--dc-intro-bg</code>, <code>--dc-intro-accent</code>, <code>--dc-intro-color</code>, <code>--dc-intro-size</code>, <code>--dc-intro-weight</code>, <code>--dc-intro-style</code>, <code>--dc-intro-rail</code>, <code>--dc-intro-rule</code>, <code>--dc-intro-ink</code> (the lede’s text-safe accent ink).</p>
+<p>Tokens: <code>--dc-intro-bg</code>, <code>--dc-intro-accent</code>, <code>--dc-intro-color</code>, <code>--dc-intro-size</code>, <code>--dc-intro-weight</code>, <code>--dc-intro-style</code>, <code>--dc-intro-rail</code>, <code>--dc-intro-ring</code>, <code>--dc-intro-shape</code>, <code>--dc-intro-ink</code> (the lede’s text-safe accent ink).</p>
 <h2 data-name="flavor">Flavor</h2>
 <p>In-world voice: italic, accent-railed, spoken from inside the fiction. It has no box: the rail is the whole container. Inside a <code>@skill</code> card the first <code>&gt;</code> line is flavor automatically; anywhere else, tag the quote.</p>
 <pre><code data-source-range="41:45" class="language-markdown">&gt; [!FLAVOR]
@@ -4142,7 +4142,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="107:108">
 <td>Lede</td>
-<td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code> <code>--dc-intro-color</code> <code>--dc-intro-size</code> <code>--dc-intro-weight</code> <code>--dc-intro-style</code> <code>--dc-intro-rail</code> <code>--dc-intro-rule</code> <code>--dc-intro-ink</code></td>
+<td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code> <code>--dc-intro-color</code> <code>--dc-intro-size</code> <code>--dc-intro-weight</code> <code>--dc-intro-style</code> <code>--dc-intro-rail</code> <code>--dc-intro-ring</code> <code>--dc-intro-shape</code> <code>--dc-intro-ink</code></td>
 </tr>
 <tr data-source-range="108:109">
 <td>Flavor</td>
