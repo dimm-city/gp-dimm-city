@@ -39,6 +39,7 @@ RIVET_R = 9                 # rivet head radius, px
 RIVET_STEP = 100            # rivet pitch along an edge, px
 RIVET_IN = 26               # rivet line's distance in from the plate edge, px
 SEED = 7
+SHADE = 0.85                # the whole tile, darker than the stone walls; its darkest rust stays well under DriveThruRPG's 240% TAC
 
 rng = np.random.default_rng(SEED)
 N = SIZE
@@ -191,7 +192,7 @@ for _ in range(70):
 # ── 5. grime toward each plate's foot ─────────────────────────────────────────
 img *= (1 - 0.10 * smooth(ly / P, 0.6, 1.0))[..., None]
 
-out = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8), "RGB")
+out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB")
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-7.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
