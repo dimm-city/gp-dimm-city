@@ -801,7 +801,7 @@ li > p {
 .chapter.dc-chapter-dm           { --dc-section-accent: var(--ink-dark); }
 .chapter.dc-chapter-gear         { --dc-section-accent: var(--signal-indigo); }
 
-/* NEON SIGNS (components/neon.css). A chapter word picks its sign's tube. */
+/* NEON SIGNS (components/neon.css). A chapter word picks the tube of its opener's sign and its lit plates. */
 .chapter.dc-chapter-rules         { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }
 .chapter.dc-chapter-dm            { --dc-neon: var(--neon-cyan);   --dc-neon-core: var(--neon-cyan-core);   --dc-neon-ring-1: var(--neon-cyan-ring-1);   --dc-neon-ring-2: var(--neon-cyan-ring-2); }
 .chapter.dc-chapter-gear          { --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core); --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2); }
@@ -820,9 +820,9 @@ li > p {
   --dc-neon-tilt: rotate(1deg);
   --dc-neon-pivot: left top;                /* hung from its left bolt: the tilt drops the right end; a lifted left corner rose past the page's top edge, cut flat there and printed a sliver on the page before */
 }
-/* In the Dream Master's own chapter every sheet is the Dream Master's and the
-   opener hangs the sign: a sheet there does not repeat DREAM MASTER. The sign
-   marks a Dream Master's sheet among the players' pages. */
+/* The DREAM MASTER sign marks a Dream Master's sheet among the players' pages.
+   In the Dream Master's own chapter every sheet is the Dream Master's, so none
+   carries it (nor does the opener, plugin.js NEON_CHAPTER_WORDS). */
 .chapter.dc-chapter-dm .dc-section-dm {
   --dc-dm-sign: none;
   --dc-section-top: 0px;

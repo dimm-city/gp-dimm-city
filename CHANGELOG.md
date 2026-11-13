@@ -162,6 +162,28 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **A box's title keeps one line when it nearly does.** A paste-up sheet's
+  tag (and a mid-sheet `.dc-pu-tag`), a bill and the Dream Master booth's
+  head that would wrap by a little are set up to 15% smaller (`--fs-fit`,
+  0.85) to stay on one line; one that needs more wraps at its own size, as
+  before. ROLL THE DIE!, DIMM CITY IS ALIVE, TIME AND MOVEMENT and most of the
+  Monoverse and rules tags now sit on one line. CSS cannot measure text, so
+  the plugin writes each title's width in em on a `span.dc-fit` (`dcHeadingFit`,
+  from the heading fonts' advances, Lixdu's kerning and the ink of
+  Creaturepunk's slanted last letter; `scripts/heading-metrics.py` writes the
+  table into `plugin.js`), and `dc-core.css` sizes it against its box: every
+  panel and flat section is now a size container (`container-type:
+  inline-size`), each title kind names its measure in `cqi`, and every
+  letter-spacing on a heading is told to the fit (`--dc-fit-ls`). Nothing runs
+  in the page, so the preview and the PDF agree. In a row a tag keeps the
+  width it had (the whole room, not 88%).
+- **The Dream Master's chapter hangs no neon sign.** Its opener's DREAM MASTER
+  sign repeated the title (DREAM MASTERY); the sign marks the Dream Master's
+  sheets among the players' pages, so the chapter that is all the Dream
+  Master's hangs none, opener or booth (owner, 2026-11-13).
+- **The gear chapter's opener hangs no neon sign.** Its GEAR sign repeated
+  the title (…and Gear), so it is gone; Rules and Citizen File openers keep
+  theirs (owner, 2026-11-13).
 - **The stone walls (1 to 6) are drawn at 300 DPI.** They were cut from a
   painted sheet and printed at 240 DPI with about 110 DPI of real detail, so
   they printed soft. They are now drawn, like walls 7 to 13, by
@@ -266,6 +288,11 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **A long word no longer runs off its tag.** THE ENTERTAINMENT DISTRICT's
+  ENTERTAINMENT was wider than its half sheet, so its tag ran under the next
+  sheet's and the word was cut. A title's longest word is now set smaller
+  until it fits its box (for a tag, from its hung edge to the paper's text
+  edge), with the 10pt floor.
 - **A dark line at the foot of a page before a `@page-break`.** A skill card
   sits 4px high (its tab's outline stays inside its box); after a forced
   break Chromium keeps that margin, so the card started 4px above its page
