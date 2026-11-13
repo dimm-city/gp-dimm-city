@@ -41,9 +41,12 @@ and the styles say where a reader is and what they are reading.
 ### Added
 
 - **Wall 7, rusted steel plate (`@page wall-7`, `.dc-page-wall-7`).** Riveted
-  steel plates in a running bond under rust patches and streaks, drawn by
-  `scripts/wall-metal.py` (no photograph). Its plate grid is anchored to the
-  sheet and a right page carries on from the left page, so a spread is one
+  steel plates in a running bond under rust patches and streaks, battered:
+  dents, bullet holes (singly and in bursts, rust bleeding from them),
+  glancing hits, torch cuts in the steel's heat colours, scorches and claw
+  marks. Drawn by `scripts/wall-metal.py` (no photograph), a 17.5in x 15in
+  tile, so a spread shows no repeat. Its plate grid is anchored to the sheet
+  and a right page carries on from the left page, so a spread is one
   continuous wall.
 - **Wall 8, circuits set into the wall (`@page wall-8`, `.dc-page-wall-8`).**
   A grey render, pored, patched and hairline-cracked, with a few printed
