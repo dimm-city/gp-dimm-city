@@ -2256,6 +2256,7 @@ export const markers = {
       'wall-5': 'dc-page-wall-5',
       'wall-6': 'dc-page-wall-6',
       'wall-7': 'dc-page-wall-7',   // rusted steel plate (scripts/wall-metal.py)
+      'wall-8': 'dc-page-wall-8',   // circuit panels falling apart (scripts/wall-circuit.py)
     },
   },
   chapter: {
