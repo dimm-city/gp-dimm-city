@@ -7,9 +7,9 @@
 These three were cut from the painted sheet (source-art/wall-sheet.png) by
 wall-tiles.py and printed at 240 DPI with about 110 DPI of real detail. They
 are drawn here instead, at DPI (300, the print bar), in the same look: a line
-drawing of dressed stone in the brick's colours, ash (--bg) faces with grey
-joints, every tone matched to the brick tile's own, so a stone page weighs
-what a brick page does.
+drawing of dressed stone, ash (--bg) faces with grey joints, its tones first
+matched to the brick tile's own; then weathered by wall_grime.py, as walls
+1, 3 and 5 are, into the city's dim, grimy, damaged stone.
 
     2  ashlar: big dressed blocks in pairs of courses, some blocks the height
        of both (jumpers), the rest in two courses whose joints break.
@@ -17,7 +17,7 @@ what a brick page does.
     6  square setts, each row half a sett along, so it reads as a wall, not
        paving.
 
-Each tile is a whole number of blocks and courses (about 6in a side), and
+Each tile is a whole number of blocks and courses (about 9in x 12in), and
 everything in it is periodic, so it repeats without a seam either way: the
 noise is filtered in the Fourier domain, blurs are circular convolutions,
 and the blocks and every stroke are laid with wrap-around.
@@ -35,9 +35,10 @@ darkness field, back to front:
    strokes, a drafted margin, a few hairline cracks), all faint.
 The darkness is then mapped, level by level, onto the brick tile's tones
 (images/brick-wall.png: --bg times a grey line drawing), as wall-tiles.py's
-`tint` mapped the sheet's: each tile gets the brick's mean colour, its
-histogram and its darkest grey, and so an exact palette of about a hundred
-colours (bg times each tone), saved as a palette PNG with no dither.
+`tint` mapped the sheet's: the clean stone gets the brick's histogram and
+darkest grey. wall_grime.py then weathers it with the joints' mask (grime,
+damp, mould and fungi, burns, damage, dried blood), dims it, and saves it
+as an exact palette PNG with no dither.
 """
 import math
 import sys
@@ -45,6 +46,9 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wall_grime  # noqa: E402  (the grime and damage, shared with wall-stone-rubble.py)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px an inch: the print bar
@@ -64,10 +68,12 @@ WALLS = {
     6: dict(seed=6, joint=2.8, line=2.6, corner=0.8, wobble=0.3, bite=0.6, fringe=6.0, speck=2.1, chips=0.15,
             flecks=1.6, draft=0.40, tool=0.15, cracks=8, midline=0.45, burst=0.0),
 }
-COURSE_4 = 0.1875 * DPI     # running bond: a course (0.19in, the sheet's), 32 to the tile
-BRICK_4 = 0.5 * DPI         # and a brick (0.5in), 12 to the tile: 6in x 6in
-SETT_6 = 170                # square setts: a cell (0.567in, the sheet's), 11 x 10 to the tile: 6.23in x 5.67in
-PAIRS_2 = 5                 # ashlar: pairs of courses (about 1.2in each) in its 6in x 6in tile
+# Each tile is about 9in x 12in, about a page across and taller than one, so a
+# page shows no mark of the grime twice; a whole number of blocks and courses.
+COURSE_4 = 0.1875 * DPI     # running bond: a course (0.19in, the sheet's), 64 to the tile
+BRICK_4 = 0.5 * DPI         # and a brick (0.5in), 18 to the tile: 9in x 12in
+SETT_6 = 170                # square setts: a cell (0.567in, the sheet's), 16 x 22 to the tile: 9.07in x 12.47in
+PAIRS_2 = 10                # ashlar: pairs of courses (about 1.2in each) in its 9in x 12in tile
 
 
 def smooth(x, lo, hi):
@@ -320,13 +326,13 @@ def crack(t, lines):
 def draw(n):
     p = WALLS[n]
     if n == 4:
-        t = Tile(round(12 * BRICK_4), round(32 * COURSE_4), p["seed"])
+        t = Tile(round(18 * BRICK_4), round(64 * COURSE_4), p["seed"])
         running_bond(t, p)
     elif n == 6:
-        t = Tile(11 * SETT_6, 10 * SETT_6, p["seed"])
+        t = Tile(16 * SETT_6, 22 * SETT_6, p["seed"])     # an even count of rows, so the half-lap wraps
         setts(t, p)
     else:
-        t = Tile(6 * DPI, 6 * DPI, p["seed"])
+        t = Tile(9 * DPI, 12 * DPI, p["seed"])
         ashlar(t, p)
     r = t.rng
     W, H = t.W, t.H
@@ -411,7 +417,7 @@ def draw(n):
     if p["midline"]:                                # a hairline down the middle of a wide joint: its pointing
         mid = smooth(-E0, p["joint"] - 1.3, p["joint"] - 0.5) * smooth(strength, 0.0, 0.3)
         D = np.maximum(D, joint * mid * p["midline"])
-    return t, D
+    return t, D, 1 - smooth(E1, lw - 0.6, lw + 0.6)     # and the joint: the gap and the arris line round it
 
 
 def brick_tones():
@@ -442,10 +448,12 @@ def main():
     walls = [int(a) for a in sys.argv[1:]] or sorted(WALLS)
     tones = brick_tones()
     for n in walls:
-        t, D = draw(n)
-        out = tint(D, tones)
+        t, D, joint = draw(n)
+        stone = np.asarray(tint(D, tones).convert("RGB"), F32) / 255
+        del D
+        rgb, special = wall_grime.weather(stone, joint, seed=WALLS[n]["seed"] * 100 + 7)
         path = ROOT / f"images/wall-{n}.png"
-        out.save(path, optimize=True)
+        out = wall_grime.save(rgb, special, path)
         avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
         print(f"images/wall-{n}.png  {t.W}x{t.H}  {t.W / DPI:.2f}x{t.H / DPI:.2f}in  {len(out.getcolors())} colours  "
               f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}  {path.stat().st_size / 1e6:.2f}MB", flush=True)

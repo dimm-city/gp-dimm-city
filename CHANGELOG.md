@@ -162,6 +162,22 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **The stone walls (1 to 6) are grim.** They were clean, calm ash stone; now
+  they are Dimm City's: dim, dirty, damp and dangerous. One shared pass,
+  `scripts/wall_grime.py`, weathers all six with each wall's joint mask, so
+  they read as one city: grime in the joints, washed down the faces and
+  heavier toward the foot; damp streaks, rising damp under a wavy tide mark
+  and tide-ringed leaks; sparse black and green mould, a slimy algal film and
+  a few small shelf fungi and caps in the joints; soot blooms, scorches and a
+  flame's lick; chipped arrises, cracks, bullet pocks, one or two sets of
+  claw gouges (fresh stone in the groove, lit from the upper left), a
+  scratched tally or glyph; and rare, small specks and spatters of dried
+  blood. Each wall averages #a8a49c, dimmer than the brick's #c1beb8 and
+  still lighter than walls 7 to 13, so the white sheets stand out more. The
+  tiles grow from 6in to about 9in x 12in (the same stones and block sizes),
+  so a page shows no mark twice; each is an exact palette with entries kept
+  for the blood and the greens, every colour well under the 240% ink limit.
+
 - **The stone walls (1 to 6) are drawn at 300 DPI.** They were cut from a
   painted sheet and printed at 240 DPI with about 110 DPI of real detail, so
   they printed soft. They are now drawn, like walls 7 to 13, by

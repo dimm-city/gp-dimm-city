@@ -62,12 +62,12 @@ Six walls can stand in for the brick on any page, over the whole sheet: write th
 
 | Word | Wall |
 |---|---|
-| `wall-1` | Coursed rubble: rough stones in rough courses |
-| `wall-2` | Ashlar: big dressed blocks, some double height |
-| `wall-3` | Random rubble: big rounded stones, no courses |
-| `wall-4` | Running bond: small bricks, half-lapped |
-| `wall-5` | Flagstone: flat slabs bedded in rough courses |
-| `wall-6` | Square setts: square blocks, half-lapped |
+| `wall-1` | Coursed rubble: rough stones in rough courses, grimy and damaged |
+| `wall-2` | Ashlar: big dressed blocks, some double height, grimy and damaged |
+| `wall-3` | Random rubble: big rounded stones, no courses, grimy and damaged |
+| `wall-4` | Running bond: small bricks, half-lapped, grimy and damaged |
+| `wall-5` | Flagstone: flat slabs bedded in rough courses, grimy and damaged |
+| `wall-6` | Square setts: square blocks, half-lapped, grimy and damaged |
 | `wall-7` | Rusted steel plate: riveted plates under rust, with bullet holes, torch cuts and claw marks |
 | `wall-8` | Circuits set into the wall: a grey render with a few broken boards set into it |
 | `wall-9` | Moss and fungus: coursed rubble under moss, lichen, bracket fungi and creepers |
@@ -76,7 +76,7 @@ Six walls can stand in for the brick on any page, over the whole sheet: write th
 | `wall-12` | A technosorcerer's lab: conduit, bulbs and LED strips, chalked circuit-sigils, shelves of jars and candles |
 | `wall-13` | A bazaar: stalls under faded awnings, bulb strings, hanging goods, crates along the foot |
 
-Walls 1 to 6 are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 6in or so, so a page reads as one wall, not a grid of tiles; all thirteen are drawn at 300 DPI, so they print sharp. Walls 7 to 13 are drawn, in their own colours, and repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
+Walls 1 to 6 are the city's own stone: ash stone with grey joints, a little dimmer than the brick, grimy, damp and dangerous. Dirt in the joints and toward the foot, damp streaks and tide marks, a little mould and fungus, soot and scorches, chips, cracks, bullet pocks, the odd set of claw gouges, a scratched tally or glyph and a few specks of dried blood: a wall first, the damage found on a second look, so the white sheets on it lead. Each repeats only every 12in or so, so a page never shows the same mark twice; all thirteen are drawn at 300 DPI, so they print sharp. Walls 7 to 13 are drawn, in their own colours, and repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
 
 ### Where pages break
 
