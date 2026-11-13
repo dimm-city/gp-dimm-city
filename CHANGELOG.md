@@ -45,6 +45,14 @@ and the styles say where a reader is and what they are reading.
   `scripts/wall-metal.py` (no photograph). Its plate grid is anchored to the
   sheet and a right page carries on from the left page, so a spread is one
   continuous wall.
+- **Wall 8, circuit panels falling apart (`@page wall-8`, `.dc-page-wall-8`).**
+  Printed circuit boards screwed to the wall with gaps between them: traces
+  routed at 0/45/90 degrees, pads, vias and chip footprints under aged solder
+  mask, the boards cracked and chipped, corners broken off with traces
+  dangling from the break, mask peeled to bare glass-epoxy and tarnished,
+  verdigrised copper, burn marks; one bay has lost its panel. Drawn by
+  `scripts/wall-circuit.py` (no photograph). Its panel grid is anchored to the
+  sheet as wall 7's is, so a spread is one continuous wall.
 - **Creaturepunk, a graffiti display face.** Caps traced from the
   CREATUREPUNK lettering (C, R, E, A, T, U, P, N, K), with the rest of A-Z,
   0-9 and common punctuation built from pieces of those letters; lowercase
