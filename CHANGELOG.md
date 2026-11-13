@@ -40,6 +40,11 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Wall 7, rusted steel plate (`@page wall-7`, `.dc-page-wall-7`).** Riveted
+  steel plates in a running bond under rust patches and streaks, drawn by
+  `scripts/wall-metal.py` (no photograph). Its plate grid is anchored to the
+  sheet and a right page carries on from the left page, so a spread is one
+  continuous wall.
 - **Creaturepunk, a graffiti display face.** Caps traced from the
   CREATUREPUNK lettering (C, R, E, A, T, U, P, N, K), with the rest of A-Z,
   0-9 and common punctuation built from pieces of those letters; lowercase

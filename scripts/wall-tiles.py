@@ -1,4 +1,5 @@
-"""Bake the six stone-wall page tiles (`@page wall-1` ... `wall-6`) and their CSS.
+"""Bake the six stone-wall page tiles (`@page wall-1` ... `wall-6`) and the CSS
+for every wall, wall 7 (rusted steel, drawn by scripts/wall-metal.py) included.
 
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
     python3 scripts/wall-tiles.py --css     # rewrite the CSS only, from images/
@@ -87,7 +88,23 @@ GROUND = "images/ground.png"        # the setts: the street under the brick
 # same stone, and cracked, patched asphalt. Each wall stands on one that
 # contrasts with it. All of them are grimed (`grime`). `--grounds` draws them.
 STREETS = {"setts": GROUND, "flags": "images/ground-flags.png", "asphalt": "images/ground-asphalt.png"}
-WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt"}
+WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt", 7: "asphalt"}
+DRAWN = {7}                         # walls drawn by their own script, not cut from the sheet (7: scripts/wall-metal.py)
+# Walls with a regular grid (7's steel plates): an @page background is placed
+# from the text area's corner, which sits at a different place on a left page,
+# a right page and a margin-free page, so a grid restarts on each and breaks at
+# the spine. These are anchored to the sheet instead, and a right page carries
+# on from the left page's width: a spread is one wall. (A stone wall has no grid
+# to break, so it keeps the text area's corner.)
+ALIGNED = {7}
+SHEET_W = "var(--gp-page-width, 8.625in)"
+ANCHOR = {   # tile offset from the text area's corner, per side; a full page has no margins
+    "left": ("calc(-1 * var(--outer-margin))", "calc(-1 * var(--page-margin))"),
+    "right": (f"calc(-1 * ({SHEET_W} + var(--binding-margin)))", "calc(-1 * var(--page-margin))"),
+    "full-left": ("0", "0"),
+    "full-right": (f"calc(-1 * {SHEET_W})", "0"),
+}
+WALLS = range(1, 8)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
@@ -586,11 +603,16 @@ def write_css(walls):
     pages, wiring = [], []
     for n, (w, h) in walls.items():
         # the ground over the foot of the sheet, then the wall: both opaque
-        stone = f'url("../images/wall-{n}.png") 0 0 / {w / DPI:.2f}in auto repeat var(--bg)'
+        def stone_at(x="0", y="0"):
+            return f'url("../images/wall-{n}.png") {x} {y} / {w / DPI:.2f}in auto repeat var(--bg)'
+        stone = stone_at()
         bg = f"{ground_layer(n=n)}, {stone}"
 
         for name in [f"dc-wall-{n}"] + [f"dc-wall-{n}-{hue}" for hue in HUES]:
             pages.append(f"@page {name} {{ background: {bg}; }}")
+            if n in ALIGNED:
+                for side in ("left", "right"):
+                    pages.append(f"@page {name}:{side} {{ background: {ground_layer(n=n)}, {stone_at(*ANCHOR[side])}; }}")
         for hue, token in HUES.items():
             pages.append(f"@page dc-wall-{n}-{hue}:left  {{ @bottom-right {{ background: var({token}); }} }}")
             pages.append(f"@page dc-wall-{n}-{hue}:right {{ @bottom-left  {{ background: var({token}); }} }}")
@@ -621,6 +643,10 @@ def write_css(walls):
         # the viewer
         wiring.append(f"@page dc-wall-{n}-full {{ margin: 0; background: {ground_layer(sheet=True, n=n)}, {stone}; "
                       "@bottom-left { content: none; } @bottom-right { content: none; } }")
+        if n in ALIGNED:
+            for side in ("left", "right"):
+                wiring.append(f"@page dc-wall-{n}-full:{side} {{ background: {ground_layer(sheet=True, n=n)}, "
+                              f"{stone_at(*ANCHOR['full-' + side])}; }}")
         wiring.append(f".dc-page-wall-{n}:not(.page, {KEEPS}) > .dc-specialty-art {{ page: dc-wall-{n}-full; }}")
     replace_block("styles/dc-native.css", "page-walls", "\n".join(pages))
     replace_block("styles/page-rules.css", "page-walls", "\n".join(wiring))
@@ -660,14 +686,15 @@ def main():
         for kind, path in STREETS.items():
             street(kind, tones).save(path, optimize=True)
             print(path, flush=True)
-        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in WALLS})
         return
     if "--css" in sys.argv:                 # the CSS alone, from the tiles already baked
-        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in WALLS})
         return
     boxes = opaque_boxes(Image.open(SHEET).convert("RGBA"))
     with Pool(len(boxes)) as pool:
         walls = dict(pool.map(bake, enumerate(boxes, 1)))
+    walls.update({n: Image.open(f"images/wall-{n}.png").size for n in DRAWN})
     write_css(walls)
 
 
