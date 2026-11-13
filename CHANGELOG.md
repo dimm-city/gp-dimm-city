@@ -203,8 +203,11 @@ and the styles say where a reader is and what they are reading.
   to a third of the height with the middle open below it. "…" fell back to
   another font: the font now has its own ellipsis. J's stub of a hook read
   as a foot: the hook is now a bowl. & was a small B with a tail: it is now
-  drawn as strokes, a loop over crossing diagonals with an arm and a tail. The logo's C and U stay
-  as `swsh` alternates. C, G, U, M and & change width, so a heading set with them
+  drawn as strokes, a loop over crossing diagonals with an arm and a tail.
+  The 7 is redrawn by hand in the editor: a hooked bar and a thicker
+  diagonal that steps left partway down, notched at the step, with a thorn
+  off its left edge; it is narrower (advance 980 to 760). The logo's C and U stay
+  as `swsh` alternates. C, G, U, M, 7 and & change width, so a heading set with them
   can rewrap.
 
 - **A paste-up tag widens to its longest word.** A word wider than the tag's
