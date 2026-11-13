@@ -113,8 +113,8 @@ aliases: --paper-form -> --paper-cream, --paper-zine -> --concrete-pale, --paper
 
 ```
 where                                  mix                                              hex      CMYK                TAC  max  min
-components/cards.css:802               srgb --ink 14% --paper-cream                     #dfdfdf  C11 M8 Y8 K0         27   11    8
-components/cards.css:803               srgb --ink 6% --paper-cream                      #f2f1f1  C4 M3 Y3 K0          10    4    3
+components/cards.css:812               srgb --ink 14% --paper-cream                     #dfdfdf  C11 M8 Y8 K0         27   11    8
+components/cards.css:813               srgb --ink 6% --paper-cream                      #f2f1f1  C4 M3 Y3 K0          10    4    3
 components/chrome.css:208              srgb --ink 35% --paper-cream                     #b0b0b0  C24 M18 Y18 K8       68   24    8
 components/data.css:816                srgb --brand-magenta 38% --paper-cream           #edabce  C5 M34 Y1 K0         40   34    1
 components/enclosures.css:121          srgb --crimson 40% --paper-cream                 #f3a8a4  C2 M35 Y24 K1        62   35    1
