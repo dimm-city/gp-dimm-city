@@ -35,10 +35,18 @@ What it draws, back to front:
 It is then quantised to an exact palette, as the other walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is).
 
-At DPI (240, wall-tiles.py's) the tile is 18in x 12in, wider than a spread
+At DPI (300, the print bar) the tile is 18in x 12in, wider than a spread
 and taller than a page, so a spread shows no repeat. wall-tiles.py anchors it to the sheet, not the text area, and offsets
 a right page by the left page's width, so a board the spine cuts carries on
 across the spread.
+
+It was first drawn at 240 DPI, and every length in it is scaled by S (300 /
+240) from there, so it prints the same at the finer resolution, with finer
+detail rather than an upsampled one. A board is laid out in board units, 1/240in
+each, and drawn at S px a unit (SS x that on its supersampled canvas). The
+noise's coarse frequencies, all the 240 DPI tile had, are drawn first from the
+same seeds as before, so the wall keeps its layout; the new ones add only
+finer grain.
 """
 import math
 from pathlib import Path
@@ -47,19 +55,29 @@ import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-W_PX, H_PX = 4320, 2880     # px; 18in x 12in at 240 DPI: wider than a spread and taller than a page, so a spread shows no repeat
-M = 96                      # margin round a panel's canvas: dangling traces, wires, shadows
+DPI = 300                   # px an inch: the print bar
+S = DPI / 240               # px per px of the 240 DPI tile it was first drawn at: every length below is scaled by it
+W_PX, H_PX = round(18 * DPI), round(12 * DPI)   # px; 18in x 12in: wider than a spread and taller than a page, so a spread shows no repeat
+M = round(96 * S)           # px of margin round a panel's canvas: dangling traces, wires, shadows
 SS = 2                      # each panel is drawn at SS x and boxed down: clean 45-degree edges
+U = S * SS                  # canvas px per board unit (1/240in): a board is laid out in those, and drawn at S px a unit
+CSS = 4                     # the wall's hairline cracks are drawn at CSS x and boxed down: 1.25px lines
 SEED = 8
 SHADE = 1.0                 # the whole tile; its darkest burn stays well under DriveThruRPG's 240% TAC
 FONT = ROOT / "fonts/tomorrow/tomorrow-500.ttf"
 
 rng = np.random.default_rng(SEED)
 NW, NH = W_PX, H_PX
+NW0, NH0 = round(NW / S), round(NH / S)     # the tile at 240 DPI, where the noise's coarse frequencies are drawn
+
+
+def px(v):
+    """A whole number of px for a length v given in 240 DPI px (a shift, a roll)."""
+    return int(math.floor(v * S + 0.5))
 R2 = math.sqrt(0.5)
 DIRS = [np.array(v) for v in ((1, 0), (R2, R2), (0, 1), (-R2, R2), (-1, 0), (-R2, -R2), (0, -1), (R2, -R2))]
-CLEAR = 5                   # px kept clear round a trace by the router
-POUR_CLEAR = 7              # px between the ground pour and any other copper
+CLEAR = 5                   # board units kept clear round a trace by the router
+POUR_CLEAR = 7              # board units between the ground pour and any other copper
 VIA_R, VIA_HOLE = 7.5, 3.0
 
 LAYERS = ("scratch", "board", "cu", "keep", "pad", "hole", "silk", "chip", "chiptext", "lead", "solder",
@@ -73,14 +91,26 @@ def hexc(h):
 def noise(beta, stretch=(1.0, 1.0), seed=None):
     """Periodic 1/f^beta noise in [0, 1] over the tile."""
     r = np.random.default_rng(seed)
-    white = r.standard_normal((NH, NW))
+    white = white_spec(r)
     fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
     fx = np.fft.fftfreq(NW)[None, :] * stretch[0]
     f = np.sqrt(fx * fx + fy * fy)
     f[0, 0] = 1.0
-    out = np.real(np.fft.ifft2(np.fft.fft2(white) / f ** beta))
+    out = np.real(np.fft.ifft2(white / f ** beta))
     out -= out.min()
     return out / out.max()
+
+
+def white_spec(r):
+    """The spectrum of white noise over the tile. Its coarse part, every
+    frequency the 240 DPI tile had, is drawn first, as it was then, so a field
+    keeps its layout; the finer frequencies are drawn after it."""
+    coarse = np.fft.fft2(r.standard_normal((NH0, NW0))) * S       # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
+    spec = np.fft.fft2(r.standard_normal((NH, NW)))
+    iy = np.fft.fftfreq(NH0, 1 / NH0).astype(int) % NH
+    ix = np.fft.fftfreq(NW0, 1 / NW0).astype(int) % NW
+    spec[np.ix_(iy, ix)] = coarse
+    return spec
 
 
 def circ_conv(img, kernel):
@@ -128,12 +158,13 @@ def jag(a, b, rough, r):
 
 
 # ── where the boards are: a few, sporadic, on the tile's own torus ──────────
-BOARDS = [(560, 420), (330, 470), (420, 300), (300, 230), (250, 330), (480, 340), (280, 380), (360, 260)]   # px, w x h
-SEP = 300                   # px of plain wall at least between two boards' recesses
-cells = []                  # (gx, gy, w, h): each board's top-left on the tile, and its size
-for (w, h) in BOARDS:
+BOARDS = [(560, 420), (330, 470), (420, 300), (300, 230), (250, 330), (480, 340), (280, 380), (360, 260)]   # board units (1/240in), w x h
+SEP = 300 * S               # px of plain wall at least between two boards' recesses
+cells = []                  # (gx, gy, w, h): each board's top-left on the tile, and its size, px
+for (bw, bh) in BOARDS:
+    w, h = int(bw * S + 0.5), int(bh * S + 0.5)
     for _ in range(5000):
-        gx, gy = int(rng.integers(0, NW)), int(rng.integers(0, NH))
+        gx, gy = round(int(rng.integers(0, NW0)) * S), round(int(rng.integers(0, NH0)) * S)
         def gap(a0, a1, b0, b1, n):             # space between two spans on a loop of n (< 0: they overlap)
             return min(max(b0 + k - a1, a0 - b1 - k) for k in (-n, 0, n))
         if all(max(gap(gx, gx + w, ox, ox + ow, NW), gap(gy, gy + h, oy, oy + oh, NH)) >= SEP
@@ -155,7 +186,7 @@ flake = noise(0.7, seed=SEED + 9)
 stain = noise(1.6, seed=SEED + 10)
 streakn = noise(1.0, stretch=(1.0, 0.10), seed=SEED + 8)
 yy, xx = np.mgrid[0:NH, 0:NW]
-weave = (np.cos(2 * np.pi * xx / 8) * np.cos(2 * np.pi * yy / 8))       # glass cloth under the resin
+weave = (np.cos(2 * np.pi * xx / (8 * S)) * np.cos(2 * np.pi * yy / (8 * S)))       # glass cloth under the resin
 
 # ── 1. the wall: grey render, mottled, pored, patched and cracked ─────────────
 grain = noise(0.5, seed=SEED + 12)                                  # the render's sand
@@ -164,14 +195,15 @@ patch = noise(1.8, seed=SEED + 11)                                  # old repair
 wall *= (1 - 0.05 * smooth(patch, 0.62, 0.66))[..., None]
 wall *= (0.95 + 0.07 * streakn)[..., None]
 wall *= (1 - 0.20 * smooth(speck, 0.80, 0.95))[..., None]
-crack_l = Image.new("L", (NW, NH), 0)          # hairline cracks in the render, drawn wrapped
+crack_l = Image.new("L", (NW * CSS, NH * CSS), 0)     # hairline cracks in the render, drawn wrapped, at CSS x
 crack_d = ImageDraw.Draw(crack_l)
 
 
 def wall_crack(x, y, heading, length, width):
+    """A crack from (x, y), px; its width in 240 DPI px."""
     pts, a = [(x, y)], heading
     while length > 0:
-        step = rng.uniform(8, 22)
+        step = rng.uniform(8 * S, 22 * S)
         a += rng.normal(0, 0.35)
         x, y = x + step * math.cos(a), y + step * math.sin(a)
         pts.append((x, y))
@@ -180,20 +212,21 @@ def wall_crack(x, y, heading, length, width):
             wall_crack(x, y, a + rng.choice([-1, 1]) * rng.uniform(0.5, 1.1), length * 0.5, max(1, width - 1))
     for ox in (-NW, 0, NW):
         for oy in (-NH, 0, NH):
-            crack_d.line([(px + ox, py + oy) for px, py in pts], fill=255, width=width)
+            crack_d.line([((qx + ox) * CSS, (qy + oy) * CSS) for qx, qy in pts], fill=255, width=round(width * S * CSS))
 
 
 for _ in range(10):
-    wall_crack(rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(0, 2 * math.pi), rng.uniform(80, 260), 1)
+    wall_crack(rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(0, 2 * math.pi), rng.uniform(80 * S, 260 * S), 1)
 
 
 class Panel:
-    """One board, drawn on its own canvas (board coords 0..w, 0..h; the canvas
-    has a margin M round it) at SS x."""
+    """One board, drawn on its own canvas (board coords 0..w, 0..h, in board
+    units; the canvas, pw x ph px of board with a margin M px round it) at SS x."""
 
     def __init__(self, w, h, seed):
         self.w, self.h = w, h
-        self.W, self.H = w + 2 * M, h + 2 * M
+        self.pw, self.ph = int(w * S + 0.5), int(h * S + 0.5)
+        self.W, self.H = self.pw + 2 * M, self.ph + 2 * M
         self.r = np.random.default_rng(seed)
         self.img = {k: Image.new("L", (self.W * SS, self.H * SS), 0) for k in LAYERS}
         self.drw = {k: ImageDraw.Draw(v) for k, v in self.img.items()}
@@ -204,31 +237,31 @@ class Panel:
         self.screws = []
         self.cracks = []
         self.fonts = {}
-        self.rect("board", 0, 0, w - 1 / SS, h - 1 / SS)
+        self.rect("board", 0, 0, (self.pw - 1 / SS) / S, (self.ph - 1 / SS) / S)
 
     # drawing primitives, board coords -------------------------------------
     def xy(self, pts):
-        return [((x + M) * SS, (y + M) * SS) for x, y in pts]
+        return [((x * S + M) * SS, (y * S + M) * SS) for x, y in pts]
 
     def line(self, layer, pts, width, fill=255):
         d = self.drw[layer]
-        d.line(self.xy(pts), fill=fill, width=max(1, round(width * SS)), joint="curve")
+        d.line(self.xy(pts), fill=fill, width=max(1, round(width * U)), joint="curve")
         for x, y in (pts[0], pts[-1]):
             self.disc(layer, x, y, width / 2, fill)
 
     def disc(self, layer, x, y, r, fill=255):
         (cx, cy), = self.xy([(x, y)])
-        self.drw[layer].ellipse((cx - r * SS, cy - r * SS, cx + r * SS, cy + r * SS), fill=fill)
+        self.drw[layer].ellipse((cx - r * U, cy - r * U, cx + r * U, cy + r * U), fill=fill)
 
     def ring(self, layer, x, y, r, width, fill=255):
         (cx, cy), = self.xy([(x, y)])
-        self.drw[layer].ellipse((cx - r * SS, cy - r * SS, cx + r * SS, cy + r * SS), outline=fill,
-                                width=max(1, round(width * SS)))
+        self.drw[layer].ellipse((cx - r * U, cy - r * U, cx + r * U, cy + r * U), outline=fill,
+                                width=max(1, round(width * U)))
 
     def rect(self, layer, x0, y0, x1, y1, fill=255, outline=None):
         (a, b), (c, d) = self.xy([(x0, y0), (x1, y1)])
         if outline:
-            self.drw[layer].rectangle((a, b, c, d), outline=fill, width=max(1, round(outline * SS)))
+            self.drw[layer].rectangle((a, b, c, d), outline=fill, width=max(1, round(outline * U)))
         else:
             self.drw[layer].rectangle((a, b, c, d), fill=fill)
 
@@ -237,23 +270,24 @@ class Panel:
 
     def text(self, s, x, y, size, vertical=False, layer="silk"):
         if size not in self.fonts:
-            self.fonts[size] = ImageFont.truetype(str(FONT), round(size * SS))
+            self.fonts[size] = ImageFont.truetype(str(FONT), round(size * U))
         font = self.fonts[size]
         box = font.getbbox(s)
         tw, th = box[2] - box[0], box[3] - box[1]
         bw, bh = (th, tw) if vertical else (tw, th)
         x0, y0 = int(x), int(y)
-        if not self.free_box(x0 - 2, y0 - 2, x0 + bw / SS + 2, y0 + bh / SS + 2, 0):
+        if not self.free_box(x0 - 2, y0 - 2, x0 + bw / U + 2, y0 + bh / U + 2, 0):
             return False
         t = Image.new("L", (tw + 4, th + 4), 0)
         ImageDraw.Draw(t).text((2 - box[0], 2 - box[1]), s, fill=255, font=font)
         if vertical:
             t = t.rotate(90, expand=True)
-        (px, py), = self.xy([(x0, y0)])
+        (px_, py_), = self.xy([(x0, y0)])
+        px_, py_ = int(px_), int(py_)
         base = self.img[layer]
-        region = base.crop((px, py, px + t.width, py + t.height))
-        base.paste(Image.fromarray(np.maximum(np.asarray(region), np.asarray(t))), (px, py))
-        self.mark_box(x0, y0, x0 + bw / SS, y0 + bh / SS, 2)
+        region = base.crop((px_, py_, px_ + t.width, py_ + t.height))
+        base.paste(Image.fromarray(np.maximum(np.asarray(region), np.asarray(t))), (px_, py_))
+        self.mark_box(x0, y0, x0 + bw / U, y0 + bh / U, 2)
         return True
 
     # occupancy (1x, board coords) -----------------------------------------
@@ -481,9 +515,9 @@ def route_row(p, pads, d_i, pitch, width, reach):
 
 def Panel_text_chip(self, s, x, y, size):
     if size not in self.fonts:
-        self.fonts[size] = ImageFont.truetype(str(FONT), round(size * SS))
-    (px, py), = self.xy([(x, y)])
-    self.drw["chiptext"].text((px, py), s, fill=150, font=self.fonts[size])
+        self.fonts[size] = ImageFont.truetype(str(FONT), round(size * U))
+    (px_, py_), = self.xy([(x, y)])
+    self.drw["chiptext"].text((px_, py_), s, fill=150, font=self.fonts[size])
 
 
 Panel.text_chip = Panel_text_chip
@@ -752,8 +786,8 @@ def populate(p):
         pour = ImageChops.subtract(pour, p.img["keep"])
         if r.random() < 0.35:
             Y, X = np.mgrid[0:pour.height, 0:pour.width]
-            q = 14 * SS
-            grid = ((((X + Y) % q) < 3 * SS) | (((X - Y) % q) < 3 * SS)).astype(np.uint8) * 255
+            q = 14 * U
+            grid = ((((X + Y) % q) < 3 * U) | (((X - Y) % q) < 3 * U)).astype(np.uint8) * 255
             pour = ImageChops.multiply(pour, Image.fromarray(grid))
         p.img["cu"] = ImageChops.lighter(p.img["cu"], pour)
         p.drw["cu"] = ImageDraw.Draw(p.img["cu"])
@@ -797,8 +831,9 @@ def damage(p, age):
         A = (x0 + sx * a, y0)
         B = (x0, y0 + sy * b)
         path = jag(A, B, 0.10, r)
-        far = (x0 - sx * M, y0 - sy * M)
-        p.poly("board", path + [(B[0] - sx * M, B[1]), far, (A[0], A[1] - sy * M)], fill=0)
+        mu = M / S                                                      # the margin, in board units
+        far = (x0 - sx * mu, y0 - sy * mu)
+        p.poly("board", path + [(B[0] - sx * mu, B[1]), far, (A[0], A[1] - sy * mu)], fill=0)
         p.line("fringe", path, 7)
         p.fractures.append((path, np.array([-sx, -sy]) / R2 / 2))
         for _ in range(int(r.integers(1, 3))):                         # cracks running on from the break
@@ -860,7 +895,7 @@ def damage(p, age):
                 q = q + 4 * v
                 pts.append(q.copy())
         p.line("wire", pts, 5.5)
-        p.wdrw.line(p.xy(pts), fill=col, width=int(5.5 * SS), joint="curve")
+        p.wdrw.line(p.xy(pts), fill=col, width=max(1, round(5.5 * U)), joint="curve")
         p.disc("solder", *a, 5)
     if not hasattr(p, "burn_at"):
         p.burn_at = None
@@ -877,7 +912,7 @@ def dangles(p, cu):
             for t in np.linspace(0, 1, max(2, int(L)), endpoint=False):
                 samp.append(a + (b - a) * t)
         samp = np.array(samp)
-        xi, yi = np.rint(samp[:, 0] + M).astype(int), np.rint(samp[:, 1] + M).astype(int)
+        xi, yi = np.rint(samp[:, 0] * S + M).astype(int), np.rint(samp[:, 1] * S + M).astype(int)
         ok = (xi >= 0) & (xi < p.W) & (yi >= 0) & (yi < p.H)
         on = np.zeros(len(samp), bool)
         on[ok] = cu[yi[ok], xi[ok]] > 0.5
@@ -937,7 +972,7 @@ HOLE = hexc("#3d3b37")
 
 
 def compose(p, gx, gy, age):
-    """The panel's colour and coverage on its canvas (1x)."""
+    """The panel's colour and coverage on its canvas (1x, px)."""
     r = p.r
     L = {k: np.asarray(v.resize((p.W, p.H), Image.BOX), float) / 255 for k, v in p.img.items()}
     wcol = np.asarray(p.wcol.resize((p.W, p.H), Image.BOX), float) / 255
@@ -951,14 +986,14 @@ def compose(p, gx, gy, age):
     # where the board is weakest: near its edges, its cracks and its burn
     edgew = r.uniform(0.2, 0.6)                                  # how far in from its edges the mask lifts
     bimg = Image.fromarray((board * 255).astype(np.uint8))
-    edge = 1 - np.asarray(bimg.filter(ImageFilter.GaussianBlur(26)), float) / 255
+    edge = 1 - np.asarray(bimg.filter(ImageFilter.GaussianBlur(26 * S)), float) / 255
     crimg = Image.fromarray((np.clip(L["crack"] + L["fringe"] * 0.5, 0, 1) * 255).astype(np.uint8))
-    near_crack = np.asarray(crimg.filter(ImageFilter.GaussianBlur(18)), float) / 255
+    near_crack = np.asarray(crimg.filter(ImageFilter.GaussianBlur(18 * S)), float) / 255
     near_crack = np.clip(near_crack * 3, 0, 1)
     burn = np.zeros((p.H, p.W))
     if p.burn_at:                                                # hottest at its heart, soot climbing above it
         bx, by, R = p.burn_at
-        Y, X = np.mgrid[0:p.H, 0:p.W] - M
+        Y, X = (np.mgrid[0:p.H, 0:p.W] - M) / S                  # board units, as the burn is placed in
         dx, dy = X - bx, Y - by
         dy = np.where(dy < 0, dy / 2.4, dy * 1.2)
         d = np.hypot(dx * (1 + 0.5 * np.abs(dy) / (R * 3)), dy) / R * (0.7 + 0.6 * pn)
@@ -994,8 +1029,8 @@ def compose(p, gx, gy, age):
     col = mix(bare, masked, np.clip(maskp / np.maximum(board, 1e-6), 0, 1))
 
     # the peel's edge: the mask lifts (a lit lip) and throws a little shadow on the bare board
-    lip = np.clip(np.roll(peeled, (2, 2), (0, 1)) - peeled, 0, 1) * (1 - pad)
-    shade = np.clip(peeled - np.roll(peeled, (3, 3), (0, 1)), 0, 1)
+    lip = np.clip(np.roll(peeled, (px(2), px(2)), (0, 1)) - peeled, 0, 1) * (1 - pad)
+    shade = np.clip(peeled - np.roll(peeled, (px(3), px(3)), (0, 1)), 0, 1)
     col = mix(col, col * 1.22 + 0.05, lip * 0.8)
     col *= (1 - 0.30 * shade)[..., None]
 
@@ -1016,7 +1051,7 @@ def compose(p, gx, gy, age):
     # parts still on: chips (a lit edge, a pin-1 dimple, faint marking), passives, header plastic, caps
     chip = L["chip"]
     cimg = Image.fromarray((np.clip(chip, 0, 1) * 255).astype(np.uint8))
-    clit = np.clip(chip - np.roll(chip, (3, 3), (0, 1)), 0, 1)
+    clit = np.clip(chip - np.roll(chip, (px(3), px(3)), (0, 1)), 0, 1)
     col = mix(col, CHIP * (0.9 + 0.2 * mot)[..., None], np.clip(chip, 0, 1))
     col = mix(col, CHIP * 1.5, clit * 0.6)
     col = mix(col, CHIP_TEXT, L["chiptext"] * chip)
@@ -1036,8 +1071,8 @@ def compose(p, gx, gy, age):
     col = mix(col, CRACK, np.clip(L["crack"], 0, 1) * 0.9)
 
     # the board's edge: lit along the top and left, in shade along the bottom and right
-    hl = np.clip(board - np.roll(board, (3, 3), (0, 1)), 0, 1)
-    dk = np.clip(board - np.roll(board, (-3, -3), (0, 1)), 0, 1)
+    hl = np.clip(board - np.roll(board, (px(3), px(3)), (0, 1)), 0, 1)
+    dk = np.clip(board - np.roll(board, (-px(3), -px(3)), (0, 1)), 0, 1)
     col = mix(col, FIBRE, hl * 0.55)
     col *= (1 - 0.35 * dk)[..., None]
 
@@ -1046,7 +1081,7 @@ def compose(p, gx, gy, age):
     tide = smooth(st, 0.66, 0.675) - smooth(st, 0.68, 0.70)
     col = mix(col, col * np.array([0.86, 0.80, 0.70]), np.clip(smooth(st, 0.66, 0.70) * 0.35 + tide * 0.6, 0, 1))
     # grime: heavier toward the foot, panel by panel
-    fy = np.clip((np.arange(p.H) - M) / p.h, 0, 1)[:, None]
+    fy = np.clip((np.arange(p.H) - M) / p.ph, 0, 1)[:, None]
     col *= (1 - 0.10 * smooth(fy, 0.5, 1.0) - 0.10 * smooth(G(grime), 0.5, 0.85) - 0.04 * age)[..., None]
 
     alpha = np.clip(board, 0, 1)
@@ -1056,7 +1091,7 @@ def compose(p, gx, gy, age):
     dcol = mix(COPPER, DARK_TARN, smooth(tn, 0.3, 0.75)) * (0.85 + 0.35 * fin)[..., None]
     col = mix(col, dcol, dg)
     wire = np.clip(L["wire"], 0, 1)
-    wlit = np.clip(wire - np.roll(wire, (2, 0), (0, 1)), 0, 1)
+    wlit = np.clip(wire - np.roll(wire, (px(2), 0), (0, 1)), 0, 1)
     wc = wcol / np.maximum(wire, 1e-3)[..., None]
     col = mix(col, wc * (1 + 0.25 * wlit)[..., None], wire)
     over = np.maximum(dg, wire)
@@ -1066,26 +1101,27 @@ def compose(p, gx, gy, age):
     for (x, y) in p.screws:
         if r.random() < 0.1:
             continue
-        cx, cy = x + M, y + M
-        R = 12
-        sy, sx = np.mgrid[int(cy) - R - 6:int(cy) + R + 7, int(cx) - R - 6:int(cx) + R + 7]
+        cx, cy = x * S + M, y * S + M
+        R = 12 * S
+        e = px(18)
+        sy, sx = np.mgrid[int(cy) - e:int(cy) + e + 1, int(cx) - e:int(cx) + e + 1]
         dy, dx = sy - cy, sx - cx
         d = np.hypot(dx, dy)
         head = d <= R
-        washer = (d <= R + 4) & ~head
-        sh = (np.hypot(dx - 3, dy - 3) <= R + 4) & ~head & ~washer
-        light = np.clip(1.12 - ((dx + 4) ** 2 + (dy + 4) ** 2) / (R * R * 2.4), 0.55, 1.12)
+        washer = (d <= R + 4 * S) & ~head
+        sh = (np.hypot(dx - 3 * S, dy - 3 * S) <= R + 4 * S) & ~head & ~washer
+        light = np.clip(1.12 - ((dx + 4 * S) ** 2 + (dy + 4 * S) ** 2) / (R * R * 2.4), 0.55, 1.12)
         rusty = r.random() < 0.35
         steel = (np.array([0.66, 0.64, 0.6]) if not rusty else np.array([0.58, 0.44, 0.33]))
         ang = r.uniform(0, math.pi)
-        slot = (np.abs(dx * math.sin(ang) - dy * math.cos(ang)) < 2.0) | (np.abs(dx * math.cos(ang) + dy * math.sin(ang)) < 2.0)
-        slot &= d < R - 2
+        slot = (np.abs(dx * math.sin(ang) - dy * math.cos(ang)) < 2.0 * S) | (np.abs(dx * math.cos(ang) + dy * math.sin(ang)) < 2.0 * S)
+        slot &= d < R - 2 * S
         col[sy[sh], sx[sh]] *= 0.6
         col[sy[washer], sx[washer]] = np.array([0.6, 0.6, 0.57]) * (0.9 + 0.1 * light[washer])[:, None]
         col[sy[head], sx[head]] = steel * light[head][:, None]
         col[sy[slot], sx[slot]] = steel * 0.45
         a = alpha[sy, sx]
-        alpha[sy, sx] = np.maximum(a, (d <= R + 4).astype(float))
+        alpha[sy, sx] = np.maximum(a, (d <= R + 4 * S).astype(float))
     return col, alpha, over
 
 
@@ -1100,9 +1136,9 @@ HOLE_A = np.zeros((NH, NW))                   # the recesses, so the wall's crac
 D_a = np.zeros((NH, NW))                      # dangles and wires on the wall: they shade it
 drips = np.zeros((NH, NW))
 CAVITY = hexc("#5f5b54")
-for i, (gx, gy, w, h) in enumerate(cells):
+for i, ((gx, gy, w, h), (bw, bh)) in enumerate(zip(cells, BOARDS)):     # w, h: px; bw, bh: board units
     age = float(rng.uniform(-0.14, 0.10))
-    p = Panel(w, h, SEED * 100 + i)
+    p = Panel(bw, bh, SEED * 100 + i)
     populate(p)
     damage(p, age)
     p.screws = []                           # set in the wall, not screwed to it
@@ -1117,12 +1153,12 @@ for i, (gx, gy, w, h) in enumerate(cells):
     Y, X = np.mgrid[0:p.H, 0:p.W] - M
     ex, ey = np.maximum(-X, X - (w - 1)), np.maximum(-Y, Y - (h - 1))
     sd = np.where((ex <= 0) & (ey <= 0), np.maximum(ex, ey), np.hypot(np.maximum(ex, 0), np.maximum(ey, 0)))
-    reach = -8 + 24 * G(peeln) + 36 * (G(verd) - 0.5) + 3 * (G(fine) - 0.5)
+    reach = (-8 + 24 * G(peeln) + 36 * (G(verd) - 0.5) + 3 * (G(fine) - 0.5)) * S
     hole = np.clip(reach - sd + 0.5, 0, 1)
-    shade_in = np.clip(hole - np.roll(hole, (9, 9), (0, 1)), 0, 1)               # under its top and left edges
-    shade_in = np.asarray(Image.fromarray((shade_in * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3)), float) / 255 * hole
-    face = np.clip(hole - np.roll(hole, (-4, -4), (0, 1)), 0, 1)                 # the lit break face, foot and right
-    rim = np.clip(np.roll(hole, (2, 2), (0, 1)) + np.roll(hole, (-2, -2), (0, 1)) - 2 * hole, 0, 1)
+    shade_in = np.clip(hole - np.roll(hole, (px(9), px(9)), (0, 1)), 0, 1)       # under its top and left edges
+    shade_in = np.asarray(Image.fromarray((shade_in * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3 * S)), float) / 255 * hole
+    face = np.clip(hole - np.roll(hole, (-px(4), -px(4)), (0, 1)), 0, 1)         # the lit break face, foot and right
+    rim = np.clip(np.roll(hole, (px(2), px(2)), (0, 1)) + np.roll(hole, (-px(2), -px(2)), (0, 1)) - 2 * hole, 0, 1)
     loc = wall[ix].copy()
     loc = mix(loc, CAVITY * (0.80 + 0.35 * G(fine))[..., None], hole)
     loc = mix(loc, col, alpha * hole)
@@ -1140,16 +1176,17 @@ for i, (gx, gy, w, h) in enumerate(cells):
         t = rng.random()
         x, y, a = [(gx + t * w, gy, -math.pi / 2), (gx + w, gy + t * h, 0.0),
                    (gx + t * w, gy + h, math.pi / 2), (gx, gy + t * h, math.pi)][side]
-        wall_crack(x, y, a + rng.normal(0, 0.5), rng.uniform(60, 220), int(rng.integers(1, 3)))
+        wall_crack(x, y, a + rng.normal(0, 0.5), rng.uniform(60 * S, 220 * S), int(rng.integers(1, 3)))
     for _ in range(int(rng.integers(2, 5))):
-        drips[int(gy + h + 6) % NH, int(gx + rng.uniform(0.1, 0.9) * w) % NW] += rng.uniform(0.4, 1.0)
+        drips[int(gy + h + 6 * S) % NH, int(gx + rng.uniform(0.1, 0.9) * w) % NW] += rng.uniform(0.4, 1.0)
     print(f"  board {i + 1}/{len(cells)}  {w}x{h}", flush=True)
 
 img = wall
-cr = np.asarray(crack_l, float) / 255 * (1 - HOLE_A)
+cr = np.asarray(crack_l.resize((NW, NH), Image.BOX), float) / 255 * (1 - HOLE_A)
+del crack_l, crack_d
 img = mix(img, img * 1.10, np.clip(np.roll(cr, (1, 1), (0, 1)) - cr, 0, 1) * 0.6)   # the crack's lit lip
 img *= (1 - 0.50 * cr)[..., None]
-dsh = np.clip(circ_conv(D_a, gauss_kernel(2.5, 4, 5)), 0, 1)
+dsh = np.clip(circ_conv(D_a, gauss_kernel(2.5 * S, 4 * S, 5 * S)), 0, 1)
 img *= (1 - 0.40 * dsh * (1 - D_a))[..., None]
 
 
@@ -1157,7 +1194,7 @@ def drip(length, width):
     return np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2)
 
 
-streaks = circ_conv(drips, drip(120.0, 9.0))
+streaks = circ_conv(drips, drip(120.0 * S, 9.0 * S))
 streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
 streaks *= smooth(streakn, 0.2, 0.7) * (1 - HOLE_A)
 img = mix(img, img * np.array([0.82, 0.74, 0.64]), streaks * 0.45)
@@ -1169,4 +1206,4 @@ out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB"
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-8.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-8.png  {NW}x{NH}  {NW / 240:.2f}x{NH / 240:.2f}in  {len(cells)} boards  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
+print(f"images/wall-8.png  {NW}x{NH}  {NW / DPI:.2f}x{NH / DPI:.2f}in  {len(cells)} boards  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
