@@ -181,6 +181,9 @@ and the styles say where a reader is and what they are reading.
   sign repeated the title (DREAM MASTERY); the sign marks the Dream Master's
   sheets among the players' pages, so the chapter that is all the Dream
   Master's hangs none, opener or booth (owner, 2026-11-13).
+- **The gear chapter's opener hangs no neon sign.** Its GEAR sign repeated
+  the title (…and Gear), so it is gone; Rules and Citizen File openers keep
+  theirs (owner, 2026-11-13).
 - **The stone walls (1 to 6) are drawn at 300 DPI.** They were cut from a
   painted sheet and printed at 240 DPI with about 110 DPI of real detail, so
   they printed soft. They are now drawn, like walls 7 to 13, by
