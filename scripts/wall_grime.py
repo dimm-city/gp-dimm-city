@@ -1,37 +1,48 @@
-"""Grime and damage for the six stone walls (1-6): what makes them Dimm City's.
+"""Grime and damage for the stone walls (1-6) and the brick: what makes them Dimm City's.
 
     import wall_grime
     rgb, special = wall_grime.weather(rgb, joint, seed)
     wall_grime.save(rgb, special, path)
 
-wall-stone-rubble.py (1, 3, 5) and wall-stone-coursed.py (2, 4, 6) draw clean
-stone in the brick's tones; each hands its tile here as float RGB (0-1) with
-its joint mask (1 in a joint and on the joint's line, 0 on a stone's face),
-so every wall is weathered by one hand and all six read as one city: dim,
-dirty, damp and dangerous, but a wall first, the damage found on a second look.
+wall-stone-rubble.py (1, 3, 5), wall-stone-coursed.py (2, 4, 6) and
+wall-brick.py (the brick) draw a clean wall in the clean brick's tones
+(`clean_brick`); each hands its tile here as float RGB (0-1) with its joint
+mask (1 in a joint and on the joint's line, 0 on a stone's face), so every
+wall is weathered by one hand and all of them read as one city: dim, dirty,
+damp and dangerous, but a wall first, behind the white sheets.
+
+The tile is placed from the text area's corner, so on every page the text
+area is the same rectangle of it (TEXT_W x TEXT_H) and the side margins are
+the columns past it. Big dark marks (soot, wet patches, scorches, grease)
+are toned down there (CALM), and some of each kind of damage is put in the
+side margins (`place(margin=True)`), so every page shows it.
 
 Back to front, the light from the upper left as on the stone:
-1. Dim: the stone is greyed a little, and at the end the whole tile is scaled
-   to TARGET, darker than the brick (#c1beb8) and lighter than the specialty
-   walls, so the white sheets stand out.
+1. Dim: the stone is greyed a little, and at the end the lighter half of the
+   tile is pulled toward its median (DULL: no face reads as clean stone)
+   and the whole tile is scaled to TARGET, lighter than the specialty walls.
 2. Grime: dirt in the joints and their pockets, washed down under every bed
    joint, in broad patches, and heavier toward the wall's foot (FOOT, where the
-   ground strip meets it on a page: a stone tile is placed from the text
-   area's corner, so its rows sit at the same height on every page).
-3. Damp: dark streaks run down from the joints, rising damp stands at the foot
-   under a wavy tide mark (a dark line, salt above it), and a few leaks leave
-   tide-ringed stains.
+   ground strip meets it on a page); soot and grime run down from the ledges.
+3. Damp: dark streaks run down from the joints, dark wet patches with a faint
+   tide line, rising damp at the foot under a wavy tide mark (a dark line,
+   salt above it, darker and dirtier lower down), and tide-ringed leaks.
 4. Mould: black and dark-green speckled blooms spreading from the joints,
    worst where it is wet; a slimy green algal film with a glint in the
-   wettest places; a few small shelf fungi and clusters of caps in the joints.
-5. Burns: soot blooms with a scorched core and soot rising above them, a
-   small burnt patch or two, sometimes a flame's lick along the wall.
-6. Damage: chipped arrises, cracks, bullet pocks (a single or a burst),
-   claw marks (sets of 3-4 gouges, fresh stone in the groove, its upper-left
-   wall in shade and its lower-right lit), and something scratched: a tally
-   or a glyph. Nothing written.
-7. Blood: dried, brown-red, small: a spatter by a claw mark, another
-   somewhere, a smear, specks. The Cybersurgeon's wall (10) is the bloody one.
+   wettest places; small shelf fungi and clusters of caps in the joints.
+5. Burns and grease: soot blooms with a scorched core and soot rising above
+   them, small burnt patches, often a flame's lick along the wall; grease
+   stains soaked in round where they hit, a run or two below.
+6. Damage: chipped arrises, cracks, bullet pocks (singles and bursts), four
+   sets of 3-4 claw gouges (`gouge`: torn into the stone, its upper-left wall
+   in shade and casting a shadow on the floor, its lower-right lip lit, a
+   blunt torn bite and a long drag out to torn tines, broken where it crosses
+   a joint, flakes and grit spilled along it; fresh, or old and packed with
+   dirt; dried blood dragged down one or two), and scratched tallies and
+   glyphs. Nothing written.
+7. Blood: dried, brown-red, small: spatters by the freshest claw marks and
+   elsewhere, specks in little groups, a smear. Grim, not gory: the
+   Cybersurgeon's wall (10) is the bloody one.
 Then quantised (`save`) to an exact palette with no dither, its last entries
 cut from the saturated things alone (blood, mould, algae, fungi), so they keep
 their colour instead of going grey.
@@ -42,17 +53,44 @@ convolutions, and every shape is drawn wrapped. The tile is 9in x 12in or so,
 taller than a page and about as wide, so a page shows no repeat of a mark.
 """
 import math
+from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 F32 = np.float32
 DPI = 300
-TARGET = np.array([0xa8, 0xa4, 0x9c], F32) / 255   # the weathered wall's average: dimmer than the brick, lighter than walls 7-13
+TARGET = np.array([0x9e, 0x9a, 0x92], F32) / 255   # the weathered wall's average: dim, and still lighter than walls 7-13
 FOOT = 10.0 * DPI           # px down the tile to the wall's foot: the ground strip's top on a page
+# Where the sheets sit. A wall is placed from the text area's corner, so on
+# every page the text area (7.5in x 9.675in: dc-palette.css's margins on an
+# 8.625in x 11.25in sheet) is the tile's top-left (0, 0)-(TEXT_W, TEXT_H) and
+# the margins are the rest: the side margins, both of them, are the columns
+# past TEXT_W (the right-hand margin, then, wrapped, the left), the band
+# above the ground the rows past TEXT_H. Big dark marks are kept moderate on
+# the text area (CALM), where the gaps between sheets are, and some of the
+# damage is put in the margins, so every page shows it.
+TEXT_W, TEXT_H = 7.5 * DPI, 9.675 * DPI
+CALM = 0.35                 # how much big dark marks are toned down on the text area
 GREY = 0.30                 # how far the stone is greyed toward its own luminance
+DULL = 0.6                  # the lighter half's contrast, kept: the faces dulled, so the wall reads dirty
 SS = 2                      # shapes are drawn at SS x and boxed down
 LUM = np.array([0.299, 0.587, 0.114], F32)
+
+
+BG = (0xC8, 0xC5, 0xBF)      # --bg (ash concrete), the brick's colour
+BRICK_SRC = Path(__file__).resolve().parents[1] / "source-art/brick-bg-01.png"   # the brick: a grey line drawing, RGBA, 300 DPI
+
+
+def clean_brick(size=(900, 1165)):
+    """The clean brick, the line drawing multiplied into --bg, at `size`: by
+    default the old 1.5in tile at 600 DPI, whose pixels are the tones every
+    stone wall and street is matched to (byte for byte the old
+    images/brick-wall.png, which is now grimed)."""
+    src = Image.open(BRICK_SRC)
+    solid = Image.new("RGB", src.size, BG)
+    flat = Image.composite(ImageChops.multiply(solid, src.convert("RGB")), solid, src.getchannel("A"))
+    return flat if size is None else flat.resize(size, Image.LANCZOS)
 
 
 def hexc(h):
@@ -82,6 +120,8 @@ MOULD_GREEN = hexc("#3e4934")
 ALGAE = hexc("#cbdcb4")         # the green film, multiplied
 SOOT = hexc("#2e2a26")
 SCORCH = hexc("#b49a84")        # the brown halo round a burn, multiplied
+OIL = hexc("#3e3830")            # grease soaked in, at its darkest
+OIL_FILM = hexc("#a39a8c")       # its stain, multiplied
 CALCINED = hexc("#a3958d")      # stone burnt pale and pinkish where the fire was hottest
 FRESH = hexc("#cfccc5")         # stone broken open: clean, paler than the weathered face
 HOLE = hexc("#47423d")
@@ -243,18 +283,29 @@ def weather(rgb, joint, seed):
     yv = np.arange(H, dtype=F32)[:, None]
     hidden = 1 - smooth(yv, FOOT + 0.4 * DPI, FOOT + 1.3 * DPI)   # under the ground strip and off the sheet: back to clean by the top
     foot = smooth(yv, 0.35 * FOOT, FOOT) * hidden
+    xv = np.arange(W, dtype=F32)[None, :]
+    inner = (smooth(xv, 0.1 * DPI, 0.6 * DPI) * smooth(TEXT_W - xv, 0.1 * DPI, 0.6 * DPI)
+             * smooth(yv, 0.1 * DPI, 0.6 * DPI) * smooth(TEXT_H - yv, 0.1 * DPI, 0.6 * DPI))
+    calm = 1 - CALM * inner                             # big dark marks toned down where the sheets are
 
     def visible_y(lo=0.3, hi=0.3):
         return r.uniform(lo * DPI, FOOT - hi * DPI)
 
+    def margin_x():
+        """A column in a side margin that both pages show: just past the text
+        area (a right page's outer margin, a left page's binding margin), or
+        just before the tile's edge (the left-hand margins, wrapped)."""
+        return r.uniform(TEXT_W + 0.08 * DPI, TEXT_W + 0.45 * DPI) if r.random() < 0.5 else r.uniform(W - 0.45 * DPI, W - 0.08 * DPI)
+
     placed = []
 
-    def place(lo=0.5, hi=0.5, apart=2.2):
-        """Somewhere on the visible wall, `apart` in (or as far as it can) from
-        every other mark placed, round the torus: the damage spread out, not heaped."""
+    def place(lo=0.5, hi=0.5, apart=2.2, margin=False):
+        """Somewhere on the visible wall (in a side margin if `margin`), `apart`
+        in (or as far as it can) from every other mark placed, round the torus:
+        the damage spread out, not heaped."""
         best, bd = None, -1.0
         for _ in range(60):
-            x, y = r.uniform(0, W), visible_y(lo, hi)
+            x, y = (margin_x() if margin else r.uniform(0, W)), visible_y(lo, hi)
             d = min((math.hypot(min(abs(x - px_), W - abs(x - px_)), min(abs(y - py_), H - abs(y - py_))) for px_, py_ in placed),
                     default=1e9)
             if d > bd:
@@ -274,48 +325,70 @@ def weather(rgb, joint, seed):
     patchy = smooth(t.noise(1.6, feature=300, lo=6), -0.4, 1.6)
     rain = t.noise(1.2, feature=600, lo=7, stretch=(0.10, 1.0))           # dirt washed down the faces in long streaks
     blotch = t.noise(1.8, feature=1.2 * DPI, lo=12)                        # dirty patches a stone or two across
-    g = (0.32 * foot + 0.28 * smooth(broad, -0.6, 2.0) + 0.30 * smooth(blotch, 0.0, 2.0) + 0.22 * smooth(rain, 0.2, 2.0)
-         + 0.30 * near * (0.5 + 0.5 * patchy) + 0.55 * pocket
-         + 0.30 * wash * smooth(t.noise(1.4, feature=200, lo=4), -0.8, 0.8))
-    img = mix(img, img * DIRT, np.clip(g, 0, 1.2))
-    img = mix(img, img * hexc("#5e5850"), pocket * 0.45)       # soot and dirt packed into the recesses
-    del wash, patchy, g, rain, blotch
+    g = (0.42 * foot + 0.36 * smooth(broad, -0.8, 1.8) + 0.38 * smooth(blotch, -0.2, 2.0) + 0.32 * smooth(rain, 0.0, 2.0)
+         + 0.40 * near * (0.5 + 0.5 * patchy) + 0.65 * pocket
+         + 0.50 * wash * smooth(t.noise(1.4, feature=200, lo=4), -0.8, 0.8))
+    img = mix(img, img * DIRT, np.clip(g, 0, 1.4))
+    img = mix(img, img * hexc("#5e5850"), pocket * 0.55)       # soot and dirt packed into the recesses
+    del patchy, g, rain, blotch
+
+    # soot and grime run down from the ledges: grey-black stains under a joint,
+    # long and streaked, the city's smoke washed off the stone above
+    cand = np.flatnonzero(ledge[::2, ::2].ravel() > 0.5)
+    src = np.zeros((H, W), F32)
+    for c in r.choice(cand, min(len(cand), 110), replace=False):
+        yy, xx = divmod(int(c), (W + 1) // 2)
+        src[(yy * 2) % H, (xx * 2) % W] += r.uniform(0.3, 1.0)
+    runs = t.conv(src, t.drip(380, 2.5)) + 0.7 * t.conv(src, t.drip(140, 9.0))
+    runs = np.clip(runs / np.percentile(runs[runs > 1e-4], 99), 0, 1)
+    runs *= smooth(t.noise(1.0, feature=700, lo=2, stretch=(0.10, 1.0)), -0.6, 1.0)
+    img = mix(img, img * hexc("#8a857c"), runs * 0.55 * calm)
+    img = mix(img, img * hexc("#9a948a"), wash * 0.35)          # and the stone just under every ledge
+    del src, runs, wash
 
     # ── 3. damp ──────────────────────────────────────────────────────────────────
     # streaks from the joints: water off a ledge, down the face below
     src = np.zeros((H, W), F32)
-    cand = np.flatnonzero(ledge[::2, ::2].ravel() > 0.5)
-    for c in r.choice(cand, min(len(cand), 150), replace=False):
+    for c in r.choice(cand, min(len(cand), 260), replace=False):
         yy, xx = divmod(int(c), (W + 1) // 2)
         src[(yy * 2) % H, (xx * 2) % W] += r.uniform(0.3, 1.0) * (1 + 1.5 * foot[(yy * 2) % H, 0])
     streaks = t.conv(src, t.drip(260, 3.0)) + 0.5 * t.conv(src, t.drip(80, 8.0))
     streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
     streaks *= smooth(t.noise(1.0, feature=900, lo=2, stretch=(0.10, 1.0)), -0.7, 0.9)
-    img = mix(img, img * WET, streaks * 0.60)
+    img = mix(img, img * WET, streaks * 0.75)
     edge_s = np.clip(streaks - t.blur(streaks, 2.0), 0, 1)    # a streak dries to a darker edge
-    img *= (1 - 0.6 * edge_s)[..., None]
+    img *= (1 - 0.7 * edge_s)[..., None]
     del src, edge_s
+
+    # wet patches: soft and dark where the stone holds water, a faint tide line
+    # where one has dried back
+    patch_ = t.noise(1.8, feature=1.6 * DPI, lo=30) + 0.2 * t.noise(1.4, feature=200, lo=5)
+    wetp = smooth(patch_, 0.5, 1.8) * (1 - 0.4 * inner)
+    img = mix(img, img * hexc("#a5a8a1"), wetp * 0.6)
+    img = mix(img, img * TIDE, np.exp(-((patch_ - 0.45) / 0.035) ** 2) * 0.22 * (1 - 0.4 * inner))
+    del patch_
 
     # rising damp at the foot: darker and wet below a wavy tide line, salt just above it
     tx = np.arange(W) / W
     tide_h = np.zeros(W, F32)
     for k in range(1, 10):
         tide_h += r.normal() / k ** 1.4 * np.sin(2 * np.pi * (k * tx + r.uniform()))
-    tide_y = FOOT - (1.0 + 0.25 * tide_h / tide_h.std()) * DPI         # px, per column
+    tide_y = FOOT - (1.25 + 0.3 * tide_h / tide_h.std()) * DPI         # px, per column
     rel = yv - tide_y[None, :] + 4 * t.noise(1.4, feature=60, lo=3)    # px below the tide line
     below = smooth(rel, -6, 40) * hidden
     tidem = np.exp(-(rel / 1.8) ** 2) + 0.45 * np.exp(-((rel - 26) / 1.6) ** 2)   # a second, fainter line where it stood once
     salt = smooth(-rel, 2, 6) * (1 - smooth(-rel, 10, 26))
     brk = smooth(t.noise(1.5, feature=200, lo=4), -1.0, 0.2)
-    img = mix(img, img * WET, below * 0.30 * (0.7 + 0.3 * smooth(fine, -1, 1)))
-    img = mix(img, img * TIDE, np.clip(tidem, 0, 1) * 0.32 * brk)
+    img = mix(img, img * WET, below * 0.50 * (0.7 + 0.3 * smooth(fine, -1, 1)))
+    img = mix(img, img * hexc("#bdb5a8"), below * smooth(rel, 20, 120) * 0.45)   # and darker, dirtier, lower down
+    img = mix(img, img * TIDE, np.clip(tidem, 0, 1) * 0.40 * brk)
     img = mix(img, SALT * (0.94 + 0.04 * fine)[..., None], salt * 0.30 * brk * smooth(fine, -0.6, 0.6))
 
     # leaks: a stain run down from a joint, its edge dried to a tide mark, the
     # lower edge scalloped where it ran
     leaks = np.zeros((H, W), F32)
     streaky = t.noise(1.0, feature=300, lo=2, stretch=(0.12, 1.0))
-    for _ in range(int(r.integers(2, 4))):
+    for _ in range(int(r.integers(3, 5))):
         for _ in range(50):
             yy, xx = divmod(int(r.choice(cand)), (W + 1) // 2)
             x0, y0 = xx * 2.0, yy * 2.0
@@ -335,13 +408,13 @@ def weather(rgb, joint, seed):
         sub = mix(sub, sub * TIDE, np.clip(rings, 0, 1) * 0.45)
         img[ix] = sub
         leaks[ix] = np.maximum(leaks[ix], inside)
-    wet = np.clip(0.6 * below + 1.0 * streaks + 0.5 * leaks + 0.15 * foot, 0, 1)
-    del leaks, streaky, rel, tidem, salt, brk, below
+    wet = np.clip(0.6 * below + 1.0 * streaks + 0.5 * leaks + 0.6 * wetp + 0.15 * foot, 0, 1)
+    del leaks, streaky, rel, tidem, salt, brk, below, wetp
 
     # ── 4. mould, algae and fungi ────────────────────────────────────────────────
     colonies = t.noise(1.5, feature=500, lo=8)
     field = colonies + 1.6 * near + 1.1 * wet
-    T = np.quantile(field[::4, ::4], 0.965)
+    T = np.quantile(field[::4, ::4], 0.95)
     colony = smooth(field, T - 0.5, T + 0.6)
     speck = t.noise(0.2, feature=40, lo=1.1)
     dots = smooth(speck, 2.2 - 1.9 * colony, 2.45 - 1.9 * colony) * smooth(colony, 0.05, 0.3)
@@ -428,7 +501,7 @@ def weather(rgb, joint, seed):
             img[ix] = sub
             fung[ix] = np.maximum(fung[ix], dome)
 
-    for _ in range(int(r.integers(2, 4))):
+    for _ in range(int(r.integers(3, 5))):
         x0, y0 = bed_point()
         pal = SHELVES[int(r.integers(len(SHELVES)))]
         W0 = r.uniform(45, 85)
@@ -438,7 +511,7 @@ def weather(rgb, joint, seed):
             specs.append((x0 + r.normal(0, W0 * 0.3), y0 + k * W0 * r.uniform(0.25, 0.4), w, w * r.uniform(0.32, 0.45), r.normal(0, 0.1)))
         for cx, cy, w, dep, ang in sorted(specs, key=lambda s: -s[1]):
             shelf(cx, cy, w, dep, pal, ang)
-    for _ in range(int(r.integers(2, 4))):
+    for _ in range(int(r.integers(3, 6))):
         x0, y0 = bed_point()
         caps(x0, y0, int(r.integers(3, 9)), r.uniform(9, 16), CAPS[int(r.integers(len(CAPS)))])
     special = np.maximum(special, fung)
@@ -467,8 +540,9 @@ def weather(rgb, joint, seed):
         soot = np.clip(soot * (0.8 + 0.25 * smooth(n1, -1.5, 1.5)), 0, 1)
         halo = np.exp(-(d / 1.9) ** 2)
         sub = img[ix]
-        sub = mix(sub, sub * SCORCH, halo * 0.55)
-        sub = mix(sub, SOOT * (0.92 + 0.16 * smooth(n1, -1.5, 1.5))[..., None], soot * 0.68)
+        k = calm[ix]
+        sub = mix(sub, sub * SCORCH, halo * 0.60 * k)
+        sub = mix(sub, SOOT * (0.92 + 0.16 * smooth(n1, -1.5, 1.5))[..., None], soot * 0.70 * k)
         sub = mix(sub, CALCINED * (0.95 + 0.08 * smooth(n1, -1, 1))[..., None], calc * 0.45)
         craze = calc * (1 - smooth(np.abs(t_craze[ix]), 0.03, 0.10))    # heat crazing: a net of fine cracks
         sub *= (1 - 0.40 * craze)[..., None]
@@ -477,11 +551,12 @@ def weather(rgb, joint, seed):
     t_mid = t.noise(1.8, feature=120, lo=6)
     t_up = t.noise(1.2, feature=300, lo=3, stretch=(0.18, 1.0))
     t_craze = t.noise(1.6, feature=40, lo=2.5)
+    scorch(*place(2.2, 0.6, margin=True), r.uniform(40, 60))
     for _ in range(int(r.integers(1, 3))):
         scorch(*place(2.2, 0.6), r.uniform(40, 70))
-    for _ in range(int(r.integers(1, 3))):
+    for _ in range(int(r.integers(2, 4))):
         scorch(*place(0.5, 0.5, 1.5), r.uniform(12, 22), plume=False)
-    if r.random() < 0.6:                                   # a flame's lick along the wall
+    if r.random() < 0.85:                                  # a flame's lick along the wall
         L = Layer(t)
         (x, y), a = place(2.0, 1.0), r.uniform(-0.25, 0.25) + (math.pi if r.random() < 0.5 else 0)
         pts = [(x, y)]
@@ -495,9 +570,33 @@ def weather(rgb, joint, seed):
         rise = t.conv(lick, t.drip(90, 18, up=True))
         rise = np.clip(rise / rise.max() * 1.3, 0, 1) * smooth(t_up, -1.0, 1.2)
         soot = np.clip(0.75 * band + 0.55 * rise, 0, 1) * (0.75 + 0.25 * smooth(fine, -1, 1))
-        img = mix(img, img * SCORCH, np.clip(t.blur(lick, 30) * 2.5, 0, 1) * 0.45)
-        img = mix(img, SOOT * (0.9 + 0.2 * smooth(fine, -1.5, 1.5))[..., None], soot * 0.75)
+        img = mix(img, img * SCORCH, np.clip(t.blur(lick, 30) * 2.5, 0, 1) * 0.45 * calm)
+        img = mix(img, SOOT * (0.9 + 0.2 * smooth(fine, -1.5, 1.5))[..., None], soot * 0.75 * calm)
         del L, lick, band, rise, soot
+
+    def oil(x0, y0, R):
+        """A grease stain: oil splashed or leaked from a fixing, soaked dark into
+        the stone round where it hit, its edge soft and its middle darkest, a
+        run or two down from it, a dull sheen where it is still tacky."""
+        ix, dx, dy = t.box(x0, y0, int(R * 3), int(R * 3), int(R * 2.5), int(R * 9))
+        d = np.hypot(dx, dy * 1.15) / R * (1 + 0.22 * t_mid[ix]) + 0.04 * fine[ix]
+        soak = np.exp(-1.4 * d * d)
+        core = smooth(0.6 - d, 0.0, 0.3)
+        run = 0
+        for _ in range(int(r.integers(1, 4))):
+            o, wr, ln = r.normal(0, R * 0.35), r.uniform(2.5, 6.0), R * r.uniform(2.0, 7.0)
+            wob = o + 2.5 * np.sin(dy / r.uniform(25, 60) + r.uniform(0, 6))
+            run = run + np.exp(-((dx - wob) / wr) ** 2) * smooth(dy, 0, R * 0.5) * np.exp(-np.clip(dy, 0, None) / ln) * r.uniform(0.6, 1.0)
+        stain = np.clip(0.9 * soak + 0.9 * run, 0, 1) * calm[ix]
+        sub = img[ix]
+        sub = mix(sub, sub * OIL_FILM, stain * 0.85)
+        sub = mix(sub, OIL * (0.92 + 0.16 * smooth(fine[ix], -1.5, 1.5))[..., None], core * 0.55 * calm[ix])
+        sheen = core * smooth(t_mid[ix] + 0.6 * fine[ix], 1.2, 2.0)
+        img[ix] = mix(sub, np.minimum(sub * 1.5 + 0.03, 1), sheen * 0.35)
+
+    oil(*place(1.5, 1.2, margin=True), r.uniform(25, 40))
+    for _ in range(int(r.integers(1, 3))):
+        oil(*place(1.2, 1.2), r.uniform(18, 45))
     del t_mid, t_up, t_craze
 
     # ── 6. damage: recesses cut into the stone, lit from the upper left ─────────
@@ -510,7 +609,7 @@ def weather(rgb, joint, seed):
         gx = (np.roll(h, -1, 1) - np.roll(h, 1, 1)) / 2
         gy = (np.roll(h, -1, 0) - np.roll(h, 1, 0)) / 2
         light = np.clip(1 + k * (gx + gy), 0.35, 1.4)
-        fresh = clean * FRESH / hexc("#c8c5bf") * floor
+        fresh = mix(clean * FRESH / hexc("#c8c5bf"), img * 1.04, 0.45) * floor   # broken open, but dirty
         fresh = mix(fresh, img * 0.85, joint * 0.7)            # the mortar, where it crosses a joint
         img = mix(img, fresh, m * alpha) * light[..., None]
 
@@ -520,7 +619,7 @@ def weather(rgb, joint, seed):
 
     # chipped arrises: a flake broken from a stone's edge
     edges = np.flatnonzero(((near[::3, ::3] > 0.25) & (near[::3, ::3] < 0.6) & (joint[::3, ::3] < 0.1)).ravel())
-    for _ in range(26):
+    for _ in range(50):
         yy, xx = divmod(int(r.choice(edges)), (W + 2) // 3)
         cx, cy, R = xx * 3.0, yy * 3.0, r.uniform(4, 12)
         k = int(r.integers(5, 8))
@@ -543,49 +642,152 @@ def weather(rgb, joint, seed):
     for _ in range(int(r.integers(4, 7))):
         crack(r.uniform(0, W), r.uniform(0, H), r.uniform(0, 2 * np.pi), r.uniform(120, 420), r.uniform(1.3, 2.0))
 
-    # claw marks: 3-4 gouges side by side, tapering out, the middle ones longest
+    # claw marks: sets of 3-4 gouges torn into the stone, each set raked at its
+    # own spacing and its strokes of different lengths; some fresh, some old and
+    # grimed over. Laid out here (the flakes, the torn tines and the grit along
+    # them go in with the other damage); cut after it (`gouge`).
+    strokes = []
+    grit = (Layer(t), Layer(t))          # dark grit, pale grit, spilled along the lips
+    sets = [(True, True), (True, False), (False, False), (False, r.random() < 0.5)]   # (big, in a side margin)
+    ages = r.permutation([0.05, 0.35, 0.7, 0.9])
     claw_at = []
-    for big in (True, False):
-        x, y = place(1.0, 2.6 if big else 1.6, 3.0)
-        claw_at.append((x, y))
-        a = r.uniform(0.9, 1.35) * r.choice([1, -1]) + (math.pi if r.random() < 0.15 else 0)   # raked down, a little aslant
-        n = int(r.integers(3, 5)) if big else 3
-        L = r.uniform(520, 820) if big else r.uniform(300, 450)
-        gap = r.uniform(34, 46) if big else r.uniform(24, 32)
+    for (big, edge), age in zip(sets, ages):
+        L = r.uniform(600, 950) if big else r.uniform(350, 550)
+        x, y = place(L / 2 / DPI + 0.3, L / 2 / DPI + 0.4, 2.6, margin=edge)
+        claw_at.append((x, y, age))
+        a = (r.uniform(1.3, 1.5) if edge else r.uniform(0.85, 1.4)) * r.choice([1, -1])   # raked down, aslant
+        a += math.pi if (r.random() < 0.15 and not edge) else 0
+        n = int(r.integers(3, 5))
+        gap = r.uniform(36, 55) if big else r.uniform(26, 38)
+        offs = np.cumsum([0] + [gap * r.uniform(0.7, 1.4) for _ in range(n - 1)])
+        offs -= offs.mean()
         bend = r.normal(0, 0.2)
-        for k in range(n):
-            o = (k - (n - 1) / 2) * gap * r.uniform(0.9, 1.1)
-            lk = L * (1 - 0.18 * abs(k - (n - 1) / 2) / max(1, (n - 1) / 2)) * r.uniform(0.85, 1.0)
-            sx_, sy_ = x - o * math.sin(a) + r.normal(0, 8) * math.cos(a), y + o * math.cos(a) + r.normal(0, 8) * math.sin(a)
-            w = (r.uniform(13, 18) if big else r.uniform(9, 12))
-            side_a, side_b, mid = [], [], []
-            jag = np.convolve(r.normal(0, 1, 100), np.ones(4) / 2, 'same')   # the lips break unevenly
-            for i_, u in enumerate(np.linspace(0, 1, 88)):
-                aa = a + bend * (u - 0.5)
-                cx = sx_ + u * lk * math.cos(a) - bend * lk * 0.25 * (u * u - u) * math.sin(a)
-                cy = sy_ + u * lk * math.sin(a) + bend * lk * 0.25 * (u * u - u) * math.cos(a)
-                hw = w / 2 * smooth(u, 0.0, 0.08) * (1 - u) ** 0.7 * (1 + 0.12 * jag[i_])   # bites in, then drags out to a point
-                side_a.append((cx - hw * math.sin(aa), cy + hw * math.cos(aa)))
-                side_b.append((cx + hw * math.sin(aa), cy - hw * math.cos(aa)))
-                mid.append((cx, cy))
-            dmg.poly(side_a + side_b[::-1], 1.0)
-            for _ in range(int(r.integers(2, 5))):                     # flakes torn from the gouge's lips
-                u = r.uniform(0.05, 0.6)
-                i = int(u * 87)
-                px_, py_ = (side_a if r.random() < 0.5 else side_b)[i]
-                R = w * r.uniform(0.4, 0.9)
-                dmg.poly([(px_ + R * math.cos(q) * r.uniform(0.5, 1.1), py_ + R * math.sin(q) * r.uniform(0.5, 1.1))
-                          for q in np.sort(r.uniform(0, 2 * np.pi, 6))], 0.7)
-            crk.line(mid[4:int(88 * 0.7)], 1.0, 0.45)                 # the groove's floor, scored along it
+        for k, o in enumerate(offs):
+            mid_ = 1 - 0.25 * abs(k - (n - 1) / 2) / max(1, (n - 1) / 2)
+            lk = L * mid_ * r.uniform(0.7, 1.05)
+            ak = a + r.normal(0, 0.04)
+            along = -lk / 2 + r.normal(0, 0.07 * L)
+            sx_ = x - o * math.sin(a) + along * math.cos(ak)
+            sy_ = y + o * math.cos(a) + along * math.sin(ak)
+            w = r.uniform(24, 34) if big else r.uniform(17, 23)
+            g = dict(x=sx_, y=sy_, a=ak, L=lk, w=w, bend=bend + r.normal(0, 0.05), age=float(np.clip(age + r.normal(0, 0.08), 0, 1)),
+                     e_in=r.uniform(0.03, 0.08), e_out=r.uniform(0.25, 0.45), bleed=False,
+                     jag=[np.interp(np.linspace(0, 1, 160), np.linspace(0, 1, 40), np.convolve(r.normal(0, 1, 40), np.ones(3) / 1.7, "same"))
+                          for _ in range(2)],
+                     torn=r.uniform(0, 6, 4))
+            strokes.append(g)
 
-    # bullet pocks: singles, and a burst
-    for _ in range(int(r.integers(3, 6))):
-        rad.append((*place(0.4, 0.4, 1.2), r.uniform(5, 8)))
-    cx, cy = place(0.8, 1.0)
-    a0 = r.uniform(0, np.pi)
-    for _ in range(int(r.integers(3, 6))):
-        s = r.normal(0, 70)
-        rad.append((cx + s * math.cos(a0) + r.normal(0, 15), cy + s * math.sin(a0) + r.normal(0, 15), r.uniform(5, 7)))
+            def at(u, off=0.0, g=g):
+                c = g["bend"] * g["L"] * 0.25 * (u * u - u) + off
+                return (g["x"] + u * g["L"] * math.cos(g["a"]) - c * math.sin(g["a"]),
+                        g["y"] + u * g["L"] * math.sin(g["a"]) + c * math.cos(g["a"]))
+            fresh_ = 1 - g["age"]
+            for _ in range(int(r.poisson(lk / 70 * (0.3 + fresh_)))):     # flakes torn from the lips, most near the bite
+                u = min(r.beta(1.3, 2.6), 0.85)
+                side = r.choice([-1, 1])
+                R = w * r.uniform(0.3, 0.75)
+                px_, py_ = at(u, side * (w / 2 * (1 - u) ** 0.4 + R * 0.25))
+                dmg.poly([(px_ + R * math.cos(q) * r.uniform(0.5, 1.1), py_ + R * math.sin(q) * r.uniform(0.5, 1.1))
+                          for q in np.sort(r.uniform(0, 2 * np.pi, 6))], r.uniform(0.55, 0.8))
+            prev = None                                                    # and the stone's edge where it crossed a joint
+            for u in np.linspace(0.02, 0.8, 120):
+                px_, py_ = at(u)
+                j = joint[int(py_) % H, int(px_) % W] > 0.5
+                if prev is not None and j != prev and r.random() < 0.3:
+                    R = w * r.uniform(0.3, 0.6)
+                    dmg.poly([(px_ + R * math.cos(q) * r.uniform(0.5, 1.1), py_ + R * math.sin(q) * r.uniform(0.5, 1.1))
+                              for q in np.sort(r.uniform(0, 2 * np.pi, 6))], 0.7)
+                prev = j
+            for _ in range(int(r.integers(1, 4))):                         # the claw lifting out: torn tines past the taper
+                o2 = r.normal(0, w * 0.2)
+                u0 = r.uniform(0.86, 0.93)
+                crk.line(wobble([at(u, o2 * (1 + 6 * (u - u0))) for u in np.linspace(u0, u0 + r.uniform(40, 90) / lk, 4)], r, 0.5),
+                         r.uniform(0.9, 1.4), 0.5 + 0.3 * fresh_)
+            for _ in range(int(r.integers(1, 4))):                         # and where it bit in: torn, not cut
+                u = r.uniform(-0.01, 0.05)
+                R = w * r.uniform(0.35, 0.8)
+                px_, py_ = at(u, r.normal(0, w * 0.3))
+                dmg.poly([(px_ + R * math.cos(q) * r.uniform(0.5, 1.1), py_ + R * math.sin(q) * r.uniform(0.5, 1.1))
+                          for q in np.sort(r.uniform(0, 2 * np.pi, 7))], r.uniform(0.6, 0.85))
+            for _ in range(int(r.poisson(lk / 4 * (0.15 + fresh_)))):      # grit, spilled along the lips and fallen below them
+                u = r.uniform(0.03, 0.85)
+                side = r.choice([-1, 1])
+                px_, py_ = at(u, side * (w / 2 * (1 - u) ** 0.5 + abs(r.normal(0, 5))))
+                py_ += r.exponential(5)
+                rr_ = r.uniform(0.6, 1.8)
+                grit[int(r.random() < 0.35)].ellipse(px_, py_, rr_ * r.uniform(0.7, 1.3), rr_, r.uniform(0.6, 1.0))
+    young = [g for g in strokes if g["age"] < 0.3] or strokes
+    young[int(r.integers(len(young)))]["bleed"] = True                 # blood dragged down one groove, or two
+    if r.random() < 0.6:
+        strokes[int(r.integers(len(strokes)))]["bleed"] = True
+    claw_blood = np.zeros((H, W), F32)
+    grain = t.noise(1.4, feature=40, lo=3)              # the lips' roughness: broken, not fuzzy
+
+    def gouge(g):
+        """Cut one stroke: a groove torn into the stone, its ends ragged (a
+        blunt bite where the claw went in, a long drag to a point where it
+        lifted out), skating over the joints; its upper-left wall in shadow
+        and a shadow cast across the floor, the lower-right lip lit; the floor
+        a little lighter than the face when fresh, dark and packed with dirt
+        when old; dried blood dragged along it in `bleed`."""
+        x0, y0, a, L, w, age = g["x"], g["y"], g["a"], g["L"], g["w"], g["age"]
+        ca, sa = math.cos(a), math.sin(a)
+        cx, cy = x0 + L * ca / 2, y0 + L * sa / 2
+        rx, ry = int(abs(L * ca) / 2 + 2 * w + 30 + abs(g["bend"]) * L * 0.07), int(abs(L * sa) / 2 + 2 * w + 30 + abs(g["bend"]) * L * 0.07)
+        ix, dx, dy = t.box(cx, cy, rx, rx, ry, ry)
+        px_, py_ = dx + cx - x0, dy + cy - y0
+        u = (px_ * ca + py_ * sa) / L
+        uc = np.clip(u, 0, 1)
+        v = -px_ * sa + py_ * ca - g["bend"] * L * 0.25 * (uc * uc - uc)
+        z = v / (w / 2)
+        tA, tB, tC, tD = g["torn"]
+        torn_in = 0.5 * np.sin(3.1 * z + tA) + 0.4 * np.sin(7.7 * z + tB)
+        torn_out = 0.5 * np.sin(2.3 * z + tC) + 0.5 * np.sin(6.1 * z + tD)
+        taper = smooth(u + g["e_in"] * 0.5 * torn_in, 0, g["e_in"]) * smooth(1 - u + 0.04 * torn_out, 0, g["e_out"]) ** 0.8
+        jag = np.where(v < 0, np.interp(uc, np.linspace(0, 1, 160), g["jag"][0]), np.interp(uc, np.linspace(0, 1, 160), g["jag"][1]))
+        hw = w / 2 * taper * (1 + 0.22 * jag) + 1.4 * grain[ix] * smooth(taper, 0.05, 0.3)
+        over = np.clip(lblur(joint[ix], 1.5) * 1.8, 0, 1)                  # the joint is recessed: the claw skates over it
+        m = smooth(hw - np.abs(v), -0.6, 0.6) * smooth(hw, 0.3, 1.2) * (1 - over)
+        if age > 0.6:
+            m = lblur(m, 0.5 + 0.8 * age)                                  # old: worn soft
+        q = np.clip(np.abs(v) / np.maximum(hw, 0.5), 0, 1)
+        prof = 1 - smooth(q, 0.35, 1.0)                                    # a floor, and steep walls
+        h = -(0.3 + 0.7 * taper) * w * (0.38 - 0.12 * age) * prof * m      # px deep
+        gy, gx = np.gradient(h)
+        shade = np.clip((1 + gx + gy) / np.sqrt(1 + gx * gx + gy * gy), 0.0, 1.6)
+        shade = 0.38 + 0.62 * shade                                        # Lambert, the light from the upper left, and a little ambient
+        cast = 0
+        for k in range(1, 9):                                              # the shadow the upper-left lip casts on the floor
+            cast = np.maximum(cast, lshift(h, k, k) - h - 1.6 * k)
+        cast = smooth(cast, 0.0, 1.5) * m
+        lip = (1 - m) * np.maximum.reduce([lshift(m, k, k) for k in (1, 2, 3)]) * smooth(taper, 0.1, 0.5)
+        dull = smooth(fine[ix], -1.5, 1.5)
+        sub = img[ix]
+        floor = sub * (1.02 - 0.28 * age) * (0.93 + 0.08 * dull)[..., None]
+        floor = mix(floor, floor * DIRT * hexc("#cfc6b8"), (0.3 + 0.7 * age) * (0.6 + 0.4 * dull))   # dirty; old, dirt packed in
+        sub = mix(sub, floor, m)
+        sub *= mix(np.ones_like(shade), shade, (1 - 0.35 * age))[..., None]
+        sub *= (1 - (0.55 - 0.2 * age) * cast)[..., None]
+        sub *= (1 + (0.42 - 0.25 * age) * lip)[..., None]
+        sub *= (1 - 0.18 * (1 - m) * np.maximum.reduce([lshift(m, -k, -k) for k in (1, 2)]) * (1 - 0.5 * age))[..., None]   # the shaded arris
+        img[ix] = sub
+        if g["bleed"]:
+            u0 = r.uniform(0.0, 0.2)
+            u1 = u0 + r.uniform(0.25, 0.5)
+            lanes = sum(np.exp(-((z - c) / r.uniform(0.15, 0.3)) ** 2) * r.uniform(0.6, 1.0) for c in r.uniform(-0.6, 0.6, 3))
+            bb = m * smooth(u, u0, u0 + 0.04) * (1 - smooth(u, u1 - 0.2, u1 + 0.1 * torn_out)) * np.clip(0.35 + lanes, 0, 1)
+            bb *= smooth(fine[ix] + 1.5 * (1 - (u - u0) / (u1 - u0 + 1e-3)), -0.2, 1.0)    # thinner as it drags, flaking
+            claw_blood[ix] = np.maximum(claw_blood[ix], np.clip(bb, 0, 1))
+
+    # bullet pocks: singles, and a burst or two
+    for i in range(int(r.integers(6, 10))):
+        rad.append((*place(0.4, 0.4, 1.2, margin=i < 2), r.uniform(5, 8)))
+    for i in range(2):
+        cx, cy = place(0.8, 1.0, margin=i == 0)
+        a0 = r.uniform(0, np.pi) if i else r.uniform(1.2, 1.9)        # in a margin, a burst up the wall
+        for _ in range(int(r.integers(3, 7))):
+            s = r.normal(0, 70)
+            rad.append((cx + s * math.cos(a0) + r.normal(0, 15), cy + s * math.sin(a0) + r.normal(0, 15), r.uniform(5, 7)))
     for x, y, rr in rad:
         k = int(r.integers(6, 10))
         ang = np.linspace(0, 2 * np.pi, 2 * k, endpoint=False)
@@ -598,10 +800,10 @@ def weather(rgb, joint, seed):
                       (x + (l0 + l1) / 2 * math.cos(q + r.normal(0, 0.1)), y + (l0 + l1) / 2 * math.sin(q + r.normal(0, 0.1))),
                       (x + l1 * math.cos(q), y + l1 * math.sin(q))], 1.3, 0.8)
 
-    # something scratched into it: a tally, or a glyph
+    # something scratched into it: a tally or two, and a glyph or two
     scr = Layer(t)
-    x, y = place(0.8, 1.5)
-    if r.random() < 0.5:                                # a tally: fours struck through, the last group not done
+
+    def tally(x, y):                                    # fours struck through, the last group not done
         h, sp = r.uniform(70, 95), r.uniform(11, 15)
         left, gx = int(r.integers(7, 19)), x
         while left > 0:
@@ -613,13 +815,21 @@ def weather(rgb, joint, seed):
                 scr.line(wobble([(gx - 8, y + h * 0.72), (gx + 3 * sp + 8, y + h * 0.25)], r, 1.0), 2.2)
             left -= k
             gx += 4 * sp + r.uniform(18, 26)
-    else:
+
+    def glyph(x, y):
         size = r.uniform(150, 210)
         for stroke in GLYPHS[int(r.integers(len(GLYPHS)))]:
             pts = [(x + u * size * 0.8, y + v * size) for u, v in stroke]
             for k in range(2):                                   # a blade scratches twice, near the same line
                 o = k * r.uniform(1.5, 2.5)
                 scr.line(wobble([(px_ + o, py_ + o * 0.5) for px_, py_ in pts], r, 1.2), 1.8 - 0.4 * k, 1.0 - 0.3 * k)
+
+    tally(*place(0.8, 1.5, margin=True))
+    glyph(*place(0.8, 1.5))
+    if r.random() < 0.5:
+        tally(*place(0.8, 1.5))
+    else:
+        glyph(*place(0.8, 1.5, margin=True))
 
     D = np.clip(dmg.render(), 0, 1)
     D = smooth(t.blur(D, 0.8) + 0.12 * fine * (D > 0.05), 0.3, 0.7) * np.maximum(D, 0.6)   # ragged edges
@@ -629,6 +839,12 @@ def weather(rgb, joint, seed):
     C = crk.render()
     img *= (1 - 0.55 * C)[..., None]
     img *= (1 + 0.10 * np.clip(shift(C, 1.2, 1.2) - C, 0, 1))[..., None]     # the crack's lower lip, lit
+    for g in strokes:
+        gouge(g)
+    Gd, Gl = grit[0].render(), grit[1].render()
+    img *= (1 - 0.45 * Gd)[..., None]
+    img = mix(img, np.minimum(img * 1.16, 1), Gl)
+    del Gd, Gl, grit
     for x, y, rr in rad:                     # the hole, and the powder round it
         ix, dx, dy = t.patch(x, y, int(rr * 5))
         d = np.hypot(dx, dy)
@@ -639,7 +855,7 @@ def weather(rgb, joint, seed):
         sub *= (1 + 0.12 * bowl)[..., None]
         sub = mix(sub, HOLE * (0.9 + 0.2 * smooth(dx + dy, 0, rr))[..., None], hole)
         img[ix] = sub
-    del D, S_, C, dmg, crk, scr
+    del D, S_, C, dmg, crk, scr, grain
 
     # ── 7. blood: dried, small ───────────────────────────────────────────────────
     blood = {"dry": Layer(t), "old": Layer(t)}
@@ -677,13 +893,16 @@ def weather(rgb, joint, seed):
             lay.poly(left + right[::-1], 0.85)
             lay.ellipse(x, y, w * 0.7, w * 0.9, 0.95)
 
-    cx, cy = claw_at[0]                                  # by the big claw mark: whatever made it was hurt, or did the hurting
-    spatter(blood["dry"], cx + r.normal(0, 60), cy + r.normal(0, 60), r.uniform(5, 8), int(r.integers(14, 26)), r.uniform(25, 45),
-            r.uniform(0, 2 * np.pi), 0.6)
-    spatter(blood["old"], *place(1.0, 1.0), r.uniform(4, 7), int(r.integers(10, 18)), r.uniform(20, 35),
-            r.uniform(0, 2 * np.pi), 0.7)
-    for _ in range(int(r.integers(3, 6))):              # specks, in little groups
-        gx, gy = place(0.4, 0.4, 1.2)
+    weather.debug = dict(claws=list(claw_at), strokes=[(g["x"], g["y"], g["a"], g["L"], g["age"], g["bleed"]) for g in strokes])  # DEBUG
+    claw_at.sort(key=lambda c: c[2])                     # by the freshest claw marks: whatever made them was hurt, or did the hurting
+    for (cx, cy, _), a in zip(claw_at[:2], ("dry", "old")):
+        spatter(blood[a], cx + r.normal(0, 80), cy + r.normal(0, 80), r.uniform(4, 8), int(r.integers(12, 26)), r.uniform(22, 45),
+                r.uniform(0, 2 * np.pi), 0.6)
+    for i in range(2):
+        spatter(blood["old" if i else "dry"], *place(1.0, 1.0, margin=i == 0), r.uniform(3, 6), int(r.integers(8, 16)), r.uniform(18, 32),
+                r.uniform(0, 2 * np.pi), 0.7)
+    for i in range(int(r.integers(7, 11))):             # specks, in little groups
+        gx, gy = place(0.4, 0.4, 1.2, margin=i < 3)
         aim = r.uniform(0, 2 * np.pi)
         for _ in range(int(r.integers(2, 7))):
             q, d = aim + r.normal(0, 0.5), r.uniform(0, 40)
@@ -702,6 +921,7 @@ def weather(rgb, joint, seed):
 
     B = {a: lay.render() for a, lay in blood.items()}
     B["old"] = np.maximum(B["old"], smear)
+    B["dry"] = np.maximum(B["dry"], claw_blood)
     for a, b in B.items():
         b = b * (0.7 + 0.3 * smooth(fine, -1.5, 1.0)) * (fine < 2.2)          # dried, flaking
         rim = np.clip(b - t.blur(b, 1.2), 0, 1)                             # the darker rim a drop dries to
@@ -709,9 +929,13 @@ def weather(rgb, joint, seed):
         img = img * mix(np.ones(3, F32), BLOOD_FILM[a], smooth(b, 0.0, 0.5)[..., None])
         img = mix(img, BLOOD_DEEP[a] * (0.95 + 0.1 * smooth(fine, -1, 1))[..., None], thick * 0.85)
         special = np.maximum(special, smooth(b, 0.05, 0.2))
-    del B, smear
+    del B, smear, claw_blood
 
-    # ── 1. dim: the whole tile to TARGET ─────────────────────────────────────────
+    # ── 1. dim: the faces dulled (the lighter half of the tile pulled toward its
+    # median, so nothing reads as clean stone), then the whole tile to TARGET
+    lum = img @ LUM
+    med = np.median(lum[::4, ::4])
+    img *= np.where(lum > med, (med + (lum - med) * DULL) / np.maximum(lum, 1e-3), 1)[..., None]
     img *= TARGET / img.reshape(-1, 3).mean(0, dtype=np.float64).astype(F32)
     return np.clip(img, 0, 1), special > 0.5
 

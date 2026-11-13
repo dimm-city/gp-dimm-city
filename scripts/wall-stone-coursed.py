@@ -33,8 +33,8 @@ darkness field, back to front:
 4. Chips: the broken-away corner or edge, stippled and dark.
 5. The face: sparse speckle in clusters, pits, and the tooling (chisel
    strokes, a drafted margin, a few hairline cracks), all faint.
-The darkness is then mapped, level by level, onto the brick tile's tones
-(images/brick-wall.png: --bg times a grey line drawing), as wall-tiles.py's
+The darkness is then mapped, level by level, onto the clean brick's tones
+(wall_grime.clean_brick: --bg times a grey line drawing), as wall-tiles.py's
 `tint` mapped the sheet's: the clean stone gets the brick's histogram and
 darkest grey. wall_grime.py then weathers it with the joints' mask (grime,
 damp, mould and fungi, burns, damage, dried blood), dims it, and saves it
@@ -54,7 +54,6 @@ ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px an inch: the print bar
 F32 = np.float32
 BG = (0xC8, 0xC5, 0xBF)     # --bg (ash concrete), the brick's colour
-BRICK = ROOT / "images/brick-wall.png"   # the tones to match
 SS = 4                      # strokes are drawn at SS x and boxed down
 LEVELS = 4096               # darkness levels the tone match works in
 TONE_STEP = 0.003           # the tones are rounded to this (a level of luminance): the palette's size
@@ -421,8 +420,8 @@ def draw(n):
 
 
 def brick_tones():
-    """The brick tile's pixels as multiples of --bg, darkest first."""
-    a = np.asarray(Image.open(BRICK).convert("RGB"), F32)
+    """The clean brick's pixels (wall_grime.clean_brick) as multiples of --bg, darkest first."""
+    a = np.asarray(wall_grime.clean_brick(), F32)
     lum = a @ np.array([0.299, 0.587, 0.114], F32)
     return np.sort(lum.ravel() / (np.array(BG, F32) @ np.array([0.299, 0.587, 0.114], F32)))
 

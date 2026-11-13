@@ -8,8 +8,8 @@ They used to be cut from the painted sheet (source-art/wall-sheet.png) by
 wall-tiles.py and printed at 240 DPI with about 110 DPI of real detail. Now
 they are drawn, at DPI (300, the print bar), in the same look: a line drawing
 of the stone, ash (--bg) faces with grey joints, their tones first matched
-level by level to the brick tile's (images/brick-wall.png), as the sheet's
-tiles were; then weathered (wall_grime.py) into the city's dim, grimy stone.
+level by level to the clean brick's (the line drawing multiplied into --bg,
+wall_grime.clean_brick), as the sheet's tiles were; then weathered (wall_grime.py) into the city's dim, grimy stone.
 
 Each tile is NW x NH px (9in x 12in), and repeats without a seam both ways,
 because everything in it is periodic: the noise is filtered in the Fourier
@@ -49,8 +49,8 @@ The marks are a darkness field; its pixels are ranked and given the brick's
 tones by rank (the darkest pixel the brick's darkest tone), so the clean
 stone has the brick's tone histogram. Then wall_grime.py weathers it, with
 the joints' mask, as it does walls 2, 4 and 6: grime, damp, mould and fungi,
-burns, chips, cracks, bullet pocks, claw marks, a scratched mark, dried
-blood; dims it to the city's stone (darker than the brick) and writes it as
+burns, chips, cracks, bullet pocks, claw gouges, scratched marks, dried
+blood; dims it to the city's stone (as dim as the brick) and writes it as
 an exact palette with no dither: lossless, so the joints keep their edges.
 """
 import math
@@ -68,7 +68,6 @@ DPI = 300                   # px an inch: the print bar
 NW, NH = 9 * DPI, 12 * DPI  # px: 9in x 12in, about a page across and taller than one, so a page shows no mark twice
 FEATURE = 3 * DPI           # px: the largest mottle or patch, whatever the tile's size
 BG = (0xC8, 0xC5, 0xBF)     # --bg (ash concrete), the brick's colour
-BRICK = ROOT / "images/brick-wall.png"   # the tones to match: --bg times the brick's line drawing
 SUPER = 3                   # the cracks are drawn at SUPER x and boxed down
 F32 = np.float32
 
@@ -375,9 +374,9 @@ def draw(n):
 
 
 def brick_tones():
-    """The brick tile's pixels as multiples of --bg, darkest first."""
+    """The clean brick's pixels (wall_grime.clean_brick) as multiples of --bg, darkest first."""
     bg = BG[0] * 0.299 + BG[1] * 0.587 + BG[2] * 0.114
-    a = np.asarray(Image.open(BRICK).convert("RGB"), np.float64)
+    a = np.asarray(wall_grime.clean_brick(), np.float64)
     return np.sort((a @ [0.299, 0.587, 0.114]).ravel() / bg)
 
 

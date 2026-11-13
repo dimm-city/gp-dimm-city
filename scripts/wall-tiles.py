@@ -4,7 +4,7 @@
     python3 scripts/wall-tiles.py --ground  # redraw the ground (the setts) only
     python3 scripts/wall-tiles.py --grounds # the three streets (setts, flags, asphalt), grimed, and the CSS
 
-Python 3 with Pillow. Every wall tile is drawn by its own script in scripts/
+Python 3 with Pillow (and numpy, for wall_grime). Every wall tile is drawn by its own script in scripts/
 at DPI (300), the print bar: 1-6 the stone walls (wall-stone-rubble.py: 1, 3,
 5; wall-stone-coursed.py: 2, 4, 6), 7-13 the specialty walls (wall-metal.py,
 wall-circuit.py, wall-moss.py, wall-surgery.py, wall-aether.py,
@@ -18,7 +18,7 @@ sheet's square-sett panel (source-art/wall-sheet.png, panel GROUND_FROM):
 its whole setts (a joint on every side) are cut out, resized to one SETT-px
 cell and laid in random turns and flips, no sett beside itself, with the
 panel's mean joint drawn along every cell edge; the asphalt is drawn. Each is
-tinted to the brick (images/brick-wall.png: --bg times a grey line drawing),
+tinted to the clean brick (wall_grime.clean_brick: --bg times a grey line drawing),
 seen in perspective from EYE above it and grimed. The sheet's setts are at
 SHEET_DPI (240); the ground resamples them to GROUND_DPI (300) in its
 perspective transform and draws its joints, foot line and shadow at that
@@ -28,12 +28,16 @@ whole CSS px: 0.6in is 58px, 0.604in), so its rows measure 300 DPI.
 import math
 import random
 import sys
+from pathlib import Path
+
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wall_grime  # noqa: E402  (the clean brick, whose tones the streets are matched to)
 
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 SHEET = ARGS[0] if ARGS else "source-art/wall-sheet.png"
 BG = (0xC8, 0xC5, 0xBF)             # --bg (ash concrete), the brick's colour
-BRICK = "images/brick-wall.png"     # the tones to match: --bg times the brick's line drawing
 DPI = 300                           # every wall tile is drawn at the print bar, so printed size = px / DPI
 SHEET_DPI = 240                     # the painted sheet's scale: the ground's setts are laid at it
 SETT, SETTS = 136, 8                # the sett cell, px, and cells a side
@@ -225,9 +229,9 @@ def ground(panel, tones, grid=None):
 
 
 def brick_tones():
-    """The brick tile's pixels as multiples of --bg, darkest first."""
+    """The clean brick's pixels (wall_grime.clean_brick) as multiples of --bg, darkest first."""
     bg = lum(BG)
-    return sorted(lum(c) / bg for c in Image.open(BRICK).convert("RGB").get_flattened_data())
+    return sorted(lum(c) / bg for c in wall_grime.clean_brick().get_flattened_data())
 
 
 def tint(tile, tones):

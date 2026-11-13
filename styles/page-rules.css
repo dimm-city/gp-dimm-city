@@ -369,7 +369,7 @@
      is the sheet, in print too, so the ground sits its depth above the foot. */
   background:
     url("../images/ground.png") 50% calc(var(--gp-page-height, 11.25in) - 0.6in) / 10in 0.6in no-repeat,
-    url("../images/brick-wall.png") 0 0 / 1.5in auto repeat var(--bg);
+    url("../images/brick-wall.png") 0 0 / 9in auto repeat var(--bg);
 
   @bottom-left  { content: none; }
   @bottom-right { content: none; }
@@ -391,7 +391,7 @@
   margin-top: 0.875in;
   background:
     url("../images/ground.png") 50% calc(var(--gp-content-h, 100% - var(--bottom-margin) + 0.6in + 0.25in) + var(--bottom-margin) - 0.6in - 0.25in) / 10in 0.6in no-repeat,
-    url("../images/brick-wall.png") 0 0 / 1.5in auto repeat var(--bg);
+    url("../images/brick-wall.png") 0 0 / 9in auto repeat var(--bg);
 }
 
 .page.dc-page-citizen-file {
