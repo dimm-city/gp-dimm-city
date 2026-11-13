@@ -35,12 +35,20 @@ What it draws, back to front:
 It is then quantised to an exact palette, as the other walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is).
 
-At DPI (240, wall-tiles.py's) the tile is 18in x 12in, wider than a spread
+At DPI (300, the print bar) the tile is 18in x 12in, wider than a spread
 and taller than a page, so a spread shows no repeat. No damp patch or stain
 is larger than FEATURE (8in). Its courses run across the tile, so
 wall-tiles.py anchors it to the sheet, not the text area, and offsets a right
 page by the left page's width: a spread is one wall, its courses unbroken at
 the spine.
+
+It was first drawn at 240 DPI, and every length in it is scaled by S (300 /
+240) from there, so it prints the same at the finer resolution, with finer
+detail rather than an upsampled one. Only the soft edge a shape is drawn with
+(a smoothstep under a pixel wide, there to antialias it) stays a pixel wide,
+so edges come out crisper. The noise's coarse frequencies, all the 240 DPI
+tile had, are drawn first from the same seeds as before, so the wall keeps its
+layout; the new ones add only finer grain.
 """
 import math
 from pathlib import Path
@@ -49,11 +57,15 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
-NW, NH = 4320, 2880         # px; 18in x 12in at 240 DPI: wider than a spread and taller than a page, so a spread shows no repeat
-FEATURE = 1920              # px (8in): the largest damp patch or stain, whatever the tile's size
-COURSE = (150, 300)         # a course's height, px
+DPI = 300                   # px an inch: the print bar
+S = DPI / 240               # px per px of the 240 DPI tile it was first drawn at: every length below is scaled by it
+NW, NH = round(18 * DPI), round(12 * DPI)   # px; 18in x 12in: wider than a spread and taller than a page, so a spread shows no repeat
+NW0, NH0 = round(NW / S), round(NH / S)     # the tile at 240 DPI, where the noise's coarse frequencies are drawn
+FEATURE = 8 * DPI           # px (8in): the largest damp patch or stain, whatever the tile's size
+COURSE = (150 * S, 300 * S) # a course's height, px
 LENGTH = (1.1, 2.7)         # a stone's length, in course heights
-MORTAR = 9.0                # half a joint's width, px (it varies by +-4)
+MORTAR = 9.0 * S            # half a joint's width, px (it varies by +-4 * S)
+CSS = 4                     # the hairline cracks are drawn at CSS x and boxed down: 1.25px lines
 MOSS = 0.30                 # the share of the wall under moss
 SEED = 9
 SHADE = 1.0                 # the whole tile; its darkest moss and shadow stay well under DriveThruRPG's 240% TAC
@@ -72,16 +84,31 @@ def hexc(h):
     return np.array([int(h[i:i + 2], 16) for i in (1, 3, 5)], F32) / 255
 
 
+def px(v):
+    """A whole number of px for a length v given in 240 DPI px (a shift, a patch's reach)."""
+    return int(math.floor(v * S + 0.5))
+
+
+def white_spec(r):
+    """The spectrum (rfft2) of white noise over the tile. Its coarse part,
+    every frequency the 240 DPI tile had, is drawn first, as it was then, so a
+    field keeps its layout; the finer frequencies are drawn after it."""
+    coarse = np.fft.rfft2(r.standard_normal((NH0, NW0), dtype=F32)) * F32(S)   # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
+    spec = np.fft.rfft2(r.standard_normal((NH, NW), dtype=F32))
+    iy = np.fft.fftfreq(NH0, 1 / NH0).astype(int) % NH
+    spec[iy, :NW0 // 2 + 1] = coarse
+    return spec
+
+
 def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE, band=None, lo=None):
     """Periodic 1/f^beta noise over the tile, as a z-score (mean 0, sd 1).
     `stretch` (sx, sy) > 1 elongates it along that axis; `band` (px) keeps
     only features near that size; `lo` (px) drops features smaller than it."""
     r = np.random.default_rng(seed)
-    white = r.standard_normal((NH, NW), dtype=F32)
     fy = FY * stretch[1]
     fx = FX * stretch[0]
     f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature)
-    spec = np.fft.rfft2(white) / f ** beta
+    spec = white_spec(r) / f ** beta
     if band:
         spec *= np.exp(-((f * band - 1) ** 2) * 3)
     if lo:
@@ -123,7 +150,8 @@ def wave(n, amp, r, kmax=9):
 
 
 def relief(h, k):
-    """Light from the upper left on a height field: > 1 lit, < 1 in shade."""
+    """Light from the upper left on a height field: > 1 lit, < 1 in shade.
+    The slope is taken over 2px, so k carries an S: the same slope per inch."""
     gx = np.roll(h, 1, 1) - np.roll(h, -1, 1)
     gy = np.roll(h, 1, 0) - np.roll(h, -1, 0)
     return 1 + k * (gx + gy)
@@ -136,9 +164,9 @@ while sum(heights) < NH:
 heights = np.array(heights) * NH / sum(heights)
 tops = np.concatenate([[0], np.cumsum(heights)])[:-1]
 K = len(heights)
-beds = [tops[k] + np.clip(wave(NW, 11, rng), -40, 40) for k in range(K)]   # each course's bed line, y(x)
+beds = [tops[k] + np.clip(wave(NW, 11 * S, rng), -40 * S, 40 * S) for k in range(K)]   # each course's bed line, y(x)
 
-E = np.full((NH, NW), -99, F32)       # distance in from the stone's edge (its rounded box), px
+E = np.full((NH, NW), -99 * S, F32)       # distance in from the stone's edge (its rounded box), px
 DT = np.zeros((NH, NW), F32)          # distance down from the stone's top edge, px
 SID = np.zeros((NH, NW), np.int32)    # which stone
 x = np.arange(NW)[None, :].astype(F32)
@@ -160,7 +188,7 @@ for k in range(K):
     vtilt = rng.normal(0, 0.10, J)
     split2 = split & (rng.random(J) < 0.45)            # and its upper part in two again, side by side
     usp = rng.uniform(0.35, 0.65, J)
-    y0, y1 = int(tops[k]) - 48, int(tops[k] + hk) + 48
+    y0, y1 = int(tops[k]) - px(48), int(tops[k] + hk) + px(48)
     ya = np.arange(y0, y1)[:, None].astype(F32)
     inside = (ya >= top[None, :]) & (ya < bot[None, :])
     hh = (bot - top)[None, :]
@@ -191,7 +219,7 @@ for k in range(K):
     dr = np.where(left, xs - dl, dr)
     dl = np.where(sp2 & ~left, dl - xs, dl)
     sub = np.where(sp2 & ~left, 2, sub)
-    kk = 16.0                                           # corner rounding, px
+    kk = 16.0 * S                                       # corner rounding, px
     m = np.minimum.reduce([dl, dr, dt, db])
     e = m - kk * np.log(np.exp(-(dl - m) / kk) + np.exp(-(dr - m) / kk) + np.exp(-(dt - m) / kk) + np.exp(-(db - m) / kk))
     rows = (np.arange(y0, y1) % NH)[:, None] * np.ones((1, NW), int)
@@ -204,12 +232,12 @@ for k in range(K):
     print(f"  course {k + 1}/{K}  {J} stones", flush=True)
 
 # the edges: irregular, chipped at the arrises
-lump = noise(2.4, seed=SEED + 1, feature=220, lo=14)         # an outline that wanders: rubble, not ashlar
-edge_n = noise(1.2, seed=SEED + 24, lo=2.5)
-chip_n = noise(1.4, seed=SEED + 2, feature=90, lo=5)         # bites out of the arris
-E = E + 9.0 * lump + 1.3 * edge_n - 12.0 * smooth(chip_n, 1.3, 2.3) * np.exp(-np.maximum(E - MORTAR, 0) / 18)
-MW = MORTAR + 4.0 * noise(1.8, seed=SEED + 3, feature=600)
-stone = smooth(E, MW - 0.8, MW + 0.8)
+lump = noise(2.4, seed=SEED + 1, feature=220 * S, lo=14 * S)         # an outline that wanders: rubble, not ashlar
+edge_n = noise(1.2, seed=SEED + 24, lo=2.5 * S)
+chip_n = noise(1.4, seed=SEED + 2, feature=90 * S, lo=5 * S)         # bites out of the arris
+E = E + (9.0 * lump + 1.3 * edge_n - 12.0 * smooth(chip_n, 1.3, 2.3) * np.exp(-np.maximum(E - MORTAR, 0) / (18 * S))) * S
+MW = MORTAR + 4.0 * S * noise(1.8, seed=SEED + 3, feature=600 * S)
+stone = smooth(E, MW - 0.8, MW + 0.8)                   # antialiased over 1.6px
 inset = E - MW                                          # px in from the stone's visible edge
 
 # each stone its own colour and weathering
@@ -220,53 +248,53 @@ colours = np.stack([STONES[i] for i in pick]) * tone[:, None]
 base = colours[SID]
 
 mottle = noise(2.0, seed=SEED + 4)
-strata = noise(1.3, stretch=(1.0, 0.08), seed=SEED + 5, feature=400, lo=5)   # bedding, along the course
+strata = noise(1.3, stretch=(1.0, 0.08), seed=SEED + 5, feature=400 * S, lo=5 * S)   # bedding, along the course
 grain = noise(0.5, seed=SEED + 6)
 pits_n = noise(0.3, seed=SEED + 7)
-face_n = noise(1.8, seed=SEED + 8, feature=300, lo=10)
+face_n = noise(1.8, seed=SEED + 8, feature=300 * S, lo=10 * S)
 stain = noise(1.9, seed=SEED + 9)
 face = 1 + 0.035 * mottle + 0.015 * strata + 0.02 * grain + 0.03 * stain
 face *= 1 - 0.18 * smooth(pits_n, 2.0, 2.8)
 
 # a dome on each stone, worn round at the arris, bumped by its face
-H = np.sqrt(smooth(inset, 0, 40)) + 0.12 * face_n * smooth(inset, 0, 20)
+H = np.sqrt(smooth(inset, 0, 40 * S)) + 0.12 * face_n * smooth(inset, 0, 20 * S)
 H = np.where(stone > 0.5, H, -0.15 + 0.02 * grain)
-lit = np.clip(relief(H.astype(F32), 2.2), 0.72, 1.22)
+lit = np.clip(relief(H.astype(F32), 2.2 * S), 0.72, 1.22)
 img = base * (face * lit)[..., None]
 
 # the joints: lime mortar, sandy, recessed, in the shadow of the stones above-left
 MORTAR_C = hexc("#a39c8c")
 sand = noise(0.2, seed=SEED + 10)
 mortar = MORTAR_C * (0.94 + 0.05 * sand + 0.03 * mottle)[..., None]
-cast = blur(stone, 3.0, 5, 6)
-mortar *= (1 - 0.30 * np.clip(cast - stone, 0, 1) - 0.10 * smooth(-inset, 0, 6))[..., None]
+cast = blur(stone, 3.0 * S, 5 * S, 6 * S)
+mortar *= (1 - 0.30 * np.clip(cast - stone, 0, 1) - 0.10 * smooth(-inset, 0, 6 * S))[..., None]
 img = mix(mortar, img, stone)
 del base, mortar, lit, face, cast
 
 # a few cracks across the faces
-crack_m = Image.new("L", (NW, NH), 0)
+crack_m = Image.new("L", (NW * CSS, NH * CSS), 0)
 cd = ImageDraw.Draw(crack_m)
 for _ in range(26):
     px_, py_, a = rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(0, 2 * np.pi)
     pts = [(px_, py_)]
     for _ in range(int(rng.integers(5, 16))):
         a += rng.normal(0, 0.45)
-        px_, py_ = px_ + rng.uniform(6, 14) * np.cos(a), py_ + rng.uniform(6, 14) * np.sin(a)
+        px_, py_ = px_ + rng.uniform(6 * S, 14 * S) * np.cos(a), py_ + rng.uniform(6 * S, 14 * S) * np.sin(a)
         pts.append((px_, py_))
     for ox in (-NW, 0, NW):
         for oy in (-NH, 0, NH):
-            cd.line([(p + ox, q + oy) for p, q in pts], fill=255, width=1)
-cr = np.asarray(crack_m, F32) / 255 * stone
+            cd.line([((p + ox) * CSS, (q + oy) * CSS) for p, q in pts], fill=255, width=round(S * CSS))
+cr = np.asarray(crack_m.resize((NW, NH), Image.BOX), F32) / 255 * stone
 img *= (1 - 0.30 * cr + 0.08 * np.clip(np.roll(cr, (1, 1), (0, 1)) - cr, 0, 1))[..., None]
 del crack_m, cr
 
 # ── fields the growth follows ────────────────────────────────────────────────────
 damp = noise(2.1, seed=SEED + 11)                       # wet patches, z-score
-joint = 1 - smooth(inset, -2, 26)                       # 1 in a joint, fading over the stone's edge
-topedge = stone * np.exp(-np.maximum(DT - MW, 0) / 34)  # a stone's top edge: a ledge that holds water
-footedge = stone * smooth(inset, 0, 8) * (1 - smooth(inset, 8, 30)) * (DT > 60)
+joint = 1 - smooth(inset, -2 * S, 26 * S)               # 1 in a joint, fading over the stone's edge
+topedge = stone * np.exp(-np.maximum(DT - MW, 0) / (34 * S))  # a stone's top edge: a ledge that holds water
+footedge = stone * smooth(inset, 0, 8 * S) * (1 - smooth(inset, 8 * S, 30 * S)) * (DT > 60 * S)
 fine = noise(0.8, seed=SEED + 12)
-clump2 = noise(1.4, seed=SEED + 18, feature=260)
+clump2 = noise(1.4, seed=SEED + 18, feature=260 * S)
 
 
 # ── drawing helpers: a small patch round a point, on the torus ──────────────────
@@ -291,21 +319,21 @@ def lshift(a, dx, dy):
 
 # galletting: small stones pressed into the wide joints
 PEBBLES = [hexc(c) for c in ("#a9a497", "#b3ac9c", "#9f9d95", "#b0a690")]
-wide = np.flatnonzero((inset[::3, ::3] < -7) & (inset[::3, ::3] > -60))
+wide = np.flatnonzero((inset[::3, ::3] < -7 * S) & (inset[::3, ::3] > -60 * S))
 n_peb = 0
 for c in rng.choice(wide, min(len(wide), 1400), replace=False):
     sy_, sx_ = divmod(c, (NW + 2) // 3)
     x0, y0 = sx_ * 3 + rng.uniform(0, 3), sy_ * 3 + rng.uniform(0, 3)
-    r = rng.uniform(3.5, 8.5) * min(1.0, -float(inset[int(y0) % NH, int(x0) % NW]) / 10)
-    if r < 3:
+    r = rng.uniform(3.5 * S, 8.5 * S) * min(1.0, -float(inset[int(y0) % NH, int(x0) % NW]) / (10 * S))
+    if r < 3 * S:
         continue
-    ix, dx, dy = patch(x0, y0, int(r * 1.6) + 4)
+    ix, dx, dy = patch(x0, y0, int(r * 1.6) + px(4))
     ang, el = rng.uniform(0, np.pi), rng.uniform(0.6, 1.0)
     X = (dx * np.cos(ang) + dy * np.sin(ang)) / r
     Y = (-dx * np.sin(ang) + dy * np.cos(ang)) / (r * el)
     rr = X * X + Y * Y
     a = smooth((1 - np.sqrt(rr)) * r * el, -0.7, 0.7) * (1 - stone[ix])
-    sh = lblur(lshift(a, 2, 2), 1.2)
+    sh = lblur(lshift(a, px(2), px(2)), 1.2 * S)
     img[ix] *= (1 - 0.35 * sh * (1 - a))[..., None]
     nz = np.sqrt(np.clip(1 - rr, 0, 1))
     lit = 0.80 + 0.35 * np.clip((-dx - dy) / (r * 1.41) * 0.6 + nz * 0.5, 0, 1)
@@ -322,13 +350,13 @@ LICHENS = {   # kind: (centre, body, rim, fruit), weight
 }
 kinds = list(LICHENS)
 kw = np.array([LICHENS[k][1] for k in kinds])
-lichen_n = noise(1.2, seed=SEED + 13, feature=60, lo=3)
-areole = noise(0.6, seed=SEED + 14, band=7)
+lichen_n = noise(1.2, seed=SEED + 13, feature=60 * S, lo=3 * S)
+areole = noise(0.6, seed=SEED + 14, band=7 * S)
 
 
 def rosette(x0, y0, R, kind):
     (cc, cb, crm, cf), _ = LICHENS[kind]
-    Rb = int(R * 1.35) + 3
+    Rb = int(R * 1.35) + px(3)
     ix, dx, dy = patch(x0, y0, Rb)
     d = np.hypot(dx, dy)
     th = np.arctan2(dy, dx)
@@ -345,41 +373,41 @@ def rosette(x0, y0, R, kind):
         col *= (1 - 0.12 * smooth(-areole[ix], 0.9, 1.6))[..., None]
     else:                                               # leafy: each lobe lit along its crest, ridged in rings
         col *= (1 + 0.06 * np.sin(k * th + ph[0]) * smooth(t, 0.45, 0.95) + 0.03 * np.sin(2 * np.pi * 4 * t + ph[1]))[..., None]
-    if R > 22 and rng.random() < 0.55:                  # old centre dying back
+    if R > 22 * S and rng.random() < 0.55:              # old centre dying back
         a *= 1 - smooth(0.42 - t + 0.15 * lichen_n[ix], 0.0, 0.12) * 0.85
     a *= 0.88
     put(ix, a, col)
-    rim = smooth(sdf, -0.5, 0.5) * (1 - smooth(sdf, 1.0, 2.2)) * stone[ix]
+    rim = smooth(sdf, -0.5, 0.5) * (1 - smooth(sdf, 1.0 * S, 2.2 * S)) * stone[ix]
     img[ix] *= (1 - 0.12 * rim)[..., None]
     if rng.random() < 0.6:                              # fruiting discs
-        for _ in range(int(rng.integers(3, 3 + R // 4))):
+        for _ in range(int(rng.integers(3, 3 + R // (4 * S)))):
             rr, aa = R * 0.6 * np.sqrt(rng.random()), rng.uniform(0, 2 * np.pi)
             fx, fy = rr * np.cos(aa), rr * np.sin(aa)
-            fr = rng.uniform(1.6, 3.4)
+            fr = rng.uniform(1.6 * S, 3.4 * S)
             disc = smooth(fr - np.hypot(dx - fx, dy - fy), -0.6, 0.6) * a
             put(ix, disc * 0.9, cf)
 
 
-face_ok = (stone > 0.9) & (inset > 6)
+face_ok = (stone > 0.9) & (inset > 6 * S)
 n_lichen = 0
 for _ in range(2600):
     if n_lichen >= 700:
         break
     if rng.random() < 0.35 and n_lichen:                # colonies: next to the last one
-        x0, y0 = lx + rng.normal(0, 40), ly + rng.normal(0, 40)
+        x0, y0 = lx + rng.normal(0, 40 * S), ly + rng.normal(0, 40 * S)
     else:
         x0, y0 = rng.uniform(0, NW), rng.uniform(0, NH)
     xi, yi = int(x0) % NW, int(y0) % NH
     if not face_ok[yi, xi] or damp[yi, xi] > 1.0:
         continue
-    R = float(np.clip(rng.lognormal(np.log(20), 0.5), 5, 75))
+    R = float(np.clip(rng.lognormal(np.log(20 * S), 0.5), 5 * S, 75 * S))
     rosette(x0, y0, R, kinds[rng.choice(len(kinds), p=kw / kw.sum())])
     lx, ly = x0, y0
     n_lichen += 1
 print(f"  {n_lichen} lichens", flush=True)
 
 # ── 3. mould: dark speckled blooms; a green algal film where it is damp ─────────
-mould_n = noise(1.5, seed=SEED + 15, feature=500)
+mould_n = noise(1.5, seed=SEED + 15, feature=500 * S)
 speck = noise(0.25, seed=SEED + 16)
 bloom = smooth(mould_n, 1.1, 2.1) * smooth(speck + 0.8 * mould_n - 1.2, -0.4, 0.8)
 dots = smooth(speck, 2.3, 2.9) * smooth(mould_n, 0.6, 1.4)
@@ -390,7 +418,7 @@ img = mix(img, img * hexc("#9aa48a") / hexc("#b0ae9f"), film * 0.35)
 del bloom, dots
 
 # ── 4. moss mask (needed by the damp streaks), then the streaks ─────────────────
-clump = noise(1.2, seed=SEED + 17, band=70)
+clump = noise(1.2, seed=SEED + 17, band=70 * S)
 mfield = 1.15 * joint + 0.75 * topedge + 0.15 * footedge + 0.55 * damp + 0.35 * clump + 0.30 * clump2 + 0.10 * fine
 T = np.quantile(mfield[::4, ::4], 1 - MOSS)
 moss = smooth(mfield, T - 0.06, T + 0.10)
@@ -409,20 +437,20 @@ def drip(length, width):
     return (np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2)).astype(F32)
 
 
-streaks = circ_conv(src, drip(170.0, 5.0)) + circ_conv(src, drip(60.0, 12.0)) * 0.6
+streaks = circ_conv(src, drip(170.0 * S, 5.0 * S)) + circ_conv(src, drip(60.0 * S, 12.0 * S)) * 0.6
 streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
 streaks *= smooth(streakn, -0.6, 0.9) * (0.7 + 0.3 * stone)
 img = mix(img, img * hexc("#8a8a76") / hexc("#b0ae9f"), streaks * 0.50)
 del src
 
 # ── 5. moss: cushions, bumpy and lit ────────────────────────────────────────────
-bumps = noise(0.8, seed=SEED + 20, band=7)
-bumps2 = noise(0.8, seed=SEED + 21, band=4)
+bumps = noise(0.8, seed=SEED + 20, band=7 * S)
+bumps2 = noise(0.8, seed=SEED + 21, band=4 * S)
 cush = np.sqrt(np.clip(moss, 0, 1))
-cushions = noise(1.0, seed=SEED + 25, band=40)          # one cushion beside another, a crevice between
+cushions = noise(1.0, seed=SEED + 25, band=40 * S)          # one cushion beside another, a crevice between
 cpart = smooth(cushions, -0.9, 0.6)
-MH = blur(moss, 6.0) * (0.55 + 0.45 * cpart) + 0.06 * bumps * cush + 0.03 * bumps2 * cush   # domed cushions, finely bumped
-mlit = np.clip(relief(MH.astype(F32), 1.5), 0.80, 1.20)
+MH = blur(moss, 6.0 * S) * (0.55 + 0.45 * cpart) + 0.06 * bumps * cush + 0.03 * bumps2 * cush   # domed cushions, finely bumped
+mlit = np.clip(relief(MH.astype(F32), 1.5 * S), 0.80, 1.20)
 wet = smooth(damp, 0.6, 1.6)                            # the wettest: a bluer, flatter moss
 MLO, MMID, MHI = hexc("#7a8160"), hexc("#8d936a"), hexc("#a3a578")
 WLO, WMID = hexc("#777f6d"), hexc("#8b9282")
@@ -432,7 +460,7 @@ mc = mix(mc, MHI, smooth(bumps + 0.5 * clump, 0.8, 2.2) * 0.8)       # yellow-gr
 mc = mix(mc, mix(WLO, WMID, hue), wet * 0.8)
 mc *= (mlit * (0.90 + 0.12 * smooth(cush, 0.3, 1.0)) * (0.88 + 0.12 * cpart))[..., None]
 ma = smooth(moss, 0.05, 0.35) * (0.80 + 0.20 * smooth(bumps2, -1.5, 0.5))  # ragged, thin at the edges
-img *= (1 - 0.18 * np.clip(blur(ma, 3.0, 3, 4) - ma, 0, 1))[..., None]  # the cushion's shadow
+img *= (1 - 0.18 * np.clip(blur(ma, 3.0 * S, 3 * S, 4 * S) - ma, 0, 1))[..., None]  # the cushion's shadow
 img = mix(img, mc, ma)
 del mc, mlit, MH, bumps2
 
@@ -444,11 +472,11 @@ cand = np.flatnonzero(((moss > 0.85) & (clump2 > 0.4))[::2, ::2])
 for c in rng.choice(cand, 2600, replace=False):
     sy_, sx_ = divmod(c, NW // 2)
     x0, y0 = sx_ * 2 + rng.uniform(0, 2), sy_ * 2 + rng.uniform(0, 2)
-    L, a = rng.uniform(7, 16), rng.normal(-np.pi / 2, 0.25)
+    L, a = rng.uniform(7 * S, 16 * S), rng.normal(-np.pi / 2, 0.25)
     x1, y1 = x0 + L * np.cos(a), y0 + L * np.sin(a)
-    r = rng.uniform(1.2, 2.0)
-    for ox in ((-NW, 0, NW) if x0 < 30 or x0 > NW - 30 else (0,)):
-        for oy in ((-NH, 0, NH) if y0 < 30 or y0 > NH - 30 else (0,)):
+    r = rng.uniform(1.2 * S, 2.0 * S)
+    for ox in ((-NW, 0, NW) if x0 < 30 * S or x0 > NW - 30 * S else (0,)):
+        for oy in ((-NH, 0, NH) if y0 < 30 * S or y0 > NH - 30 * S else (0,)):
             sdraw.line([(x0 + ox, y0 + oy), (x1 + ox, y1 + oy)], fill=200, width=1)
             cdraw.ellipse((x1 + ox - r, y1 + oy - r * 1.3, x1 + ox + r, y1 + oy + r * 1.3), fill=255)
 seta = np.asarray(seta_m, F32) / 255
@@ -473,7 +501,7 @@ def wrapped_line(draw, pts, width, fill=255):
 
 def tendril(x0, y0, a, length, w0, leafy, depth=0):
     pts, w = [(x0, y0)], w0
-    step = 5.0
+    step = 5.0 * S
     n = int(length / step)
     turn = rng.normal(0, 0.02)
     pull = 0.012 if leafy else 0.05                     # a root hangs; a creeper wanders
@@ -483,16 +511,16 @@ def tendril(x0, y0, a, length, w0, leafy, depth=0):
         x0, y0 = x0 + step * np.cos(a), y0 + step * np.sin(a)
         pts.append((x0, y0))
         if i % 3 == 2:
-            wi = max(1, round(w0 * (1 - i / n) ** 0.8 + 0.6))
+            wi = max(1, round(w0 * (1 - i / n) ** 0.8 + 0.6 * S))
             wrapped_line(rdraw, pts[-4:], wi)
         if depth < 2 and rng.random() < 0.012:
             tendril(x0, y0, a + rng.choice([-1, 1]) * rng.uniform(0.5, 1.1), length * (1 - i / n) * rng.uniform(0.3, 0.6),
-                    max(1.5, w0 * (1 - i / n) * 0.6), leafy, depth + 1)
+                    max(1.5 * S, w0 * (1 - i / n) * 0.6), leafy, depth + 1)
         if leafy and i % int(rng.integers(5, 9)) == 0 and i > 3:
             side = rng.choice([-1, 1])
             la = a + side * rng.uniform(0.6, 1.3)
-            Ls, Ws = rng.uniform(9, 18), rng.uniform(4, 7)
-            bx, by = x0 + 2 * np.cos(la), y0 + 2 * np.sin(la)
+            Ls, Ws = rng.uniform(9 * S, 18 * S), rng.uniform(4 * S, 7 * S)
+            bx, by = x0 + 2 * S * np.cos(la), y0 + 2 * S * np.sin(la)
             tt = np.linspace(0, 1, 14)
             half = Ws * np.sin(np.pi * tt) ** 0.8 * (1 - 0.3 * tt)
             ca, sa = np.cos(la), np.sin(la)
@@ -509,17 +537,17 @@ def tendril(x0, y0, a, length, w0, leafy, depth=0):
 for i in range(14):
     leafy = i < 6
     tendril(rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(0, 2 * np.pi) if leafy else rng.normal(np.pi / 2, 0.6),
-            rng.uniform(500, 1300), rng.uniform(4.0, 7.5), leafy)
-root = lblur(np.asarray(root_m, F32) / 255, 0.6)
+            rng.uniform(500 * S, 1300 * S), rng.uniform(4.0 * S, 7.5 * S), leafy)
+root = lblur(np.asarray(root_m, F32) / 255, 0.6 * S)
 leaf = np.asarray(leaf_m, F32) / 255
 leafa = smooth(leaf, 0.02, 0.2)
 vein = np.asarray(leaf_vein, F32) / 255 * leafa
-img *= (1 - 0.30 * np.clip(blur(np.maximum(root, leafa), 1.6, 3, 4) - np.maximum(root, leafa), 0, 1))[..., None]
+img *= (1 - 0.30 * np.clip(blur(np.maximum(root, leafa), 1.6 * S, 3 * S, 4 * S) - np.maximum(root, leafa), 0, 1))[..., None]
 rootc = hexc("#73654f") * (0.95 + 0.10 * smooth(fine, -1, 1))[..., None]
 rootc = rootc * (1 + 0.20 * np.clip(np.roll(root, (1, 1), (0, 1)) - np.roll(root, (-1, -1), (0, 1)), -1, 1))[..., None]   # lit on its upper left
 img = mix(img, rootc, root * 0.92)
 leafc = mix(hexc("#6f7d55"), hexc("#94a06c"), leaf)       # each leaf its own shade
-leafc *= (1 + 0.15 * np.clip(np.roll(leafa, (2, 2), (0, 1)) - leafa, 0, 1) - 0.15 * np.clip(np.roll(leafa, (-2, -2), (0, 1)) - leafa, 0, 1))[..., None]
+leafc *= (1 + 0.15 * np.clip(np.roll(leafa, (px(2), px(2)), (0, 1)) - leafa, 0, 1) - 0.15 * np.clip(np.roll(leafa, (-px(2), -px(2)), (0, 1)) - leafa, 0, 1))[..., None]
 img = mix(img, leafc, leafa * 0.95)
 img *= (1 - 0.18 * vein)[..., None]
 del root_m, leaf_m, leaf_vein, root, leaf, leafa, vein, rootc, leafc
@@ -531,14 +559,14 @@ BRACKETS = [   # zones (dark, mid, light), rim, underside
     ((hexc("#a17f4c"), hexc("#b5995f"), hexc("#c8b27c")), hexc("#d8cba1"), hexc("#86683e")),   # ochre shelf
     ((hexc("#8a7660"), hexc("#a48f74"), hexc("#bfb096")), hexc("#d7cfba"), hexc("#73624f")),   # tan
 ]
-fib_n = noise(0.7, seed=SEED + 22, band=5)
+fib_n = noise(0.7, seed=SEED + 22, band=5 * S)
 
 
 def shelf(cx, cy, w, dep, pal, ang):
     """One shelf seen from a little above: a fan below its line of attachment,
     zoned in arcs parallel to its margin, a pale rim, a dark underside lip."""
     zones, rim, under = pal
-    rx, ry = int(w / 2) + 16, int(dep) + 18
+    rx, ry = int(w / 2) + px(16), int(dep) + px(18)
     ix, dx, dy = patch(cx, cy + dep / 2, rx, ry)
     dy = dy + dep / 2                                   # from the attachment line
     ca, sa = np.cos(ang), np.sin(ang)
@@ -547,10 +575,10 @@ def shelf(cx, cy, w, dep, pal, ang):
     lob = 1 + 0.05 * np.sin(int(rng.integers(3, 7)) * th + rng.uniform(0, 6)) + 0.03 * np.sin(11 * th + rng.uniform(0, 6))
     rho = np.hypot(X / (w / 2), Y / dep) / lob
     top = smooth((1 - rho) * dep, -0.8, 0.8) * smooth(Y, -1.0, 1.0)
-    lip_rho = np.hypot(X / (w / 2), (Y - 5) / dep) / lob
-    lip = smooth((1 - lip_rho) * dep, -0.8, 0.8) * smooth(Y - 5, -1.0, 1.0)
+    lip_rho = np.hypot(X / (w / 2), (Y - 5 * S) / dep) / lob
+    lip = smooth((1 - lip_rho) * dep, -0.8, 0.8) * smooth(Y - 5 * S, -1.0, 1.0)
     # cast shadow on the wall below and to the right
-    shadow = lblur(lshift(np.maximum(top, lip), 6, 9), 4.0)
+    shadow = lblur(lshift(np.maximum(top, lip), px(6), px(9)), 4.0 * S)
     img[ix] *= (1 - 0.40 * shadow)[..., None]
     put(ix, lip, under * (0.9 + 0.15 * smooth(-X / (w / 2), -1, 1))[..., None])
     nz = int(rng.integers(4, 8))
@@ -562,8 +590,8 @@ def shelf(cx, cy, w, dep, pal, ang):
     zc *= (1 + 0.03 * fib_n[ix] * smooth(rho, 0.1, 0.8) + 0.10 * (1 - rho) - 0.06 * (X / (w / 2)))[..., None]
     zc *= (1 - 0.25 * smooth(0.18 - rho, 0, 0.18))[..., None]  # where it goes into the wall
     put(ix, top, zc)
-    edge = top * (1 - smooth((1 - rho) * dep, 0.6, 1.8))
-    img[ix] *= (1 - 0.25 * edge * smooth(Y, 0, 4))[..., None]
+    edge = top * (1 - smooth((1 - rho) * dep, 0.6 * S, 1.8 * S))
+    img[ix] *= (1 - 0.25 * edge * smooth(Y, 0, 4 * S))[..., None]
 
 
 n_br = 0
@@ -576,12 +604,12 @@ for _ in range(400):
     if moss[int(y0) % NH, int(x0) % NW] < 0.3 and rng.random() < 0.6:
         continue
     pal = BRACKETS[int(rng.choice(len(BRACKETS), p=[0.35, 0.15, 0.2, 0.3]))]
-    W0 = rng.uniform(90, 200)
+    W0 = rng.uniform(90 * S, 200 * S)
     tiers = int(rng.integers(1, 5))
     specs = []
     for t in range(tiers):
         w = W0 * rng.uniform(0.6, 1.0) * (1 - 0.12 * t)
-        specs.append((x0 + rng.normal(0, W0 * 0.25), y0 + t * W0 * rng.uniform(0.28, 0.42) - rng.uniform(0, 8), w,
+        specs.append((x0 + rng.normal(0, W0 * 0.25), y0 + t * W0 * rng.uniform(0.28, 0.42) - rng.uniform(0, 8 * S), w,
                       w * rng.uniform(0.32, 0.46), rng.normal(0, 0.08)))
     for (cx, cy, w, dep, ang) in sorted(specs, key=lambda s: -s[1]):  # the lowest first: a shelf above overlaps it
         shelf(cx, cy, w, dep, pal, ang)
@@ -602,13 +630,13 @@ L3 /= np.linalg.norm(L3)
 
 def mushroom(bx, by, h, cw, lean, pal, spots):
     cap, capd, stem = pal
-    R = int(max(h + cw * 0.7, cw)) + 14
+    R = int(max(h + cw * 0.7, cw)) + px(14)
     ix, dx, dy = patch(bx, by - h / 2, R)
     X, Y = dx, -(dy - h / 2)                           # from the base, y up
     tY = np.clip(Y / h, 0, 1)
     cx = lean * h * tY ** 2
-    sw = (cw * 0.10 + 2.0) * (1.25 - 0.35 * tY)
-    sdf_s = np.minimum(sw - np.abs(X - cx), np.minimum(Y + 1.5, h - Y + 2))
+    sw = (cw * 0.10 + 2.0 * S) * (1.25 - 0.35 * tY)
+    sdf_s = np.minimum(sw - np.abs(X - cx), np.minimum(Y + 1.5 * S, h - Y + 2 * S))
     sa = smooth(sdf_s, -0.7, 0.7)
     a, b = cw / 2, cw * rng.uniform(0.38, 0.62)
     capx, capy = lean * h, h - cw * 0.06
@@ -618,7 +646,7 @@ def mushroom(bx, by, h, cw, lean, pal, spots):
     ca_ = smooth(sdf_c, -0.7, 0.7) * smooth(Y - capy, -0.7, 0.7)
     gill = smooth((1 - np.sqrt(nx * nx + ((Y - capy) / (b * 0.22)) ** 2)) * a * 0.3, -0.5, 0.5) * smooth(capy - Y, -0.7, 0.7)
     sil = np.maximum(np.maximum(sa, ca_), gill)
-    shadow = lblur(lshift(sil, 5, 4), 3.0)
+    shadow = lblur(lshift(sil, px(5), px(4)), 3.0 * S)
     img[ix] *= (1 - 0.40 * shadow * (1 - sil))[..., None]
     # stem: a lit cylinder
     snx = np.clip((X - cx) / sw, -1, 1)
@@ -634,7 +662,7 @@ def mushroom(bx, by, h, cw, lean, pal, spots):
         sp = smooth(np.sin(nx * 9 + spots) * np.sin(ny * 7 + spots * 2), 0.82, 0.95)
         cc = mix(cc, hexc("#dcd4c0"), sp * 0.7)
     put(ix, ca_, cc)
-    out = sil * (1 - smooth(np.maximum(np.maximum(sdf_s, sdf_c), 0), 0.4, 1.4))
+    out = sil * (1 - smooth(np.maximum(np.maximum(sdf_s, sdf_c), 0), 0.4 * S, 1.4 * S))
     img[ix] *= (1 - 0.22 * out)[..., None]
 
 
@@ -648,12 +676,12 @@ for _ in range(600):
         continue
     pal = MUSH[int(rng.integers(0, len(MUSH)))]
     n = int(rng.integers(2, 10))
-    size = rng.uniform(22, 50)
+    size = rng.uniform(22 * S, 50 * S)
     spots = rng.uniform(0, 6) if rng.random() < 0.2 else 0
     items = []
     for _ in range(n):
         bx = x0 + rng.normal(0, size * 0.75)
-        by = float(bed_lines[k][int(bx) % NW]) + rng.uniform(-2, 8)
+        by = float(bed_lines[k][int(bx) % NW]) + rng.uniform(-2 * S, 8 * S)
         cw = size * rng.uniform(0.5, 1.3)
         h = cw * rng.uniform(0.8, 1.8)
         items.append((by, bx, h, cw, rng.normal(0, 0.18)))
@@ -672,5 +700,5 @@ out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB"
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-9.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-9.png  {NW}x{NH}  {NW / 240:.2f}x{NH / 240:.2f}in  {n_lichen} lichens  {n_br} brackets  {n_mu} mushroom clusters"
+print(f"images/wall-9.png  {NW}x{NH}  {NW / DPI:.2f}x{NH / DPI:.2f}in  {n_lichen} lichens  {n_br} brackets  {n_mu} mushroom clusters"
       f"  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")

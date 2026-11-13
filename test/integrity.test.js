@@ -249,8 +249,8 @@ describe("file contracts", () => {
       }
     });
     expect(bad).toEqual([]);
-    expect([...walls].sort((a, b) => a - b)).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
-    expect([...plates].sort((a, b) => a - b)).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
+    expect([...walls].sort((a, b) => a - b)).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]);
+    expect([...plates].sort((a, b) => a - b)).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]);
   });
 
   // Columns (css-architecture.md, "Column ownership"): this package owns NO column

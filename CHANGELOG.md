@@ -40,6 +40,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Walls 12 and 13 (`@page wall-12`, `wall-13`).** Drawn like walls 7 to 11,
+  18in x 12in tiles anchored to the sheet:
+  12, a technosorcerer's lab (`scripts/wall-techlab.py`): spalled plaster
+  with conduit, a breaker panel, a pegboard of tools, caged amber bulbs and
+  teal LED strips with their light baked in, circuit-sigil diagrams in an
+  invented glyph script, shelves of jars, candles and a skull;
+  13, a bazaar's back wall (`scripts/wall-bazaar.py`): seven different stalls
+  under patched, faded awnings, bulb strings, hanging goods, crates and sacks
+  along the foot, peeling posters and signs in an invented glyph script.
+
 - **Walls 9, 10 and 11 (`@page wall-9` … `wall-11`, `.dc-page-wall-9` …).**
   Drawn like walls 7 and 8 (no photograph), each an 18in x 12in tile anchored
   to the sheet, so a spread shows no repeat:
@@ -151,6 +161,15 @@ and the styles say where a reader is and what they are reading.
   turns it off; the design guide does, since its specimen stages are HTML.
 
 ### Changed
+
+- **The drawn walls (7 to 13) are drawn at 300 DPI.** Each script draws at
+  `DPI = 300` with every length scaled from its 240 DPI design (never
+  upsampled), so the walls carry print-resolution detail at the same size in
+  inches and the same look; a PDF page embeds them at a native 300 ppi.
+  `DRAWN_DPI` in `scripts/wall-tiles.py` sizes them. The package is about
+  75 MB, past the 50 MB cap older Gutterpress releases put on a plugin:
+  installing it from npm needs a Gutterpress without that cap
+  (dimm-city/gutterpress#529). The package test no longer checks the size.
 
 - **The lede is a callout with no label.** `@lede` (`.dc-intro`) is now drawn
   as a callout: a white sheet cut to the note's chamfers, an 8px accent rail, a
