@@ -234,22 +234,22 @@ describe("file contracts", () => {
     const walls = new Set();
     const plates = new Set();
     css(path.join(ROOT, "styles/page-rules.css")).walkDecls("page", (d) => {
-      if (!/^dc-wall-\d/.test(d.value)) return;
+      if (!/^dc-wall-\d+/.test(d.value)) return;
       for (const selector of d.parent.selectors) {
-        if (/(^|> )\.page\.dc-page-wall-\d/.test(selector)) continue;
-        const plate = selector.match(/^\.dc-page-wall-(\d):not\(\.page, [^)]*\) > \.dc-specialty-art$/);
+        if (/(^|> )\.page\.dc-page-wall-\d+/.test(selector)) continue;
+        const plate = selector.match(/^\.dc-page-wall-(\d+):not\(\.page, [^)]*\) > \.dc-specialty-art$/);
         if (plate && d.value === `dc-wall-${plate[1]}-full`) {
           plates.add(plate[1]);
           continue;
         }
         // in a chapter with a colour, the children take that wall's twin (dc-wall-N-<hue>), so the chip keeps it
-        const kids = selector.match(/^(?:\.chapter\.dc-chapter-[a-z-]+ )?:where\(\.dc-page-wall-(\d):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
+        const kids = selector.match(/^(?:\.chapter\.dc-chapter-[a-z-]+ )?:where\(\.dc-page-wall-(\d+):not\(\.page, [^)]*\)\) > :not\(([^)]*)\)$/);
         if (kids && kids[2].split(/,\s*/).includes(".dc-specialty-art")) walls.add(kids[1]);
         else bad.push(selector);
       }
     });
     expect(bad).toEqual([]);
-    expect([...walls].sort()).toEqual(["1", "2", "3", "4", "5", "6", "7", "8"]);
+    expect([...walls].sort((a, b) => a - b)).toEqual(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]);
     expect([...plates].sort()).toEqual(["1", "2", "3", "4", "5", "6", "7", "8"]);
   });
 
