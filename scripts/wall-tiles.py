@@ -1,4 +1,5 @@
-"""Bake the six stone-wall page tiles (`@page wall-1` ... `wall-6`) and their CSS.
+"""Bake the six stone-wall page tiles (`@page wall-1` ... `wall-6`) and the CSS
+for every wall, wall 7 (rusted steel, drawn by scripts/wall-metal.py) included.
 
     python3 scripts/wall-tiles.py [source-art/wall-sheet.png]
     python3 scripts/wall-tiles.py --css     # rewrite the CSS only, from images/
@@ -87,7 +88,9 @@ GROUND = "images/ground.png"        # the setts: the street under the brick
 # same stone, and cracked, patched asphalt. Each wall stands on one that
 # contrasts with it. All of them are grimed (`grime`). `--grounds` draws them.
 STREETS = {"setts": GROUND, "flags": "images/ground-flags.png", "asphalt": "images/ground-asphalt.png"}
-WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt"}
+WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt", 7: "asphalt"}
+DRAWN = {7}                         # walls drawn by their own script, not cut from the sheet (7: scripts/wall-metal.py)
+WALLS = range(1, 8)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
@@ -660,14 +663,15 @@ def main():
         for kind, path in STREETS.items():
             street(kind, tones).save(path, optimize=True)
             print(path, flush=True)
-        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in WALLS})
         return
     if "--css" in sys.argv:                 # the CSS alone, from the tiles already baked
-        write_css({n: Image.open(f"images/wall-{n}.png").size for n in range(1, 7)})
+        write_css({n: Image.open(f"images/wall-{n}.png").size for n in WALLS})
         return
     boxes = opaque_boxes(Image.open(SHEET).convert("RGBA"))
     with Pool(len(boxes)) as pool:
         walls = dict(pool.map(bake, enumerate(boxes, 1)))
+    walls.update({n: Image.open(f"images/wall-{n}.png").size for n in DRAWN})
     write_css(walls)
 
 
