@@ -20,7 +20,11 @@ What it draws, back to front:
 It is then quantised to an exact palette, as the stone walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is).
 
-At DPI (240, wall-tiles.py's) the tile is 5in square and a plate 2.5in wide.
+At DPI (240, wall-tiles.py's) the tile is 10in square and a plate 2.5in
+wide, so a page shows no repeat. Each plate weathers by its own amount. Its
+plate grid is regular, so wall-tiles.py anchors this wall to the sheet, not
+the text area, and offsets a right page by the left page's width: a spread
+is one continuous wall.
 """
 from pathlib import Path
 
@@ -28,8 +32,8 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SIZE = 1200                 # px, square; 5in at 240 DPI
-PLATES = 2                  # plates a side
+SIZE = 2400                 # px, square; 10in at 240 DPI, so a page shows no repeat
+PLATES = 4                  # plates a side (each 2.5in)
 SEAM = 7                    # groove width, px
 RIVET_R = 9                 # rivet head radius, px
 RIVET_STEP = 100            # rivet pitch along an edge, px
@@ -91,7 +95,8 @@ foot = smooth(ly / P, 0.55, 1.0)
 blot = noise(1.9, seed=SEED + 4)
 fine = noise(1.1, seed=SEED + 5)
 speck = noise(0.4, seed=SEED + 10)
-rust_field = 0.70 * blot + 0.30 * fine + 0.12 * near_edge + 0.10 * foot
+weather = rng.uniform(-0.20, 0.10, PLATES * PLATES)[plate_id]   # some plates nearly clean, some eaten through
+rust_field = 0.70 * blot + 0.30 * fine + 0.12 * near_edge + 0.10 * foot + weather
 rust = smooth(rust_field, 0.60, 0.80)
 rust = np.maximum(rust, smooth(speck, 0.80, 0.93) * 0.7)      # pinprick spots all over
 
