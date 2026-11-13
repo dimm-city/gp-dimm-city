@@ -38,7 +38,7 @@ A `citizen-file` page has a 0.875 in top margin. Margins swap per recto and vers
 | `@page chapter-start` | none | A chapter opener |
 | `@page citizen-file` | `p.N`, `c.N` | A Citizen File walkthrough page, 0.875 in from the top |
 | `@page specialty-catalog` | `p.N`, `c.N` | The specialty catalog: a two-page spread that opens on a left page |
-| `@page wall-1` … `wall-6` | `p.N`, `c.N` | A stone wall instead of the brick (below) |
+| `@page wall-1` … `wall-11` | `p.N`, `c.N` | A wall instead of the brick (below) |
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
 | `@page blank` | none | A deliberately blank page (core's word) |
 
@@ -68,8 +68,13 @@ Six walls can stand in for the brick on any page, over the whole sheet: write th
 | `wall-4` | Running bond: small bricks, half-lapped |
 | `wall-5` | Flagstone: flat slabs bedded in rough courses |
 | `wall-6` | Square setts: square blocks, half-lapped |
+| `wall-7` | Rusted steel plate: riveted plates under rust, with bullet holes, torch cuts and claw marks |
+| `wall-8` | Circuits set into the wall: a grey render with a few broken boards set into it |
+| `wall-9` | Moss and fungus: coursed rubble under moss, lichen, bracket fungi and creepers |
+| `wall-10` | Operating room: grimy clinical tiles with blood spatter, runs and filth |
+| `wall-11` | Into the aether: stone and metal plates torn by rifts that pull the wall in |
 
-All six are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
+Walls 1 to 6 are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles. Walls 7 to 11 are drawn, in their own colours, and repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
 
 ### Where pages break
 

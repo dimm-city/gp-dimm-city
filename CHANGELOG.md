@@ -40,6 +40,19 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Walls 9, 10 and 11 (`@page wall-9` … `wall-11`, `.dc-page-wall-9` …).**
+  Drawn like walls 7 and 8 (no photograph), each an 18in x 12in tile anchored
+  to the sheet, so a spread shows no repeat:
+  9, moss and fungus on stone (`scripts/wall-moss.py`): coursed rubble in
+  lime mortar under moss, lichen, bracket fungi, mushrooms, mould, damp
+  streaks, roots and creepers;
+  10, a dingy operating room (`scripts/wall-surgery.py`): small clinical
+  tiles gone grey and yellow, cracked and missing, with blood spatter,
+  cast-off, runs caught on the grout, a dragged hand, and filth;
+  11, into the aether (`scripts/wall-aether.py`): stone and riveted metal
+  torn by rifts that twist the wall and pull it in as shrinking shards.
+  Wall numbers now take two digits.
+
 - **Wall 7, rusted steel plate (`@page wall-7`, `.dc-page-wall-7`).** Riveted
   steel plates in a running bond under rust patches and streaks, battered:
   dents, bullet holes (singly and in bursts, rust bleeding from them),

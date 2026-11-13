@@ -48,7 +48,7 @@ The chapter prefix and the offset tokens are parked under "Still considering" in
 
 `gutterpress validate design-guide --phase pre-build` passes with no warning and three notes (1.10.2-alpha.2, Gutterpress 0.11.24-alpha.1):
 
-- **Three "Ellipsis character (U+2026)" notes** (`08-page-templates.md:41`, `10-reference.md:17` and `:63`). Each is the range `wall-1 … wall-6` in a reference table, typed with the character on purpose. They are informational and are left as they are.
+- **Three "Ellipsis character (U+2026)" notes** (`08-page-templates.md:41`, `10-reference.md:17` and `:63`). Each is the range `wall-1 … wall-11` in a reference table, typed with the character on purpose. They are informational and are left as they are.
 
 What this section used to list, and where it went:
 
