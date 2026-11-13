@@ -41,9 +41,12 @@ and the styles say where a reader is and what they are reading.
 ### Added
 
 - **Wall 7, rusted steel plate (`@page wall-7`, `.dc-page-wall-7`).** Riveted
-  steel plates in a running bond under rust patches and streaks, drawn by
-  `scripts/wall-metal.py` (no photograph). Its plate grid is anchored to the
-  sheet and a right page carries on from the left page, so a spread is one
+  steel plates in a running bond under rust patches and streaks, battered:
+  dents, bullet holes (singly and in bursts, rust bleeding from them),
+  glancing hits, torch cuts in the steel's heat colours, scorches and claw
+  marks. Drawn by `scripts/wall-metal.py` (no photograph), a 17.5in x 15in
+  tile, so a spread shows no repeat. Its plate grid is anchored to the sheet
+  and a right page carries on from the left page, so a spread is one
   continuous wall.
 - **Wall 8, circuits set into the wall (`@page wall-8`, `.dc-page-wall-8`).**
   A grey render, pored, patched and hairline-cracked, with a few printed
@@ -220,6 +223,14 @@ and the styles say where a reader is and what they are reading.
   - The catalog has one entry per piece, and design guide chapter 6 a specimen.
 
 ### Fixed
+
+- **A dark line at the foot of a page before a `@page-break`.** A skill card
+  sits 4px high (its tab's outline stays inside its box); after a forced
+  break Chromium keeps that margin, so the card started 4px above its page
+  and the top of its tab's outline printed along the foot of the page
+  before (Augmerc, Proxy, Streetwarden, Etherlock). A card that follows a
+  `@page-break` (or an empty block straight after one) now starts on its
+  page's top edge.
 
 - **Blank preview pages after a fiction excerpt at a page foot.** The
   excerpt's broken wall reaches 16px past its box; at a page foot that reach
