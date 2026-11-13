@@ -1,41 +1,44 @@
-"""Draw wall 8, circuit panels falling apart (`@page wall-8`), as images/wall-8.png.
+"""Draw wall 8, circuits set into the wall (`@page wall-8`), as images/wall-8.png.
 
     python3 scripts/wall-circuit.py      (from the package root; needs numpy and Pillow)
     python3 scripts/wall-tiles.py --css  (then: the CSS for every wall, this one included)
 
 Drawn, not sampled: no photograph goes into it. The tile repeats without a
 seam both ways, because everything in it is periodic: the noise is filtered
-in the Fourier domain (so it wraps), the shadows and drips are circular
-convolutions, and each panel is drawn on its own canvas and laid on the
-tile's grid with wrap-around.
+in the Fourier domain (so it wraps), the drips and shadows are circular
+convolutions, the cracks are drawn wrapped, and each board is drawn on its
+own canvas and laid on the tile with wrap-around.
 
 What it draws, back to front:
-1. The wall behind: a grimy grey render, seen in the gaps between panels and
-   where a panel has broken away (one bay has lost its panel altogether:
-   only its fixings and a cleaner ghost of it are left).
-2. Printed circuit board panels on a 1.25in module grid, two to four modules
-   a side, each its own solder-mask colour (aged greens, a teal, an olive, a
-   tired blue). On each: chip footprints (QFP, SOIC, BGA, passives, headers,
-   electrolytic caps, edge fingers), traces routed in buses at 0/45/90
-   degrees with mitred bends and staggered vias, a ground pour on some,
-   silkscreen outlines and labels. Some chips are still on, most are gone,
-   leaving tinned pads and solder lumps.
+1. The wall: a grey render, mottled, sanded, pored, with old repairs a shade
+   off and hairline cracks.
+2. A few printed circuit boards (BOARDS: eight, of different sizes, placed at
+   random at least SEP apart), each its own solder-mask colour (aged greens,
+   a teal, an olive, a tired blue). On each: chip footprints (QFP, SOIC, BGA,
+   passives, headers, electrolytic caps, edge fingers), traces routed in
+   buses at 0/45/90 degrees with mitred bends and staggered vias, a ground
+   pour on some, silkscreen outlines and labels. Some chips are still on,
+   most are gone, leaving tinned pads and solder lumps.
 3. The damage: corners broken off along a jagged fracture (pale glass fibre
    at the break, traces left dangling from it), chipped edges, cracks, the
    odd impact hole, solder mask peeled away (bare fibreglass and tarnished,
    verdigrised copper underneath, a lifted lip at the peel's edge), measling
    and blisters, burn marks with soot climbing above them, leaking caps,
    sagging bodge wires.
-4. Fixings: a screw in a plated mounting hole at each corner (one or two
-   missing), rust drips under some, and each panel's drop shadow on the wall.
+4. Each board set into the wall: a recess hacked out of the render, its
+   broken edge running a little outside the board in places and over it in
+   others, the recess's rough concrete showing where the board is broken, a
+   shadow inside under the top and left edges, a lit break face along the
+   foot and right side, cracks running out into the wall, grime washed down
+   the wall below.
 5. Grime over everything.
 It is then quantised to an exact palette, as the other walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is).
 
-At DPI (240, wall-tiles.py's) the tile is 10in square, so a page shows no
-repeat. Its panel grid is regular, so wall-tiles.py anchors this wall to the
-sheet, not the text area, and offsets a right page by the left page's width:
-a spread is one continuous wall.
+At DPI (240, wall-tiles.py's) the tile is 18in x 12in, wider than a spread
+and taller than a page, so a spread shows no repeat. wall-tiles.py anchors it to the sheet, not the text area, and offsets
+a right page by the left page's width, so a board the spine cuts carries on
+across the spread.
 """
 import math
 from pathlib import Path
@@ -44,17 +47,15 @@ import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-SIZE = 2400                 # px, square; 10in at 240 DPI, so a page shows no repeat
-MOD = 300                   # the panel grid's module, px (1.25in); 8 a side
-GAP = 22                    # px between panels
+W_PX, H_PX = 4320, 2880     # px; 18in x 12in at 240 DPI: wider than a spread and taller than a page, so a spread shows no repeat
 M = 96                      # margin round a panel's canvas: dangling traces, wires, shadows
 SS = 2                      # each panel is drawn at SS x and boxed down: clean 45-degree edges
 SEED = 8
-SHADE = 1.05               # the whole tile; its darkest burn stays well under DriveThruRPG's 240% TAC
+SHADE = 1.0                 # the whole tile; its darkest burn stays well under DriveThruRPG's 240% TAC
 FONT = ROOT / "fonts/tomorrow/tomorrow-500.ttf"
 
 rng = np.random.default_rng(SEED)
-N = SIZE
+NW, NH = W_PX, H_PX
 R2 = math.sqrt(0.5)
 DIRS = [np.array(v) for v in ((1, 0), (R2, R2), (0, 1), (-R2, R2), (-1, 0), (-R2, -R2), (0, -1), (R2, -R2))]
 CLEAR = 5                   # px kept clear round a trace by the router
@@ -72,9 +73,9 @@ def hexc(h):
 def noise(beta, stretch=(1.0, 1.0), seed=None):
     """Periodic 1/f^beta noise in [0, 1] over the tile."""
     r = np.random.default_rng(seed)
-    white = r.standard_normal((N, N))
-    fy = np.fft.fftfreq(N)[:, None] * stretch[1]
-    fx = np.fft.fftfreq(N)[None, :] * stretch[0]
+    white = r.standard_normal((NH, NW))
+    fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
+    fx = np.fft.fftfreq(NW)[None, :] * stretch[0]
     f = np.sqrt(fx * fx + fy * fy)
     f[0, 0] = 1.0
     out = np.real(np.fft.ifft2(np.fft.fft2(white) / f ** beta))
@@ -86,9 +87,9 @@ def circ_conv(img, kernel):
     return np.real(np.fft.ifft2(np.fft.fft2(img) * np.fft.fft2(kernel)))
 
 
-ky, kx = np.mgrid[0:N, 0:N]
-ky = np.where(ky > N // 2, ky - N, ky)
-kx = np.where(kx > N // 2, kx - N, kx)
+ky, kx = np.mgrid[0:NH, 0:NW]
+ky = np.where(ky > NH // 2, ky - NH, ky)
+kx = np.where(kx > NW // 2, kx - NW, kx)
 
 
 def gauss_kernel(sigma, dx=0, dy=0):
@@ -126,23 +127,21 @@ def jag(a, b, rough, r):
             return pts
 
 
-# ── the panel grid: rectangles of 1 to 4 modules, packed on the tile's own torus ─
-CELLS = N // MOD
-taken = np.zeros((CELLS, CELLS), bool)
-SIZES = [((2, 2), 3.0), ((3, 2), 2.2), ((2, 3), 2.2), ((3, 3), 1.2), ((4, 2), 1.0), ((2, 4), 0.8),
-         ((4, 3), 0.5), ((1, 2), 0.7), ((2, 1), 0.7), ((1, 1), 0.25)]
-cells = []
-for cy in range(CELLS):
-    for cx in range(CELLS):
-        if taken[cy, cx]:
-            continue
-        opts = sorted(SIZES, key=lambda s: -s[1] * rng.random())
-        for (cw, ch), _ in opts + [((1, 1), 0)]:
-            ys, xs = [(cy + j) % CELLS for j in range(ch)], [(cx + i) % CELLS for i in range(cw)]
-            if not taken[np.ix_(ys, xs)].any():
-                taken[np.ix_(ys, xs)] = True
-                cells.append((cx, cy, cw, ch))
-                break
+# ── where the boards are: a few, sporadic, on the tile's own torus ──────────
+BOARDS = [(560, 420), (330, 470), (420, 300), (300, 230), (250, 330), (480, 340), (280, 380), (360, 260)]   # px, w x h
+SEP = 300                   # px of plain wall at least between two boards' recesses
+cells = []                  # (gx, gy, w, h): each board's top-left on the tile, and its size
+for (w, h) in BOARDS:
+    for _ in range(5000):
+        gx, gy = int(rng.integers(0, NW)), int(rng.integers(0, NH))
+        def gap(a0, a1, b0, b1, n):             # space between two spans on a loop of n (< 0: they overlap)
+            return min(max(b0 + k - a1, a0 - b1 - k) for k in (-n, 0, n))
+        if all(max(gap(gx, gx + w, ox, ox + ow, NW), gap(gy, gy + h, oy, oy + oh, NH)) >= SEP
+               for (ox, oy, ow, oh) in cells):
+            cells.append((gx, gy, w, h))
+            break
+    else:
+        raise SystemExit("no room for a board: lower SEP")
 
 # ── global fields (all periodic) ───────────────────────────────────────────────
 mottle = noise(2.0, seed=SEED + 1)
@@ -155,13 +154,37 @@ speck = noise(0.35, seed=SEED + 7)
 flake = noise(0.7, seed=SEED + 9)
 stain = noise(1.6, seed=SEED + 10)
 streakn = noise(1.0, stretch=(1.0, 0.10), seed=SEED + 8)
-yy, xx = np.mgrid[0:N, 0:N]
+yy, xx = np.mgrid[0:NH, 0:NW]
 weave = (np.cos(2 * np.pi * xx / 8) * np.cos(2 * np.pi * yy / 8))       # glass cloth under the resin
 
-# ── 1. the wall behind ────────────────────────────────────────────────────────
-wall = hexc("#7a776f") * (0.86 + 0.22 * mottle + 0.10 * (fine - 0.5))[..., None]
-wall *= (0.94 + 0.10 * streakn)[..., None]
-wall *= (1 - 0.18 * smooth(speck, 0.78, 0.95))[..., None]
+# ── 1. the wall: grey render, mottled, pored, patched and cracked ─────────────
+grain = noise(0.5, seed=SEED + 12)                                  # the render's sand
+wall = hexc("#aba79f") * (0.88 + 0.16 * mottle + 0.10 * (fine - 0.5) + 0.12 * (grain - 0.5))[..., None]
+patch = noise(1.8, seed=SEED + 11)                                  # old repairs, a shade off
+wall *= (1 - 0.05 * smooth(patch, 0.62, 0.66))[..., None]
+wall *= (0.95 + 0.07 * streakn)[..., None]
+wall *= (1 - 0.20 * smooth(speck, 0.80, 0.95))[..., None]
+crack_l = Image.new("L", (NW, NH), 0)          # hairline cracks in the render, drawn wrapped
+crack_d = ImageDraw.Draw(crack_l)
+
+
+def wall_crack(x, y, heading, length, width):
+    pts, a = [(x, y)], heading
+    while length > 0:
+        step = rng.uniform(8, 22)
+        a += rng.normal(0, 0.35)
+        x, y = x + step * math.cos(a), y + step * math.sin(a)
+        pts.append((x, y))
+        length -= step
+        if rng.random() < 0.08:                                     # a branch
+            wall_crack(x, y, a + rng.choice([-1, 1]) * rng.uniform(0.5, 1.1), length * 0.5, max(1, width - 1))
+    for ox in (-NW, 0, NW):
+        for oy in (-NH, 0, NH):
+            crack_d.line([(px + ox, py + oy) for px, py in pts], fill=255, width=width)
+
+
+for _ in range(10):
+    wall_crack(rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(0, 2 * math.pi), rng.uniform(80, 260), 1)
 
 
 class Panel:
@@ -843,24 +866,6 @@ def damage(p, age):
         p.burn_at = None
 
 
-def shards(p):
-    """All of a board broken away but a shard at some of its screws."""
-    r = p.r
-    w, h = p.w, p.h
-    p.img["board"] = Image.new("L", p.img["board"].size, 0)
-    p.drw["board"] = ImageDraw.Draw(p.img["board"])
-    p.burn_at = None
-    for (x0, y0, sx, sy) in ((0, 0, 1, 1), (w, 0, -1, 1), (0, h, 1, -1), (w, h, -1, -1)):
-        if r.random() < 0.3:
-            continue
-        a, b = r.uniform(60, 210), r.uniform(60, 210)
-        A, B = (x0 + sx * a, y0), (x0, y0 + sy * b)
-        path = jag(A, B, 0.12, r)
-        p.poly("board", [(x0, y0)] + path)
-        p.line("fringe", path, 7)
-        p.fractures.append((path, np.array([sx, sy]) * R2))
-
-
 def dangles(p, cu):
     """Copper traces that crossed a break, left hanging off it."""
     r = p.r
@@ -936,8 +941,8 @@ def compose(p, gx, gy, age):
     r = p.r
     L = {k: np.asarray(v.resize((p.W, p.H), Image.BOX), float) / 255 for k, v in p.img.items()}
     wcol = np.asarray(p.wcol.resize((p.W, p.H), Image.BOX), float) / 255
-    rows = (gy - M + np.arange(p.H)) % N
-    cols = (gx - M + np.arange(p.W)) % N
+    rows = (gy - M + np.arange(p.H)) % NH
+    cols = (gx - M + np.arange(p.W)) % NW
     G = lambda f: f[np.ix_(rows, cols)]
     mot, fin, pn, tn, vd, wv, sp = G(mottle), G(fine), G(peeln), G(tarn), G(verd), G(weave), G(speck)
     board = L["board"]
@@ -1084,61 +1089,78 @@ def compose(p, gx, gy, age):
     return col, alpha, over
 
 
-# ── lay the panels ────────────────────────────────────────────────────────────
-P_rgb = np.zeros((N, N, 3))         # premultiplied
-P_a = np.zeros((N, N))
-D_a = np.zeros((N, N))              # dangles and wires: they shade what is under them
-gone = int(rng.integers(len(cells)))
-drips = np.zeros((N, N))
-for i, (cx, cy, cw, ch) in enumerate(cells):
-    jx, jy = rng.integers(-4, 5, 2)
-    w, h = cw * MOD - GAP, ch * MOD - GAP
-    gx, gy = cx * MOD + GAP // 2 + int(jx), cy * MOD + GAP // 2 + int(jy)
+# ── set the boards into the wall ──────────────────────────────────────────────
+# Each board sits in a recess hacked out of the render: a broken edge that
+# runs a little outside the board in places and over its edge in others, the
+# rough concrete of the recess showing where the board is broken, a shadow
+# inside the recess under its top and left edges, a lit break face along its
+# foot and right side, cracks running out from it into the wall, and grime
+# washed down the wall below it.
+HOLE_A = np.zeros((NH, NW))                   # the recesses, so the wall's cracks and drips stop at them
+D_a = np.zeros((NH, NW))                      # dangles and wires on the wall: they shade it
+drips = np.zeros((NH, NW))
+CAVITY = hexc("#5f5b54")
+for i, (gx, gy, w, h) in enumerate(cells):
     age = float(rng.uniform(-0.14, 0.10))
     p = Panel(w, h, SEED * 100 + i)
     populate(p)
-    if i == gone:
-        # the bay whose panel has gone: a cleaner ghost of it on the wall, and
-        # shards of the board still held by their screws
-        rows, cols = (gy + np.arange(h)) % N, (gx + np.arange(w)) % N
-        wall[np.ix_(rows, cols)] *= 1.07
-        for b in range(10):
-            f = 0.93 + 0.007 * b
-            wall[np.ix_(rows[[b, -1 - b]], cols)] *= f
-            wall[np.ix_(rows, cols[[b, -1 - b]])] *= f
-        shards(p)
-    else:
-        damage(p, age)
+    damage(p, age)
+    p.screws = []                           # set in the wall, not screwed to it
     cu_pre = np.asarray(p.img["cu"].resize((p.W, p.H), Image.BOX), float) / 255
     dangles(p, cu_pre)
     col, alpha, over = compose(p, gx, gy, age)
-    for (x, y) in p.screws:
-        if rng.random() < 0.3:
-            drips[int(gy + y + 13) % N, int(gx + x) % N] += rng.uniform(0.4, 1.0)
-    rows = (gy - M + np.arange(p.H)) % N
-    cols = (gx - M + np.arange(p.W)) % N
+    rows = (gy - M + np.arange(p.H)) % NH
+    cols = (gx - M + np.arange(p.W)) % NW
     ix = np.ix_(rows, cols)
-    P_rgb[ix] = col * alpha[..., None] + P_rgb[ix] * (1 - alpha[..., None])
-    P_a[ix] = alpha + P_a[ix] * (1 - alpha)
-    D_a[ix] = np.maximum(D_a[ix], over)
-    print(f"  panel {i + 1}/{len(cells)}  {cw}x{ch}", flush=True)
+    G = lambda f: f[ix]
+    # the recess: the board's rectangle grown or shrunk by a ragged amount
+    Y, X = np.mgrid[0:p.H, 0:p.W] - M
+    ex, ey = np.maximum(-X, X - (w - 1)), np.maximum(-Y, Y - (h - 1))
+    sd = np.where((ex <= 0) & (ey <= 0), np.maximum(ex, ey), np.hypot(np.maximum(ex, 0), np.maximum(ey, 0)))
+    reach = -8 + 24 * G(peeln) + 36 * (G(verd) - 0.5) + 3 * (G(fine) - 0.5)
+    hole = np.clip(reach - sd + 0.5, 0, 1)
+    shade_in = np.clip(hole - np.roll(hole, (9, 9), (0, 1)), 0, 1)               # under its top and left edges
+    shade_in = np.asarray(Image.fromarray((shade_in * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3)), float) / 255 * hole
+    face = np.clip(hole - np.roll(hole, (-4, -4), (0, 1)), 0, 1)                 # the lit break face, foot and right
+    rim = np.clip(np.roll(hole, (2, 2), (0, 1)) + np.roll(hole, (-2, -2), (0, 1)) - 2 * hole, 0, 1)
+    loc = wall[ix].copy()
+    loc = mix(loc, CAVITY * (0.80 + 0.35 * G(fine))[..., None], hole)
+    loc = mix(loc, col, alpha * hole)
+    loc *= (1 - 0.55 * shade_in)[..., None]
+    loc = mix(loc, wall[ix] * 1.12, face * 0.7)
+    loc *= (1 - 0.45 * rim * (1 - hole))[..., None]
+    out_ = over * (1 - hole)                                                       # traces and wires hanging over the wall
+    loc = mix(loc, col, out_)
+    wall[ix] = loc
+    HOLE_A[ix] = np.maximum(HOLE_A[ix], hole)
+    D_a[ix] = np.maximum(D_a[ix], out_)
+    # cracks out of its corners and edges, grime washed down from its foot
+    for _ in range(int(rng.integers(3, 6))):
+        side = rng.integers(4)
+        t = rng.random()
+        x, y, a = [(gx + t * w, gy, -math.pi / 2), (gx + w, gy + t * h, 0.0),
+                   (gx + t * w, gy + h, math.pi / 2), (gx, gy + t * h, math.pi)][side]
+        wall_crack(x, y, a + rng.normal(0, 0.5), rng.uniform(60, 220), int(rng.integers(1, 3)))
+    for _ in range(int(rng.integers(2, 5))):
+        drips[int(gy + h + 6) % NH, int(gx + rng.uniform(0.1, 0.9) * w) % NW] += rng.uniform(0.4, 1.0)
+    print(f"  board {i + 1}/{len(cells)}  {w}x{h}", flush=True)
 
-# ── 4. shadows and drips ──────────────────────────────────────────────────────
-shadow = np.clip(circ_conv(P_a, gauss_kernel(5.0, 6, 8)), 0, 1)
-wall *= (1 - 0.55 * shadow)[..., None]
-img = P_rgb + wall * (1 - P_a)[..., None]
+img = wall
+cr = np.asarray(crack_l, float) / 255 * (1 - HOLE_A)
+img = mix(img, img * 1.10, np.clip(np.roll(cr, (1, 1), (0, 1)) - cr, 0, 1) * 0.6)   # the crack's lit lip
+img *= (1 - 0.50 * cr)[..., None]
 dsh = np.clip(circ_conv(D_a, gauss_kernel(2.5, 4, 5)), 0, 1)
-img *= (1 - 0.45 * dsh * (1 - D_a))[..., None]
+img *= (1 - 0.40 * dsh * (1 - D_a))[..., None]
 
 
 def drip(length, width):
     return np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2)
 
 
-streaks = circ_conv(drips, drip(90.0, 2.5))
+streaks = circ_conv(drips, drip(120.0, 9.0))
 streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
-streaks *= smooth(streakn, 0.2, 0.7)
-img = mix(img, img * np.array([0.78, 0.62, 0.48]), streaks * 0.7)
+streaks *= smooth(streakn, 0.2, 0.7) * (1 - HOLE_A)
+img = mix(img, img * np.array([0.82, 0.74, 0.64]), streaks * 0.45)
 
 # ── 5. grime over everything ──────────────────────────────────────────────────
 img *= (1 - 0.08 * smooth(grime, 0.45, 0.9) - 0.06 * (fine - 0.5))[..., None]
@@ -1147,4 +1169,4 @@ out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB"
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-8.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-8.png  {SIZE}x{SIZE}  {SIZE / 240:.2f}in  {len(cells)} panels  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
+print(f"images/wall-8.png  {NW}x{NH}  {NW / 240:.2f}x{NH / 240:.2f}in  {len(cells)} boards  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")

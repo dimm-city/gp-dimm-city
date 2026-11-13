@@ -96,7 +96,8 @@ DRAWN = {7, 8}                      # walls drawn by their own script, not cut f
 # a right page and a margin-free page, so a grid restarts on each and breaks at
 # the spine. These are anchored to the sheet instead, and a right page carries
 # on from the left page's width: a spread is one wall. (A stone wall has no grid
-# to break, so it keeps the text area's corner.)
+# to break, so it keeps the text area's corner. Wall 8 has no grid either, but
+# a board the spine cuts must carry on across the spread.)
 ALIGNED = {7, 8}
 SHEET_W = "var(--gp-page-width, 8.625in)"
 ANCHOR = {   # tile offset from the text area's corner, per side; a full page has no margins
