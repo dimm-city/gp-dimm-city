@@ -38,12 +38,16 @@ quantised to an exact palette: the wall's tones, and apart from them the
 few saturated things (chillies, spice, boards, lit bulbs), which a median
 cut over the whole tile would turn grey.
 
-At DPI (240, wall-tiles.py's) the tile is 18in x 12in, wider than a spread
+At DPI (300) the tile is 18in x 12in, wider than a spread
 and taller than a page, so a spread shows no repeat. It is anchored to the
 sheet (ALIGNED), so the stalls stand on the street on every page: the
 awnings and bulbs along the top, the crates and sacks along the foot
 (FLOOR); the last 0.75in of the tile is under the ground strip or off the
 page, and fades back to the top.
+
+Lengths are written in units of 1/240in (a px at 240 DPI, the DPI it was
+first drawn at): the sprites and layers lay them down at S = DPI / 240 px to
+the unit, so every length scales with DPI, and so does nothing else.
 """
 import math
 from pathlib import Path
@@ -52,9 +56,12 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
-NW, NH = 4320, 2880         # px; 18in x 12in at 240 DPI: wider than a spread and taller than a page, so a spread shows no repeat
-FLOOR = 2560                # px from the sheet's top to the ground strip (11.25in - 0.6in, rounded): the wall's foot
-FEATURE = 1800              # px (7.5in): the largest blotch of damp or grime
+DPI = 300                   # px per inch
+S = DPI / 240               # px per unit: lengths are in units of 1/240in, laid down at S px each
+NW, NH = 18 * 240, 12 * 240                 # units; 18in x 12in: wider than a spread and taller than a page, so a spread shows no repeat
+PW, PH = round(18 * DPI), round(12 * DPI)   # px: the tile's size in inches x DPI
+FLOOR = 2560                # units from the sheet's top to the ground strip (11.25in - 0.6in, rounded): the wall's foot
+FEATURE = 1800 * S          # px (7.5in): the largest blotch of damp or grime
 SS = 4                      # shapes are drawn at SS x and boxed down: anti-aliased
 SEED = 13
 CALM = 0.84                 # every tone is drawn this far back toward the tile's mean
@@ -66,9 +73,11 @@ f32 = np.float32
 LIGHT = np.array([-0.45, -0.62, 0.64])
 LIGHT /= np.linalg.norm(LIGHT)
 
-yy, xx = np.mgrid[0:NH, 0:NW].astype(np.int32)
-ky = np.where(yy > NH // 2, yy - NH, yy).astype(f32)
-kx = np.where(xx > NW // 2, xx - NW, xx).astype(f32)
+yy = (np.arange(PH, dtype=f32) / S)[:, None] * np.ones((1, PW), f32)     # every px's place on the tile, in units
+xx = (np.arange(PW, dtype=f32) / S)[None, :] * np.ones((PH, 1), f32)
+iy_, ix_ = np.arange(PH), np.arange(PW)
+ky = (np.where(iy_ > PH // 2, iy_ - PH, iy_) / S).astype(f32)[:, None]    # signed offsets round the torus, in units
+kx = (np.where(ix_ > PW // 2, ix_ - PW, ix_) / S).astype(f32)[None, :]
 
 
 def hexc(h):
@@ -76,24 +85,60 @@ def hexc(h):
 
 
 def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
-    """Periodic 1/f^beta noise in [0, 1]; `stretch` (sx, sy) > 1 elongates it along that axis."""
-    r = np.random.default_rng(seed)
-    white = r.standard_normal((NH, NW))
-    fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
-    fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
-    f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature)
-    out = np.fft.irfft2(np.fft.rfft2(white) / f ** beta, s=(NH, NW))
-    out -= out.min()
-    return (out / out.max()).astype(f32)
+    """Periodic 1/f^beta noise in [0, 1] over the tile's px; `stretch` (sx, sy) > 1 elongates it along that axis."""
+    def field(h, w, spec, cap):
+        fy = np.fft.fftfreq(h)[:, None] * stretch[1]
+        fx = np.fft.rfftfreq(w)[None, :] * stretch[0]
+        f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / cap)
+        return np.fft.irfft2(spec / f ** beta, s=(h, w))
+    spec, base = white_spectrum(seed)
+    ref = field(NH, NW, base, feature / S)    # the field as a 240 DPI tile has it, scaled to [0, 1]
+    ref -= ref.min()
+    ref /= ref.max()
+    if (PH, PW) == (NH, NW):
+        return ref.astype(f32)
+    out = field(PH, PW, spec, feature)        # and with the finer detail: given the same mean and spread
+    out = ref.mean() + (out - out.mean()) * (ref.std() / out.std())
+    return np.clip(out, 0, 1).astype(f32)
+
+
+def white_spectrum(seed):
+    """The spectra of white noise over the tile at px, and at 240 DPI. The
+    frequencies a 240 DPI tile has (in cycles per tile, so per inch) come from
+    the same draw at any DPI, so the damp, spalls and grain land where they
+    did; the finer ones the extra px add are drawn fresh."""
+    base = np.fft.rfft2(np.random.default_rng(seed).standard_normal((NH, NW)))
+    if (PH, PW) == (NH, NW):
+        return base, base
+    spec = np.fft.rfft2(np.random.default_rng([seed if seed is not None else 0, DPI]).standard_normal((PH, PW)))
+    k, k2 = NH // 2 - 1, NW // 2 - 1          # rows +-k and columns 0..k2: below the 240 DPI tile's Nyquist
+    g = math.sqrt(PH * PW / (NH * NW))        # white noise's spectrum grows with the number of samples
+    spec[:k + 1, :k2 + 1] = base[:k + 1, :k2 + 1] * g
+    spec[PH - k:, :k2 + 1] = base[NH - k:, :k2 + 1] * g
+    return spec, base
 
 
 def circ_conv(a, kernel):
-    return np.fft.irfft2(np.fft.rfft2(a) * np.fft.rfft2(kernel), s=(NH, NW)).astype(f32)
+    return np.fft.irfft2(np.fft.rfft2(a) * np.fft.rfft2(kernel), s=(PH, PW)).astype(f32)
 
 
 def blur(m, sigma, dx=0, dy=0):
+    """A wrapped gaussian blur of a tile-sized field; sigma and the offset in units."""
     g = np.exp(-(((kx - dx) ** 2 + (ky - dy) ** 2) / (2 * sigma * sigma)))
     return circ_conv(m, g / g.sum())
+
+
+def shift(a, dy, dx):
+    """np.roll by (dy, dx) px, which need not be whole: a fractional shift is
+    the blend of the two whole ones either side of it."""
+    out = 0
+    y0, x0 = math.floor(dy), math.floor(dx)
+    fy, fx = dy - y0, dx - x0
+    for oy, wy in ((y0, 1 - fy), (y0 + 1, fy)):
+        for ox, wx in ((x0, 1 - fx), (x0 + 1, fx)):
+            if wy * wx > 1e-6:
+                out = out + (wy * wx) * np.roll(a, (oy, ox), (0, 1))
+    return np.asarray(out, f32)
 
 
 def smooth(x, lo, hi):
@@ -138,7 +183,10 @@ TEX = {
 
 
 def tex(name, Y, X, off):
-    return TEX[name][(Y + off[0]) % NH, (X + off[1]) % NW]
+    """A global texture at (Y, X), offset by off (all in units), read at every px."""
+    iy = np.rint((np.asarray(Y) + off[0]) * S).astype(np.int64) % PH
+    ix = np.rint((np.asarray(X) + off[1]) * S).astype(np.int64) % PW
+    return TEX[name][iy, ix]
 
 
 def toff(r):
@@ -147,20 +195,37 @@ def toff(r):
 
 # ── sprites: local RGBA patches, stamped onto the tile with wrap-around ─────────
 class Spr:
-    def __init__(self, w, h):
-        self.w, self.h = int(math.ceil(w)), int(math.ceil(h))
-        self.rgb = np.zeros((self.h, self.w, 3), f32)
-        self.a = np.zeros((self.h, self.w), f32)
-        self.acc = np.zeros((self.h, self.w), bool)
+    """A sprite w x h units: everything drawn on it is placed and sized in
+    units, and laid down at S px to the unit. Its arrays are at px; w and h
+    are its size in units, pw and ph in px."""
+
+    def __init__(self, w, h, px=False):
+        if px:
+            self.pw, self.ph = int(w), int(h)
+        else:
+            self.pw, self.ph = int(math.ceil(w * S - 1e-6)), int(math.ceil(h * S - 1e-6))
+        self.w, self.h = self.pw / S, self.ph / S
+        self.rgb = np.zeros((self.ph, self.pw, 3), f32)
+        self.a = np.zeros((self.ph, self.pw), f32)
+        self.acc = np.zeros((self.ph, self.pw), bool)
+
+    def grid(self, y0=0, x0=0, h=None, w=None):
+        """Y, X: where each px (of the box at px y0, x0, h x w) is on the sprite, in units."""
+        h = self.ph if h is None else h
+        w = self.pw if w is None else w
+        Y, X = np.mgrid[y0:y0 + h, x0:x0 + w].astype(f32)
+        return Y / S, X / S
 
     def _box(self, xs, ys, pad):
+        """The px box round px coordinates xs, ys."""
         x0 = max(0, int(math.floor(min(xs) - pad)))
         y0 = max(0, int(math.floor(min(ys) - pad)))
-        x1 = min(self.w, int(math.ceil(max(xs) + pad)) + 1)
-        y1 = min(self.h, int(math.ceil(max(ys) + pad)) + 1)
+        x1 = min(self.pw, int(math.ceil(max(xs) + pad)) + 1)
+        y1 = min(self.ph, int(math.ceil(max(ys) + pad)) + 1)
         return x0, y0, x1, y1
 
     def mpoly(self, polys):
+        polys = [[(x * S, y * S) for x, y in poly] for poly in polys]
         xs = [p[0] for poly in polys for p in poly]
         ys = [p[1] for poly in polys for p in poly]
         x0, y0, x1, y1 = self._box(xs, ys, 2)
@@ -173,6 +238,8 @@ class Spr:
         return y0, x0, np.asarray(im.resize((x1 - x0, y1 - y0), Image.BOX), f32) / 255
 
     def mlines(self, lines, width, caps=True):
+        lines = [[(x * S, y * S) for x, y in ln] for ln in lines]
+        width = width * S
         xs = [p[0] for ln in lines for p in ln]
         ys = [p[1] for ln in lines for p in ln]
         x0, y0, x1, y1 = self._box(xs, ys, width + 2)
@@ -191,6 +258,7 @@ class Spr:
         return y0, x0, np.asarray(im.resize((x1 - x0, y1 - y0), Image.BOX), f32) / 255
 
     def mell(self, cx, cy, rx, ry):
+        cx, cy, rx, ry = cx * S, cy * S, rx * S, ry * S
         x0, y0, x1, y1 = self._box([cx - rx, cx + rx], [cy - ry, cy + ry], 2)
         if x1 <= x0 or y1 <= y0:
             return None
@@ -199,14 +267,14 @@ class Spr:
         return y0, x0, np.clip((1 - d) * min(rx, ry) + 0.5, 0, 1).astype(f32)
 
     def put(self, m, col, alpha=1.0, acc=False):
-        """Paint `col` (a colour, an (h, w, 3) array, or fn(Y, X, m) -> colours) through mask m."""
+        """Paint `col` (a colour, an (h, w, 3) array, or fn(Y, X, m) -> colours, Y and X in units) through mask m."""
         if m is None:
             return
         y0, x0, mk = m
         h, w = mk.shape
         sl = (slice(y0, y0 + h), slice(x0, x0 + w))
         if callable(col):
-            Y, X = np.mgrid[y0:y0 + h, x0:x0 + w].astype(f32)
+            Y, X = self.grid(y0, x0, h, w)
             col = col(Y, X, mk)
         a = (mk * alpha)[..., None]
         self.rgb[sl] = self.rgb[sl] * (1 - a) + np.asarray(col, f32) * a
@@ -222,7 +290,7 @@ class Spr:
         h, w = mk.shape
         sl = (slice(y0, y0 + h), slice(x0, x0 + w))
         if callable(factor):
-            Y, X = np.mgrid[y0:y0 + h, x0:x0 + w].astype(f32)
+            Y, X = self.grid(y0, x0, h, w)
             factor = factor(Y, X, mk)
         f = np.asarray(factor, f32)
         if f.ndim == 2:
@@ -248,10 +316,10 @@ class Spr:
         self.put(self.mlines([pts], width), col, alpha, acc)
 
     def blit(self, o, X, Y):
-        """Lay another sprite o into this one at (X, Y), clipped."""
-        X, Y = int(round(X)), int(round(Y))
+        """Lay another sprite o into this one at (X, Y) units, clipped."""
+        X, Y = int(round(X * S)), int(round(Y * S))
         x0, y0 = max(0, X), max(0, Y)
-        x1, y1 = min(self.w, X + o.w), min(self.h, Y + o.h)
+        x1, y1 = min(self.pw, X + o.pw), min(self.ph, Y + o.ph)
         if x1 <= x0 or y1 <= y0:
             return
         so = (slice(y0 - Y, y1 - Y), slice(x0 - X, x1 - X))
@@ -270,7 +338,7 @@ def rotate(s, deg):
     out = [np.asarray(Image.fromarray(c.astype(np.float32), "F").rotate(deg, Image.BICUBIC, expand=True), f32) for c in chans]
     acc = np.asarray(Image.fromarray(s.acc.astype(np.uint8) * 255).rotate(deg, Image.NEAREST, expand=True)) > 127
     a = np.clip(out[3], 0, 1)
-    n = Spr(a.shape[1], a.shape[0])
+    n = Spr(a.shape[1], a.shape[0], px=True)
     n.a = a
     n.rgb = np.clip(np.stack(out[:3], -1) / np.maximum(a, 1e-4)[..., None], 0, 1)
     n.acc = acc
@@ -314,7 +382,7 @@ def flat(base, r=None, amt=0.06, name="fine"):
     off = toff(r if r is not None else rng)
 
     def fn(Y, X, m):
-        t = tex(name, Y.astype(np.int64), X.astype(np.int64), off)
+        t = tex(name, Y, X, off)
         return np.clip(base * (1 - amt + 2 * amt * t)[..., None], 0, 1)
     return fn
 
@@ -325,28 +393,31 @@ def jit(c, r, k=0.05):
 
 # ── layers: each throws its shadow on what is already drawn, then is laid on ───
 img = None
-accent = np.zeros((NH, NW), bool)
+accent = np.zeros((PH, PW), bool)
 
 
 class Layer:
+    """Sprites laid together, throwing one shadow (offset dx, dy and softness sigma, in units; strength k)."""
+
     def __init__(self, name, dx, dy, sigma, k):
         self.name, self.dx, self.dy, self.sigma, self.k = name, dx, dy, sigma, k
         self.items = []
 
     def add(self, s, X, Y):
-        self.items.append((s, int(round(X)), int(round(Y))))
+        """Lay sprite s at (X, Y) units."""
+        self.items.append((s, int(round(X * S)), int(round(Y * S))))
 
     def flush(self):
         global img
         if self.k > 0 and self.items:
-            A = np.zeros((NH, NW), f32)
+            A = np.zeros((PH, PW), f32)
             for s, X, Y in self.items:
-                iy, ix = (np.arange(s.h) + Y) % NH, (np.arange(s.w) + X) % NW
+                iy, ix = (np.arange(s.ph) + Y) % PH, (np.arange(s.pw) + X) % PW
                 A[np.ix_(iy, ix)] = np.maximum(A[np.ix_(iy, ix)], s.a)
             sh = np.clip(blur(A, self.sigma, self.dx, self.dy), 0, 1)
             img *= (1 - self.k * sh)[..., None]
         for s, X, Y in self.items:
-            iy, ix = (np.arange(s.h) + Y) % NH, (np.arange(s.w) + X) % NW
+            iy, ix = (np.arange(s.ph) + Y) % PH, (np.arange(s.pw) + X) % PW
             g = np.ix_(iy, ix)
             a = s.a[..., None]
             img[g] = img[g] * (1 - a) + s.rgb * a
@@ -421,9 +492,9 @@ del paint, plaster, band
 
 # brick behind the plaster: running bond on the tile's grid (30 x 60 courses)
 BW, BH, BJ = 144, 48, 5
-course = yy // BH
+course = (yy // BH).astype(np.int32)
 bx = (xx + (course % 2) * (BW // 2)) % NW
-bid = course * (NW // BW) + bx // BW
+bid = (course * (NW // BW) + bx // BW).astype(np.int32)
 lxb, lyb = bx % BW, yy % BH
 BRICKS = np.array([hexc(c) for c in ("#9c6c58", "#a67a62", "#8f6b5a", "#ad8869", "#977062", "#a28a72")])
 btone = rng.uniform(0.9, 1.06, bid.max() + 1).astype(f32)
@@ -436,13 +507,13 @@ brick *= (1 - 0.18 * smooth(3 - np.abs(lyb - BJ - 1.0), 0, 2) * (lyb > BJ))[...,
 del bcol, bedge, joint
 spall_n = noise(1.8, seed=SEED + 8)
 low = smooth(yy, 1900, 2500)
-S = smooth(spall_n + 0.10 * low + 0.05 * fine + 0.06 * smooth(damp, 0.5, 0.9), 0.715, 0.725)
-inside = np.clip(S * (1 - np.roll(S, (8, 8), (0, 1))), 0, 1)
-lit = np.clip((1 - S) * np.roll(S, (4, 4), (0, 1)), 0, 1)
+SP = smooth(spall_n + 0.10 * low + 0.05 * fine + 0.06 * smooth(damp, 0.5, 0.9), 0.715, 0.725)
+inside = np.clip(SP * (1 - shift(SP, 8 * S, 8 * S)), 0, 1)
+lit = np.clip((1 - SP) * shift(SP, 4 * S, 4 * S), 0, 1)
 brick *= (1 - 0.35 * blur(inside, 2.0))[..., None]
-img = mix(img, brick, S)
+img = mix(img, brick, SP)
 img *= (1 + 0.16 * lit)[..., None]
-img *= (1 - 0.10 * np.clip(np.roll(S, (-2, -2), (0, 1)) - S, 0, 1))[..., None]
+img *= (1 - 0.10 * np.clip(shift(SP, -2 * S, -2 * S) - SP, 0, 1))[..., None]
 del brick, inside, lit, course, bx, bid, lxb, lyb
 
 # ghost sign: huge faded glyphs painted high up, mostly under the awnings
@@ -451,9 +522,9 @@ for gx0 in (80, 2300):
     gs.poly([(gx0, 40), (gx0 + 1900, 40), (gx0 + 1900, 330), (gx0, 330)], hexc("#d8ccb0"), 0.35)
     ln, _ = glyph_lines(gx0 + 70, 80, 200, 9, np.random.default_rng(SEED + 9 + gx0), words=True, aspect=0.8, max_w=1760)
     gs.put(gs.mlines(ln, 26), hexc("#7f6a5c"), 0.45)
-gs.a *= smooth(TEX["mott"][:360] * 0.6 + TEX["fine"][:360] * 0.4, 0.38, 0.62)
+gs.a *= smooth(TEX["mott"][:gs.ph] * 0.6 + TEX["fine"][:gs.ph] * 0.4, 0.38, 0.62)
 g = gs.a[..., None]
-img[:360] = img[:360] * (1 - g) + gs.rgb * g
+img[:gs.ph] = img[:gs.ph] * (1 - g) + gs.rgb * g
 del gs
 
 # cracks, running from the spalls and from nowhere
@@ -469,7 +540,9 @@ img = img * (1 - g) + cr.rgb * g
 del cr
 
 # damp streaks down from the top, rising damp and grime at the foot
-src = (speck > 0.83).astype(f32) * (yy < 700) * smooth(damp, 0.4, 0.7)
+top_ = yy < 700
+DRIP_EVERY = 5390           # units^2 (0.094in^2) of the top band to a drip: the brightest specks, as many to the inch at any DPI
+src = (speck >= np.quantile(speck[top_], 1 - 1 / (DRIP_EVERY * S * S))).astype(f32) * top_ * smooth(damp, 0.4, 0.7)
 drip = np.where(ky >= 0, np.exp(-ky / 260.0), 0) * np.exp(-(kx / 2.5) ** 2)
 streak = circ_conv(src, drip.astype(f32))
 streak = np.clip(streak / np.percentile(streak[streak > 1e-3], 99), 0, 1) * smooth(noise(1.0, stretch=(1, 0.1), seed=SEED + 10), 0.3, 0.7)
@@ -477,7 +550,7 @@ img *= (1 - 0.13 * streak)[..., None]
 rise = smooth(yy - (2280 - 120 * damp), -40, 40)
 img *= (1 - 0.06 * rise - 0.10 * smooth(yy, 2150, FLOOR) - 0.05 * smooth(damp, 0.5, 0.8))[..., None]
 img = mix(img, img * hexc("#e6dcc4"), np.clip(1 - np.abs(yy - (2280 - 120 * damp)) / 10, 0, 1) * 0.6)   # the tide mark
-del src, drip, streak, rise, worn, S, spall_n, low
+del src, drip, streak, rise, worn, SP, spall_n, low, top_
 
 L_FLAT = Layer("posters, graffiti", 2, 3, 2.0, 0.12)
 L_FIX = Layer("fixtures", 6, 8, 4.0, 0.30)
@@ -567,7 +640,7 @@ def poster(w, h, r):
         if r.random() < 0.6:
             s.poly([(2, h * 0.9), (w + 2, h * 0.9), (w + 2, h + 2), (2, h + 2)], ink2, 0.7)
     # weather: bleached, rain-streaked, grimed at the foot
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     off = toff(r)
     st = tex("gv", Y, X, off)
     s.rgb = mix(s.rgb, paper * 0.95, 0.25 + 0.25 * smooth(st, 0.3, 0.8))
@@ -654,7 +727,7 @@ def graffiti(w, h, r, fat=True):
         s.put(s.mlines(drips, 3.5), col, 0.85)
     else:
         s.put(s.mlines(ln, r.uniform(3, 5)), hexc(r.choice(["#4f4a4c", "#6b4e5a", "#45566a"])), 0.8)
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     s.a *= 0.55 + 0.4 * smooth(tex("mott", Y, X, toff(r)), 0.25, 0.65)
     return s
 
@@ -673,9 +746,8 @@ def wood_fn(base, r, along="x", amt=0.22):
     name = "gh" if along == "x" else "gv"
 
     def fn(Y, X, m):
-        Yi, Xi = Y.astype(np.int64), X.astype(np.int64)
-        g = tex(name, Yi, Xi, off)
-        f = tex("fine", Yi, Xi, off)
+        g = tex(name, Y, X, off)
+        f = tex("fine", Y, X, off)
         return np.clip(base * (1 - amt + 2 * amt * g + 0.06 * (f - 0.5))[..., None], 0, 1)
     return fn
 
@@ -749,7 +821,7 @@ def sign(w, h, r, style=None):
         ln = [[(x + ox, y + oy) for x, y in l] for l in ln]
         s.put(s.mlines(ln, max(3, sz * 0.13)), ink, 0.92)
     # chipped back to the wood or the tin, rust at the edges of a tin sign
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     off = toff(r)
     edge = np.minimum.reduce([X, w - 1 - X, Y, h - 1 - Y]).astype(f32)
     chip = smooth(tex("fine", Y, X, off) * 0.6 + tex("speck", Y, X, off) * 0.4 + 0.12 * np.exp(-edge / 12), 0.66, 0.70)
@@ -910,7 +982,7 @@ def basket(w, h, r, handle=True, contents=None):
         strand = 0.86 + 0.14 * np.cos(np.pi * (v - np.floor(v) - 0.5) * 2) * (chk * 2 - 1) * 0.5 + 0.07 * chk
         nx = np.clip((X - cx) / (w / 2), -1, 1)
         cyl = 0.65 + 0.35 * np.sqrt(1 - nx * nx) - 0.12 * nx
-        return np.clip(base * (strand * cyl * (0.95 + 0.1 * tex("fine", Y.astype(int), X.astype(int), off)))[..., None], 0, 1)
+        return np.clip(base * (strand * cyl * (0.95 + 0.1 * tex("fine", Y, X, off)))[..., None], 0, 1)
     s.poly(body, weave)
     s.poly([(cx - w / 2 - 3, top - 5), (cx + w / 2 + 3, top - 5), (cx + w / 2 + 3, top + 9), (cx - w / 2 - 3, top + 9)], cylh(top + 2, 7, base * 0.95))
     for x in np.arange(cx - w / 2, cx + w / 2, 8):
@@ -942,7 +1014,7 @@ def pot(w, h, r, metal=None):
             x, y = cx + r.uniform(-w / 2.4, w / 2.4), top + r.uniform(8, h)
             s.ell(x, y, r.uniform(2, 6), r.uniform(2, 5), hexc("#4f4b48"))
         s.put(s.mlines([[(cx - w / 2, top + 1), (cx + w / 2, top + 1)]], 4), hexc("#5c6670"))
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     s.rgb *= (0.92 + 0.1 * tex("mott", Y, X, toff(r)))[..., None]
     return s
 
@@ -958,7 +1030,7 @@ def pan(R, r, metal=None):
     s.ell(cx, cy, R, R, sphere(cx, cy, R * 1.2, R * 1.2, base, 0.6, 0.06))
     s.ell(cx, cy, R * 0.84, R * 0.84, lambda Y, X, m: np.clip(base * (0.78 + 0.18 * np.clip(((X - cx) - (Y - cy)) / (R * 1.6) + 0.5, 0, 1))[..., None], 0, 1))
     if metal == "iron":
-        Y, X = np.mgrid[0:s.h, 0:s.w]
+        Y, X = s.grid()
         s.rgb = mix(s.rgb, hexc("#8a6248"), smooth(tex("mott", Y, X, toff(r)), 0.6, 0.75) * 0.5 * (s.a > 0))
     return s
 
@@ -1122,7 +1194,7 @@ def gear(R, r):
     s.poly(pts, sphere(c, c, R * 1.6, R * 1.6, base, 0.65))
     s.ell(c, c, R * 0.62, R * 0.62, base * 0.85)
     s.ell(c, c, R * 0.22, R * 0.22, hexc("#4a4642"))
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     s.rgb = mix(s.rgb, hexc("#8f6146"), smooth(tex("mott", Y, X, toff(r)), 0.55, 0.75) * 0.6)
     return s
 
@@ -1176,7 +1248,7 @@ def rug(w, h, r):
             ("#4f5b70", "#a8846a", "#cbb98f", "#d9cfba"), ("#8a5a62", "#5e7466", "#c4a46e", "#d4c8b0"),
             ("#6f8a5e", "#7a4e44", "#c9b07c", "#ddd2bb")]
     field, border, acc_, light = (hexc(c) for c in pals[int(r.integers(len(pals)))])
-    K = int(r.choice([5, 6]))                                     # a knot cell, px: the pattern is stepped like weaving
+    K = int(r.choice([5, 6]))                                     # a knot cell, units: the pattern is stepped like weaving
     gw, gh = w // K + 1, h // K + 1
     v, u = np.mgrid[0:gh, 0:gw].astype(f32)
     u, v = u / (gw - 1), v / (gh - 1)
@@ -1205,9 +1277,9 @@ def rug(w, h, r):
         pat[(band < 0.18) & (edge >= bw)] = 2
         pat[(band > 0.45) & (band < 0.55) & (edge >= bw)] = 3
     cols = np.stack([field, border, acc_, light])
-    img_ = cols[pat]
-    img_ = np.repeat(np.repeat(img_, K, 0), K, 1)[:h, :w]
-    Y, X = np.mgrid[0:h, 0:w]
+    hp = int(round(h * S))                                       # the rug's rows, px (the fringe is below them)
+    Y, X = s.grid(h=hp)
+    img_ = cols[pat[(Y // K).astype(np.int64), (X // K).astype(np.int64)]]
     off = toff(r)
     img_ = mix(img_, light, 0.18 + 0.15 * tex("mott", Y, X, off))              # faded in the sun
     img_ = img_ * (0.93 + 0.1 * tex("fine", Y, X, off))[..., None]
@@ -1219,12 +1291,12 @@ def rug(w, h, r):
     img_ = img_ * (1 + (0.05 + 0.05 * (1 - Y / h)) * f)[..., None]
     sag = 6 * np.abs(np.sin(np.pi * X / (w / 3)))
     m = (Y >= sag).astype(f32)
-    s.rgb[:h], s.a[:h] = img_, m
+    s.rgb[:hp], s.a[:hp] = img_, m
     # fringe
     for x in np.arange(3, w - 3, 4):
         L = r.uniform(18, 32)
         s.line([(x, h - 2), (x + r.normal(0, 2), h + L)], 2, light * r.uniform(0.85, 1.0))
-    s.acc[:h] = False
+    s.acc[:hp] = False
     return s
 
 
@@ -1430,7 +1502,7 @@ def crate(w, h, r, kind=None, stencil=True):
                 s.poly([(x, y), (x + cw_ - 8, y), (x + cw_ - 8, y + 28), (x, y + 28)], col * 0.55)
                 s.poly([(x, y + 22), (x + cw_ - 8, y + 22), (x + cw_ - 8, y + 28), (x, y + 28)], col * 0.8, 0.6)
         s.poly([(w * 0.35, 18), (w * 0.65, 18), (w * 0.65, 28), (w * 0.35, 28)], col * 0.45)
-        Y, X = np.mgrid[0:s.h, 0:s.w]
+        Y, X = s.grid()
         s.rgb *= (0.88 + 0.12 * tex("mott", Y, X, toff(r)) - 0.08 * Y / h)[..., None]
         return s
     nsl = int(r.integers(3, 5))
@@ -1466,10 +1538,10 @@ def crate(w, h, r, kind=None, stencil=True):
         m = s.mlines([[(x + ox, y + oy) for x, y in l] for l in ln], max(3, sz * 0.14))
         if m is not None and r.random() < 0.6:
             y0, x0, mk = m
-            mk = mk * ((np.arange(mk.shape[1]) + x0) % 9 > 1)[None, :]           # the stencil's bridges
+            mk = mk * (((np.arange(mk.shape[1]) + x0) / S) % 9 > 1)[None, :]     # the stencil's bridges
             m = (y0, x0, mk)
         s.put(m, ink, 0.55)
-    Y, X = np.mgrid[0:s.h, 0:s.w]
+    Y, X = s.grid()
     s.rgb *= (0.9 + 0.12 * tex("mott", Y, X, toff(r)))[..., None]
     return s
 
@@ -1521,7 +1593,7 @@ def sack(w, h, r, spice=None, open_=True):
         crease = 1 - 0.10 * np.exp(-((X - cx - 0.25 * w * np.sin((Y - top) / h * 3 + ph)) / 7) ** 2) \
                    - 0.08 * np.exp(-((X - cx + 0.3 * w * np.sin((Y - top) / h * 2 + ph * 2)) / 5) ** 2)
         foot = 1 - 0.2 * smooth((Y - top) / h, 0.78, 1.0)
-        return np.clip(burlap * k * (wv * cyl * crease * foot * (0.93 + 0.12 * tex("fine", Y.astype(int), X.astype(int), off)))[..., None], 0, 1)
+        return np.clip(burlap * k * (wv * cyl * crease * foot * (0.93 + 0.12 * tex("fine", Y, X, off)))[..., None], 0, 1)
     rim = top + 20
     # the body: narrow at the neck, slumped and wide at the foot, its outline lumpy
     lump = r.normal(0, 1, 6)
@@ -1546,7 +1618,7 @@ def sack(w, h, r, spice=None, open_=True):
             mound.append((cx + w * 0.45 * np.cos(a), rim + 8 - hh * np.sin(a) ** 0.7 * bump))
 
         def grain(Y, X, m):
-            g = tex("speck", Y.astype(int), X.astype(int), off)
+            g = tex("speck", Y, X, off)
             nx = np.clip((X - cx) / (w * 0.45), -1, 1)
             ny = np.clip((rim + 8 - Y) / hh, 0, 1)
             lit_ = 0.78 + 0.22 * (-nx * 0.6 + 0.4) + 0.14 * ny
@@ -1627,11 +1699,11 @@ def pole(h, r, kind=None):
         c = jit(hexc(r.choice(["#8f7d64", "#9a8668", "#857560"])), r, 0.04)
         off = toff(r)
         s.poly([(cx - w / 2, 0), (cx + w / 2, 0), (cx + w / 2 + 1, h), (cx - w / 2 - 1, h)],
-               cylv(cx, w / 2, c, 0.5, 0.0, lambda Y, X: 0.82 + 0.3 * tex("gv", Y.astype(int), X.astype(int), off)))
+               cylv(cx, w / 2, c, 0.5, 0.0, lambda Y, X: 0.82 + 0.3 * tex("gv", Y, X, off)))
     else:
         c = jit(hexc(r.choice(["#8e8b84", "#7a7670"])), r, 0.04)
         s.poly([(cx - w / 2, 0), (cx + w / 2, 0), (cx + w / 2, h), (cx - w / 2, h)], cylv(cx, w / 2, c, 0.5, 0.1))
-        Y, X = np.mgrid[0:s.h, 0:s.w]
+        Y, X = s.grid()
         s.rgb = mix(s.rgb, hexc("#8f6146"), smooth(tex("mott", Y, X, toff(r)), 0.55, 0.72) * 0.6 * (s.a > 0))
         for y in r.uniform(100, h - 100, 2):
             s.poly([(cx - w / 2 - 4, y), (cx + w / 2 + 4, y), (cx + w / 2 + 4, y + 22), (cx - w / 2 - 4, y + 22)], cylv(cx, w / 2 + 4, c * 0.95, 0.5, 0.1))
@@ -1687,25 +1759,29 @@ TARPS = {"canvas-rust": "#a88472", "tarp-blue": "#7d98a6", "tarp-green": "#6f8a6
 def awning(W, ytop, supports, val_h, style, r, hem="scallop"):
     """A canvas or a tarp, seen flat on, from the wall at ytop to its front edge,
     which sags between `supports` [(x, y), ...] (local x, tile y). Returns the sprite
-    (placed at y = ytop) and the front edge's y at every x."""
+    (placed at y = ytop) and the front edge's y at every unit of x."""
     sx = np.array([p[0] for p in supports], f32)
     sy = np.array([p[1] for p in supports], f32)
     sags = r.uniform(18, 46, len(supports) - 1)
-    X = np.arange(W, dtype=f32)
-    yb = np.interp(X, sx, sy)
-    for k in range(len(supports) - 1):
-        t = np.clip((X - sx[k]) / (sx[k + 1] - sx[k]), 0, 1)
-        inside = (X >= sx[k]) & (X <= sx[k + 1])
-        yb += np.where(inside, sags[k] * 4 * t * (1 - t), 0)
+
+    def front(X):
+        yb = np.interp(X, sx, sy)
+        for k in range(len(supports) - 1):
+            t = np.clip((X - sx[k]) / (sx[k + 1] - sx[k]), 0, 1)
+            inside = (X >= sx[k]) & (X <= sx[k + 1])
+            yb += np.where(inside, sags[k] * 4 * t * (1 - t), 0)
+        return yb
+    yb = front(np.arange(W, dtype=f32))
     yb_l = yb - ytop
     H = int(yb_l.max() + val_h + 40)
     s = Spr(W, H)
-    Y, Xg = np.mgrid[0:H, 0:W].astype(f32)
-    edge = yb_l[None, :]
+    Y, Xg = s.grid()
+    X = Xg[0]                                                   # every px column, in units
+    edge = (front(X) - ytop)[None, :]
     tarp = style in TARPS
     # folds, stronger toward the sag
-    f = np.zeros(W, f32)
-    df = np.zeros(W, f32)
+    f = np.zeros(X.shape, f32)
+    df = np.zeros(X.shape, f32)
     for k in range(4):
         p, ph, a = r.uniform(40, 160), r.uniform(0, 6.3), r.uniform(0.4, 1.0)
         f += a * np.sin(2 * np.pi * X / p + ph)
@@ -1718,15 +1794,15 @@ def awning(W, ytop, supports, val_h, style, r, hem="scallop"):
     Xn = (Xg - xl) * W / (W - 2 * xl)
     if tarp:
         base = hexc(TARPS[style])
-        col = np.broadcast_to(base, (H, W, 3)).copy()
+        col = np.broadcast_to(base, (s.ph, s.pw, 3)).copy()
     else:
         cols, sw = AWNING_STYLES[style]
         cols = np.stack([hexc(c) for c in cols])
         idx = (np.floor((Xn + disp) / sw).astype(np.int64)) % len(cols)
         col = cols[idx]
     off = toff(r)
-    Yi, Xi = Y.astype(np.int64), Xg.astype(np.int64)
-    mt, fn_ = tex("mott", Yi, Xi, off), tex("fine", Yi, Xi, off)
+    Xi = np.floor(Xg)
+    mt, fn_ = tex("mott", Y, Xg, off), tex("fine", Y, Xg, off)
     v = np.clip(Y / np.maximum(edge, 1), 0, 1)
     light = (1.0 + 0.06 * (1 - v) - 0.07 * v * v + (0.05 + 0.08 * v) * np.clip(df[None, :], -1.5, 1.5) / 1.5)
     tt = np.clip((Xg - sx[0]) / max(1, sx[-1] - sx[0]), 0, 1)
@@ -1734,7 +1810,7 @@ def awning(W, ytop, supports, val_h, style, r, hem="scallop"):
     col = col * light[..., None]
     col = mix(col, hexc("#ddd4c0"), (0.22 + 0.22 * mt) * (1 - 0.5 * v))         # sun-bleached, most at the top
     col = col * (0.95 + 0.07 * fn_)[..., None]
-    canvas = np.clip(edge - Y + 0.5, 0, 1) * np.clip(Xg - xl + 0.5, 0, 1) * np.clip(W - xl - Xg + 0.5, 0, 1)
+    canvas = np.clip((edge - Y) * S + 0.5, 0, 1) * np.clip((Xg - xl) * S + 0.5, 0, 1) * np.clip((W - xl - Xg) * S + 0.5, 0, 1)
     side = np.exp(-((Xg - xl) / 3.0) ** 2) + np.exp(-((W - xl - Xg) / 3.0) ** 2)
     col = col * (1 - 0.18 * np.clip(side, 0, 1) * (Y < edge))[..., None]
     # the valance: a flap hanging from the front edge, in shade, with a hem
@@ -1748,7 +1824,7 @@ def awning(W, ytop, supports, val_h, style, r, hem="scallop"):
         bottom = edge + val_h - val_h * 0.3 * np.abs(2 * u - 1)
     else:
         bottom = edge + val_h + 3 * np.sin(Xg / 23)
-    val = np.clip(bottom - Y + 0.5, 0, 1) * (Y >= edge - 0.5)
+    val = np.clip((bottom - Y) * S + 0.5, 0, 1) * (Y >= edge - 0.5 / S)
     vcol = col * (0.84 + 0.06 * np.sin(2 * np.pi * Xg / r.uniform(30, 50)))[..., None]
     if tarp:
         vcol = col * 0.9
@@ -2203,10 +2279,10 @@ for layer in (L_FLAT, L_FIX, L_GOODS, L_BACK, L_FRONT, L_AWN, L_POLE, L_HANG, L_
     layer.flush()
 
 # the lit bulbs and lanterns: a warm glow, screened over what is round them
-glow = np.zeros((NH, NW), f32)
+glow = np.zeros((PH, PW), f32)
 for (x, y, k) in GLOWS:
-    glow[int(y) % NH, int(x) % NW] += k
-glow = blur(glow, 26.0) * (2 * np.pi * 26 ** 2) * 0.10
+    glow[int(y * S) % PH, int(x * S) % PW] += k
+glow = blur(glow, 26.0) * (2 * np.pi * (26 * S) ** 2) * 0.10           # a glow of peak 0.1 k, 26 units wide
 glow = np.clip(glow, 0, 0.35)
 img = img + (1 - img) * glow[..., None] * hexc("#f2dca0")
 
@@ -2216,17 +2292,18 @@ img *= (1 - 0.05 * smooth(grime, 0.4, 0.9) - 0.04 * smooth(yy, 2000, FLOOR))[...
 img = np.clip(img, 0, 1)
 
 # the foot of the tile is under the ground strip or off the page: fade it back to the top, mirrored at the seam
-HID = NH - FLOOR
+FP = round(FLOOR * S)       # px
+HID = PH - FP
 t = smooth(np.arange(HID, dtype=f32), HID * 0.25, HID * 0.95)[:, None, None]
-img[FLOOR:] = img[FLOOR:] * (1 - t) + img[HID - 1::-1][:HID] * t
-accent[FLOOR:] = np.where(t[..., 0] > 0.5, accent[HID - 1::-1][:HID], accent[FLOOR:])
+img[FP:] = img[FP:] * (1 - t) + img[HID - 1::-1][:HID] * t
+accent[FP:] = np.where(t[..., 0] > 0.5, accent[HID - 1::-1][:HID], accent[FP:])
 
 # drawn back: a little greyer, then toward the mean; a fine grain so the palette does not band
 lum = img.mean(-1, keepdims=True)
 img = img + (lum - img) * 0.18
-mean = img.reshape(-1, 3).mean(0)
+mean = img.reshape(-1, 3).mean(0, dtype=np.float64).astype(f32)     # summed in float64: in float32 it drifts with the px count
 img = mean + (img - mean) * CALM
-img *= (1 + np.random.default_rng(SEED + 900).normal(0, 0.009, (NH, NW)).astype(f32))[..., None]
+img *= (1 + np.random.default_rng(SEED + 900).normal(0, 0.009, (PH, PW)).astype(f32))[..., None]
 
 # an exact palette, no dither: the wall's tones, and the saturated sliver apart
 rgb = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
@@ -2241,5 +2318,5 @@ palimg.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
 out = Image.fromarray(rgb, "RGB").quantize(palette=palimg, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-13.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-13.png  {NW}x{NH}  {NW / 240:.2f}x{NH / 240:.2f}in  {int(accent.mean() * 1000) / 10}% accent  "
+print(f"images/wall-13.png  {PW}x{PH}  {PW / DPI:.2f}x{PH / DPI:.2f}in  {int(accent.mean() * 1000) / 10}% accent  "
       f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
