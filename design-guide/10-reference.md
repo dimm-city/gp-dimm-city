@@ -105,7 +105,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Space under paragraphs and list items | `--dc-flow-gap` (unset by default) |
 | Art by context | `--dc-entry-art-width` `--dc-credits-art-height` |
 | Page text (free-standing headings and prose) | `--dc-page-title-ink` `--dc-page-slip-bg` `--dc-page-slip-ink` `--dc-page-slip-edge` `--dc-page-slip-shadow` `--dc-page-slip-bolt` `--dc-page-slip-bolt-face` `--dc-page-slip-bolt-size` `--dc-page-slip-gap` `--dc-page-slip-foot` `--dc-page-sheet-pad` `--dc-heading-gap` |
-| Lede | `--dc-intro-bg` `--dc-intro-accent` `--dc-intro-color` `--dc-intro-size` `--dc-intro-weight` `--dc-intro-style` `--dc-intro-rail` `--dc-intro-rule` `--dc-intro-ink` |
+| Lede | `--dc-intro-bg` `--dc-intro-accent` `--dc-intro-color` `--dc-intro-size` `--dc-intro-weight` `--dc-intro-style` `--dc-intro-rail` `--dc-intro-ring` `--dc-intro-shape` `--dc-intro-ink` |
 | Flavor | `--dc-flavor-accent` `--dc-flavor-accent-width` `--dc-flavor-color` `--dc-flavor-bg` |
 | Pull quote | `--dc-pullquote-accent` `--dc-pullquote-bg` |
 | Alerts, callout, DM note | `--dc-alert-bg` `--dc-alert-border` `--dc-alert-fg` `--dc-alert-label-color` `--dc-alert-border-width` `--dc-alert-label-size` `--dc-alert-body-size` `--dc-alert-frame` `--dc-alert-frame-width` `--dc-alert-label-bg` `--dc-alert-label-pad` |

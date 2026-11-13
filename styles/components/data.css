@@ -188,8 +188,8 @@
   --dc-intro-weight: 400;
   --dc-intro-style: italic;
   --dc-intro-rail: 3px;
-  --dc-intro-rule: 0px;
-  --dc-intro-drop: 0 0 0 var(--paper-cream);
+  --dc-intro-ring: 0;
+  --dc-intro-shape: none;
 }
 
 .dc-path-shell .dc-stickers {
@@ -206,7 +206,7 @@
 
 .dc-path-shell>div.dc-intro {
   margin-bottom: 8px;
-  padding: 3px 12px 3px 14px;
+  padding: 3px 12px calc(3px + 0.08in) 14px;  /* the foot keeps its paragraph's 0.08in gap */
   line-height: 1.4;
 }
 

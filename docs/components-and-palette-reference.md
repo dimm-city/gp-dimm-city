@@ -298,12 +298,13 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 ### Lede (`.dc-intro`)
 | Token | Default | Role |
 |---|---|---|
-| `--dc-intro-bg` | `--paper-light` | Panel background (lighter than the wall) |
-| `--dc-intro-accent` | `--orange` | Rail colour |
+| `--dc-intro-bg` | `--paper-cream` | The sheet (white, as every callout) |
+| `--dc-intro-accent` | `--orange` | Rail and ring colour |
 | `--dc-intro-color` | `--ink` | Type colour |
-| `--dc-intro-size` | `--fs-h4` | Type size (13pt) |
+| `--dc-intro-size` | `--fs-h4` | Type size |
 | `--dc-intro-weight` / `-style` | `600` / `normal` | Upright semibold |
-| `--dc-intro-rail` / `-rule` | `6px` / `3px` | Rail width and ink foot rule (flush stacks set the rule to 0) |
+| `--dc-intro-rail` / `-ring` | `8px` / `2pt` | Rail width and inset ring width, the callout's (a lede on paper sets the ring to 0) |
+| `--dc-intro-shape` | `--dc-alert-shape` | The clip-path silhouette: the note's chamfers and chipped notch (`none` on paper) |
 
 ### Inline chips and tape (`.dc-tag`, `.dc-tape`, `.dc-spray`)
 | Token | Default | Role |

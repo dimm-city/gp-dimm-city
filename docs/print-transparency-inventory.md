@@ -22,7 +22,7 @@ All artwork: shadows, lifts, bevels and a smudge. Each darkens or tints what is 
 |---|---|---|
 | Hard ink shadow `--shadow-ink` (`dc-palette.css`) | Alone: the credits colophon, the skill-card body and cut-card shadows, a paste-up plate and bill. In the poster shadow below | `color-mix(in srgb, var(--ink) 28%, transparent)` |
 | Soft lift `--shadow-lift` / `--shadow-soft` (`dc-palette.css`) | The skill-card body, the learning-path shell, the specialty card; every section panel through `--dc-section-lift` | `3pt 7pt 12pt -5pt` of `color-mix(in srgb, var(--ink) 34%, transparent)` (blurred) |
-| Poster shadow `--shadow-poster` (`dc-palette.css`): the hard ink shadow plus the soft lift | Ledes (`--dc-intro-drop`), `##` slips (`--dc-page-slip-shadow`), the contents panel and table (`--dc-toc-shadow`), the intro page's sheet, definition cards, `@procedure` steps, at-a-glance cards, the human callout | as above |
+| Poster shadow `--shadow-poster` (`dc-palette.css`): the hard ink shadow plus the soft lift | `##` slips (`--dc-page-slip-shadow`), the contents panel and table (`--dc-toc-shadow`), the intro page's sheet, definition cards, `@procedure` steps, at-a-glance cards, the human callout | as above |
 | Recess `--shadow-press` (`dc-palette.css`) | The `lore` and `dm` sheets and their title, the `choose` sheets | `color-mix(in srgb, var(--ink-dark) 42%, transparent)` |
 | Section hard shadow `--dc-section-hard-shadow` (`dc-component-defaults.css`) | Every section panel's offset copy (`section.css`, `.dc-section-panel::after`) | `color-mix(in srgb, var(--ink-dark) 82%, transparent)` |
 | Sticker and path-title shadows (`chrome.css`) | `.dc-sticker`, `.dc-path-sticker` | 35% and 30% ink |

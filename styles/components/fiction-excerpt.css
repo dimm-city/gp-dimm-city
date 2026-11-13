@@ -36,6 +36,12 @@
   line-height: var(--dc-fiction-line-height);
   padding: 12px 10px 10px 12px;
   margin: 16px 16px calc(16px + 4pt);
+  /* The broken wall below reaches 16px past the box. Clipped at that margin,
+     it still paints, but an excerpt that ends at a page foot no longer
+     overflows onto the next page (in the preview that overflow was a blank
+     page of its own). */
+  overflow: clip;
+  overflow-clip-margin: 16px;
 }
 .dc-fiction-excerpt::before,
 .dc-fiction-excerpt::after {
@@ -55,9 +61,14 @@
   z-index: -1;
 }
 
-/* The title is a story's name, not a chapter's. */
+/* The title is a story's name, not a chapter's. A story's heading, `#` or
+   `##`, has no underline. */
 .dc-fiction-excerpt > h1 {
   font-size: var(--dc-fiction-title-size);
+}
+.dc-fiction-excerpt > :is(h1, h2) {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 .dc-fiction-excerpt p {
   orphans: 3;
