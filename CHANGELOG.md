@@ -224,6 +224,14 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **A dark line at the foot of a page before a `@page-break`.** A skill card
+  sits 4px high (its tab's outline stays inside its box); after a forced
+  break Chromium keeps that margin, so the card started 4px above its page
+  and the top of its tab's outline printed along the foot of the page
+  before (Augmerc, Proxy, Streetwarden, Etherlock). A card that follows a
+  `@page-break` (or an empty block straight after one) now starts on its
+  page's top edge.
+
 - **Blank preview pages after a fiction excerpt at a page foot.** The
   excerpt's broken wall reaches 16px past its box; at a page foot that reach
   overflowed onto the next page, and the HTML preview gave it a page of its

@@ -604,6 +604,16 @@
 .dc-specialty.dualist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%23006878' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%23006878'/%3E%3C/svg%3E"); }
 .dc-specialty.generalist { --dc-seam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='708' height='32' viewBox='0 0 708 32'%3E%3Cg fill='none' stroke='%233a4854' stroke-width='2' stroke-dasharray='6 4'%3E%3Cpath d='M14 5H694'/%3E%3Cpath d='M14 20H670'/%3E%3C/g%3E%3Cpath d='M685 16l9 5-9 5z' fill='%233a4854'/%3E%3C/svg%3E"); }
 
+/* A card after a forced break (`@page-break`) opens its page: Chromium keeps a
+   margin at a forced break, so the -4px above pulled it 4px above the page
+   and its tab's outline printed as a dark line at the foot of the page
+   before. There it starts on the page's top edge instead. An empty block
+   between the two (an `@columns` with nothing in it) passes the margin
+   straight through, so the card after one is the same case. */
+:is(.gp-page-break, .gp-page-break + :empty) + .dc-skill-card {
+  margin-top: 0;
+}
+
 /* ── Continuation card (an explicit @continue) ────────────────────────── */
 .dc-skill-card-cont {
   margin-top: -4px; /* the card's own offset: see .dc-skill-card */
