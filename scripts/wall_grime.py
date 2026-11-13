@@ -893,7 +893,6 @@ def weather(rgb, joint, seed):
             lay.poly(left + right[::-1], 0.85)
             lay.ellipse(x, y, w * 0.7, w * 0.9, 0.95)
 
-    weather.debug = dict(claws=list(claw_at), strokes=[(g["x"], g["y"], g["a"], g["L"], g["age"], g["bleed"]) for g in strokes])  # DEBUG
     claw_at.sort(key=lambda c: c[2])                     # by the freshest claw marks: whatever made them was hurt, or did the hurting
     for (cx, cy, _), a in zip(claw_at[:2], ("dry", "old")):
         spatter(blood[a], cx + r.normal(0, 80), cy + r.normal(0, 80), r.uniform(4, 8), int(r.integers(12, 26)), r.uniform(22, 45),
