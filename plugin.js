@@ -1379,13 +1379,13 @@ function dcPageScopes(state) {
       // The wall is the page's: a page that names none takes the specialty's,
       // and the re-opened specialty carries none (a box whose children print on
       // another named page than itself costs a blank sheet).
-      const namesWall = /^wall-\d$/.test(tok.meta.name || '') || /\bdc-page-wall-\d\b/.test(tok.meta.attrs?.class || '');
-      const specialtyWall = (open.find((s) => s.kind === 'specialty')?.attrs.class || '').match(/\bdc-page-wall-\d\b/)?.[0];
+      const namesWall = /^wall-\d+$/.test(tok.meta.name || '') || /\bdc-page-wall-\d+\b/.test(tok.meta.attrs?.class || '');
+      const specialtyWall = (open.find((s) => s.kind === 'specialty')?.attrs.class || '').match(/\bdc-page-wall-\d+\b/)?.[0];
       if (!namesWall && specialtyWall) tok.meta.attrs = { ...tok.meta.attrs, class: ((tok.meta.attrs?.class || '') + ' ' + specialtyWall).trim() };
       out.push(tok);
       for (const s of open) {
         let cls = (s.attrs.class || '').split(/\s+/).filter(Boolean);
-        if (s.kind === 'specialty') cls = cls.filter((c) => !/^dc-page-wall-\d$/.test(c));
+        if (s.kind === 'specialty') cls = cls.filter((c) => !/^dc-page-wall-\d+$/.test(c));
         if (!cls.includes(SCOPE_CONT[s.kind])) cls.push(SCOPE_CONT[s.kind]);
         out.push(layoutMarker(s.kind, { ...s.attrs, class: cls.join(' ') }, line));
       }
@@ -2256,7 +2256,10 @@ export const markers = {
       'wall-5': 'dc-page-wall-5',
       'wall-6': 'dc-page-wall-6',
       'wall-7': 'dc-page-wall-7',   // rusted steel plate (scripts/wall-metal.py)
-      'wall-8': 'dc-page-wall-8',   // circuit panels falling apart (scripts/wall-circuit.py)
+      'wall-8': 'dc-page-wall-8',   // circuits set into the wall (scripts/wall-circuit.py)
+      'wall-9': 'dc-page-wall-9',   // moss and fungus on stone (scripts/wall-moss.py)
+      'wall-10': 'dc-page-wall-10', // a dingy operating room's tiles (scripts/wall-surgery.py)
+      'wall-11': 'dc-page-wall-11', // metal and rock pulled into the aether (scripts/wall-aether.py)
     },
   },
   chapter: {
