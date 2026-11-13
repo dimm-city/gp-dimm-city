@@ -147,6 +147,7 @@
   --fs-h6:      var(--fs-floor);  /* metadata only: 10pt, the floor */
   --fs-stat:    16pt;    /* a stat strip's numbers (HP, Damage) */
   --fs-lead:    16pt;    /* the larger display lines that are not headings: contents entries, a path's spray title, a sticker */
+  --fs-fit:     0.85;    /* the smallest a box's title is set to keep it on one line: 85% of its size (dc-core.css, .dc-fit) */
 
   --lh-display: 1.35;  /* headings. Not tighter: lixdu's capitals fill the whole em, so at 1.2 two lines of a wrapped heading sit 2pt apart */
   --lh-tight:  1.35;   /* compact running text */

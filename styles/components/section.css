@@ -71,6 +71,9 @@ div[class="section"] {
      room is the fix; clipping it back only hid it. */
   margin: 0 3px calc(var(--dc-section-gap) + var(--dc-section-edge)) 0;
   position: relative;
+  /* Its title's measure is in `cqi` of the box (dc-core.css, .dc-fit). The box
+     is sized by its column, never by its content, so this changes no width. */
+  container-type: inline-size;
   flex-grow: var(--dc-section-grow);
   /* A fragment that continues keeps the box's own padding: a continuation
      opens --dc-section-pad-top under its edge. The foot's padding is the
@@ -244,7 +247,7 @@ div[class="section"] {
   padding: 0.42rem max(var(--space-lg), calc(var(--dc-section-clip) * 0.75 + 2pt)) 0.28rem max(var(--space-lg), calc(var(--dc-section-cut-tl) * 0.75 + 2pt));
   border: 0;
   border-bottom: var(--dc-section-bar-rule-sub);
-  letter-spacing: var(--ls-display);
+  letter-spacing: var(--ls-display); --dc-fit-ls: var(--ls-display);
   text-transform: uppercase;
   break-after: avoid;
 }
@@ -254,7 +257,7 @@ div[class="section"] {
    instead; `:where()` keeps this rule's specificity where it was. */
 .dc-section-panel > h2:where(:not(.dc-h3)):first-child {
   font-size: var(--fs-h2-bar);
-  letter-spacing: var(--ls-title);
+  letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title);
   padding-top: 0.55rem;
   padding-bottom: 0.40rem;
   /* The bar follows the panel's two top corners. */
@@ -506,7 +509,7 @@ h3 + .dc-section-panel {
 .dc-section-lore > :is(h3, h4, h5):not(:first-child) {
   font-style: italic;
   text-transform: none;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.02em; --dc-fit-ls: 0.02em;
   color: var(--brand-violet);
 }
 
@@ -574,6 +577,9 @@ h3 + .dc-section-panel {
 .dc-section-dm > :is(h2, h3):first-child {
   margin: var(--dc-section-top) calc(6pt - var(--dc-section-pad-right)) var(--space-md) calc(6pt - var(--dc-section-pad-left));
   padding: var(--dc-dm-head-pad-top) calc(1.5pt + var(--space-lg)) calc(var(--space-sm) + 4.5pt);
+  /* One line, a little smaller if that is all it takes (dc-core.css, .dc-fit):
+     the booth's width, less the margins and padding above. */
+  --dc-fit-measure: calc(100cqi + var(--dc-section-pad-left) + var(--dc-section-pad-right) - 12pt - 2 * (1.5pt + var(--space-lg)));
   background: var(--ink);
   color: var(--dc-neon-core);
   clip-path: none;

@@ -78,6 +78,8 @@ h1, h2, h3, h4, h5, h6,
      in Lixdu's own stroke rather than a synthetic (Type 3) bold. */
   font-synthesis-weight: none;
   letter-spacing: var(--ls-display);
+  --dc-fit-ls: var(--ls-display);   /* every letter-spacing on a heading is told to .dc-fit too */
+  --dc-fit-ws: 0px;
   line-height: var(--lh-display);
   text-transform: uppercase;
   text-wrap: balance;
@@ -94,6 +96,7 @@ h1, h2, h3, h4, h5, h6,
 h1, h2 {
   font-family: var(--font-title);
   word-spacing: 0.12em;
+  --dc-fit-ws: 0.12em;
 }
 h2:is(.dc-h3, .dc-h4, .dc-h5, .dc-h6) {
   font-family: var(--font-display);
@@ -127,7 +130,7 @@ h2, h3, h4 { break-inside: avoid; }
 /* H1 — magenta neon authority: chapter openers, page-level titles. */
 h1 {
   font-size: var(--fs-h1);
-  letter-spacing: var(--ls-title);
+  letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title);
   margin-bottom: 0.75em;
   color: var(--hud-magenta);
   border-bottom: 2px solid var(--hud-magenta);
@@ -138,24 +141,47 @@ h1 {
 h2 {
   font-size: var(--fs-h2);
   color: var(--hud-blue-dark);
-  letter-spacing: var(--ls-title);
+  letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title);
   border-bottom: 2.5pt solid var(--hud-blue-dark);
   padding-bottom: 0.1em;
 }
 
 /* H3 — deep teal: sub-sections (hud-blue-dark gives 6.4:1 on paper-cream vs hud-blue's 3.8:1) */
-h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); }
+h3, .dc-h3 { font-size: var(--fs-h3); margin-top: 0.08in; color: var(--hud-blue-dark); letter-spacing: var(--ls-heading); --dc-fit-ls: var(--ls-heading); }
 /* H4–H6 — grim dark ramp: body labels */
-h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink);  letter-spacing: 0.06em; }
-h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); }
+h4, .dc-h4 { font-size: var(--fs-h4); margin-top: 0.05in; color: var(--ink);  letter-spacing: 0.06em; --dc-fit-ls: 0.06em; }
+h5, .dc-h5 { font-size: var(--fs-h5); margin-top: 0; color: var(--ink); letter-spacing: var(--ls-display); --dc-fit-ls: var(--ls-display); }
 /* H6, the 10pt label size, in the display face like every heading below h2. */
-h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink); letter-spacing: 0.04em; }   /* Lixdu at 10pt reads large: tight, so it sits under a tag */
+h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink); letter-spacing: 0.04em; --dc-fit-ls: 0.04em; }   /* Lixdu at 10pt reads large: tight, so it sits under a tag */
 /* What h1/h2 add that no lower look has: clear it when a look class is on
    one of those tags. */
 .dc-h3, .dc-h4, .dc-h5, .dc-h6 {
   margin-bottom: 0.5em;
   border-bottom: 0;
   padding-bottom: 0;
+}
+
+/* A box's title fits its box. The plugin wraps the title of a section, and a
+   paste-up tag or bill, in `.dc-fit`, with its width in em read from the
+   fonts (plugin.js, dcHeadingFit). Where a component names the title's measure
+   (`--dc-fit-measure`, the width its text may take, in `cqi` of the section,
+   which is a size container), the title is set:
+     - on one line, up to `--fs-fit` (15%) smaller, when that is all it takes;
+     - otherwise at its own size, wrapping;
+     - and never so large that its longest word runs past
+       `--dc-fit-word-measure` (the measure unless a component widens it), which
+       is all a one-word title is held to.
+   The tracking is the heading's own (`--dc-fit-ls`, `--dc-fit-ws`, set beside
+   every letter-spacing on a heading), and `1em` here is the heading's size.
+   With no measure the sizes are invalid and the title keeps its size. */
+.dc-fit {
+  /* the sizes at which the line, and the longest word, fill the measure (a pixel short, for rounding) */
+  --dc-fit-line: max(0px, (var(--dc-fit-measure) - 1px - var(--dc-fit-n) * var(--dc-fit-ls) - var(--dc-fit-s) * var(--dc-fit-ws)) / var(--dc-fit-adv));
+  --dc-fit-word: max(0px, (var(--dc-fit-word-measure, var(--dc-fit-measure)) - 1px - var(--dc-fit-word-n) * var(--dc-fit-ls)) / var(--dc-fit-word-adv));
+  /* 1em when the line needs more than --fs-fit (the step: round() is 0 below it), else the line's size */
+  --dc-fit-one-line: max(min(1em, var(--dc-fit-line)), 1em - min(round(down, var(--dc-fit-line), 1em * var(--fs-fit)), 1em * var(--fs-fit)) * 1000);
+  /* a one-word title is its own longest word: it takes the word's room (its 0 spaces zero the second term) */
+  font-size: max(var(--fs-floor), min(1em, var(--dc-fit-word), max(var(--dc-fit-one-line), var(--dc-fit-word) * (1 - min(var(--dc-fit-s), 1)))));
 }
 
 

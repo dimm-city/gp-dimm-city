@@ -124,8 +124,16 @@ p:has(+ .dc-kicker) {
     --dc-pu-tag-top: var(--dc-pu-lift);   /* the tag's top, under the sheet's top edge */
     width: fit-content; max-width: 88%;
     min-width: min-content;   /* a word wider than 88% (QUICKSTART) widens the tag; it never runs off it */
+    /* Its text (dc-core.css, .dc-fit) keeps one line in its 88%, a little
+       smaller if that is all it takes; a word wider than the room from the tag's
+       hung left edge to the paper's text edge is set smaller, so it never runs
+       off the tag. The sheet is the size container (cqi). */
+    --dc-pu-tag-room: calc(100cqi + var(--dc-pu-hang) + var(--dc-section-pad-left) - 2 * var(--dc-pu-tag-pad-x));
+    --dc-fit-measure: calc(88cqi - 2 * var(--dc-pu-tag-pad-x));
+    --dc-fit-word-measure: var(--dc-pu-tag-room);
     margin: calc(var(--dc-pu-tag-top) - var(--dc-pu-band) - var(--dc-section-pad-top)) 0 var(--space-sm) calc(-1 * var(--dc-pu-hang) - var(--dc-section-pad-left));
-    padding: 0.3rem var(--space-lg) 0.22rem;
+    --dc-pu-tag-pad-x: var(--space-lg);
+    padding: 0.3rem var(--dc-pu-tag-pad-x) 0.22rem;
     clip-path: none; border-bottom: 0;
     line-height: var(--lh-display);
     text-wrap: pretty;   /* balance pulled wrapped lines in and left a slab of empty tag at the right */
@@ -135,13 +143,20 @@ p:has(+ .dc-kicker) {
     position: relative; z-index: 2;
     break-after: avoid;
   }
+  /* In a row a tag takes the whole room, as it always has: a sheet in a row is
+     a flex column, where the 88% did not resolve until the sheet became a size
+     container. */
+  .dc-pu-row > & > :is(h2, h3):is(:first-child, .dc-pu-tag):not(.dc-pu-bill) {
+    max-width: none;
+    --dc-fit-measure: var(--dc-pu-tag-room);
+  }
   & > :is(h2, h3).dc-pu-tag:not(:first-child) {
     margin-top: var(--space-lg);
     border: 0;
     background: color-mix(in srgb, var(--dc-section-accent) var(--dc-section-bar-mix), var(--dc-section-bar-tone));
     color: var(--dc-section-bar-fg);
   }
-  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); letter-spacing: var(--ls-title); }
+  & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title); }
   & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
   &:not(.dc-catalog) > :is(h2, h3):first-child::after,
   & > .dc-pu-tag::after { content: none; }
@@ -160,7 +175,11 @@ p:has(+ .dc-kicker) {
     padding: var(--space-sm) var(--space-xl) var(--space-md);
     background: var(--ink-dark); color: var(--paper-cream);
     font-size: calc(var(--fs-h1) * 2);
-    letter-spacing: var(--ls-title);
+    letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title);
+    /* One line, a little smaller if that is all it takes: the sheet's width, less
+       the margins and padding above (dc-core.css, .dc-fit). */
+    --dc-fit-measure: calc(100cqi + var(--dc-section-pad-left) + var(--dc-section-pad-right) - 0.06em - 2px - 2 * var(--space-xl));
+    --dc-fit-word-measure: var(--dc-fit-measure);
     border-bottom: 6pt solid var(--brand-yellow);
     box-shadow: 4px 4px 0 var(--shadow-ink);
   }

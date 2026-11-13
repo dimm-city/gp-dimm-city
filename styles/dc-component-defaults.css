@@ -23,6 +23,19 @@
   --dc-pu-sticker-gap:    var(--space-lg);
   --dc-pu-sticker-drop:   calc(0.1in + 2pt);
 
+  /* A box's title fits its box (dc-core.css, .dc-fit). The plugin writes each
+     title's width on its span (dcHeadingFit: advance in em, characters and
+     spaces, the same for its longest word); a component names the width its
+     text may take (the measure, and a wider one for its longest word, in cqi
+     of the section). Unset, the sizes are invalid and a title keeps its size. */
+  --dc-fit-adv:           initial;
+  --dc-fit-n:             initial;
+  --dc-fit-s:             initial;
+  --dc-fit-word-adv:      initial;
+  --dc-fit-word-n:        initial;
+  --dc-fit-measure:       initial;
+  --dc-fit-word-measure:  initial;
+
   --dc-rule:           var(--ink);          /* the `---` hairline; a skill card sets it to the specialty mid */
   --dc-section-bg:     var(--paper-cream);
   --dc-section-accent: var(--brand-magenta);  /* brand signal at every section header */
