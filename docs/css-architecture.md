@@ -355,7 +355,7 @@ in two files:
    no blend mode) */
 @page {
   background: var(--bg) url("../images/brick-wall.png") repeat;
-  background-size: 1.5in auto;
+  background-size: 9in auto;
 }
 ```
 

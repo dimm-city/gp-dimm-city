@@ -7,11 +7,11 @@
 They used to be cut from the painted sheet (source-art/wall-sheet.png) by
 wall-tiles.py and printed at 240 DPI with about 110 DPI of real detail. Now
 they are drawn, at DPI (300, the print bar), in the same look: a line drawing
-of the stone in the brick's colours, ash (--bg) faces with grey joints, their
-tones matched level by level to the brick tile's (images/brick-wall.png), as
-the sheet's tiles were, so a stone page weighs the same as a brick one.
+of the stone, ash (--bg) faces with grey joints, their tones first matched
+level by level to the clean brick's (the line drawing multiplied into --bg,
+wall_grime.clean_brick), as the sheet's tiles were; then weathered (wall_grime.py) into the city's dim, grimy stone.
 
-Each tile is TILE px a side (6in), and repeats without a seam both ways,
+Each tile is NW x NH px (9in x 12in), and repeats without a seam both ways,
 because everything in it is periodic: the noise is filtered in the Fourier
 domain (so it wraps), the seeds the stones grow from are laid on the tile's
 own torus and every distance to them is taken round it, and the cracks are
@@ -46,10 +46,12 @@ Then, as marks on the ash, darkest first:
 4. A pale lit band inside the edge on the side away from the shadow, and a
    broad, faint mottle.
 The marks are a darkness field; its pixels are ranked and given the brick's
-tones by rank (the darkest pixel the brick's darkest tone), so the tile has
-the brick's tone histogram and average exactly, then written as an exact
-palette (one colour per tone, about a hundred; no dither): lossless, so the
-joints keep their edges, and small.
+tones by rank (the darkest pixel the brick's darkest tone), so the clean
+stone has the brick's tone histogram. Then wall_grime.py weathers it, with
+the joints' mask, as it does walls 2, 4 and 6: grime, damp, mould and fungi,
+burns, chips, cracks, bullet pocks, claw gouges, scratched marks, dried
+blood; dims it to the city's stone (as dim as the brick) and writes it as
+an exact palette with no dither: lossless, so the joints keep their edges.
 """
 import math
 import sys
@@ -58,12 +60,14 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wall_grime  # noqa: E402  (the grime and damage, shared with wall-stone-coursed.py)
+
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px an inch: the print bar
-TILE = 1800                 # px a side: 6in, so a page shows the tile about once and a half across
+NW, NH = 9 * DPI, 12 * DPI  # px: 9in x 12in, about a page across and taller than one, so a page shows no mark twice
 FEATURE = 3 * DPI           # px: the largest mottle or patch, whatever the tile's size
 BG = (0xC8, 0xC5, 0xBF)     # --bg (ash concrete), the brick's colour
-BRICK = ROOT / "images/brick-wall.png"   # the tones to match: --bg times the brick's line drawing
 SUPER = 3                   # the cracks are drawn at SUPER x and boxed down
 F32 = np.float32
 
@@ -127,7 +131,6 @@ WALLS = {
     ),
 }
 
-NW = NH = TILE
 FY = np.fft.fftfreq(NH).astype(F32)[:, None]
 FX = np.fft.rfftfreq(NW).astype(F32)[None, :]
 F2 = FX * FX + FY * FY
@@ -365,13 +368,15 @@ def draw(n):
     print("  " + "  ".join(f"{k} {(v > 0.12).mean() * 100:.1f}%" for k, v in marks.items()), flush=True)
     D = np.maximum.reduce(list(marks.values()))
     D = D + 0.01 * mottle + 0.02 * tone - 0.06 * lit
-    return D
+    wj = w + g * (g > 0.9)                       # the joint: its line, and the mortar where it opens
+    joint = 1 - smooth(e, wj - 0.6, wj + 0.6)
+    return D, joint
 
 
 def brick_tones():
-    """The brick tile's pixels as multiples of --bg, darkest first."""
+    """The clean brick's pixels (wall_grime.clean_brick) as multiples of --bg, darkest first."""
     bg = BG[0] * 0.299 + BG[1] * 0.587 + BG[2] * 0.114
-    a = np.asarray(Image.open(BRICK).convert("RGB"), np.float64)
+    a = np.asarray(wall_grime.clean_brick(), np.float64)
     return np.sort((a @ [0.299, 0.587, 0.114]).ravel() / bg)
 
 
@@ -401,12 +406,15 @@ def main():
     which = [int(a) for a in sys.argv[1:]] or sorted(WALLS)
     tones = brick_tones()
     for n in which:
-        out = tint(draw(n), tones)
+        D, joint = draw(n)
+        stone = np.asarray(tint(D, tones).convert("RGB"), F32) / 255
+        del D
+        rgb, special = wall_grime.weather(stone, joint, seed=WALLS[n]["seed"] * 100 + 7)
         path = ROOT / f"images/wall-{n}.png"
-        out.save(path, optimize=True)
+        out = wall_grime.save(rgb, special, path)
         avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
         print(f"images/wall-{n}.png  {NW}x{NH}  {NW / DPI:.2f}x{NH / DPI:.2f}in  {len(out.getcolors())} colours  "
-              f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}", flush=True)
+              f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}  {path.stat().st_size / 1e6:.2f}MB", flush=True)
 
 
 if __name__ == "__main__":

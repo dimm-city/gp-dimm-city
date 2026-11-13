@@ -184,6 +184,43 @@ and the styles say where a reader is and what they are reading.
 - **The gear chapter's opener hangs no neon sign.** Its GEAR sign repeated
   the title (…and Gear), so it is gone; Rules and Citizen File openers keep
   theirs (owner, 2026-11-13).
+- **The stone walls (1 to 6) are grim.** They were clean, calm ash stone; now
+  they are Dimm City's: dim, dirty, damp and dangerous. One shared pass,
+  `scripts/wall_grime.py`, weathers all six with each wall's joint mask, so
+  they read as one city: soot and grime packed in the joints and run down
+  from the ledges, washed down the faces and heavier toward the foot; damp
+  streaks, dark wet patches, darker rising damp under a wavy tide mark and
+  tide-ringed leaks; black and green mould, a slimy algal film, small shelf
+  fungi and caps in the joints; soot blooms, scorches, a flame's lick and
+  grease stains; chipped arrises, cracks, bullet pocks singly and in bursts;
+  four sets of three or four claw gouges torn into the stone, at their own
+  spacing and lengths (a shadowed wall and a lit lip, a dirty floor, a blunt
+  torn bite and a long drag out to torn tines, broken where they cross a
+  joint, flakes and grit spilled along them; some fresh, some old and filled
+  with dirt, dried blood dragged down one or two); scratched tallies and
+  glyphs; and specks and spatters of dried blood, so most pages show some,
+  grim, not gory. The light end is dulled and each wall averages #9d9990,
+  as the brick now does, still lighter than walls 7 to 13. The tile is
+  placed from the text area's corner, so the text area is the same rectangle
+  of it on every page: big dark marks are toned down there, and some of each
+  kind of damage sits in the side margins, where every page shows it. The
+  tiles grow from 6in to about 9in x 12in (the same stones and block sizes),
+  so a page shows no mark twice; each is an exact palette with entries kept
+  for the blood and the greens, every colour well under the 240% ink limit
+  (205% at most).
+
+- **The brick is grim too.** `images/brick-wall.png` was the brick line
+  drawing multiplied into `--bg`, 900px across a 1.5in repeat; it is now
+  drawn by `scripts/wall-brick.py`: the same drawing over the same `--bg`,
+  its bricks the same size, laid six by six into a 9in x 11.64in tile at
+  300 DPI and weathered by the stone walls' pass, its joints taken from the
+  drawing's lines, so it averages #9c9990 with them. The four rules that
+  paint it (`dc-native.css` §1, `@page full` and `@page citizen-file` in
+  `page-rules.css`, the design guide's stage) size it 9in across. The stone
+  walls and the streets took their tones from the brick tile; they now
+  compute the clean brick from the drawing (`wall_grime.clean_brick`, byte
+  for byte the old tile), so they are unchanged.
+
 - **The stone walls (1 to 6) are drawn at 300 DPI.** They were cut from a
   painted sheet and printed at 240 DPI with about 110 DPI of real detail, so
   they printed soft. They are now drawn, like walls 7 to 13, by

@@ -3296,27 +3296,27 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 <tbody data-source-range="64:77">
 <tr data-source-range="64:65">
 <td><code>wall-1</code></td>
-<td>Coursed rubble: rough stones in rough courses</td>
+<td>Coursed rubble: rough stones in rough courses, grimy and damaged</td>
 </tr>
 <tr data-source-range="65:66">
 <td><code>wall-2</code></td>
-<td>Ashlar: big dressed blocks, some double height</td>
+<td>Ashlar: big dressed blocks, some double height, grimy and damaged</td>
 </tr>
 <tr data-source-range="66:67">
 <td><code>wall-3</code></td>
-<td>Random rubble: big rounded stones, no courses</td>
+<td>Random rubble: big rounded stones, no courses, grimy and damaged</td>
 </tr>
 <tr data-source-range="67:68">
 <td><code>wall-4</code></td>
-<td>Running bond: small bricks, half-lapped</td>
+<td>Running bond: small bricks, half-lapped, grimy and damaged</td>
 </tr>
 <tr data-source-range="68:69">
 <td><code>wall-5</code></td>
-<td>Flagstone: flat slabs bedded in rough courses</td>
+<td>Flagstone: flat slabs bedded in rough courses, grimy and damaged</td>
 </tr>
 <tr data-source-range="69:70">
 <td><code>wall-6</code></td>
-<td>Square setts: square blocks, half-lapped</td>
+<td>Square setts: square blocks, half-lapped, grimy and damaged</td>
 </tr>
 <tr data-source-range="70:71">
 <td><code>wall-7</code></td>
@@ -3348,7 +3348,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 </tbody>
 </table>
-<p>Walls 1 to 6 are in the brick’s colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 6in or so, so a page reads as one wall, not a grid of tiles; all thirteen are drawn at 300 DPI, so they print sharp. Walls 7 to 13 are drawn, in their own colours, and repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on <code>@specialty</code>: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a <code>specialty</code>, <code>rules</code> or <code>lore</code> chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: <code>#ch-rules &gt; .page.dc-page-wall-3 { page: dc-wall-3-rust; }</code>. A page word with chrome of its own (<code>contents</code>, <code>credits</code>, <code>intro</code>, <code>citizen-file</code>) keeps the brick, and a full-bleed plate never takes a wall.</p>
+<p>Walls 1 to 6 are the city’s own stone: ash stone with grey joints, as dim, dirty, damp and dangerous as the brick, which is weathered the same way. Soot and dirt in the joints and run down the faces, damp streaks, wet patches and tide marks, mould and fungus, soot, scorches and grease stains, chips, cracks, bullet pocks, claw gouges torn into the stone, some fresh and some old, scratched tallies and glyphs, and specks and spatters of dried blood: grim, not gory. The heaviest marks are kept moderate where the text sits and some damage is left in the margins, so every page shows it and the white sheets on it still lead. Each repeats only every 12in or so, so a page never shows the same mark twice; all thirteen are drawn at 300 DPI, so they print sharp. Walls 7 to 13 are drawn, in their own colours, and repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on <code>@specialty</code>: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a <code>specialty</code>, <code>rules</code> or <code>lore</code> chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: <code>#ch-rules &gt; .page.dc-page-wall-3 { page: dc-wall-3-rust; }</code>. A page word with chrome of its own (<code>contents</code>, <code>credits</code>, <code>intro</code>, <code>citizen-file</code>) keeps the brick, and a full-bleed plate never takes a wall.</p>
 <h3 data-name="where-pages-break">Where pages break</h3>
 <p>Pagination is part of the package, so every book gets it: text keeps three orphans and three widows in panels and callouts; a skill card splits between ability rows, never leaving one row on a page with a hand’s breadth of empty cream under it; headings, tape dividers and stat-block names stay with what follows. A panel splits where the page ends; one that must be kept whole whatever it costs is <code>{.dc-avoid-split}</code>, and a book that wants all its short panels whole says so from its own sheet (<code>--dc-section-break-inside: avoid</code>), since what counts as short depends on its content.</p>
 <h3 data-name="text-on-the-wall">Text on the wall</h3>

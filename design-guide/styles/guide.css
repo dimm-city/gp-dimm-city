@@ -313,7 +313,7 @@ div.chapter[id^="ch-example-"][data-ch] {
 .dg-stage {
   display: flow-root;
   background: var(--bg) url("../../images/brick-wall.png") repeat;
-  background-size: 1.5in auto;
+  background-size: 9in auto;
   border: 1pt solid var(--dg-ink-soft);
   padding: 0.15in;
   margin: 0 0 0.2in;
