@@ -3,8 +3,9 @@
 /* ── NEON SIGNS ─────────────────────────────────────────────────────────────
    The city's own signage: a small ink plate hung on the wall, a word in tubes.
    The plugin places one on each chapter opener (dcNeonSigns); authors write
-   nothing. The Dream Master's sheet hangs the same sign in its tab, as an image
-   (section.css, `.dc-section-dm::after`).
+   nothing. The Dream Master's sheet hangs the DREAM MASTER sign in its tab, as
+   an image (section.css, `.dc-section-dm::after`), among the players' pages
+   only: the Dream Master's own chapter hangs no sign, opener included.
 
    Print. Ink cannot emit light, so a tube is four flat, opaque layers of the
    same word drawn as SVG paths (plugin.js, NEON_FONT), back to front: an
@@ -116,7 +117,8 @@
 .section.dc-section-panel.dc-lit > :is(h2, h3):first-child {
   background: var(--ink);
   color: var(--dc-neon-core);
-  padding: 6pt calc(6pt + var(--space-lg));   /* 1.5pt of ink between the text and the 4.5pt tube */
+  --dc-pu-tag-pad-x: calc(6pt + var(--space-lg));
+  padding: 6pt var(--dc-pu-tag-pad-x);   /* 1.5pt of ink between the text and the 4.5pt tube */
   --dc-pu-tag-top: calc(var(--dc-pu-lift) - 5.76pt);   /* the 5.76pt over the paper tag's padding, taken from above; paste-up.css sets the margin and the tilt's pivot from it */
   box-shadow: var(--dc-lit-line), 3pt 3pt 0 var(--ink-dark);
 }
@@ -188,7 +190,7 @@
 
 /* The contents list: an entry that ends with its chapter's word as a class
    ({.dc-toc-rules}) has its number lit in that chapter's tube colour, the same
-   as the chapter's opener sign. */
+   as the chapter's opener sign (the Dream Master's cyan is its booth's). */
 .dc-toc .dc-toc-citizen-file { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
 .dc-toc .dc-toc-specialty    { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
 .dc-toc .dc-toc-rules        { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }

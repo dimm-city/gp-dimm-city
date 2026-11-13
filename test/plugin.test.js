@@ -1929,7 +1929,7 @@ describe("paste-up: rows and continuation sheets", () => {
     for (const [a, b] of [[" .dc-half", " .dc-half"], [" .dc-narrow", " .dc-wide"], [" .dc-wide", " .dc-narrow"]]) {
       const { html, warnings } = renderGp(`${sheet("A", a)}\n\n${sheet("B", b)}\n\nafter`);
       expect(warnings, a + b).toEqual([]);
-      expect(html, a + b).toMatch(new RegExp(`^<div class="dc-pu-row">\\n<div class="section dc-section-panel dc-${a.slice(5)}"[^>]*><h3>A</h3>[\\s\\S]*<div class="section dc-section-panel dc-${b.slice(5)}"[^>]*><h3>B</h3>[\\s\\S]*</div></div>\\n<p>after</p>`));
+      expect(html, a + b).toMatch(new RegExp(`^<div class="dc-pu-row">\\n<div class="section dc-section-panel dc-${a.slice(5)}"[^>]*><h3><span class="dc-fit"[^>]*>A</span></h3>[\\s\\S]*<div class="section dc-section-panel dc-${b.slice(5)}"[^>]*><h3><span class="dc-fit"[^>]*>B</span></h3>[\\s\\S]*</div></div>\\n<p>after</p>`));
     }
   });
   test("a run of four halves is two rows; a sheet with no partner is reported and left alone", () => {
@@ -2013,6 +2013,10 @@ describe("neon signs", () => {
     expect(signs(html)).toBe(0); // no plate of its own: the heading is the plate
   });
 
+  test("the Dream Master's chapter hangs no sign: its title already says so, and the sign marks the DM among the players' pages", () => {
+    expect(signs(renderGp(doc("@chapter dm", "", "@page chapter-start", "", "# Dream Mastery", "")).html)).toBe(0);
+  });
+
   test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
     expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
     expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
@@ -2026,6 +2030,37 @@ describe("neon signs", () => {
   test("a specialty's art page hangs no sign", () => {
     const { html } = renderGp(doc("@specialty augmerc", "", "@specialty-art", "", "x", "", "@end-specialty-art", "", "@end-specialty", ""));
     expect(signs(html)).toBe(0);
+  });
+});
+
+describe("heading fit", () => {
+  const fit = (src) => [...renderGp(src).html.matchAll(/<span class="dc-fit" style="([^"]*)">([\s\S]*?)<\/span><\/h/g)]
+    .map((m) => ({ text: m[2], ...Object.fromEntries(m[1].split("; ").map((d) => d.replace("--dc-fit-", "").split(": ")).map(([k, v]) => [k, Number(v)])) }));
+
+  test("a section's title carries its width in em, its counts and its longest word's", () => {
+    const [t] = fit("@section panel\n\n### Roll the Die!\n\nx\n\n@end-section");
+    expect(t).toMatchObject({ text: "Roll the Die!", n: 13, s: 2, "word-n": 4 });
+    expect(t.adv).toBeGreaterThan(t["word-adv"] * 2);
+  });
+
+  test("h1 and h2 are measured in the title face, h3 and a look class in the display face", () => {
+    const at = (h) => fit(`@section panel\n\n${h}\n\nx\n\n@end-section`)[0].adv;
+    expect(at("## Mirror")).not.toBe(at("### Mirror"));
+    expect(at("## Mirror {.dc-h3}")).toBe(at("### Mirror"));
+  });
+
+  test("Lixdu's kerning is counted", () => {
+    const at = (h) => fit(`@section panel\n\n### ${h}\n\nx\n\n@end-section`)[0].adv;
+    expect(at("TO")).toBeLessThan(at("TA"));
+  });
+
+  test("a mid-sheet tag and a bill are measured; a plain sub-head, a heading with markup in it or with an unknown character is not", () => {
+    expect(fit("@section panel\n\nx\n\n### Fall Damage {.dc-pu-tag}\n\ny\n\n@end-section")).toHaveLength(1);
+    expect(fit("@section panel\n\nx\n\n## Hacking {.dc-pu-bill}\n\ny\n\n@end-section")).toHaveLength(1);
+    expect(fit("@section panel\n\nx\n\n### Sub\n\ny\n\n@end-section")).toHaveLength(0);
+    expect(fit("## Loose\n\nx")).toHaveLength(0);
+    expect(fit("@section panel\n\n### A <br> B\n\nx\n\n@end-section")).toHaveLength(0);
+    expect(fit("@section panel\n\n### Café\n\nx\n\n@end-section")).toHaveLength(0);
   });
 });
 
