@@ -73,7 +73,8 @@ BG = (0xC8, 0xC5, 0xBF)             # --bg (ash concrete), the brick's colour
 BRICK = "images/brick-wall.png"     # the tones to match: --bg times the brick's line drawing
 OVERLAP = range(28, 110)            # how much of each end the seam may use, px
 FEATHER = 2                         # px blended either side of a cut
-DPI = 240                           # print resolution, so printed size = px / DPI
+DPI = 240                           # print resolution of the stone walls (1-6), so printed size = px / DPI
+DRAWN_DPI = 300                     # the drawn walls (DRAWN) are drawn at the print bar
 GROW = 3                            # a regrown tile is this many panels each way
 TALL = 1000                         # px: a tile at least about this tall (4in), however short its panel
 PATCH, PATCH_OVERLAP = 200, 56      # quilting patch and its overlap with each neighbour, px
@@ -609,7 +610,7 @@ def write_css(walls):
     for n, (w, h) in walls.items():
         # the ground over the foot of the sheet, then the wall: both opaque
         def stone_at(x="0", y="0"):
-            return f'url("../images/wall-{n}.png") {x} {y} / {w / DPI:.2f}in auto repeat var(--bg)'
+            return f'url("../images/wall-{n}.png") {x} {y} / {w / (DRAWN_DPI if n in DRAWN else DPI):.2f}in auto repeat var(--bg)'
         stone = stone_at()
         bg = f"{ground_layer(n=n)}, {stone}"
 

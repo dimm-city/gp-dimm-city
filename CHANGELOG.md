@@ -162,6 +162,15 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **The drawn walls (7 to 13) are drawn at 300 DPI.** Each script draws at
+  `DPI = 300` with every length scaled from its 240 DPI design (never
+  upsampled), so the walls carry print-resolution detail at the same size in
+  inches and the same look; a PDF page embeds them at a native 300 ppi.
+  `DRAWN_DPI` in `scripts/wall-tiles.py` sizes them. The package is about
+  75 MB, past the 50 MB cap older Gutterpress releases put on a plugin:
+  installing it from npm needs a Gutterpress without that cap
+  (dimm-city/gutterpress#529). The package test no longer checks the size.
+
 - **The lede is a callout with no label.** `@lede` (`.dc-intro`) is now drawn
   as a callout: a white sheet cut to the note's chamfers, an 8px accent rail, a
   2pt inset ring in the accent and a bolt in each top corner, around its own
