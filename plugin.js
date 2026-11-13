@@ -2260,6 +2260,8 @@ export const markers = {
       'wall-9': 'dc-page-wall-9',   // moss and fungus on stone (scripts/wall-moss.py)
       'wall-10': 'dc-page-wall-10', // a dingy operating room's tiles (scripts/wall-surgery.py)
       'wall-11': 'dc-page-wall-11', // metal and rock pulled into the aether (scripts/wall-aether.py)
+      'wall-12': 'dc-page-wall-12', // a technosorcerer's lab (scripts/wall-techlab.py)
+      'wall-13': 'dc-page-wall-13', // a bazaar's back wall (scripts/wall-bazaar.py)
     },
   },
   chapter: {

@@ -40,6 +40,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Walls 12 and 13 (`@page wall-12`, `wall-13`).** Drawn like walls 7 to 11,
+  18in x 12in tiles anchored to the sheet:
+  12, a technosorcerer's lab (`scripts/wall-techlab.py`): spalled plaster
+  with conduit, a breaker panel, a pegboard of tools, caged amber bulbs and
+  teal LED strips with their light baked in, circuit-sigil diagrams in an
+  invented glyph script, shelves of jars, candles and a skull;
+  13, a bazaar's back wall (`scripts/wall-bazaar.py`): seven different stalls
+  under patched, faded awnings, bulb strings, hanging goods, crates and sacks
+  along the foot, peeling posters and signs in an invented glyph script.
+
 - **Walls 9, 10 and 11 (`@page wall-9` … `wall-11`, `.dc-page-wall-9` …).**
   Drawn like walls 7 and 8 (no photograph), each an 18in x 12in tile anchored
   to the sheet, so a spread shows no repeat:

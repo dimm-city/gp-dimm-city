@@ -14,7 +14,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Notes |
 |---|---|---|
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
-| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog` `wall-1` … `wall-11`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
+| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog` `wall-1` … `wall-13`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
 | `@section [word] [.class...]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
@@ -60,7 +60,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-snug` | `@section`, `@page` | Tighten the space under paragraphs and list items; it sets `--dc-flow-gap` to 0.04in |
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
-| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-11` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
+| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-13` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
 | `.dc-chapter-rules` · `.dc-chapter-dm` · `.dc-chapter-gear` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
 | `.dc-section-panel` · `.dc-section-flat` | `@section` | What `@section panel` and `flat` write |
 | `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |

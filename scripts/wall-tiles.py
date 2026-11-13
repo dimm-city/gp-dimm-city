@@ -90,17 +90,18 @@ GROUND = "images/ground.png"        # the setts: the street under the brick
 # contrasts with it. All of them are grimed (`grime`). `--grounds` draws them.
 STREETS = {"setts": GROUND, "flags": "images/ground-flags.png", "asphalt": "images/ground-asphalt.png"}
 WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt", 7: "asphalt", 8: "setts",
-               9: "asphalt", 10: "asphalt", 11: "flags"}
-DRAWN = {7, 8, 9, 10, 11}           # walls drawn by their own script, not cut from the sheet (7: wall-metal.py, 8: wall-circuit.py,
-                                    # 9: wall-moss.py, 10: wall-surgery.py, 11: wall-aether.py, all in scripts/)
-# Walls with a regular grid (7's steel plates, 9's courses, 10's tiles, 11's courses and plates): an @page background is placed
+               9: "asphalt", 10: "asphalt", 11: "flags", 12: "setts", 13: "flags"}
+DRAWN = {7, 8, 9, 10, 11, 12, 13}   # walls drawn by their own script, not cut from the sheet (7: wall-metal.py, 8: wall-circuit.py,
+                                    # 9: wall-moss.py, 10: wall-surgery.py, 11: wall-aether.py, 12: wall-techlab.py,
+                                    # 13: wall-bazaar.py, all in scripts/)
+# Walls with a regular grid (7's steel plates, 9's courses, 10's tiles, 11's courses and plates, 12's conduit, 13's stalls): an @page background is placed
 # from the text area's corner, which sits at a different place on a left page,
 # a right page and a margin-free page, so a grid restarts on each and breaks at
 # the spine. These are anchored to the sheet instead, and a right page carries
 # on from the left page's width: a spread is one wall. (A stone wall has no grid
 # to break, so it keeps the text area's corner. Walls 8 and 11 also carry a
 # board or a rift the spine cuts on across the spread.)
-ALIGNED = {7, 8, 9, 10, 11}
+ALIGNED = {7, 8, 9, 10, 11, 12, 13}
 SHEET_W = "var(--gp-page-width, 8.625in)"
 ANCHOR = {   # tile offset from the text area's corner, per side; a full page has no margins
     "left": ("calc(-1 * var(--outer-margin))", "calc(-1 * var(--page-margin))"),
@@ -108,7 +109,7 @@ ANCHOR = {   # tile offset from the text area's corner, per side; a full page ha
     "full-left": ("0", "0"),
     "full-right": (f"calc(-1 * {SHEET_W})", "0"),
 }
-WALLS = range(1, 12)
+WALLS = range(1, 14)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
