@@ -404,6 +404,19 @@
     clip-path: var(--clip-banner);
   }
 
+  /* THE BANNER'S AND A FULL-WIDTH SLIP'S WORDS FIT IT, as a box's title fits
+     its box (dc-core.css, .dc-fit): one line up to 15% smaller when that is all
+     it takes, else its own size, wrapping. The heading is its own size
+     container, so its measure is its own text width (`100cqi`, its content
+     box) wherever it stands: a page's padding, a column, the banner inside the
+     padding that clears its cut end. A block's width is its column's, so the
+     containment changes no size; `####` and below shrink to their words and
+     have no width to fit. */
+  > :is(h1, h2, h3):not([class*="dc-"]:not(.dc-h3, .dc-h4, .dc-h5, .dc-h6, .dc-snug, .dc-avoid-split)) {
+    container-type: inline-size;
+    --dc-fit-measure: 100cqi;
+  }
+
   /* HEADING SLIPS. `--dc-page-slip-gap` is the space above one, so a slip never
      jams against the box above it; `--dc-page-slip-foot` is the space below it,
      the same whatever follows. A heading never ends a page (`break-after`, which

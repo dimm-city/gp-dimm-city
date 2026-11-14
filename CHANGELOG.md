@@ -177,6 +177,16 @@ and the styles say where a reader is and what they are reading.
   letter-spacing on a heading is told to the fit (`--dc-fit-ls`). Nothing runs
   in the page, so the preview and the PDF agree. In a row a tag keeps the
   width it had (the whole room, not 88%).
+- **The wall's own headings keep one line when they nearly do.** The same
+  rule now holds for a page's `#` banner (the chapter opener's included), its
+  `##` and `###` slips and a fiction excerpt's title. Their box is not a
+  section, so each heading is its own size container and fits its own text
+  width: in a page, in a column and inside the banner's padding, which clears
+  its cut end. The page is never made a container (containment would move what
+  is pinned to it). A word wider than its slip, which ran off the slip, is now
+  set smaller. In the Field Guide, WHAT DO YOU DREAM OF DOING? (chapter 2)
+  sits on one line at 97%; every other page of chapters 0 to 5 prints as
+  before. A step's slip (`## 4. Ideal`) holds a chip and keeps its size.
 - **The Dream Master's chapter hangs no neon sign.** Its opener's DREAM MASTER
   sign repeated the title (DREAM MASTERY); the sign marks the Dream Master's
   sheets among the players' pages, so the chapter that is all the Dream
