@@ -40,13 +40,39 @@ What it draws, back to front:
 6. The light: caged bulbs (warm amber, the chapter's rust in it) and LED
    strips (teal and electric blue), baked in as soft opaque tints on
    whatever is near them; candle flames.
+7. What the craft has done to the wall: the marks. These are drawn at the
+   page's scale, not the wall's (1in to 3in across), so they read from
+   across a spread; they lie on the wall and under what is fixed to it; and
+   they fall where there is room (clear of the fixtures, the blackboards,
+   the gutter and each other), no two alike.
+   - Circuit-shaped burns: a board's copper printed into the plaster by a
+     surge. Chips' rows of pads, buses run out of them side by side and
+     bent at 45 degrees to vias, an edge connector's fingers, a meander,
+     mounting holes, at any angle; charred (and burnt to ash at the heart)
+     where the surge came in, a broken brown ghost further off.
+   - Fractal scorches: the branching figure a discharge leaves (a
+     Lichtenberg figure), grown, not routed: a charred trunk forking into
+     branches and hairs, out of a socket and up the wall, burst from a
+     point, or crawled off along the wall.
+   - Code-like fragments: lines of spell-code, set out as code is (lines,
+     indented blocks with a rule down their side, a sign at each
+     statement's end, a cursor, a line struck out). Its words are bars with
+     a head and teeth, like a bus and its taps: nothing like the chalked
+     runes, and no letter of any script. Some are cut into the plaster with
+     a point, some scrawled with a paint-stick.
+   - Displaced, fragmented geometry: patches where the wall's own surface
+     is broken into shards and each shard shows its piece of wall from
+     somewhere else, slid and turned, so brick courses, joints, the
+     plaster's edge and the chalk on it no longer meet across the cracks.
 Everything stands out from the wall a little and casts a soft shadow down
 and to the right (the room's light is from the upper left, as on the other
 walls). It is then quantised to an exact palette, as the other walls are
 (one colour per tone, lossless and small; an opaque tile PDF/X carries as
 is), with VIVID_COLOURS of its 160 kept for the small saturated things (the
 gels, the bulbs, the LEDs, tape, liquids, flames): a median cut over the
-whole tile spends almost nothing on so few pixels and greys them.
+whole tile spends almost nothing on so few pixels and greys them. The marks
+get MARK_COLOURS more, cut from the pixels they changed; the wall's own 160
+are cut from the wall without them, so it is the same wall it was.
 
 Scale: the clutter is drawn at about 1:6 (a breaker panel about 2.2in wide,
 a brick 1.2in). At DPI (300) the tile is 18in x 12in, wider
@@ -64,7 +90,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wall_fft import irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
@@ -79,7 +105,7 @@ FEATURE = 1680 * S          # px (7in): the largest blotch of stain or grime
 SS = 3                      # shapes are drawn at SS x and boxed down
 SEED = 12
 SHADE = 1.0
-COLOURS, VIVID_COLOURS = 160, 40
+COLOURS, VIVID_COLOURS, MARK_COLOURS = 160, 40, 64   # the wall's, those of them kept for its vivid things, and the marks' own on top
 DARKEST = 0.25              # nothing darker: DriveThruRPG's 240% TAC, and a background
 
 rng = np.random.default_rng(SEED)
@@ -231,6 +257,7 @@ def mask(w, h, fn, wrap=False, ss=SS):
 
 img = None                       # the wall, (NH, NW, 3) float32
 VIVID = np.zeros((NH, NW), bool)  # where the palette's saturated colours go
+OVER = np.zeros((NH, NW), np.uint8)  # what is fixed to the wall (its cover, 0..255): the marks go under it
 DEFER = []                       # emissive sprites, laid after the light
 
 
@@ -288,6 +315,7 @@ def place(sp, lift=(4, 5, 4.0, 0.35), defer=False):
     sub = sub * (1 - sp.a[..., None]) + sp.P
     img[ix] = sub
     VIVID[ix] |= sp.v > 0.35
+    OVER[ix] = np.maximum(OVER[ix], (np.clip(sp.a, 0, 1) * 255).astype(np.uint8))
 
 
 def lblur_wrap(a, sigma):
@@ -702,6 +730,7 @@ RUSTCH = hexc("#a8582c")
 img = mix(img, img * np.array([1.0, 0.92, 0.84]), np.clip(gauss_full(R_, 6 * S) * 0.5, 0, 1))
 img = mix(img, RUSTCH * (0.95 + 0.06 * fine)[..., None], R_ * 0.72)
 VIVID |= R_ > 0.35
+CHALKED = np.maximum(np.maximum(W_, C_), R_) > 0.3        # where the wall is drawn or written on (the spell-code keeps off it)
 del W_, C_, R_, haze, bm, bwash
 
 
@@ -1546,8 +1575,9 @@ junction_box(0.27 * IN, 0.24 * IN, 104 * S)                 # where the margin's
 junction_box(0.27 * IN, 10.42 * IN, 104 * S)                # and meets the foot's
 junction_box(0.27 * IN, 2.95 * IN, 96 * S)
 junction_box(0.27 * IN, 8.25 * IN, 96 * S)
-for x, kind in ((1.35, "outlet"), (3.6, "switch"), (4.9, "outlet"), (7.35, "switch"), (8.6, "outlet"),
-                (10.15, "outlet"), (11.0, "switch"), (12.9, "outlet"), (15.85, "switch"), (16.45, "outlet")):
+FOOT = ((1.35, "outlet"), (3.6, "switch"), (4.9, "outlet"), (7.35, "switch"), (8.6, "outlet"),
+        (10.15, "outlet"), (11.0, "switch"), (12.9, "outlet"), (15.85, "switch"), (16.45, "outlet"))
+for x, kind in FOOT:
     junction_box(x * IN, 10.42 * IN, 128 * S, kind)
 # a stapled cable down the left of the spine, a bundle down the right margin
 cable_run(sc([(40, -20), (40, NH0 + 20)]), 10 * S, BLACK, staples=150 * S, wrap=True, gx=8.33 * IN - 40 * S, gy=0, sw=80 * S, sh_=NH)
@@ -1682,20 +1712,711 @@ del acc, wsum
 for sp in DEFER:
     place(sp, None)
 
-# ── finish: no colour too dark to print, and the palette ─────────────────────
+# ── 7. the marks ─────────────────────────────────────────────────────────────
+# What the craft has done to the wall: burns the shape of a board's copper, the
+# branching burns of a discharge, lines of spell-code, and patches of the wall
+# itself slipped out of place. They are drawn at the page's scale, not the
+# wall's (1in to 3in across), so they read from across a spread; over the
+# finished wall but under what is fixed to it (OVER); and from a stream of
+# their own (`more`), so the wall is drawn exactly as it was. BASE keeps that
+# wall: a pixel no mark touches is saved as the pixel it had.
+print("marks", flush=True)
+more = np.random.default_rng(SEED + 70)
 img = np.maximum(img, 0)
-img = np.where(img < 2 * DARKEST, DARKEST + img * img / (4 * DARKEST), img)      # a soft toe: nothing under DARKEST
-rgb = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
+
+
+def to8(a):
+    """8 bits a channel, through a soft toe: nothing under DARKEST."""
+    a = np.where(a < 2 * DARKEST, DARKEST + a * a / (4 * DARKEST), a)
+    return (np.clip(a * SHADE, 0, 1) * 255).astype(np.uint8)
+
+
+BASE = to8(img)
+
+# where a mark can go: clear of what is fixed to the wall, of the blackboards
+# (written on already), of the strips no page shows, and of the other marks
+Q = 12                                   # the tile is weighed up in blocks of Q px
+occ = np.asarray(Image.fromarray(OVER).resize((NW // Q, NH // Q), Image.BOX), np.float32) / 255
+oy, ox = (np.mgrid[0:NH // Q, 0:NW // Q] + 0.5) * Q / IN
+occ[(oy < 0.85) | (oy > 10.9) | (ox > 17.1) | ((ox > 8.2) & (ox < 9.05))] = 1      # under the hung cables, under the ground strip, off the spread, in the gutter
+for a, b, c, d in boards:
+    occ[(ox > a) & (ox < c) & (oy > b) & (oy < d)] = 1
+del oy, ox
+chalk = Image.fromarray(CHALKED.view(np.uint8) * 255).resize((NW // Q, NH // Q), Image.BOX).point(lambda v: 255 * (v > 2))
+chalk = np.asarray(chalk.filter(ImageFilter.MaxFilter(5)), np.float32) / 255       # the blocks with chalk in or by them
+SPOTS = []                               # (x, y, radius, kind) of every mark so far
+
+
+def cover(taken, R):
+    """How much of the disc of radius R round each block is taken."""
+    h, w = taken.shape
+    ky = np.minimum(np.arange(h), h - np.arange(h))[:, None]
+    kx = np.minimum(np.arange(w), w - np.arange(w))[None, :]
+    k = (np.hypot(kx, ky) <= R / Q).astype(np.float32)
+    return np.fft.irfft2(np.fft.rfft2(taken) * np.fft.rfft2(k), s=taken.shape) / k.sum()
+
+
+def spot(R, kind, tol=0.1, apart=4.5 * IN, among=None, clear=None, bare=False):
+    """A place for a mark of radius R: no more than tol of it under something,
+    clear of the other marks, and `apart` from the others of its kind. `among`
+    is a list of places to choose from (else anywhere), `clear` the radius to
+    keep clear if not most of R, `bare` whether it wants wall with no chalk on
+    it. None if there is no room."""
+    for ease, plain in ((1.0, bare), (0.7, bare), (0.7, False), (0.0, False)):      # if there is no room, its own kind may come nearer, and it may go over the chalk
+        cov = cover(np.maximum(occ, chalk) if plain else occ, clear or 0.85 * R)
+        for i in more.permutation(len(among)) if among else range(1500):
+            x, y = among[i] if among else (more.uniform(0, NW), more.uniform(0, NH))
+            if cov[int(y % NH) // Q, int(x % NW) // Q] > (2.5 * tol if plain else tol):
+                continue
+            if all(math.hypot(wrapd(x - px, NW), wrapd(y - py, NH)) >= max(0.8 * (R + pr), ease * apart * (k == kind)) for px, py, pr, k in SPOTS):
+                SPOTS.append((x, y, R, kind))
+                return x, y
+    print(f"  no room for a {kind} of {R / IN:.1f}in", flush=True)
+    return None
+
+
+class Patch:
+    """A w x h window on the wall centred on (cx, cy), wrapped round the tile's edges."""
+
+    def __init__(self, cx, cy, w, h):
+        self.w, self.h = int(w), int(h)
+        self.gx, self.gy = int(round(cx - self.w / 2)), int(round(cy - self.h / 2))
+        self.ix = np.ix_((np.arange(self.h) + self.gy) % NH, (np.arange(self.w) + self.gx) % NW)
+        self.free = 1 - OVER[self.ix].astype(np.float32) / 255      # what is fixed to the wall hides the mark
+
+    def pen(self):
+        return Pen(self.w, self.h)
+
+
+def lnoise(h, w, beta, r, feature):
+    """1/f^beta noise over a patch, mean 0 and sd 1."""
+    fy = np.fft.fftfreq(h)[:, None]
+    fx = np.fft.rfftfreq(w)[None, :]
+    f = np.maximum(np.hypot(fx, fy), 1 / feature)
+    spec = np.fft.rfft2(r.standard_normal((h, w), dtype=np.float32)) / f ** beta
+    spec[0, 0] = 0
+    out = np.fft.irfft2(spec, s=(h, w)).astype(np.float32)
+    return out / out.std()
+
+
+ONE = np.ones(3, np.float32)
+CHAR = hexc("#39332f")                    # charred plaster
+ASH = hexc("#a39d92")                     # burnt past black, to ash
+SCORCH = np.array([0.60, 0.45, 0.32], np.float32)   # what heat does to the plaster right by a burn,
+TOAST = np.array([0.90, 0.81, 0.66], np.float32)    # and further off
+
+
+def burn(p, T, heat, core=None, reach=1.0):
+    """Burn the line mask T into the wall in patch p. `heat` (0..1) is how hard
+    each place burnt: lightly, a brown toasted line; harder, charred, with a
+    brown halo; hardest (`core`, a thinner line inside T), through to pale ash.
+    The plaster's lip is lit below the groove."""
+    T = T * p.free
+    hot = T * heat
+    g = lnoise(p.h, p.w, 0.8, more, 60 * S)
+    sub = img[p.ix]
+    sub *= mix(ONE, TOAST, np.clip(lblur(hot, 16 * S * reach) * 2.6, 0, 1))
+    sub *= mix(ONE, SCORCH, np.clip(lblur(hot, 3.5 * S) * 1.5 + 0.85 * T * smooth(heat, 0.0, 0.3), 0, 1))
+    char = T * smooth(heat + 0.12 * g, 0.3, 0.7)
+    sub = mix(sub, CHAR * (1 + 0.06 * g)[..., None], char * 0.92)
+    lip = np.clip(shift(char, 1.8 * S, 1.8 * S) - char, 0, 1) * p.free
+    sub = mix(sub, sub * 1.14 + 0.02, lip * 0.6)
+    if core is not None:
+        sub = mix(sub, ASH * (1 + 0.05 * g)[..., None], core * p.free * smooth(heat + 0.12 * g, 0.88, 1.05) * 0.8)
+    img[p.ix] = sub
+
+
+# circuit-shaped burns: a surge printed a board's copper into the plaster
+DIRS = ((1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1))
+
+
+def copper(r, gw, gh):
+    """A board's copper on a gw x gh grid: chips with their rows of pads, buses
+    run out of them side by side and bent at 45 degrees to vias, an edge
+    connector's fingers, a meander, loose traces, mounting holes. Nothing
+    crosses. Returns traces (runs of grid points), pads (x, y, direction),
+    vias, chips (x0, y0, x1, y1), fingers (x, y) and holes."""
+    occ_ = np.zeros((2 * gh + 1, 2 * gw + 1), bool)     # at twice the grid: its points, and the middle of each step between them
+    traces, pads, vias, chips, fingers, buses = [], [], [], [], [], []
+    holes = [(x, y) for x in (1, gw - 1) for y in (1, gh - 1)]
+    for x, y in holes:
+        occ_[2 * y - 2:2 * y + 3, 2 * x - 2:2 * x + 3] = True
+
+    def clear(x0, y0, x1, y1):
+        return x0 >= 1 and y0 >= 1 and x1 <= gw - 1 and y1 <= gh - 1 and not occ_[2 * y0:2 * y1 + 1, 2 * x0:2 * x1 + 1].any()
+
+    def run(x, y, plan):
+        """A trace from (x, y) along plan [(direction, steps), ...]. Where
+        something is in its way it takes its next turn early, so buses nest,
+        or stops; it ends in a via."""
+        pts = [(x, y)]
+        i, left = 0, plan[0][1]
+        while i < len(plan):
+            dx, dy = DIRS[plan[i][0] % 8]
+            qx, qy = x + dx, y + dy
+            if left > 0 and 1 <= qx <= gw - 1 and 1 <= qy <= gh - 1 and not occ_[2 * qy, 2 * qx] and not occ_[y + qy, x + qx]:
+                occ_[2 * qy, 2 * qx] = occ_[y + qy, x + qx] = True
+                x, y = qx, qy
+                pts.append((x, y))
+                left -= 1
+            else:
+                i += 1
+                left = plan[i][1] if i < len(plan) else 0
+        if len(pts) > 1:
+            traces.append(pts)
+            vias.append((x, y))
+
+    def bus(row, d):
+        """Share the pads of one side out among buses, each with a plan of its own."""
+        i = 0
+        while i < len(row):
+            n = int(r.integers(2, 6))
+            turn = int(r.choice([-1, 1]))
+            plan = [(d, int(r.integers(1, 4))), (d + turn, int(r.integers(2, 6))), (d + turn + int(r.choice([-turn, turn])), int(r.integers(2, 8)))]
+            if r.random() < 0.4:
+                plan.append((plan[-1][0] + int(r.choice([-1, 1])), int(r.integers(2, 6))))
+            stagger = int(r.choice([-1, 0, 1]))
+            for k, (x, y) in enumerate(row[i:i + n]):
+                buses.append((x, y, plan[:-1] + [(plan[-1][0], max(1, plan[-1][1] + k * stagger))]))
+            i += n
+
+    def chip():
+        if r.random() < 0.4:                                  # pads on four sides
+            w = h = int(r.integers(4, 8))
+            sides = (0, 1, 2, 3)
+        else:                                                 # or in two rows
+            n, across = int(r.integers(4, 10)), int(r.integers(2, 5))
+            w, h, sides = (n, across, (1, 3)) if r.random() < 0.5 else (across, n, (0, 2))
+        if gw - w - 2 <= 2 or gh - h - 2 <= 2:
+            return
+        x0, y0 = int(r.integers(2, gw - w - 2)), int(r.integers(2, gh - h - 2))
+        if not clear(x0 - 1, y0 - 1, x0 + w + 1, y0 + h + 1):
+            return
+        occ_[2 * y0:2 * (y0 + h) + 1, 2 * x0:2 * (x0 + w) + 1] = True
+        chips.append((x0, y0, x0 + w, y0 + h))
+        for s in sides:
+            row = [((x0 + w if s == 0 else x0), y) for y in range(y0 + 1, y0 + h)] if s in (0, 2) else [(x, (y0 + h if s == 1 else y0)) for x in range(x0 + 1, x0 + w)]
+            pads.extend((x, y, 2 * s) for x, y in row)
+            bus(row, 2 * s)
+
+    if r.random() < 0.7 and gw >= 12:                         # an edge connector along the foot of the board
+        n = int(r.integers(5, min(13, gw - 5)))
+        x0 = int(r.integers(3, gw - n - 2))
+        occ_[2 * (gh - 2):, 2 * x0 - 2:2 * (x0 + n) + 1] = True
+        fingers.extend((x, gh - 2) for x in range(x0, x0 + n))
+        bus(fingers[:], 6)
+    for _ in range(40):
+        if len(chips) < max(1, gw * gh // 110):
+            chip()
+    for _ in range(6):                                        # a meander, where there is room for one
+        w, n = int(r.integers(3, 6)), int(r.integers(3, 7))
+        x0, y0 = int(r.integers(2, max(3, gw - w - 2))), int(r.integers(2, max(3, gh - n - 2)))
+        if clear(x0 - 1, y0 - 1, x0 + w + 1, y0 + n + 1):
+            occ_[2 * y0:2 * (y0 + n) + 1, 2 * x0:2 * (x0 + w) + 1] = True
+            pts = [(x0, y0)]
+            for k in range(n + 1):
+                pts += [(x0 + (w if k % 2 == 0 else 0), y0 + k)] + ([(x0 + (w if k % 2 == 0 else 0), y0 + k + 1)] if k < n else [])
+            traces.append(pts)
+            vias.extend((pts[0], pts[-1]))
+            break
+    for b in buses:
+        run(*b)
+    for _ in range(gw * gh // 14):                            # loose traces between vias, wherever there is room
+        x, y = int(r.integers(2, gw - 1)), int(r.integers(2, gh - 1))
+        if not occ_[2 * y, 2 * x]:
+            occ_[2 * y, 2 * x] = True
+            d = int(r.integers(8))
+            n0 = len(traces)
+            run(x, y, [(d, int(r.integers(2, 7))), (d + int(r.choice([-1, 1])), int(r.integers(2, 6))), (d + int(r.choice([-2, 0, 2])), int(r.integers(2, 7)))])
+            if len(traces) > n0:
+                vias.append((x, y))
+    return traces, pads, vias, chips, fingers, holes
+
+
+def circuit_burn(cx, cy, bw, bh, r):
+    """A board's copper bw x bh px, scorched into the plaster at (cx, cy) at
+    any angle: no board, only the traces, charred where the surge ran hottest,
+    faint where it barely took, in a halo of soot."""
+    g = r.uniform(21, 30) * S                                 # the board's grid
+    gw, gh = int(bw // g), int(bh // g)
+    traces, pads, vias, chips, fingers, holes = copper(r, gw, gh)
+    D = int(math.hypot(bw, bh) + 140 * S)
+    p = Patch(cx, cy, D, D)
+    ang = r.uniform(0, 2 * np.pi)
+    ca, sa = math.cos(ang), math.sin(ang)
+
+    def at(x, y):
+        u, v = (x - gw / 2) * g, (y - gh / 2) * g
+        return D / 2 + u * ca - v * sa, D / 2 + u * sa + v * ca
+
+    tw = g * r.uniform(0.3, 0.4)
+    pen, core = p.pen(), p.pen()
+    for x0, y0, x1, y1 in chips:                              # where the chip sat: its outline, and the dot by its first pin
+        k = 0.45
+        pen.line([at(x0 + k, y0 + k), at(x1 - k, y0 + k), at(x1 - k, y1 - k), at(x0 + k, y1 - k), at(x0 + k, y0 + k)], tw * 0.5, v=170)
+        c = at(x0 + 1, y0 + 1)
+        pen.ellipse(c[0], c[1], 0.2 * g, 0.2 * g, v=170)
+    for pts in traces:
+        pen.line([at(*q) for q in pts], tw)
+        core.line([at(*q) for q in pts], tw * 0.34)
+    for x, y, d in pads:                                      # a chip's pad: an oblong across its edge
+        dx, dy = DIRS[d]
+        pen.line([at(x - 0.32 * dx, y - 0.32 * dy), at(x + 0.32 * dx, y + 0.32 * dy)], g * 0.5)
+    for x, y in fingers:
+        pen.poly([at(x - 0.3, y - 0.2), at(x + 0.3, y - 0.2), at(x + 0.3, y + 1.6), at(x - 0.3, y + 1.6)])
+    for x, y in vias:
+        c = at(x, y)
+        pen.ellipse(c[0], c[1], 0.42 * g, 0.42 * g, width=0.2 * g)
+    ly, lx = np.mgrid[0:D, 0:D].astype(np.float32)
+    # the surge came in at one or two places and burnt hardest there, less with
+    # every inch it ran: the far traces barely took, and the plaster between
+    # them is only scorched round them (a soot halo), never filled in
+    heat = 0.1 + 0.15 * lnoise(D, D, 1.6, r, 300 * S)
+    for _ in range(int(r.integers(1, 3))):
+        hx, hy = at(r.uniform(0.15, 0.85) * gw, r.uniform(0.15, 0.85) * gh)
+        heat += r.uniform(0.7, 1.1) * np.exp(-((lx - hx) ** 2 + (ly - hy) ** 2) / (2 * (r.uniform(0.2, 0.32) * math.hypot(bw, bh)) ** 2))
+    patchy = lnoise(D, D, 1.3, r, 140 * S)
+    soot = lblur(pen.get(), 9 * S) * p.free
+    sub = img[p.ix]
+    sub *= mix(ONE, np.array([0.66, 0.60, 0.55], np.float32), np.clip(soot * 1.6, 0, 1) * np.clip(heat, 0, 1) * smooth(patchy, -1.5, 0.5) * 0.75)
+    img[p.ix] = sub
+    heat = np.clip(heat, 0.12, 1)
+    took = smooth(heat, 0.3, 0.6)                             # faint and broken where it barely took
+    T = pen.get() * (took + (1 - took) * (0.35 + 0.65 * smooth(patchy + 0.6 * lnoise(D, D, 0.4, r, 14 * S), -1.6, 0.0)))
+    burn(p, T, heat, core.get())
+
+
+# fractal scorches: the branching figure a discharge leaves (a Lichtenberg figure)
+def colonise(r, root, A, step, reach, kill, wobble):
+    """Grow a tree from root into the cloud of points A: each point pulls on
+    the node nearest it, a node grows a step toward what pulls on it, and a
+    point is spent when the tree comes within `kill` of it (space
+    colonisation). Returns the nodes and each node's parent."""
+    N = np.zeros((6 * len(A) + 64, 2), np.float32)
+    par = np.full(len(N), -1, np.int32)
+    kids = np.zeros(len(N), np.int8)
+    N[0] = root
+    n = 1
+    near = np.zeros(len(A), np.int32)
+    nd = np.hypot(A[:, 0] - root[0], A[:, 1] - root[1])
+    for _ in range(900):
+        act = np.flatnonzero(nd < reach)
+        if not len(act):
+            if not len(A):
+                break
+            act = np.array([nd.argmin()])                     # nothing in reach: the nearest one calls it on
+        idx = near[act]
+        v = A[act] - N[idx]
+        v /= np.maximum(np.hypot(v[:, 0], v[:, 1]), 1e-6)[:, None]
+        pull = np.zeros((n, 2), np.float32)
+        np.add.at(pull, idx, v)
+        src = np.unique(idx)
+        src = src[kids[src] < 3]
+        if not len(src) or n + len(src) > len(N):
+            break
+        d = pull[src] / np.maximum(np.hypot(pull[src, 0], pull[src, 1]), 1e-6)[:, None] + r.normal(0, wobble, (len(src), 2))
+        d /= np.maximum(np.hypot(d[:, 0], d[:, 1]), 1e-6)[:, None]
+        new = N[src] + step * d
+        N[n:n + len(new)] = new
+        par[n:n + len(new)] = src
+        kids[src] += 1
+        dd = np.hypot(A[:, None, 0] - new[None, :, 0], A[:, None, 1] - new[None, :, 1])
+        j = dd.argmin(1)
+        dm = dd[np.arange(len(A)), j]
+        up = dm < nd
+        near[up], nd[up] = n + j[up], dm[up]
+        n += len(new)
+        keep = nd > kill
+        A, near, nd = A[keep], near[keep], nd[keep]
+    return N[:n], par[:n]
+
+
+def lichtenberg(cx, cy, R, shape, r, aim=None, soot=False):
+    """A discharge's burn rooted at (cx, cy) and reaching about R: `shape` is
+    "burst" (all round the root, in lobes), "fan" (thrown one way, `aim`) or
+    "crawl" (a long one, wandering off along the wall). Its channels are as
+    wide as what they carry: a charred trunk, branches, a fringe of hairs."""
+    D = int(2 * R + 160 * S)
+    off = {"burst": 0.0, "fan": 0.5, "crawl": 0.6}[shape] * R      # the root is at (cx, cy); the figure's middle is off toward its aim
+    p = Patch(cx + off * math.cos(aim), cy + off * math.sin(aim), D, D)
+    root = np.array([cx - p.gx, cy - p.gy], np.float32)
+    n = int(R * R / (r.uniform(17, 24) * S) ** 2 * (3.1 if shape == "burst" else 1.6))
+    if shape == "burst":
+        a = r.uniform(0, 2 * np.pi, n)
+        ph = r.uniform(0, 2 * np.pi, 3)
+        lobes = 0.62 + 0.2 * np.cos(2 * a + ph[0]) + 0.14 * np.cos(3 * a + ph[1]) + 0.1 * np.cos(5 * a + ph[2])
+        d = R * lobes * r.uniform(0, 1, n) ** 0.6
+        A = np.stack([root[0] + d * np.cos(a), root[1] + d * np.sin(a)], 1)
+    elif shape == "fan":
+        a = aim + np.clip(r.normal(0, 0.55, n), -1.3, 1.3)
+        d = R * (1.0 - 0.3 * np.abs(a - aim)) * r.uniform(0, 1, n) ** 0.6
+        A = np.stack([root[0] + d * np.cos(a), root[1] + d * np.sin(a)], 1)
+    else:
+        t = r.uniform(0, 1, n) ** 0.8
+        bend = r.uniform(-0.9, 0.9)
+        a = aim + bend * t
+        side = r.normal(0, 1, n) * R * (0.05 + 0.2 * np.sin(np.pi * t) ** 0.5 + 0.12 * t)
+        A = np.stack([root[0] + 1.25 * R * t * np.cos(a) - side * np.sin(a), root[1] + 1.25 * R * t * np.sin(a) + side * np.cos(a)], 1)
+    A = A.astype(np.float32)
+    N, par = colonise(r, root, A, step=6 * S, reach=r.uniform(50, 80) * S, kill=7.5 * S, wobble=r.uniform(0.3, 0.5))
+    flow = np.ones(len(N))
+    for i in range(len(N) - 1, 0, -1):
+        flow[par[i]] += flow[i]
+    wide = np.clip(r.uniform(16, 22) * S * (flow / flow[0]) ** 0.44, 1.5 * S, None)
+    pen, core = p.pen(), p.pen()
+    for i in np.argsort(wide[1:]) + 1:                        # the hairs first, the trunk over them
+        seg = [tuple(N[par[i]]), tuple(N[i])]
+        pen.line(seg, wide[i], v=255 * min(1.0, 0.5 + wide[i] / (6 * S)))
+        if wide[i] > 5 * S:
+            core.line(seg, wide[i] * 0.4)
+    ly, lx = np.mgrid[0:D, 0:D].astype(np.float32)
+    far = np.hypot(lx - root[0], ly - root[1]) / R
+    blot = smooth(1.0 - far * R / (r.uniform(16, 26) * S) + 0.5 * lnoise(D, D, 1.2, r, 30 * S), 0.0, 0.5)    # where the arc struck
+    heat = np.clip(1.05 - 0.45 * far + 0.12 * lnoise(D, D, 1.4, r, 300 * S), 0.4, 1)
+    if soot:                                                  # smoke up the wall from where it began, over whatever is there
+        sub = img[p.ix]
+        up = np.clip((root[1] - ly) / (1.3 * R), 0, 1)
+        plume = np.exp(-((lx - root[0] - 30 * S * lnoise(D, D, 1.5, r, 400 * S)) / (R * (0.1 + 0.3 * up))) ** 2) * (1 - up) ** 1.5 * (ly < root[1] + 30 * S)
+        plume = lblur(plume, 10 * S) * (0.75 + 0.25 * lnoise(D, D, 1.0, r, 80 * S))
+        sub *= mix(ONE, np.array([0.60, 0.57, 0.54], np.float32), np.clip(plume * 0.6, 0, 0.6))
+        img[p.ix] = sub
+    burn(p, np.maximum(pen.get(), blot), heat, np.maximum(core.get(), smooth(blot, 0.7, 1.0) * 0.8), reach=0.7)
+
+
+# code-like fragments: lines of spell-code. Not the chalked runes (make_glyph:
+# tall, each a stem with pads): a word here is a bar with teeth above and below
+# it, like a bus and its taps, and the words are set out as code is, in lines,
+# indented in blocks, a mark at the end of each statement.
+def word(r, n):
+    """A word n units long: a head, then at each unit a tooth (or none) above
+    the bar and below it. 1 short, 2 long, 3 long with a foot, 4 short with a
+    dot beyond it, 5 slanted. Every word has teeth on both sides and one at
+    least that is not plain, so none is a bar and a stroke or two: no letter
+    of any script."""
+    while True:
+        w = [(int(r.choice(6, p=(0.36, 0.2, 0.2, 0.08, 0.08, 0.08))), int(r.choice(6, p=(0.2, 0.2, 0.26, 0.12, 0.12, 0.1)))) for _ in range(n)]
+        if any(u for u, d in w) and any(d for u, d in w) and any(t > 2 for pair in w for t in pair) and sum(bool(t) for pair in w for t in pair) >= 3:
+            return [int(r.integers(3))] + w
+
+
+def word_strokes(w, x, y):
+    head, w = w[0], w[1:]
+    out = [("l", [(x, y), (x + len(w) + 0.4, y)]),
+           ("p", ([(x - 0.1, y - 0.42), (x + 0.4, y - 0.42), (x + 0.4, y + 0.42), (x - 0.1, y + 0.42)],        # its head: a block,
+                  [(x - 0.1, y - 0.95), (x + 0.5, y), (x - 0.1, y)],                                         # a flag above the bar,
+                  [(x - 0.1, y), (x + 0.5, y), (x - 0.1, y + 0.95)])[head])]                                 # or below it
+    x += 0.7
+    for k, pair in enumerate(w):
+        tx = x + k + 0.35
+        for kind, sg in zip(pair, (-1, 1)):
+            if kind == 5:
+                out.append(("l", [(tx, y), (tx + 0.45, y + sg * 0.8)]))
+            elif kind:
+                L = sg * (0.42, 0.9, 0.9, 0.5)[kind - 1]
+                out.append(("l", [(tx, y), (tx, y + L)] + ([(tx + 0.42, y + L)] if kind == 3 else [])))
+                if kind == 4:
+                    out.append(("d", (tx, y + sg * 0.88), 0.13))
+    return out
+
+
+def sign_strokes(kind, x, y):
+    """The small signs between words and at a line's end, about (x, y)."""
+    if kind == "tri":
+        return [("p", [(x - 0.35, y - 0.45), (x + 0.42, y), (x - 0.35, y + 0.45)])]
+    if kind == "barb":
+        return [("p", [(x - 0.4, y - 0.5), (x + 0.42, y), (x - 0.4, y + 0.5), (x - 0.1, y)])]
+    if kind == "dia":
+        return [("l", [(x - 0.42, y), (x, y - 0.5), (x + 0.42, y), (x, y + 0.5), (x - 0.42, y)])]
+    if kind == "dots":
+        return [("d", (x - 0.22, y + 0.3), 0.15), ("d", (x + 0.22, y - 0.3), 0.15)]
+    return [("l", [(x - 0.45, y - 0.4), (x + 0.45, y - 0.4), (x, y + 0.45), (x - 0.45, y - 0.4)])]    # "open": a block opens under this line
+
+
+def write_code(r, lines, cols):
+    """A fragment of code `lines` long and about `cols` units wide, in units
+    (across: a tooth's pitch; down: a tooth's reach, the lines 3 apart).
+    Returns its strokes ("l" a line, "d" a dot, "p" a filled shape) and its size."""
+    keys = [word(r, int(r.integers(3, 5))) for _ in range(3)]            # the words it keeps coming back to
+    signs = ("tri", "barb", "dia", "dots")
+    stop = signs[r.integers(4)]                                          # what ends a statement here
+    out, levels, ends, level = [], [], [], 0
+    for i in range(lines):
+        x, y = 2.4 * level, 3.0 * i
+        levels.append(level)
+        for k in range(int(r.integers(1, 5))):
+            w = keys[r.integers(3)] if k == 0 and r.random() < 0.7 else word(r, int(r.integers(3, 7)))
+            if k and x + len(w) > cols:
+                break
+            if k:
+                out += sign_strokes(signs[r.integers(4)], x + 0.4, y)
+                x += 1.4
+            out += word_strokes(w, x, y)
+            x += len(w) + 0.5
+        opens = level < 3 and i < lines - 2 and r.random() < 0.4
+        if opens or r.random() < 0.8:
+            out += sign_strokes("open" if opens else stop, x + 0.5, y)
+            x += 1.4
+        ends.append(x)
+        level = level + 1 if opens else level - int(r.integers(1, level + 1)) if level and r.random() < 0.45 else level
+    for lv in range(1, 4):                                               # a rule down the side of each block, a foot at its end
+        i = 0
+        while i < lines:
+            if levels[i] >= lv:
+                j = i
+                while j + 1 < lines and levels[j + 1] >= lv:
+                    j += 1
+                bx = 2.4 * (lv - 1) + 0.9
+                out.append(("l", [(bx, 3.0 * i - 1.4), (bx, 3.0 * j + 1.3), (bx + 0.7, 3.0 * j + 1.3)]))
+                i = j
+            i += 1
+    y = 3.0 * (lines - 1)
+    out.append(("p", [(ends[-1] + 0.3, y - 0.9), (ends[-1] + 1.1, y - 0.9), (ends[-1] + 1.1, y + 0.9), (ends[-1] + 0.3, y + 0.9)]))   # the cursor
+    if r.random() < 0.6:                                                 # a line struck out
+        i = int(r.integers(lines))
+        xs = np.linspace(2.4 * levels[i] - 0.6, ends[i] + 0.4, 9)
+        out.append(("s", [(x, 3.0 * i + r.normal(0, 0.22)) for x in xs]))
+    return out, max(ends) + 1.2, 3.0 * (lines - 1) + 2.0
+
+
+INKS = (np.array([0.26, 0.50, 0.54], np.float32), np.array([0.42, 0.36, 0.58], np.float32))    # paint-stick: a dull teal, a dull violet-blue
+
+
+def code(cx, cy, lines, cols, h, r, etched, ink=None):
+    """Spell-code at (cx, cy), a tooth h px tall: etched (cut into the plaster
+    with a point: a dark groove, its lower lip lit, dust smeared round it) or
+    scrawled with a paint-stick (`ink`: dry and broken, rubbed away in places)."""
+    strokes, wu, hu = write_code(r, lines, cols)
+    u = h * r.uniform(0.95, 1.2)                               # a tooth's pitch
+    slant, tilt, ang = r.uniform(-0.3, 0.3), r.normal(0, 0.03), r.normal(0, 0.06)
+    D = int(math.hypot(wu * u, hu * h) + 100 * S)
+    p = Patch(cx, cy, D, D)
+    ca, sa = math.cos(ang), math.sin(ang)
+    bow = r.normal(0, 0.5, int(hu // 3) + 2)                   # each line wanders off its rule
+
+    def at(x, y, shake=0.05):
+        i = int(round(y / 3.0))
+        px_, py_ = (x - wu / 2) * u - slant * (y - 3.0 * i) * h, (y - hu / 2 + 1.0) * h
+        py_ += tilt * px_ + bow[i] * h * 0.35 * math.sin(1.5 * x / wu + i)
+        px_, py_ = px_ + r.normal(0, shake * h), py_ + r.normal(0, shake * h)
+        return D / 2 + px_ * ca - py_ * sa, D / 2 + px_ * sa + py_ * ca
+
+    sw = h * (r.uniform(0.2, 0.26) if etched else r.uniform(0.24, 0.34))
+    pen = p.pen()
+    for s in strokes:
+        if s[0] == "l":
+            pen.line([at(*q) for q in s[1]], sw)
+        elif s[0] == "s":
+            pen.line([at(*q, shake=0.0) for q in s[1]], sw * 1.3)
+        elif s[0] == "d":
+            c = at(*s[1])
+            pen.ellipse(c[0], c[1], s[2] * h + sw * 0.3, s[2] * h + sw * 0.3)
+        else:
+            pen.poly([at(*q) for q in s[1]])
+    E = pen.get() * p.free
+    worn = smooth(lnoise(D, D, 1.5, r, 260 * S), -1.5, -0.1)   # where it has worn away
+    sub = img[p.ix]
+    if etched:
+        E *= 0.45 + 0.55 * worn
+        sub = mix(sub, sub * 1.05 + 0.02, np.clip(lblur(E, 6 * S) * 0.9, 0, 1))                      # plaster dust round the cut
+        sub = mix(sub, sub * np.array([0.44, 0.42, 0.40], np.float32), np.clip(E * 1.2, 0, 1))        # the groove, in its own shadow
+        sub = mix(sub, sub * 1.16 + 0.03, np.clip(shift(E, 1.7 * S, 1.7 * S) - E, 0, 1) * 0.9)       # its lower lip, lit
+    else:
+        dry = smooth(lnoise(D, D, 0.5, r, 12 * S), -1.3, 0.3)
+        E *= (0.25 + 0.75 * worn) * (0.6 + 0.4 * dry)
+        sub = sub * mix(ONE, ink, np.clip(E * 1.15, 0, 1))
+        sub = sub * mix(ONE, ink, np.clip(lblur(E, 2.5 * S) * 0.35, 0, 1))
+    img[p.ix] = sub
+
+
+# displaced, fragmented geometry: a patch of the wall broken into shards and
+# each shard slipped and turned out of place, taking what was on it with it.
+# Done on the finished wall, so whatever crosses a shard no longer meets itself.
+def cut(poly, px_, py_, nx, ny):
+    """A convex polygon cut by the line through (px_, py_) with normal (nx, ny): its two halves."""
+    a, b = [], []
+    for i, p0 in enumerate(poly):
+        p1 = poly[(i + 1) % len(poly)]
+        s0, s1 = (p0[0] - px_) * nx + (p0[1] - py_) * ny, (p1[0] - px_) * nx + (p1[1] - py_) * ny
+        (a if s0 >= 0 else b).append(p0)
+        if (s0 >= 0) != (s1 >= 0):
+            t = s0 / (s0 - s1)
+            c = (p0[0] + t * (p1[0] - p0[0]), p0[1] + t * (p1[1] - p0[1]))
+            a.append(c)
+            b.append(c)
+    return a, b
+
+
+def area(poly):
+    return abs(sum(p[0] * q[1] - q[0] * p[1] for p, q in zip(poly, poly[1:] + poly[:1]))) / 2
+
+
+def middle(poly):
+    return sum(p[0] for p in poly) / len(poly), sum(p[1] for p in poly) / len(poly)
+
+
+def sample(a, X, Y):
+    """Picture a (h, w, 3) read at the places (X, Y), between its pixels."""
+    h, w = a.shape[:2]
+    X, Y = np.clip(X, 0, w - 1.001), np.clip(Y, 0, h - 1.001)
+    x0, y0 = X.astype(np.int32), Y.astype(np.int32)
+    fx, fy = (X - x0)[..., None], (Y - y0)[..., None]
+    return (a[y0, x0] * (1 - fx) + a[y0, x0 + 1] * fx) * (1 - fy) + (a[y0 + 1, x0] * (1 - fx) + a[y0 + 1, x0 + 1] * fx) * fy
+
+
+def bricks(X, Y, tone, grain):
+    """The wall's brickwork (its bond, its sizes, its colours) at the places (X, Y)."""
+    row = np.floor(Y / BH).astype(np.int32)
+    bx_ = X + (row % 2) * (BW // 2)
+    col = np.floor(bx_ / BW).astype(np.int32)
+    lx_, ly_ = bx_ - col * BW, Y - row * BH
+    d = np.minimum(np.minimum(lx_, BW - lx_), np.minimum(ly_, BH - ly_))
+    t = tone[row % tone.shape[0], col % tone.shape[1]]
+    c = mix(hexc("#a07e6a"), hexc("#98887a"), (t * 7.3) % 1.0) * (0.86 + 0.22 * t + 0.05 * grain)[..., None]
+    c *= (1 + 0.08 * np.exp(-np.clip(d - MJ / 2, 0, None) / (5 * S)))[..., None] * 0.97
+    return mix(hexc("#b4ac9e") * 0.92, c, smooth(d, MJ / 2 - S, MJ / 2 + 1.5 * S))
+
+
+def displace(cx, cy, R, r):
+    """Break the wall within about R of (cx, cy) into shards. The plaster has
+    come off part of the patch, as in the wall's spalls, so there is brick to
+    break as well; then every shard shows its piece of the wall from somewhere
+    else, slid and turned: courses, joints, the plaster's edge and whatever was
+    chalked there stop at each crack and carry on out of step in the next."""
+    pad = int(150 * S)
+    D = 2 * int(R) + 2 * pad
+    p = Patch(cx, cy, D, D)
+    src = img[p.ix]
+    k = int(r.integers(6, 10))                                 # the patch: a lopsided polygon,
+    squash, turn = r.uniform(0.6, 1.0), r.uniform(0, np.pi)
+    poly = rot([(R * math.cos(a), R * squash * math.sin(a)) for a in (np.arange(k) + r.uniform(-0.35, 0.35, k)) * 2 * np.pi / k], 0, 0, turn)
+    polys = [[(x + D / 2, y + D / 2) for x, y in poly]]
+    whole = mask(D, D, lambda q_: q_.poly(polys[0]), ss=1)
+    grain = r.uniform(0, np.pi) if r.random() < 0.5 else None  # broken along a grain, or every which way
+    seams = []
+    want = int(r.integers(12, 24))
+    for _ in range(3 * want):                                  # cut and cut again
+        if len(polys) >= want:
+            break
+        i = int(np.argmax([area(q) * r.uniform(0.4, 1.0) for q in polys]))
+        q = polys.pop(i)
+        mx, my = middle(q)
+        sd = 0.14 * math.sqrt(area(q))
+        th = r.normal(grain, 0.3) if grain is not None and r.random() < 0.8 else r.uniform(0, np.pi)
+        mx, my = mx + r.normal(0, sd), my + r.normal(0, sd)
+        a, b = cut(q, mx, my, math.cos(th), math.sin(th))
+        if len(a) >= 3 and len(b) >= 3 and min(area(a), area(b)) > (14 * S) ** 2:
+            polys += [a, b]
+            seams.append((mx, my, th + np.pi / 2))
+        else:
+            polys.append(q)
+    polys = [q for q in polys if r.random() < 0.9]             # a few stayed as they were
+    ly, lx = np.mgrid[0:D, 0:D].astype(np.float32)
+    fine_ = lnoise(D, D, 0.6, r, 40 * S)
+    lit = np.stack([lblur(src[..., c], 40 * S) for c in range(3)], -1) / lblur(np.ones((D, D), np.float32), 40 * S)[..., None]
+    lit = np.clip(lit / PLASTER, 0.7, 1.25)                    # the light and the grime here, to put on brick that was never in them
+    brick_ = bricks(lx + p.gx, ly + p.gy, r.uniform(0, 1, (37, 41)).astype(np.float32), fine_) * lit
+    bare = smooth(lnoise(D, D, 1.9, r, 300 * S) + 0.22 * lnoise(D, D, 1.5, r, 50 * S) + 1.6 * (lblur(whole, 40 * S) - 0.75), 0.15, 0.22) * p.free
+    pre = mix(src, brick_, bare)                               # the patch before it broke: plaster off part of it,
+    pre *= (1 - 0.5 * np.clip(lblur(shift(1 - bare, 6 * S, 5 * S), 3.5 * S), 0, 1) * bare)[..., None]     # its edge shading the brick
+    pre = mix(pre, pre * 1.1, np.clip(lblur(shift(bare, -3 * S, -3 * S), 2 * S) - bare, 0, 1))             # and lit on the far side
+    hole = mask(D, D, lambda q_: [q_.poly(q) for q in polys])
+    out = mix(src, pre * 0.5, hole)                            # between the shards, the dark
+    drift = r.uniform(0, 2 * np.pi)                            # the wall slipped mostly one way
+    for q in polys:
+        mx, my = middle(q)
+        phi = r.normal(0, 0.015)                               # the shard itself barely moves: enough to open the cracks
+        shrink = 1 - r.uniform(0.0, 0.035)
+        ox_, oy_ = r.normal(0, 2 * S, 2)
+        moved = [(mx + (x - mx) * shrink + ox_, my + (y - my) * shrink + oy_) for x, y in rot(q, mx, my, phi)]
+        m = mask(D, D, lambda q_: q_.poly(moved))
+        x0, x1 = max(0, int(min(x for x, y in moved)) - 2), min(D, int(max(x for x, y in moved)) + 3)
+        y0, y1 = max(0, int(min(y for x, y in moved)) - 2), min(D, int(max(y for x, y in moved)) + 3)
+        a = r.normal(drift, 0.9)                               # what it shows has slid and turned
+        far = r.uniform(16, 60) * S
+        phi = r.normal(0, 0.05) if r.random() < 0.7 else r.normal(0, 0.18)
+        ex, ey = lx[y0:y1, x0:x1] - mx, ly[y0:y1, x0:x1] - my
+        c_, s_ = math.cos(phi), math.sin(phi)
+        sx, sy = mx + ex * c_ + ey * s_ - far * math.cos(a), my - ex * s_ + ey * c_ - far * math.sin(a)
+        body = mix(sample(brick_, sx, sy), sample(pre, sx, sy), sample(p.free[..., None], sx, sy)[..., 0])      # (nothing that was fixed over the wall comes with it)
+        ms = m[y0:y1, x0:x1, None]
+        out[y0:y1, x0:x1] = out[y0:y1, x0:x1] * (1 - ms) + body * r.uniform(0.9, 1.06) * ms
+        lit_, dark_ = edges(m, 1.3)
+        out *= (1 + 0.14 * lit_ - 0.2 * dark_)[..., None]
+    cr = Pen(D, D)                                             # the cracks run on a little way into the sound wall
+    for mx, my, th in seams:
+        for sg in (-1, 1):
+            if r.random() < 0.55:
+                x, y, a = mx, my, th + (np.pi if sg < 0 else 0)
+                t0 = 0
+                while 0 <= x < D and 0 <= y < D and whole[int(y), int(x)] > 0.5 and t0 < 2 * R:      # out to the patch's edge
+                    x, y, t0 = x + 4 * math.cos(a), y + 4 * math.sin(a), t0 + 4
+                n_ = int(r.integers(4, 9))
+                L = r.uniform(30, 150) * S
+                pts = [(x, y)]
+                for j in range(n_):
+                    a += r.normal(0, 0.25)
+                    pts.append((pts[-1][0] + L / n_ * math.cos(a), pts[-1][1] + L / n_ * math.sin(a)))
+                for j in range(n_):
+                    cr.line(pts[j:j + 2], max(S, 3.2 * S * (1 - j / n_)))
+    cr = cr.get() * (1 - whole)
+    out = mix(out, out * 0.5, cr * 0.9)
+    out = mix(out, out * 1.12, np.clip(shift(cr, 1.6 * S, 1.6 * S) - cr, 0, 1) * 0.7)
+    img[p.ix] = mix(src, out, p.free)                          # what is fixed to the wall stayed whole
+
+
+# The marks fall where there is room for them: the burn out of a socket first,
+# then the code (it wants bare plaster), then the rest, which go over anything.
+at_ = spot(1.2 * IN, "lichtenberg", tol=0.2, clear=0.9 * IN, among=[(x * IN, 9.3 * IN) for x, kind in FOOT if kind == "outlet"])
+if at_:                                                       # out of a socket and up the wall
+    lichtenberg(at_[0], 10.42 * IN - 66 * S, more.uniform(1.7, 2.1) * IN, "fan", more, aim=-np.pi / 2 + more.normal(0, 0.12), soot=True)
+for i, (lines, cols, h) in enumerate(((8, 26, 19), (5, 30, 26), (6, 20, 15), (4, 18, 22))):
+    h = h * more.uniform(0.9, 1.1) * S
+    at_ = spot(0.5 * math.hypot(cols * 1.1 * h, lines * 3 * h), "code", apart=4.5 * IN, bare=True)
+    if at_:
+        code(*at_, lines, cols, h, more, etched=i % 2 == 0, ink=INKS[i // 2])
+for bw, bh in ((2.5, 1.7), (1.9, 1.5), (1.5, 1.1)):
+    bw, bh = bw * more.uniform(0.9, 1.1) * IN, bh * more.uniform(0.9, 1.1) * IN
+    at_ = spot(0.5 * math.hypot(bw, bh), "circuit", apart=6.0 * IN)
+    if at_:
+        circuit_burn(*at_, bw, bh, more)
+for R, shape in ((1.25, "burst"), (1.3, "crawl")):
+    at_ = spot(R * IN * (1.0 if shape == "burst" else 0.8), "lichtenberg", apart=5.0 * IN)
+    if at_:
+        aim = more.uniform(0, 2 * np.pi)
+        back = 0.6 * R * IN if shape == "crawl" else 0         # a crawl's place is its middle: it starts back from there
+        lichtenberg(at_[0] - back * math.cos(aim), at_[1] - back * math.sin(aim), R * more.uniform(0.9, 1.1) * IN, shape, more, aim=aim)
+for R in (1.15, 0.95, 0.75):
+    at_ = spot(R * IN, "shards", tol=0.06, apart=5.5 * IN)
+    if at_:
+        displace(*at_, R * IN, more)
+
+# ── finish: the palette ──────────────────────────────────────────────────────
+# The wall's colours are cut from the wall as it was before the marks, as they
+# always were, and the marks get MARK_COLOURS more, cut from the pixels they
+# changed; every other pixel keeps the colour it had.
+rgb = to8(img)
 del img
+changed = (rgb != BASE).any(-1)
 pal = []
 for sel, n in ((~VIVID, COLOURS - VIVID_COLOURS), (VIVID, VIVID_COLOURS)):
-    px = rgb[sel][None]
+    px = BASE[sel][None]
     q = Image.fromarray(px, "RGB").quantize(colors=n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     pal += q.getpalette()[:3 * n]
-palimg = Image.new("P", (1, 1))
-palimg.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
-out = Image.fromarray(rgb, "RGB").quantize(palette=palimg, dither=Image.Dither.NONE)
+
+
+def fit(a):
+    """Picture a in the palette's colours: each pixel the nearest of them."""
+    palimg = Image.new("P", (1, 1))
+    palimg.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
+    return Image.fromarray(a, "RGB").quantize(palette=palimg, dither=Image.Dither.NONE)
+
+
+out = fit(BASE)
+q = Image.fromarray(rgb[changed][None], "RGB").quantize(colors=MARK_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+pal += q.getpalette()[:3 * MARK_COLOURS]
+out = Image.fromarray(np.where(changed, np.asarray(fit(rgb)), np.asarray(out)).astype(np.uint8), "P")
+out.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
 out.save(ROOT / "images/wall-12.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-12.png  {NW}x{NH}  {NW / IN:.2f}x{NH / IN:.2f}in  vivid {VIVID.mean():.1%}  "
+print(f"images/wall-12.png  {NW}x{NH}  {NW / IN:.2f}x{NH / IN:.2f}in  vivid {VIVID.mean():.1%}  marks {changed.mean():.1%}  "
       f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
