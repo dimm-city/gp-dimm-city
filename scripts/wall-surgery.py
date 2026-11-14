@@ -35,8 +35,9 @@ What it draws, back to front:
    there, a bead at the end), a paw dragged down the wall, a rag's wipe,
    and the brownish tide mark of dried antiseptic. Then the loud ones, drawn
    at the page's scale, not the wall's, so they read from across a spread:
-   heavy impacts with their sprays and long runs, splashes of the theatre's
-   chemicals (gentian violet, a copper green, bleach that etched the glaze),
+   heavy impacts with their sprays and long runs, the theatre's chemicals
+   (gentian violet and a copper green thrown and run down as the blood was,
+   bleach that took the grime off and yellowed the glaze),
    scalpel scratches cut into the tiles in rows, and vomit: thrown at the
    wall, lumpy, run down to the floor.
 6. Mould in the grout, worst low down and round the water.
@@ -833,18 +834,31 @@ for _ in range(2):
 img = mix(img, img * np.array([0.86, 0.66, 0.42]), np.clip(ANTI, 0, 1) * 0.65)
 del src, dr_
 
-# the theatre's chemicals, splashed and left to dry: gentian violet, a copper
-# green, and bleach, which took the grime off and yellowed the glaze at its edge.
-# Each is a film (FILM: blotchy, the tiles showing through) and the tide lines it
-# dried to (TIDE), with long thin runs below it.
+# the theatre's chemicals. Gentian violet and a copper green, thrown at the wall
+# as the blood was: a splash, its spray, and long runs down from it, dried dark
+# at the rim. And bleach, which took the grime off and yellowed the glaze at its
+# edge: a blotchy film and the tide lines it dried to.
 print("chemicals, scratches, vomit", flush=True)
-FILM = {k: np.zeros((NH, NW)) for k in ("violet", "green", "bleach")}
-TIDE = {k: np.zeros((NH, NW)) for k in FILM}
-for k, x, y, R0 in (
-    ("violet", 7.5, 1.0, 170), ("violet", 16.9, 7.4, 130),
-    ("green", 10.4, 4.6, 160), ("green", 0.25, 2.0, 140),
-    ("bleach", 6.6, 8.3, 190), ("bleach", 11.6, 2.2, 150),
-):
+SPILL = {"violet": Layer(), "green": Layer()}
+L.update(SPILL)                                  # spatter and run draw into L
+n0 = len(runs)
+for k, x, y, R, aim in (("violet", 7.5, 0.9, 50, 1.3), ("violet", 16.9, 6.9, 42, -2.6), ("green", 10.4, 4.3, 46, -0.5), ("green", 0.3, 1.8, 40, 0.6)):
+    spatter(k, x * IN, y * IN, R=R * S, count=240, spread=210 * S, aim=aim, cone=1.1, standoff=170 * S, nruns=(4, 7), r=more, big=2.4)
+for x, y, w, vol, k in runs[n0:]:
+    run(k, x, y, w, vol, r=more)
+STAIN = {   # multiply at full cover: thin film, then thick
+    "violet": (np.array([0.62, 0.46, 0.78]), hexc("#4b2f6b")),
+    "green": (np.array([0.58, 0.80, 0.68]), hexc("#2f6a5e")),
+}
+CHEM = np.zeros((NH, NW))
+for k, (thin, deep) in STAIN.items():
+    b = L.pop(k).render()
+    ring_ = np.clip(b - blur(b, 1.5 * S), 0, 1)                          # the darker rim it dries to
+    film = img * mix(np.ones(3), thin, smooth(b, 0.0, 0.6))
+    img = mix(film, deep, np.clip(0.7 * smooth(b, 0.55, 1.0) + 0.6 * ring_, 0, 1) * 0.8)
+    CHEM += b
+FILM, TIDE = np.zeros((NH, NW)), np.zeros((NH, NW))
+for x, y, R0 in ((6.6, 8.3, 190), (11.6, 2.2, 150)):
     R = round(1.3 * R0 * S)
     base = (round(2.6 * R0), round(2.6 * R0))
     edge = local_noise(2 * R, 2 * R, 2.3, more, base=base)
@@ -852,25 +866,17 @@ for k, x, y, R0 in (
     vy, vx = np.mgrid[-R:R, -R:R]
     d = np.hypot(vx * more.uniform(0.75, 1.0), vy) / (R0 * S) + 1.0 * (edge - 0.5)
     x0, y0 = x * IN - R, y * IN - R
-    put(FILM[k], x0, y0, smooth(0.9 - d, 0.0, 0.14) * (0.35 + 0.65 * blot))
-    put(TIDE[k], x0, y0, sum(wt * np.exp(-((d - at) / 0.022) ** 2) for at, wt in ((0.86, 1.0), (0.66, 0.55), (0.45, 0.3))))
+    put(FILM, x0, y0, smooth(0.9 - d, 0.0, 0.14) * (0.35 + 0.65 * blot))
+    put(TIDE, x0, y0, sum(wt * np.exp(-((d - at) / 0.022) ** 2) for at, wt in ((0.86, 1.0), (0.66, 0.55), (0.45, 0.3))))
     src = np.zeros((NH, NW))
     for _ in range(int(more.integers(2, 5))):
         src[int(y * IN + R0 * S * more.uniform(0.5, 0.8)) % NH, int(x * IN + more.normal(0, R0 * S * 0.45)) % NW] = more.uniform(0.5, 1.0)
     dr_ = circ_conv(src, *drip(more.uniform(200, 420) * S, 2.6 * S))
-    np.maximum(FILM[k], np.clip(dr_ / dr_.max(), 0, 1) * 0.7, out=FILM[k])
-del src, dr_
-STAIN = {   # multiply at full cover, then the colour its tide lines dry to
-    "violet": (np.array([0.66, 0.54, 0.80]), hexc("#55406f")),
-    "green": (np.array([0.62, 0.83, 0.76]), hexc("#3d6f64")),
-}
-for k, (thin, deep) in STAIN.items():
-    img = img * mix(np.ones(3), thin, np.clip(FILM[k], 0, 1) * 0.85)
-    img = mix(img, deep, np.clip(TIDE[k], 0, 1) * 0.5)
-img = mix(img, np.clip(img * 1.13 + 0.03, 0, 1), np.clip(FILM["bleach"], 0, 1) * 0.9)            # cleaner than the wall round it
-img = mix(img, img * np.array([0.88, 0.82, 0.58]), np.clip(TIDE["bleach"], 0, 1) * 0.75)       # its yellow tide lines
-CHEM = sum(FILM.values()) + sum(TIDE.values())
-del FILM, TIDE
+    np.maximum(FILM, np.clip(dr_ / dr_.max(), 0, 1) * 0.7, out=FILM)
+img = mix(img, np.clip(img * 1.13 + 0.03, 0, 1), np.clip(FILM, 0, 1) * 0.9)            # cleaner than the wall round it
+img = mix(img, img * np.array([0.88, 0.82, 0.58]), np.clip(TIDE, 0, 1) * 0.75)       # its yellow tide lines
+CHEM += FILM + TIDE
+del src, dr_, b, ring_, film, FILM, TIDE
 
 # scalpel scratches: a blade drawn down the glaze in short close rows, each stroke
 # tapered to a point at both ends; the cut is dark with dirt, its lower lip catches the light
