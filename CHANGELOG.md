@@ -40,6 +40,34 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **Each specialty's wall carries its own marks.** Drawn at the page's
+  scale so they read across a spread, each on a random stream of its own so
+  the wall underneath is unchanged, and no two kinds made alike:
+  Cybersurgeon (wall 10): blood as impacts, an artery's pulsed arc, a cough
+  of mist and drips run to the floor, gentian violet slung in a ropey arc, a
+  copper green sprayed to a speckle, bleach patches, scalpel scratches in
+  rows, and vomit, its bloody handprint now a paw print (no one in Dimm City
+  has hands);
+  Streetwarden (13): claw rakes, muddy paw trails, scratched trail signs,
+  ivy and moss in the cracks;
+  Gutterdruid (9): root fractures, ivy, five kinds of fungus, claw gouges,
+  slime trails ending in slugs and seeping damp;
+  Wirephreak (8): glitch bands, pixel corruption in the boards' own colours,
+  drilled holes, stencilled reticles, tape and sticker tracking markers;
+  Technosorcerer (12): circuit traces scorched into the plaster, branching
+  discharge burns, shards of plaster and brick slipped out of place, and
+  scrawled invented code;
+  Etherlock (11): stone and plates bowed toward the rifts, occult circles cut
+  into the stone, violet burns and stains, candle stubs and their wax, ash.
+  Augmerc's wall (7) is unchanged.
+- **Wall 14, Proxy's (`@page wall-14`, `.dc-page-wall-14`).** Wall 6's setts,
+  two tiles wide, with burned invented sigils, ritual knife cuts, soot rings
+  and scorches, and cracks radiating from impact points
+  (`scripts/wall-proxy.py`, drawn from `images/wall-6.png`). Wall 6 is used
+  well beyond the Proxy chapter, so its marks get a wall of their own;
+  anchored to the sheet, so a spread's two pages show the tile's two halves
+  and meet at the spine. A book moves Proxy to it by naming
+  `.dc-page-wall-14`.
 - **Walls 12 and 13 (`@page wall-12`, `wall-13`).** Drawn like walls 7 to 11,
   18in x 12in tiles anchored to the sheet:
   12, a technosorcerer's lab (`scripts/wall-techlab.py`): spalled plaster
