@@ -45,9 +45,7 @@ What it draws, back to front:
    or scratched, with invented signs between two rings and a figure inside.
    Violet where the aether touched: forking burns (a charred fern of a track,
    the stone scorched round it, a blister and sparks' pits) and stains seeped
-   from a joint and run down below it. Candle wax: stubs on ledges or stuck
-   to the wall, pooled, hung over the edge and run down in beads, lit like
-   the wall. Ash, which is a powder and drawn as grains: low drifts heaped on
+   from a joint and run down below it. Ash, which is a powder and drawn as grains: low drifts heaped on
    the ledges with cinders in them and specks sifted down the wall below, and
    dry streaks smeared across it by a paw or something broad.
 It is then quantised to an exact palette, as the other walls are (one colour
@@ -983,7 +981,7 @@ for rf in rifts:
 
 # where the marks go: drawn at random and kept apart, not set by hand
 n_stone = n_units - len(plates)              # units below this are stones, from it up plates
-kind = np.zeros((NH, NW), np.uint8)          # what marks each pixel: 1 violet, 2 wax, 3 ash and cuts (each has colours of its own)
+kind = np.zeros((NH, NW), np.uint8)          # what marks each pixel: 1 violet, 3 ash and cuts (each has colours of its own)
 taken = []                                   # (x, y, radius) of every mark placed
 
 
@@ -1021,8 +1019,8 @@ def place(radius, clear):
 
 def ledge(half, radius, drop=0.0):
     """A place on the top edge of a plate or a band with `half` px of it clear
-    either side, stone above it, where the warp has not moved the wall: where a candle can
-    stand or ash can lie. `drop`: how far below the edge the mark's middle is."""
+    either side, stone above it, where the warp has not moved the wall: where ash can
+    lie. `drop`: how far below the edge the mark's middle is."""
     lens = np.array([0.2 * NW if p["w"] is None else max(0.0, p["w"] - 2 * half - 50 * S) for p in plates])
     tries = 0
     while True:
@@ -1057,6 +1055,8 @@ def boxed(im):
 
 
 # the ledge marks first (they have the fewest places to go), then the largest
+# Candle wax was drawn here and taken out (owner, 2026-11-14). Its places are
+# still drawn and left empty, so every other mark keeps the place it was given.
 WAX_LEDGE = [ledge(sp + 0.3 * IN, 0.9 * IN, 0.4 * IN) + (sp,) for sp in more.uniform(0.2, 0.6, 3) * IN]
 ASH_LEDGE = [ledge(hf, 0.9 * IN, 0.2 * IN) + (0.92 * hf,) for hf in more.uniform(1.0, 1.8, 4) * IN]
 CIRCLES = sorted((more.uniform(0.75, 1.3) * IN for _ in range(5)), reverse=True)
@@ -1373,135 +1373,6 @@ for x, y, R_ in BURNS:
     burn(x, y, R_, more)
 for x, y, R_ in SEEPS:
     seep(x, y, R_, more)
-
-# melted candle wax: where candles stood on a ledge (the top of a plate or a
-# band) or were stuck to the wall on a gob of their own wax. A stub or two or
-# three (some burnt right down), each a cylinder melted unevenly round its wick;
-# wax pooled at their feet, hung over the edge and run down the wall in beads.
-# It has thickness: it is lit from the upper left, as the wall is, and shades
-# the wall beside it. Tallow mostly; a dull red and a black gone grey with dust.
-print("wax", flush=True)
-WAX = (hexc("#d3c7a6"), hexc("#86423b"), hexc("#5b5654"))
-WICK = hexc("#383331")
-
-
-def ridge(T, pts, rad):
-    """A round bead of wax along pts (window px), rad its half-width at each: T raised to it."""
-    for (ax, ay), (bx, by), ra, rb in zip(pts, pts[1:], rad, rad[1:]):
-        m_ = max(ra, rb) + 1
-        x0, x1 = int(max(0, min(ax, bx) - m_)), int(min(T.shape[1], max(ax, bx) + m_ + 1))
-        y0, y1 = int(max(0, min(ay, by) - m_)), int(min(T.shape[0], max(ay, by) + m_ + 1))
-        if x0 >= x1 or y0 >= y1:
-            continue
-        py, px = np.mgrid[y0:y1, x0:x1].astype(np.float32)
-        vx, vy = bx - ax, by - ay
-        L2 = vx * vx + vy * vy
-        t = np.clip(((px - ax) * vx + (py - ay) * vy) / L2, 0, 1) if L2 > 0 else 0.0
-        r_ = ra + (rb - ra) * t
-        d2 = (px - ax - t * vx) ** 2 + (py - ay - t * vy) ** 2
-        np.maximum(T[y0:y1, x0:x1], 0.8 * np.sqrt(np.clip(r_ * r_ - d2, 0, None)), out=T[y0:y1, x0:x1])
-
-
-def wax_run(T, x, y, w, length, r):
-    """A run of wax down from (x, y): narrowing, wavering a little, a bead where
-    it set, and sometimes one where it paused on the way."""
-    pts, rad = [(x, y)], [w * 0.55]
-    n = max(2, int(length / (7 * S)))
-    for i in range(1, n + 1):
-        x += r.normal(0, 0.35 * S)
-        pts.append((x, y + length * i / n))
-        rad.append(w * (0.5 - 0.14 * i / n) * r.uniform(0.92, 1.08))
-    ridge(T, pts, rad)
-    b = w * r.uniform(0.62, 0.9)
-    ridge(T, [(x, y + length - 0.3 * b), (x, y + length + 0.5 * b)], [b, b * 0.85])
-    if length > 80 * S and r.random() < 0.45:
-        k = int(r.uniform(0.3, 0.7) * n)
-        ridge(T, [pts[k], (pts[k][0], pts[k][1] + w * 0.6)], [w * 0.64, w * 0.55])
-
-
-def candle(B, PX, PY, bx, by, cw, ch, lean, r):
-    """A stub standing at (bx, by), leaning `lean`: a cylinder, its top melted
-    down unevenly round the wick's well. Returns the wick's foot and a point on its rim."""
-    dx, dy = PX - bx, by - PY
-    c, s_ = math.cos(lean), math.sin(lean)
-    p, q = dx * c - dy * s_, dx * s_ + dy * c
-    hw = cw / 2
-    tilt, f, ph = r.uniform(-0.2, 0.2), r.uniform(2.5, 4.5), r.uniform(0, TAU)
-    top_at = lambda p_: ch + cw * (tilt * p_ / hw + 0.07 * np.sin(p_ / hw * f + ph) - 0.13 * np.exp(-(p_ / (0.35 * hw)) ** 2))
-    body = 0.8 * np.sqrt(np.clip(hw * hw - p * p, 0, None))
-    np.maximum(B, body * np.clip(top_at(p) - q + 0.5, 0, 1) * np.clip(q + 0.5, 0, 1), out=B)
-    world = lambda p_, q_: (bx + p_ * c + q_ * s_, by + p_ * s_ - q_ * c)
-    return world(0.0, float(top_at(0.0))), lambda p_: world(p_, float(top_at(p_)))
-
-
-def lay_wax(ix, B, Rn, wick, soot, colour, r):
-    T = wblur(B + Rn, 1.0 * S)
-    gy_, gx_ = np.gradient(T)
-    lit = (gx_ + gy_) / math.sqrt(2)
-    dirt, grit = lnoise(*T.shape, 1.3, r), lnoise(*T.shape, 0.4, r)
-    cast = np.clip(wblur(np.clip(shift(T, 5 * S, 5 * S) - T, 0, 6 * S) / (6 * S), 1.5 * S), 0, 1)
-    sub = img[ix] * ((1 - 0.42 * cast) * (1 - 0.34 * smooth(soot * (0.6 + 0.8 * dirt), 0.12, 0.6)))[..., None]
-    col = colour * ((1 + 0.3 * np.tanh(lit * 0.9)) * (0.98 - 0.22 * smooth(dirt, 0.35, 0.8)) * (1 - 0.3 * (grit > 0.66)))[..., None]     # old wax: grimy, gritty
-    col = mix(col, np.clip(colour * 1.15 + 0.06, 0, 1), smooth(lit, 0.35, 1.0) * 0.5)    # its sheen, on the side toward the light
-    a = np.clip(T / (1.3 * S), 0, 1)
-    sub = mix(sub, col, a)
-    img[ix] = mix(sub, WICK, wick)
-    kind[ix] = np.where((a > 0.02) | (wick > 0.02), 2, kind[ix])
-
-
-def wax_group(x, y, spread, on_ledge, colour, r):
-    """Candles at (x, y), `spread` px either way along the ledge, or one stuck to the wall."""
-    halfw, top, below = int(spread + 0.5 * IN), int(1.5 * IN), int(2.0 * IN)
-    w, h = 2 * halfw, top + below
-    PY, PX = np.mgrid[0:h, 0:w].astype(np.float32)
-    B, Rn, wick, soot = (np.zeros((h, w), np.float32) for _ in range(4))
-    widths = [r.uniform(55, 95) * S]
-    while on_ledge and len(widths) < 3:           # as many as the ledge has room for, up to three
-        cw = r.uniform(55, 95) * S
-        if sum(widths) * 1.25 + cw > 2 * spread:
-            break
-        widths.append(cw)
-    bx = halfw - sum(widths) * 1.25 / 2
-    for cw in widths:
-        bx += cw * r.uniform(0.55, 0.7)
-        ch = cw * (r.uniform(0.12, 0.3) if on_ledge and r.random() < 0.25 else r.uniform(0.7, 2.8))    # burnt right down, or a stub
-        lean = r.normal(0, 0.03) if on_ledge else r.choice([-1, 1]) * r.uniform(0.12, 0.38)
-        by = float(top)
-        if on_ledge:                              # pooled at its foot and over the edge
-            a_, b_ = cw * r.uniform(0.5, 1.2), r.uniform(9, 17) * S
-            ridge(B, [(bx - a_, by + 0.3 * b_), (bx + a_, by + 0.3 * b_)], [b_ * r.uniform(0.6, 1.0), b_ * r.uniform(0.6, 1.0)])
-            for _ in range(int(r.integers(2, 5))):
-                lx, lr = bx + r.uniform(-a_, a_), b_ * r.uniform(0.6, 1.2)
-                ridge(B, [(lx, by + 0.2 * lr), (lx + r.uniform(4, 20) * S, by + 0.2 * lr)], [lr, lr])
-            reach_ = a_ + b_ * 0.5
-        else:                                     # a gob of wax on the wall, the stub set in it
-            a_ = cw * r.uniform(0.65, 0.95)       # widest under the stub's foot, less as it goes down
-            for _ in range(int(r.integers(9, 15))):
-                dn = r.uniform(0, 1) ** 1.5
-                lr = a_ * r.uniform(0.28, 0.5) * (1 - 0.4 * dn)
-                ridge(B, [(bx + r.uniform(-1, 1) * a_ * (1 - 0.75 * dn), by - 0.15 * a_ + 1.5 * a_ * dn)] * 2, [lr, lr])
-            reach_ = a_ * 0.55
-        foot, rim = candle(B, PX, PY, bx, by, cw, ch, lean, r)
-        for _ in range(int(r.integers(1, 5))):    # down the stub's own side
-            sx, sy = rim(r.uniform(-0.42, 0.42) * cw)
-            wax_run(Rn, sx, sy + 2 * S, r.uniform(7, 12) * S, min(ch, r.uniform(0.25, 1.1) * ch) + 2 * S, r)
-        for _ in range(int(r.integers(3, 10))):   # and down the wall
-            wax_run(Rn, bx + r.uniform(-1, 1) * reach_, by + r.uniform(2, 8) * S, r.uniform(8, 17) * S,
-                    float(np.clip(r.lognormal(math.log(110 * S), 0.8), 22 * S, below - 30 * S)), r)
-        wy = r.uniform(10, 18) * S                # the wick: burnt, bent over
-        wx = r.normal(0, 0.4) * wy
-        ridge(wick, [(foot[0], foot[1] + 3 * S), (foot[0] + 0.3 * wx, foot[1] - 0.6 * wy), (foot[0] + wx, foot[1] - wy)], [2.4 * S, 2.1 * S, 1.6 * S])
-        sy_, sw_ = foot[1] - PY, 0.3 * cw + 0.16 * np.clip(foot[1] - PY, 0, None)       # the soot its flame left on the wall above it
-        np.maximum(soot, smooth(sy_, 0, 12 * S) * np.exp(-sy_ / (r.uniform(0.25, 0.55) * IN)) * np.exp(-((PX - foot[0] - 0.12 * wx * sy_ / wy) / sw_) ** 2) * (sy_ > 0), out=soot)
-        bx += cw * r.uniform(0.55, 0.7)
-    lay_wax(window(x - halfw, y - top, w, h), B, Rn, np.clip(wick, 0, 1), soot, colour, r)
-
-
-wax_colours = [WAX[i] for i in more.permutation([0, 0, 0, 1, 2])]
-for (x, y, spread), colour in zip(WAX_LEDGE, wax_colours):
-    wax_group(x, y, spread, True, colour, more)
-for (x, y), colour in zip(WAX_WALL, wax_colours[3:]):
-    wax_group(x, y, 0.0, False, colour, more)
 
 # ash, which is a powder and is drawn as one: grains, not a film. Heaped on the
 # ledges: a low drift of several humps, grey with a paler crust where the light

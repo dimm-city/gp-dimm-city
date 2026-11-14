@@ -58,7 +58,8 @@ and the styles say where a reader is and what they are reading.
   discharge burns, shards of plaster and brick slipped out of place, and
   scrawled invented code;
   Etherlock (11): stone and plates bowed toward the rifts, occult circles cut
-  into the stone, violet burns and stains, candle stubs and their wax, ash.
+  into the stone, violet burns and stains, ash (the candle wax drawn for it
+  in beta.13 is taken out).
   Augmerc's wall (7) is unchanged.
 - **Wall 14, Proxy's (`@page wall-14`, `.dc-page-wall-14`).** Wall 6's setts,
   two tiles wide, with burned invented sigils, ritual knife cuts, soot rings
