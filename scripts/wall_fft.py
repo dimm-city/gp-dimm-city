@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
-THREADS = os.cpu_count() or 1
+THREADS = int(os.environ.get("WALL_FFT_THREADS") or os.cpu_count() or 1)   # draw-walls.py shares the cores between walls drawn at once
 _pool = ThreadPoolExecutor(THREADS)
 
 
