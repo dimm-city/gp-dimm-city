@@ -30,10 +30,33 @@ What it draws, back to front:
 7. Bracket fungi in tiers, growing out of the joints: zoned fans with a
    pale rim, a dark underside and a shadow on the wall below.
 8. Clusters of small mushrooms standing in the joints.
-9. Grime over everything, and the whole drawn back toward a mid tone, so a
-   white sheet pasted on it stays the focus.
+9. The loud marks. All of the above is drawn at the wall's scale (about 1:7)
+   and is texture at the size of a page; these are drawn at the page's scale,
+   most of them half an inch to three inches across, so they read from across
+   a spread. Each kind is made its own way, no two of a kind are alike, and
+   they fall where they fall, clear of each other:
+   - seeping damp: water out of a bed joint, running down the face in tongues;
+     the stone darker where it is wet, a tide line at its edge, glints on it,
+     trickles running on to a bead;
+   - root fractures: a jagged gap forced open across the stones, side cracks
+     and flaked scars beside it, the root lying in it and breaking out to
+     hang and fork down the wall;
+   - claw gouges: three to five furrows raked side by side through stone and
+     moss, deep where the claws landed, the stone bruised pale round them;
+   - slime trails: a pale, patchy, glinting ribbon wandering over the wall,
+     and at the fresh end of each the slug that left it;
+   - more fungus, of four more kinds: toadstools with warted caps, shaggy ink
+     caps dripping black, puffballs (some spent, their spores smoked down the
+     wall), rashes of orange cups; and the bracket again, three times the
+     size, in sulphur yellow;
+   - ivy: woody shoots climbing from the wall's foot (one creeping along from
+     a joint), a lobed, veined leaf on a stalk every inch or so.
+10. Grime over everything, and the whole drawn back toward a mid tone, so a
+    white sheet pasted on it stays the focus.
 It is then quantised to an exact palette, as the other walls are (one colour
-per tone, lossless and small; an opaque tile PDF/X carries as is).
+per tone, lossless and small; an opaque tile PDF/X carries as is). The wall
+keeps the colours it had before the marks, and where no mark falls the tile
+is what it was, pixel for pixel; the marks get colours of their own.
 
 At DPI (300, the print bar) the tile is 18in x 12in, wider than a spread
 and taller than a page, so a spread shows no repeat. No damp patch or stain
@@ -580,7 +603,7 @@ BRACKETS = [   # zones (dark, mid, light), rim, underside
 fib_n = noise(0.7, seed=SEED + 22, band=5 * S)
 
 
-def shelf(cx, cy, w, dep, pal, ang):
+def shelf(cx, cy, w, dep, pal, ang, r=rng):
     """One shelf seen from a little above: a fan below its line of attachment,
     zoned in arcs parallel to its margin, a pale rim, a dark underside lip."""
     zones, rim, under = pal
@@ -590,7 +613,7 @@ def shelf(cx, cy, w, dep, pal, ang):
     ca, sa = np.cos(ang), np.sin(ang)
     X, Y = dx * ca + dy * sa, -dx * sa + dy * ca
     th = np.arctan2(Y, X / (w / (2 * dep)))
-    lob = 1 + 0.05 * np.sin(int(rng.integers(3, 7)) * th + rng.uniform(0, 6)) + 0.03 * np.sin(11 * th + rng.uniform(0, 6))
+    lob = 1 + 0.05 * np.sin(int(r.integers(3, 7)) * th + r.uniform(0, 6)) + 0.03 * np.sin(11 * th + r.uniform(0, 6))
     rho = np.hypot(X / (w / 2), Y / dep) / lob
     top = smooth((1 - rho) * dep, -0.8, 0.8) * smooth(Y, -1.0, 1.0)
     lip_rho = np.hypot(X / (w / 2), (Y - 5 * S) / dep) / lob
@@ -599,7 +622,7 @@ def shelf(cx, cy, w, dep, pal, ang):
     shadow = lblur(lshift(np.maximum(top, lip), px(6), px(9)), 4.0 * S)
     img[ix] *= (1 - 0.40 * shadow)[..., None]
     put(ix, lip, under * (0.9 + 0.15 * smooth(-X / (w / 2), -1, 1))[..., None])
-    nz = int(rng.integers(4, 8))
+    nz = int(r.integers(4, 8))
     z = rho * nz + 0.10 * fib_n[ix] + 0.15 * np.sin(th * 3)
     band = 0.5 + 0.5 * np.sin(2 * np.pi * z)
     zc = mix(zones[0], zones[1], smooth(band, 0.0, 0.5))
@@ -708,15 +731,780 @@ for _ in range(600):
     n_mu += 1
 print(f"  {n_mu} mushroom clusters", flush=True)
 
-# ── 9. grime, and the whole drawn back toward its mean ─────────────────────────
+# ── 9. the loud marks ──────────────────────────────────────────────────────────
+# Everything above is drawn at the wall's scale (about 1:7) and reads, at the
+# size of a page, as texture. These are drawn at the page's scale, so they read
+# from across a spread: seeping damp, roots that have split the stone, claw
+# gouges, slime trails, four more kinds of fungus, ivy, and the slugs. They have
+# a random stream of their own (`more`), so the wall above stays as it was, and
+# they fall where they fall (`place`), clear of each other. Each kind is made
+# its own way, and no two of a kind are alike.
+print("marks", flush=True)
+plain = img.copy()                       # the wall without them: its mean and its palette are taken from it (see below)
+more = np.random.default_rng(SEED + 70)
+IN = DPI                                 # px an inch: the marks are sized in inches of page
+FLOOR = 10.65 * IN                       # px from the sheet's top to the ground strip (11.25in - 0.6in): the wall's foot
+GLINT = hexc("#eef1ea")                  # wet catching the light (nothing glows in print: it is only pale)
+WETTED = np.array([0.63, 0.67, 0.65], F32)   # what water does to the stone's colour
+taken = []                               # (x, y, reach) of every mark placed so far
+
+
+def place(reach, lo=0.5, hi=9.6, course=False):
+    """A place for a mark that reaches `reach` px from its middle, drawn at random
+    between lo and hi inches down the wall and clear of the marks already there
+    (as clear as the wall allows: the room it asks for shrinks as the tries run
+    out). With `course` it sits on a bed joint, and that course's number is
+    returned with it."""
+    for t in range(3000):
+        x0, y0, k = more.uniform(0, NW), more.uniform(lo, hi) * IN, None
+        if course:
+            k = int(np.argmin(np.abs(tops - y0)))
+            y0 = float(bed_lines[k][int(x0) % NW])
+        room = 1 - t / 3000
+        if all(min(abs(x0 - a), NW - abs(x0 - a)) ** 2 + min(abs(y0 - b), NH - abs(y0 - b)) ** 2 >= (room * (reach + c)) ** 2 for a, b, c in taken):
+            break
+    taken.append((x0, y0, reach))
+    return (x0, y0, k) if course else (x0, y0)
+
+
+def soft(m, sigma, dx=0.0, dy=0.0):
+    """blur() for a mark's mask: exactly nothing where the mask is not, so the wall away from the marks is untouched."""
+    b = blur(m, sigma, dx, dy)
+    b[b < 1 / 256] = 0
+    return b
+
+
+def canvas():
+    im = Image.new("L", (NW, NH), 0)
+    return im, ImageDraw.Draw(im)
+
+
+def wrapped_poly(draw, pts, fill=255):
+    for ox in (-NW, 0, NW):
+        for oy in (-NH, 0, NH):
+            draw.polygon([(p + ox, q + oy) for p, q in pts], fill=fill)
+
+
+def wrapped_dot(draw, x0, y0, rx, ry, fill=255):
+    for ox in (-NW, 0, NW):
+        for oy in (-NH, 0, NH):
+            draw.ellipse((x0 + ox - rx, y0 + oy - ry, x0 + ox + rx, y0 + oy + ry), fill=fill)
+
+
+def mask(im, r=0.7):
+    """A drawn canvas as a 0..1 field, its edges antialiased (a blur under a pixel wide, on the torus)."""
+    a = Image.fromarray(np.pad(np.asarray(im), 4, mode="wrap")).filter(ImageFilter.GaussianBlur(r))
+    return np.asarray(a, F32)[4:-4, 4:-4] / 255
+
+
+def strip(pts, widths):
+    """The outline of a ribbon along pts, widths[i] wide at pts[i]."""
+    p = np.asarray(pts, float)
+    d = np.gradient(p, axis=0)
+    n = np.stack([-d[:, 1], d[:, 0]], 1) / np.maximum(np.hypot(d[:, 0], d[:, 1]), 1e-6)[:, None]
+    h = np.asarray(widths, float)[:, None] / 2
+    return [tuple(q) for q in p + n * h] + [tuple(q) for q in (p - n * h)[::-1]]
+
+
+def jink(x0, y0, a, length, r, lo=22, hi=80, sd=0.5):
+    """A fracture's line: straight runs that jink, never far from its heading."""
+    pts, dev, run = [(x0, y0)], 0.0, 0.0
+    while run < length:
+        dev = 0.3 * dev + r.normal(0, sd)
+        s = r.uniform(lo, hi) * S
+        x0, y0, run = x0 + s * math.cos(a + dev), y0 + s * math.sin(a + dev), run + s
+        pts.append((x0, y0))
+    return pts
+
+
+# The ivy is drawn last but its ground is taken first, as it is the largest of
+# them: two plants climbing from the wall's foot, and one creeping along from a
+# joint half way up. (its foot, how many shoots, how far they run in inches, the way they head)
+IVIES = []
+for lo, hi, shoots, tall, aim in ((FLOOR / IN + 0.1, FLOOR / IN + 0.2, int(more.integers(3, 5)), more.uniform(4.5, 7.5), -np.pi / 2),
+                                  (FLOOR / IN + 0.1, FLOOR / IN + 0.2, int(more.integers(2, 4)), more.uniform(2.2, 4.0), -np.pi / 2),
+                                  (3.0, 6.5, 2, more.uniform(2.5, 4.5), more.choice([0.0, np.pi]) + more.normal(0, 0.3))):
+    x0, y0 = place(0.8 * IN, lo, hi)
+    taken.append((x0 + 0.45 * tall * IN * math.cos(aim), y0 + 0.45 * tall * IN * math.sin(aim), 1.2 * IN))
+    IVIES.append((x0, y0, shoots, tall, aim))
+
+TA, TH, TM = (np.zeros((NH, NW), F32) for _ in range(3))    # a tube's cover, its height above the wall (px), and a saddle on it
+
+
+def tube(pts, radii, saddle=False):
+    """Stamp a round-backed tube (a root, a slug) along pts into TA and TH; with `saddle`, into TM too."""
+    for (x0, y0), r_ in zip(pts, radii):
+        if r_ < 0.6:
+            continue
+        ix, dx, dy = patch(x0, y0, int(r_) + 2)
+        d2 = dx * dx + dy * dy
+        TA[ix] = np.maximum(TA[ix], smooth(r_ - np.sqrt(d2), -0.7, 0.7))
+        TH[ix] = np.maximum(TH[ix], np.sqrt(np.clip(r_ * r_ - d2, 0, None)))
+        if saddle:
+            TM[ix] = np.maximum(TM[ix], smooth(r_ * 0.90 - np.sqrt(d2), -0.7, 0.7))
+
+
+def lambert(h, flat=1.0):
+    """How a height field (px) takes the light from the upper left: 0 turned away, 0.63 flat to the wall, 1 square on."""
+    hx = (np.roll(h, -1, 1) - np.roll(h, 1, 1)) * (0.5 * flat)
+    hy = (np.roll(h, -1, 0) - np.roll(h, 1, 0)) * (0.5 * flat)
+    return np.clip((0.55 * hx + 0.55 * hy + 0.63) / np.sqrt(1 + hx * hx + hy * hy), 0, 1)
+
+
+def tubes(dark, mid_, light, shadow=0.45, flat=1.0, shine=0.0, spots=None):
+    """Paint what tube() stamped: its shadow on the wall to the lower right, then the
+    tube itself, round and lit; `shine` is how wet it is; then clear the stamps."""
+    global img
+    sh = soft(TA, 3.0 * S, 5 * S, 7 * S)
+    img *= (1 - shadow * np.clip(sh - TA, 0, 1))[..., None]
+    lam = lambert(TH, flat)
+    c = mix(dark, mid_, smooth(lam, 0.05, 0.62))
+    c = mix(c, light, smooth(lam, 0.68, 0.92) * 0.85)
+    c *= (1 + 0.05 * fib_n)[..., None]
+    if spots is not None:
+        c = mix(c, dark * 0.8, spots)
+    c = mix(c, np.clip(c * 1.22 + 0.04, 0, 1), TM * 0.85)                      # the saddle: paler, its far edge in its own shade
+    c *= (1 - 0.35 * np.clip(TM - np.roll(TM, (px(2), px(2)), (0, 1)), 0, 1) - 0.25 * np.clip(np.roll(TM, (-px(3), -px(3)), (0, 1)) - TM, 0, 1) * TA)[..., None]
+    if shine:
+        c = mix(c, GLINT, smooth(lam, 0.90, 0.985) * shine)
+    img = mix(img, c, TA)
+    TA[:] = 0
+    TH[:] = 0
+    TM[:] = 0
+
+
+# seeping damp: water coming out of a bed joint and running down the face. It is
+# the old damp-streak convolution with the gain turned up: each seep is a row of
+# springs along the joint, each spring's strength sets how far its tongue runs,
+# and where the flow is over a threshold the stone is wet: darker, with a tide
+# line where the wet stops, glints on it, and trickles running on from the
+# longest tongues to a bead. One kind runs fast and narrow, the other slow and broad.
+SEEP = ((230 * S, 30 * S), (130 * S, 54 * S))    # (how far it runs, how wide a tongue), px
+
+
+def tongue(length, width):
+    """drip(), narrowing as it runs: one spring's wet, a tongue that tapers to its tip."""
+    return (np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2 * (1 + 2.5 * np.maximum(ky, 0) / length))).astype(F32)
+
+
+src = [np.zeros((NH, NW), F32) for _ in SEEP]
+springs = []
+for i in range(5):
+    x0, y0, k = place(1.1 * IN, 0.5, 7.4, course=True)
+    span = more.uniform(0.6, 2.3) * IN
+    for _ in range(int(more.integers(4, 12))):
+        sx_ = x0 + more.uniform(-span / 2, span / 2)
+        sy_ = float(bed_lines[k][int(sx_) % NW]) + more.uniform(2 * S, 12 * S)
+        src[i % 2][int(sy_) % NH, int(sx_) % NW] += math.exp(more.uniform(0.4, 2.1))
+        springs.append((sx_, sy_))
+flow = sum(circ_conv(s_, tongue(*kern)) for s_, kern in zip(src, SEEP))
+flow *= np.exp(0.22 * clump + 0.07 * lichen_n)              # the wet's edge wanders with the stone
+WET = smooth(flow, 1.0, 1.1)
+img = mix(img, img * WETTED, WET * np.clip(0.62 + 0.36 * smooth(flow, 1.0, 3.5) + 0.07 * streakn, 0, 1))     # wettest under the joint, streaked as it runs
+img = mix(img, img * 0.76, np.clip((WET - soft(WET, 3.0 * S)) * 2.4, 0, 1))      # the tide line
+glisten = noise(0.5, stretch=(0.2, 1.0), seed=SEED + 71, band=28 * S)            # short dashes, long down the wall
+img = mix(img, GLINT, WET * smooth(flow, 1.25, 1.8) * smooth(glisten, 1.75, 2.25) * 0.8)
+tim, td = canvas()
+him, hd = canvas()
+for sx_, sy_ in springs:
+    col = flow[(int(sy_) + np.arange(NH // 2)) % NH, int(sx_) % NW]
+    reach = int(np.argmax(col < 1.0))                       # how far down the wet runs under this spring
+    if reach > 60 * S and more.random() < 0.7:              # a thread of running water down the tongue, catching the light
+        for q in np.arange(sy_ + more.uniform(0, 30 * S), sy_ + reach * 0.9, 34 * S):
+            if more.random() < 0.6:
+                wrapped_line(hd, [(sx_ + more.normal(0, S), q), (sx_ + more.normal(0, S), q + more.uniform(8, 26) * S)], max(1, round(1.6 * S)))
+    if reach > 40 * S and more.random() < 0.6:              # the trickle that runs on past the wet, to a bead
+        w = more.uniform(3.2, 6.0) * S
+        pts = [(sx_, sy_ + reach - 24 * S)]
+        for _ in range(int(more.uniform(0.25, 1.5) * IN / (6 * S))):
+            pts.append((pts[-1][0] + more.normal(0, 0.9 * S), pts[-1][1] + 6 * S))
+        wrapped_line(td, pts, round(w))
+        wrapped_line(hd, [(p - w * 0.22, q) for p, q in pts[4:]], max(1, round(w * 0.3)))
+        bx, by = pts[-1]
+        wrapped_dot(td, bx, by, w * 1.1, w * 1.7)
+        wrapped_dot(hd, bx - w * 0.35, by - w * 0.5, w * 0.38, w * 0.5)
+TR = mask(tim)
+img = mix(img, img * WETTED, TR * 0.9)
+img = mix(img, GLINT, mask(him) * 0.8)
+del src, flow, glisten, tim, him, TR
+
+# root fractures: a root has grown through the wall and split it. The fracture
+# is a jagged gap, wide in the middle and run out to a hair at each end, with
+# short side cracks and the pale scars where the face flaked off beside it; the
+# root lies in the gap, as thick as the gap is wide, and breaks out of it in two
+# to four places to hang and fork down the wall.
+ROOTS = (hexc("#3b3027"), hexc("#665340"), hexc("#a08a68"))     # bark: in shade, across, lit
+GAP = hexc("#35312b")                                           # the dark inside a fracture
+FRESH = hexc("#cbc5b3")                                         # stone newly broken: paler than the weathered face
+cim, cd = canvas()
+sim_, sd = canvas()
+
+
+def root(x0, y0, a, length, r0, r, depth=0):
+    """A root over the wall: it wanders, hangs, knots, thins to a thread and forks."""
+    step, turn, pts, rad = 2.0, 0.0, [], []
+    n = int(length / step)
+    k0, kf = r.uniform(0, 6.3), r.uniform(0.03, 0.07)
+    for i in range(n):
+        t = i / n
+        turn = 0.96 * turn + r.normal(0, 0.0035)
+        a += turn - 0.005 * math.sin(a - np.pi / 2)
+        x0, y0 = x0 + step * math.cos(a), y0 + step * math.sin(a)
+        pts.append((x0, y0))
+        rad.append(max(1.3 * S, r0 * (1 - t) ** 0.8 * (1 + 0.12 * math.sin(k0 + kf * i))))
+        if depth < 2 and r.random() < 0.004 * (1.3 - t):
+            root(x0, y0, a + r.choice([-1, 1]) * r.uniform(0.35, 1.0), length * (1 - t) * r.uniform(0.35, 0.75), rad[-1] * r.uniform(0.5, 0.8), r, depth + 1)
+    tube(pts, rad)
+
+
+def fracture(x0, y0, r):
+    a = r.uniform(0, np.pi)                                 # any way: a root does not care for the courses
+    length, wmax = r.uniform(2.4, 5.2) * IN, r.uniform(22, 40) * S
+    ca, sa = math.cos(a), math.sin(a)
+    mid = jink(x0 - length / 2 * ca, y0 - length / 2 * sa, a, length, r)
+    n = len(mid)
+    w = [wmax * max(0.0, math.sin(np.pi * i / (n - 1))) ** 0.6 * r.uniform(0.5, 1.3) + 1.2 * S for i in range(n)]
+    lean = r.uniform(0.25, 0.75, n)                         # the gap opens unevenly either side of its line
+    left = [(p - sa * w_ * l_, q + ca * w_ * l_) for (p, q), w_, l_ in zip(mid, w, lean)]
+    right = [(p + sa * w_ * (1 - l_), q - ca * w_ * (1 - l_)) for (p, q), w_, l_ in zip(mid, w, lean)]
+    wrapped_poly(cd, left + right[::-1])
+    for _ in range(int(r.integers(3, 8))):                  # side cracks, run out to nothing
+        i = int(r.integers(1, n - 1))
+        b = a + r.choice([-1, 1]) * r.uniform(0.5, 1.3) + (np.pi if r.random() < 0.5 else 0)
+        pts = jink(*mid[i], b, r.uniform(0.4, 1.5) * IN, r, 14, 50, 0.45)
+        wrapped_poly(cd, strip(pts, np.linspace(max(4 * S, w[i] * 0.5), 0.8, len(pts))))
+    for _ in range(int(r.integers(4, 9))):                  # scars: an angular flake gone from the face beside the gap
+        i = int(r.integers(1, n - 2))
+        edge, way = (left, 1) if r.random() < 0.5 else (right, -1)
+        (p0, q0), (p1, q1) = edge[i], edge[i + 1]
+        flake = [(p0, q0)]
+        for f in sorted(r.uniform(0.1, 0.9, int(r.integers(1, 3)))):
+            out_ = way * r.uniform(16, 62) * S
+            flake.append((p0 + (p1 - p0) * f - sa * out_, q0 + (q1 - q0) * f + ca * out_))
+        wrapped_poly(sd, flake + [(p1, q1)])
+    i0, i1 = int(n * r.uniform(0.15, 0.32)), int(n * r.uniform(0.68, 0.85))     # the root in the gap
+    cx_ = np.array([p - sa * w_ * (l_ - 0.5) for (p, q), w_, l_ in zip(mid, w, lean)][i0:i1 + 1])
+    cy_ = np.array([q + ca * w_ * (l_ - 0.5) for (p, q), w_, l_ in zip(mid, w, lean)][i0:i1 + 1])
+    run = np.concatenate([[0], np.cumsum(np.hypot(np.diff(cx_), np.diff(cy_)))])
+    at = np.arange(0, run[-1], 2.0)
+    box = np.ones(31) / 31                                  # a root does not jink: its line is the gap's, smoothed
+    ease = lambda v: np.convolve(np.pad(np.interp(at, run, v), 15, mode="edge"), box, "valid")
+    rx_, ry_ = ease(cx_), ease(cy_)
+    rr_ = np.clip(ease(np.array(w[i0:i1 + 1])) * 0.42, 7 * S, 17 * S) * np.clip(np.minimum(at, at[-1] - at) / (0.15 * at[-1]), 0.25, 1)
+    tube(zip(rx_, ry_), rr_)
+    for _ in range(int(r.integers(2, 5))):                  # and where it breaks out
+        j = int(r.integers(len(at) // 8, len(at) * 7 // 8))
+        root(rx_[j], ry_[j], a + r.choice([-1, 1]) * np.pi / 2 + r.normal(0, 0.5), r.uniform(1.2, 3.6) * IN, rr_[j] * r.uniform(0.8, 1.05), r)
+
+
+for _ in range(4):
+    fracture(*place(1.5 * IN, 0.8, 8.6), more)
+CR = mask(cim)
+SC = mask(sim_) * (1 - CR)
+img = mix(img, FRESH * (1 + 0.03 * fine + 0.03 * lichen_n)[..., None], SC * 0.55)
+img *= (1 - 0.35 * np.clip(SC - np.roll(SC, (px(3), px(3)), (0, 1)), 0, 1))[..., None]      # the old face's shadow on the scar
+img = mix(img, np.clip(img * 1.22 + 0.04, 0, 1), np.clip(np.roll(CR, (px(2), px(2)), (0, 1)) - CR, 0, 1) * 0.7)   # the gap's lit lip
+img = mix(img, GAP * (1 + 0.06 * fine)[..., None], CR * 0.95)
+tubes(*ROOTS)
+del cim, sim_, CR, SC
+
+# claw gouges: something raked the wall. Three to five furrows side by side,
+# the middle claws leading, all swung on the one curve; each bites deep where
+# it lands and runs out to a scratch. The furrow is cut as a groove (its upper
+# wall in shadow, its lower wall lit), its edges chipped, and round it the
+# stone is bruised pale and the moss torn off.
+gim, gd = canvas()
+for _ in range(8):
+    x0, y0 = place(1.0 * IN, 0.4, 9.8)
+    n = int(more.choice([3, 4, 4, 5]))
+    a = more.normal(np.pi / 2, 0.9) + (np.pi if more.random() < 0.15 else 0)   # mostly raked downward
+    length, gap, swing, wmax = more.uniform(1.4, 3.3) * IN, more.uniform(34, 64) * S, more.normal(0, 0.5), more.uniform(11, 21) * S
+    for j in range(n):
+        off = j - (n - 1) / 2
+        lj = length * more.uniform(0.7, 1.05) * (1 - 0.07 * abs(off))
+        wj = wmax * more.uniform(0.7, 1.1)
+        lead = -length / 2 + abs(off) * gap * more.uniform(0.3, 0.9) + more.normal(0, 12 * S)
+        b = a - swing / 2 + more.normal(0, 0.03)
+        gx_ = x0 + lead * math.cos(a) - off * gap * math.sin(a)
+        gy_ = y0 + lead * math.sin(a) + off * gap * math.cos(a)
+        skip = more.uniform(0.35, 0.7) if more.random() < 0.25 else None        # where the claw lifted and bit again
+        pts, ws = [], []
+        for i in range(49):
+            t = i / 48
+            b += swing / 48 + more.normal(0, 0.012)
+            gx_, gy_ = gx_ + lj / 48 * math.cos(b), gy_ + lj / 48 * math.sin(b)
+            pts.append((gx_, gy_))
+            ws.append(wj * min(1, t / 0.05) ** 0.5 * (1 - t) ** 0.6 * (1 - 0.85 * math.exp(-((t - skip) / 0.05) ** 2) if skip else 1) + 0.6)
+        wrapped_poly(gd, strip(pts, ws))
+G = mask(gim, 1.0)
+edge = soft(G, 2.5 * S)
+G = np.maximum(G, smooth(edge + lichen_n * edge * (1 - edge), 0.42, 0.58))    # the edges chipped
+bruise = smooth(soft(G, 7.0 * S) * (1 + 0.3 * lichen_n), 0.07, 0.30)
+img = mix(img, FRESH * (1 + 0.04 * fine)[..., None], bruise * (0.38 + 0.50 * ma))
+depth = soft(G, 2.2 * S)
+slope = (np.roll(depth, 1, 1) - np.roll(depth, -1, 1)) + (np.roll(depth, 1, 0) - np.roll(depth, -1, 0))   # > 0 on the wall that faces the light
+img = mix(img, mix(hexc("#3f3b34"), hexc("#ddd8c8"), smooth(slope, -0.10, 0.28)), G * 0.94)
+del gim, G, edge, bruise, depth, slope
+
+# slime trails: where a slug went, over stone and moss alike. A ribbon of dried
+# slime, a pale patchy film that swells and narrows, a darker line along its
+# edges, points of light all over it; old where it starts (thin, broken) and
+# fresh at the slug.
+SLIME = hexc("#dfe5d8")
+rim_, rd = canvas()
+eim, ed = canvas()
+trails = []
+for i in range(5):
+    x0, y0 = place(0.5 * IN, 0.5, 9.3)
+    a, w = more.uniform(0, 2 * np.pi), more.uniform(26, 44) * S
+    wander = more.uniform(0.001, 0.003)
+    n = int(more.uniform(4.5, 13) * IN / 3)
+    pts, turn = [], 0.0
+    for _ in range(n):
+        turn = 0.985 * turn + more.normal(0, wander)
+        a += turn
+        x0, y0 = x0 + 3 * math.cos(a), y0 + 3 * math.sin(a)
+        pts.append((x0, y0))
+    trails.append((pts, w))
+    p = np.asarray(pts)
+    d = np.gradient(p, axis=0)
+    nrm = np.stack([-d[:, 1], d[:, 0]], 1) / 3
+    wide = w * (1 + 0.16 * np.sin(np.arange(n) / more.uniform(9, 16) + more.uniform(0, 6.3)) + 0.10 * np.sin(np.arange(n) / more.uniform(3, 6) + more.uniform(0, 6.3)))   # it swells and narrows as the slug did
+    gone = 0
+    for j in range(0, n - 8, 8):
+        t = j / n
+        if gone <= 0 and more.random() < 0.10 * (1 - 1.6 * t):                  # the old end is broken: stretches of it are gone
+            gone = int(more.integers(2, 9))
+        gone -= 1
+        if gone > 0:
+            continue
+        v = int(255 * (0.35 + 0.65 * t ** 0.8))
+        wrapped_poly(rd, strip(p[j:j + 10], wide[j:j + 10]), fill=v)
+        for side in (-1, 1):
+            if more.random() < 0.75:                                            # its edges, where the slime lay thickest: a darker line, not all the way
+                wrapped_line(ed, [tuple(q) for q in p[j:j + 10] + side * nrm[j:j + 10] * (wide[j:j + 10, None] / 2 - 1.5 * S)], max(2, round(2.0 * S)), fill=v)
+SL = mask(rim_)
+sparkle = noise(0.3, seed=SEED + 72, band=4.5 * S)                               # points of light on it, not lines
+img = mix(img, SLIME, SL * np.clip(0.56 + 0.16 * lichen_n + 0.10 * fine, 0.25, 0.85))    # a film, patchy
+img = mix(img, img * np.array([0.62, 0.67, 0.63], F32), mask(eim) * 0.8)
+img = mix(img, GLINT, SL * smooth(sparkle, 1.3, 1.8) * 0.9)
+del rim_, eim, SL, sparkle
+
+# more fungus, and of four more kinds, each a colony on a bed joint. The first
+# is the old bracket drawn three times the size, in a sulphur yellow; the others
+# are new: toadstools with warted caps, shaggy ink caps gone to black drip at
+# the hem, puffballs (some ripe, some spent and smoking their spores down the
+# wall), and a rash of orange cups on the stone.
+SULPHUR = ((hexc("#9a6c2e"), hexc("#bd8f3d"), hexc("#d6b765")), hexc("#e6d6a2"), hexc("#765a2c"))
+for _ in range(3):
+    x0, y0, k = place(0.9 * IN, 0.5, 9.0, course=True)
+    w0 = more.uniform(230, 400) * S
+    specs = []
+    for t in range(int(more.integers(2, 7))):
+        w = w0 * more.uniform(0.55, 1.0) * (1 - 0.08 * t)
+        specs.append((x0 + more.normal(0, w0 * 0.22), y0 + t * w0 * more.uniform(0.24, 0.38) - more.uniform(0, 8 * S), w,
+                      w * more.uniform(0.30, 0.44), more.normal(0, 0.10)))
+    for (cx, cy, w, dep, ang) in sorted(specs, key=lambda s: -s[1]):
+        shelf(cx, cy, w, dep, SULPHUR, ang, more)
+
+TOADS = [   # cap, cap's dark, stem, warts
+    (hexc("#9c3f2e"), hexc("#5d2821"), hexc("#d8cfb8"), hexc("#ebe4cf")),      # ox-blood
+    (hexc("#b06a2c"), hexc("#74431f"), hexc("#d6ccb2"), hexc("#ece3c8")),      # tawny
+    (hexc("#7d7a45"), hexc("#55532f"), hexc("#d2ceb6"), hexc("#e4e0c8")),      # a sick olive
+]
+
+
+def toadstool(bx, by, h, cw, lean, pal, r):
+    """A big toadstool, side on: a thick stem with a swollen foot and a skirt, a
+    broad cap scattered with pale warts, its gills showing under the brim."""
+    cap, capd, stem, wart = pal
+    R = int(max(h + cw * 0.7, cw)) + px(18)
+    ix, dx, dy = patch(bx, by - h / 2, R)
+    X, Y = dx, -(dy - h / 2)                           # from the base, y up
+    tY = np.clip(Y / h, 0, 1)
+    cx = lean * h * tY ** 2
+    sw = cw * 0.075 * (1 + 1.1 * (1 - tY) ** 3) + 2.0 * S
+    sdf_s = np.minimum(sw - np.abs(X - cx), np.minimum(Y + 2 * S, h - Y + 2 * S))
+    sa = smooth(sdf_s, -0.7, 0.7)
+    a, b = cw / 2, cw * r.uniform(0.26, 0.52)
+    capx, capy = lean * h, h - cw * 0.05
+    nx, ny = (X - capx) / a, (Y - capy) / b
+    rr = nx * nx + ny * ny
+    sdf_c = (1 - np.sqrt(rr)) * min(a, b)
+    ca_ = smooth(sdf_c, -0.7, 0.7) * smooth(Y - capy, -0.7, 0.7)
+    gill = smooth((1 - np.sqrt(nx * nx + ((Y - capy) / (b * 0.30)) ** 2)) * a * 0.3, -0.5, 0.5) * smooth(capy - Y, -0.7, 0.7)
+    ys, sh_ = h * r.uniform(0.52, 0.68), cw * r.uniform(0.09, 0.14)             # the skirt: a little cone round the stem
+    tS = (ys - Y) / sh_
+    skirt = smooth(np.minimum(sw * (1.0 + 1.3 * tS) - np.abs(X - cx), np.minimum(tS, 1 - tS) * sh_), -0.7, 0.7)
+    sil = np.maximum(np.maximum(sa, ca_), np.maximum(gill, skirt))
+    shadow = lblur(lshift(sil, px(8), px(7)), 5.0 * S)
+    img[ix] *= (1 - 0.42 * shadow * (1 - sil))[..., None]
+    snx = np.clip((X - cx) / sw, -1, 1)
+    sl = np.clip(snx * L3[0] + np.sqrt(1 - snx * snx) * L3[2], 0, 1)
+    under = 1 - 0.30 * smooth(Y, h - cw * 0.30, h - cw * 0.05) - 0.22 * smooth(tS, 1.0, 1.6) * smooth(tS, 3.0, 1.6)   # in the cap's shade, and the skirt's
+    put(ix, sa, stem * ((0.70 + 0.38 * sl) * under)[..., None])
+    put(ix, skirt, stem * (0.80 + 0.30 * sl * (1 - 0.3 * np.clip(tS, 0, 1)))[..., None])
+    put(ix, gill, mix(capd, stem, 0.55) * (0.86 + 0.10 * np.sin(nx * a / (2.2 * S)))[..., None])
+    nz = np.sqrt(np.clip(1 - rr, 0, 1))
+    cl = np.clip(nx * L3[0] + ny * L3[1] + nz * L3[2], 0, 1)
+    cc = mix(capd, cap, smooth(cl, 0.12, 0.72)) * (0.88 + 0.22 * cl)[..., None]
+    cc = mix(cc, cap * 1.18, smooth(cl, 0.85, 1.0) * 0.6)
+    warts = np.zeros_like(X)
+    for _ in range(int(r.integers(8, 30))):
+        th, rad = r.uniform(0.06, 0.94) * np.pi, 0.94 * math.sqrt(r.random())
+        s = cw * r.uniform(0.030, 0.075) * (1 - 0.45 * rad)
+        wa = r.uniform(0, np.pi)
+        u = (X - capx - rad * math.cos(th) * a), (Y - capy - rad * math.sin(th) * b)
+        warts = np.maximum(warts, smooth(s - np.hypot((u[0] * math.cos(wa) + u[1] * math.sin(wa)), (-u[0] * math.sin(wa) + u[1] * math.cos(wa)) * r.uniform(1.2, 2.0)), -0.7, 0.7))
+    cc = mix(cc, wart * (0.82 + 0.22 * cl)[..., None], warts * 0.92)
+    put(ix, ca_, cc)
+    out = sil * (1 - smooth(np.maximum(np.maximum(sdf_s, sdf_c), 0), 0.5 * S, 1.8 * S))
+    img[ix] *= (1 - 0.25 * out * (1 - warts))[..., None]
+
+
+for i in range(4):
+    x0, y0, k = place(0.75 * IN, 0.6, 9.2, course=True)
+    pal = TOADS[int(more.integers(0, len(TOADS)))]
+    size = more.uniform(105, 190) * S
+    items = []
+    for _ in range(int(more.integers(1, 6))):
+        bx = x0 + more.normal(0, size * 0.8)
+        cw = size * more.uniform(0.45, 1.15)
+        items.append((float(bed_lines[k][int(bx) % NW]) + more.uniform(-2 * S, 10 * S), bx, cw * more.uniform(0.75, 1.5), cw, more.normal(0, 0.16)))
+    for (by, bx, h, cw, lean) in sorted(items, key=lambda s: (s[0], s[3])):
+        toadstool(bx, by, h, cw, lean, pal, more)
+
+INK = hexc("#2b2826")
+
+
+def inkcap(bx, by, h, cw, lean, age, r):
+    """A shaggy ink cap: a tall bell on a thin stem, shaggy with upturned scales,
+    its hem gone to black ink that drips. `age` 0 is a closed cylinder, 1 a
+    flared bell, most of it ink."""
+    R = int(h * 1.05 + cw) + px(12)
+    ix, dx, dy = patch(bx, by - h / 2, R)
+    X, Y = dx, -(dy - h / 2)
+    tY = np.clip(Y / h, 0, 1)
+    cx = lean * h * tY ** 2
+    sw = cw * 0.07 + 1.6 * S
+    sa = smooth(np.minimum(sw - np.abs(X - cx), np.minimum(Y + 2 * S, h - Y)), -0.7, 0.7)
+    ch = min(h * 0.86, cw * (2.3 - 1.1 * age) * r.uniform(0.85, 1.1))          # the cap's height: it shortens as it melts
+    v = (h - Y) / ch                                                           # 0 at its crown, 1 at its hem
+    vc = np.clip(v, 0, 1)
+    hw = (cw / 2) * np.sqrt(np.clip(1 - (1 - np.minimum(vc * 2.2, 1)) ** 2, 0, 1)) * (0.80 + 0.20 * vc + 0.75 * age * vc ** 3)
+    ph = r.uniform(0, 6.3, 3)
+    rag = 0.06 * np.sin(X / (5.0 * S) + ph[0]) + 0.05 * np.sin(X / (2.3 * S) + ph[1]) + 0.04 * fib_n[ix]    # the hem, tattered
+    capx = lean * h * (np.clip(Y, 0, h) / h) ** 2
+    sdf_c = np.minimum(hw - np.abs(X - capx), np.minimum((1 + rag - v) * ch, v * ch + 1))
+    ca_ = smooth(sdf_c, -0.7, 0.7)
+    drips = np.zeros_like(X)
+    hem = h - ch
+    for _ in range(int(r.integers(1, 3 + int(4 * age)))):
+        xd = lean * h * (hem / h) ** 2 + r.uniform(-0.9, 0.9) * (cw / 2) * (1 + 0.75 * age)
+        ld_, wd = r.uniform(0.15, 0.85) * hem, r.uniform(1.5, 2.8) * S
+        drips = np.maximum(drips, smooth(np.minimum(wd - np.abs(X - xd), np.minimum(hem + 4 * S - Y, Y - (hem - ld_))), -0.7, 0.7))
+        drips = np.maximum(drips, smooth(wd * 1.9 - np.hypot(X - xd, (Y - (hem - ld_)) * 0.7), -0.7, 0.7))
+    sil = np.maximum(np.maximum(sa, ca_), drips)
+    shadow = lblur(lshift(sil, px(7), px(6)), 4.0 * S)
+    img[ix] *= (1 - 0.40 * shadow * (1 - sil))[..., None]
+    snx = np.clip((X - cx) / sw, -1, 1)
+    sl = np.clip(snx * L3[0] + np.sqrt(1 - snx * snx) * L3[2], 0, 1)
+    put(ix, sa, hexc("#d9d2be") * (0.70 + 0.38 * sl)[..., None])
+    put(ix, drips, INK)
+    cnx = np.clip((X - capx) / np.maximum(hw, 1), -1, 1)
+    cl = np.clip(cnx * L3[0] + np.sqrt(1 - cnx * cnx) * L3[2] + 0.25 * (1 - vc) * L3[1], 0, 1)
+    cc = mix(hexc("#b59a70"), hexc("#dcd5c1"), smooth(vc, 0.02, 0.22))         # a tan crown on a pale bell
+    scales = smooth(fib_n[ix] + 0.7 * np.sin(v * ch / (4.5 * S) + 3 * cnx + ph[2]), 0.9, 1.5) * smooth(vc, 0.1, 0.3)
+    cc = mix(cc, hexc("#a18c68"), scales * 0.75)                               # the shag
+    cc = cc * (0.66 + 0.42 * cl)[..., None]
+    inked = smooth(v + 0.5 * rag, 1 - (0.22 + 0.5 * age), 1.0 - 0.08 * age)
+    cc = mix(cc, INK * (0.9 + 0.5 * cl)[..., None], inked)
+    put(ix, ca_, cc)
+    img[ix] *= (1 - 0.25 * ca_ * (1 - smooth(sdf_c, 0.5 * S, 1.8 * S)))[..., None]
+
+
+for i in range(4):
+    x0, y0, k = place(0.7 * IN, 0.8, 9.2, course=True)
+    size = more.uniform(55, 95) * S
+    items = []
+    for _ in range(int(more.integers(3, 9))):
+        bx = x0 + more.normal(0, size * 1.3)
+        cw = size * more.uniform(0.6, 1.15)
+        items.append((float(bed_lines[k][int(bx) % NW]) + more.uniform(-2 * S, 8 * S), bx, cw * more.uniform(2.4, 3.8), cw, more.normal(0, 0.10), more.random() ** 1.3))
+    for (by, bx, h, cw, lean, age) in sorted(items, key=lambda s: (s[0], s[3])):
+        inkcap(bx, by, h, cw, lean, age, more)
+
+PUFFS = [(hexc("#e0d9c4"), hexc("#a49a80")), (hexc("#c9b68e"), hexc("#8c7a58")), (hexc("#9a8662"), hexc("#5e5140"))]   # young, ripe, spent: (lit, shade)
+SPORE = hexc("#5a4c36")
+
+
+def puffball(bx, by, rad, age, r):
+    """A puffball sat in the joint: a warty ball, lit as one. A ripe one (age 1)
+    has a pore at its crown; a spent one (2) is torn open, and has smoked its
+    spores down the wall below it."""
+    lit, shade = PUFFS[age]
+    if age == 2:
+        for _ in range(int(r.uniform(180, 420))):                              # the spores first: the ball stands in front of them
+            px_, py_ = bx + r.normal(0.3 * rad, 0.75 * rad), by - rad + abs(r.normal(0, 1.9 * rad)) + rad * 0.4
+            s = max(0.9 * S, r.lognormal(math.log(1.8 * S), 0.5))
+            jx, ddx, ddy = patch(px_, py_, int(s) + 2)
+            put(jx, smooth(s - np.hypot(ddx, ddy), -0.7, 0.7) * r.uniform(0.35, 0.85), SPORE)
+    R = int(rad * 1.25) + px(14)
+    ix, dx, dy = patch(bx, by - rad * 0.8, R)
+    a, b = rad, rad * r.uniform(0.80, 1.0)
+    nx, ny = dx / a, -dy / b
+    rr = nx * nx + ny * ny
+    sil = smooth((1 - np.sqrt(rr)) * b, -0.7, 0.7)
+    shadow = lblur(lshift(sil, px(7), px(6)), 4.0 * S)
+    img[ix] *= (1 - 0.42 * shadow * (1 - sil))[..., None]
+    nz = np.sqrt(np.clip(1 - rr, 0, 1))
+    cl = np.clip(nx * L3[0] + ny * L3[1] + nz * L3[2], 0, 1)
+    cc = mix(shade, lit, smooth(cl, 0.10, 0.80))
+    cc = mix(cc, lit * 1.08, smooth(cl, 0.88, 1.0) * 0.6)
+    cc *= (1 - 0.16 * smooth(fib_n[ix], 0.7, 1.5) * nz)[..., None]             # its warts
+    if age == 1:
+        cc = mix(cc, SPORE * 0.8, smooth(0.15 - np.hypot(nx + 0.08, (ny - 0.72) * 1.6), -0.03, 0.03))
+    if age == 2:
+        ph = r.uniform(0, 6.3, 2)
+        tear = ny - (0.30 + 0.14 * np.sin(7 * nx + ph[0]) + 0.10 * np.sin(13 * nx + ph[1]))
+        cc = mix(cc, SPORE * (0.62 + 0.5 * np.clip(-nx - ny + 1, 0, 1))[..., None], smooth(tear, 0.0, 0.05))
+        cc = mix(cc, lit, smooth(tear, -0.07, 0.0) * smooth(tear, 0.04, 0.0) * 0.6)    # the torn lip
+    put(ix, sil, cc)
+    img[ix] *= (1 - 0.25 * sil * (1 - smooth((1 - np.sqrt(rr)) * b, 0.5 * S, 1.8 * S)))[..., None]
+
+
+for i in range(5):
+    x0, y0, k = place(0.6 * IN, 0.6, 9.4, course=True)
+    size = more.uniform(34, 70) * S
+    items = []
+    for _ in range(int(more.integers(2, 9))):
+        bx = x0 + more.normal(0, size * 1.6)
+        items.append((float(bed_lines[k][int(bx) % NW]) + more.uniform(-3 * S, 14 * S), bx, size * more.uniform(0.45, 1.2), int(more.choice([0, 0, 1, 1, 2]))))
+    for (by, bx, rad, age) in sorted(items, key=lambda s: s[0]):
+        puffball(bx, by, rad, age, more)
+
+CUPS = [   # hollow in shade, cup, hollow lit, rim
+    (hexc("#7a3319"), hexc("#b9562a"), hexc("#dc8e52"), hexc("#e6bd90")),
+    (hexc("#7d5a1c"), hexc("#b98a2c"), hexc("#dcb85c"), hexc("#ead9a4")),
+    (hexc("#6e2a26"), hexc("#a23e34"), hexc("#cf7460"), hexc("#e2b4a0")),
+]
+
+
+def cup(x0, y0, rad, pal, r):
+    """An elf cup: a little bowl on the stone, its rim pale and wavy, its hollow
+    in shade on the side the light comes from and lit on the far side."""
+    dark, mid_, light, rimc = pal
+    ix, dx, dy = patch(x0, y0, int(rad * 1.25) + px(7))
+    ang, el = r.uniform(0, np.pi), r.uniform(0.72, 1.0)
+    X = (dx * math.cos(ang) + dy * math.sin(ang)) / rad
+    Y = (-dx * math.sin(ang) + dy * math.cos(ang)) / (rad * el)
+    th = np.arctan2(Y, X)
+    rho = np.hypot(X, Y) / (1 + 0.08 * np.sin(3 * th + r.uniform(0, 6.3)) + 0.05 * np.sin(5 * th + r.uniform(0, 6.3)))
+    a = smooth((1 - rho) * rad * el, -0.7, 0.7)
+    shadow = lblur(lshift(a, px(3), px(3)), 2.0 * S)
+    img[ix] *= (1 - 0.40 * shadow * (1 - a))[..., None]
+    s = (dx + dy) / (rad * 1.41) * smooth(rho, 0.0, 0.7)                        # > 0 on the hollow's far side, which faces the light
+    c = mix(dark, mid_, smooth(s, -0.75, 0.05))
+    c = mix(c, light, smooth(s, 0.15, 0.75) * 0.8)
+    c = mix(c, rimc * (1 - 0.18 * np.clip(s, 0, 1))[..., None], smooth(rho, 0.74, 0.86))
+    put(ix, a, c)
+    img[ix] *= (1 - 0.22 * a * smooth(rho, 0.93, 1.0))[..., None]
+
+
+for i in range(5):
+    x0, y0, k = place(0.55 * IN, 0.5, 9.4, course=True)
+    pal = CUPS[int(more.integers(0, len(CUPS)))]
+    sx_, sy_ = more.uniform(45, 110) * S, more.uniform(30, 75) * S
+    for rad in sorted(np.clip(more.lognormal(math.log(15 * S), 0.5, int(more.integers(12, 46))), 6 * S, 38 * S), reverse=True):
+        cup(x0 + more.normal(0, sx_), y0 + sy_ * 0.8 + more.normal(0, sy_), rad, pal, more)
+
+# ivy: woody stems climbing from the wall's foot (and one creeping along from a
+# joint half way up), forking, a leaf on a stalk every inch or so, to one side
+# then the other. Each leaf is drawn on its own: three or five pointed lobes
+# round a heart-shaped base, pale veins from the stalk to each point, folded
+# along its midrib so one half takes the light; smaller and paler toward the
+# shoot's tip, a few yellowed or gone brown, a few with a bite out of them.
+IVY = [   # in shade, in the light, its gloss, its veins
+    (hexc("#34492c"), hexc("#4a6639"), hexc("#7f9a62"), hexc("#b5c398")),
+    (hexc("#3a4a2a"), hexc("#566b38"), hexc("#8a9c5e"), hexc("#bcc694")),
+    (hexc("#2f4a33"), hexc("#44664a"), hexc("#779a78"), hexc("#b0c6a8")),
+]
+TURNED = [   # the leaves that have turned
+    (hexc("#6f6a30"), hexc("#99913f"), hexc("#bdb469"), hexc("#d6d09c")),      # yellowed
+    (hexc("#5f3526"), hexc("#874a32"), hexc("#ad7150"), hexc("#d0a888")),      # red
+    (hexc("#4f3f2c"), hexc("#72593c"), hexc("#94795a"), hexc("#b8a586")),      # dead
+]
+LSS = 3                                  # a leaf's outline is drawn at LSS x and boxed down
+vim, vd_ = canvas()
+shoot, leaves = [], []                   # one plant's leaves as its shoots put them out; every plant's, with their colours
+
+
+def ivy_outline(R, r, lobes):
+    """An ivy leaf's outline in its own frame, the stalk at the back of the
+    origin and the tip along +u: ([(u, v)], the points the veins run to)."""
+    def half(side):
+        n1, s1, n2 = r.uniform(0.50, 0.66), r.uniform(0.74, 0.92), r.uniform(0.46, 0.56)
+        b1 = r.uniform(0.54, 0.72) if lobes == 5 else n2 * 1.03
+        keys = [(0, 1.0), (r.uniform(28, 36), n1), (r.uniform(56, 68), s1), (r.uniform(94, 104), n2), (r.uniform(122, 134), b1),
+                (158, r.uniform(0.38, 0.46)), (180, 0.10)]
+        pts = []
+        for (d0, r0), (d1, r1) in zip(keys, keys[1:]):
+            pts += [(d0, r0), ((d0 + d1) / 2, (r0 + r1) / 2 * 1.07)]          # each lobe's side bows out a little
+        pts.append(keys[-1])
+        xy = [(R * q * math.cos(math.radians(d) * side), R * q * math.sin(math.radians(d) * side)) for d, q in pts]
+        return xy, [xy[4], xy[8]] if lobes == 5 else [xy[4]]
+    (p, tp), (m, tm) = half(1), half(-1)
+    return p + m[-2:0:-1], [((R, 0.0), 0.034)] + [(t, 0.026) for t in tp + tm]
+
+
+def ivy_leaf(x0, y0, ang, R, pal, r):
+    dark, mid_, light, veinc = pal
+    out_, tips = ivy_outline(R, r, 5 if r.random() < 0.7 else 3)
+    Rb = int(R * 1.08) + px(8)
+    ix, dx, dy = patch(x0, y0, Rb)
+    n = 2 * Rb + 1
+    ca, sa = math.cos(ang), math.sin(ang)
+    fx, fy = x0 - int(x0) + Rb + 0.5, y0 - int(y0) + Rb + 0.5
+    Z = lambda u, v: ((u * ca - v * sa + fx) * LSS, (u * sa + v * ca + fy) * LSS)
+    im = Image.new("L", (n * LSS, n * LSS), 0)
+    d = ImageDraw.Draw(im)
+    d.polygon([Z(u, v) for u, v in out_], fill=255)
+    if r.random() < 0.22:                                                      # something has been at it
+        for _ in range(int(r.integers(1, 4))):
+            th, q, br = r.uniform(-2.4, 2.4), R * r.uniform(0.55, 0.95), R * r.uniform(0.07, 0.17) * LSS
+            bx, by = Z(q * math.cos(th), q * math.sin(th))
+            d.ellipse((bx - br, by - br, bx + br, by + br), fill=0)
+    vm = Image.new("L", (n * LSS, n * LSS), 0)
+    vd = ImageDraw.Draw(vm)
+    u0 = -0.10 * R
+    for (tu, tv), wt in tips:
+        vd.line([Z(u0, 0), Z(u0 + (tu - u0) * 0.9, tv * 0.9)], fill=255, width=max(2, round(R * wt * LSS)))
+        for f in (0.35, 0.6):                                                  # and the side veins off each
+            mu, mv = u0 + (tu - u0) * f, tv * f
+            for side in (-1, 1):
+                va = math.atan2(tv, tu - u0) + side * 0.75
+                vd.line([Z(mu, mv), Z(mu + 0.2 * R * (1 - f) * math.cos(va), mv + 0.2 * R * (1 - f) * math.sin(va))], fill=170, width=max(1, round(R * 0.012 * LSS)))
+    a = np.asarray(im.resize((n, n), Image.BOX), F32) / 255
+    veins = np.asarray(vm.resize((n, n), Image.BOX), F32) / 255 * a
+    U, V = dx * ca + dy * sa, -dx * sa + dy * ca
+    face = (0.707 * sa - 0.707 * ca) * np.tanh(V / (0.07 * R))                 # folded along the midrib: > 0 on the half that takes the light
+    c = mix(dark, mid_, smooth(face, -0.6, 0.5) * 0.75 + 0.25 * r.random())
+    c = mix(c, light, 0.6 * smooth(face, 0.1, 0.7) * np.exp(-((U - 0.4 * R) ** 2 + (np.abs(V) - 0.22 * R) ** 2) / (0.34 * R) ** 2))
+    c *= (1 + 0.05 * fib_n[ix])[..., None]
+    c = mix(c, veinc, veins * 0.8)
+    shadow = lblur(lshift(a, px(5), px(6)), 3.0 * S)
+    img[ix] *= (1 - 0.42 * shadow * (1 - a))[..., None]
+    put(ix, a, c)
+    img[ix] *= (1 - 0.5 * np.clip(a - lblur(a, 1.5 * S), 0, 1))[..., None]      # a darker margin
+
+
+def ivy(x0, y0, a, length, w0, aim, r, depth=0):
+    """One shoot: it wanders toward `aim`, forks, and leaves a leaf to one side then the other."""
+    step, turn, pts = 4.0, 0.0, [(x0, y0)]
+    n = int(length / step)
+    side, due = r.choice([-1, 1]), r.uniform(20, 60) * S
+    for i in range(n):
+        t = i / n
+        turn = 0.94 * turn + r.normal(0, 0.011)
+        a += turn - 0.022 * math.sin(a - aim)
+        x0, y0 = x0 + step * math.cos(a), y0 + step * math.sin(a)
+        pts.append((x0, y0))
+        if i % 4 == 3:
+            wrapped_line(vd_, pts[-6:], max(2, round(w0 * (1 - t) ** 0.7 + 1.5 * S)))
+        due -= step
+        if due <= 0:
+            side, due = -side, r.uniform(30, 68) * S * (1 - 0.3 * t)
+            la = a + side * r.uniform(0.6, 1.4)
+            stalk = r.uniform(14, 42) * S * (1 - 0.4 * t)
+            lx, ly = x0 + stalk * math.cos(la), y0 + stalk * math.sin(la)
+            wrapped_line(vd_, [(x0, y0), (lx, ly)], max(2, round(2.2 * S)))
+            R = r.uniform(36, 66) * S * (1 - 0.55 * t) * (0.85 if depth else 1)
+            shoot.append((lx, ly, la + 0.4 * math.sin(np.pi / 2 - la) + r.normal(0, 0.3), R))   # the leaf hangs a little from its stalk's line
+        if depth < 2 and r.random() < 0.007:
+            ivy(x0, y0, a + r.choice([-1, 1]) * r.uniform(0.5, 1.1), length * (1 - t) * r.uniform(0.4, 0.8), max(3 * S, w0 * (1 - t) * 0.7), aim, r, depth + 1)
+
+
+for x0, y0, shoots, tall, aim in IVIES:
+    pal = IVY[int(more.integers(0, len(IVY)))]
+    for _ in range(shoots):
+        ivy(x0 + more.normal(0, 30 * S), y0, aim + more.normal(0, 0.4), tall * IN * more.uniform(0.6, 1.0), more.uniform(8, 13) * S, aim, more)
+    leaves += [(lx, ly, la, R, TURNED[int(more.integers(0, len(TURNED)))] if more.random() < 0.13 else pal) for lx, ly, la, R in shoot]
+    shoot.clear()
+VN = mask(vim)
+img *= (1 - 0.35 * np.clip(soft(VN, 2.0 * S, 3 * S, 4 * S) - VN, 0, 1))[..., None]
+vc = hexc("#5c4a36") * (1 + 0.30 * np.clip(np.roll(VN, (-1, -1), (0, 1)) - np.roll(VN, (1, 1), (0, 1)), -1, 1) + 0.06 * fib_n)[..., None]   # woody, lit on its upper left
+img = mix(img, vc, VN * 0.95)
+del vim, VN, vc
+for lx, ly, la, R, pal in leaves:
+    ivy_leaf(lx, ly, la, R, pal, more)
+
+# and the slugs, each at the fresh end of its trail: a round-backed, tapered
+# body lying along the trail's last bend, the mantle a saddle behind the head,
+# two long eye stalks and two short feelers, wet enough to shine.
+SLUGS = [   # in shade, across, lit, blotched?
+    (hexc("#2c2722"), hexc("#4b4137"), hexc("#857a6a"), False),                # black
+    (hexc("#5f351d"), hexc("#96572b"), hexc("#cf9258"), False),                # rust
+    (hexc("#4f4b28"), hexc("#868040"), hexc("#bdb678"), False),                # olive
+    (hexc("#4c463b"), hexc("#8b806a"), hexc("#bdb39b"), True),                 # leopard
+]
+n_slugs = 0
+for (pts, w), kind in zip(trails, more.permutation(len(trails))):
+    dark, mid_, light, blotched = SLUGS[kind % len(SLUGS)]  # every trail has its slug: it is the slug that says what the trail is
+    fat = w * more.uniform(0.55, 0.68)                      # half its width: it is as wide as its road, and a little over
+    long_ = fat * more.uniform(8.5, 11.5)
+    p = np.asarray(pts[-int(long_ / 3) - 2:])
+    at = np.arange(0, long_, 1.5)
+    bx, by = np.interp(at, np.arange(len(p)) * 3.0, p[:, 0]), np.interp(at, np.arange(len(p)) * 3.0, p[:, 1])
+    s = at / long_                                          # 0 at the tail, 1 at the head
+    rad = fat * np.minimum(1, s / 0.5) ** 0.55 * np.sqrt(np.clip(1 - np.clip((s - 0.90) / 0.10, 0, 1) ** 2, 0, 1))
+    tube(zip(bx, by), rad)
+    m = (s > 0.52) & (s < 0.86)                             # the mantle, a saddle behind the head
+    tube(zip(bx[m], by[m]), rad[m] * 1.07 * np.sin(np.pi * (s[m] - 0.52) / 0.34) ** 0.35, saddle=True)
+    hx, hy, ha = bx[-8], by[-8], math.atan2(by[-1] - by[-12], bx[-1] - bx[-12])
+    for da, ln, r0 in ((0.38, 0.26, 3.8), (-0.38, 0.26, 3.8), (0.95, 0.08, 2.6), (-0.95, 0.08, 2.6)):
+        ta = ha + da + more.normal(0, 0.12)
+        q = np.arange(0, ln * long_ * more.uniform(0.8, 1.15), 1.5)
+        bend = more.normal(0, 0.15)
+        tx, ty = hx + q * np.cos(ta + bend * q / max(q[-1], 1)), hy + q * np.sin(ta + bend * q / max(q[-1], 1))
+        tube(zip(tx, ty), np.linspace(r0 * S, r0 * 0.7 * S, len(q)))
+        tube([(tx[-1], ty[-1])], [r0 * 1.45 * S])
+    tubes(dark, mid_, light, shadow=0.42, flat=0.8, shine=0.85, spots=smooth(lichen_n, 0.3, 0.8) * 0.8 if blotched else None)
+    n_slugs += 1
+print(f"  {len(taken)} places  {len(leaves)} ivy leaves  {n_slugs} slugs", flush=True)
+del TA, TH, TM
+
+# ── 10. grime, and the whole drawn back toward its mean ────────────────────────
+# The wall's mean is taken from the wall without the marks, so the wall is drawn
+# back exactly as it was before there were any.
 grime = noise(1.9, seed=SEED + 23)
-img *= (1 - 0.05 * smooth(grime, 0.0, 2.0) - 0.02 * fine)[..., None]
-mean = img.reshape(-1, 3).mean(0)
+grime = (1 - 0.05 * smooth(grime, 0.0, 2.0) - 0.02 * fine)[..., None]
+plain *= grime
+img *= grime
+mean = plain.reshape(-1, 3).mean(0)
+plain = mean + (plain - mean) * CALM
 img = mean + (img - mean) * CALM
 
-out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB")
-out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+# ── the palette ────────────────────────────────────────────────────────────────
+# Quantised in two parts. The wall without the marks gets the WALL_COLOURS it
+# always had, cut as it always was, and every pixel no mark touched keeps the
+# colour that gave it: away from the marks the tile is what it was, pixel for
+# pixel. The pixels the marks changed get the rest of the palette, cut from
+# their own colours (a median cut over the whole tile would give the ivy, the
+# caps and the slugs a handful of greys between them).
+WALL_COLOURS, COLOURS = 160, 256
+wall8 = (np.clip(plain * SHADE, 0, 1) * 255).astype(np.uint8)
+rgb8 = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
+del plain, img
+marked = (rgb8 != wall8).any(-1)
+wall = Image.fromarray(wall8, "RGB").quantize(colors=WALL_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+pal = wall.getpalette()[:3 * WALL_COLOURS]
+pal += Image.fromarray(rgb8[marked].reshape(1, -1, 3)).quantize(colors=COLOURS - WALL_COLOURS, method=Image.Quantize.MEDIANCUT).getpalette()[:3 * (COLOURS - WALL_COLOURS)]
+ref = Image.new("P", (1, 1))
+ref.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
+both = Image.fromarray(rgb8, "RGB").quantize(palette=ref, dither=Image.Dither.NONE)
+out = Image.fromarray(np.where(marked, np.asarray(both), np.asarray(wall)).astype(np.uint8), "P")
+out.putpalette(pal)
 out.save(ROOT / "images/wall-9.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
 print(f"images/wall-9.png  {NW}x{NH}  {NW / DPI:.2f}x{NH / DPI:.2f}in  {n_lichen} lichens  {n_br} brackets  {n_mu} mushroom clusters"
-      f"  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
+      f"  {marked.mean():.1%} under the marks  average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
