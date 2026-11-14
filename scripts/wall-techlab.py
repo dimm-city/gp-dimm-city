@@ -60,10 +60,14 @@ of the spine, along the foot. The last 0.75in is under the ground strip or
 off the page, and only carries the runs round to the top.
 """
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wall_fft import irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px per inch
@@ -79,7 +83,8 @@ COLOURS, VIVID_COLOURS = 160, 40
 DARKEST = 0.25              # nothing darker: DriveThruRPG's 240% TAC, and a background
 
 rng = np.random.default_rng(SEED)
-yy, xx = np.mgrid[0:NH, 0:NW].astype(np.float32)
+yy = np.arange(NH, dtype=np.float32)[:, None]   # a column and a row: they broadcast, so the tile-sized grids are never stored
+xx = np.arange(NW, dtype=np.float32)[None, :]
 
 
 def hexc(h):
@@ -93,7 +98,7 @@ def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
     fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
     f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature)
     f[0, 0] = 1.0
-    out = np.fft.irfft2(white_spectrum(seed) / f ** beta, s=(NH, NW)).astype(np.float32)
+    out = irfft2(white_spectrum(seed) / f ** beta, s=(NH, NW)).astype(np.float32)
     out -= out.mean()
     return out / out.std()
 
@@ -103,10 +108,10 @@ def white_spectrum(seed):
     tile has (in cycles per tile, so per inch) come from the same draw as at
     240 DPI, so the stains, spalls and grain land where they did; the finer
     ones the extra pixels add are drawn fresh."""
-    base = np.fft.rfft2(np.random.default_rng(seed).standard_normal((NH0, NW0), dtype=np.float32))
+    base = rfft2(np.random.default_rng(seed).standard_normal((NH0, NW0), dtype=np.float32))
     if (NH, NW) == (NH0, NW0):
         return base
-    spec = np.fft.rfft2(np.random.default_rng([seed if seed is not None else 0, DPI]).standard_normal((NH, NW), dtype=np.float32))
+    spec = rfft2(np.random.default_rng([seed if seed is not None else 0, DPI]).standard_normal((NH, NW), dtype=np.float32))
     k = NH0 // 2 - 1                          # rows +-k and columns 0..k2: below the 240 DPI tile's Nyquist
     k2 = NW0 // 2 - 1
     g = math.sqrt(NH * NW / (NH0 * NW0))      # white noise's spectrum grows with the number of samples
@@ -119,8 +124,10 @@ def gauss_full(m, sigma, dx=0.0, dy=0.0):
     """Gaussian blur of a tile-sized field, wrapped (circular)."""
     fy = np.fft.fftfreq(NH)[:, None].astype(np.float32)
     fx = np.fft.rfftfreq(NW)[None, :].astype(np.float32)
-    H = np.exp(-2 * np.pi ** 2 * sigma ** 2 * (fx * fx + fy * fy)) * np.exp(-2j * np.pi * (fx * dx + fy * dy))
-    return np.fft.irfft2(np.fft.rfft2(m) * H, s=(NH, NW)).astype(np.float32)
+    H = np.exp(-2 * np.pi ** 2 * sigma ** 2 * (fx * fx + fy * fy))
+    if dx or dy:
+        H = H * np.exp(-2j * np.pi * (fx * dx + fy * dy))
+    return irfft2(rfft2(m) * H, s=(NH, NW)).astype(np.float32)
 
 
 def lblur(a, sigma):
@@ -133,20 +140,27 @@ def lblur(a, sigma):
     fy = np.fft.fftfreq(h)[:, None]
     fx = np.fft.rfftfreq(w)[None, :]
     H = np.exp(-2 * np.pi ** 2 * sigma ** 2 * (fx * fx + fy * fy))
-    out = np.fft.irfft2(np.fft.rfft2(b) * H, s=(h, w))
+    out = irfft2(rfft2(b) * H, s=(h, w))
     return out[p:-p, p:-p].astype(np.float32)
 
 
 def smooth(x, lo, hi):
     t = np.clip((x - lo) / (hi - lo), 0, 1)
-    return t * t * (3 - 2 * t)
+    u = 3 - 2 * t
+    t *= t
+    t *= u
+    return t
 
 
 def mix(a, b, t):
     t = np.asarray(t, np.float32)
     if t.ndim == 2:
         t = t[..., None]
-    return a + (b - a) * t
+    d = np.subtract(b, a)          # a + (b - a) * t, in the one new buffer where its shape and type allow
+    inplace = d.shape == np.broadcast_shapes(d.shape, t.shape) and np.result_type(d, t) == d.dtype
+    d = np.multiply(d, t, out=d if inplace else None)
+    d += a
+    return d
 
 
 def wrapd(d, n):
@@ -281,7 +295,7 @@ def lblur_wrap(a, sigma):
     fy = np.fft.fftfreq(h)[:, None]
     fx = np.fft.rfftfreq(w)[None, :]
     H = np.exp(-2 * np.pi ** 2 * sigma ** 2 * (fx * fx + fy * fy))
-    return np.fft.irfft2(np.fft.rfft2(a) * H, s=(h, w)).astype(np.float32)
+    return irfft2(rfft2(a) * H, s=(h, w)).astype(np.float32)
 
 
 def shift(a, dy, dx):
@@ -384,6 +398,7 @@ blot = noise(2.0, seed=SEED + 6)
 trowel = noise(1.4, stretch=(0.35, 1.0), seed=SEED + 7, feature=900 * S)
 plaster = PLASTER * (1 + 0.035 * mottle + 0.018 * fine + 0.02 * trowel)[..., None]
 plaster = mix(plaster, plaster * np.array([1.0, 0.97, 0.90]), np.clip(0.3 + 0.35 * blot, 0, 1) * 0.4)   # old paint, yellowed in patches
+del trowel
 
 # brick: running bond under the plaster, shown where it has spalled
 BW, BH, MJ = round(288 * S), round(96 * S), 7 * S     # 1.2in x 0.4in, and the joint
@@ -397,17 +412,19 @@ btone = rng.uniform(0.86, 1.08, nb)[bid]
 bwarm = rng.uniform(-1, 1, nb)[bid]
 brick_c = mix(hexc("#a07e6a"), hexc("#98887a"), (0.5 + 0.5 * bwarm))
 brick = brick_c * (btone + 0.06 * fine + 0.05 * mottle)[..., None]
-dmin = np.minimum.reduce([lxb, BW - lxb, lyb, BH - lyb])
+dmin = np.minimum(np.minimum(lxb, BW - lxb), np.minimum(lyb, BH - lyb))
 bface = smooth(dmin, MJ / 2 - S, MJ / 2 + 1.5 * S)
 mortar = hexc("#b4ac9e") * (0.92 + 0.05 * fine)[..., None]
 brick = mix(mortar, brick * (1 + 0.08 * np.exp(-np.clip(dmin - MJ / 2, 0, None) / (5 * S)))[..., None] * 0.97, bface)
 brick *= (1 - 0.06 * smooth(-np.minimum(BW - lxb, BH - lyb), -14 * S, -2 * S))[..., None]
+del row, bx, col_, bid, lxb, lyb, btone, bwarm, brick_c, dmin, bface, mortar
 
 # spalls: a few patches, kept to the plaster's weak spots
 sp_n = noise(1.9, seed=SEED + 8, feature=1200 * S)
 sp_e = noise(1.5, seed=SEED + 9, feature=200 * S)
 spall = smooth(sp_n + 0.22 * sp_e, 2.05, 2.12)
 img = mix(plaster, brick, spall)
+del plaster, brick, sp_n, sp_e
 sh = np.clip(gauss_full(1 - spall, 3.5 * S, 5 * S, 6 * S), 0, 1) * spall          # the plaster's broken edge throws a shadow in
 img *= (1 - 0.5 * sh)[..., None]
 lip = np.clip(gauss_full(spall, 2.0 * S, -3 * S, -3 * S) - spall, 0, 1)            # and is lit on the far side
@@ -429,13 +446,13 @@ for y in (int(0.24 * IN + 12 * S), int(10.42 * IN + 12 * S)):                 # 
 ky = np.where(yy > NH // 2, yy - NH, yy)
 kx = np.where(xx > NW // 2, xx - NW, xx)
 dk = np.where(ky >= 0, np.exp(-ky / (260.0 * S)), 0) * np.exp(-(kx / (4.0 * S)) ** 2)
-streak = np.fft.irfft2(np.fft.rfft2(src) * np.fft.rfft2(dk), s=(NH, NW)).astype(np.float32)
+streak = irfft2(rfft2(src) * rfft2(dk), s=(NH, NW)).astype(np.float32)
 streak = np.clip(streak / np.percentile(streak[streak > 1e-4], 99), 0, 1)
 streak *= smooth(noise(1.0, stretch=(1.0, 0.15), seed=SEED + 11), -0.6, 0.8)
 img = mix(img, img * np.array([0.90, 0.87, 0.80]), streak * 0.4)
 grime = noise(1.4, seed=SEED + 12)
 img *= (1 - 0.05 * smooth(grime, 0.0, 2.0) - 0.02 * smooth(speck, 1.6, 2.4))[..., None]
-del brick, plaster, bid, bx, row, lxb, lyb, dmin, bface, mortar, brick_c, btone, bwarm, sh, lip, ring
+del sh, lip, ring
 
 # old screw holes and anchors, and the ghosts of things taken down
 ghosts = [(3.0, 2.1, 1.1, 0.7), (11.9, 6.3, 0.7, 1.0), (15.2, 9.2, 1.4, 0.5), (8.9, 1.9, 0.5, 0.8), (1.9, 9.6, 0.9, 0.5)]
@@ -1636,7 +1653,7 @@ bundle(15.7 * IN, 18.75 * IN, 0.42 * IN, 0.5 * IN, [(BLACK, 11 * S), (hexc("#b84
 
 # ── 6. the light ─────────────────────────────────────────────────────────────
 print("light", flush=True)
-acc = np.zeros((NH, NW, 3), np.float32)
+acc = np.zeros((3, NH, NW), np.float32)     # a plane a channel: each light adds into it in place
 wsum = np.zeros((NH, NW), np.float32)
 for kind, geo, cm, st, reach in lights:
     if kind == "pt":
@@ -1655,9 +1672,10 @@ for kind, geo, cm, st, reach in lights:
             dx = wrapd(xx - x0, NW)
         d2 = (dx * dx + dy * dy) / (reach * reach)
     f = st * np.exp(-d2 * 2.0) + st * 0.08 * np.exp(-d2 * 0.5)
-    acc += f[..., None] * (cm - 1)
+    for ch in range(3):
+        acc[ch] += f * (cm[ch] - 1)
     wsum += f
-img = img * (1 + acc) + np.clip(wsum, 0, 1)[..., None] * 0.05
+img = img * (1 + np.moveaxis(acc, 0, -1)) + np.clip(wsum, 0, 1)[..., None] * 0.05
 del acc, wsum
 
 # the emissive things, over the light

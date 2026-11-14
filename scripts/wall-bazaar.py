@@ -50,10 +50,14 @@ first drawn at): the sprites and layers lay them down at S = DPI / 240 px to
 the unit, so every length scales with DPI, and so does nothing else.
 """
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wall_fft import irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px per inch
@@ -73,8 +77,8 @@ f32 = np.float32
 LIGHT = np.array([-0.45, -0.62, 0.64])
 LIGHT /= np.linalg.norm(LIGHT)
 
-yy = (np.arange(PH, dtype=f32) / S)[:, None] * np.ones((1, PW), f32)     # every px's place on the tile, in units
-xx = (np.arange(PW, dtype=f32) / S)[None, :] * np.ones((PH, 1), f32)
+yy = (np.arange(PH, dtype=f32) / S)[:, None]     # every px's place on the tile, in units: a column and a row, which broadcast
+xx = (np.arange(PW, dtype=f32) / S)[None, :]
 iy_, ix_ = np.arange(PH), np.arange(PW)
 ky = (np.where(iy_ > PH // 2, iy_ - PH, iy_) / S).astype(f32)[:, None]    # signed offsets round the torus, in units
 kx = (np.where(ix_ > PW // 2, ix_ - PW, ix_) / S).astype(f32)[None, :]
@@ -90,7 +94,7 @@ def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
         fy = np.fft.fftfreq(h)[:, None] * stretch[1]
         fx = np.fft.rfftfreq(w)[None, :] * stretch[0]
         f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / cap)
-        return np.fft.irfft2(spec / f ** beta, s=(h, w))
+        return irfft2(spec / f ** beta, s=(h, w))
     spec, base = white_spectrum(seed)
     ref = field(NH, NW, base, feature / S)    # the field as a 240 DPI tile has it, scaled to [0, 1]
     ref -= ref.min()
@@ -107,10 +111,10 @@ def white_spectrum(seed):
     frequencies a 240 DPI tile has (in cycles per tile, so per inch) come from
     the same draw at any DPI, so the damp, spalls and grain land where they
     did; the finer ones the extra px add are drawn fresh."""
-    base = np.fft.rfft2(np.random.default_rng(seed).standard_normal((NH, NW)))
+    base = rfft2(np.random.default_rng(seed).standard_normal((NH, NW)))
     if (PH, PW) == (NH, NW):
         return base, base
-    spec = np.fft.rfft2(np.random.default_rng([seed if seed is not None else 0, DPI]).standard_normal((PH, PW)))
+    spec = rfft2(np.random.default_rng([seed if seed is not None else 0, DPI]).standard_normal((PH, PW)))
     k, k2 = NH // 2 - 1, NW // 2 - 1          # rows +-k and columns 0..k2: below the 240 DPI tile's Nyquist
     g = math.sqrt(PH * PW / (NH * NW))        # white noise's spectrum grows with the number of samples
     spec[:k + 1, :k2 + 1] = base[:k + 1, :k2 + 1] * g
@@ -119,7 +123,7 @@ def white_spectrum(seed):
 
 
 def circ_conv(a, kernel):
-    return np.fft.irfft2(np.fft.rfft2(a) * np.fft.rfft2(kernel), s=(PH, PW)).astype(f32)
+    return irfft2(rfft2(a) * rfft2(kernel), s=(PH, PW)).astype(f32)
 
 
 def blur(m, sigma, dx=0, dy=0):
@@ -143,14 +147,21 @@ def shift(a, dy, dx):
 
 def smooth(x, lo, hi):
     t = np.clip((x - lo) / (hi - lo), 0, 1)
-    return t * t * (3 - 2 * t)
+    u = 3 - 2 * t
+    t *= t
+    t *= u
+    return t
 
 
 def mix(a, b, t):
     t = np.asarray(t, f32)
     if t.ndim == 2:
         t = t[..., None]
-    return a + (b - a) * t
+    d = np.subtract(b, a)          # a + (b - a) * t, in the one new buffer where its shape and type allow
+    inplace = d.shape == np.broadcast_shapes(d.shape, t.shape) and np.result_type(d, t) == d.dtype
+    d = np.multiply(d, t, out=d if inplace else None)
+    d += a
+    return d
 
 
 def jag(a, b, rough, r, step=6):
@@ -500,7 +511,7 @@ BRICKS = np.array([hexc(c) for c in ("#9c6c58", "#a67a62", "#8f6b5a", "#ad8869",
 btone = rng.uniform(0.9, 1.06, bid.max() + 1).astype(f32)
 bcol = BRICKS[rng.integers(0, len(BRICKS), bid.max() + 1)][bid] * btone[bid][..., None]
 bcol = bcol * (0.88 + 0.16 * TEX["gh"] + 0.06 * fine)[..., None]
-bedge = np.minimum.reduce([lxb, BW - lxb, lyb, BH - lyb]).astype(f32)
+bedge = np.minimum(np.minimum(lxb, BW - lxb), np.minimum(lyb, BH - lyb)).astype(f32)
 joint = smooth(BJ - bedge, -0.5, 0.8)
 brick = mix(bcol, hexc("#b0a693") * (0.9 + 0.1 * fine)[..., None], joint)
 brick *= (1 - 0.18 * smooth(3 - np.abs(lyb - BJ - 1.0), 0, 2) * (lyb > BJ))[..., None]     # each brick's top in the joint's shade
@@ -540,7 +551,7 @@ img = img * (1 - g) + cr.rgb * g
 del cr
 
 # damp streaks down from the top, rising damp and grime at the foot
-top_ = yy < 700
+top_ = np.broadcast_to(yy < 700, (PH, PW))
 DRIP_EVERY = 5390           # units^2 (0.094in^2) of the top band to a drip: the brightest specks, as many to the inch at any DPI
 src = (speck >= np.quantile(speck[top_], 1 - 1 / (DRIP_EVERY * S * S))).astype(f32) * top_ * smooth(damp, 0.4, 0.7)
 drip = np.where(ky >= 0, np.exp(-ky / 260.0), 0) * np.exp(-(kx / 2.5) ** 2)

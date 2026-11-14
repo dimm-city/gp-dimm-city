@@ -65,15 +65,24 @@ rng = np.random.default_rng(SEED)
 def white_spectrum(seed):
     """The spectrum of white noise on the tile, the same wall at any DPI: its
     frequencies up to 240 DPI's Nyquist are those of the 240 DPI tile's noise
-    (so every blotch lands where it did), and only the finer ones above are new."""
-    base = np.fft.fft2(np.random.default_rng(seed).standard_normal((NH0, NW0)))
+    (so every blotch lands where it did), and only the finer ones above are new.
+    Half of it (rfft2's), as the noise is real: the 240 DPI tile's Nyquist row
+    and column land on one side only, so there the two halves are averaged, as
+    taking the real part of the full inverse did."""
+    base = np.fft.rfft2(np.random.default_rng(seed).standard_normal((NH0, NW0)))
     if (NH, NW) == (NH0, NW0):
         return base
-    spec = np.random.default_rng([seed, DPI]).standard_normal((NH, NW))
-    spec = np.fft.fft2(spec)
+    spec = np.fft.rfft2(np.random.default_rng([seed, DPI]).standard_normal((NH, NW)))
+    base *= np.sqrt(NH * NW / (NH0 * NW0))
+    hy, hx = NH0 // 2, NW0 // 2
     iy = np.round(np.fft.fftfreq(NH0) * NH0).astype(int) % NH
-    ix = np.round(np.fft.fftfreq(NW0) * NW0).astype(int) % NW
-    spec[np.ix_(iy, ix)] = base * np.sqrt(NH * NW / (NH0 * NW0))
+    za, zb = spec[NH - hy, :hx].copy(), spec[hy, :hx].copy()     # the Nyquist row (-hy) and its unpaired mirror (+hy)
+    spec[iy, :hx] = base[:, :hx]
+    spec[NH - hy, :hx] = (base[hy, :hx] + za) / 2
+    spec[hy, :hx] = (base[hy, :hx] + zb) / 2
+    fr = np.round(np.fft.fftfreq(NH) * NH).astype(int)          # the Nyquist column (+hx) and its mirror
+    ok = (fr > -hy) & (fr <= hy)
+    spec[ok, hx] = (spec[ok, hx] + base[fr[ok] % NH0, hx]) / 2
     return spec
 
 
@@ -81,20 +90,25 @@ def noise(beta, stretch=(1.0, 1.0), seed=None):
     """Periodic 1/f^beta noise in [0, 1]. `stretch` (sx, sy) > 1 elongates it
     along that axis (brushing)."""
     if seed is None:
-        white = np.fft.fft2(rng.standard_normal((NH, NW)))
+        white = np.fft.rfft2(rng.standard_normal((NH, NW)))
     else:
         white = white_spectrum(seed)
     fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
-    fx = np.fft.fftfreq(NW)[None, :] * stretch[0]
+    fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
     f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / FEATURE)    # no blotch larger than FEATURE
     f[0, 0] = 1.0
-    out = np.real(np.fft.ifft2(white / f ** beta))
+    white /= f ** beta
+    out = np.fft.irfft2(white, s=(NH, NW))
     out -= out.min()
-    return out / out.max()
+    out /= out.max()
+    return out
 
 
 def circ_conv(img, kernel):
-    return np.real(np.fft.ifft2(np.fft.fft2(img) * np.fft.fft2(kernel)))
+    """A circular convolution; `kernel` is a kernel or its rfft2."""
+    if kernel.dtype.kind != "c":
+        kernel = np.fft.rfft2(kernel)
+    return np.fft.irfft2(np.fft.rfft2(img) * kernel, s=img.shape)
 
 
 def smooth(x, lo, hi):
@@ -176,7 +190,11 @@ ky = np.where(ky > NH // 2, ky - NH, ky)
 kx = np.where(kx > NW // 2, kx - NW, kx)
 def drip(length, width):
     return np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2)
-streaks = circ_conv(sources, drip(60.0 * S, 3.0 * S)) + circ_conv(long_src, drip(220.0 * S, 2.0 * S))
+# (a full complex FFT here, not circ_conv's real one: the percentile below
+# counts every pixel over 0, the FFT's rounding noise too, so its scale, and
+# the wall, would shift a little with any other transform)
+streaks = (np.real(np.fft.ifft2(np.fft.fft2(sources) * np.fft.fft2(drip(60.0 * S, 3.0 * S))))
+           + np.real(np.fft.ifft2(np.fft.fft2(long_src) * np.fft.fft2(drip(220.0 * S, 2.0 * S)))))
 streaks = np.clip(streaks / np.percentile(streaks[streaks > 0], 99), 0, 1)
 streaks *= smooth(noise(1.0, stretch=(1.0, 0.12), seed=SEED + 6), 0.25, 0.75)
 rust = np.clip(np.maximum(rust, streaks * 0.85), 0, 1)
@@ -192,27 +210,31 @@ colour = np.where((depth > 0.55)[..., None],
                   ochre + (rustc - ochre) * smooth(depth, 0.2, 0.55)[..., None])
 # flaky crust: fine grain lightens and darkens the rust, a little muted toward grey
 crust = noise(0.35, seed=SEED + 11)
-colour = colour * (0.80 + 0.40 * crust)[..., None]
-colour = colour * 0.85 + colour.mean(-1, keepdims=True) * 0.15
-img = steel * (1 - rust[..., None]) + colour * rust[..., None]
-del steel, colour, depth, crust
+colour *= (0.80 + 0.40 * crust)[..., None]
+grey = colour.mean(-1, keepdims=True)
+colour *= 0.85
+colour += grey * 0.15
+steel *= 1 - rust[..., None]
+colour *= rust[..., None]
+img = steel
+img += colour
+del steel, colour, grey, depth, crust
 
 # pitting where the rust is thick
 pits = (noise(0.6, seed=SEED + 8) > 0.86) & (rust > 0.6)
 img[pits] *= 0.72
+del rust, pits
 
 # ── 4. seams and rivets ───────────────────────────────────────────────────────
-def shade(mask_bool, factor):
-    img[mask_bool] *= factor
-
 for y in seam_rows:                                     # horizontal seams
     for d in range(SEAM):
-        shade(yy == (y + d) % NH, 0.42 + 0.04 * d / S)
-    shade(yy == (y + SEAM) % NH, 1.10)                   # lit lip under the groove
-    shade(yy == (y - 1) % NH, 0.85)
+        img[(y + d) % NH] *= 0.42 + 0.04 * d / S
+    img[(y + SEAM) % NH] *= 1.10                         # lit lip under the groove
+    img[(y - 1) % NH] *= 0.85
 vseam = (px % P) < SEAM                                 # vertical seams, offset per row
 img[vseam] *= (0.45 + 0.05 * (px % P)[vseam] / S)[..., None]
 img[((px % P) == SEAM)] *= 1.10
+del vseam, px, yy
 
 for (x, y) in rivets:
     x0, x1 = x - int(np.ceil(RIVET_R + 3 * S)), x + int(np.ceil(RIVET_R + 4 * S))
@@ -239,19 +261,27 @@ for _ in range(180):
     img[ys, xs] *= rng.choice([0.82, 1.12])
 
 # ── 5. the damage: dents, bullet holes, torch cuts, claw marks ─────────────────
+_gauss = {}
+
+
 def blur(m, sigma):
-    g = np.exp(-(kx * kx + ky * ky) / (2 * sigma * sigma))
-    return circ_conv(m, g / g.sum())
+    """A Gaussian blur, wrapped round `m`: the tile, or a patch with room round its shape."""
+    key = sigma, m.shape
+    if key not in _gauss:                   # the kernel's spectrum, once a sigma and shape
+        oy, ox = (np.where(np.arange(n) > n // 2, np.arange(n) - n, np.arange(n)) for n in m.shape)
+        g = np.exp(-(ox[None, :] ** 2 + oy[:, None] ** 2) / (2 * sigma * sigma))
+        _gauss[key] = np.fft.rfft2(g / g.sum())
+    return circ_conv(m, _gauss[key])
 
 
 def wrapped(draw):
-    """Draw on a tile-sized mask through `draw(d, ox, oy)` at every wrap offset."""
+    """Draw on a tile-sized mask (0-255) through `draw(d, ox, oy)` at every wrap offset."""
     m = Image.new("L", (NW, NH), 0)
     d = ImageDraw.Draw(m)
     for ox in (-NW, 0, NW):
         for oy in (-NH, 0, NH):
             draw(d, ox, oy)
-    return np.asarray(m, float) / 255
+    return np.asarray(m)
 
 
 def patch(x, y, R):
@@ -324,13 +354,18 @@ for _ in range(9):
     hw = 6 * S
     gl = wrapped(lambda d, ox, oy: d.polygon([(x + ox - hw * np.sin(a), y + oy + hw * np.cos(a)), (x + ox + L * np.cos(a), y + oy + L * np.sin(a)),
                                                (x + ox + hw * np.sin(a), y + oy - hw * np.cos(a))], fill=255))
-    gl = blur(gl, 0.8 * S)
-    img = img * (1 - gl[..., None]) + (np.array([0.74, 0.73, 0.70]) * (0.9 + 0.2 * grain_h)[..., None]) * gl[..., None]
-    img *= (1 - 0.45 * np.clip(gl - roll_f(gl, 2 * S), 0, 1))[..., None]
+    ix, _, _ = patch(x, y, int(L + hw) + 16)          # blurred and laid on a patch round it, with room for its blur and shadow
+    gl = blur(gl[ix] / 255, 0.8 * S)
+    sub = img[ix]
+    sub = sub * (1 - gl[..., None]) + (np.array([0.74, 0.73, 0.70]) * (0.9 + 0.2 * grain_h[ix])[..., None]) * gl[..., None]
+    sub *= (1 - 0.45 * np.clip(gl - roll_f(gl, 2 * S), 0, 1))[..., None]
+    img[ix] = sub
 bleed_s = circ_conv(bleed, drip(45.0 * S, 2.0 * S))
 if bleed_s.max() > 0:
     bleed_s = np.clip(bleed_s / np.percentile(bleed_s[bleed_s > 1e-4], 99), 0, 1)
-    img = img * (1 - 0.45 * bleed_s[..., None]) + rustc * 0.45 * bleed_s[..., None]
+    img *= 1 - 0.45 * bleed_s[..., None]
+    img += rustc * 0.45 * bleed_s[..., None]
+del bleed, bleed_s
 
 # torch cuts: a kerf burnt through, dark oxide along it, the steel's heat
 # colours fading out from it (blue, purple, bronze, straw); and two scorches
@@ -351,9 +386,9 @@ for _ in range(4):
         x, y = x + 20 * S * np.cos(a) + rng.normal(0, 0.8 * S), y + 20 * S * np.sin(a) + rng.normal(0, 0.8 * S)
         pts.append((x, y))
     paths.append(pts)
-cut = wrapped(lambda d, ox, oy: [d.line([(px + ox, py + oy) for px, py in pts], fill=255, width=1) for pts in paths])
+cut = wrapped(lambda d, ox, oy: [d.line([(px + ox, py + oy) for px, py in pts], fill=255, width=1) for pts in paths]) / 255
 spots = [(rng.uniform(0, NW), rng.uniform(0, NH), rng.uniform(8 * S, 16 * S)) for _ in range(2)]
-spot = wrapped(lambda d, ox, oy: [d.ellipse((x + ox - r, y + oy - r, x + ox + r, y + oy + r), fill=255) for x, y, r in spots])
+spot = wrapped(lambda d, ox, oy: [d.ellipse((x + ox - r, y + oy - r, x + ox + r, y + oy + r), fill=255) for x, y, r in spots]) / 255
 SIG = 16.0 * S
 heat = blur(cut, SIG)
 heat = np.clip(heat / heat[cut > 0.5].mean(), 1e-9, 1)
@@ -362,10 +397,16 @@ heat_s = blur(spot, SIG)
 heat_s = np.clip(heat_s / heat_s.max(), 1e-9, 1)
 dist = np.minimum(dist, SIG * np.sqrt(-2 * np.log(heat_s)) + 3.5 * S)   # a scorch has no kerf
 dist *= 0.8 + 0.4 * crust_n
+del cut, spot, heat, heat_s
 hd = [h[0] for h in HEAT]
 tint = np.stack([np.interp(dist, hd, [h[1][i] / 255 for h in HEAT]) for i in range(3)], -1)
 ta = np.interp(dist, hd, [h[2] for h in HEAT])
-img = img * (1 - ta[..., None]) + tint * (0.9 + 0.2 * crust_n)[..., None] * ta[..., None]
+del dist
+img *= 1 - ta[..., None]
+tint *= (0.9 + 0.2 * crust_n)[..., None]
+tint *= ta[..., None]
+img += tint
+del tint, ta, crust_n
 
 # claw marks: three or four gouges side by side, tapered, fresh bright steel at
 # the bottom of each, its upper-left wall in shade and its lower-right lit
@@ -387,10 +428,15 @@ for _ in range(6):
             side_a.append((cxp - hw * np.sin(aa), cyp + hw * np.cos(aa)))
             side_b.append((cxp + hw * np.sin(aa), cyp - hw * np.cos(aa)))
         claws.append(side_a + side_b[::-1])
-G = wrapped(lambda d, ox, oy: [d.polygon([(px + ox, py + oy) for px, py in poly], fill=255) for poly in claws])
+G = wrapped(lambda d, ox, oy: [d.polygon([(px + ox, py + oy) for px, py in poly], fill=255) for poly in claws]) / 255
 G = np.clip(blur(G, 0.7 * S), 0, 1)
 fresh = np.array([0.76, 0.75, 0.72]) * (0.85 + 0.2 * grain_h)[..., None]
-img = img * (1 - 0.85 * G[..., None]) + fresh * 0.85 * G[..., None]
+del grain_h
+img *= 1 - 0.85 * G[..., None]
+fresh *= 0.85
+fresh *= G[..., None]
+img += fresh
+del fresh
 img *= (1 - 0.55 * np.clip(G - roll_f(G, 3 * S), 0, 1))[..., None]      # the wall in shade
 img *= (1 + 0.15 * np.clip(G - roll_f(G, -3 * S), 0, 1))[..., None]     # the wall lit
 burr = np.clip(roll_f(G, 2 * S) - G, 0, 1)                              # metal thrown up along it
@@ -399,7 +445,11 @@ img *= (1 - 0.25 * burr)[..., None]
 # ── 6. grime toward each plate's foot ─────────────────────────────────────────
 img *= (1 - 0.10 * smooth(ly / P, 0.6, 1.0))[..., None]
 
-out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB")
+img *= SHADE
+np.clip(img, 0, 1, out=img)
+img *= 255
+out = Image.fromarray(img.astype(np.uint8), "RGB")
+del img
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-7.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))

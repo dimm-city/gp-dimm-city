@@ -50,10 +50,14 @@ grime is drawn toward the foot of the page (FLOOR); the last 0.75in of the
 tile is under the ground strip or off the page, and fades back to the top.
 """
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wall_fft import irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300
@@ -80,41 +84,50 @@ def hexc(h):
     return np.array([int(h[i:i + 2], 16) for i in (1, 3, 5)]) / 255
 
 
-def white_noise(r, h, w, base=None, fine=None):
-    """White noise on an h x w grid. Its coarse part (every frequency a 240 DPI
-    grid holds) is the `base`-sized field r draws, just as r drew it at 240 DPI,
-    so a field keeps its shape at any DPI and r is left where it was; the finer
-    frequencies come from `fine`."""
+def white_spectrum(r, h, w, base=None, fine=None):
+    """The spectrum (rfft2) of white noise on an h x w grid. Its coarse part
+    (every frequency a 240 DPI grid holds) is the `base`-sized field r draws,
+    just as r drew it at 240 DPI, so a field keeps its shape at any DPI and r is
+    left where it was; the finer frequencies come from `fine`."""
     h0, w0 = base or (round(h / S), round(w / S))
     lo = r.standard_normal((h0, w0))
     if (h0, w0) == (h, w):
-        return lo
-    F = np.fft.fft2((DETAIL if fine is None else fine).standard_normal((h, w)))
-    my, mx = (h0 - 1) // 2, (w0 - 1) // 2
-    iy, ix = np.r_[0:my + 1, -my:0], np.r_[0:mx + 1, -mx:0]
-    F[np.ix_(iy % h, ix % w)] = np.fft.fft2(lo)[np.ix_(iy % h0, ix % w0)] * math.sqrt(h * w / (h0 * w0))
-    return np.real(np.fft.ifft2(F))
+        return rfft2(lo)
+    F = rfft2((DETAIL if fine is None else fine).standard_normal((h, w)))
+    G = rfft2(lo)
+    g = math.sqrt(h * w / (h0 * w0))
+    my, mx = (h0 - 1) // 2, (w0 - 1) // 2     # frequencies 0..+-my down, 0..mx across: the 240 DPI grid's
+    F[:my + 1, :mx + 1] = G[:my + 1, :mx + 1] * g
+    F[h - my:, :mx + 1] = G[h0 - my:, :mx + 1] * g
+    return F
 
 
 def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
     """Periodic 1/f^beta noise in [0, 1]; `stretch` (sx, sy) > 1 elongates it along that axis."""
     r = np.random.default_rng(seed)
-    white = white_noise(r, NH, NW, fine=r)
+    spec = white_spectrum(r, NH, NW, fine=r)
     fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
-    fx = np.fft.fftfreq(NW)[None, :] * stretch[0]
-    f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature)
-    out = np.real(np.fft.ifft2(np.fft.fft2(white) / f ** beta))
+    fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
+    spec /= np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature) ** beta
+    out = irfft2(spec, s=(NH, NW))
+    del spec
     out -= out.min()
-    return out / out.max()
+    out /= out.max()
+    return out
 
 
-def circ_conv(img, kernel):
-    return np.real(np.fft.ifft2(np.fft.fft2(img) * np.fft.fft2(kernel)))
+def circ_conv(img, col, row):
+    """img convolved on the torus with a separable kernel: the column col times the row row."""
+    F = rfft2(img)
+    F *= np.fft.fft(col.ravel())[:, None]
+    F *= np.fft.rfft(row.ravel())[None, :]
+    return irfft2(F, s=(NH, NW))
 
 
 def blur(m, sigma, dx=0, dy=0):
-    g = np.exp(-(((kx - dx) ** 2 + (ky - dy) ** 2) / (2 * sigma * sigma)))
-    return circ_conv(m, g / g.sum())
+    gy = np.exp(-((ky - dy) ** 2 / (2 * sigma * sigma)))
+    gx = np.exp(-((kx - dx) ** 2 / (2 * sigma * sigma)))
+    return circ_conv(m, gy / gy.sum(), gx / gx.sum())
 
 
 def shift(m, dy, dx):
@@ -128,19 +141,27 @@ def shift(m, dy, dx):
 
 
 def drip(length, width):
-    return np.where(ky >= 0, np.exp(-ky / length), 0) * np.exp(-(kx / width) ** 2)
+    """A drip's kernel, as its column and its row: a run down from the source, narrow across."""
+    return np.where(ky >= 0, np.exp(-ky / length), 0), np.exp(-(kx / width) ** 2)
 
 
 def smooth(x, lo, hi):
     t = np.clip((x - lo) / (hi - lo), 0, 1)
-    return t * t * (3 - 2 * t)
+    u = 3 - 2 * t
+    t *= t
+    t *= u
+    return t
 
 
 def mix(a, b, t):
     t = np.asarray(t)
     if t.ndim == 2:
         t = t[..., None]
-    return a + (b - a) * t
+    d = np.subtract(b, a)          # a + (b - a) * t, in the one new buffer where its shape and type allow
+    inplace = d.shape == np.broadcast_shapes(d.shape, t.shape) and np.result_type(d, t) == d.dtype
+    d = np.multiply(d, t, out=d if inplace else None)
+    d += a
+    return d
 
 
 def jag(a, b, rough, r, step=5):
@@ -212,12 +233,12 @@ def put(field, x0, y0, patch, how="max"):
 
 def local_noise(h, w, beta, r, stretch=(1.0, 1.0), base=None):
     """`base`: its size at 240 DPI, when h x w over S does not round to it."""
-    white = white_noise(r, h, w, base)
+    spec = white_spectrum(r, h, w, base)
     fy = np.fft.fftfreq(h)[:, None] * stretch[1]
-    fx = np.fft.fftfreq(w)[None, :] * stretch[0]
+    fx = np.fft.rfftfreq(w)[None, :] * stretch[0]
     f = np.sqrt(fx * fx + fy * fy)
     f[0, 0] = 1.0
-    out = np.real(np.fft.ifft2(np.fft.fft2(white) / f ** beta))
+    out = irfft2(spec / f ** beta, s=(h, w))
     out -= out.min()
     return out / out.max()
 
@@ -305,15 +326,14 @@ dsrc = np.zeros((NH, NW))
 for _ in range(260):
     c, r = rng.integers(TX), rng.integers(TY)
     dsrc[int(r * CELL + GH + S) % NH, int(c * CELL + rng.uniform(10 * S, CELL - 10 * S)) % NW] += rng.uniform(0.3, 1.0)
-dk = np.where(ky >= 0, np.exp(-ky / (60.0 * S)), 0) * np.exp(-(kx / (3.5 * S)) ** 2)
-dstreak = circ_conv(dsrc, dk)
+dstreak = circ_conv(dsrc, *drip(60.0 * S, 3.5 * S))
 dstreak = np.clip(dstreak / np.percentile(dstreak[dstreak > 1e-4], 99.5), 0, 1)
 img = mix(img, img * np.array([0.86, 0.84, 0.78]), dstreak * 0.35 * face)
 fly = noise(0.15, seed=SEED + 15)
 specks = smooth(fly, 0.80, 0.86) * (0.3 + floor + smooth(grime, 0.5, 0.9))
 img *= (1 - 0.30 * np.clip(specks, 0, 1))[..., None]
 img = mix(img, img * 0.88, (1 - face) * (0.3 + 0.4 * smooth(grime, 0.3, 0.8)))     # grime packs the joints
-del dsrc, dk, dstreak, fly, specks, grime
+del dsrc, dstreak, fly, specks, grime
 
 # ── 2. the damage ─────────────────────────────────────────────────────────────
 print("damage", flush=True)
@@ -457,7 +477,7 @@ del Hc, ring, chip_c
 # ── 4. water and rust ─────────────────────────────────────────────────────────
 print("water", flush=True)
 RUST = hexc("#8a5a34")
-rs = circ_conv(rust_src, drip(90.0 * S, 2.5 * S))
+rs = circ_conv(rust_src, *drip(90.0 * S, 2.5 * S))
 rs = np.clip(rs / max(1e-6, np.percentile(rs[rs > 1e-4], 99)), 0, 1)
 rs *= 0.6 + 0.4 * fine
 img = mix(img, img * (RUST / RUST.max()), rs * 0.55)
@@ -467,7 +487,7 @@ wsrc = np.zeros((NH, NW))
 for _ in range(26):
     wsrc[int(rng.uniform(0, NH)), int(rng.uniform(0, NW))] += rng.uniform(0.4, 1.0)
 streak_n = noise(1.0, stretch=(0.1, 1.0), seed=SEED + 7)
-ws = circ_conv(wsrc, drip(520.0 * S, 14.0 * S))
+ws = circ_conv(wsrc, *drip(520.0 * S, 14.0 * S))
 ws = np.clip(ws / np.percentile(ws[ws > 1e-5], 99), 0, 1) * smooth(streak_n, 0.25, 0.75)
 img = mix(img, img * np.array([0.93, 0.88, 0.76]), ws * 0.55)
 del wsrc, streak_n
@@ -762,7 +782,7 @@ for _ in range(2):
     src = np.zeros((NH, NW))
     for _ in range(int(rng.integers(1, 3))):
         src[int(y0 + R * 1.6) % NH, int(x0 + R + rng.normal(0, R * 0.4)) % NW] = 1
-    dr_ = circ_conv(src, drip(160.0 * S, 2.2 * S))
+    dr_ = circ_conv(src, *drip(160.0 * S, 2.2 * S))
     ANTI = np.maximum(ANTI, np.clip(dr_ / dr_.max(), 0, 1) * 0.6)
 img = mix(img, img * np.array([0.86, 0.66, 0.42]), np.clip(ANTI, 0, 1) * 0.65)
 del src, dr_

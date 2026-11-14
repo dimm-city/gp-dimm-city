@@ -93,31 +93,43 @@ def noise(beta, stretch=(1.0, 1.0), seed=None):
     r = np.random.default_rng(seed)
     white = white_spec(r)
     fy = np.fft.fftfreq(NH)[:, None] * stretch[1]
-    fx = np.fft.fftfreq(NW)[None, :] * stretch[0]
+    fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
     f = np.sqrt(fx * fx + fy * fy)
     f[0, 0] = 1.0
-    out = np.real(np.fft.ifft2(white / f ** beta))
+    white /= f ** beta
+    out = np.fft.irfft2(white, s=(NH, NW))
     out -= out.min()
-    return out / out.max()
+    out /= out.max()
+    return out
 
 
 def white_spec(r):
     """The spectrum of white noise over the tile. Its coarse part, every
     frequency the 240 DPI tile had, is drawn first, as it was then, so a field
-    keeps its layout; the finer frequencies are drawn after it."""
-    coarse = np.fft.fft2(r.standard_normal((NH0, NW0))) * S       # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
-    spec = np.fft.fft2(r.standard_normal((NH, NW)))
+    keeps its layout; the finer frequencies are drawn after it. Half of it
+    (rfft2's), as the noise is real: the coarse Nyquist row and column land on
+    one side only, so there the two halves are averaged, as taking the real
+    part of the full inverse did."""
+    coarse = np.fft.rfft2(r.standard_normal((NH0, NW0))) * S       # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
+    spec = np.fft.rfft2(r.standard_normal((NH, NW)))
+    hy, hx = NH0 // 2, NW0 // 2
     iy = np.fft.fftfreq(NH0, 1 / NH0).astype(int) % NH
-    ix = np.fft.fftfreq(NW0, 1 / NW0).astype(int) % NW
-    spec[np.ix_(iy, ix)] = coarse
+    za, zb = spec[NH - hy, :hx].copy(), spec[hy, :hx].copy()     # the Nyquist row (-hy) and its unpaired mirror (+hy)
+    spec[iy, :hx] = coarse[:, :hx]
+    spec[NH - hy, :hx] = (coarse[hy, :hx] + za) / 2
+    spec[hy, :hx] = (coarse[hy, :hx] + zb) / 2
+    fr = np.fft.fftfreq(NH, 1 / NH).astype(int)                   # the Nyquist column (+hx) and its mirror
+    ok = (fr > -hy) & (fr <= hy)
+    spec[ok, hx] = (spec[ok, hx] + coarse[fr[ok] % NH0, hx]) / 2
     return spec
 
 
 def circ_conv(img, kernel):
-    return np.real(np.fft.ifft2(np.fft.fft2(img) * np.fft.fft2(kernel)))
+    return np.fft.irfft2(np.fft.rfft2(img) * np.fft.rfft2(kernel), s=(NH, NW))
 
 
-ky, kx = np.mgrid[0:NH, 0:NW]
+ky = np.arange(NH)[:, None]                 # signed offsets, broadcast (a full grid of each costs memory)
+kx = np.arange(NW)[None, :]
 ky = np.where(ky > NH // 2, ky - NH, ky)
 kx = np.where(kx > NW // 2, kx - NW, kx)
 
@@ -185,8 +197,12 @@ speck = noise(0.35, seed=SEED + 7)
 flake = noise(0.7, seed=SEED + 9)
 stain = noise(1.6, seed=SEED + 10)
 streakn = noise(1.0, stretch=(1.0, 0.10), seed=SEED + 8)
-yy, xx = np.mgrid[0:NH, 0:NW]
-weave = (np.cos(2 * np.pi * xx / (8 * S)) * np.cos(2 * np.pi * yy / (8 * S)))       # glass cloth under the resin
+
+
+def weave(rows, cols):
+    """The glass cloth under the resin, over those rows and columns of the tile."""
+    return np.cos(2 * np.pi * cols / (8 * S))[None, :] * np.cos(2 * np.pi * rows / (8 * S))[:, None]
+
 
 # ── 1. the wall: grey render, mottled, pored, patched and cracked ─────────────
 grain = noise(0.5, seed=SEED + 12)                                  # the render's sand
@@ -195,6 +211,7 @@ patch = noise(1.8, seed=SEED + 11)                                  # old repair
 wall *= (1 - 0.05 * smooth(patch, 0.62, 0.66))[..., None]
 wall *= (0.95 + 0.07 * streakn)[..., None]
 wall *= (1 - 0.20 * smooth(speck, 0.80, 0.95))[..., None]
+del grain, patch
 crack_l = Image.new("L", (NW * CSS, NH * CSS), 0)     # hairline cracks in the render, drawn wrapped, at CSS x
 crack_d = ImageDraw.Draw(crack_l)
 
@@ -979,7 +996,7 @@ def compose(p, gx, gy, age):
     rows = (gy - M + np.arange(p.H)) % NH
     cols = (gx - M + np.arange(p.W)) % NW
     G = lambda f: f[np.ix_(rows, cols)]
-    mot, fin, pn, tn, vd, wv, sp = G(mottle), G(fine), G(peeln), G(tarn), G(verd), G(weave), G(speck)
+    mot, fin, pn, tn, vd, wv, sp = G(mottle), G(fine), G(peeln), G(tarn), G(verd), weave(rows, cols), G(speck)
     board = L["board"]
     cu = np.clip(L["cu"], 0, 1)
 
@@ -1182,9 +1199,14 @@ for i, ((gx, gy, w, h), (bw, bh)) in enumerate(zip(cells, BOARDS)):     # w, h: 
     print(f"  board {i + 1}/{len(cells)}  {w}x{h}", flush=True)
 
 img = wall
+del wall, mottle, peeln, tarn, verd, speck, flake, stain        # (the tile is big: free what is done with)
 cr = np.asarray(crack_l.resize((NW, NH), Image.BOX), float) / 255 * (1 - HOLE_A)
 del crack_l, crack_d
-img = mix(img, img * 1.10, np.clip(np.roll(cr, (1, 1), (0, 1)) - cr, 0, 1) * 0.6)   # the crack's lit lip
+lip = img * 1.10                                                # the crack's lit lip
+lip -= img
+lip *= (np.clip(np.roll(cr, (1, 1), (0, 1)) - cr, 0, 1) * 0.6)[..., None]
+img += lip
+del lip
 img *= (1 - 0.50 * cr)[..., None]
 dsh = np.clip(circ_conv(D_a, gauss_kernel(2.5 * S, 4 * S, 5 * S)), 0, 1)
 img *= (1 - 0.40 * dsh * (1 - D_a))[..., None]
@@ -1197,12 +1219,20 @@ def drip(length, width):
 streaks = circ_conv(drips, drip(120.0 * S, 9.0 * S))
 streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
 streaks *= smooth(streakn, 0.2, 0.7) * (1 - HOLE_A)
-img = mix(img, img * np.array([0.82, 0.74, 0.64]), streaks * 0.45)
+stained = img * np.array([0.82, 0.74, 0.64])
+stained -= img
+stained *= (streaks * 0.45)[..., None]
+img += stained
+del stained, streaks, drips, D_a, dsh, HOLE_A, cr
 
 # ── 5. grime over everything ──────────────────────────────────────────────────
 img *= (1 - 0.08 * smooth(grime, 0.45, 0.9) - 0.06 * (fine - 0.5))[..., None]
 
-out = Image.fromarray((np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8), "RGB")
+img *= SHADE
+np.clip(img, 0, 1, out=img)
+img *= 255
+out = Image.fromarray(img.astype(np.uint8), "RGB")
+del img
 out = out.quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
 out.save(ROOT / "images/wall-8.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))

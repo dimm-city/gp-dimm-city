@@ -51,10 +51,14 @@ tile had, are drawn first from the same seeds as before, so the wall keeps its
 layout; the new ones add only finer grain.
 """
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wall_fft import irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300                   # px an inch: the print bar
@@ -74,7 +78,7 @@ CALM = 0.80                 # every tone is drawn this far back toward the wall'
 rng = np.random.default_rng(SEED)
 F32 = np.float32
 
-yy, xx = np.mgrid[0:NH, 0:NW]
+yy, xx = np.ogrid[0:NH, 0:NW]          # a column and a row: they broadcast, so the tile-sized grids are never stored
 FY = np.fft.fftfreq(NH).astype(F32)[:, None]
 FX = np.fft.rfftfreq(NW).astype(F32)[None, :]
 F2 = FX * FX + FY * FY
@@ -93,8 +97,8 @@ def white_spec(r):
     """The spectrum (rfft2) of white noise over the tile. Its coarse part,
     every frequency the 240 DPI tile had, is drawn first, as it was then, so a
     field keeps its layout; the finer frequencies are drawn after it."""
-    coarse = np.fft.rfft2(r.standard_normal((NH0, NW0), dtype=F32)) * F32(S)   # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
-    spec = np.fft.rfft2(r.standard_normal((NH, NW), dtype=F32))
+    coarse = rfft2(r.standard_normal((NH0, NW0), dtype=F32)) * F32(S)   # S = sqrt(NH * NW / (NH0 * NW0)): the same power a bin
+    spec = rfft2(r.standard_normal((NH, NW), dtype=F32))
     iy = np.fft.fftfreq(NH0, 1 / NH0).astype(int) % NH
     spec[iy, :NW0 // 2 + 1] = coarse
     return spec
@@ -113,31 +117,40 @@ def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE, band=None, lo=No
         spec *= np.exp(-((f * band - 1) ** 2) * 3)
     if lo:
         spec *= np.exp(-(f * lo) ** 2)
-    out = np.fft.irfft2(spec, s=(NH, NW)).astype(F32)
+    out = irfft2(spec, s=(NH, NW)).astype(F32)
     out -= out.mean()
     return out / out.std()
 
 
 def blur(m, sigma, dx=0.0, dy=0.0):
     """Gaussian blur on the torus, the result shifted by (dx, dy)."""
-    k = np.exp(-2 * np.pi ** 2 * sigma * sigma * F2) * np.exp(-2j * np.pi * (FX * dx + FY * dy))
-    return np.fft.irfft2(np.fft.rfft2(m) * k, s=(NH, NW)).astype(F32)
+    k = np.exp(-2 * np.pi ** 2 * sigma * sigma * F2)
+    if dx or dy:
+        k = k * np.exp(-2j * np.pi * (FX * dx + FY * dy))
+    return irfft2(rfft2(m) * k, s=(NH, NW)).astype(F32)
 
 
 def circ_conv(img, kernel):
-    return np.fft.irfft2(np.fft.rfft2(img) * np.fft.rfft2(kernel), s=(NH, NW)).astype(F32)
+    return irfft2(rfft2(img) * rfft2(kernel), s=(NH, NW)).astype(F32)
 
 
 def smooth(x, lo, hi):
     t = np.clip((x - lo) / (hi - lo), 0, 1)
-    return t * t * (3 - 2 * t)
+    u = 3 - 2 * t
+    t *= t
+    t *= u
+    return t
 
 
 def mix(a, b, t):
     t = np.asarray(t, F32)
     if t.ndim == 2:
         t = t[..., None]
-    return a + (b - a) * t
+    d = np.subtract(b, a)          # a + (b - a) * t, in the one new buffer where its shape and type allow
+    inplace = d.shape == np.broadcast_shapes(d.shape, t.shape) and np.result_type(d, t) == d.dtype
+    d = np.multiply(d, t, out=d if inplace else None)
+    d += a
+    return d
 
 
 def wave(n, amp, r, kmax=9):
@@ -196,8 +209,11 @@ for k in range(K):
     v = vp / hh
     d = np.empty((J, len(ya), NW), F32)
     for j in range(J):
-        p = jx[j] + slant[j] * (v - 0.5)
-        d[j] = (x - p + NW / 2) % NW - NW / 2
+        t = x - (jx[j] + slant[j] * (v - 0.5))
+        t += NW / 2
+        np.remainder(t, NW, out=t)
+        t -= NW / 2
+        d[j] = t
     dl_all = np.where(d >= 0, d, np.inf)
     s = np.argmin(dl_all, 0)
     dl = np.take_along_axis(dl_all, s[None], 0)[0]
@@ -222,11 +238,10 @@ for k in range(K):
     kk = 16.0 * S                                       # corner rounding, px
     m = np.minimum.reduce([dl, dr, dt, db])
     e = m - kk * np.log(np.exp(-(dl - m) / kk) + np.exp(-(dr - m) / kk) + np.exp(-(dt - m) / kk) + np.exp(-(db - m) / kk))
-    rows = (np.arange(y0, y1) % NH)[:, None] * np.ones((1, NW), int)
-    cols = np.ones((y1 - y0, 1), int) * np.arange(NW)[None, :]
-    E[rows[inside], cols[inside]] = e[inside]
-    DT[rows[inside], cols[inside]] = dt[inside]
-    SID[rows[inside], cols[inside]] = (n_ids + s * 3 + sub)[inside]
+    rows = np.arange(y0, y1) % NH
+    E[rows] = np.where(inside, e, E[rows])
+    DT[rows] = np.where(inside, dt, DT[rows])
+    SID[rows] = np.where(inside, n_ids + s * 3 + sub, SID[rows])
     n_ids += J * 3
     bed_lines.append(top)
     print(f"  course {k + 1}/{K}  {J} stones", flush=True)
@@ -239,6 +254,7 @@ E = E + (9.0 * lump + 1.3 * edge_n - 12.0 * smooth(chip_n, 1.3, 2.3) * np.exp(-n
 MW = MORTAR + 4.0 * S * noise(1.8, seed=SEED + 3, feature=600 * S)
 stone = smooth(E, MW - 0.8, MW + 0.8)                   # antialiased over 1.6px
 inset = E - MW                                          # px in from the stone's visible edge
+del lump, edge_n, chip_n, E
 
 # each stone its own colour and weathering
 STONES = [hexc(c) for c in ("#b4afa3", "#aeaca4", "#b9ad96", "#a8a59c", "#b1aa9b", "#a9aba6", "#b6b0a2")]
@@ -246,6 +262,7 @@ pick = rng.integers(0, len(STONES), n_ids)
 tone = rng.uniform(0.93, 1.05, n_ids).astype(F32)
 colours = np.stack([STONES[i] for i in pick]) * tone[:, None]
 base = colours[SID]
+del SID
 
 mottle = noise(2.0, seed=SEED + 4)
 strata = noise(1.3, stretch=(1.0, 0.08), seed=SEED + 5, feature=400 * S, lo=5 * S)   # bedding, along the course
@@ -261,6 +278,7 @@ H = np.sqrt(smooth(inset, 0, 40 * S)) + 0.12 * face_n * smooth(inset, 0, 20 * S)
 H = np.where(stone > 0.5, H, -0.15 + 0.02 * grain)
 lit = np.clip(relief(H.astype(F32), 2.2 * S), 0.72, 1.22)
 img = base * (face * lit)[..., None]
+del strata, grain, pits_n, face_n, stain, H
 
 # the joints: lime mortar, sandy, recessed, in the shadow of the stones above-left
 MORTAR_C = hexc("#a39c8c")
@@ -269,7 +287,7 @@ mortar = MORTAR_C * (0.94 + 0.05 * sand + 0.03 * mottle)[..., None]
 cast = blur(stone, 3.0 * S, 5 * S, 6 * S)
 mortar *= (1 - 0.30 * np.clip(cast - stone, 0, 1) - 0.10 * smooth(-inset, 0, 6 * S))[..., None]
 img = mix(mortar, img, stone)
-del base, mortar, lit, face, cast
+del base, mortar, lit, face, cast, sand, mottle
 
 # a few cracks across the faces
 crack_m = Image.new("L", (NW * CSS, NH * CSS), 0)

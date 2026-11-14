@@ -109,6 +109,18 @@ def mix(a, b, t):
     return a + (b - a) * t
 
 
+def mix_into(a, b, t):
+    """mix(a, b, t), worked in place in `a` (the tile is big): `b`, a new array
+    of `a`'s shape, is used up."""
+    t = np.asarray(t, F32)
+    if t.ndim == 2:
+        t = t[..., None]
+    b -= a
+    b *= t
+    a += b
+    return a
+
+
 # the colours: multipliers (a stain over the stone) and paints (opaque)
 DIRT = hexc("#c8bfb2")          # grime: a warm grey-brown, multiplied
 WET = hexc("#b0b3ac")           # damp stone: darker and a little cool
@@ -175,16 +187,22 @@ class Torus:
         spec /= f ** beta
         if lo:
             spec *= np.exp(-(f * lo) ** 2)
-        out = np.fft.irfft2(spec, s=(self.H, self.W)).astype(F32)
+        out = np.fft.irfft2(spec, s=(self.H, self.W)).astype(F32, copy=False)
         out -= out.mean()
         return out / out.std()
 
+    def spec(self, m):
+        """`m`'s spectrum, for a blur or conv of it to take instead of `m` when it
+        is blurred or convolved more than once."""
+        return m if np.iscomplexobj(m) else np.fft.rfft2(m)
+
     def blur(self, m, sigma):
         k = np.exp(-2 * np.pi ** 2 * sigma * sigma * (self.FX ** 2 + self.FY ** 2))
-        return np.fft.irfft2(np.fft.rfft2(m) * k, s=(self.H, self.W)).astype(F32)
+        return np.fft.irfft2(self.spec(m) * k, s=(self.H, self.W)).astype(F32, copy=False)
 
     def conv(self, m, kernel):
-        return np.fft.irfft2(np.fft.rfft2(m) * np.fft.rfft2(kernel), s=(self.H, self.W)).astype(F32)
+        k = np.fft.rfft2(kernel)            # named, so numpy never multiplies into it (k * m rounds differently from m * k)
+        return np.fft.irfft2(self.spec(m) * k, s=(self.H, self.W)).astype(F32, copy=False)
 
     def drip(self, length, width, up=False):
         """A streak's kernel: running down (or up) from its source, fading over `length` px."""
@@ -316,8 +334,10 @@ def weather(rgb, joint, seed):
         return best
 
     # ── 2. grime ────────────────────────────────────────────────────────────────
-    near = np.clip(t.blur(joint, 5) * 2.5, 0, 1)        # in a joint and just beside it
-    pocket = smooth(t.blur(joint, 3), 0.42, 0.8)        # where joints open or meet: pockets
+    jf = t.spec(joint)
+    near = np.clip(t.blur(jf, 5) * 2.5, 0, 1)           # in a joint and just beside it
+    pocket = smooth(t.blur(jf, 3), 0.42, 0.8)           # where joints open or meet: pockets
+    del jf
     ledge = joint * np.roll(stone, -3, 0)               # a joint's lower edge: the stone below it takes what runs off
     wash = t.conv(ledge, t.drip(22, 1.2))
     wash = np.clip(wash / np.quantile(wash[::4, ::4][wash[::4, ::4] > 1e-3], 0.9), 0, 1) * stone
@@ -328,8 +348,8 @@ def weather(rgb, joint, seed):
     g = (0.42 * foot + 0.36 * smooth(broad, -0.8, 1.8) + 0.38 * smooth(blotch, -0.2, 2.0) + 0.32 * smooth(rain, 0.0, 2.0)
          + 0.40 * near * (0.5 + 0.5 * patchy) + 0.65 * pocket
          + 0.50 * wash * smooth(t.noise(1.4, feature=200, lo=4), -0.8, 0.8))
-    img = mix(img, img * DIRT, np.clip(g, 0, 1.4))
-    img = mix(img, img * hexc("#5e5850"), pocket * 0.55)       # soot and dirt packed into the recesses
+    img = mix_into(img, img * DIRT, np.clip(g, 0, 1.4))
+    img = mix_into(img, img * hexc("#5e5850"), pocket * 0.55)       # soot and dirt packed into the recesses
     del patchy, g, rain, blotch
 
     # soot and grime run down from the ledges: grey-black stains under a joint,
@@ -339,12 +359,13 @@ def weather(rgb, joint, seed):
     for c in r.choice(cand, min(len(cand), 110), replace=False):
         yy, xx = divmod(int(c), (W + 1) // 2)
         src[(yy * 2) % H, (xx * 2) % W] += r.uniform(0.3, 1.0)
-    runs = t.conv(src, t.drip(380, 2.5)) + 0.7 * t.conv(src, t.drip(140, 9.0))
+    sf = t.spec(src)
+    runs = t.conv(sf, t.drip(380, 2.5)) + 0.7 * t.conv(sf, t.drip(140, 9.0))
     runs = np.clip(runs / np.percentile(runs[runs > 1e-4], 99), 0, 1)
     runs *= smooth(t.noise(1.0, feature=700, lo=2, stretch=(0.10, 1.0)), -0.6, 1.0)
-    img = mix(img, img * hexc("#8a857c"), runs * 0.55 * calm)
-    img = mix(img, img * hexc("#9a948a"), wash * 0.35)          # and the stone just under every ledge
-    del src, runs, wash
+    img = mix_into(img, img * hexc("#8a857c"), runs * 0.55 * calm)
+    img = mix_into(img, img * hexc("#9a948a"), wash * 0.35)          # and the stone just under every ledge
+    del src, sf, runs, wash
 
     # ── 3. damp ──────────────────────────────────────────────────────────────────
     # streaks from the joints: water off a ledge, down the face below
@@ -352,20 +373,21 @@ def weather(rgb, joint, seed):
     for c in r.choice(cand, min(len(cand), 260), replace=False):
         yy, xx = divmod(int(c), (W + 1) // 2)
         src[(yy * 2) % H, (xx * 2) % W] += r.uniform(0.3, 1.0) * (1 + 1.5 * foot[(yy * 2) % H, 0])
-    streaks = t.conv(src, t.drip(260, 3.0)) + 0.5 * t.conv(src, t.drip(80, 8.0))
+    sf = t.spec(src)
+    streaks = t.conv(sf, t.drip(260, 3.0)) + 0.5 * t.conv(sf, t.drip(80, 8.0))
     streaks = np.clip(streaks / np.percentile(streaks[streaks > 1e-4], 99), 0, 1)
     streaks *= smooth(t.noise(1.0, feature=900, lo=2, stretch=(0.10, 1.0)), -0.7, 0.9)
-    img = mix(img, img * WET, streaks * 0.75)
+    img = mix_into(img, img * WET, streaks * 0.75)
     edge_s = np.clip(streaks - t.blur(streaks, 2.0), 0, 1)    # a streak dries to a darker edge
     img *= (1 - 0.7 * edge_s)[..., None]
-    del src, edge_s
+    del src, sf, edge_s
 
     # wet patches: soft and dark where the stone holds water, a faint tide line
     # where one has dried back
     patch_ = t.noise(1.8, feature=1.6 * DPI, lo=30) + 0.2 * t.noise(1.4, feature=200, lo=5)
     wetp = smooth(patch_, 0.5, 1.8) * (1 - 0.4 * inner)
-    img = mix(img, img * hexc("#a5a8a1"), wetp * 0.6)
-    img = mix(img, img * TIDE, np.exp(-((patch_ - 0.45) / 0.035) ** 2) * 0.22 * (1 - 0.4 * inner))
+    img = mix_into(img, img * hexc("#a5a8a1"), wetp * 0.6)
+    img = mix_into(img, img * TIDE, np.exp(-((patch_ - 0.45) / 0.035) ** 2) * 0.22 * (1 - 0.4 * inner))
     del patch_
 
     # rising damp at the foot: darker and wet below a wavy tide line, salt just above it
@@ -379,10 +401,10 @@ def weather(rgb, joint, seed):
     tidem = np.exp(-(rel / 1.8) ** 2) + 0.45 * np.exp(-((rel - 26) / 1.6) ** 2)   # a second, fainter line where it stood once
     salt = smooth(-rel, 2, 6) * (1 - smooth(-rel, 10, 26))
     brk = smooth(t.noise(1.5, feature=200, lo=4), -1.0, 0.2)
-    img = mix(img, img * WET, below * 0.50 * (0.7 + 0.3 * smooth(fine, -1, 1)))
-    img = mix(img, img * hexc("#bdb5a8"), below * smooth(rel, 20, 120) * 0.45)   # and darker, dirtier, lower down
-    img = mix(img, img * TIDE, np.clip(tidem, 0, 1) * 0.40 * brk)
-    img = mix(img, SALT * (0.94 + 0.04 * fine)[..., None], salt * 0.30 * brk * smooth(fine, -0.6, 0.6))
+    img = mix_into(img, img * WET, below * 0.50 * (0.7 + 0.3 * smooth(fine, -1, 1)))
+    img = mix_into(img, img * hexc("#bdb5a8"), below * smooth(rel, 20, 120) * 0.45)   # and darker, dirtier, lower down
+    img = mix_into(img, img * TIDE, np.clip(tidem, 0, 1) * 0.40 * brk)
+    img = mix_into(img, SALT * (0.94 + 0.04 * fine)[..., None], salt * 0.30 * brk * smooth(fine, -0.6, 0.6))
 
     # leaks: a stain run down from a joint, its edge dried to a tide mark, the
     # lower edge scalloped where it ran
@@ -419,17 +441,17 @@ def weather(rgb, joint, seed):
     speck = t.noise(0.2, feature=40, lo=1.1)
     dots = smooth(speck, 2.2 - 1.9 * colony, 2.45 - 1.9 * colony) * smooth(colony, 0.05, 0.3)
     halo = np.clip(t.blur(colony, 10) * 1.3, 0, 1)
-    img = mix(img, img * MOULD_STAIN, halo * 0.55)
+    img = mix_into(img, img * MOULD_STAIN, halo * 0.55)
     green = smooth(t.noise(1.8, feature=400, lo=10) + 0.8 * wet, 0.0, 0.8)     # green where it is wet, black where it is not
     mc = mix(MOULD_BLACK, MOULD_GREEN, green[..., None]) * (0.9 + 0.12 * smooth(fine, -1.5, 1.5))[..., None]
-    img = mix(img, mc, dots * 0.9)
+    img = mix_into(img, mc, dots * 0.9)
     special = np.maximum(special, (dots > 0.25) * green)
     del colonies, field, speck, halo, mc
 
     film = smooth(wet, 0.55, 1.0) * smooth(t.noise(1.6, feature=300, lo=6), 0.2, 1.2)
-    img = mix(img, img * ALGAE, film * 0.45)
+    img = mix_into(img, img * ALGAE, film * 0.45)
     glint = film * smooth(t.noise(0.9, feature=200, lo=1.5, stretch=(0.15, 1.0)), 2.0, 2.6)   # the slime's sheen, running down
-    img = mix(img, np.minimum(img * 1.25 + 0.04, 1), glint * 0.6)
+    img = mix_into(img, np.minimum(img * 1.25 + 0.04, 1), glint * 0.6)
     special = np.maximum(special, smooth(film, 0.3, 0.45))
     special = np.maximum(special, smooth(film, 0.25, 0.4))
     del film, glint, green
@@ -565,13 +587,13 @@ def weather(rgb, joint, seed):
             x, y = x + 18 * math.cos(a), y + 18 * math.sin(a) + r.normal(0, 1.5)
             pts.append((x, y))
         L.line(pts, 16)
-        lick = L.render()
+        lick = t.spec(L.render())
         band = np.clip(t.blur(lick, 14) * 1.6, 0, 1)
         rise = t.conv(lick, t.drip(90, 18, up=True))
         rise = np.clip(rise / rise.max() * 1.3, 0, 1) * smooth(t_up, -1.0, 1.2)
         soot = np.clip(0.75 * band + 0.55 * rise, 0, 1) * (0.75 + 0.25 * smooth(fine, -1, 1))
-        img = mix(img, img * SCORCH, np.clip(t.blur(lick, 30) * 2.5, 0, 1) * 0.45 * calm)
-        img = mix(img, SOOT * (0.9 + 0.2 * smooth(fine, -1.5, 1.5))[..., None], soot * 0.75 * calm)
+        img = mix_into(img, img * SCORCH, np.clip(t.blur(lick, 30) * 2.5, 0, 1) * 0.45 * calm)
+        img = mix_into(img, SOOT * (0.9 + 0.2 * smooth(fine, -1.5, 1.5))[..., None], soot * 0.75 * calm)
         del L, lick, band, rise, soot
 
     def oil(x0, y0, R):
@@ -611,7 +633,8 @@ def weather(rgb, joint, seed):
         light = np.clip(1 + k * (gx + gy), 0.35, 1.4)
         fresh = mix(clean * FRESH / hexc("#c8c5bf"), img * 1.04, 0.45) * floor   # broken open, but dirty
         fresh = mix(fresh, img * 0.85, joint * 0.7)            # the mortar, where it crosses a joint
-        img = mix(img, fresh, m * alpha) * light[..., None]
+        img = mix_into(img, fresh, m * alpha)
+        img *= light[..., None]
 
     dmg = Layer(t)       # recesses
     crk = Layer(t)       # cracks: dark lines
@@ -843,7 +866,7 @@ def weather(rgb, joint, seed):
         gouge(g)
     Gd, Gl = grit[0].render(), grit[1].render()
     img *= (1 - 0.45 * Gd)[..., None]
-    img = mix(img, np.minimum(img * 1.16, 1), Gl)
+    img = mix_into(img, np.minimum(img * 1.16, 1), Gl)
     del Gd, Gl, grit
     for x, y, rr in rad:                     # the hole, and the powder round it
         ix, dx, dy = t.patch(x, y, int(rr * 5))
@@ -925,8 +948,8 @@ def weather(rgb, joint, seed):
         b = b * (0.7 + 0.3 * smooth(fine, -1.5, 1.0)) * (fine < 2.2)          # dried, flaking
         rim = np.clip(b - t.blur(b, 1.2), 0, 1)                             # the darker rim a drop dries to
         thick = np.clip(smooth(b, 0.5, 1.0) + 0.6 * rim, 0, 1)
-        img = img * mix(np.ones(3, F32), BLOOD_FILM[a], smooth(b, 0.0, 0.5)[..., None])
-        img = mix(img, BLOOD_DEEP[a] * (0.95 + 0.1 * smooth(fine, -1, 1))[..., None], thick * 0.85)
+        img *= mix(np.ones(3, F32), BLOOD_FILM[a], smooth(b, 0.0, 0.5)[..., None])
+        img = mix_into(img, BLOOD_DEEP[a] * (0.95 + 0.1 * smooth(fine, -1, 1))[..., None], thick * 0.85)
         special = np.maximum(special, smooth(b, 0.05, 0.2))
     del B, smear, claw_blood
 
