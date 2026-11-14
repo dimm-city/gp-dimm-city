@@ -65,6 +65,14 @@ ANCHOR = {   # tile offset from the text area's corner, per side; a full page ha
     "full-left": ("0", "0"),
     "full-right": (f"calc(-1 * {SHEET_W})", "0"),
 }
+# A wall placed from the text area: its tile starts at a text page's text
+# corner (outer margin, top margin on a left page). A margin-free page is
+# offset to carry on from the page facing it, so an art plate meets its
+# intro page across the spine.
+TEXT_ANCHOR = {
+    "full-left": ("var(--outer-margin)", "var(--page-margin)"),
+    "full-right": (f"calc(var(--outer-margin) - {SHEET_W})", "var(--page-margin)"),
+}
 WALLS = range(1, 14)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
@@ -411,10 +419,14 @@ def write_css(walls):
         # the viewer
         wiring.append(f"@page dc-wall-{n}-full {{ margin: 0; background: {ground_layer(sheet=True, n=n)}, {stone}; "
                       "@bottom-left { content: none; } @bottom-right { content: none; } }")
-        if n in ALIGNED:
-            for side in ("left", "right"):
-                wiring.append(f"@page dc-wall-{n}-full:{side} {{ background: {ground_layer(sheet=True, n=n)}, "
-                              f"{stone_at(*ANCHOR['full-' + side])}; }}")
+        # A wall placed from the text area (not ALIGNED) starts its tile at a
+        # page's text corner; a margin-free page has no text area, so it
+        # carries on from the page it faces instead: an art plate (a right
+        # page) from its intro page, a left one as a left text page sits.
+        full = ANCHOR if n in ALIGNED else TEXT_ANCHOR
+        for side in ("left", "right"):
+            wiring.append(f"@page dc-wall-{n}-full:{side} {{ background: {ground_layer(sheet=True, n=n)}, "
+                          f"{stone_at(*full['full-' + side])}; }}")
         wiring.append(f".dc-page-wall-{n}:not(.page, {KEEPS}) > .dc-specialty-art {{ page: dc-wall-{n}-full; }}")
     replace_block("styles/dc-native.css", "page-walls", "\n".join(pages))
     replace_block("styles/page-rules.css", "page-walls", "\n".join(wiring))
