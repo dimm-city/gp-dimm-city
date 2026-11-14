@@ -146,7 +146,7 @@ def noise(beta, seed, feature=FEATURE, lo=None, stretch=(1.0, 1.0)):
     spec = np.fft.rfft2(r.standard_normal((NH, NW), dtype=F32)) / f ** beta
     if lo:
         spec *= np.exp(-(f * lo) ** 2)
-    out = np.fft.irfft2(spec, s=(NH, NW)).astype(F32)
+    out = np.fft.irfft2(spec, s=(NH, NW)).astype(F32, copy=False)
     out -= out.mean()
     return out / out.std()
 
@@ -228,9 +228,11 @@ def cells(pts, half, p, WX, WY):
     i2 = i1.copy()
     for k, ((sx_, sy_), (hx, hy)) in enumerate(zip(pts, half)):
         rx, ry = int(hx * 2.4 + 30), int(hy * 2.4 + 30)
-        rows = np.arange(int(sy_) - ry, int(sy_) + ry + 1) % NH
-        cols = np.arange(int(sx_) - rx, int(sx_) + rx + 1) % NW
-        ix = np.ix_(rows, cols)
+        r0, c0 = int(sy_) - ry, int(sx_) - rx
+        if 0 <= r0 and r0 + 2 * ry < NH and 0 <= c0 and c0 + 2 * rx < NW:
+            ix = np.s_[r0:r0 + 2 * ry + 1, c0:c0 + 2 * rx + 1]          # a view, where the box does not wrap
+        else:
+            ix = np.ix_(np.arange(r0, r0 + 2 * ry + 1) % NH, np.arange(c0, c0 + 2 * rx + 1) % NW)
         dx = np.abs(tor(WX[ix] - sx_, NW)) / hx
         dy = np.abs(tor(WY[ix] - sy_, NH)) / hy
         d = np.sqrt(dx * dx + dy * dy) if p == 2 else (dx ** p + dy ** p) ** (1 / p)
@@ -257,7 +259,7 @@ def draw(n):
     c = WALLS[n]
     seed = c["seed"]
     rng = np.random.default_rng(seed)
-    yy, xx = np.mgrid[0:NH, 0:NW].astype(F32)
+    yy, xx = np.arange(NH, dtype=F32)[:, None], np.arange(NW, dtype=F32)[None, :]
 
     # the seeds, each with its stone's half-size
     if c["kind"] == "random":

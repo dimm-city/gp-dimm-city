@@ -101,7 +101,7 @@ class Tile:
         spec = spec / f ** beta
         if lo:
             spec = spec * np.exp(-(f * lo) ** 2)
-        out = np.fft.irfft2(spec, s=(self.H, self.W)).astype(F32)
+        out = np.fft.irfft2(spec, s=(self.H, self.W)).astype(F32, copy=False)
         out -= out.mean()
         return out / out.std()
 
