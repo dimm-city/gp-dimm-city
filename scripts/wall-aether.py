@@ -37,6 +37,19 @@ What it draws, back to front:
    teal edge inside the tear, an amber lip (Etherlock's gold) outside it,
    then a lavender band fading out over the wall. Hairline cracks run out
    from it, the near ones lit violet from within.
+5. The marks, drawn at the page's scale (0.5in to 2.5in across), each of its
+   own kind and placed at random and kept apart, on a random stream of their
+   own, so the wall above is unchanged by them. The surface itself is warped
+   toward each rift (courses and plate edges bowed, the far side lit and the
+   near side shaded). Occult circles, chiselled (short cuts, a drilled dot)
+   or scratched, with invented signs between two rings and a figure inside.
+   Violet where the aether touched: forking burns (a charred fern of a track,
+   the stone scorched round it, a blister and sparks' pits) and stains seeped
+   from a joint and run down below it. Candle wax: stubs on ledges or stuck
+   to the wall, pooled, hung over the edge and run down in beads, lit like
+   the wall. Ash, which is a powder and drawn as grains: low drifts heaped on
+   the ledges with cinders in them and specks sifted down the wall below, and
+   dry streaks smeared across it by a paw or something broad.
 It is then quantised to an exact palette, as the other walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is), with
 AETHER_COLOURS of its 160 kept for the tears and their light: a median cut
@@ -893,8 +906,723 @@ for ri, rf in enumerate(rifts):
     out = mix(out, mix(out, LAVENDER, 0.09), o_ * ((dT >= b3) & (dT < b4)))
     img[ix] = out
     aether[ix] |= (inside > 0) | (o_ * (dT < b3) > 0)
+    rf.update(R=R, dT=dT, Zloc=Zloc)             # kept for the warp (5)
     print(f"  {len(shards)} shards  void {int((1 - outside).sum())} px", flush=True)
 
+# ── 5. the marks ──────────────────────────────────────────────────────────────
+# Drawn at the page's scale, not the wall's (most are 0.5in to 2.5in across), so
+# they read from across a spread. They have a random stream of their own (`more`),
+# so the wall above stays as it was.
+print("marks", flush=True)
+more = np.random.default_rng(SEED + 70)
+IN = DPI
+wall0 = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)   # the wall before the marks: its palette is cut from this, as it always was
+
+
+def window(x0, y0, w, h):
+    """The tile's rows and columns under a w x h window at (x0, y0), wrapped."""
+    return np.ix_(np.arange(int(y0), int(y0) + h) % NH, np.arange(int(x0), int(x0) + w) % NW)
+
+
+def lnoise(h, w, beta, r, stretch=(1.0, 1.0)):
+    """1/f^beta noise in a window, scaled to 0..1 (it wraps at the window's edges)."""
+    fy = np.fft.fftfreq(h)[:, None] * stretch[1]
+    fx = np.fft.rfftfreq(w)[None, :] * stretch[0]
+    f = np.sqrt(fx * fx + fy * fy)
+    f[0, 0] = 1.0
+    out = irfft2(rfft2(white_noise(r, h, w)) / f ** beta, s=(h, w)).astype(np.float32)
+    out -= out.min()
+    return out / out.max()
+
+
+# the warp: round each rift the wall's own surface is drawn in toward it, the
+# courses and the plates' edges bowed and a little turned, most a short way out
+# from the shards and less from there to `reach`. The tear, its light and its
+# shards stay where they are. The surface dishes toward the rift: its far side
+# catches the light, its near side is in shade.
+rift_reach = []
+pulled = np.zeros((NH, NW), np.float32)        # how far the warp has moved each point of the wall, px
+for rf in rifts:
+    L = rf["L"]
+    reach = 1.3 * L + 1.0 * IN
+    amp = 0.36 * L + 0.2 * IN
+    RW = int(0.85 * L + reach) + 2
+    SW = 2 * RW + 1
+    gx0, gy0 = int(rf["cx"]) - RW, int(rf["cy"]) - RW
+    ix = window(gx0, gy0, SW, SW)
+    Y, X = np.mgrid[0:SW, 0:SW].astype(np.float32)
+    rx, ry = X - RW, Y - RW
+    ca, sa = math.cos(rf["ang"]), math.sin(rf["ang"])
+    U, V = rx * ca + ry * sa, -rx * sa + ry * ca
+    du = U - np.clip(U, -0.85 * L, 0.85 * L)
+    d = np.hypot(du, V) + 1e-6                                # from the rift's spine
+    nx, ny = (du * ca - V * sa) / d, (du * sa + V * ca) / d    # away from it
+    e = np.full((SW, SW), 1e6, np.float32)                     # out from the shards
+    R = rf["R"]
+    o, c = max(0, RW - R), max(0, R - RW)
+    n = min(SW, 2 * R + 1)
+    e[o:o + n, o:o + n] = (rf["dT"] - 0.7 * rf["Zloc"])[c:c + n, c:c + n]
+    w = smooth(e, 0, 1.2 * IN) * (1 - smooth(d, 0, reach))
+    tongue = 0.45 + 0.75 * lnoise(SW, SW, 2.6, more)          # it pulls harder here than there
+    m = amp * w * tongue
+    theta = rf["spin"] * 0.16 * w
+    ct, st = np.cos(theta), np.sin(theta)
+    SX = gx0 + RW + ct * rx + st * ry + nx * m
+    SY = gy0 + RW - st * rx + ct * ry + ny * m
+    moved = m > 0.02
+    pulled[ix] = np.maximum(pulled[ix], np.where(e < 0.5 * IN, 1e3, np.hypot(SX - gx0 - X, SY - gy0 - Y)))     # the tear and its shards count as moved
+    hgt = -wblur(m, 6 * S)                                      # the dish
+    gy_, gx_ = np.gradient(hgt)
+    lit = 1 + 0.5 * np.tanh((gx_ + gy_) / math.sqrt(2) * 1.6)[..., None] * 0.2
+    img[ix] = np.where(moved[..., None], sample(img, SY, SX) * lit, img[ix])
+    iy_, ix_ = SY.round().astype(int) % NH, SX.round().astype(int) % NW
+    unit[ix] = unit[iy_, ix_]
+    stone_a[ix] = stone_a[iy_, ix_]
+    rift_reach.append((rf, reach))
+    del X, Y, rx, ry, U, V, du, d, nx, ny, e, w, tongue, m, theta, ct, st, SX, SY, hgt, gx_, gy_, lit, iy_, ix_
+
+# where the marks go: drawn at random and kept apart, not set by hand
+n_stone = n_units - len(plates)              # units below this are stones, from it up plates
+kind = np.zeros((NH, NW), np.uint8)          # what marks each pixel: 1 violet, 2 wax, 3 ash and cuts (each has colours of its own)
+taken = []                                   # (x, y, radius) of every mark placed
+
+
+def away(x, y, px, py):
+    dx, dy = abs(x - px), abs(y - py)
+    return math.hypot(min(dx, NW - dx), min(dy, NH - dy))
+
+
+def rift_clear(x, y):
+    """How far (x, y) lies outside the ground the rifts have warped (negative: inside it)."""
+    out_ = 1e9
+    for rf_, reach_ in rift_reach:
+        dx, dy = (x - rf_["cx"] + NW / 2) % NW - NW / 2, (y - rf_["cy"] + NH / 2) % NH - NH / 2
+        ca_, sa_ = math.cos(rf_["ang"]), math.sin(rf_["ang"])
+        u, v = dx * ca_ + dy * sa_, -dx * sa_ + dy * ca_
+        out_ = min(out_, math.hypot(u - min(max(u, -0.85 * rf_["L"]), 0.85 * rf_["L"]), v) - reach_)
+    return out_
+
+
+def free(x, y, radius):
+    return all(away(x, y, px, py) >= radius + pr for px, py, pr in taken)
+
+
+def place(radius, clear):
+    """A place for a mark of this radius, `clear` px outside the warped ground
+    (negative: that far into it), and clear of the marks already placed."""
+    tries = 0
+    while True:
+        x, y = more.uniform(0, NW), more.uniform(0.5 * IN, 10.2 * IN)
+        tries += 1
+        if rift_clear(x, y) >= clear and free(x, y, radius * 0.9 ** (tries // 3000)):     # crowded: let them closer
+            taken.append((x, y, radius))
+            return x, y
+
+
+def ledge(half, radius, drop=0.0):
+    """A place on the top edge of a plate or a band with `half` px of it clear
+    either side, stone above it, where the warp has not moved the wall: where a candle can
+    stand or ash can lie. `drop`: how far below the edge the mark's middle is."""
+    lens = np.array([0.2 * NW if p["w"] is None else max(0.0, p["w"] - 2 * half - 50 * S) for p in plates])
+    tries = 0
+    while True:
+        tries += 1
+        k = int(more.choice(len(plates), p=lens / lens.sum()))
+        p = plates[k]
+        if p["w"] is None:
+            x, y = more.uniform(0, NW), p["cy"] - p["h"] / 2
+        elif lens[k] <= 0:
+            continue
+        else:
+            t = more.uniform(-0.5, 0.5) * lens[k]
+            x = p["cx"] + t * math.cos(p["ang"]) + p["h"] / 2 * math.sin(p["ang"])
+            y = p["cy"] + t * math.sin(p["ang"]) - p["h"] / 2 * math.cos(p["ang"])
+        x, y = x % NW, y % NH
+        xs = np.arange(int(x - half), int(x + half)) % NW
+        if not 0.8 * IN < y < 9.6 * IN or pulled[int(y) % NH, xs].max() > 3 * S or not free(x, y + drop, radius * 0.9 ** (tries // 3000)):
+            continue
+        if (unit[int(y + 8 * S) % NH, xs] == n_stone + k).all() and (unit[int(y - 10 * S) % NH, xs] < n_stone).all():
+            taken.append((x, y + drop, radius))
+            return x, y
+
+
+def canvas(side_w, side_h):
+    """A window's drawing at SS x: the image and its pen."""
+    im = Image.new("L", (side_w * SS, side_h * SS), 0)
+    return im, ImageDraw.Draw(im)
+
+
+def boxed(im):
+    return np.asarray(im.resize((im.width // SS, im.height // SS), Image.BOX), np.float32) / 255
+
+
+# the ledge marks first (they have the fewest places to go), then the largest
+WAX_LEDGE = [ledge(sp + 0.3 * IN, 0.9 * IN, 0.4 * IN) + (sp,) for sp in more.uniform(0.2, 0.6, 3) * IN]
+ASH_LEDGE = [ledge(hf, 0.9 * IN, 0.2 * IN) + (0.92 * hf,) for hf in more.uniform(1.0, 1.8, 4) * IN]
+CIRCLES = sorted((more.uniform(0.75, 1.3) * IN for _ in range(5)), reverse=True)
+CIRCLES = [place(R_ + 0.1 * IN, -0.5 * IN) + (R_,) for R_ in CIRCLES]
+WAX_WALL = [place(0.8 * IN, 0.3 * IN) for _ in range(2)]
+BURNS = sorted((more.uniform(0.5, 1.25) * IN for _ in range(5)), reverse=True)
+BURNS = [place(R_ * 0.75, -1.0 * IN) + (R_,) for R_ in BURNS]
+SEEPS = sorted((more.uniform(0.5, 1.0) * IN for _ in range(5)), reverse=True)
+SEEPS = [place(R_ * 0.8, -0.8 * IN) + (R_,) for R_ in SEEPS]
+SMEARS = [place(0.6 * IN, -0.3 * IN) for _ in range(4)]
+
+# occult circles: summoning circles cut into the wall, some chiselled (short
+# straight cuts, each a little off the last, a pit drilled for a dot) and some
+# scratched (thin, wavering, gone over twice). Two rings with a band of invented
+# signs between them, and a figure of its own inside each. The signs are built
+# of open rings, squiggles, combs, dots and ticks: no letter, numeral or known symbol.
+print("circles", flush=True)
+TAU = 2 * math.pi
+
+
+def arc(cx, cy, rad, a0=0.0, a1=TAU):
+    return [(cx + rad * math.cos(a), cy + rad * math.sin(a)) for a in np.linspace(a0, a1, max(6, int(abs(a1 - a0) * rad / (4 * S)) + 2))]
+
+
+def glyph(r):
+    """An invented sign in a unit box, as (strokes, dots)."""
+    def uarc(cx, cy, rad, a0, a1):
+        return [(cx + rad * math.cos(a), cy + rad * math.sin(a)) for a in np.linspace(a0, a1, 14)]
+
+    strokes, dots = [], []
+    base = int(r.integers(0, 5))
+    a0 = r.uniform(0, TAU)
+    if base == 0:                                 # an open ring round a dot
+        strokes.append(uarc(0, 0, 0.34, a0, a0 + r.uniform(3.4, 5.2)))
+        dots.append((0.0, 0.0))
+    elif base == 1:                               # a small ring, an arc cupping it
+        strokes += [uarc(0, 0, 0.14, 0, TAU), uarc(0, 0, 0.36, a0, a0 + r.uniform(2.0, 3.2))]
+    elif base == 2:                               # two open rings, one in the other, facing apart
+        strokes += [uarc(0, 0, 0.36, a0, a0 + r.uniform(3.0, 4.0)), uarc(0, 0, 0.17, a0 + math.pi, a0 + math.pi + r.uniform(3.2, 4.4))]
+    elif base == 3:                               # a squiggle dying away: three humps, each smaller
+        strokes.append(uarc(-0.26, 0, 0.18, math.pi, TAU) + uarc(0.04, 0, 0.12, math.pi, 0)[1:] + uarc(0.23, 0, 0.07, math.pi, TAU)[1:])
+    else:                                         # a comb: an arc with teeth out of its back
+        sw = r.uniform(2.0, 3.0)
+        strokes.append(uarc(0, 0.1, 0.26, a0, a0 + sw))
+        for a in np.linspace(a0 + 0.2, a0 + sw - 0.2, int(r.integers(3, 6))):
+            strokes.append([(0.26 * math.cos(a), 0.1 + 0.26 * math.sin(a)), (0.46 * math.cos(a), 0.1 + 0.46 * math.sin(a))])
+    for _ in range(int(r.integers(1, 3))):
+        a, k = r.uniform(0, TAU), int(r.integers(0, 4))
+        if k == 0 and base == 2:
+            dots.append((0.0, 0.0))
+        elif k == 1:
+            dots.append((0.47 * math.cos(a), 0.47 * math.sin(a)))
+        elif k == 2:                              # a pair of ticks across it
+            for o in (-0.05, 0.05):
+                c, s_ = math.cos(a), math.sin(a)
+                strokes.append([(0.22 * c - o * s_, 0.22 * s_ + o * c), (0.46 * c - o * s_, 0.46 * s_ + o * c)])
+        else:
+            strokes.append(uarc(0.44 * math.cos(a), 0.44 * math.sin(a), 0.07, 0, TAU))
+    rot = r.uniform(0, TAU)
+    c, s_ = math.cos(rot), math.sin(rot)
+    turn = lambda p: (p[0] * c - p[1] * s_, p[0] * s_ + p[1] * c)
+    return [[turn(p) for p in st] for st in strokes], [turn(p) for p in dots]
+
+
+def circle_figure(R, motif, r):
+    """A circle's strokes and dots, about its centre: (points, weight) and (x, y)."""
+    strokes, dots = [], []
+    r1, r2 = R, R * r.uniform(0.66, 0.74)
+    strokes += [(arc(0, 0, r1), 1.0), (arc(0, 0, r2), 0.85)]
+    g = (r1 - r2) * 0.7                          # a sign's size
+    rm = (r1 + r2) / 2
+    n = max(5, int(TAU * rm / ((r1 - r2) * r.uniform(1.1, 1.5))))
+    th0 = r.uniform(0, TAU)
+    for i in range(n):
+        th = th0 + TAU * (i + r.normal(0, 0.05)) / n
+        c, s_ = math.cos(th), math.sin(th)
+        if r.random() < 0.12:                     # a divider, not a sign
+            strokes.append(([(r2 * c, r2 * s_), (r1 * c, r1 * s_)], 0.8))
+            continue
+        put_ = lambda p: (rm * c + g * (-p[0] * s_ + p[1] * c), rm * s_ + g * (p[0] * c + p[1] * s_))
+        gs, gd = glyph(r)
+        strokes += [([put_(p) for p in st], 0.7) for st in gs]
+        dots += [put_(p) for p in gd]
+    ri = r2 * r.uniform(0.82, 0.9)
+    a0, spin = r.uniform(0, TAU), float(r.choice([-1, 1]))
+    if motif == 0:                                # the tear itself: a jagged slit, rays of uneven length round it
+        hh, ww = 0.36 * ri, 0.085 * ri
+        c, s_ = math.cos(a0), math.sin(a0)
+        side = lambda sg: [(sg * ww * max(0.0, 1 - t * t) ** 0.8 * r.uniform(0.55, 1.4), t * hh) for t in np.linspace(-1, 1, 11)]
+        slit = side(1) + side(-1)[::-1]
+        strokes.append(([(x * c - y * s_, x * s_ + y * c) for x, y in slit + slit[:1]], 1.0))
+        strokes.append((arc(0, 0, 0.46 * ri), 0.8))
+        for i in range(int(r.integers(8, 14))):
+            a = a0 + TAU * (i + r.uniform(-0.25, 0.25)) / 11
+            e = ri * r.uniform(0.62, 1.0)
+            strokes.append(([(0.52 * ri * math.cos(a), 0.52 * ri * math.sin(a)), (e * math.cos(a), e * math.sin(a))], 0.8))
+            if r.random() < 0.4:
+                dots.append(((e + 0.07 * ri) * math.cos(a), (e + 0.07 * ri) * math.sin(a)))
+    elif motif == 1:                              # small rings on an orbit, each on a curved arm from the middle
+        strokes.append((arc(0, 0, 0.11 * ri), 0.9))
+        k = int(r.integers(3, 6))
+        for i in range(k):
+            a = a0 + TAU * (i + r.uniform(-0.2, 0.2)) / k
+            rs, ro = ri * r.uniform(0.12, 0.2), ri * r.uniform(0.6, 0.74)
+            strokes.append((arc(ro * math.cos(a), ro * math.sin(a), rs), 0.9))
+            dots.append((ro * math.cos(a), ro * math.sin(a)))
+            ts = np.linspace(0, 1, 24)
+            strokes.append(([((0.11 * ri + t * (ro - rs - 0.11 * ri)) * math.cos(a - spin * (1 - t) * 1.5),
+                              (0.11 * ri + t * (ro - rs - 0.11 * ri)) * math.sin(a - spin * (1 - t) * 1.5)) for t in ts], 0.8))
+    elif motif == 2:                              # a spiral, ticked across, dots where it ends
+        turns = r.uniform(2.2, 3.2)
+        ts = np.linspace(0.04, 1, int(turns * 60))
+        sp = [(0.92 * ri * t * math.cos(a0 + spin * t * turns * TAU), 0.92 * ri * t * math.sin(a0 + spin * t * turns * TAU)) for t in ts]
+        strokes.append((sp, 1.0))
+        for t in np.arange(0.3, 0.97, r.uniform(0.045, 0.08)):
+            a, rad = a0 + spin * t * turns * TAU, 0.92 * ri * t
+            strokes.append(([((rad - 0.05 * ri) * math.cos(a), (rad - 0.05 * ri) * math.sin(a)), ((rad + 0.05 * ri) * math.cos(a), (rad + 0.05 * ri) * math.sin(a))], 0.7))
+        a = a0 + spin * turns * TAU
+        dots += [(ri * 0.92 * math.cos(a + spin * d_), ri * 0.92 * math.sin(a + spin * d_)) for d_ in (0.14, 0.26, 0.38)]
+    elif motif == 3:                              # shells: rings one in the other, all touching at one side, a bar through them
+        c, s_ = math.cos(a0), math.sin(a0)
+        for f in (1.0, r.uniform(0.66, 0.76), r.uniform(0.42, 0.52), r.uniform(0.2, 0.28)):
+            strokes.append((arc((ri - ri * f) * c, (ri - ri * f) * s_, ri * f), 0.9))
+        strokes.append(([(-ri * 0.86 * c, -ri * 0.86 * s_), (ri * 0.7 * c, ri * 0.7 * s_)], 0.8))
+        dots.append((-ri * 0.93 * c, -ri * 0.93 * s_))
+        for a in np.arange(a0 + 1.0, a0 + TAU - 1.0, r.uniform(0.22, 0.34)):
+            strokes.append(([(0.92 * ri * math.cos(a), 0.92 * ri * math.sin(a)), (1.0 * ri * math.cos(a), 1.0 * ri * math.sin(a))], 0.7))
+    else:                                         # a web: uneven points round it joined by bowed sides, a ring at each
+        k = int(r.integers(5, 8))
+        angs = sorted(a0 + TAU * (i + r.uniform(-0.3, 0.3)) / k for i in range(k))
+        P = [(0.8 * ri * math.cos(a), 0.8 * ri * math.sin(a)) for a in angs]
+        for (ax, ay), (bx, by) in zip(P, P[1:] + P[:1]):
+            mx, my = (ax + bx) * r.uniform(0.18, 0.3), (ay + by) * r.uniform(0.18, 0.3)       # bowed in toward the middle
+            strokes.append(([((1 - t) ** 2 * ax + 2 * t * (1 - t) * mx + t * t * bx, (1 - t) ** 2 * ay + 2 * t * (1 - t) * my + t * t * by) for t in np.linspace(0, 1, 20)], 0.9))
+        for (ax, ay) in P:
+            strokes.append((arc(ax * 1.14, ay * 1.14, 0.09 * ri), 0.8))
+        strokes.append((arc(0, 0, 0.14 * ri), 0.9))
+        dots.append((0.0, 0.0))
+    if r.random() < 0.7:                          # small rings outside it, where things stood
+        for a in np.sort(r.uniform(0, TAU, int(r.integers(2, 6)))):
+            strokes.append((arc(1.13 * R * math.cos(a), 1.13 * R * math.sin(a), R * r.uniform(0.06, 0.1)), 0.8))
+    return strokes, dots
+
+
+def cut_line(d, pts, width, chisel, r):
+    """A stroke cut along pts (window px) into the pen d."""
+    pts = np.array(pts, float)
+    s = np.r_[0, np.cumsum(np.hypot(*np.diff(pts, axis=0).T))]
+    total = s[-1]
+    if total < 1:
+        return
+    at = lambda t: np.stack([np.interp(t, s, pts[:, 0]), np.interp(t, s, pts[:, 1])], -1)
+    if chisel:
+        t = 0.0
+        while t < total:
+            t1 = min(total, t + min(r.uniform(11, 24) * S, total / 6))
+            if r.random() > 0.05:                 # a cut missed here and there
+                p, q = at(t) + r.normal(0, 0.9 * S, 2), at(t1) + r.normal(0, 0.9 * S, 2)
+                d.line([tuple(p * SS), tuple(q * SS)], fill=255, width=max(1, round(width * r.uniform(0.75, 1.25) * SS)))
+            if t1 >= total:
+                break
+            t = t1 - r.uniform(0, 0.2) * (t1 - t)
+        return
+    for k in range(2):                            # scratched: gone over twice, never quite on the first line
+        lo, hi = (0.0, total) if k == 0 else sorted(r.uniform(0, total, 2))
+        ts = np.arange(lo, hi, 5 * S)
+        if len(ts) < 3:
+            continue
+        p = at(ts)
+        tx, ty = np.gradient(p[:, 0]), np.gradient(p[:, 1])
+        tn = np.hypot(tx, ty) + 1e-6
+        wob = sum(r.uniform(0.6, 1.8) * S * np.sin(ts / (r.uniform(25, 110) * S) + r.uniform(0, TAU)) for _ in range(3)) + (r.normal(0, 1.6 * S) if k else 0)
+        p = p + np.stack([-ty / tn, tx / tn], -1) * wob[:, None]
+        d.line([tuple(q * SS) for q in p], fill=255 if k == 0 else 190, width=max(1, round(width * r.uniform(0.8, 1.1) * SS)), joint="curve")
+
+
+for i, ((x, y, R_), motif) in enumerate(zip(CIRCLES, more.permutation(5))):
+    chisel = i % 2 == 0
+    width = (more.uniform(5.5, 7.5) if chisel else more.uniform(3.0, 3.8)) * S
+    half = int(R_ * 1.28) + 8
+    side_ = 2 * half
+    im, d = canvas(side_, side_)
+    strokes, dots = circle_figure(R_, int(motif), more)
+    for pts, wt in strokes:
+        cut_line(d, [(px + half, py + half) for px, py in pts], width * wt, chisel, more)
+    for px, py in dots:
+        rr = width * (0.95 if chisel else 1.3)
+        if chisel:                                # a pit drilled
+            d.ellipse([(px + half - rr) * SS, (py + half - rr) * SS, (px + half + rr) * SS, (py + half + rr) * SS], fill=255)
+        else:                                     # a tight scribble
+            cut_line(d, [(px + half + rr * t / 9 * math.cos(t), py + half + rr * t / 9 * math.sin(t)) for t in np.linspace(0, 9, 24)], width * 0.8, False, more)
+    C = boxed(im)
+    del im, d
+    worn = lnoise(side_, side_, 2.2, more)        # worn off or spalled away in places
+    C *= smooth(worn, *((0.1, 0.3) if chisel else (0.18, 0.4)))
+    ix = window(x - half, y - half, side_, side_)
+    sub = img[ix]
+    lip = np.clip(shift(C, 1.5 * S, 1.5 * S) - C, 0, 1)        # the cut's far lip catches the light
+    sub = mix(sub, np.clip(sub * 1.2 + 0.04, 0, 1), lip * 0.75)
+    if chisel:                                    # a groove: dirt in its floor, its near wall in deeper shade
+        Cb = wblur(C, 0.8 * S)
+        gy_, gx_ = np.gradient(Cb)
+        sub = sub * ((1 - 0.52 * Cb) * (1 - 0.3 * np.clip((gx_ + gy_) * 3, 0, 1)))[..., None]
+    else:                                         # a scratch: dark with dirt
+        sub = sub * (1 - 0.55 * C)[..., None]
+    img[ix] = sub
+    kind[ix] = np.where((C > 0.04) | (shift(C, 1.3 * S, 1.3 * S) > 0.04), 3, kind[ix])
+    del C, sub, worn
+
+# violet, where the aether touched the wall, two ways. Burns: a discharge struck
+# the wall and forked across it, a charred track that branches and thins like a
+# fern, the stone scorched violet close round it, a blistered spot where it
+# struck and pits where sparks flew. Stains: aether seeped out of the joints
+# (the mortar, a plate's edge) and soaked down the wall below them: a curtain of
+# stain hanging from a stretch of joint, deepest in the joint, its foot ragged,
+# dried to a darker rim, a few runs on from it ending in beads.
+print("violet", flush=True)
+BURN = hexc("#352c56")
+SCORCH = np.array([0.68, 0.60, 0.86], np.float32)     # what the heat left of the stone's colour
+FILM = np.array([0.72, 0.62, 0.94], np.float32)       # the seep's thin stain
+
+
+def burn(x, y, R, r):
+    half = int(R * 1.15 + 30 * S)
+    side_ = 2 * half
+    im, d = canvas(side_, side_)
+
+    def branch(px, py, a, length, width, depth):
+        full = length
+        while length > 0:
+            step = r.uniform(6, 13) * S
+            out_ = math.atan2(py - half, px - half) if depth or length < full else a      # it runs outward, on the whole
+            a += r.normal(0, 0.24) + 0.14 * ((out_ - a + math.pi) % TAU - math.pi)
+            qx, qy = px + step * math.cos(a), py + step * math.sin(a)
+            w_ = max(1.1 * S, width * (0.25 + 0.75 * length / full))
+            d.line([(px * SS, py * SS), (qx * SS, qy * SS)], fill=255, width=max(1, round(w_ * SS)))
+            d.ellipse([(qx - w_ / 2) * SS, (qy - w_ / 2) * SS, (qx + w_ / 2) * SS, (qy + w_ / 2) * SS], fill=255)
+            px, py = qx, qy
+            length -= step
+            if depth < 4 and r.random() < 0.21:
+                branch(px, py, a + r.choice([-1, 1]) * r.uniform(0.35, 1.1), length * r.uniform(0.4, 0.8), w_ * 0.75, depth + 1)
+
+    a0, span = r.uniform(0, TAU), r.uniform(1.6, TAU)      # it forks over part of the round, or all of it
+    arms = int(r.integers(3, 8))
+    for i in range(arms):
+        branch(half, half, a0 + span * (i + r.uniform(-0.3, 0.3)) / arms, R * r.uniform(0.45, 1.0), r.uniform(4.5, 8.5) * S, 0)
+    rr = r.uniform(10, 22) * S                             # where it struck: a ragged blot
+    d.polygon([((half + rr * r.uniform(0.6, 1.25) * math.cos(t)) * SS, (half + rr * r.uniform(0.6, 1.25) * math.sin(t)) * SS)
+               for t in np.linspace(0, TAU, 18, endpoint=False)], fill=255)
+    for _ in range(int(r.integers(15, 50))):               # pits where sparks flew
+        a, dist, pr = a0 + r.uniform(-0.2, span + 0.2), R * r.uniform(0.1, 1.0), r.uniform(1.2, 3.2) * S
+        px, py = half + dist * math.cos(a), half + dist * math.sin(a)
+        d.ellipse([(px - pr) * SS, (py - pr) * SS, (px + pr) * SS, (py + pr) * SS], fill=255)
+    core = boxed(im)
+    del im, d
+    n_ = lnoise(side_, side_, 1.6, r)
+    halo = smooth(wblur(core, 7 * S) + 0.07 * (n_ - 0.5), 0.05, 0.075)    # scorched round the track: flat, hard-edged
+    inner = smooth(wblur(core, 2.2 * S), 0.2, 0.3)
+    ix = window(x - half, y - half, side_, side_)
+    sub = img[ix]
+    sub = sub * mix(np.ones(3, np.float32), SCORCH, halo)
+    sub = mix(sub, VIOLET_L * 0.92, inner * 0.55)
+    sub = mix(sub, BURN * (0.94 + 0.12 * n_)[..., None], np.clip(core * 1.4, 0, 1) * 0.93)
+    yy_, xx_ = np.mgrid[0:side_, 0:side_]
+    blister = smooth(0.45 * rr - np.hypot(xx_ - half, yy_ - half) + 3 * S * (n_ - 0.5), 0, 1.5 * S)
+    sub = mix(sub, LAVENDER * 0.9, blister * 0.8)          # the blister at its heart: ashen, paler
+    img[ix] = sub
+    kind[ix] = np.where(halo > 0.03, 1, kind[ix])
+
+
+def seep(x, y, R, r):
+    half, below = int(R * 1.4), int(1.7 * IN)
+    w, h = 2 * half, 2 * half + below
+    ix = window(x - half, y - half, w, h)
+    u = unit[ix]
+    edge = ((u != np.roll(u, 1, 0)) | (u != np.roll(u, 1, 1))).astype(np.float32)
+    edge[0, :] = edge[:, 0] = 0
+    J = np.clip((1 - stone_a[ix]) * (u < n_stone) + wblur(edge, 1.5 * S) * 2.5, 0, 1)      # the joints, and the plates' edges
+    vy, vx = np.mgrid[0:h, 0:w].astype(np.float32)
+    vx -= half
+    vy -= half
+    en, gate, fing = lnoise(h, w, 2.2, r), lnoise(h, w, 1.8, r), lnoise(h, w, 1.5, r, stretch=(1.0, 0.2))
+    B = smooth(0.9 - np.hypot(vx * r.uniform(0.7, 1.0), vy) / R - 0.9 * (en - 0.5), 0.0, 0.5)   # where it came through, most at the middle,
+    src = J * B * smooth(gate, 0.42, 0.6)                                                  # from this stretch of joint and not that
+    hang = np.exp(-np.arange(h, dtype=np.float32) / (r.uniform(45, 105) * S))              # and soaked down the wall below each joint
+    soak = wblur(np.fft.irfft(np.fft.rfft(src, axis=0) * np.fft.rfft(hang)[:, None], n=h, axis=0).astype(np.float32), 2 * S)
+    stain = smooth(soak / (11 * S) + 0.5 * (fing - 0.5), 0.3, 0.36)                        # a curtain with a ragged foot
+    im, d = canvas(w, h)
+    foot = np.argwhere((stain > 0.5) & (np.roll(stain, -round(8 * S), 0) < 0.5) & (vy < half + 0.4 * IN))
+    foot = foot[r.choice(len(foot), min(len(foot), int(r.integers(3, 10))), replace=False)] if len(foot) else []
+    for py, px in foot:                                    # and ran on from it here and there, each run ending in a bead
+        length = min(h - py - 30 * S, r.lognormal(math.log(100 * S), 0.7))
+        wd = r.uniform(3.5, 6.5) * S
+        qx, qy = float(px), float(py) - 6 * S
+        while qy < py + length:
+            nx_, ny_ = qx + r.normal(0, 0.5 * S), qy + 8 * S
+            w_ = wd * (1 - 0.45 * max(0.0, qy - py) / max(length, 1))
+            d.line([(qx * SS, qy * SS), (nx_ * SS, ny_ * SS)], fill=255, width=max(1, round(w_ * SS)))
+            qx, qy = nx_, ny_
+        br = wd * r.uniform(0.6, 0.85)
+        d.ellipse([(qx - br) * SS, (qy - br * 1.3) * SS, (qx + br) * SS, (qy + br * 1.1) * SS], fill=255)
+    runs_ = boxed(im)
+    del im, d
+    stain = np.maximum(stain, runs_)
+    rim = np.clip(stain - wblur(stain, 2.2 * S), 0, 1)
+    sub = img[ix] * mix(np.ones(3, np.float32), FILM, stain * (0.75 + 0.25 * fing))
+    sub = mix(sub, VIOLET, np.clip(smooth(wblur(src, 1.5 * S), 0.1, 0.5) * 0.7 + runs_ * 0.5, 0, 0.8))   # deepest in the joint it came out of
+    sub = mix(sub, VIOLET * 0.9, np.clip(rim * 2.4, 0, 1) * 0.6)                           # and dried to a darker rim
+    img[ix] = sub
+    kind[ix] = np.where(stain > 0.03, 1, kind[ix])
+
+
+for x, y, R_ in BURNS:
+    burn(x, y, R_, more)
+for x, y, R_ in SEEPS:
+    seep(x, y, R_, more)
+
+# melted candle wax: where candles stood on a ledge (the top of a plate or a
+# band) or were stuck to the wall on a gob of their own wax. A stub or two or
+# three (some burnt right down), each a cylinder melted unevenly round its wick;
+# wax pooled at their feet, hung over the edge and run down the wall in beads.
+# It has thickness: it is lit from the upper left, as the wall is, and shades
+# the wall beside it. Tallow mostly; a dull red and a black gone grey with dust.
+print("wax", flush=True)
+WAX = (hexc("#d3c7a6"), hexc("#86423b"), hexc("#5b5654"))
+WICK = hexc("#383331")
+
+
+def ridge(T, pts, rad):
+    """A round bead of wax along pts (window px), rad its half-width at each: T raised to it."""
+    for (ax, ay), (bx, by), ra, rb in zip(pts, pts[1:], rad, rad[1:]):
+        m_ = max(ra, rb) + 1
+        x0, x1 = int(max(0, min(ax, bx) - m_)), int(min(T.shape[1], max(ax, bx) + m_ + 1))
+        y0, y1 = int(max(0, min(ay, by) - m_)), int(min(T.shape[0], max(ay, by) + m_ + 1))
+        if x0 >= x1 or y0 >= y1:
+            continue
+        py, px = np.mgrid[y0:y1, x0:x1].astype(np.float32)
+        vx, vy = bx - ax, by - ay
+        L2 = vx * vx + vy * vy
+        t = np.clip(((px - ax) * vx + (py - ay) * vy) / L2, 0, 1) if L2 > 0 else 0.0
+        r_ = ra + (rb - ra) * t
+        d2 = (px - ax - t * vx) ** 2 + (py - ay - t * vy) ** 2
+        np.maximum(T[y0:y1, x0:x1], 0.8 * np.sqrt(np.clip(r_ * r_ - d2, 0, None)), out=T[y0:y1, x0:x1])
+
+
+def wax_run(T, x, y, w, length, r):
+    """A run of wax down from (x, y): narrowing, wavering a little, a bead where
+    it set, and sometimes one where it paused on the way."""
+    pts, rad = [(x, y)], [w * 0.55]
+    n = max(2, int(length / (7 * S)))
+    for i in range(1, n + 1):
+        x += r.normal(0, 0.35 * S)
+        pts.append((x, y + length * i / n))
+        rad.append(w * (0.5 - 0.14 * i / n) * r.uniform(0.92, 1.08))
+    ridge(T, pts, rad)
+    b = w * r.uniform(0.62, 0.9)
+    ridge(T, [(x, y + length - 0.3 * b), (x, y + length + 0.5 * b)], [b, b * 0.85])
+    if length > 80 * S and r.random() < 0.45:
+        k = int(r.uniform(0.3, 0.7) * n)
+        ridge(T, [pts[k], (pts[k][0], pts[k][1] + w * 0.6)], [w * 0.64, w * 0.55])
+
+
+def candle(B, PX, PY, bx, by, cw, ch, lean, r):
+    """A stub standing at (bx, by), leaning `lean`: a cylinder, its top melted
+    down unevenly round the wick's well. Returns the wick's foot and a point on its rim."""
+    dx, dy = PX - bx, by - PY
+    c, s_ = math.cos(lean), math.sin(lean)
+    p, q = dx * c - dy * s_, dx * s_ + dy * c
+    hw = cw / 2
+    tilt, f, ph = r.uniform(-0.2, 0.2), r.uniform(2.5, 4.5), r.uniform(0, TAU)
+    top_at = lambda p_: ch + cw * (tilt * p_ / hw + 0.07 * np.sin(p_ / hw * f + ph) - 0.13 * np.exp(-(p_ / (0.35 * hw)) ** 2))
+    body = 0.8 * np.sqrt(np.clip(hw * hw - p * p, 0, None))
+    np.maximum(B, body * np.clip(top_at(p) - q + 0.5, 0, 1) * np.clip(q + 0.5, 0, 1), out=B)
+    world = lambda p_, q_: (bx + p_ * c + q_ * s_, by + p_ * s_ - q_ * c)
+    return world(0.0, float(top_at(0.0))), lambda p_: world(p_, float(top_at(p_)))
+
+
+def lay_wax(ix, B, Rn, wick, soot, colour, r):
+    T = wblur(B + Rn, 1.0 * S)
+    gy_, gx_ = np.gradient(T)
+    lit = (gx_ + gy_) / math.sqrt(2)
+    dirt, grit = lnoise(*T.shape, 1.3, r), lnoise(*T.shape, 0.4, r)
+    cast = np.clip(wblur(np.clip(shift(T, 5 * S, 5 * S) - T, 0, 6 * S) / (6 * S), 1.5 * S), 0, 1)
+    sub = img[ix] * ((1 - 0.42 * cast) * (1 - 0.34 * smooth(soot * (0.6 + 0.8 * dirt), 0.12, 0.6)))[..., None]
+    col = colour * ((1 + 0.3 * np.tanh(lit * 0.9)) * (0.98 - 0.22 * smooth(dirt, 0.35, 0.8)) * (1 - 0.3 * (grit > 0.66)))[..., None]     # old wax: grimy, gritty
+    col = mix(col, np.clip(colour * 1.15 + 0.06, 0, 1), smooth(lit, 0.35, 1.0) * 0.5)    # its sheen, on the side toward the light
+    a = np.clip(T / (1.3 * S), 0, 1)
+    sub = mix(sub, col, a)
+    img[ix] = mix(sub, WICK, wick)
+    kind[ix] = np.where((a > 0.02) | (wick > 0.02), 2, kind[ix])
+
+
+def wax_group(x, y, spread, on_ledge, colour, r):
+    """Candles at (x, y), `spread` px either way along the ledge, or one stuck to the wall."""
+    halfw, top, below = int(spread + 0.5 * IN), int(1.5 * IN), int(2.0 * IN)
+    w, h = 2 * halfw, top + below
+    PY, PX = np.mgrid[0:h, 0:w].astype(np.float32)
+    B, Rn, wick, soot = (np.zeros((h, w), np.float32) for _ in range(4))
+    widths = [r.uniform(55, 95) * S]
+    while on_ledge and len(widths) < 3:           # as many as the ledge has room for, up to three
+        cw = r.uniform(55, 95) * S
+        if sum(widths) * 1.25 + cw > 2 * spread:
+            break
+        widths.append(cw)
+    bx = halfw - sum(widths) * 1.25 / 2
+    for cw in widths:
+        bx += cw * r.uniform(0.55, 0.7)
+        ch = cw * (r.uniform(0.12, 0.3) if on_ledge and r.random() < 0.25 else r.uniform(0.7, 2.8))    # burnt right down, or a stub
+        lean = r.normal(0, 0.03) if on_ledge else r.choice([-1, 1]) * r.uniform(0.12, 0.38)
+        by = float(top)
+        if on_ledge:                              # pooled at its foot and over the edge
+            a_, b_ = cw * r.uniform(0.5, 1.2), r.uniform(9, 17) * S
+            ridge(B, [(bx - a_, by + 0.3 * b_), (bx + a_, by + 0.3 * b_)], [b_ * r.uniform(0.6, 1.0), b_ * r.uniform(0.6, 1.0)])
+            for _ in range(int(r.integers(2, 5))):
+                lx, lr = bx + r.uniform(-a_, a_), b_ * r.uniform(0.6, 1.2)
+                ridge(B, [(lx, by + 0.2 * lr), (lx + r.uniform(4, 20) * S, by + 0.2 * lr)], [lr, lr])
+            reach_ = a_ + b_ * 0.5
+        else:                                     # a gob of wax on the wall, the stub set in it
+            a_ = cw * r.uniform(0.65, 0.95)       # widest under the stub's foot, less as it goes down
+            for _ in range(int(r.integers(9, 15))):
+                dn = r.uniform(0, 1) ** 1.5
+                lr = a_ * r.uniform(0.28, 0.5) * (1 - 0.4 * dn)
+                ridge(B, [(bx + r.uniform(-1, 1) * a_ * (1 - 0.75 * dn), by - 0.15 * a_ + 1.5 * a_ * dn)] * 2, [lr, lr])
+            reach_ = a_ * 0.55
+        foot, rim = candle(B, PX, PY, bx, by, cw, ch, lean, r)
+        for _ in range(int(r.integers(1, 5))):    # down the stub's own side
+            sx, sy = rim(r.uniform(-0.42, 0.42) * cw)
+            wax_run(Rn, sx, sy + 2 * S, r.uniform(7, 12) * S, min(ch, r.uniform(0.25, 1.1) * ch) + 2 * S, r)
+        for _ in range(int(r.integers(3, 10))):   # and down the wall
+            wax_run(Rn, bx + r.uniform(-1, 1) * reach_, by + r.uniform(2, 8) * S, r.uniform(8, 17) * S,
+                    float(np.clip(r.lognormal(math.log(110 * S), 0.8), 22 * S, below - 30 * S)), r)
+        wy = r.uniform(10, 18) * S                # the wick: burnt, bent over
+        wx = r.normal(0, 0.4) * wy
+        ridge(wick, [(foot[0], foot[1] + 3 * S), (foot[0] + 0.3 * wx, foot[1] - 0.6 * wy), (foot[0] + wx, foot[1] - wy)], [2.4 * S, 2.1 * S, 1.6 * S])
+        sy_, sw_ = foot[1] - PY, 0.3 * cw + 0.16 * np.clip(foot[1] - PY, 0, None)       # the soot its flame left on the wall above it
+        np.maximum(soot, smooth(sy_, 0, 12 * S) * np.exp(-sy_ / (r.uniform(0.25, 0.55) * IN)) * np.exp(-((PX - foot[0] - 0.12 * wx * sy_ / wy) / sw_) ** 2) * (sy_ > 0), out=soot)
+        bx += cw * r.uniform(0.55, 0.7)
+    lay_wax(window(x - halfw, y - top, w, h), B, Rn, np.clip(wick, 0, 1), soot, colour, r)
+
+
+wax_colours = [WAX[i] for i in more.permutation([0, 0, 0, 1, 2])]
+for (x, y, spread), colour in zip(WAX_LEDGE, wax_colours):
+    wax_group(x, y, spread, True, colour, more)
+for (x, y), colour in zip(WAX_WALL, wax_colours[3:]):
+    wax_group(x, y, 0.0, False, colour, more)
+
+# ash, which is a powder and is drawn as one: grains, not a film. Heaped on the
+# ledges: a low drift of several humps, grey with a paler crust where the light
+# falls, flecked black and white, charred bits in it, and what sifted off the
+# edge caught on the wall below in specks and trails. And smeared: dragged
+# across the wall by a paw (four toes' streaks from where the pads pressed) or
+# rubbed with something broad, in dry streaks of charcoal and pale ash.
+print("ash", flush=True)
+ASH = (hexc("#d0cdc6"), hexc("#8a8782"), hexc("#494644"))      # pale ash, grey ash, charcoal
+
+
+def grains(h, w, r, beta=0.25, stretch=(1.0, 1.0)):
+    """Noise in a window with mean 0 and sd 1: the fine sort, for powder."""
+    g_ = lnoise(h, w, beta, r, stretch)
+    return (g_ - g_.mean()) / g_.std()
+
+
+def ash_heap(x, y, half, r):
+    """Ash heaped on the ledge at (x, y), `half` px either way: a low drift, and
+    what sifted off the edge."""
+    halfw, top, below = int(half + 0.3 * IN), int(1.0 * IN), int(1.8 * IN)
+    w, h = 2 * halfw, top + below
+    px = np.arange(w, dtype=np.float32) - halfw
+    q = (top - np.arange(h, dtype=np.float32))[:, None]          # up from the ledge
+    hp = np.zeros(w, np.float32)
+    for _ in range(int(r.integers(2, 6))):                       # its humps: low and round, ash will not stand steep
+        hp += r.uniform(0.35, 1.0) * np.exp(-((px - r.uniform(-0.55, 0.55) * half) / (r.uniform(0.28, 0.55) * half)) ** 2)
+    hp *= np.clip(1 - (px / half) ** 2, 0, 1) ** 0.8
+    hp /= hp.max()
+    lump, patch = lnoise(h, w, 1.7, r), lnoise(h, w, 1.4, r)
+    g1, g2 = grains(h, w, r, 0.3), grains(h, w, r, 0.9)
+    surf = hp[None, :] * half * r.uniform(0.3, 0.42) + 7 * S * (lump - 0.5)
+    lip = hp[None, :] ** 0.7 * r.uniform(5, 16) * S * (0.3 + 1.4 * patch)       # a little of it hangs over the edge
+    heap = smooth(surf - q + 2.2 * S * g1, 0, 2 * S) * smooth(q + lip + 2.2 * S * g1, 0, 2 * S) * (hp[None, :] > 0.02)   # a grainy edge: it is powder
+    up = np.clip(q / np.maximum(surf, 1), 0, 1)
+    gy_, gx_ = np.gradient(wblur(lump, 2 * S) * 50 * S + surf * 0.5)
+    pale = np.clip(0.25 + 0.5 * smooth(up, 0.2, 0.9) + 0.5 * smooth(np.gradient(hp)[None, :] * half, -0.5, 0.4) - 0.7 * smooth(patch, 0.45, 0.7), 0, 1)
+    col = mix(ASH[1], ASH[0], pale)                              # grey ash and pale, paler on top and toward the light
+    col = col * ((1 + 0.09 * np.tanh((gx_ + gy_) * 0.9)) * (1 + 0.05 * g1))[..., None]
+    col = mix(col, ASH[2], smooth(g2, 1.25, 1.6) * 0.9)          # flecked with cinders
+    col = mix(col, ASH[0] * 1.06, smooth(-g2, 1.4, 1.8) * 0.9)   # and with white
+    im, d = canvas(w, h)                                          # and a few charred bits in it
+    for _ in range(int(r.integers(5, 14))):
+        bx = r.uniform(-0.8, 0.8) * half
+        by = top - float(np.interp(bx, px, surf[top])) * r.uniform(0.1, 0.85)
+        a, ln, th = r.uniform(0, math.pi), r.uniform(2, 6) * S, r.uniform(1.5, 3.5) * S
+        c, s_ = math.cos(a), math.sin(a)
+        d.polygon([((bx + halfw + u * c - v * s_) * SS, (by + u * s_ + v * c) * SS)
+                   for u, v in ((-ln, -th * r.uniform(0.5, 1)), (ln, -th * r.uniform(0.5, 1)), (ln * r.uniform(0.6, 1), th), (-ln * r.uniform(0.6, 1), th))], fill=255)
+    col = mix(col, ASH[2] * 0.9, boxed(im))
+    del im, d
+    # what sifted off the edge: specks down the wall under it, thick at the edge, thinning, in trails
+    reach_ = wblur(np.tile(hp ** 0.5, (8, 1)), 14 * S)[0][None, :]
+    dens = reach_ * np.exp(-np.clip(-q, 0, None) / (r.uniform(90, 230) * S)) * (q < 0) * (0.3 + 1.4 * lnoise(h, w, 1.3, r, stretch=(1.0, 0.05)))
+    fall = smooth(g2 - 2.2 + 2.6 * np.clip(dens, 0, 1), 0, 0.3) * (dens > 0.03)
+    ix = window(x - halfw, y - top, w, h)
+    sub = img[ix]
+    sub = sub * (1 - 0.25 * np.clip(wblur(shift(heap, 4 * S, 4 * S), 1.2 * S) - heap, 0, 1))[..., None]      # its shade on the wall
+    sub = mix(sub, np.where((g1 > 0.9)[..., None], ASH[2], ASH[0]), fall * 0.8)
+    img[ix] = mix(sub, col, heap)
+    kind[ix] = np.where((heap > 0.02) | (fall > 0.05), 3, kind[ix])
+
+
+def ash_smear(x, y, paw, r):
+    """Ash smeared on the wall about (x, y): a paw pressed there and dragged
+    along an arc, or something broad rubbed to and fro."""
+    length = r.uniform(1.0, 2.2) * IN
+    half = int(length * 0.7 + 0.5 * IN)
+    side_ = 2 * half
+    PY, PX = np.mgrid[0:side_, 0:side_].astype(np.float32)
+    tw, tl = round(300 * S), int(length + 200 * S)
+    oval = lambda s, t, s0, t0, ls, lt: np.exp(-(((s - s0) / ls) ** 2 + ((t - t0) / lt) ** 2) ** 2)
+
+    def drag(sx, sy, a0, bend, sgn):
+        """Where each point lies along (s) and across (t) an arc from (sx, sy) heading a0, and the dry streaks along it (0..1)."""
+        rho = length / bend
+        cx_, cy_ = sx - sgn * rho * math.sin(a0), sy + sgn * rho * math.cos(a0)
+        s = (((np.arctan2(PY - cy_, PX - cx_) - math.atan2(sy - cy_, sx - cx_)) * sgn + math.pi) % TAU - math.pi) * rho
+        t = (np.hypot(PX - cx_, PY - cy_) - rho) * sgn
+        tex = grains(tw, tl, r, 0.9, stretch=(0.03, 1.0))
+        return s, t, np.clip(0.5 + 0.3 * tex[np.clip(t + tw / 2, 0, tw - 1).astype(int), np.clip(s + 90 * S, 0, tl - 1).astype(int)], 0, 1)
+
+    a0 = r.uniform(0, TAU)
+    dark, pale = (np.zeros((side_, side_), np.float32) for _ in range(2))
+    g1 = grains(side_, side_, r, 0.6)
+    if paw:                                       # the big pad and its heel, four toes ahead of it, a streak dragged from each
+        s, t, st = drag(half - length / 2 * math.cos(a0), half - length / 2 * math.sin(a0), a0, r.uniform(0.25, 1.2), float(r.choice([-1, 1])))
+        gap = r.uniform(25, 32) * S
+        press = oval(s, t, -2.45 * gap, 0, 0.72 * gap, 1.15 * gap)
+        for lobe in (-1, 0, 1):
+            press += oval(s, t, -3.05 * gap, lobe * 0.78 * gap, 0.45 * gap, 0.45 * gap)
+        dens = 0.0
+        for i in range(4):
+            ti, wd = (i - 1.5) * gap + r.normal(0, 1.5 * S), r.uniform(6.5, 9) * S
+            s0, ln = -0.55 * gap * abs(i - 1.5) ** 1.6 + r.uniform(0, 4 * S), length * r.uniform(0.5, 1.0)
+            press += oval(s, t, s0, ti, 0.55 * gap, 0.4 * gap)
+            dens = dens + np.exp(-((t - ti) / wd) ** 4) * smooth(s - s0, 0, 0.4 * gap) * np.clip(1 - (s - s0) / ln, 0, 1) ** 1.4
+        dark = np.maximum(smooth(dens * (0.1 + 1.6 * st), 0.38, 0.52), smooth(np.clip(press, 0, 1) * (0.78 + 0.1 * g1), 0.5, 0.62))
+        pale = smooth(dens * (1.7 - 1.6 * st), 0.5, 0.7) * (1 - dark)
+    else:
+        sx, sy = half - length / 2 * math.cos(a0), half - length / 2 * math.sin(a0)
+        for k in range(int(r.integers(3, 6))):    # to and fro, each pass a little off the last
+            s, t, st = drag(sx + r.normal(0, 14 * S), sy + r.normal(0, 14 * S), a0 + r.normal(0, 0.12), r.uniform(0.2, 0.9), float(r.choice([-1, 1])))
+            wd, ln = r.uniform(26, 48) * S, length * r.uniform(0.55, 1.0)
+            dens = np.exp(-(t / wd) ** 4) * smooth(s, 0, 30 * S) * np.clip(1 - s / ln, 0, 1) ** 0.8
+            dark = np.maximum(dark, smooth(dens * (0.1 + 1.6 * st), 0.42, 0.56))
+            pale = np.maximum(pale, smooth(dens * (1.7 - 1.6 * st), 0.5, 0.7))
+            sx, sy, a0 = sx + ln * math.cos(a0), sy + ln * math.sin(a0), a0 + math.pi + r.normal(0, 0.18)   # and back
+        pale *= 1 - dark
+    ix = window(x - half, y - half, side_, side_)
+    sub = mix(img[ix], ASH[2] * (1 + 0.05 * g1)[..., None], dark * (0.66 + 0.1 * np.clip(g1, -1, 1)))
+    img[ix] = mix(sub, ASH[0], pale * 0.55)
+    kind[ix] = np.where((dark > 0.03) | (pale > 0.03), 3, kind[ix])
+
+
+for x, y, half in ASH_LEDGE:
+    ash_heap(x, y, half, more)
+for i, (x, y) in enumerate(SMEARS):
+    ash_smear(x, y, i % 2 == 0, more)
+
+# MARKS-END
 # an exact palette, no dither: the wall's tones, and the aether's apart from
 # them (a median cut over the whole tile spends nothing on so few pixels)
 rgb = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
