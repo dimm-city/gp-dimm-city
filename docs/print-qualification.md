@@ -77,7 +77,7 @@ PDF. Every row matched the plain PDF at 300 DPI, apart from CMYK gamut.
 
 | Component | Specimen pages (design guide) | Printed | Notes |
 |---|---|---|---|
-| Brick wall (`@page` background) | every wall page | split and vector | opaque tile, 900px across a 1.5in repeat (600 DPI); the ground strip 300 DPI; the six stone walls about 240 DPI, accepted as texture |
+| Brick wall (`@page` background) | every wall page | split and vector | opaque tile drawn at 300 DPI, 9in across (`scripts/wall-brick.py`); the ground strip 300 DPI; every other wall tile (1 to 13) drawn at 300 DPI too |
 | Section panels, soft lift, hard shadow | 39, 68, 69, 155, 163 | split | |
 | Recessed `lore` / `dm` / `choose` | 42, 163 | split | soft inset |
 | Fiction excerpt | 43, 91, 139, 142 | vector | the broken-wall edge is clipped vector shapes |
