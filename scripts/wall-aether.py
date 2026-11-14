@@ -51,10 +51,14 @@ page by the left page's width: a rift the spine cuts carries on across the
 spread.
 """
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wall_fft import fft2, ifft2, irfft2, rfft2  # noqa: E402  (numpy's real FFTs, spread over the cores)
 
 ROOT = Path(__file__).resolve().parents[1]
 DPI = 300
@@ -73,7 +77,8 @@ RIFTS = [tuple(v * S for v in rift) for rift in
          [(700, 1650, 320, 54), (2050, 560, 250, 44), (3020, 2080, 195, 36), (3880, 980, 140, 27)]]
 
 rng = np.random.default_rng(SEED)
-yy, xx = np.mgrid[0:NH, 0:NW].astype(np.float32)
+yy = np.arange(NH, dtype=np.float32)[:, None]   # a column and a row: they broadcast, so the tile-sized grids are never stored
+xx = np.arange(NW, dtype=np.float32)[None, :]
 
 
 def hexc(h):
@@ -88,11 +93,14 @@ def white_noise(r, h, w):
     lo = r.standard_normal((h0, w0), dtype=np.float32)
     if (h0, w0) == (h, w):
         return lo
-    F = np.fft.fft2(r.standard_normal((h, w), dtype=np.float32))
-    my, mx = (h0 - 1) // 2, (w0 - 1) // 2
-    iy, ix = np.r_[0:my + 1, -my:0], np.r_[0:mx + 1, -mx:0]
-    F[np.ix_(iy % h, ix % w)] = np.fft.fft2(lo)[np.ix_(iy % h0, ix % w0)] * math.sqrt(h * w / (h0 * w0))
-    return np.real(np.fft.ifft2(F)).astype(np.float32)
+    F = fft2(r.standard_normal((h, w), dtype=np.float32))
+    G = fft2(lo)
+    g = math.sqrt(h * w / (h0 * w0))
+    my, mx = (h0 - 1) // 2, (w0 - 1) // 2     # frequencies 0..+-my down, 0..+-mx across: the 240 DPI grid's
+    for ty, sy in ((slice(0, my + 1), slice(0, my + 1)), (slice(h - my, h), slice(h0 - my, h0))):
+        for tx, sx in ((slice(0, mx + 1), slice(0, mx + 1)), (slice(w - mx, w), slice(w0 - mx, w0))):
+            F[ty, tx] = G[sy, sx] * g
+    return np.real(ifft2(F)).astype(np.float32)
 
 
 def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
@@ -104,18 +112,18 @@ def noise(beta, stretch=(1.0, 1.0), seed=None, feature=FEATURE):
     fx = np.fft.rfftfreq(NW)[None, :] * stretch[0]
     f = np.maximum(np.sqrt(fx * fx + fy * fy), 1 / feature)       # no blotch larger than FEATURE
     f[0, 0] = 1.0
-    out = np.fft.irfft2(np.fft.rfft2(white) / f ** beta, s=(NH, NW)).astype(np.float32)
+    out = irfft2(rfft2(white) / f ** beta, s=(NH, NW)).astype(np.float32)
     out -= out.mean()
-    return out / out.std()
+    out /= out.std()
+    return out
 
 
-ky, kx = np.mgrid[0:NH, 0:NW].astype(np.float32)
-ky = np.where(ky > NH // 2, ky - NH, ky)
-kx = np.where(kx > NW // 2, kx - NW, kx)
+ky = np.where(yy > NH // 2, yy - NH, yy)     # signed offsets round the torus: a column and a row
+kx = np.where(xx > NW // 2, xx - NW, xx)
 
 
 def circ_conv(img, kernel):
-    return np.fft.irfft2(np.fft.rfft2(img) * np.fft.rfft2(kernel), s=(NH, NW)).astype(np.float32)
+    return irfft2(rfft2(img) * rfft2(kernel), s=(NH, NW)).astype(np.float32)
 
 
 def gauss_kernel(sigma, dx=0.0, dy=0.0):
@@ -143,14 +151,21 @@ def drip(length, width):
 
 def smooth(x, lo, hi):
     t = np.clip((x - lo) / (hi - lo), 0, 1)
-    return t * t * (3 - 2 * t)
+    u = 3 - 2 * t
+    t *= t
+    t *= u
+    return t
 
 
 def mix(a, b, t):
     t = np.asarray(t, np.float32)
     if t.ndim == 2:
         t = t[..., None]
-    return a + (b - a) * t
+    d = np.subtract(b, a)          # a + (b - a) * t, in the one new buffer where its shape and type allow
+    inplace = d.shape == np.broadcast_shapes(d.shape, t.shape) and np.result_type(d, t) == d.dtype
+    d = np.multiply(d, t, out=d if inplace else None)
+    d += a
+    return d
 
 
 def jag(pts, rough, r, step=5):
@@ -256,17 +271,20 @@ def facets(s, seed):
     r = np.random.default_rng(seed)
     nx, ny = NW // s, NH // s
     jit = r.uniform(0.05, 0.95, (ny, nx, 2)).astype(np.float32)
-    gx_, gy_ = (xx // s).astype(np.int32), (yy // s).astype(np.int32)
-    best = np.full((NH, NW), 1e9, np.float32)
+    gx_, gy_ = (xx[0] // s).astype(np.int32), (yy[:, 0] // s).astype(np.int32)   # each column's cell, each row's
+    best = np.full((NH, NW), 1e9)
     bid = np.zeros((NH, NW), np.int32)
     for oy in (-1, 0, 1):
         for ox in (-1, 0, 1):
             cx_, cy_ = gx_ + ox, gy_ + oy
             wx_, wy_ = cx_ % nx, cy_ % ny
-            d = (xx - (cx_ + jit[wy_, wx_, 0]) * s) ** 2 + (yy - (cy_ + jit[wy_, wx_, 1]) * s) ** 2
+            # a distance's x part depends only on the column and the row of cells,
+            # its y part on the row and the column of cells: worked out small, then spread
+            d = ((xx[0] - (cx_ + jit[:, wx_, 0]) * s) ** 2)[wy_]
+            d += ((yy[:, 0, None] - (cy_[:, None] + jit[wy_, :, 1]) * s) ** 2)[:, wx_]
             closer = d < best
-            best = np.where(closer, d, best)
-            bid = np.where(closer, wy_ * nx + wx_, bid)
+            np.copyto(best, d, where=closer)
+            np.copyto(bid, wy_[:, None] * nx + wx_, where=closer)
     return bid
 
 
@@ -503,17 +521,20 @@ def worley(X, Y, s, r):
     gx_, gy_ = np.floor(X / s).astype(int), np.floor(Y / s).astype(int)
     nx, ny = gx_.max() + 3, gy_.max() + 3
     jit = r.uniform(0.1, 0.9, (ny, nx, 2))
-    best = np.full(X.shape, 1e9, np.float32)
+    cy_, cx_ = np.mgrid[0:ny, 0:nx]
+    px, py = ((cx_ + jit[..., 0]) * s).ravel(), ((cy_ + jit[..., 1]) * s).ravel()   # each cell's point, by cell id
+    rows = [np.clip(gy_ + o, 0, ny - 1) * nx for o in (-1, 0, 1)]
+    cols = [np.clip(gx_ + o, 0, nx - 1) for o in (-1, 0, 1)]
+    del gx_, gy_
+    best = np.full(X.shape, 1e9)
     bid = np.zeros(X.shape, np.int64)
-    for oy in (-1, 0, 1):
-        for ox in (-1, 0, 1):
-            cx_, cy_ = np.clip(gx_ + ox, 0, nx - 1), np.clip(gy_ + oy, 0, ny - 1)
-            px = (cx_ + jit[cy_, cx_, 0]) * s
-            py = (cy_ + jit[cy_, cx_, 1]) * s
-            d = (X - px) ** 2 + (Y - py) ** 2
+    for row in rows:
+        for col in cols:
+            c = row + col
+            d = (X - px[c]) ** 2 + (Y - py[c]) ** 2
             closer = d < best
-            best = np.where(closer, d, best)
-            bid = np.where(closer, cy_ * nx + cx_, bid)
+            np.copyto(best, d, where=closer)
+            np.copyto(bid, c, where=closer)
     return bid
 
 
@@ -523,7 +544,7 @@ def wblur(a, sigma):
     fy = np.fft.fftfreq(h)[:, None]
     fx = np.fft.rfftfreq(w)[None, :]
     g = np.exp(-2 * (math.pi * sigma) ** 2 * (fx * fx + fy * fy))
-    return np.fft.irfft2(np.fft.rfft2(a) * g, s=(h, w)).astype(np.float32)
+    return irfft2(rfft2(a) * g, s=(h, w)).astype(np.float32)
 
 
 def sample(src, Y, X):
