@@ -32,11 +32,28 @@ What it draws, back to front:
    awning or tarp, faded stripes or plain, patched and stained, with a
    scalloped or plain valance, grommets, tears; ropes tying them off.
 7. Strings of bare bulbs swagged between the poles, a few lit, and lanterns.
+8. The Streetwarden's marks (the wall is the Streetwarden's page: the city's
+   tracker, scout and beast-friend), drawn at the page's scale, not the
+   wall's, so they read from across a spread, each kind made its own way
+   and no two of a kind alike:
+   - claw marks: three to five gouges raked together into the plaster,
+     through the posters and into the faces of the crates;
+   - muddy paw prints: the trails of four beasts over the wall and the
+     crates, each its own foot and gait, the mud wearing off as it goes;
+   - trail signs: a tracker's way-marks scratched into the plaster (arrows,
+     counts of notches, pictographs: an eye, a den, a horned head, a track),
+     not the city's script and not paint;
+   - growth: new cracks, moss in every crack and along the broken edges of
+     the plaster, creepers up the wall, down it, and round two poles.
+   Those on the wall lie under what hangs in front of it, in its shadow.
 Each layer throws a soft shadow down and to the right onto what is behind
 it. It is then drawn back toward its mean (a background, not a picture) and
 quantised to an exact palette: the wall's tones, and apart from them the
 few saturated things (chillies, spice, boards, lit bulbs), which a median
-cut over the whole tile would turn grey.
+cut over the whole tile would turn grey; and then the marks' own colours,
+used only where a mark is. The marks have a random stream, a mean and a
+palette apart from the wall's, so away from a mark the tile is, px for px,
+the wall without them.
 
 At DPI (300) the tile is 18in x 12in, wider than a spread
 and taller than a page, so a spread shows no repeat. It is anchored to the
@@ -71,6 +88,7 @@ SEED = 13
 CALM = 0.84                 # every tone is drawn this far back toward the tile's mean
 SHADE = 1.03                # lifted a touch, toward the other walls
 ACCENT_COLOURS = 40         # of 160: the saturated sliver (chillies, spice, boards, bulbs) gets its own
+MARK_COLOURS = 64           # and the marks theirs, over and above the 160
 
 rng = np.random.default_rng(SEED)
 f32 = np.float32
@@ -418,7 +436,10 @@ class Layer:
         """Lay sprite s at (X, Y) units."""
         self.items.append((s, int(round(X * S)), int(round(Y * S))))
 
-    def flush(self):
+    def flush(self, vis=None, lit=None):
+        """Lay it down. `vis` and `lit` are for a layer that lies on a surface
+        already under others (the marks on the wall): how much of that surface
+        shows, and the shadow already on it."""
         global img
         if self.k > 0 and self.items:
             A = np.zeros((PH, PW), f32)
@@ -426,15 +447,46 @@ class Layer:
                 iy, ix = (np.arange(s.ph) + Y) % PH, (np.arange(s.pw) + X) % PW
                 A[np.ix_(iy, ix)] = np.maximum(A[np.ix_(iy, ix)], s.a)
             sh = np.clip(blur(A, self.sigma, self.dx, self.dy), 0, 1)
-            img *= (1 - self.k * sh)[..., None]
+            if vis is None:
+                img *= (1 - self.k * sh)[..., None]
+                self.covers(A, sh)
+            else:
+                img *= (1 - self.k * sh * vis)[..., None]
         for s, X, Y in self.items:
             iy, ix = (np.arange(s.ph) + Y) % PH, (np.arange(s.pw) + X) % PW
             g = np.ix_(iy, ix)
             a = s.a[..., None]
+            if vis is not None:
+                a = a * vis[g][..., None]
+                img[g] = img[g] * (1 - a) + s.rgb * lit[g][..., None] * a
+                continue
             img[g] = img[g] * (1 - a) + s.rgb * a
             accent[g] = np.where(s.a > 0.5, s.acc, accent[g])
         print(f"  {self.name}: {len(self.items)}", flush=True)
         self.items = []
+
+    def covers(self, A, sh):
+        """Keep count, for the marks, of how much of each surface still shows
+        (SHOWS) and of the shadow that has fallen on it (LIT), as this layer
+        (its cover A, its shadow sh) is laid over them."""
+        for m in SHOWS.values():
+            m *= 1 - A
+        for m in LIT.values():
+            m *= 1 - self.k * sh
+        key = SURFACE.get(self.name)
+        if key == "paper":                              # the wall and its paper are one surface: all of it shows, so far
+            SHOWS["paper"], SHOWS["wall"], LIT["wall"] = A, np.ones((PH, PW), f32), np.ones((PH, PW), f32)
+        elif key == "stack":
+            np.maximum(SHOWS["stack"], A, out=SHOWS["stack"])
+            LIT["stack"] = LIT["stack"] * (1 - A) + A
+            for s, X, Y in self.items:                  # a crate's face shows, less what was then put on it
+                g = np.ix_((np.arange(s.ph) + Y) % PH, (np.arange(s.pw) + X) % PW)
+                SHOWS["wood"][g] = np.maximum(SHOWS["wood"][g] * (1 - s.a), s.a * getattr(s, "wood", False))
+
+
+SURFACE = {"posters, graffiti": "paper", "stacks against the wall": "stack", "front row": "stack"}
+SHOWS = {k: np.zeros((PH, PW), f32) for k in ("stack", "wood")}     # and "paper", "wall": see covers
+LIT = {"stack": np.ones((PH, PW), f32)}                             # and "wall"
 
 
 # ── glyphs: the city's own script, no real letters ───────────────────────────
@@ -519,6 +571,7 @@ del bcol, bedge, joint
 spall_n = noise(1.8, seed=SEED + 8)
 low = smooth(yy, 1900, 2500)
 SP = smooth(spall_n + 0.10 * low + 0.05 * fine + 0.06 * smooth(damp, 0.5, 0.9), 0.715, 0.725)
+PAINTED = dado * (1 - worn) * (1 - SP)     # where the dado's paint still is (the marks scrape it off)
 inside = np.clip(SP * (1 - shift(SP, 8 * S, 8 * S)), 0, 1)
 lit = np.clip((1 - SP) * shift(SP, 4 * S, 4 * S), 0, 1)
 brick *= (1 - 0.35 * blur(inside, 2.0))[..., None]
@@ -548,6 +601,7 @@ for _ in range(26):
     cr.line(pts, rng.uniform(1.2, 2.4), hexc("#6a6258"), 0.7)
 g = cr.a[..., None]
 img = img * (1 - g) + cr.rgb * g
+CRACK = cr.a                               # kept: moss grows in them
 del cr
 
 # damp streaks down from the top, rising damp and grime at the foot
@@ -561,7 +615,7 @@ img *= (1 - 0.13 * streak)[..., None]
 rise = smooth(yy - (2280 - 120 * damp), -40, 40)
 img *= (1 - 0.06 * rise - 0.10 * smooth(yy, 2150, FLOOR) - 0.05 * smooth(damp, 0.5, 0.8))[..., None]
 img = mix(img, img * hexc("#e6dcc4"), np.clip(1 - np.abs(yy - (2280 - 120 * damp)) / 10, 0, 1) * 0.6)   # the tide mark
-del src, drip, streak, rise, worn, SP, spall_n, low, top_
+del src, drip, streak, rise, worn, spall_n, low, top_
 
 L_FLAT = Layer("posters, graffiti", 2, 3, 2.0, 0.12)
 L_FIX = Layer("fixtures", 6, 8, 4.0, 0.30)
@@ -1515,6 +1569,7 @@ def crate(w, h, r, kind=None, stencil=True):
         s.poly([(w * 0.35, 18), (w * 0.65, 18), (w * 0.65, 28), (w * 0.35, 28)], col * 0.45)
         Y, X = s.grid()
         s.rgb *= (0.88 + 0.12 * tex("mott", Y, X, toff(r)) - 0.08 * Y / h)[..., None]
+        s.wood = True
         return s
     nsl = int(r.integers(3, 5))
     post = r.uniform(18, 26)
@@ -1554,6 +1609,7 @@ def crate(w, h, r, kind=None, stencil=True):
         s.put(m, ink, 0.55)
     Y, X = s.grid()
     s.rgb *= (0.9 + 0.12 * tex("mott", Y, X, toff(r)))[..., None]
+    s.wood = True                                                  # the marks: claws rake a crate's face
     return s
 
 
@@ -1908,6 +1964,7 @@ AWN = [  # style, top of the awning (0: it runs off the top of the sheet), valan
 ]
 
 pole_x = []
+POLES = []                  # (the pole's middle, its top, its width): vines climb them
 fronts = {}
 for i, (a, b) in enumerate(zip(BOUNDS, BOUNDS[1:])):
     r = np.random.default_rng(SEED * 100 + i)
@@ -1938,7 +1995,9 @@ for i, px in enumerate(pole_x):
     p = pole(FLOOR + 30 - top, r)
     lashing(p, p.w / 2, 26 + r.uniform(0, 20), 24, r)
     lashing(p, p.w / 2, 700 + r.uniform(0, 500), 24, r, 3)
-    L_POLE.add(p, px - p.w / 2 + r.normal(0, 4), top)
+    X = px - p.w / 2 + r.normal(0, 4)
+    L_POLE.add(p, X, top)
+    POLES.append((X + p.w / 2, top, p.w - 16))
 
 # ── what each stall sells ───────────────────────────────────────────────────
 
@@ -2289,45 +2348,675 @@ L_FIX.add(conduit(800, r), 2900, 60)
 for layer in (L_FLAT, L_FIX, L_GOODS, L_BACK, L_FRONT, L_AWN, L_POLE, L_HANG, L_TOP):
     layer.flush()
 
+# ── 8. the Streetwarden's marks ──────────────────────────────────────────────
+# What a tracker and the beasts left on the wall, drawn at the page's scale,
+# not the wall's, so they read from across a spread. They have a stream of
+# their own (`more`), and the wall under them is finished without them (`plain`:
+# its mean and its palette are the unmarked wall's), so away from a mark the
+# tile is, px for px, the wall as it was. Marks on the wall lie under what
+# hangs in front of it (SHOWS, LIT); marks on the crates lie on the crates.
+# They fall where they fall: places are drawn at random, where the surface a
+# mark needs shows, and clear of each other.
+print("marks", flush=True)
+plain, accent0 = img.copy(), accent.copy()
+more = np.random.default_rng(SEED + 70)
+WALL, PAPER, STACK, WOOD = SHOWS["wall"], SHOWS["paper"], SHOWS["stack"], SHOWS["wood"]
+B = 8                       # units to a cell of the maps the places are chosen on
+
+
+def coarse(a):
+    b = round(B * S)
+    return a[:PH // b * b, :PW // b * b].reshape(PH // b, b, PW // b, b).mean((1, 3))
+
+
+def seen(m, x, y, w, h):
+    """How much of the box w x h round (x, y) the coarse map m gives, round the tile."""
+    iy = np.arange(int((y - h / 2) // B), int((y + h / 2) // B) + 1) % m.shape[0]
+    ix = np.arange(int((x - w / 2) // B), int((x + w / 2) // B) + 1) % m.shape[1]
+    return float(m[np.ix_(iy, ix)].mean())
+
+
+WALL_, BARE_, PAPER_, STACK_, WOOD_ = coarse(WALL), coarse(WALL * (1 - PAPER)), coarse(PAPER), coarse(STACK), coarse(WOOD)
+TAKEN = []
+
+
+def apart(x, y, pts, sep):
+    return all(min(abs(x - px), NW - abs(x - px)) ** 2 + (y - py) ** 2 >= sep * sep for px, py in pts)
+
+
+def spot(fits, sep, lo=600, hi=FLOOR - 100, tries=4000):
+    """A place drawn at random where fits(x, y) holds, sep clear of every mark
+    placed so far; None when the wall has no such place left."""
+    for _ in range(tries):
+        x, y = more.uniform(0, NW), more.uniform(lo, hi)
+        if apart(x, y, TAKEN, sep) and fits(x, y):
+            TAKEN.append((x, y))
+            return x, y
+    return None
+
+
+class Mask:
+    """A tile-sized mask of shapes (in units), queued and then drawn at SS x
+    with wrap-around, the lightest first, so a heavy mark is never overwritten
+    by a faint one."""
+
+    def __init__(self):
+        self.q = []
+
+    def poly(self, pts, v=1.0):
+        self.q.append((v, 0, [(float(x), float(y)) for x, y in pts]))
+
+    def line(self, pts, w, v=1.0):
+        self.q.append((v, w, [(float(x), float(y)) for x, y in pts]))
+
+    def render(self):
+        k = S * SS
+        im = Image.new("L", (PW * SS, PH * SS), 0)
+        d = ImageDraw.Draw(im)
+        for v, w, geo in sorted(self.q, key=lambda it: it[0]):
+            fill = int(round(255 * min(1.0, max(0.0, v))))
+            xs, ys = [p[0] for p in geo], [p[1] for p in geo]
+            for ox in (-NW, 0, NW):
+                if max(xs) + ox < -w - 2 or min(xs) + ox > NW + w + 2:
+                    continue
+                for oy in (-NH, 0, NH):
+                    if max(ys) + oy < -w - 2 or min(ys) + oy > NH + w + 2:
+                        continue
+                    pts = [((x + ox) * k, (y + oy) * k) for x, y in geo]
+                    if not w:
+                        d.polygon(pts, fill=fill)
+                        continue
+                    wd = max(1, int(round(w * k)))
+                    d.line(pts, fill=fill, width=wd, joint="curve")
+                    for px, py in (pts[0], pts[-1]):
+                        d.ellipse((px - wd / 2, py - wd / 2, px + wd / 2, py + wd / 2), fill=fill)
+        return np.asarray(im.resize((PW, PH), Image.BOX), f32) / 255
+
+
+def relief(h, d):
+    """How a height field h catches the light from the upper left: above 0 on
+    the slopes that face it, below on those that face away; d in units."""
+    return shift(h, -d * S, -d * S) - shift(h, d * S, d * S)
+
+
+def daub(colour, m, vis, lit):
+    """Paint colour (one, or a field of them) through mask m onto a surface that shows by vis, in the shadow lit."""
+    global img
+    img = mix(img, np.asarray(colour, f32) * lit[..., None], m * vis)
+
+
+def tone(f, m, vis):
+    """Multiply what is under mask m by f."""
+    global img
+    img *= 1 - (m * vis)[..., None] * (1 - np.asarray(f, f32))
+
+
+def needle(M, a, b, w, v=1.0):
+    """A stroke from a to b, widest in the middle and pointed at both ends."""
+    (ax, ay), (bx, by) = a, b
+    d = math.hypot(bx - ax, by - ay)
+    if d < 0.5:
+        return
+    nx, ny = -(by - ay) / d, (bx - ax) / d
+    ts = np.linspace(0, 1, 9)
+    half = [w / 2 * math.sin(np.pi * t) ** 0.4 for t in ts]
+    mid = [(ax + (bx - ax) * t, ay + (by - ay) * t) for t in ts]
+    M.poly([(px + nx * h, py + ny * h) for (px, py), h in zip(mid, half)] + [(px - nx * h, py - ny * h) for (px, py), h in zip(mid[::-1], half[::-1])], v)
+
+
+# trail signs: a tracker's way-marks, scratched into the plaster with a claw or
+# a knife point. Not the city's script and not paint: pictographs an inch or so
+# high, every curve a run of straight cuts, every cut struck one to three times
+# and never twice along the same line, overshooting its corners. On the plaster
+# a cut is a dirty groove with a pale burr on its lit side; on the dado it took
+# the paint off in flakes, down to the plaster.
+def chords(cx, cy, rx, ry, a0, a1, n):
+    return [(cx + rx * math.cos(a), cy + ry * math.sin(a)) for a in np.linspace(a0, a1, n + 1)]
+
+
+def peck(x, y, d=0.035):
+    """A dot, as a point makes one: two or three short cuts on one spot."""
+    return [[(x - d, y - d * 0.3), (x + d, y + d * 0.4)], [(x - d * 0.8, y + d * 0.5), (x + d * 0.9, y - d * 0.5)]]
+
+
+def s_arrow(r):                 # the way: a shaft and two barbs, and up to three notches cut across the shaft
+    out = [[(0.5, 0.97), (0.5, 0.04)], [(0.5, 0.04), (0.22, 0.34)], [(0.5, 0.04), (0.78, 0.34)]]
+    return out + [[(0.36, 0.67 + 0.11 * k), (0.64, 0.57 + 0.11 * k)] for k in range(int(r.integers(0, 4)))]
+
+
+def s_turn(r):                  # the way turns
+    return [[(0.18, 0.96), (0.18, 0.32), (0.9, 0.32)], [(0.9, 0.32), (0.66, 0.12)], [(0.9, 0.32), (0.66, 0.52)]]
+
+
+def s_count(r):                 # a count: notches of uneven length standing on a line, one cut long
+    n = int(r.integers(3, 7))
+    long_ = int(r.integers(n))
+    return [[(0.02, 0.8), (0.98, 0.74)]] + [[(0.18 + 0.72 * k / (n - 1), 0.04 if k == long_ else r.uniform(0.25, 0.45)), (0.09 + 0.72 * k / (n - 1), 0.92)] for k in range(n)]
+
+
+def s_track(r):                 # a beast's track: the pad a chevron, three or four toes
+    return [[(0.22, 0.94), (0.5, 0.64), (0.78, 0.94)]] + [[(0.5 + 0.2 * math.sin(a), 0.52 - 0.2 * math.cos(a)), (0.5 + 0.52 * math.sin(a), 0.52 - 0.5 * math.cos(a))]
+                                                         for a in np.linspace(-0.8, 0.8, int(r.integers(3, 5)))]
+
+
+def s_eye(r):                   # watched: an eye, its pupil, the lashes under it
+    return ([chords(0.5, 0.74, 0.55, 0.5, np.pi * 1.18, np.pi * 1.82, 4), chords(0.5, 0.18, 0.55, 0.5, np.pi * 0.18, np.pi * 0.82, 4)] + peck(0.5, 0.46)
+            + [[(x, 0.74), (x + (x - 0.5) * 0.4, 0.96)] for x in (0.3, 0.5, 0.7)])
+
+
+def s_den(r):                   # shelter: an arch on a ground line, something in it
+    return [chords(0.5, 0.85, 0.38, 0.72, np.pi, 2 * np.pi, 5), [(0.0, 0.87), (1.0, 0.83)]] + peck(0.5, 0.58)
+
+
+def s_water(r):                 # water: two or three waves
+    n = int(r.integers(2, 4))
+    return [[(0.02 + 0.96 * i / 20, 0.5 + 0.24 * (k - (n - 1) / 2) - 0.08 * math.sin(i * np.pi / 4)) for i in range(21)] for k in range(n)]
+
+
+def s_beast(r):                 # a horned head: a wedge of a skull, two horns, the eyes pecked
+    return ([[(0.3, 0.4), (0.5, 0.98), (0.7, 0.4), (0.3, 0.4)], [(0.3, 0.4), (0.1, 0.22), (0.15, 0.02)], [(0.7, 0.4), (0.9, 0.22), (0.85, 0.02)]]
+            + peck(0.42, 0.54, 0.025) + peck(0.58, 0.54, 0.025))
+
+
+def s_fangs(r):                 # danger: a jaw line and the teeth hanging from it
+    n = int(r.integers(2, 5))
+    xs = [0.2 + 0.6 * k / (n - 1) for k in range(n)]
+    return [[(0.03, 0.2), (0.5, 0.3), (0.97, 0.2)]] + [[(x - 0.08, 0.29), (x, 0.92 - 0.5 * abs(x - 0.5)), (x + 0.08, 0.29)] for x in xs]
+
+
+def s_sun(r):                   # by day: a ring and the rays over it
+    a0 = r.uniform(0, 1)
+    return [chords(0.5, 0.64, 0.26, 0.26, a0, a0 + 2 * np.pi, 8)] + [[(0.5 + 0.34 * math.cos(a), 0.64 + 0.34 * math.sin(a)), (0.5 + 0.56 * math.cos(a), 0.64 + 0.56 * math.sin(a))]
+                                                                    for a in np.linspace(-np.pi * 0.95, -np.pi * 0.05, int(r.integers(4, 7)))]
+
+
+def s_coil(r):                  # a coil, wound outward
+    a0 = r.uniform(0, 2 * np.pi)
+    return [[(0.5 + (0.05 + 0.43 * t) * math.cos(a0 + 4.3 * np.pi * t), 0.5 + (0.05 + 0.43 * t) * math.sin(a0 + 4.3 * np.pi * t)) for t in np.linspace(0, 1, 19)]]
+
+
+WAYS, SIGNS = [s_arrow, s_arrow, s_turn], [s_count, s_track, s_eye, s_den, s_water, s_beast, s_fangs, s_sun, s_coil]
+SCR = Mask()
+
+
+def scratch(lines, x, y, size, rot, w):
+    """Cut a sign's strokes (given in its unit box) size high at (x, y), turned by rot."""
+    ca, sa = math.cos(rot), math.sin(rot)
+    for ln in lines:
+        P = [(x + size * ((px - 0.5) * ca - (py - 0.5) * sa), y + size * ((px - 0.5) * sa + (py - 0.5) * ca)) for px, py in ln]
+        for (px, py), (qx, qy) in zip(P, P[1:]):
+            d = math.hypot(qx - px, qy - py)
+            ux, uy = (qx - px) / d, (qy - py) / d
+            short = min(1.0, d / (0.3 * size))                    # a short cut is struck less wildly
+            for k in range(int(more.integers(1, 4)) if short == 1 else int(more.integers(1, 3))):
+                o0, o1 = more.uniform(0.01, 0.07, 2) * size * short + 0.1 * d
+                j = more.normal(0, 0.011 * size, 4)
+                needle(SCR, (px - ux * o0 + j[0], py - uy * o0 + j[1]), (qx + ux * o1 + j[2], qy + uy * o1 + j[3]), w * more.uniform(0.75, 1.15) * (1.0 if k == 0 else 0.7))
+
+
+deck = [SIGNS[i] for i in more.permutation(len(SIGNS))] * 2
+for _ in range(9):
+    n = int(more.choice([1, 2, 2, 3]))
+    sizes = more.uniform(200, 320, n)
+    stacked = n > 1 and more.random() < 0.3
+    bw, bh = (sizes.max(), sizes.sum() * 1.2) if stacked else (sizes.sum() * 1.2, sizes.max())
+    p = spot(lambda x, y: seen(BARE_, x, y, bw + 40, bh + 40) > 0.92, 330 + max(bw, bh) / 2, lo=640, hi=FLOOR - 260)
+    if p is None:
+        continue
+    TAKEN.pop()                                                  # each sign takes its own place, not the row's middle
+    tilt, w = more.normal(0, 0.07), more.uniform(4.6, 6.4)
+    at = -(sizes.sum() * 1.2) / 2
+    for i, size in enumerate(sizes):
+        way = i == 0 and more.random() < 0.6
+        sign = WAYS[int(more.integers(len(WAYS)))] if way else deck.pop()
+        at += size * 0.6
+        dx, dy = (0, at) if stacked else (at, 0)
+        sx, sy = p[0] + dx * math.cos(tilt) - dy * math.sin(tilt) + more.normal(0, 8), p[1] + dx * math.sin(tilt) + dy * math.cos(tilt) + more.normal(0, 12)
+        scratch(sign(more), sx, sy, size * 0.92, tilt + (more.uniform(0, 2 * np.pi) if way else more.normal(0, 0.1)), w)
+        TAKEN.append((sx, sy))
+        at += size * 0.6
+
+# claw marks: three to five claws drawn down the wall together. Each digs in
+# blunt and trails off to a point; the middle claws reach furthest; they fan a
+# little, share the turn of the swipe, and now and then one skips. Raked into
+# the plaster (a dark gouge, its edge broken back to pale fresh plaster),
+# through the posters (the paper torn white along the slit), and into the
+# faces of the crates (raw pale wood, a dark line at the deepest).
+CLAW = {"wall": Mask(), "wood": Mask()}
+
+
+def rake(M, x, y, a, length, n, gap, wmax):
+    turn, fan = more.normal(0, 0.22), more.normal(0, 0.02)
+    for i in range(n):
+        u = (i - (n - 1) / 2) / ((n - 1) / 2)                    # -1 .. 1 across the paw
+        ln = length * (1 - 0.3 * u * u) * more.uniform(0.82, 1.08)
+        lead = 0.16 * length * u * u + more.normal(0, 0.04 * length)
+        px = x - u * (n - 1) / 2 * gap * math.sin(a) + (lead - length / 2) * math.cos(a)
+        py = y + u * (n - 1) / 2 * gap * math.cos(a) + (lead - length / 2) * math.sin(a)
+        w = wmax * more.uniform(0.7, 1.0) * (1 - 0.15 * abs(u))
+        ts = np.linspace(0, 1, 44)
+        skip = more.uniform(0.3, 0.7) if more.random() < 0.3 else 9.0
+        wob = np.convolve(more.normal(0, 1, len(ts) + 6), np.ones(7) / 7, "valid") * 0.5
+        mid, half = [], []
+        for t, wb in zip(ts, wob):
+            ai = a + fan * u * (n - 1) / 2 + turn * (t - 0.5)
+            px, py = px + ln / len(ts) * math.cos(ai), py + ln / len(ts) * math.sin(ai)
+            h = w / 2 * ((t / 0.22) ** 0.7 if t < 0.22 else ((1 - t) / 0.78) ** 0.9) * (1 + wb)
+            if abs(t - skip) < 0.05:                              # the claw skipped
+                h = 0.0
+            mid.append((px, py))
+            half.append(max(h, 0.0))
+            if h > 2 and more.random() < 0.035:                  # a splinter or a flake thrown off its edge
+                sa_ = ai + more.choice([-1, 1]) * more.uniform(0.2, 0.5)
+                needle(M, (px, py), (px + more.uniform(1.0, 2.2) * w * math.cos(sa_), py + more.uniform(1.0, 2.2) * w * math.sin(sa_)), w * 0.35, 0.8)
+        run = []
+        for (qx, qy), h, t in zip(mid, half, ts):
+            ai = a + fan * u * (n - 1) / 2 + turn * (t - 0.5)
+            if h > 0:
+                run.append((qx, qy, -math.sin(ai) * h, math.cos(ai) * h))
+            if h == 0 and len(run) > 2:
+                M.poly([(qx + nx, qy + ny) for qx, qy, nx, ny in run] + [(qx - nx, qy - ny) for qx, qy, nx, ny in run[::-1]])
+            if h == 0:
+                run = []
+        if len(run) > 2:
+            M.poly([(qx + nx, qy + ny) for qx, qy, nx, ny in run] + [(qx - nx, qy - ny) for qx, qy, nx, ny in run[::-1]])
+
+
+RAKES = [("wall", lambda x, y: seen(BARE_, x, y, 260, 420) > 0.8)] * 4 \
+    + [("wall", lambda x, y: seen(PAPER_, x, y, 150, 190) > 0.7 and seen(WALL_, x, y, 240, 380) > 0.8)] * 4 \
+    + [("wood", lambda x, y: seen(WOOD_, x, y, 150, 200) > 0.86)] * 5
+for on, fits in RAKES:
+    p = spot(fits, 430, lo=620, hi=FLOOR - 50)
+    if p is None:
+        continue
+    n = int(more.choice([3, 4, 4, 5]))
+    a = np.pi / 2 + more.normal(0, 0.5) + (np.pi if more.random() < 0.15 else 0)
+    if on == "wall":
+        rake(CLAW[on], *p, a, more.uniform(330, 700), n, more.uniform(38, 60), more.uniform(15, 22))
+    else:
+        rake(CLAW[on], *p, a, more.uniform(230, 400), n, more.uniform(28, 42), more.uniform(10, 15))
+
+# cracks the wall did not have, longer and forked: for moss to take, and for a
+# creeper to root in
+CRK, ROOTS = Mask(), []
+
+
+def crack(x, y, a, length, w, depth=0):
+    pts = jag((x, y), (x + length * math.cos(a), y + length * math.sin(a)), 0.17, more, step=9)
+    CRK.line(pts, w)
+    ROOTS.extend(pts[::6])
+    for _ in range(int(more.integers(0, 3)) if depth < 2 else 0):
+        bx_, by_ = pts[int(more.integers(len(pts) // 5, 4 * len(pts) // 5))]
+        crack(bx_, by_, a + more.choice([-1, 1]) * more.uniform(0.5, 1.1), length * more.uniform(0.25, 0.5), w * 0.75, depth + 1)
+
+
+for _ in range(8):
+    p = spot(lambda x, y: seen(WALL_, x, y, 240, 400) > 0.7, 380, lo=760, hi=FLOOR - 560)
+    if p is not None:
+        a = more.uniform(0.9, 2.2)
+        crack(*p, a, min(more.uniform(380, 900), (FLOOR - 60 - p[1]) / math.sin(a)), more.uniform(2.6, 3.6))
+
+# muddy paw prints: four beasts went over the wall, each its own foot and its
+# own gait. Paws, never hands: a lobed pad and its toes, the claws' nicks ahead
+# of them on the ones that do not sheathe them. The mud is thick where a trail
+# starts (clods, a dribble or two) and wears off the feet as it goes, till
+# only the toes and the pad's edge print; a foot that slipped left its smear
+# above it; the smallest beast dragged its tail.
+PAWS = {    # the pad's lobes (x, y, rx, ry) and the toes (angle, reach from the pad, rx, ry), in print lengths; the claws' length
+    "hound": ([(0, 0.10, 0.19, 0.15), (0, 0.24, 0.27, 0.16), (-0.17, 0.33, 0.12, 0.12), (0.17, 0.33, 0.12, 0.12), (0, 0.36, 0.13, 0.11)],
+              [(-0.70, 0.40, 0.085, 0.125), (-0.23, 0.50, 0.095, 0.14), (0.23, 0.50, 0.095, 0.14), (0.70, 0.40, 0.085, 0.125)], 0.13),
+    "cat": ([(0, 0.12, 0.20, 0.14), (0, 0.24, 0.29, 0.15), (-0.19, 0.31, 0.11, 0.11), (0.19, 0.31, 0.11, 0.11), (0, 0.33, 0.12, 0.10)],
+            [(-0.80, 0.38, 0.095, 0.11), (-0.27, 0.45, 0.10, 0.12), (0.27, 0.45, 0.10, 0.12), (0.80, 0.38, 0.095, 0.11)], 0.0),
+    "fox": ([(0, 0.12, 0.14, 0.14), (0, 0.25, 0.20, 0.14), (-0.12, 0.33, 0.10, 0.10), (0.12, 0.33, 0.10, 0.10)],
+            [(-0.55, 0.42, 0.07, 0.13), (-0.17, 0.56, 0.075, 0.15), (0.17, 0.56, 0.075, 0.15), (0.55, 0.42, 0.07, 0.13)], 0.10),
+    "small": ([(0, 0.20, 0.20, 0.13), (-0.12, 0.28, 0.10, 0.10), (0.12, 0.28, 0.10, 0.10)],
+              [(a, 0.43, 0.07, 0.085) for a in (-1.15, -0.58, 0.0, 0.58, 1.15)], 0.08),
+}
+GAIT = {    # stride and straddle (in print lengths), how the way wanders, how often a foot slips
+    "hound": (1.28, 0.42, 0.06, 0.4), "cat": (1.4, 0.26, 0.05, 0.15), "fox": (1.5, 0.3, 0.07, 0.25), "small": (1.25, 0.55, 0.16, 0.0),
+}
+MUD = {"wall": Mask(), "stack": Mask()}
+
+
+def pawprint(M, x, y, a, L, kind, v, slip=0.0):
+    """One print at (x, y), toes toward a, L long, as heavy as v; slip: how far (in L) the foot slid down the wall to it."""
+    pad, toes, claw = PAWS[kind]
+    c, s_ = math.cos(a + np.pi / 2), math.sin(a + np.pi / 2)
+    shapes = [(cx, cy, rx, ry, 0.0) for cx, cy, rx, ry in pad] + [(math.sin(g) * d, 0.2 - math.cos(g) * d, rx, ry, g * 0.8) for g, d, rx, ry in toes]
+
+    def blob(cx, cy, rx, ry, turn, v_, dy=0.0):
+        pts = []
+        for t in np.linspace(0, 2 * np.pi, 14, endpoint=False):
+            ex, ey = rx * math.cos(t) * more.uniform(0.92, 1.08), ry * math.sin(t) * more.uniform(0.92, 1.08)
+            lx, ly = cx + ex * math.cos(turn) - ey * math.sin(turn), cy + ex * math.sin(turn) + ey * math.cos(turn)
+            pts.append((x + L * (lx * c - ly * s_), y + dy + L * (lx * s_ + ly * c)))
+        M.poly(pts, v_)
+
+    for j in range(1, 1 + int(slip * 7)):                        # the smear above a foot that slid
+        for shp in shapes:
+            blob(*shp, v * 0.34 * (1 - 0.5 * j / (slip * 7)), dy=-j / 7 * L)
+    for k, shp in enumerate(shapes):
+        if v > 0.55 or more.random() < 0.85 or k >= len(pad):    # a light print can miss a lobe
+            blob(*shp, v * more.uniform(0.85, 1.0))
+    if claw:
+        for g, d, rx, ry in toes:
+            tx, ty = math.sin(g) * (d + ry + 0.03), 0.2 - math.cos(g) * (d + ry + 0.03)
+            ex, ey = math.sin(g) * (d + ry + 0.03 + claw), 0.2 - math.cos(g) * (d + ry + 0.03 + claw)
+            needle(M, (x + L * (tx * c - ty * s_), y + L * (tx * s_ + ty * c)), (x + L * (ex * c - ey * s_), y + L * (ex * s_ + ey * c)), 0.07 * L, v)
+    if v > 0.8:                                                  # heavy with mud: clods thrown round it, and a dribble
+        for _ in range(int(more.integers(2, 8))):
+            g, d = more.uniform(0, 2 * np.pi), L * more.uniform(0.55, 1.1)
+            M.line([(x + d * math.cos(g), y + d * math.sin(g)), (x + d * math.cos(g) + 0.5, y + d * math.sin(g) + more.uniform(0, 0.08) * L)], L * more.uniform(0.03, 0.09), more.uniform(0.6, 1.0))
+        if more.random() < 0.55:
+            dx_, len_ = more.normal(0, 0.15) * L, L * more.uniform(0.5, 1.6)
+            M.line([(x + dx_, y + 0.2 * L), (x + dx_ + more.normal(0, 0.03) * L, y + 0.4 * L + len_)], 0.035 * L, 0.62)
+            M.line([(x + dx_, y + 0.4 * L + len_), (x + dx_, y + 0.4 * L + len_ + 1)], 0.075 * L, 0.8)
+
+
+def footfalls(kind, x, y, a, n, L):
+    """Where a trail's prints fall: (x, y, heading, how far along, the way's own x, y). The feet alternate either side of the way, which wanders."""
+    stride, straddle, wander, _ = GAIT[kind]
+    side, turn, out = more.choice([-1, 1]), more.normal(0, 0.025), []
+    for i in range(n):
+        a += turn + more.normal(0, wander)
+        st = stride * L * more.uniform(0.85, 1.15)
+        x, y = x + st * math.cos(a), y + st * math.sin(a)
+        out.append((x - side * straddle * L * math.sin(a), y + side * straddle * L * math.cos(a), a + side * more.uniform(0.0, 0.22) + more.normal(0, 0.08), i / n, x, y))
+        side = -side
+    return out
+
+
+TRAILS = [   # the beast, its print's length, how many prints, where it set out (down the wall) and which way
+    ("hound", (178, 206), (7, 9), (FLOOR - 420, FLOOR - 60), lambda: -np.pi / 2 + more.normal(0, 0.45)),
+    ("cat", (104, 124), (12, 16), (700, FLOOR - 200), lambda: more.uniform(0, 2 * np.pi)),
+    ("fox", (128, 150), (9, 12), (640, 1400), lambda: np.pi / 2 + more.normal(0, 0.6)),
+    ("small", (56, 68), (24, 34), (900, FLOOR - 150), lambda: more.choice([0, np.pi]) + more.normal(0, 0.4)),
+]
+TROD = []
+for kind, size, count, band, heading in TRAILS:
+    best = None
+    for _ in range(600):                                         # of many ways it might have gone, the one that shows best
+        L, n = more.uniform(*size), int(more.integers(*count))
+        x, y = more.uniform(0, NW), more.uniform(*band)
+        falls = footfalls(kind, x, y, heading(), n, L)
+        if not all(580 < f[1] < FLOOR + 30 and apart(f[0], f[1], TROD, 300) for f in falls):
+            continue
+        score = np.mean([max(seen(WALL_, f[0], f[1], L, L), seen(STACK_, f[0], f[1], L, L)) - 0.6 * (not apart(f[0], f[1], TAKEN, 200)) for f in falls])
+        if best is None or score > best[0]:
+            best = (score, L, falls)
+        if score > 0.93:
+            break
+    if best is None:
+        continue
+    _, L, falls = best
+    slips = GAIT[kind][3]
+    for i, (x, y, a, t, wx, wy) in enumerate(falls):
+        on = "stack" if seen(STACK_, x, y, L * 0.5, L * 0.5) > 0.5 else "wall"
+        v = (1 - 0.62 * t ** 0.8) * more.uniform(0.85, 1.0)
+        pawprint(MUD[on], x, y, a, L * more.uniform(0.93, 1.07), kind, v, slip=more.uniform(0.3, 0.75) if more.random() < slips else 0.0)
+        if kind in ("hound", "fox") and more.random() < 0.45:   # the hind foot, set down just behind the fore
+            back = more.uniform(0.5, 0.85) * L
+            pawprint(MUD[on], x - back * math.cos(a) + more.normal(0, 0.12) * L, y - back * math.sin(a) + more.normal(0, 0.12) * L, a + more.normal(0, 0.12), L * 0.86, kind, v * 0.8)
+        if kind == "small" and i and more.random() < 0.8:        # its tail, dragged
+            (px, py), (qx, qy) = falls[i - 1][4:], (wx, wy)
+            MUD[on].line([(px, py), ((px + qx) / 2 + more.normal(0, 0.12) * L, (py + qy) / 2 + more.normal(0, 0.12) * L), (qx, qy)], 0.11 * L, 0.3 + 0.25 * (1 - t))
+    TROD += [f[:2] for f in falls]
+TAKEN += TROD[::3]
+
+# now lay them on the wall: the new cracks; moss in every crack and along the
+# broken edges of the plaster, in cushions, thicker low down where it is damp
+print("  cracks and moss", flush=True)
+vis, lit = WALL * (1 - PAPER), LIT["wall"]                      # the wall itself, bare of paper
+crk = CRK.render()
+daub(hexc("#6a6258"), crk * 0.75, vis, lit)
+veins = np.clip(blur(np.maximum(crk, CRACK), 13.0) * 10, 0, 1)
+edge = blur(SP, 5.0)
+edge = np.clip(4 * edge * (1 - edge), 0, 1) * 0.8
+took = 0.2 + 0.8 * smooth(noise(1.6, seed=SEED + 73, feature=300 * S), 0.4, 0.58)       # where moss has taken at all: in patches
+damp_ = 0.5 + 0.5 * smooth(yy, 700, 2300)
+clump = noise(1.3, seed=SEED + 71, feature=80 * S)
+MOSS = smooth(np.maximum(veins, edge) * took * damp_ + 1.0 * (clump - 0.5) + 0.35 * (TEX["speck"] - 0.5), 0.36, 0.41)   # in cushions, ragged
+h = blur(MOSS, 2.2)
+tone(0.75, np.clip((shift(h, 3.5 * S, 3.5 * S) - MOSS) * 1.5, 0, 1), vis)                 # the cushions' shade on the wall
+green = mix(hexc("#566440"), hexc("#8c9858"), smooth(TEX["fine"] * 0.6 + clump * 0.4, 0.38, 0.62)[..., None])
+daub(green * np.clip((0.8 + 0.4 * TEX["speck"]) * (1 + 0.8 * relief(h, 2.0)), 0.6, 1.4)[..., None], MOSS * 0.95, vis, lit)
+del crk, veins, edge, took, damp_, h, green, CRACK, SP
+
+# the signs
+print("  signs", flush=True)
+vis = WALL
+scr = SCR.render()
+flake = smooth(blur(scr, 2.4) + 0.8 * (TEX["speck"] - 0.5), 0.24, 0.3) * PAINTED         # the dado's paint, flaked off round a cut
+cut_ = smooth(blur(scr, 0.9) + 0.3 * (TEX["speck"] - 0.5), 0.28, 0.5)                    # the cut itself, its edge ragged
+daub(hexc("#e2dccb"), np.clip(blur(scr, 6.0) * 2.5, 0, 0.3) * (1 - PAINTED), vis, lit)                     # the dust of it, rubbed into the wall
+daub(PLASTER * 0.99, flake * 0.92, vis, lit)
+tone(0.8, np.clip(flake - shift(flake, 2.5 * S, 2.5 * S), 0, 1), vis)                     # the paint's edge, in its own shade
+daub(hexc("#ebe6d8"), np.clip(shift(cut_, 2.6 * S, 2.6 * S) - cut_, 0, 1) * 0.85, vis, lit)   # the burr, lit
+daub(hexc("#62584f"), cut_ * (0.86 - 0.26 * PAINTED), vis, lit)
+del scr, flake, cut_
+
+# the claws on the wall, and through its paper
+print("  claws", flush=True)
+raw = CLAW["wall"].render()
+gouge = smooth(blur(raw, 1.0) + 0.3 * (TEX["speck"] - 0.5), 0.3, 0.55)
+chips = 0.2 + 0.8 * smooth(clump, 0.47, 0.56)                    # the plaster broke back from a gouge in places, not all along it
+broke = np.maximum(smooth(blur(raw, 4.0) + 0.5 * (TEX["speck"] - 0.5), 0.2, 0.32) * chips * (1 - PAPER),
+                   smooth(blur(raw, 2.4) + 0.4 * (TEX["speck"] - 0.5), 0.2, 0.32) * PAPER)               # and paper tears white all along
+daub(mix(PLASTER * 1.06, hexc("#ece8dc"), PAPER[..., None]), broke * (0.8 + 0.15 * PAPER), vis, lit)
+tone(0.8, np.clip(broke - shift(broke, 3 * S, 3 * S), 0, 1) * (1 - gouge), vis)
+h = blur(gouge, 1.6)
+daub(mix(hexc("#564c45"), hexc("#6b635a"), PAPER[..., None]) * np.clip(1 - 2.2 * relief(h, 2.0), 0.5, 1.9)[..., None], gouge * 0.92, vis, lit)
+# and in the crates
+raw = CLAW["wood"].render()
+gouge = smooth(blur(raw, 1.0) + 0.3 * (TEX["speck"] - 0.5), 0.3, 0.55)
+broke = smooth(blur(raw, 3.0) + 0.9 * (TEX["gh"] - 0.5), 0.22, 0.32)                                     # splintered along the grain
+h = blur(gouge, 1.6)
+daub(hexc("#dccba6"), broke * 0.9, WOOD, LIT["stack"])
+daub(hexc("#5b4d40") * np.clip(1 - 2.2 * relief(h, 2.0), 0.5, 1.9)[..., None], gouge * 0.92, WOOD, LIT["stack"])
+del raw, gouge, broke, h
+
+# the mud
+print("  mud", flush=True)
+blot = noise(1.5, seed=SEED + 72, feature=34 * S)
+for on, vis, lit in (("wall", WALL, LIT["wall"]), ("stack", STACK, LIT["stack"])):
+    T = smooth(blur(MUD[on].render(), 0.9) * (0.5 + 0.95 * blot), 0.28, 0.55)      # patchy where the foot was light
+    h = blur(T, 1.8)
+    tone(np.array([0.80, 0.70, 0.56]), smooth(T, 0.0, 0.5), vis)                   # a film of it
+    body = mix(hexc("#7a654c"), hexc("#5f4e3b"), smooth(TEX["fine"], 0.3, 0.7)[..., None])
+    daub(body * np.clip(1 + 1.2 * relief(h, 1.6), 0.7, 1.3)[..., None], smooth(T, 0.35, 0.9) * 0.9, vis, lit)
+    tone(0.78, np.clip((T - h) * 2.2, 0, 1), vis)                                  # it dried darker at its edge
+del T, h, body, blot
+
+# creepers: a stem wanders up the wall from a crack or from behind the crates
+# (or hangs down it from the gutter), forks, and puts out a leaf at every node:
+# big and dark low on the stem, small and pale at the growing tip, a few
+# yellowed or dead. Three kinds of leaf. They lie on the wall and its paper,
+# under what is hung there; two more wind up poles, in front of everything.
+print("  creepers", flush=True)
+GREENS = [hexc(c) for c in ("#56633f", "#617046", "#6c7a4c", "#4f5b3b", "#76804f")]
+SERE = [hexc(c) for c in ("#9a8c50", "#8b7049", "#a59c64")]
+LEAF = {    # half of each outline, from the stalk (0, 0) to the tip (1, 0)
+    "ivy": [(0, 0), (-0.07, 0.27), (0.07, 0.45), (0.23, 0.26), (0.48, 0.5), (0.6, 0.2), (1, 0)],
+    "heart": [(0, 0), (-0.1, 0.2), (0.0, 0.4), (0.25, 0.46), (0.55, 0.34), (0.82, 0.14), (1, 0)],
+    "round": [(0, 0), (0.1, 0.24), (0.35, 0.38), (0.65, 0.35), (0.9, 0.18), (1, 0)],
+}
+NODE = {"ivy": (40, 60), "heart": (48, 54), "round": (24, 30)}      # units between leaves, and a full-grown leaf's length
+
+
+def grow(x, y, a, length, w0, kind, home, stems, leaves, depth=0):
+    """A stem from (x, y) heading a: it wanders, leans back toward `home` (up,
+    for a climber; down, for one that hangs), forks, and leaves at every node."""
+    node, big = NODE[kind]
+    node *= more.uniform(0.85, 1.2)
+    n = int(length / 8)
+    pts, side, since, ph = [(x, y)], more.choice([-1, 1]), node * 0.5, more.uniform(0, 2 * np.pi)
+    for i in range(n):
+        t = i / n
+        a += more.normal(0, 0.08) + 0.05 * math.sin(i * 0.13 + ph) - 0.05 * ((a - home + np.pi) % (2 * np.pi) - np.pi)
+        x, y = x + 8 * math.cos(a), y + 8 * math.sin(a)
+        pts.append((x, y))
+        since += 8
+        if since >= node:
+            since = 0
+            for sd in ((side, -side) if kind == "round" else (side,)):
+                if more.random() > 0.12:                         # some have fallen
+                    la = a + sd * more.uniform(0.75, 1.25)
+                    leaves.append((x, y, la + 0.35 * ((np.pi / 2 - la + np.pi) % (2 * np.pi) - np.pi) * (home > 0), big * (1 - 0.55 * t ** 1.5) * more.uniform(0.75, 1.15), t, depth))
+            side = -side
+            if depth < 2 and t < 0.8 and more.random() < 0.13:
+                grow(x, y, a + side * more.uniform(0.5, 1.0), length * (1 - t) * more.uniform(0.45, 0.85), w0 * (1 - 0.55 * t), kind, home, stems, leaves, depth + 1)
+    stems.append((pts, w0, 1.6))
+
+
+def foliage(stems, leaves, kind, pad=90):
+    """The sprite of a creeper (its stems and leaves in tile coordinates), and where it goes: (sprite, X, Y)."""
+    xs = [p[0] for st in stems for p in st[0]] + [lf[0] for lf in leaves]
+    ys = [p[1] for st in stems for p in st[0]] + [lf[1] for lf in leaves]
+    X0, Y0 = int(min(xs)) - pad, int(min(ys)) - pad
+    s = Spr(max(xs) - X0 + pad, max(ys) - Y0 + pad)
+    bark = jit(hexc("#5e5440"), more, 0.04)
+    for pts, w0, w1 in stems:
+        for i in range(0, len(pts) - 1, 5):
+            seg = [(px - X0, py - Y0) for px, py in pts[i:i + 6]]
+            w = w0 + (w1 - w0) * i / len(pts)
+            s.line(seg, w + 1.4, bark * 0.7)
+            s.line(seg, w, mix(bark, GREENS[1], i / len(pts)))
+    for x, y, a, size, t, depth in leaves:
+        col = jit(GREENS[int(more.integers(len(GREENS)))] * (0.9 + 0.25 * t), more, 0.04)
+        if more.random() < 0.17:
+            col = jit(SERE[int(more.integers(len(SERE)))], more, 0.04)
+        ca, sa = math.cos(a), math.sin(a)
+        x, y = x - X0 + 0.22 * size * ca, y - Y0 + 0.22 * size * sa                  # at the end of its stalk
+        s.line([(x - 0.22 * size * ca, y - 0.22 * size * sa), (x, y)], 1.6, bark * 0.9)
+        wide = more.uniform(0.85, 1.1)
+        T = lambda px, py: (x + size * (px * ca - py * wide * sa), y + size * (px * sa + py * wide * ca))
+        half = LEAF[kind]
+        out = [T(px, py) for px, py in half] + [T(px, -py) for px, py in half[-2:0:-1]]
+        s.put(s.mlines([out + out[:1]], 2.6), col * 0.55)
+        s.poly(out, col)
+        low = 1 if 0.62 * ca - 0.45 * sa > 0 else -1                                 # the half turned from the light
+        s.shade(s.mpoly([[T(px, low * py) for px, py in half]]), 0.8)
+        s.line([T(0, 0), T(0.9, 0)], 1.3, np.clip(col * 1.3, 0, 1), 0.8)
+        if kind == "ivy":
+            for sd in (-1, 1):
+                s.line([T(0.12, 0), T(0.42, sd * 0.36)], 1.0, np.clip(col * 1.3, 0, 1), 0.6)
+    return s, X0, Y0
+
+
+L_VINE = Layer("creepers on the wall", 3, 4, 2.5, 0.30)
+L_TWINE = Layer("creepers up the poles", 4, 6, 3.5, 0.28)
+kinds = list(LEAF) * 3
+more.shuffle(kinds)
+clear = lambda x, y, up: seen(WALL_, x, y - up * 300, 200, 600) > 0.62 and apart(x, y, TAKEN, 240)
+roots = [ROOTS[i] for i in more.permutation(len(ROOTS))] if ROOTS else []
+roots = [p for p in roots if 1300 < p[1] < FLOOR - 200 and clear(*p, 1)]
+for k in range(7):
+    hangs = k >= 5
+    if hangs:                                                    # down from the gutter
+        p = spot(lambda x, y: clear(x, y, -1), 380, lo=560, hi=700)
+    elif k < 2 and roots:                                        # out of a crack
+        p = roots.pop()
+        roots = [q for q in roots if apart(*q, [p], 700)]
+        TAKEN.append(p)
+    else:                                                        # up from behind the stalls
+        p = spot(lambda x, y: clear(x, y, 1), 380, lo=FLOOR - 620, hi=FLOOR - 260)
+    if p is None:
+        continue
+    stems, leaves = [], []
+    home = np.pi / 2 if hangs else -np.pi / 2
+    grow(*p, home + more.normal(0, 0.4), more.uniform(500, 900) if hangs else min(more.uniform(600, 1400), p[1] - 560), more.uniform(5, 7.5), kinds[k], home, stems, leaves)
+    L_VINE.add(*foliage(stems, leaves, kinds[k]))
+for j in more.choice(len(POLES), 2, replace=False):              # round a pole: the stem shows where it passes in front
+    cx, top, pw = POLES[j]
+    kind = ["ivy", "heart"][int(more.integers(2))]
+    y1, pitch, ph, R = FLOOR + 30, more.uniform(105, 150), more.uniform(0, 2 * np.pi), pw / 2 + 3
+    y0 = max(top + 120, y1 - more.uniform(800, 1700))
+    stems, leaves, run, since = [], [], [], 0.0
+    for y in np.arange(y1, y0, -4.0):
+        t = (y1 - y) / (y1 - y0)
+        wide = 6 - 3 * t
+        phi = 2 * np.pi * (y1 - y) / pitch + ph
+        x = cx + R * math.sin(phi)
+        if math.cos(phi) > -0.25:
+            run.append((x, y))
+        elif run:
+            stems.append((run, wide, wide))
+            run = []
+        since += 4
+        if since > NODE[kind][0] * 0.8 and math.cos(phi) > 0.1 and more.random() < 0.8:
+            since = 0
+            out = 1 if math.sin(phi) > 0 else -1
+            leaves.append((x, y, -np.pi / 2 + out * more.uniform(0.5, 1.4), NODE[kind][1] * (1 - 0.5 * t ** 1.5) * more.uniform(0.75, 1.1), t, 0))
+    if run:
+        stems.append((run, wide, wide))
+    if more.random() < 0.7:                                      # and a shoot let go of it, reaching out
+        grow(cx, y0 + 60, -np.pi / 2 + more.choice([-1, 1]) * 0.9, more.uniform(200, 420), 3.5, kind, -np.pi / 2, stems, leaves, depth=2)
+    L_TWINE.add(*foliage(stems, leaves, kind))
+L_VINE.flush(WALL, LIT["wall"])
+L_TWINE.flush()
+del SHOWS, LIT, WALL, PAPER, STACK, WOOD, PAINTED, vis, lit
+
 # the lit bulbs and lanterns: a warm glow, screened over what is round them
 glow = np.zeros((PH, PW), f32)
 for (x, y, k) in GLOWS:
     glow[int(y * S) % PH, int(x * S) % PW] += k
 glow = blur(glow, 26.0) * (2 * np.pi * (26 * S) ** 2) * 0.10           # a glow of peak 0.1 k, 26 units wide
 glow = np.clip(glow, 0, 0.35)
-img = img + (1 - img) * glow[..., None] * hexc("#f2dca0")
-
-# grime over everything, a little more toward the street
 grime = noise(1.9, seed=SEED + 23)
-img *= (1 - 0.05 * smooth(grime, 0.4, 0.9) - 0.04 * smooth(yy, 2000, FLOOR))[..., None]
-img = np.clip(img, 0, 1)
-
-# the foot of the tile is under the ground strip or off the page: fade it back to the top, mirrored at the seam
 FP = round(FLOOR * S)       # px
 HID = PH - FP
 t = smooth(np.arange(HID, dtype=f32), HID * 0.25, HID * 0.95)[:, None, None]
-img[FP:] = img[FP:] * (1 - t) + img[HID - 1::-1][:HID] * t
-accent[FP:] = np.where(t[..., 0] > 0.5, accent[HID - 1::-1][:HID], accent[FP:])
+accent0[FP:] = np.where(t[..., 0] > 0.5, accent0[HID - 1::-1][:HID], accent0[FP:])
 
-# drawn back: a little greyer, then toward the mean; a fine grain so the palette does not band
-lum = img.mean(-1, keepdims=True)
-img = img + (lum - img) * 0.18
-mean = img.reshape(-1, 3).mean(0, dtype=np.float64).astype(f32)     # summed in float64: in float32 it drifts with the px count
-img = mean + (img - mean) * CALM
-img *= (1 + np.random.default_rng(SEED + 900).normal(0, 0.009, (PH, PW)).astype(f32))[..., None]
 
-# an exact palette, no dither: the wall's tones, and the saturated sliver apart
-rgb = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
-del img
+def weathered(img):
+    """The wall (with its marks, and without) under the bulbs' glow and the
+    street's grime, its hidden foot faded back to its top, a little greyer."""
+    img = img + (1 - img) * glow[..., None] * hexc("#f2dca0")
+    # grime over everything, a little more toward the street
+    img *= (1 - 0.05 * smooth(grime, 0.4, 0.9) - 0.04 * smooth(yy, 2000, FLOOR))[..., None]
+    img = np.clip(img, 0, 1)
+    # the foot of the tile is under the ground strip or off the page: fade it back to the top, mirrored at the seam
+    img[FP:] = img[FP:] * (1 - t) + img[HID - 1::-1][:HID] * t
+    lum = img.mean(-1, keepdims=True)
+    return img + (lum - img) * 0.18
+
+
+# drawn back: a little greyer, then toward the mean (the unmarked wall's: the marks do not move the wall); a fine grain so the palette does not band
+plain, img = weathered(plain), weathered(img)
+mean = plain.reshape(-1, 3).mean(0, dtype=np.float64).astype(f32)   # summed in float64: in float32 it drifts with the px count
+grain = (1 + np.random.default_rng(SEED + 900).normal(0, 0.009, (PH, PW)).astype(f32))[..., None]
+
+
+def eight(img):
+    img = mean + (img - mean) * CALM
+    img *= grain
+    return (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
+
+
+# an exact palette, no dither: the wall's tones, and the saturated sliver apart;
+# then the marks' own colours, cut from the px they changed and used only there
+rgb0, rgb = eight(plain), eight(img)
+del img, plain
+marked = (rgb != rgb0).any(-1)
 pal = []
-for sel, n in ((~accent, 160 - ACCENT_COLOURS), (accent, ACCENT_COLOURS)):
-    px = rgb[sel][None]
+for sel, n in ((~accent0, 160 - ACCENT_COLOURS), (accent0, ACCENT_COLOURS)):
+    px = rgb0[sel][None]
     q = Image.fromarray(px, "RGB").quantize(colors=n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     pal += q.getpalette()[:3 * n]
-palimg = Image.new("P", (1, 1))
-palimg.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
-out = Image.fromarray(rgb, "RGB").quantize(palette=palimg, dither=Image.Dither.NONE)
+q = Image.fromarray(rgb[marked][None], "RGB").quantize(colors=MARK_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+pal_marks = q.getpalette()[:3 * MARK_COLOURS]
+
+
+def to_palette(rgb, pal):
+    palimg = Image.new("P", (1, 1))
+    palimg.putpalette(pal + pal[:3] * (256 - len(pal) // 3))
+    return np.asarray(Image.fromarray(rgb, "RGB").quantize(palette=palimg, dither=Image.Dither.NONE))
+
+
+out = Image.fromarray(np.where(marked, to_palette(rgb, pal + pal_marks), to_palette(rgb0, pal)), "P")
+out.putpalette(pal + pal_marks)
 out.save(ROOT / "images/wall-13.png", optimize=True)
 avg = out.convert("RGB").resize((1, 1), Image.BOX).getpixel((0, 0))
-print(f"images/wall-13.png  {PW}x{PH}  {PW / DPI:.2f}x{PH / DPI:.2f}in  {int(accent.mean() * 1000) / 10}% accent  "
+print(f"images/wall-13.png  {PW}x{PH}  {PW / DPI:.2f}x{PH / DPI:.2f}in  {int(accent0.mean() * 1000) / 10}% accent  {int(marked.mean() * 1000) / 10}% marked  "
       f"average #{avg[0]:02x}{avg[1]:02x}{avg[2]:02x}")
