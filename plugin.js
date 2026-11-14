@@ -1217,9 +1217,11 @@ function fitAdvance(face, text) {
 }
 
 /**
- * A heading that titles a box (the first block of a section, or a paste-up tag
- * or bill) carries its own width, so CSS can set it a little smaller to keep it
- * on one line, and never let a word run past its box (dc-core.css, `.dc-fit`).
+ * A heading that titles a box (the first block of a section, a paste-up tag or
+ * bill, or a heading standing on the page, in no section or component: the
+ * wall's banner or slip) carries its own width, so CSS can set it a little
+ * smaller to keep it on one line, and never let a word run past its box
+ * (dc-core.css, `.dc-fit`).
  * CSS cannot measure text, so the width is read here from the heading faces'
  * metrics (FIT_FONTS), in em: the line's width to its last letter's ink, its
  * character and space counts (the stylesheet adds its own tracking), and the
@@ -1228,10 +1230,13 @@ function fitAdvance(face, text) {
  */
 function dcHeadingFit(state) {
   const t = state.tokens;
-  for (let i = 1; i < t.length; i++) {
+  let depth = 0; // sections and components open around the token
+  for (let i = 0; i < t.length; i++) {
     const tok = t[i];
+    if (tok.type === 'layout_section_open' || tok.type === 'layout_component_open') depth++;
+    else if (tok.type === 'layout_section_close' || tok.type === 'layout_component_close') depth--;
     if (tok.type !== 'heading_open' || !['h1', 'h2', 'h3'].includes(tok.tag)) continue;
-    const titles = t[i - 1].type === 'layout_section_open' || hasClass(tok, 'dc-pu-tag') || hasClass(tok, 'dc-pu-bill');
+    const titles = !depth || t[i - 1]?.type === 'layout_section_open' || hasClass(tok, 'dc-pu-tag') || hasClass(tok, 'dc-pu-bill');
     const inline = t[i + 1];
     if (!titles || !inline.children?.length || !inline.children.every((c) => FIT_INLINE.has(c.type))) continue;
     const text = inline.children.map((c) => (c.type === 'text' || c.type === 'dc_roll_the_die' ? c.content : '')).join('').trim().toUpperCase();

@@ -165,7 +165,8 @@ h6, .dc-h6 { font-size: var(--fs-h6); margin-top: 0; color: var(--ink); letter-s
    paste-up tag or bill, in `.dc-fit`, with its width in em read from the
    fonts (plugin.js, dcHeadingFit). Where a component names the title's measure
    (`--dc-fit-measure`, the width its text may take, in `cqi` of the section,
-   which is a size container), the title is set:
+   which is a size container, or of the heading itself where it is its own:
+   the wall's banner and slips, a fiction excerpt's title), the title is set:
      - on one line, up to `--fs-fit` (15%) smaller, when that is all it takes;
      - otherwise at its own size, wrapping;
      - and never so large that its longest word runs past

@@ -160,8 +160,10 @@ describe("behaviour carried from the book repo", () => {
     const html = createMarkdown().render(["## ROLLING THE DIE!", "", "Setext ROLL A DIE!", "---", "", "### Before ROLL A DIE! after", "", "Body ROLL A DIE! text."].join("\n"));
 
     expect(countRolls(html)).toBe(1);
-    expect(html).toMatch(/<h2>ROLLING THE DIE!<\/h2>/);
-    expect(html).toMatch(/<h3>Before ROLL A DIE! after<\/h3>/);
+    // a heading standing on the page carries its fit span (dcHeadingFit), never a die span
+    const text = html.replace(/<span class="dc-fit"[^>]*>(.*?)<\/span>/g, "$1");
+    expect(text).toMatch(/<h2>ROLLING THE DIE!<\/h2>/);
+    expect(text).toMatch(/<h3>Before ROLL A DIE! after<\/h3>/);
     expect(html).toContain(`Body ${ROLL_HTML.replace("ROLL THE DIE!", "ROLL A DIE!")} text.`);
   });
 
@@ -2058,9 +2060,15 @@ describe("heading fit", () => {
     expect(fit("@section panel\n\nx\n\n### Fall Damage {.dc-pu-tag}\n\ny\n\n@end-section")).toHaveLength(1);
     expect(fit("@section panel\n\nx\n\n## Hacking {.dc-pu-bill}\n\ny\n\n@end-section")).toHaveLength(1);
     expect(fit("@section panel\n\nx\n\n### Sub\n\ny\n\n@end-section")).toHaveLength(0);
-    expect(fit("## Loose\n\nx")).toHaveLength(0);
+    expect(fit("@columns 2\n\n## In a column\n\nx\n\n@end-columns")).toHaveLength(0);
     expect(fit("@section panel\n\n### A <br> B\n\nx\n\n@end-section")).toHaveLength(0);
     expect(fit("@section panel\n\n### Café\n\nx\n\n@end-section")).toHaveLength(0);
+  });
+
+  test("a heading standing on the page, the wall's banner or slip, is measured; a step's chip leaves it alone", () => {
+    expect(fit("@page\n\n# Banner\n\n## Slip\n\nx\n\n### Plain slip\n\ny\n\n#### Label").map((t) => t.text)).toEqual(["Banner", "Slip", "Plain slip"]);
+    expect(fit("@chapter rules\n\n@page chapter-start\n\n# Opener\n\nlede").map((t) => t.text)).toEqual(["Opener"]);
+    expect(fit("## 4. Ideal\n\nx")).toHaveLength(0);
   });
 });
 

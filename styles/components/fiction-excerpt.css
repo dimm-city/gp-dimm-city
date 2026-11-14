@@ -62,13 +62,17 @@
 }
 
 /* The title is a story's name, not a chapter's. A story's heading, `#` or
-   `##`, has no underline. */
+   `##`, has no underline. Its words fit its width as a box's title does
+   (dc-core.css, .dc-fit): it is its own size container, so the measure is its
+   own text width. */
 .dc-fiction-excerpt > h1 {
   font-size: var(--dc-fiction-title-size);
 }
 .dc-fiction-excerpt > :is(h1, h2) {
   border-bottom: 0;
   padding-bottom: 0;
+  container-type: inline-size;
+  --dc-fit-measure: 100cqi;
 }
 .dc-fiction-excerpt p {
   orphans: 3;
