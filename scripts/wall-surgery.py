@@ -35,9 +35,11 @@ What it draws, back to front:
    there, a bead at the end), a paw dragged down the wall, a rag's wipe,
    and the brownish tide mark of dried antiseptic. Then the loud ones, drawn
    at the page's scale, not the wall's, so they read from across a spread:
-   heavy impacts with their sprays and long runs, the theatre's chemicals
-   (gentian violet and a copper green thrown and run down as the blood was,
-   bleach that took the grime off and yellowed the glaze),
+   blood in its several ways (impacts of one to three sprays, an artery's
+   pulsed arc, a cough of fine mist, a row of drips run to the floor), the
+   theatre's chemicals each in its own (gentian violet slung in a ropey arc,
+   a copper green sprayed to a speckle and a haze, bleach that took the grime
+   off and yellowed the glaze),
    scalpel scratches cut into the tiles in rows, and vomit: thrown at the
    wall, lumpy, run down to the floor.
 6. Mould in the grout, worst low down and round the water.
@@ -652,21 +654,67 @@ for x, y, w, vol, age in runs:
     run(age, x, y, w, vol)
 
 # The loud marks have a stream of their own (`more`), so the wall above stays as
-# it was. Placed by hand, in inches on the tile (a left page is its first
-# 8.625in, a right page the next): in the margins a page of text leaves showing,
-# and on the open wall of the plate.
+# it was. They fall where they fall (SPOTS, spaced out round the tile), and no
+# two are made the same way: each liquid has its own way of meeting a wall.
 more = np.random.default_rng(SEED + 70)
 IN = DPI
+
+
+def burst(age, x, y, r):
+    """An impact made of one to three sprays of different aim, cone and reach,
+    with anything from no runs to a wall of them."""
+    R = r.uniform(18, 40) * S
+    big = r.uniform(1.5, 2.6)
+    for i in range(int(r.integers(1, 4))):
+        spatter(age, x + (r.normal(0, R) if i else 0), y + (r.normal(0, R) if i else 0), R=R * (r.uniform(0.3, 0.7) if i else 1),
+                count=int(r.uniform(90, 420)), spread=r.uniform(120, 380) * S, aim=r.uniform(0, 2 * np.pi), cone=float(r.choice([0.22, 0.5, 1.0, 2.4])),
+                standoff=r.uniform(90, 320) * S, nruns=(0, int(r.integers(1, 7))), r=r, big=big * r.uniform(0.7, 1.3))
+
+
+def spurt(age, x, y, r):
+    """An artery: pulses along a rising and falling arc, each a clutch of long
+    tailed drops flung the way the arc runs, the wall below some of them run with blood."""
+    length, rise, way = r.uniform(700, 1500) * S, r.uniform(120, 420) * S, float(r.choice([-1, 1]))
+    pulses = int(r.integers(3, 7))
+    for k in range(pulses):
+        t = (k + r.uniform(0.2, 0.8)) / pulses
+        px, py = x + way * length * t, y - rise * math.sin(np.pi * t)
+        heading = math.atan2(-rise * np.pi * math.cos(np.pi * t), way * length)
+        for _ in range(int(r.integers(5, 15))):
+            s = r.lognormal(math.log(4.5 * S), 0.45)
+            drop(L[age], px + r.normal(0, 34 * S), py + r.normal(0, 22 * S), heading + r.normal(0, 0.28), s * r.uniform(2.4, 5.0), s, r.uniform(0.75, 1.0), tail=s * r.uniform(1.0, 3.2), r=r)
+        if r.random() < 0.6:
+            runs.append((px, py + 8 * S, r.uniform(3 * S, 6 * S), r.uniform(200 * S, 800 * S), age))
+
+
+def mist(layer, x, y, R, n, r, squash=1.0):
+    """Fine spray: a cloud of pin-point dots, dense at its heart and thinning outward."""
+    for _ in range(n):
+        a, d = r.uniform(0, 2 * np.pi), abs(r.normal(0, R))
+        s = max(0.9 * S, r.lognormal(math.log(1.7 * S), 0.5))
+        layer.ellipse(x + d * math.cos(a), y + squash * d * math.sin(a), s, s * r.uniform(0.8, 1.3), r.uniform(0.4, 0.95))
+
+
+def spaced_more(n, sep):
+    return spaced(n, sep, r=more)
+
+
+SPOTS = spaced_more(13, 700 * S)
 n0 = len(runs)
-for age, x, y, R, count, spread, aim, big in (
-    ("fresh", 16.75, 3.3, 34, 520, 300, -2.5, 2.3),     # right page, outer margin
-    ("mid", 0.45, 6.2, 30, 420, 260, -0.6, 2.1),        # left page, outer margin
-    ("fresh", 9.0, 8.7, 26, 380, 240, -1.2, 1.9),       # just right of the spine, low
-    ("old", 12.4, 0.45, 30, 420, 280, 1.3, 2.2),        # right page, head margin
-    ("mid", 5.2, 10.0, 22, 300, 220, -1.9, 1.8),        # left page, foot
-):
-    spatter(age, x * IN, y * IN, R=R * S, count=count, spread=spread * S, aim=aim, cone=1.0, standoff=190 * S, nruns=(3, 6), r=more, big=big)
-castoff("fresh", 14.2 * IN, 9.6 * IN, 1500 * S, -np.pi / 2 - 0.5, -np.pi / 2 + 0.45, 70, r=more)   # an artery, across the plate
+for (x, y), age in zip(SPOTS[:3], ("fresh", "mid", "old")):
+    burst(age, x, y, more)
+spurt("fresh", *SPOTS[3], more)
+spurt("mid", *SPOTS[4], more)
+for (x, y), age in zip(SPOTS[5:7], ("fresh", "old")):                 # a cough of fine spray, a few heavier drops in it
+    mist(L[age], x, y, more.uniform(90, 220) * S, int(more.uniform(500, 1400)), more, squash=more.uniform(0.5, 1.0))
+    for _ in range(int(more.integers(3, 9))):
+        s = more.lognormal(math.log(4 * S), 0.4)
+        drop(L[age], x + more.normal(0, 90 * S), y + more.normal(0, 70 * S), more.uniform(0, 2 * np.pi), s * more.uniform(1, 2.2), s, 0.9, scallop=0.25, r=more)
+x, y = SPOTS[7]                                                         # what dripped off something hung there: a row of drops, each run to the floor
+for i in range(int(more.integers(4, 9))):
+    dx = x + i * more.uniform(40, 110) * S
+    drop(L["mid"], dx, y + more.normal(0, 12 * S), more.uniform(0, np.pi), more.uniform(7, 13) * S, more.uniform(6, 10) * S, 0.95, scallop=0.3, r=more)
+    runs.append((dx, y + 4 * S, more.uniform(2.6 * S, 5 * S), more.uniform(150 * S, 1500 * S), "mid"))
 for x, y, w, vol, age in runs[n0:]:
     run(age, x, y, w, vol, r=more)
 
@@ -676,7 +724,18 @@ L["vomit"] = Layer()
 MASS = np.zeros((NH, NW))                       # how thick it lies
 LUMP = [np.zeros((NH, NW)) for _ in range(3)]   # the pale lumps, the dark bits and the orange ones in it
 vomit_runs = []
-for x, y, R0 in ((1.15 * IN, 7.9 * IN, 150), (15.6 * IN, 9.0 * IN, 95)):
+def clear_of(spots, sep, lo, hi):
+    """A place low on the wall (between lo and hi inches down) at least sep px from every spot."""
+    while True:
+        x, y = more.uniform(0, NW), more.uniform(lo, hi) * IN
+        if all(min(abs(x - px), NW - abs(x - px)) ** 2 + (y - py) ** 2 >= sep * sep for px, py in spots):
+            return x, y
+
+
+taken = list(SPOTS) + [E[5]]                     # E[5]: the paw print
+for lo, hi, R0 in ((6.6, 8.6, int(more.uniform(120, 170))), (7.5, 9.3, int(more.uniform(70, 110)))):
+    x, y = clear_of(taken, 620 * S, lo, hi)
+    taken.append((x, y))
     R = round(R0 * S)
     h, w = 2 * R, round(3.4 * R)
     base = (2 * R0, round(3.4 * R0))
@@ -834,37 +893,63 @@ for _ in range(2):
 img = mix(img, img * np.array([0.86, 0.66, 0.42]), np.clip(ANTI, 0, 1) * 0.65)
 del src, dr_
 
-# the theatre's chemicals. Gentian violet and a copper green, thrown at the wall
-# as the blood was: a splash, its spray, and long runs down from it, dried dark
-# at the rim. And bleach, which took the grime off and yellowed the glaze at its
-# edge: a blotchy film and the tide lines it dried to.
+# the theatre's chemicals, each in its own way. Gentian violet, slung from a
+# bottle: a ropey arc, fat where it began and breaking into beads, dripping all
+# along. A copper green, sprayed: a dense speckle thinning outward, wet enough at
+# its heart to bead and run, and a haze round it. And bleach, which took the grime
+# off and yellowed the glaze at its edge: a blotchy film and the tide lines it dried to.
 print("chemicals, scratches, vomit", flush=True)
 SPILL = {"violet": Layer(), "green": Layer()}
-L.update(SPILL)                                  # spatter and run draw into L
+L.update(SPILL)                                  # drop and run draw into L
 n0 = len(runs)
-for k, x, y, R, aim in (("violet", 7.5, 0.9, 50, 1.3), ("violet", 16.9, 6.9, 42, -2.6), ("green", 10.4, 4.3, 46, -0.5), ("green", 0.3, 1.8, 40, 0.6)):
-    spatter(k, x * IN, y * IN, R=R * S, count=240, spread=210 * S, aim=aim, cone=1.1, standoff=170 * S, nruns=(4, 7), r=more, big=2.4)
+for x, y in SPOTS[8:10]:
+    length, a, curve = more.uniform(500, 1100) * S, more.uniform(0, 2 * np.pi), more.uniform(-1.4, 1.4)
+    w0 = more.uniform(13, 22) * S
+    n_ = 46
+    for i in range(n_):
+        t = i / (n_ - 1)
+        a += curve / n_
+        x, y = x + length / n_ * math.cos(a), y + length / n_ * math.sin(a)
+        w = w0 * (1 - t) ** 0.7 * more.uniform(0.7, 1.25)                # ropey, thinning
+        if t < 0.65 or more.random() < 0.55:                             # past there it breaks into beads
+            L["violet"].ellipse(x, y, w * more.uniform(0.9, 1.5), w * more.uniform(0.6, 1.0), 1.0)
+        if more.random() < 0.2 * (1 - t) + 0.03:
+            runs.append((x, y, max(2.5 * S, w * more.uniform(0.25, 0.5)), more.uniform(150, 1000) * S * (1 - 0.6 * t), "violet"))
+    for _ in range(int(more.integers(10, 30))):                          # and what flew on past its end
+        d, s = more.exponential(130 * S), more.lognormal(math.log(3.5 * S), 0.5)
+        drop(L["violet"], x + d * math.cos(a) + more.normal(0, 28 * S), y + d * math.sin(a) + more.normal(0, 28 * S), a, s * more.uniform(1.5, 3.2), s, 0.9, tail=s * more.uniform(0, 2), r=more)
+for x, y in SPOTS[10:12]:
+    R = more.uniform(130, 260) * S
+    mist(L["green"], x, y, R, int(more.uniform(1400, 2600)), more, squash=more.uniform(0.6, 1.0))
+    for _ in range(int(more.integers(4, 11))):                           # where it was wettest it beaded, and some of the beads ran
+        bx, by, s = x + more.normal(0, R * 0.35), y + more.normal(0, R * 0.3), more.uniform(5, 10) * S
+        drop(L["green"], bx, by, more.uniform(0, np.pi), s * more.uniform(1.0, 1.5), s, 1.0, scallop=0.3, r=more)
+        if more.random() < 0.45:
+            runs.append((bx, by + s / 2, s * more.uniform(0.3, 0.5), more.uniform(120, 700) * S, "green"))
 for x, y, w, vol, k in runs[n0:]:
     run(k, x, y, w, vol, r=more)
-STAIN = {   # multiply at full cover: thin film, then thick
-    "violet": (np.array([0.62, 0.46, 0.78]), hexc("#4b2f6b")),
-    "green": (np.array([0.58, 0.80, 0.68]), hexc("#2f6a5e")),
+STAIN = {   # multiply at full cover (thin film, then thick), and how far its haze spreads (px at 240 DPI; 0: none)
+    "violet": (np.array([0.62, 0.46, 0.78]), hexc("#4b2f6b"), 0),
+    "green": (np.array([0.58, 0.80, 0.68]), hexc("#2f6a5e"), 26),
 }
 CHEM = np.zeros((NH, NW))
-for k, (thin, deep) in STAIN.items():
+for k, (thin, deep, haze) in STAIN.items():
     b = L.pop(k).render()
     ring_ = np.clip(b - blur(b, 1.5 * S), 0, 1)                          # the darker rim it dries to
-    film = img * mix(np.ones(3), thin, smooth(b, 0.0, 0.6))
+    wet = np.maximum(b, np.clip(blur(b, haze * S) * 2.2, 0, 0.5)) if haze else b
+    film = img * mix(np.ones(3), thin, smooth(wet, 0.0, 0.6))
     img = mix(film, deep, np.clip(0.7 * smooth(b, 0.55, 1.0) + 0.6 * ring_, 0, 1) * 0.8)
-    CHEM += b
+    CHEM += wet
+del wet
 FILM, TIDE = np.zeros((NH, NW)), np.zeros((NH, NW))
-for x, y, R0 in ((6.6, 8.3, 190), (11.6, 2.2, 150)):
+for (x, y), R0 in ((SPOTS[12], 190), (SPOTS[0], 150)):
     R = round(1.3 * R0 * S)
     base = (round(2.6 * R0), round(2.6 * R0))
     edge = local_noise(2 * R, 2 * R, 2.3, more, base=base)
     blot = local_noise(2 * R, 2 * R, 1.4, more, base=base)
     vy, vx = np.mgrid[-R:R, -R:R]
     d = np.hypot(vx * more.uniform(0.75, 1.0), vy) / (R0 * S) + 1.0 * (edge - 0.5)
+    x, y = x / IN + 2.2, y / IN                  # in: beside the mark that is there, not on it
     x0, y0 = x * IN - R, y * IN - R
     put(FILM, x0, y0, smooth(0.9 - d, 0.0, 0.14) * (0.35 + 0.65 * blot))
     put(TIDE, x0, y0, sum(wt * np.exp(-((d - at) / 0.022) ** 2) for at, wt in ((0.86, 1.0), (0.66, 0.55), (0.45, 0.3))))
