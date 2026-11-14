@@ -32,14 +32,19 @@ What it draws, back to front:
    instrument (a line of tailed drops along the swing), runs sliding down
    from the heavy stains (channelled by a vertical grout line when they meet
    one, wicking sideways into each horizontal joint and often stopping
-   there, a bead at the end), a hand dragged down the wall, a rag's wipe,
-   and the brownish tide mark of dried antiseptic.
+   there, a bead at the end), a paw dragged down the wall, a rag's wipe,
+   and the brownish tide mark of dried antiseptic. Then the loud ones, drawn
+   at the page's scale, not the wall's, so they read from across a spread:
+   heavy impacts with their sprays and long runs, splashes of the theatre's
+   chemicals (gentian violet, a copper green, bleach that etched the glaze),
+   scalpel scratches cut into the tiles in rows, and vomit: thrown at the
+   wall, lumpy, run down to the floor.
 6. Mould in the grout, worst low down and round the water.
 It is then quantised to an exact palette, as the other walls are (one colour
 per tone, lossless and small; an opaque tile PDF/X carries as is).
 
 Scale: a tile on the wall is about 108mm (4.25in) and is drawn 0.6in, so the
-wall is drawn at about 1:7, and the blood at the same scale (a hand is about
+wall is drawn at about 1:7, and the first blood at the same scale (a paw is about
 1in, most droplets a few px). At DPI (300) the tile is
 18in x 12in, 30 x 20 wall tiles: wider than a spread and taller than a page,
 so a spread shows no repeat. Its grid is regular, so wall-tiles.py anchors it
@@ -534,9 +539,10 @@ def drop(layer, x, y, a, length, width, v, tail=0.0, scallop=0.0, r=rng):
     layer.poly([(x + px * ca - py * sa, y + px * sa + py * ca) for px, py in zip(ex, ey)], v)
 
 
-def spatter(age, cx, cy, R, count, spread, aim, cone, standoff, nruns=(2, 4), r=rng):
+def spatter(age, cx, cy, R, count, spread, aim, cone, standoff, nruns=(2, 4), r=rng, big=1.0):
     """An impact: a central stain and a spray of satellites flung out from it, round
-    near the source (they struck square on), longer and tailed further out."""
+    near the source (they struck square on), longer and tailed further out.
+    `big` scales the satellites and the runs with it (the heavy impacts)."""
     lay = L[age]
     drop(lay, cx, cy, r.uniform(0, np.pi), R * 2.0, R * 1.6, 1.0, scallop=0.35, r=r)
     for _ in range(int(r.integers(3, 6))):                               # lobes of the central stain
@@ -548,7 +554,7 @@ def spatter(age, cx, cy, R, count, spread, aim, cone, standoff, nruns=(2, 4), r=
         d = R * 0.8 + r.exponential(spread)
         x, y = cx + d * math.cos(a), cy + d * math.sin(a)
         y += 0.012 * d * d / spread                                      # long flights droop a little
-        size = max(0.8 * S, r.lognormal(math.log(2.3 * S), 0.55) * (1.3 - 0.7 * min(1.0, d / (3 * spread))))
+        size = max(0.8 * S, r.lognormal(math.log(2.3 * S), 0.55) * (1.3 - 0.7 * min(1.0, d / (3 * spread)))) * big
         alpha = math.atan2(standoff, d)                                  # the angle it struck at
         el = min(1 / max(math.sin(alpha), 0.2), 4.5) * r.uniform(0.9, 1.15)
         tail = size * el * r.uniform(0.25, 0.8) if el > 1.5 else 0.0
@@ -557,7 +563,7 @@ def spatter(age, cx, cy, R, count, spread, aim, cone, standoff, nruns=(2, 4), r=
             dd = size * el * 0.6 + tail + r.uniform(2 * S, 7 * S)
             drop(lay, x + dd * math.cos(a), y + dd * math.sin(a), a, size * 0.9, size * 0.5, 0.7, r=r)
     for _ in range(int(r.integers(*nruns))):                             # runs from the heavy stain
-        runs.append((cx + r.normal(0, R * 0.5), cy + R * r.uniform(0.4, 0.8), r.uniform(2.6 * S, 4.2 * S), r.uniform(150 * S, 520 * S), age))
+        runs.append((cx + r.normal(0, R * 0.5), cy + R * r.uniform(0.4, 0.8), r.uniform(2.6 * S, 4.2 * S) * big, r.uniform(150 * S, 520 * S) * big * big, age))
 
 
 def castoff(age, cx, cy, R, a0, a1, count, r=rng):
@@ -644,57 +650,97 @@ for _ in range(40):
 for x, y, w, vol, age in runs:
     run(age, x, y, w, vol)
 
+# The loud marks have a stream of their own (`more`), so the wall above stays as
+# it was. Placed by hand, in inches on the tile (a left page is its first
+# 8.625in, a right page the next): in the margins a page of text leaves showing,
+# and on the open wall of the plate.
+more = np.random.default_rng(SEED + 70)
+IN = DPI
+n0 = len(runs)
+for age, x, y, R, count, spread, aim, big in (
+    ("fresh", 16.75, 3.3, 34, 520, 300, -2.5, 2.3),     # right page, outer margin
+    ("mid", 0.45, 6.2, 30, 420, 260, -0.6, 2.1),        # left page, outer margin
+    ("fresh", 9.0, 8.7, 26, 380, 240, -1.2, 1.9),       # just right of the spine, low
+    ("old", 12.4, 0.45, 30, 420, 280, 1.3, 2.2),        # right page, head margin
+    ("mid", 5.2, 10.0, 22, 300, 220, -1.9, 1.8),        # left page, foot
+):
+    spatter(age, x * IN, y * IN, R=R * S, count=count, spread=spread * S, aim=aim, cone=1.0, standoff=190 * S, nruns=(3, 6), r=more, big=big)
+castoff("fresh", 14.2 * IN, 9.6 * IN, 1500 * S, -np.pi / 2 - 0.5, -np.pi / 2 + 0.45, 70, r=more)   # an artery, across the plate
+for x, y, w, vol, age in runs[n0:]:
+    run(age, x, y, w, vol, r=more)
+
+# vomit: thrown at the wall, a lumpy mass wider than tall with a ragged edge, its
+# spray mostly below it, and heavy runs down to the floor. One fresh, one older and smaller.
+L["vomit"] = Layer()
+MASS = np.zeros((NH, NW))                       # how thick it lies
+LUMP = [np.zeros((NH, NW)) for _ in range(3)]   # the pale lumps, the dark bits and the orange ones in it
+vomit_runs = []
+for x, y, R0 in ((1.15 * IN, 7.9 * IN, 150), (15.6 * IN, 9.0 * IN, 95)):
+    R = round(R0 * S)
+    h, w = 2 * R, round(3.4 * R)
+    base = (2 * R0, round(3.4 * R0))
+    edge = local_noise(h, w, 2.2, more, base=base)
+    body = local_noise(h, w, 1.3, more, base=base)
+    vy, vx = np.mgrid[-R:R, -(w // 2):w - w // 2]
+    d = np.hypot(vx / 1.45, (vy - 0.1 * R) / 0.72) / R + 1.1 * (edge - 0.5)
+    mass = smooth(0.82 - d, 0.0, 0.10)
+    put(MASS, x - w / 2, y - R, mass * (0.5 + 0.5 * body))
+    for k, (beta, cut_) in enumerate(((1.0, 0.70), (0.9, 0.74), (0.9, 0.79))):
+        bits = local_noise(h, w, beta, more, base=base)
+        put(LUMP[k], x - w / 2, y - R, smooth(bits, cut_, cut_ + 0.05) * smooth(0.7 - d, 0.0, 0.1))
+    for _ in range(int(R0 * 1.3)):                                        # the spray round it, heavier below
+        a_ = more.normal(np.pi / 2, 1.3)
+        dd = R * (0.75 + more.exponential(0.8))
+        s = max(1.5 * S, more.lognormal(math.log(4.5 * S), 0.6))
+        drop(L["vomit"], x + 1.45 * dd * math.cos(a_), y + 0.72 * dd * math.sin(a_), a_, s * more.uniform(1.2, 2.6), s, more.uniform(0.5, 0.9), tail=s * more.uniform(0, 1.2), scallop=0.2, r=more)
+    for _ in range(int(more.integers(5, 8))):
+        vomit_runs.append((x + more.normal(0, R * 0.8), y + R * more.uniform(0.35, 0.6), more.uniform(5 * S, 12 * S), more.uniform(900 * S, 2600 * S) * R0 / 150))
+for x, y, w, vol in vomit_runs:
+    run("vomit", x, y, w, vol, r=more)
+VOMIT = np.maximum(L.pop("vomit").render() * 0.8, MASS)
+del MASS
+
 blood = {a: L[a].render() for a in AGES}
 
 
-def hand(r, scale):
-    """A hand, palm flat, fingers up and a little spread, in a local canvas: (mask, W, H).
-    The pads, the finger joints and the heel of the palm take the blood; the palm's
-    hollow and the creases barely touch."""
+def paw(r, scale):
+    """A paw, toes up, in a local canvas: (mask, W, H). Nobody in Dimm City has
+    hands. The big pad (three lobes at its heel) and the four toe pads take the
+    blood, the claws leave a nick above each toe, and the middle of the big pad
+    barely touches."""
     s0 = 13.5 * scale                                                    # px per cm at 1:7, at 240 DPI
     s = s0 * S
     W0, H0 = int(16 * s0), int(21 * s0)                                  # its canvas at 240 DPI
     W, H = round(W0 * S), round(H0 * S)
     im = Image.new("L", (W * SS, H * SS), 0)
     d = ImageDraw.Draw(im)
-    cx, top, foot = W * 0.52, H * 0.42, H * 0.95
-    Z = lambda pts: [(px * SS, py * SS) for px, py in pts]
-    d.polygon(Z([(cx - 4.3 * s, top), (cx + 4.3 * s, top + 0.3 * s), (cx + 4.0 * s, foot - 2.5 * s),
-                 (cx + 2.2 * s, foot), (cx - 2.0 * s, foot), (cx - 3.9 * s, foot - 3.0 * s)]), fill=190)
-    for (ox, ln, wd, ang) in ((-3.2, 6.4, 1.6, -0.22), (-1.1, 7.6, 1.75, -0.07), (1.05, 7.2, 1.7, 0.06), (3.05, 5.6, 1.5, 0.2)):
-        bx, by = cx + ox * s, top + 0.4 * s + abs(ox) * 0.12 * s
-        ca, sa = math.cos(ang), math.sin(ang)
-        tip = lambda t, side: (bx + sa * t * ln * s + ca * side * wd * s / 2 * (1 - 0.15 * t),
-                               by - ca * t * ln * s + sa * side * wd * s / 2 * (1 - 0.15 * t))
-        d.polygon(Z([tip(0, -1), tip(0.93, -1), tip(0.93, 1), tip(0, 1)]), fill=205)
-        tx, ty = tip(0.9, 0)
-        rr = wd * s * 0.45
-        d.ellipse(Z([(tx - rr, ty - rr * 1.2), (tx + rr, ty + rr * 1.2)]), fill=230)            # the pad
-        for t in (0.38, 0.66):                                           # the creases at the joints
-            d.line(Z([tip(t, -1.1), tip(t, 1.1)]), fill=40, width=int(0.28 * s * SS))
-    d.ellipse(Z([(cx - 5.4 * s, foot - 6.4 * s), (cx - 2.4 * s, foot - 0.6 * s)]), fill=200)   # the ball of the thumb
-    ta = -0.95                                                           # the thumb, out to the side and up
-    bx, by = cx - 3.9 * s, foot - 3.8 * s
-    ex, ey = bx + math.sin(ta) * 5.2 * s, by - math.cos(ta) * 5.2 * s
-    d.line(Z([(bx, by), (ex, ey)]), fill=200, width=int(2.0 * s * SS))
-    d.ellipse(Z([(ex - 1.0 * s, ey - 1.2 * s), (ex + 1.0 * s, ey + 1.2 * s)]), fill=240)
-    mx, my = (bx + ex) / 2, (by + ey) / 2
-    d.line(Z([(mx - 1.1 * s * math.cos(ta), my - 1.1 * s * math.sin(ta)), (mx + 1.1 * s * math.cos(ta), my + 1.1 * s * math.sin(ta))]),
-           fill=40, width=int(0.28 * s * SS))
-    shape = im.point(lambda v: 255 if v > 0 else 0).filter(ImageFilter.GaussianBlur(0.45 * s * SS))
-    level = im.filter(ImageFilter.GaussianBlur(0.45 * s * SS))
+    cx, cy = W * 0.5, H * 0.66                                           # the big pad's centre
+    blob = lambda x, y, rx, ry, v: d.ellipse([(x - rx) * SS, (y - ry) * SS, (x + rx) * SS, (y + ry) * SS], fill=v)
+    blob(cx, cy - 1.2 * s, 2.7 * s, 2.1 * s, 215)                        # the big pad: its crown,
+    blob(cx, cy + 0.2 * s, 3.9 * s, 2.5 * s, 220)                        # its body,
+    for ox, oy, rr in ((-2.5, 1.5, 1.8), (0.0, 2.0, 2.0), (2.5, 1.5, 1.8)):   # and the three lobes at its heel
+        blob(cx + ox * s, cy + oy * s, rr * s, rr * s, 225)
+    for ang, dist, rx, ry in ((-0.72, 6.0, 1.35, 1.9), (-0.25, 7.0, 1.5, 2.15), (0.25, 7.0, 1.5, 2.15), (0.72, 6.0, 1.35, 1.9)):
+        tx, ty = cx + math.sin(ang) * dist * s, cy - math.cos(ang) * dist * s
+        toe = Image.new("L", im.size, 0)                                 # a toe pad: an oval turned out along its toe
+        ImageDraw.Draw(toe).ellipse([(tx - rx * s) * SS, (ty - ry * s) * SS, (tx + rx * s) * SS, (ty + ry * s) * SS], fill=235)
+        im.paste(toe.rotate(-math.degrees(ang) * 0.8, Image.BICUBIC, center=(tx * SS, ty * SS)), (0, 0), toe.rotate(-math.degrees(ang) * 0.8, Image.BICUBIC, center=(tx * SS, ty * SS)))
+        k0, k1 = ry + 0.7, ry + 2.0                                      # the claw's nick, beyond the pad
+        d.line([((tx + math.sin(ang) * k0 * s) * SS, (ty - math.cos(ang) * k0 * s) * SS), ((tx + math.sin(ang) * k1 * s) * SS, (ty - math.cos(ang) * k1 * s) * SS)], fill=200, width=int(0.5 * s * SS))
+    shape = im.point(lambda v: 255 if v > 0 else 0).filter(ImageFilter.GaussianBlur(0.4 * s * SS))
+    level = im.filter(ImageFilter.GaussianBlur(0.4 * s * SS))
     shape = np.asarray(shape.resize((W, H), Image.BOX), float) / 255
     level = np.asarray(level.resize((W, H), Image.BOX), float) / 255
     m = smooth(shape, 0.35, 0.65) * level / np.maximum(shape, 1e-3)      # the outline rounded, as flesh is
     hy, hx = np.mgrid[0:H, 0:W]
-    hollow = np.exp(-(((hx - cx) / (2.0 * s)) ** 2 + ((hy - (top + foot) / 2 + 0.6 * s) / (2.2 * s)) ** 2))
+    hollow = np.exp(-(((hx - cx) / (2.2 * s)) ** 2 + ((hy - cy) / (1.6 * s)) ** 2))
     return m * (1 - 0.8 * hollow * smooth(local_noise(H, W, 1.4, r, base=(H0, W0)), 0.2, 0.6)), W, H, (H0, W0)
 
 
 def smear(age, x, y, drag, angle, r=rng):
-    """A bloody hand put to the wall and dragged down it: the print, patchy where the
-    skin barely touched, then the fingers' trails, streaked along the drag."""
-    m, W, H, (H0, W0) = hand(r, r.uniform(0.95, 1.05))
+    """A bloody paw put to the wall and dragged down it: the print, patchy where the
+    pads barely touched, then the toes' trails, streaked along the drag."""
+    m, W, H, (H0, W0) = paw(r, r.uniform(0.95, 1.05))
     side = round(20 * S)
     pad = int(drag) + side
     P = np.zeros((H + pad, W + 2 * side))
@@ -787,6 +833,83 @@ for _ in range(2):
 img = mix(img, img * np.array([0.86, 0.66, 0.42]), np.clip(ANTI, 0, 1) * 0.65)
 del src, dr_
 
+# the theatre's chemicals, splashed and left to dry: gentian violet, a copper
+# green, and bleach, which took the grime off and yellowed the glaze at its edge.
+# Each is a film (FILM: blotchy, the tiles showing through) and the tide lines it
+# dried to (TIDE), with long thin runs below it.
+print("chemicals, scratches, vomit", flush=True)
+FILM = {k: np.zeros((NH, NW)) for k in ("violet", "green", "bleach")}
+TIDE = {k: np.zeros((NH, NW)) for k in FILM}
+for k, x, y, R0 in (
+    ("violet", 7.5, 1.0, 170), ("violet", 16.9, 7.4, 130),
+    ("green", 10.4, 4.6, 160), ("green", 0.25, 2.0, 140),
+    ("bleach", 6.6, 8.3, 190), ("bleach", 11.6, 2.2, 150),
+):
+    R = round(1.3 * R0 * S)
+    base = (round(2.6 * R0), round(2.6 * R0))
+    edge = local_noise(2 * R, 2 * R, 2.3, more, base=base)
+    blot = local_noise(2 * R, 2 * R, 1.4, more, base=base)
+    vy, vx = np.mgrid[-R:R, -R:R]
+    d = np.hypot(vx * more.uniform(0.75, 1.0), vy) / (R0 * S) + 1.0 * (edge - 0.5)
+    x0, y0 = x * IN - R, y * IN - R
+    put(FILM[k], x0, y0, smooth(0.9 - d, 0.0, 0.14) * (0.35 + 0.65 * blot))
+    put(TIDE[k], x0, y0, sum(wt * np.exp(-((d - at) / 0.022) ** 2) for at, wt in ((0.86, 1.0), (0.66, 0.55), (0.45, 0.3))))
+    src = np.zeros((NH, NW))
+    for _ in range(int(more.integers(2, 5))):
+        src[int(y * IN + R0 * S * more.uniform(0.5, 0.8)) % NH, int(x * IN + more.normal(0, R0 * S * 0.45)) % NW] = more.uniform(0.5, 1.0)
+    dr_ = circ_conv(src, *drip(more.uniform(200, 420) * S, 2.6 * S))
+    np.maximum(FILM[k], np.clip(dr_ / dr_.max(), 0, 1) * 0.7, out=FILM[k])
+del src, dr_
+STAIN = {   # multiply at full cover, then the colour its tide lines dry to
+    "violet": (np.array([0.66, 0.54, 0.80]), hexc("#55406f")),
+    "green": (np.array([0.62, 0.83, 0.76]), hexc("#3d6f64")),
+}
+for k, (thin, deep) in STAIN.items():
+    img = img * mix(np.ones(3), thin, np.clip(FILM[k], 0, 1) * 0.85)
+    img = mix(img, deep, np.clip(TIDE[k], 0, 1) * 0.5)
+img = mix(img, np.clip(img * 1.13 + 0.03, 0, 1), np.clip(FILM["bleach"], 0, 1) * 0.9)            # cleaner than the wall round it
+img = mix(img, img * np.array([0.88, 0.82, 0.58]), np.clip(TIDE["bleach"], 0, 1) * 0.75)       # its yellow tide lines
+CHEM = sum(FILM.values()) + sum(TIDE.values())
+del FILM, TIDE
+
+# scalpel scratches: a blade drawn down the glaze in short close rows, each stroke
+# tapered to a point at both ends; the cut is dark with dirt, its lower lip catches the light
+SCR = Layer()
+for x, y, n_, ang, length in (
+    (0.35, 1.0, 5, 1.25, 210), (8.35, 4.2, 4, 1.45, 190), (17.0, 1.2, 6, 1.9, 230), (4.3, 0.3, 4, 0.2, 240),
+    (13.0, 6.3, 7, 1.15, 250), (9.3, 0.4, 3, 2.9, 190), (2.2, 9.9, 5, 0.35, 220), (16.6, 9.9, 4, 2.7, 200),
+    (6.0, 5.0, 6, 1.7, 240), (11.0, 8.8, 5, 1.0, 220),
+):
+    gap = more.uniform(8 * S, 13 * S)
+    strokes = [(i, ang + more.normal(0, 0.025)) for i in range(n_)]
+    if more.random() < 0.5:
+        strokes.append(((n_ - 1) / 2, ang + more.choice([-1, 1]) * more.uniform(0.9, 1.2)))    # one slashed across the row
+    for i, a in strokes:
+        ln = length * S * more.uniform(0.7, 1.1) * (1.5 if a != ang and abs(a - ang) > 0.5 else 1)
+        cx_, cy_ = x * IN + i * gap * math.cos(ang + np.pi / 2), y * IN + i * gap * math.sin(ang + np.pi / 2)
+        ox, oy = cx_ - ln / 2 * math.cos(a) + more.normal(0, 6 * S), cy_ - ln / 2 * math.sin(a) + more.normal(0, 6 * S)
+        bend = more.normal(0, 0.015) * ln
+        w = more.uniform(1.8 * S, 3.0 * S)
+        ts = np.linspace(0, 1, 24)
+        mid = [(ox + ln * t * math.cos(a) - bend * 4 * t * (1 - t) * math.sin(a), oy + ln * t * math.sin(a) + bend * 4 * t * (1 - t) * math.cos(a)) for t in ts]
+        half = [w / 2 * math.sin(np.pi * t) ** 0.45 for t in ts]
+        nx, ny = -math.sin(a), math.cos(a)
+        SCR.poly([(px + nx * h, py + ny * h) for (px, py), h in zip(mid, half)] + [(px - nx * h, py - ny * h) for (px, py), h in zip(mid[::-1], half[::-1])], 1.0)
+SCR = SCR.render()
+img = mix(img, np.clip(img * 1.25 + 0.05, 0, 1), np.clip(shift(SCR, 1.4 * S, 1.0 * S) - SCR, 0, 1) * 0.7)   # the lit lip
+img = mix(img, img * 0.42, SCR * 0.9)
+
+# the vomit: a thin yellow film where it ran and sprayed, opaque where it sat
+# (thicker, paler), a darker rim where it dried, and the bits in it
+vn = noise(1.4, seed=SEED + 72, feature=60 * S)
+ring_ = np.clip(VOMIT - blur(VOMIT, 2.5 * S), 0, 1)
+img = img * mix(np.ones(3), np.array([0.90, 0.85, 0.60]), smooth(VOMIT, 0.0, 0.45))
+img = mix(img, mix(hexc("#8f8650"), hexc("#b0a46c"), vn), smooth(VOMIT, 0.4, 0.95) * 0.86)
+img = mix(img, hexc("#6f6434"), np.clip(ring_ * 1.8, 0, 1) * 0.55)
+for bits, colour in zip(LUMP, ("#cfc394", "#665630", "#a8733f")):
+    img = mix(img, hexc(colour), np.clip(bits, 0, 1) * 0.85)
+del vn, ring_
+
 # ── 6. mould in the joints, worst low down and round the wet ────────────────
 print("mould", flush=True)
 mn = noise(1.1, seed=SEED + 10)
@@ -802,10 +925,10 @@ img = mix(img, hexc("#3e4636") * (0.9 + 0.2 * fine)[..., None], np.clip(mould, 0
 # Quantised in two parts: the fluids are a sliver of the tile, and a median cut
 # over the whole of it gives them a handful of browns; so the wall gets WALL_COLOURS
 # and the stains the rest, cut from their own pixels.
-WALL_COLOURS, COLOURS = 124, 160
+WALL_COLOURS, COLOURS = 124, 208
 rgb8 = (np.clip(img * SHADE, 0, 1) * 255).astype(np.uint8)
 del img, mould, face, fine
-stained = (sum(blood.values()) + ANTI + rs) > 0.06
+stained = (sum(blood.values()) + ANTI + rs + CHEM + VOMIT + SCR) > 0.06
 
 
 def cut(px, n):
