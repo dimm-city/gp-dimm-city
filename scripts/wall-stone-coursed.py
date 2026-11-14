@@ -19,8 +19,7 @@ matched to the brick tile's own; then weathered by wall_grime.py, as walls
 
 Each tile is a whole number of blocks and courses (about 9in x 12in), and
 everything in it is periodic, so it repeats without a seam either way: the
-noise is filtered in the Fourier domain, blurs are circular convolutions,
-and the blocks and every stroke are laid with wrap-around.
+noise is filtered in the Fourier domain, and the blocks and every stroke are laid with wrap-around.
 
 One block renderer draws all three. Each block is a rounded box; its signed
 distance in from the edge (E) is laid on the tile, wobbled a little and bitten
@@ -104,10 +103,6 @@ class Tile:
         out = np.fft.irfft2(spec, s=(self.H, self.W)).astype(F32, copy=False)
         out -= out.mean()
         return out / out.std()
-
-    def blur(self, m, sigma):
-        k = np.exp(-2 * np.pi ** 2 * sigma * sigma * (self.FX ** 2 + self.FY ** 2))
-        return np.fft.irfft2(np.fft.rfft2(m) * k, s=(self.H, self.W)).astype(F32)
 
     def block(self, x0, y0, x1, y1, joint, corner, angle=0.0):
         """Lay a block filling the box (x0, y0)-(x1, y1) less half a joint each side:

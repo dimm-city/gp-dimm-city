@@ -133,7 +133,6 @@ WALLS = {
 
 FY = np.fft.fftfreq(NH).astype(F32)[:, None]
 FX = np.fft.rfftfreq(NW).astype(F32)[None, :]
-F2 = FX * FX + FY * FY
 
 
 def noise(beta, seed, feature=FEATURE, lo=None, stretch=(1.0, 1.0)):
@@ -149,11 +148,6 @@ def noise(beta, seed, feature=FEATURE, lo=None, stretch=(1.0, 1.0)):
     out = np.fft.irfft2(spec, s=(NH, NW)).astype(F32, copy=False)
     out -= out.mean()
     return out / out.std()
-
-
-def blur(m, sigma):
-    """Gaussian blur on the torus."""
-    return np.fft.irfft2(np.fft.rfft2(m) * np.exp(-2 * np.pi ** 2 * sigma * sigma * F2), s=(NH, NW)).astype(F32)
 
 
 def smooth(x, lo, hi):

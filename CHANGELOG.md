@@ -335,6 +335,13 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **Claw gouges on small bricks read as one tear.** A gouge broke at every
+  joint, so on the brick wall and wall 4 (courses under 0.2in) it read as a
+  ladder of dashes. Where the courses are that close it now tears through
+  the joint, a little shallower; the stone walls keep their breaks. Blood
+  (spatter, specks) no longer lands in a gouge that does not bleed, so a
+  claw set shows blood in one groove or two (the brick's freshest set showed
+  three).
 - **A long word no longer runs off its tag.** THE ENTERTAINMENT DISTRICT's
   ENTERTAINMENT was wider than its half sheet, so its tag ran under the next
   sheet's and the word was cut. A title's longest word is now set smaller

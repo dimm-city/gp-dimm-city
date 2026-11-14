@@ -37,12 +37,14 @@ Back to front, the light from the upper left as on the stone:
    sets of 3-4 claw gouges (`gouge`: torn into the stone, its upper-left wall
    in shade and casting a shadow on the floor, its lower-right lip lit, a
    blunt torn bite and a long drag out to torn tines, broken where it crosses
-   a joint, flakes and grit spilled along it; fresh, or old and packed with
-   dirt; dried blood dragged down one or two), and scratched tallies and
-   glyphs. Nothing written.
+   a joint (where the courses are close, as on small bricks, torn on through
+   it, only a little shallower), flakes and grit spilled along it; fresh, or
+   old and packed with dirt; dried blood dragged down one or two), and
+   scratched tallies and glyphs. Nothing written.
 7. Blood: dried, brown-red, small: spatters by the freshest claw marks and
-   elsewhere, specks in little groups, a smear. Grim, not gory: the
-   Cybersurgeon's wall (10) is the bloody one.
+   elsewhere, specks in little groups, a smear; none in a groove that does
+   not bleed, so a set of claw marks shows blood in one groove or two. Grim,
+   not gory: the Cybersurgeon's wall (10) is the bloody one.
 Then quantised (`save`) to an exact palette with no dither, its last entries
 cut from the saturated things alone (blood, mould, algae, fungi), so they keep
 their colour instead of going grey.
@@ -744,12 +746,17 @@ def weather(rgb, joint, seed):
     if r.random() < 0.6:
         strokes[int(r.integers(len(strokes)))]["bleed"] = True
     claw_blood = np.zeros((H, W), F32)
+    dry_groove = np.zeros((H, W), F32)                  # the grooves that do not bleed: no blood lands in them (7.)
+    course = 2 / max(float(np.diff(joint > 0.5, axis=0).mean()), 1e-3)   # px from one bed joint to the next, down the wall
+    tear = 1 - float(smooth(course, 60, 75))           # courses under 0.2in (small bricks): torn through the joints, not broken
     grain = t.noise(1.4, feature=40, lo=3)              # the lips' roughness: broken, not fuzzy
 
     def gouge(g):
         """Cut one stroke: a groove torn into the stone, its ends ragged (a
         blunt bite where the claw went in, a long drag to a point where it
-        lifted out), skating over the joints; its upper-left wall in shadow
+        lifted out), skating over the joints (or, where they are close, torn
+        through them, a little shallower: broken at every one, it would read
+        as a ladder); its upper-left wall in shadow
         and a shadow cast across the floor, the lower-right lip lit; the floor
         a little lighter than the face when fresh, dark and packed with dirt
         when old; dried blood dragged along it in `bleed`."""
@@ -769,7 +776,7 @@ def weather(rgb, joint, seed):
         taper = smooth(u + g["e_in"] * 0.5 * torn_in, 0, g["e_in"]) * smooth(1 - u + 0.04 * torn_out, 0, g["e_out"]) ** 0.8
         jag = np.where(v < 0, np.interp(uc, np.linspace(0, 1, 160), g["jag"][0]), np.interp(uc, np.linspace(0, 1, 160), g["jag"][1]))
         hw = w / 2 * taper * (1 + 0.22 * jag) + 1.4 * grain[ix] * smooth(taper, 0.05, 0.3)
-        over = np.clip(lblur(joint[ix], 1.5) * 1.8, 0, 1)                  # the joint is recessed: the claw skates over it
+        over = np.clip(lblur(joint[ix], 1.5) * 1.8, 0, 1) * (1 - 0.7 * tear)   # the joint is recessed: the claw skates over it
         m = smooth(hw - np.abs(v), -0.6, 0.6) * smooth(hw, 0.3, 1.2) * (1 - over)
         if age > 0.6:
             m = lblur(m, 0.5 + 0.8 * age)                                  # old: worn soft
@@ -801,6 +808,8 @@ def weather(rgb, joint, seed):
             bb = m * smooth(u, u0, u0 + 0.04) * (1 - smooth(u, u1 - 0.2, u1 + 0.1 * torn_out)) * np.clip(0.35 + lanes, 0, 1)
             bb *= smooth(fine[ix] + 1.5 * (1 - (u - u0) / (u1 - u0 + 1e-3)), -0.2, 1.0)    # thinner as it drags, flaking
             claw_blood[ix] = np.maximum(claw_blood[ix], np.clip(bb, 0, 1))
+        else:
+            dry_groove[ix] = np.maximum(dry_groove[ix], m)
 
     # bullet pocks: singles, and a burst or two
     for i in range(int(r.integers(6, 10))):
@@ -943,6 +952,8 @@ def weather(rgb, joint, seed):
 
     B = {a: lay.render() for a, lay in blood.items()}
     B["old"] = np.maximum(B["old"], smear)
+    for b in B.values():
+        b *= 1 - dry_groove                             # none in a groove that does not bleed: one or two to a set
     B["dry"] = np.maximum(B["dry"], claw_blood)
     for a, b in B.items():
         b = b * (0.7 + 0.3 * smooth(fine, -1.5, 1.0)) * (fine < 2.2)          # dried, flaking
@@ -951,7 +962,7 @@ def weather(rgb, joint, seed):
         img *= mix(np.ones(3, F32), BLOOD_FILM[a], smooth(b, 0.0, 0.5)[..., None])
         img = mix_into(img, BLOOD_DEEP[a] * (0.95 + 0.1 * smooth(fine, -1, 1))[..., None], thick * 0.85)
         special = np.maximum(special, smooth(b, 0.05, 0.2))
-    del B, smear, claw_blood
+    del B, smear, claw_blood, dry_groove
 
     # ── 1. dim: the faces dulled (the lighter half of the tile pulled toward its
     # median, so nothing reads as clean stone), then the whole tile to TARGET
