@@ -335,6 +335,14 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **An art plate on a stone wall meets its intro page across the spine.** A
+  stone wall (1 to 6) is placed from each page's text corner; the
+  margin-free art plate has none, so its wall started at the sheet's corner
+  and its courses jumped at the spine (Proxy's setts). A margin-free page on
+  such a wall now carries on from the page it faces (`TEXT_ANCHOR` in
+  `scripts/wall-tiles.py`). The drawn walls (7 to 13), anchored to the sheet,
+  were checked spread by spread and already run on unbroken.
+
 - **Claw gouges on small bricks read as one tear.** A gouge broke at every
   joint, so on the brick wall and wall 4 (courses under 0.2in) it read as a
   ladder of dashes. Where the courses are that close it now tears through
