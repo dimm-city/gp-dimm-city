@@ -394,6 +394,16 @@ and the styles say where a reader is and what they are reading.
 
 ### Maintenance
 
+- **The wall scripts draw about twice as fast, and every tile is unchanged.**
+  Real FFTs in place of complex ones where that keeps every pixel, cached
+  kernel spectra, fewer tile-sized temporaries, and a threaded FFT
+  (`scripts/wall_fft.py`, bit for bit numpy's) for walls 9 to 13; each tile
+  is byte-identical to before, and peak memory is down by up to half.
+  `scripts/draw-walls.py` draws them all two at a time and then writes the
+  CSS: every wall in about 7 minutes on four cores, from about 18 one by
+  one. A port to Bun was measured first and dropped: a JavaScript FFT runs
+  the dominant transform 4 to 8 times slower than numpy.
+
 - **Book workarounds moved into the package.** A `@flaws` table splits across
   pages with its header once; a ladder rung's closing sticker has room inside
   its frame; a program card's comb meets its foot. New tokens replace book
