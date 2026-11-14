@@ -7,6 +7,8 @@
 Each wall script draws on its own, so they run side by side; each takes up to
 about 4.5 GB, so the default of two at once fits a 16 GB machine. The cores
 are shared between them (WALL_FFT_THREADS, read by scripts/wall_fft.py).
+The walls in AFTER are drawn over another wall's tile, so they wait for the
+rest to finish.
 Then scripts/wall-tiles.py writes the CSS for the tiles drawn.
 """
 import os
@@ -17,7 +19,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WALLS = ["stone-rubble", "stone-coursed", "brick", "metal", "circuit", "moss", "surgery", "aether", "techlab", "bazaar"]
+WALLS = ["stone-rubble", "stone-coursed", "brick", "metal", "circuit", "moss", "surgery", "aether", "techlab", "bazaar", "proxy"]
+AFTER = ["proxy"]     # drawn over images/wall-6.png (stone-coursed's), so after it
 
 
 def main():
@@ -43,7 +46,8 @@ def main():
 
     t = time.time()
     with ThreadPoolExecutor(jobs) as pool:
-        failed = sum(1 for code in pool.map(draw, names) if code)
+        failed = sum(1 for code in pool.map(draw, [n for n in names if n not in AFTER]) if code)
+        failed += sum(1 for code in pool.map(draw, [n for n in names if n in AFTER]) if code)
     print(f"drew {len(names) - failed} of {len(names)} in {time.time() - t:.0f}s", flush=True)
     if failed:
         sys.exit(1)

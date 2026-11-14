@@ -2345,6 +2345,7 @@ export const markers = {
       'wall-11': 'dc-page-wall-11', // metal and rock pulled into the aether (scripts/wall-aether.py)
       'wall-12': 'dc-page-wall-12', // a technosorcerer's lab (scripts/wall-techlab.py)
       'wall-13': 'dc-page-wall-13', // a bazaar's back wall (scripts/wall-bazaar.py)
+      'wall-14': 'dc-page-wall-14', // wall 6's setts with a priest's marks: soot rings, sigils, knife cuts (scripts/wall-proxy.py)
     },
   },
   chapter: {

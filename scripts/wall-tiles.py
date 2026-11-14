@@ -8,7 +8,8 @@ Python 3 with Pillow (and numpy, for wall_grime). Every wall tile is drawn by it
 at DPI (300), the print bar: 1-6 the stone walls (wall-stone-rubble.py: 1, 3,
 5; wall-stone-coursed.py: 2, 4, 6), 7-13 the specialty walls (wall-metal.py,
 wall-circuit.py, wall-moss.py, wall-surgery.py, wall-aether.py,
-wall-techlab.py, wall-bazaar.py). This script rewrites the generated
+wall-techlab.py, wall-bazaar.py), 14 the Proxy's (wall-proxy.py: wall 6's
+stone, twice across, with a priest's marks on it). This script rewrites the generated
 `page-walls` blocks in styles/dc-native.css (each wall's named pages: the
 background, and the chapter chip's face per hue) and styles/page-rules.css (the
 wiring from page word to named page), sizing each tile at DPI.
@@ -49,15 +50,20 @@ GROUND = "images/ground.png"        # the setts: the street under the brick
 # contrasts with it. All of them are grimed (`grime`). `--grounds` draws them.
 STREETS = {"setts": GROUND, "flags": "images/ground-flags.png", "asphalt": "images/ground-asphalt.png"}
 WALL_STREET = {1: "flags", 2: "asphalt", 3: "setts", 4: "flags", 5: "setts", 6: "asphalt", 7: "asphalt", 8: "setts",
-               9: "asphalt", 10: "asphalt", 11: "flags", 12: "setts", 13: "flags"}
+               9: "asphalt", 10: "asphalt", 11: "flags", 12: "setts", 13: "flags", 14: "asphalt"}   # 14 is wall 6's stone: its street
 # Walls with a regular grid (7's steel plates, 9's courses, 10's tiles, 11's courses and plates, 12's conduit, 13's stalls): an @page background is placed
 # from the text area's corner, which sits at a different place on a left page,
 # a right page and a margin-free page, so a grid restarts on each and breaks at
 # the spine. These are anchored to the sheet instead, and a right page carries
 # on from the left page's width: a spread is one wall. (A stone wall has no grid
 # to break, so it keeps the text area's corner. Walls 8 and 11 also carry a
-# board or a rift the spine cuts on across the spread.)
-ALIGNED = {7, 8, 9, 10, 11, 12, 13}
+# board or a rift the spine cuts on across the spread. Wall 14 is wall 6's
+# stone, which has none, but its tile is two of wall 6's side by side, each
+# half with its own marks: from the text corner both pages would show the
+# same half, and a mark at the spine would be cut. Anchored to the sheet, a
+# left page shows the first half and a right page the second, and a mark
+# carries on across the spine.)
+ALIGNED = {7, 8, 9, 10, 11, 12, 13, 14}
 SHEET_W = "var(--gp-page-width, 8.625in)"
 ANCHOR = {   # tile offset from the text area's corner, per side; a full page has no margins
     "left": ("calc(-1 * var(--outer-margin))", "calc(-1 * var(--page-margin))"),
@@ -73,7 +79,7 @@ TEXT_ANCHOR = {
     "full-left": ("var(--outer-margin)", "var(--page-margin)"),
     "full-right": (f"calc(var(--outer-margin) - {SHEET_W})", "var(--page-margin)"),
 }
-WALLS = range(1, 14)
+WALLS = range(1, 15)
 GROUND_FROM = 6                     # laid from this wall's panel: its setts make the paving slabs
 GROUND_IN = 0.6                     # its depth from the sheet edge, in: just under the footer chips
 GROUND_DPI = 300                    # the ground is drawn, so it is drawn at the print bar (the walls print at DPI)
