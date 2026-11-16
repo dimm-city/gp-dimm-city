@@ -153,6 +153,7 @@ These are separate components — not variants of each other.
 ### Typography Decorations
 - `.dc-chevron` — deep-magenta chevron banner heading
 - `.dc-spray` — stencil-tag heading: stepped overspray edge, dashed stencil line
+- `.dc-logo` — the CREATUREPUNK logo look: yellow Creaturepunk caps with an ink outline (hard text shadows, so the text stays live in print)
 - `.dc-sub-header`
 - `.dc-pullquote`
 - `.dc-intro` — lede: upright semibold ink type on a light panel, accent rail, ink foot rule
@@ -314,6 +315,8 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-tape-border` / `-color` | `--ink` / `--ink` | Tape edges and label |
 | `--dc-tape-shape` | torn-end polygon | Tape clip-path |
 | `--dc-spray-stencil` | `--ink-dark` | The dashed stencil line along a spray tag's foot |
+| `--dc-logo-color` / `-outline` | `--brand-yellow` / `--ink` | A `.dc-logo` heading's fill and outline |
+| `--dc-logo-outline-width` | `0.05em` | The outline's thickness |
 
 ### Choice Card, Faction, Entry (`.dc-card`, `.dc-faction`, `.dc-entry`)
 | Token | Default | Role |

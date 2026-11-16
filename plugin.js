@@ -1196,7 +1196,8 @@ function dcNeonSigns(state) {
 }
 
 // A heading's face, as dc-core.css sets it: h1 and h2 in the title face unless a
-// look class puts them back in the display face, every other level in the display face.
+// look class puts them back in the display face, every other level in the display
+// face; `.dc-logo` (chrome.css) puts any level in the title face.
 const FIT_FACES = Object.fromEntries(Object.entries(FIT_FONTS).map(([name, f]) => {
   const widths = f.widths.split(' ').map(Number);
   return [name, { width: new Map([...f.chars].map((c, i) => [c, widths[i]])), kern: f.kern, overhang: f.overhang }];
@@ -1240,7 +1241,7 @@ function dcHeadingFit(state) {
     const inline = t[i + 1];
     if (!titles || !inline.children?.length || !inline.children.every((c) => FIT_INLINE.has(c.type))) continue;
     const text = inline.children.map((c) => (c.type === 'text' || c.type === 'dc_roll_the_die' ? c.content : '')).join('').trim().toUpperCase();
-    const look = tok.tag !== 'h3' && !classesOf(tok).some((c) => /^dc-h[3-6]$/.test(c));
+    const look = hasClass(tok, 'dc-logo') || (tok.tag !== 'h3' && !classesOf(tok).some((c) => /^dc-h[3-6]$/.test(c)));
     const face = FIT_FACES[look ? 'title' : 'display'];
     const words = text.split(/\s+/);
     const adv = fitAdvance(face, text);

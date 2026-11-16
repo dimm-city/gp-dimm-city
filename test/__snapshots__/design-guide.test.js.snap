@@ -437,7 +437,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <th>Role</th>
 </tr>
 </thead>
-<tbody data-source-range="14:26">
+<tbody data-source-range="14:27">
 <tr data-source-range="14:15">
 <td>H1</td>
 <td><code># Title</code></td>
@@ -499,12 +499,18 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <td>Learning paths, major topic breaks</td>
 </tr>
 <tr data-source-range="24:25">
+<td>Logo</td>
+<td><code># Title {.dc-logo}</code></td>
+<td>Its level’s scale · yellow Creaturepunk caps, ink outline</td>
+<td>A name that shouts: a cover line, a gang, a chapter’s title</td>
+</tr>
+<tr data-source-range="25:26">
 <td>Card tab</td>
 <td>emitted by <code>@skill</code></td>
 <td>11pt title, 10pt tier pill · Tomorrow</td>
 <td>Skill-card tab labels</td>
 </tr>
-<tr data-source-range="25:26">
+<tr data-source-range="26:27">
 <td>Tag</td>
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;</code></td>
 <td>10pt · Tomorrow</td>
@@ -540,7 +546,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </div>
 <h2 data-name="level-and-look"><span class="dc-fit" style="--dc-fit-adv: 9.782; --dc-fit-n: 14; --dc-fit-s: 2; --dc-fit-word-adv: 3.684; --dc-fit-word-n: 5">Level and look</span></h2>
 <p>A heading’s level is its place in the outline, and the outline never skips a level: <code>#</code> is followed by <code>##</code>, never <code>###</code>. Gutterpress flags a skip when it builds. When the page needs a smaller label than the outline allows, keep the level and set the look with <code>.dc-h3</code>, <code>.dc-h4</code>, <code>.dc-h5</code> or <code>.dc-h6</code>:</p>
-<pre><code data-source-range="71:80" class="language-markdown"># Cybernetics, Weapons, and Gear
+<pre><code data-source-range="72:81" class="language-markdown"># Cybernetics, Weapons, and Gear
 
 ## Useful Items {.dc-h3}
 
@@ -557,7 +563,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The look follows the class everywhere: an <code>##</code> with <code>.dc-h3</code> that opens a section takes the subordinate section bar, and a <code>###</code> with <code>.dc-h4</code> inside a section takes no accent rule. On a paragraph, the class sets a line in heading type without adding it to the outline.</p>
 <h2 data-name="heading-chrome"><span class="dc-fit" style="--dc-fit-adv: 10.189; --dc-fit-n: 14; --dc-fit-s: 1; --dc-fit-word-adv: 5.174; --dc-fit-word-n: 7">Heading chrome</span></h2>
 <p>Three classes dress a heading. The chevron opens a chapter, the spray breaks a major topic, and the spec-tweak rule flags an optional mechanic; <code>.dc-no-top</code> pulls it tight against whatever is above it.</p>
-<pre><code data-source-range="99:106" class="language-markdown"># Augmerc {.dc-chevron}
+<pre><code data-source-range="100:107" class="language-markdown"># Augmerc {.dc-chevron}
 
 ## Biting Distance {.dc-spray}
 
@@ -565,36 +571,48 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 </code></pre>
 <p class="dg-result">Result</p>
 <div class="dg-stage">
-<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="111:112"><h1 class="dc-chevron" data-name="augmerc"><span class="dc-fit" style="--dc-fit-adv: 5.421; --dc-fit-n: 7; --dc-fit-s: 0; --dc-fit-word-adv: 5.421; --dc-fit-word-n: 7">Augmerc</span></h1>
+<div class="section dc-section-panel" data-section="panel" data-name="augmerc" data-source-range="112:113"><h1 class="dc-chevron" data-name="augmerc"><span class="dc-fit" style="--dc-fit-adv: 5.421; --dc-fit-n: 7; --dc-fit-s: 0; --dc-fit-word-adv: 5.421; --dc-fit-word-n: 7">Augmerc</span></h1>
 <h2 class="dc-spray" data-name="biting-distance">Biting Distance</h2>
 <h3 class="dc-spec-tweak dc-no-top" data-name="spec-tweak-wired-to-kill">Spec Tweak: Wired to Kill</h3>
 </div></div>
+<h2 data-name="the-logo-look"><span class="dc-fit" style="--dc-fit-adv: 9.049; --dc-fit-n: 13; --dc-fit-s: 2; --dc-fit-word-adv: 3.261; --dc-fit-word-n: 4">The logo look</span></h2>
+<p><code>{.dc-logo}</code> sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline. Keep it for a name that has to shout; on every heading it stops shouting.</p>
+<pre><code data-source-range="128:133" class="language-markdown"># Gutter Rats {.dc-logo}
+
+### Guns &amp; Gear {.dc-logo}
+</code></pre>
+<p class="dg-result">Result</p>
+<div class="dg-stage">
+<div class="section dc-section-panel" data-section="panel" data-name="gutter-rats" data-source-range="138:139"><h1 class="dc-logo" data-name="gutter-rats"><span class="dc-fit" style="--dc-fit-adv: 8.021; --dc-fit-n: 11; --dc-fit-s: 1; --dc-fit-word-adv: 4.597; --dc-fit-word-n: 6">Gutter Rats</span></h1>
+<h3 class="dc-logo" data-name="guns-gear">Guns &amp; Gear</h3>
+</div></div>
+<p>The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours it with <code>--dc-logo-color</code> and <code>--dc-logo-outline</code>, and thickens it with <code>--dc-logo-outline-width</code> (0.05em).</p>
 <h2 data-name="body-and-flavor"><span class="dc-fit" style="--dc-fit-adv: 10.516; --dc-fit-n: 15; --dc-fit-s: 2; --dc-fit-word-adv: 4.654; --dc-fit-word-n: 6">Body and flavor</span></h2>
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
 <div class="dc-flavor">
-<p data-source-range="129:131">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
+<p data-source-range="156:158">See an opening, ya take it. Best time to hit 'em is when they think it’s over.</p>
 </div>
 </div>
 <p>Flavor is 11pt italic in <code>--ink-dark</code>, with a rail and no box. Never set flavor in bold italic — it reads as urgency, not voice.</p>
 <p class="dg-dont-label">Don’t</p>
 <div class="dg-stage dg-dont">
 <div class="dc-flavor">
-<p data-source-range="140:142"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
+<p data-source-range="167:169"><em><strong>See an opening, ya take it. Best time to hit 'em is when they think it’s over.</strong></em></p>
 </div>
 </div>
 <p><strong>Column-safe headings:</strong> in a two-column layout use <code>###</code> and <code>####</code>. <code>#</code> and <code>##</code> at full print size exceed a 3.5-inch column.</p>
 <h2 data-name="size-floors"><span class="dc-fit" style="--dc-fit-adv: 7.779; --dc-fit-n: 11; --dc-fit-s: 1; --dc-fit-word-adv: 4.749; --dc-fit-word-n: 6">Size floors</span></h2>
 <p>There is one floor, <code>--fs-floor</code> (10pt), and nothing prints smaller: not a chip, a tab, a tier pill, an AP chip, a folio or a stamp. It is a minimum, not a target; text that already meets it stays as it is.</p>
 <table>
-<thead data-source-range="151:152">
-<tr data-source-range="151:152">
+<thead data-source-range="178:179">
+<tr data-source-range="178:179">
 <th>Text</th>
 <th>Floor</th>
 </tr>
 </thead>
-<tbody data-source-range="153:154">
-<tr data-source-range="153:154">
+<tbody data-source-range="180:181">
+<tr data-source-range="180:181">
 <td>All text: body, rules, tables, captions, labels, chips, tabs and badges</td>
 <td>10pt (the book sets running body at 12pt)</td>
 </tr>
@@ -604,35 +622,35 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <p>The renderer converts ASCII shortcuts as you type: <code>--</code> is an en dash --, <code>---</code> an em dash —, <code>...</code> an ellipsis …, and “straight quotes” curl. No special syntax, no Unicode entry.</p>
 <h2 data-name="font-tokens"><span class="dc-fit" style="--dc-fit-adv: 7.846; --dc-fit-n: 11; --dc-fit-s: 1; --dc-fit-word-adv: 4.605; --dc-fit-word-n: 6">Font tokens</span></h2>
 <table>
-<thead data-source-range="161:162">
-<tr data-source-range="161:162">
+<thead data-source-range="188:189">
+<tr data-source-range="188:189">
 <th>Token</th>
 <th>Face</th>
 <th>Used for</th>
 </tr>
 </thead>
-<tbody data-source-range="163:168">
-<tr data-source-range="163:164">
+<tbody data-source-range="190:195">
+<tr data-source-range="190:191">
 <td><code>--font-display</code></td>
 <td>lixdu</td>
 <td>H1–H3, banners</td>
 </tr>
-<tr data-source-range="164:165">
+<tr data-source-range="191:192">
 <td><code>--font-body</code></td>
 <td>Titillium Web</td>
 <td>Body prose, flavor, quotes</td>
 </tr>
-<tr data-source-range="165:166">
+<tr data-source-range="192:193">
 <td><code>--font-mono</code></td>
 <td>Tomorrow</td>
 <td>Code, counters, tabular data</td>
 </tr>
-<tr data-source-range="166:167">
+<tr data-source-range="193:194">
 <td><code>--font-tab</code></td>
 <td>Tomorrow</td>
 <td>Short label text: card tabs, stat labels</td>
 </tr>
-<tr data-source-range="167:168">
+<tr data-source-range="194:195">
 <td><code>--font-quote</code></td>
 <td>Titillium Web</td>
 <td>Italic quotes and attributions</td>
@@ -3980,7 +3998,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <th>Effect</th>
 </tr>
 </thead>
-<tbody data-source-range="58:82">
+<tbody data-source-range="58:83">
 <tr data-source-range="58:59">
 <td><code>.dc-avoid-split</code></td>
 <td><code>@section</code>, <code>@skill</code>, <code>@faction</code>, <code>@npc-stat</code></td>
@@ -4087,16 +4105,21 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <td>Spray banner</td>
 </tr>
 <tr data-source-range="79:80">
+<td><code>.dc-logo</code></td>
+<td>any heading, a paragraph</td>
+<td>The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline</td>
+</tr>
+<tr data-source-range="80:81">
 <td><code>.dc-spec-tweak</code> · <code>.dc-no-top</code></td>
 <td><code>###</code> heading</td>
 <td>Spec-tweak rule; no top margin</td>
 </tr>
-<tr data-source-range="80:81">
+<tr data-source-range="81:82">
 <td><code>.dc-img-float-left</code> · <code>.dc-img-float-right</code></td>
 <td>an image</td>
 <td>Float at 44% width</td>
 </tr>
-<tr data-source-range="81:82">
+<tr data-source-range="82:83">
 <td><code>.dc-flush</code></td>
 <td>tape, stat block, stickers</td>
 <td>Edge to edge</td>
@@ -4105,38 +4128,38 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </table>
 <h2 data-name="inline-html"><span class="dc-fit" style="--dc-fit-adv: 7.359; --dc-fit-n: 11; --dc-fit-s: 1; --dc-fit-word-adv: 4.296; --dc-fit-word-n: 6">Inline HTML</span></h2>
 <table>
-<thead data-source-range="85:86">
-<tr data-source-range="85:86">
+<thead data-source-range="86:87">
+<tr data-source-range="86:87">
 <th>You write</th>
 <th>Renders</th>
 </tr>
 </thead>
-<tbody data-source-range="87:94">
-<tr data-source-range="87:88">
+<tbody data-source-range="88:95">
+<tr data-source-range="88:89">
 <td><code>&lt;span class=&quot;dc-tag&quot;&gt;Melee&lt;/span&gt;</code></td>
 <td>keyword chip</td>
 </tr>
-<tr data-source-range="88:89">
+<tr data-source-range="89:90">
 <td><code>&lt;span class=&quot;dc-classtag augmerc&quot;&gt;Augmerc&lt;/span&gt;</code></td>
 <td>specialty identity pill</td>
 </tr>
-<tr data-source-range="89:90">
+<tr data-source-range="90:91">
 <td><code>&lt;span class=&quot;dc-ap&quot;&gt;2 AP&lt;/span&gt;</code> · <code>.free</code> · <code>.var</code></td>
 <td>AP chip in prose</td>
 </tr>
-<tr data-source-range="90:91">
+<tr data-source-range="91:92">
 <td><code>&lt;div class=&quot;dc-tape dc-flush&quot;&gt;Label&lt;/div&gt;</code></td>
 <td>tape, edge to edge</td>
 </tr>
-<tr data-source-range="91:92">
+<tr data-source-range="92:93">
 <td><code>&lt;div class=&quot;dc-stat [dc-flush]&quot;&gt;...&lt;/div&gt;</code></td>
 <td>four-cell stat grid (<a href="#ch-panels" data-gp-source-token="[Panels, Cards &amp; Data](#ch-panels)" data-gp-source-occurrence="0">Panels, Cards &amp; Data</a>)</td>
 </tr>
-<tr data-source-range="92:93">
+<tr data-source-range="93:94">
 <td><code>&lt;div class=&quot;dc-at-a-glance-card&quot;&gt;...&lt;/div&gt;</code> in <code>@columns 3</code></td>
 <td>label band over a value, as a tile</td>
 </tr>
-<tr data-source-range="93:94">
+<tr data-source-range="94:95">
 <td><code>&lt;div class=&quot;dc-sidebar&quot;&gt;&lt;div class=&quot;dc-human-callout&quot;&gt;...</code></td>
 <td>floated contact card</td>
 </tr>
@@ -4145,150 +4168,154 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <h2 data-name="tokens-by-component"><span class="dc-fit" style="--dc-fit-adv: 13.644; --dc-fit-n: 19; --dc-fit-s: 2; --dc-fit-word-adv: 7.12; --dc-fit-word-n: 9">Tokens by component</span></h2>
 <p>Reset any of these in a book’s own sheet, at <code>:root</code> or at a chapter id. Defaults live in the package’s <code>styles/dc-component-defaults.css</code>; shapes are <code>polygon(...)</code> clip-paths.</p>
 <table>
-<thead data-source-range="100:101">
-<tr data-source-range="100:101">
+<thead data-source-range="101:102">
+<tr data-source-range="101:102">
 <th>Component</th>
 <th>Tokens</th>
 </tr>
 </thead>
-<tbody data-source-range="102:137">
-<tr data-source-range="102:103">
+<tbody data-source-range="103:139">
+<tr data-source-range="103:104">
 <td>Section chassis</td>
 <td><code>--dc-section-bg</code> <code>--dc-section-accent</code></td>
 </tr>
-<tr data-source-range="103:104">
+<tr data-source-range="104:105">
 <td>Keep whole (<code>avoid</code> or <code>auto</code>)</td>
 <td><code>--dc-section-break-inside</code> (with <code>--dc-section-edge: 0px</code>) <code>--dc-catalog-break-inside</code> <code>--dc-npc-stat-break-inside</code> <code>--dc-skill-card-break-inside</code> <code>--dc-faction-break-inside</code></td>
 </tr>
-<tr data-source-range="104:105">
+<tr data-source-range="105:106">
 <td>Space under paragraphs and list items</td>
 <td><code>--dc-flow-gap</code> (unset by default)</td>
 </tr>
-<tr data-source-range="105:106">
+<tr data-source-range="106:107">
 <td>Art by context</td>
 <td><code>--dc-entry-art-width</code> <code>--dc-credits-art-height</code></td>
 </tr>
-<tr data-source-range="106:107">
+<tr data-source-range="107:108">
 <td>Page text (free-standing headings and prose)</td>
 <td><code>--dc-page-title-ink</code> <code>--dc-page-slip-bg</code> <code>--dc-page-slip-ink</code> <code>--dc-page-slip-edge</code> <code>--dc-page-slip-shadow</code> <code>--dc-page-slip-bolt</code> <code>--dc-page-slip-bolt-face</code> <code>--dc-page-slip-bolt-size</code> <code>--dc-page-slip-gap</code> <code>--dc-page-slip-foot</code> <code>--dc-page-sheet-pad</code> <code>--dc-heading-gap</code></td>
 </tr>
-<tr data-source-range="107:108">
+<tr data-source-range="108:109">
 <td>Lede</td>
 <td><code>--dc-intro-bg</code> <code>--dc-intro-accent</code> <code>--dc-intro-color</code> <code>--dc-intro-size</code> <code>--dc-intro-weight</code> <code>--dc-intro-style</code> <code>--dc-intro-rail</code> <code>--dc-intro-ring</code> <code>--dc-intro-shape</code> <code>--dc-intro-ink</code></td>
 </tr>
-<tr data-source-range="108:109">
+<tr data-source-range="109:110">
 <td>Flavor</td>
 <td><code>--dc-flavor-accent</code> <code>--dc-flavor-accent-width</code> <code>--dc-flavor-color</code> <code>--dc-flavor-bg</code></td>
 </tr>
-<tr data-source-range="109:110">
+<tr data-source-range="110:111">
 <td>Pull quote</td>
 <td><code>--dc-pullquote-accent</code> <code>--dc-pullquote-bg</code></td>
 </tr>
-<tr data-source-range="110:111">
+<tr data-source-range="111:112">
 <td>Alerts, callout, DM note</td>
 <td><code>--dc-alert-bg</code> <code>--dc-alert-border</code> <code>--dc-alert-fg</code> <code>--dc-alert-label-color</code> <code>--dc-alert-border-width</code> <code>--dc-alert-label-size</code> <code>--dc-alert-body-size</code> <code>--dc-alert-frame</code> <code>--dc-alert-frame-width</code> <code>--dc-alert-label-bg</code> <code>--dc-alert-label-pad</code></td>
 </tr>
-<tr data-source-range="111:112">
+<tr data-source-range="112:113">
 <td>Tape</td>
 <td><code>--dc-tape-bg</code> <code>--dc-tape-border</code> <code>--dc-tape-color</code> <code>--dc-tape-shape</code></td>
 </tr>
-<tr data-source-range="112:113">
+<tr data-source-range="113:114">
 <td>Tag (inline chip)</td>
 <td><code>--dc-tag-bg</code> <code>--dc-tag-fg</code> <code>--dc-tag-border</code></td>
 </tr>
-<tr data-source-range="113:114">
+<tr data-source-range="114:115">
 <td>Chevron · Spray</td>
 <td><code>--dc-chevron-bg</code> <code>--dc-chevron-color</code> <code>--dc-chevron-font-size</code> · <code>--dc-spray-bg</code> <code>--dc-spray-color</code> <code>--dc-spray-stencil</code></td>
 </tr>
-<tr data-source-range="114:115">
+<tr data-source-range="115:116">
+<td>Logo</td>
+<td><code>--dc-logo-color</code> <code>--dc-logo-outline</code> <code>--dc-logo-outline-width</code></td>
+</tr>
+<tr data-source-range="116:117">
 <td>Class tag</td>
 <td><code>--dc-classtag-color</code></td>
 </tr>
-<tr data-source-range="115:116">
+<tr data-source-range="117:118">
 <td>Roll the die</td>
 <td><code>--dc-accent-ink</code></td>
 </tr>
-<tr data-source-range="116:117">
+<tr data-source-range="118:119">
 <td>Block</td>
 <td><code>--dc-block-bg</code> <code>--dc-block-fg</code> <code>--dc-block-accent</code> <code>--dc-block-title-bg</code> <code>--dc-block-title-fg</code> <code>--dc-block-title-rule</code> <code>--dc-block-tag</code> <code>--dc-block-tag-edge</code></td>
 </tr>
-<tr data-source-range="117:118">
+<tr data-source-range="119:120">
 <td>Section chip (<code>dm</code>, <code>choose</code>)</td>
 <td><code>--dc-section-tab</code> <code>--dc-section-tab-bg</code> <code>--dc-section-tab-fg</code></td>
 </tr>
-<tr data-source-range="118:119">
+<tr data-source-range="120:121">
 <td>Roll table</td>
 <td><code>--dc-roll-table-accent</code> <code>--dc-roll-table-surface</code> <code>--dc-roll-table-head-bg</code></td>
 </tr>
-<tr data-source-range="119:120">
+<tr data-source-range="121:122">
 <td>Faction</td>
 <td><code>--dc-faction-accent</code> <code>--dc-faction-badge-fg</code> <code>--dc-faction-shape</code> <code>--dc-faction-surface</code> <code>--dc-faction-band</code> <code>--dc-faction-band-height</code> <code>--dc-faction-title</code></td>
 </tr>
-<tr data-source-range="120:121">
+<tr data-source-range="122:123">
 <td>Choice card (set by <code>@flaws</code> <code>@ideals</code> <code>@dreams</code>)</td>
 <td><code>--dc-choice-accent</code> <code>--dc-choice-surface</code> <code>--dc-choice-tint</code> <code>--dc-choice-kind</code> <code>--dc-choice-edge</code> <code>--dc-choice-band</code> <code>--dc-choice-rail</code> <code>--dc-card-shape</code></td>
 </tr>
-<tr data-source-range="121:122">
+<tr data-source-range="123:124">
 <td>Entry card (<code>@gear</code> and its kinds)</td>
 <td><code>--dc-entry-accent</code> <code>--dc-entry-ink</code> <code>--dc-entry-surface</code> <code>--dc-entry-shape</code> <code>--dc-entry-radius</code> <code>--dc-entry-ornament</code> <code>--dc-entry-orn-inset</code> <code>--dc-entry-orn-bg</code> <code>--dc-entry-orn-border</code> <code>--dc-entry-orn-clip</code> <code>--dc-entry-orn-z</code> <code>--dc-entry-frame</code> <code>--dc-entry-badge-bg</code> <code>--dc-entry-badge-fg</code> <code>--dc-entry-badge-shape</code> <code>--dc-entry-badge-radius</code></td>
 </tr>
-<tr data-source-range="122:123">
+<tr data-source-range="124:125">
 <td>Field</td>
 <td><code>--dc-field-surface</code> <code>--dc-field-fg</code> <code>--dc-field-label-fg</code> <code>--dc-field-edge-width</code> <code>--dc-field-edge-style</code></td>
 </tr>
-<tr data-source-range="123:124">
+<tr data-source-range="125:126">
 <td>Procedure</td>
 <td><code>--dc-steps-accent</code> <code>--dc-steps-surface</code></td>
 </tr>
-<tr data-source-range="124:125">
+<tr data-source-range="126:127">
 <td>At-a-glance tile</td>
 <td><code>--dc-at-a-glance-accent</code> <code>--dc-at-a-glance-value</code></td>
 </tr>
-<tr data-source-range="125:126">
+<tr data-source-range="127:128">
 <td>Stat strip</td>
 <td><code>--dc-stat-strip-accent</code> <code>--dc-stat-strip-value</code></td>
 </tr>
-<tr data-source-range="126:127">
+<tr data-source-range="128:129">
 <td>Definition</td>
 <td><code>--dc-definition-block-surface</code> <code>--dc-definition-block-accent</code> <code>--dc-definition-block-term</code> <code>--dc-definition-block-accent-width</code> <code>--dc-definition-block-rule-bottom</code> <code>--dc-definition-block-shape</code> <code>--dc-definition-block-fg</code> <code>--dc-definition-block-style</code> <code>--dc-definition-block-frame</code> <code>--dc-definition-block-pad</code></td>
 </tr>
-<tr data-source-range="127:128">
+<tr data-source-range="129:130">
 <td>Outcome ladder</td>
 <td><code>--dc-outcomes-surface</code> <code>--dc-outcomes-border</code> <code>--dc-outcomes-inner-border</code> <code>--dc-outcomes-label-bg</code> <code>--dc-outcomes-label-color</code> <code>--dc-outcome-key-color</code> <code>--dc-outcome-name-color</code> <code>--dc-outcome-name-opacity</code> <code>--dc-outcome-key-col</code></td>
 </tr>
-<tr data-source-range="128:129">
+<tr data-source-range="130:131">
 <td>NPC stat block</td>
 <td><code>--dc-npc-stat-primary</code> <code>--dc-npc-stat-secondary</code> <code>--dc-npc-stat-label-color</code> <code>--dc-npc-stat-rule</code> <code>--dc-npc-stat-rule-width</code></td>
 </tr>
-<tr data-source-range="129:130">
+<tr data-source-range="131:132">
 <td>Fiction excerpt</td>
 <td><code>--dc-fiction-bg</code> <code>--dc-fiction-cavity</code> <code>--dc-fiction-title-size</code> <code>--dc-fiction-hole</code> <code>--dc-fiction-shape</code> <code>--dc-fiction-line-height</code> <code>--dc-fiction-art-float</code> <code>--dc-fiction-art-width</code> <code>--dc-fiction-art-outline</code> <code>--dc-fiction-art-shadow</code></td>
 </tr>
-<tr data-source-range="130:131">
+<tr data-source-range="132:133">
 <td>Specialty wrapper</td>
 <td><code>--spec-accent</code> <code>--spec-mid</code> <code>--spec-dark</code> <code>--spec-band</code> <code>--spec-on-band</code> <code>--spec-chip-bg</code> <code>--spec-chip-fg</code> <code>--spec-chip-edge</code> <code>--dc-skill-tab-shape</code> <code>--dc-skill-body-shape</code> <code>--dc-path-title-shape</code> <code>--dc-path-shell-clip</code> <code>--dc-specialty-intro-title-shape</code> <code>--dc-specialty-intro-clip</code></td>
 </tr>
-<tr data-source-range="131:132">
+<tr data-source-range="133:134">
 <td>Specialty intro</td>
 <td><code>--dc-specialty-intro-bg</code> <code>--dc-specialty-intro-title-bg</code> <code>--dc-specialty-intro-title-color</code> <code>--dc-specialty-intro-h3-color</code></td>
 </tr>
-<tr data-source-range="132:133">
+<tr data-source-range="134:135">
 <td>Title band (path banner, intro title)</td>
 <td><code>--dc-band-rule</code> <code>--dc-band-rule-h</code> <code>--dc-band-tick</code> <code>--dc-band-tick-style</code> <code>--dc-band-tick-w</code> <code>--dc-band-rule-skew</code> <code>--dc-band-rule-bleed</code> <code>--dc-band-facet</code> <code>--dc-band-facet-width</code> <code>--dc-band-facet-clip</code> <code>--dc-band-rim</code> <code>--dc-band-reg</code></td>
 </tr>
-<tr data-source-range="133:134">
+<tr data-source-range="135:136">
 <td>Specialty card</td>
 <td><code>--dc-specialty-card-bg</code> <code>--dc-specialty-card-accent</code> <code>--dc-specialty-card-fg</code> <code>--dc-specialty-card-media-height</code> <code>--dc-specialty-card-media-width</code> <code>--dc-specialty-card-title-align</code> <code>--dc-specialty-card-band-bg</code> <code>--dc-specialty-card-band-fg</code> <code>--dc-specialty-card-band-shape</code> <code>--dc-specialty-card-shell-shape</code> <code>--dc-specialty-card-title-color</code> <code>--dc-specialty-card-display</code> <code>--dc-specialty-card-media-order</code> <code>--dc-specialty-card-media-float</code> <code>--dc-specialty-card-media-margin</code> <code>--dc-specialty-card-media-shape</code> <code>--dc-specialty-card-media-mat</code> <code>--dc-specialty-card-name-size</code> <code>--dc-card-grid-display</code> <code>--dc-card-grid-item-display</code> <code>--dc-card-grid-row</code> <code>--dc-card-grid-gap</code></td>
 </tr>
-<tr data-source-range="134:135">
+<tr data-source-range="136:137">
 <td>Learning path</td>
 <td><code>--dc-path-title-bg</code> <code>--dc-path-title-color</code> <code>--dc-path-code-bg</code> <code>--dc-path-code-fg</code> <code>--dc-path-chip-bg</code> <code>--dc-path-chip-fg</code> <code>--dc-path-chip-edge</code> <code>--dc-path-note-rail</code> <code>--dc-path-accent</code> <code>--dc-path-shell-padding-top</code> <code>--dc-path-shell-padding-bottom</code> <code>--dc-arrow-color</code></td>
 </tr>
-<tr data-source-range="135:136">
+<tr data-source-range="137:138">
 <td>Skill card</td>
 <td><code>--dc-card-accent</code> <code>--dc-card-surface</code> <code>--dc-card-tab-bg</code> <code>--dc-card-tab-title-color</code> <code>--dc-card-gap</code> <code>--dc-card-tab-shadow</code> <code>--dc-tier-bg</code> <code>--dc-tier-fg</code> <code>--dc-tier-edge</code></td>
 </tr>
-<tr data-source-range="136:137">
+<tr data-source-range="138:139">
 <td>AP chip</td>
 <td><code>--dc-ap-bg</code> <code>--dc-ap-fg</code> <code>--dc-ap-border</code></td>
 </tr>

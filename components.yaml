@@ -947,6 +947,17 @@ components:
     tokens: [--dc-spray-bg, --dc-spray-color, --dc-spray-stencil]
     breaks: "as a path-shell title: break-before avoid on the element after it"
 
+  - name: logo
+    status: live
+    origin: author
+    modifier: dc-logo
+    description: "Set a heading or a line like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline."
+    recipe: "# Gutter Rats {.dc-logo}  (any heading level, or a paragraph)"
+    emits: .dc-logo (on the heading or paragraph it is written on)
+    css: styles/components/chrome.css
+    tokens: [--dc-logo-color, --dc-logo-outline, --dc-logo-outline-width]
+    notes: "The outline is hard text shadows, not -webkit-text-stroke, so the text prints live in its TrueType font (a stroked glyph prints as Type 3, which PDF/X preserve-text cannot keep). The plugin measures a .dc-logo heading in Creaturepunk at any level, so a title that would wrap by a little still fits its box."
+
   - name: spec-tweak
     status: live
     origin: author

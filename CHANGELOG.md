@@ -110,6 +110,17 @@ and the styles say where a reader is and what they are reading.
   and tarnished, verdigrised copper, burn marks. Drawn by
   `scripts/wall-circuit.py` (no photograph). Anchored to the sheet as wall 7
   is, so a board the spine cuts carries on across the spread.
+- **`{.dc-logo}`: the CREATUREPUNK logo look.** Any heading, or a line of
+  text, in yellow Creaturepunk caps with an ink outline (`## Gutter Rats
+  {.dc-logo}`). The outline is sixteen hard text shadows, not
+  `-webkit-text-stroke`: Chromium prints stroked text in a Type 3 font, which
+  the PDF/X preserve-text split cannot keep, while the shadows leave the text
+  live in its TrueType font. Tokens: `--dc-logo-color` (`--brand-yellow`),
+  `--dc-logo-outline` (`--ink`), `--dc-logo-outline-width` (0.05em). The
+  plugin measures a `.dc-logo` heading in Creaturepunk at any level, so its
+  one-line fit is right. The design guide shows it under *The logo look*
+  (Typography) and lists it in the reference.
+
 - **Creaturepunk, a feral display face.** Caps scrawled with a brush: stroke
   ends that hook like talons, spiked stem tops, fangs under the bars, a
   sloppy hand (each letter tilts and sits a little off the baseline, joins

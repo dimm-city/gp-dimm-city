@@ -2051,6 +2051,12 @@ describe("heading fit", () => {
     expect(at("## Mirror {.dc-h3}")).toBe(at("### Mirror"));
   });
 
+  test("a .dc-logo heading is measured in the title face at any level", () => {
+    const at = (h) => fit(`@section panel\n\n${h}\n\nx\n\n@end-section`)[0].adv;
+    expect(at("### Mirror {.dc-logo}")).toBe(at("## Mirror"));
+    expect(at("## Mirror {.dc-h3 .dc-logo}")).toBe(at("## Mirror"));
+  });
+
   test("Lixdu's kerning is counted", () => {
     const at = (h) => fit(`@section panel\n\n### ${h}\n\nx\n\n@end-section`)[0].adv;
     expect(at("TO")).toBeLessThan(at("TA"));

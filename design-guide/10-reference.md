@@ -77,6 +77,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | The kind of choice (flaw, ideal, dream): colour, silhouette and chip per step |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
+| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |
 | `.dc-img-float-left` · `.dc-img-float-right` | an image | Float at 44% width |
 | `.dc-flush` | tape, stat block, stickers | Edge to edge |
@@ -112,6 +113,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` `--dc-tape-shape` |
 | Tag (inline chip) | `--dc-tag-bg` `--dc-tag-fg` `--dc-tag-border` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
+| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` |
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-accent-ink` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` `--dc-block-title-rule` `--dc-block-tag` `--dc-block-tag-edge` |
