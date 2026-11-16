@@ -1,9 +1,8 @@
 # Creaturepunk source
 
-`creaturepunk-logo.png` is the lettering the Creaturepunk font was traced
-from. `fonts/creaturepunk/Creaturepunk.ttf` is the working source: edit it in
+`fonts/creaturepunk/Creaturepunk.ttf` is the working source: edit it in
 `docs/creaturepunk-font-demo.html`. The Python generator here is the
-deterministic reset.
+deterministic reset: it rebuilds the same `.ttf` every time.
 
 ## Edit the font
 
@@ -16,25 +15,31 @@ deterministic reset.
 3. Click *Download Creaturepunk.ttf* and replace
    `fonts/creaturepunk/Creaturepunk.ttf` with the download.
 
-The editor changes outlines and spacing only; names, licence, swash features
-and line metrics are copied unchanged.
+The editor changes outlines and spacing only; names, licence and line
+metrics are copied unchanged.
 
 ## Reset the font from the generator
 
-The generator rebuilds `Creaturepunk.ttf` from the traced lettering, the same
-way every time (its edge noise is seeded). **Running it overwrites every hand
-edit made in the page.**
+**Running it overwrites every hand edit made in the page.**
 
 ```sh
 pip install fonttools numpy pillow scipy potracer
-python3 extract.py
 python3 build.py            # writes ../../fonts/creaturepunk/Creaturepunk.ttf
 python3 build.py out.ttf    # or somewhere else, to compare first
+cd ../.. && python3 scripts/heading-metrics.py   # then refresh the heading widths in plugin.js
 ```
 
-R, E, A, T, P, N and K (and the logo C, U and K alternates) are traced from
-the lettering; `defs.py` builds every other glyph from pieces of those.
-`python3 preview.py out.preview.png A,B,C` draws glyphs on the design grid
-(units: cap height 44, baseline 0, slant removed). In `defs.py`, change a glyph
-by redefining it at the end of the file: the edge noise comes from one seeded
-stream, so editing a definition in place shifts every glyph defined after it.
+How the glyphs are made:
+
+- `scrawl.py` draws every default glyph as brush strokes: a centre line with
+  wandering pressure, a sloppy hand (jittered points, ends that overshoot
+  their joins) and ends that are blunt, pointed, or a talon that hooks as it
+  tapers. Bars carry fangs; stems end in spikes.
+- `feral.py` then damages them: claw rakes, bite marks with fang punctures,
+  drips, chewed edges, and a tilt and baseline wobble per glyph. The `FERAL`
+  table says which glyph gets what.
+
+Every glyph draws from its own random stream, seeded by its name, so changing
+one glyph leaves the others as they are. `python3 preview.py out.preview.png
+A,B,C` draws glyphs on the design grid (units: cap height 44, baseline 0,
+slant removed).
