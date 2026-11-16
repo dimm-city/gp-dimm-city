@@ -1,6 +1,6 @@
 import sys, math, time, json
 import potrace
-from defs import *
+from feral import *
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.pens.cu2quPen import Cu2QuPen

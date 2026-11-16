@@ -119,7 +119,7 @@
   font-weight: normal; font-style: normal; font-display: swap;
   unicode-range: U+2018-2019, U+201C-201D, U+2013-2014, U+2026;
 }
-/* Creaturepunk: graffiti display caps traced from the CREATUREPUNK lettering
+/* Creaturepunk: feral brush-scrawled caps, clawed, bitten and dripping
    (edit the .ttf itself in docs/creaturepunk-font-demo.html). Caps only — lowercase
    maps to the same letters. `font-feature-settings: "swsh"` swaps in the
    logo's own C, U and K (tall C, short-stemmed U, long-legged K). */

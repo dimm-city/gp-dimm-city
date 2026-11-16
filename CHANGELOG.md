@@ -110,19 +110,20 @@ and the styles say where a reader is and what they are reading.
   and tarnished, verdigrised copper, burn marks. Drawn by
   `scripts/wall-circuit.py` (no photograph). Anchored to the sheet as wall 7
   is, so a board the spine cuts carries on across the spread.
-- **Creaturepunk, a graffiti display face.** Caps traced from the
-  CREATUREPUNK lettering (C, R, E, A, T, U, P, N, K), with the rest of A-Z,
-  0-9 and common punctuation built from pieces of those letters; lowercase
-  maps to the caps. `font-family: 'Creaturepunk'` (declared in
-  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the logo's own C, U
-  and K (tall C, short-stemmed U, long-legged K). Licensed CC BY 4.0
+- **Creaturepunk, a feral display face.** Caps scrawled with a brush: stroke
+  ends that hook like talons, spiked stem tops, fangs under the bars, a
+  sloppy hand (each letter tilts and sits a little off the baseline, joins
+  overshoot, edges are chewed), and on some letters claw rakes, bite marks
+  with fang punctures, or drips. A-Z, 0-9, common punctuation and "…";
+  lowercase maps to the caps. `font-family: 'Creaturepunk'` (declared in
+  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the CREATUREPUNK
+  logo's own C, U and K, traced from the lettering. Licensed CC BY 4.0
   (`fonts/creaturepunk/LICENSE.txt`). `Creaturepunk.ttf` is the source: edit
   it in `docs/creaturepunk-font-demo.html`, which, served locally, loads the
   file, lets you drag outline points and set side bearings with the whole
   specimen redrawing live, and downloads the edited `.ttf`. The generator in
-  `source-art/creaturepunk/` (with the lettering it traces) stays as the
-  deterministic reset: it rebuilds the same `.ttf` every time, overwriting
-  hand edits.
+  `source-art/creaturepunk/` stays as the deterministic reset: it rebuilds
+  the same `.ttf` every time, overwriting hand edits.
 
 - **Gear sections by kind: `@section weapons`, `explosives`, `armor`.** The
   catalog in one colour and one chip label per kind of gear, so firearms,
@@ -401,18 +402,10 @@ and the styles say where a reader is and what they are reading.
   `overflow-clip-margin: 16px`), so the wall still paints and nothing spills.
 
 - **Creaturepunk letters that read as other characters, from print review.**
-  C read as "<": it is now a blocky C (stem, top and bottom arms). U read as
-  "J": its left stem now runs to cap height. G, built on the old C, is now
-  the blocky C with a spur and an inward bar. M read as "H": its V now drops
-  to a third of the height with the middle open below it. "…" fell back to
-  another font: the font now has its own ellipsis. J's stub of a hook read
-  as a foot: the hook is now a bowl. & was a small B with a tail: it is now
-  drawn as strokes, a loop over crossing diagonals with an arm and a tail.
-  The 7 is redrawn by hand in the editor: a hooked bar and a thicker
-  diagonal that steps left partway down, notched at the step, with a thorn
-  off its left edge; it is narrower (advance 980 to 760). The logo's C and U stay
-  as `swsh` alternates. C, G, U, M, 7 and & change width, so a heading set with them
-  can rewrap.
+  The redrawn alphabet keeps every fix: C has a left side and cannot read as
+  "<", U has two full stems (not "J"), M has its V between two stems (not
+  "H"), J ends in a bowl, & is a loop over crossing strokes, and "…" is in the
+  font instead of falling back.
 
 - **A paste-up tag widens to its longest word.** A word wider than the tag's
   88% cap (QUICKSTART) ran past the tag in cream on the white paper.
