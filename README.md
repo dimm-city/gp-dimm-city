@@ -180,6 +180,7 @@ edit.
 | `.dc-snug` on `@section` or `@page` | Tighten the space under paragraphs and list items, for one that overflows by a line or two | `--dc-flow-gap: 0.04in` |
 | `.dc-h3` … `.dc-h6` on a heading or paragraph | Give it the look of that level without changing its place in the outline | none: a class only |
 | `.dc-chevron` on a heading | Set it as a chevron banner (the title under `@page intro`, `credits` and `contents` already is one) | `--dc-chevron-bg`, `--dc-chevron-color`, `--dc-chevron-font-size` |
+| `.dc-logo` on a heading or paragraph | Set it like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline, at any level | `--dc-logo-color`, `--dc-logo-outline`, `--dc-logo-outline-width` |
 | `.dc-flush` | Run a tape, stat block, sticker chain, pull quote or `@outcome` edge to edge | none: a class only |
 | `.dc-sidebar` on a callout | Float it right at about a third of the width, text wrapping on its left (`@callout note .dc-sidebar`) | none: a class only |
 | `.dc-spray`, `.dc-spec-tweak`, `.dc-no-top`, `.dc-img-float-left`, `.dc-img-float-right` | Heading banners and an image float | none: classes only |

@@ -22,6 +22,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
 | Spray banner | `## Title {.dc-spray}` | H2 scale, a stencilled tag with a stepped edge | Learning paths, major topic breaks |
+| Logo | `# Title {.dc-logo}` | Its level's scale · yellow Creaturepunk caps, ink outline | A name that shouts: a cover line, a gang, a chapter's title |
 | Card tab | emitted by `@skill` | 11pt title, 10pt tier pill · Tomorrow | Skill-card tab labels |
 | Tag | `<span class="dc-tag">` | 10pt · Tomorrow | Keyword and cost chips |
 
@@ -120,6 +121,32 @@ Result {.dg-result}
 @end-section
 
 </div>
+
+## The logo look
+
+`{.dc-logo}` sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline. Keep it for a name that has to shout; on every heading it stops shouting.
+
+```markdown
+# Gutter Rats {.dc-logo}
+
+### Guns & Gear {.dc-logo}
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section panel
+
+# Gutter Rats {.dc-logo}
+
+### Guns & Gear {.dc-logo}
+
+@end-section
+
+</div>
+
+The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours it with `--dc-logo-color` and `--dc-logo-outline`, and thickens it with `--dc-logo-outline-width` (0.05em).
 
 ## Body and flavor
 

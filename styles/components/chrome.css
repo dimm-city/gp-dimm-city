@@ -144,6 +144,44 @@ h1.dc-chevron {
   background: color-mix(in srgb, var(--dc-spray-bg) 8%, transparent);
 }
 
+/* ── Logo ──────────────────────────────────────────────────────────────
+   `{.dc-logo}`: a heading (or a paragraph) set like the CREATUREPUNK logo,
+   yellow Creaturepunk caps with an ink outline, at any level.
+   The outline is sixteen hard text shadows round each glyph, not
+   -webkit-text-stroke: Chromium prints stroked text in a Type 3 font, which
+   the PDF/X preserve-text split cannot keep; shadows keep the text live in
+   its TrueType font. The plugin measures a .dc-logo heading in Creaturepunk.
+   Public API:
+     --dc-logo-color         → the fill (default --brand-yellow)
+     --dc-logo-outline       → the outline (default --ink)
+     --dc-logo-outline-width → the outline's thickness (default 0.05em) */
+.dc-logo {
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--dc-logo-color);
+  letter-spacing: var(--ls-title);
+  --dc-fit-ls: var(--ls-title);
+  word-spacing: 0.12em;
+  --dc-fit-ws: 0.12em;
+  text-shadow:
+    var(--dc-logo-outline-width) 0 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.924) calc(var(--dc-logo-outline-width) * 0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.707) calc(var(--dc-logo-outline-width) * 0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.383) calc(var(--dc-logo-outline-width) * 0.924) 0 var(--dc-logo-outline),
+    0 var(--dc-logo-outline-width) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.383) calc(var(--dc-logo-outline-width) * 0.924) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.707) calc(var(--dc-logo-outline-width) * 0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.924) calc(var(--dc-logo-outline-width) * 0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -1) 0 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.924) calc(var(--dc-logo-outline-width) * -0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.707) calc(var(--dc-logo-outline-width) * -0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.383) calc(var(--dc-logo-outline-width) * -0.924) 0 var(--dc-logo-outline),
+    0 calc(var(--dc-logo-outline-width) * -1) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.383) calc(var(--dc-logo-outline-width) * -0.924) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.707) calc(var(--dc-logo-outline-width) * -0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.924) calc(var(--dc-logo-outline-width) * -0.383) 0 var(--dc-logo-outline);
+}
+
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
 /* The chain flows inline. Each » is bound to the chip BEFORE it: it is drawn as

@@ -486,6 +486,11 @@
   --dc-spray-color:          var(--paper-cream);
   --dc-spray-stencil:        var(--ink-dark);       /* dashed stencil line along the foot */
 
+  /* .dc-logo public API */
+  --dc-logo-color:           var(--brand-yellow);
+  --dc-logo-outline:         var(--ink);
+  --dc-logo-outline-width:   0.05em;
+
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);
   --dc-tag-fg:               var(--ink);
