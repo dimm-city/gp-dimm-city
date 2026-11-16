@@ -116,8 +116,7 @@ and the styles say where a reader is and what they are reading.
   overshoot, edges are chewed), and on some letters claw rakes, bite marks
   with fang punctures, or drips. A-Z, 0-9, common punctuation and "…";
   lowercase maps to the caps. `font-family: 'Creaturepunk'` (declared in
-  `dc-fonts.css`); `font-feature-settings: "swsh"` gives the CREATUREPUNK
-  logo's own C, U and K, traced from the lettering. Licensed CC BY 4.0
+  `dc-fonts.css`). Licensed CC BY 4.0
   (`fonts/creaturepunk/LICENSE.txt`). `Creaturepunk.ttf` is the source: edit
   it in `docs/creaturepunk-font-demo.html`, which, served locally, loads the
   file, lets you drag outline points and set side bearings with the whole

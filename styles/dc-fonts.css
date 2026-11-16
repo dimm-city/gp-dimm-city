@@ -121,8 +121,7 @@
 }
 /* Creaturepunk: feral brush-scrawled caps, clawed, bitten and dripping
    (edit the .ttf itself in docs/creaturepunk-font-demo.html). Caps only — lowercase
-   maps to the same letters. `font-feature-settings: "swsh"` swaps in the
-   logo's own C, U and K (tall C, short-stemmed U, long-legged K). */
+   maps to the same letters. */
 @font-face {
   font-family: 'Creaturepunk';
   src: url("../fonts/creaturepunk/Creaturepunk.ttf") format('truetype');

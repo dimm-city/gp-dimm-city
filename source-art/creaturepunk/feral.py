@@ -1,6 +1,6 @@
 """Creature damage: the pass that makes Creaturepunk look gnawed on.
 
-Runs on the finished letterforms from defs.py (which stay as they are) and adds
+Runs on the letterforms from scrawl.py (which stay as they are) and adds
 sloppy hand-lettering, claw slashes, bite marks and drips. Every glyph draws
 from its own random stream, seeded by its name, so the result is the same on
 every run and changing one glyph's damage leaves the others alone.

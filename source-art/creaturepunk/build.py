@@ -6,7 +6,6 @@ from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.pens.cu2quPen import Cu2QuPen
 from fontTools.pens.reverseContourPen import ReverseContourPen
 from fontTools.pens.recordingPen import RecordingPen
-from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 
 UPM=1000; U=700/CAP; SLANT=0.5; SB=2.5
 RSB={'T':-6.0}          # T's crossbar spike hangs over the next letter, as in the logo
@@ -49,7 +48,7 @@ def draw(contours,pen,dx):
             else: pen.curveTo(t(s[1]),t(s[2]),t(s[3]))
         pen.closePath()
 
-order=['.notdef']+[c for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']+digits+list(punct)+['C.swsh','U.swsh','K.swsh']
+order=['.notdef']+[c for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']+digits+list(punct)
 glyphs={}; metrics={}
 t0=time.time()
 for n in order:
@@ -84,7 +83,7 @@ ymax=max(getattr(gs[n],'yMax',0) for n in order); ymin=min(getattr(gs[n],'yMin',
 fb.setupHorizontalHeader(ascent=900,descent=-250,caretSlopeRise=2,caretSlopeRun=1)
 fb.setupNameTable({'familyName':'Creaturepunk','styleName':'Regular','uniqueFontIdentifier':'Creaturepunk-Regular-1.000',
     'fullName':'Creaturepunk Regular','psName':'Creaturepunk-Regular','version':'Version 1.000',
-    'description':'Graffiti display caps traced from the CREATUREPUNK logo lettering; the missing letters, digits and punctuation are built from pieces of the traced ones.',
+    'description':'Feral brush-scrawled display caps: talon ends, spiked stems, fangs, claw rakes, bites and drips.',
     'copyright':'Copyright (c) 2026 Dimm City','licenseDescription':'This font is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).',
     'licenseInfoURL':'https://creativecommons.org/licenses/by/4.0/'})
 fb.setupOS2(sTypoAscender=900,sTypoDescender=-250,sTypoLineGap=0,usWinAscent=max(1050,ymax),usWinDescent=max(250,-ymin),
@@ -92,13 +91,6 @@ fb.setupOS2(sTypoAscender=900,sTypoDescender=-250,sTypoLineGap=0,usWinAscent=max
 fb.setupPost(italicAngle=-math.degrees(math.atan(SLANT)))
 from fontTools.misc.timeTools import timestampNow
 fb.setupHead(unitsPerEm=UPM,created=timestampNow(),modified=timestampNow())
-addOpenTypeFeaturesFromString(fb.font,'''
-languagesystem DFLT dflt;
-languagesystem latn dflt;
-@plain=[C U K]; @swash=[C.swsh U.swsh K.swsh];
-feature swsh { sub @plain by @swash; } swsh;
-feature ss01 { featureNames { name "Logo forms: tall C, short-stemmed U, long-legged K"; }; sub @plain by @swash; } ss01;
-''')
 out=sys.argv[1] if len(sys.argv)>1 else '../../fonts/creaturepunk/Creaturepunk.ttf'
 fb.save(out)
 print('wrote',out)

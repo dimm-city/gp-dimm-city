@@ -1,7 +1,5 @@
 from lib import *
-_c={n:canon(n) for n in REF}
 rng=np.random.default_rng(7)
-def src(n): return _c[n].copy()
 
 def _rough_pts(pts, rough):
     pts=[np.array(p,float) for p in pts]; out=[]

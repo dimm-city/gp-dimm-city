@@ -1,30 +1,12 @@
 import numpy as np, json
 from scipy import ndimage as nd
 from PIL import Image, ImageDraw
-from deslant import deslant
 S=8; X0=-20; X1=140; Y0=-25; Y1=75   # canonical frame in src px, y up, baseline 0, cap 44
 W=(X1-X0)*S; H=(Y1-Y0)*S
 CAP=44.0
 rows=np.arange(H); cols=np.arange(W)
 YY=(Y1 - (rows[:,None]+0.5)/S)*np.ones((1,W))
 XX=(X0 + (cols[None,:]+0.5)/S)*np.ones((H,1))
-
-# (top, base) of each traced letter in deslanted source px (read off the grid views)
-REF={'C':(18,79),'R':(36,74),'E':(33,76),'A':(36,77),'T':(25,72),'U':(32,77),
-     'R2':(30,73),'E2':(24,71),'P':(24,72),'U2':(28,74),'N':(32,76),'K':(35,71)}
-def canon(n, k=None, base=None):
-    d,(gx,gy)=deslant(n)
-    top,b=REF[n]
-    if k is None: k=CAP/(b-top)
-    if base is not None: b=base
-    xl=(gx+np.nonzero(d.any(0))[0][0])/S
-    # canvas pixel -> deslanted 8x pixel
-    # gxx = xl + x/k ; col = gxx*S - gx ; x = X0 + (c+.5)/S
-    # gyy = b - y/k ; row = gyy*S - gy ; y = Y1 - (r+.5)/S
-    out=nd.affine_transform(d.astype(np.float32),
-        matrix=[1/k,1/k], offset=[(b - Y1/k)*S - gy + 0.5/k - 0.5, (xl + X0/k)*S - gx + 0.5/k - 0.5],
-        output_shape=(H,W),order=1)
-    return out>0.5
 
 def show(masks, fn, labels=None, scale=4, xr=None, yr=(-12,66)):
     tiles=[]

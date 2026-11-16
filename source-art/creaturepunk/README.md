@@ -15,8 +15,8 @@ deterministic reset: it rebuilds the same `.ttf` every time.
 3. Click *Download Creaturepunk.ttf* and replace
    `fonts/creaturepunk/Creaturepunk.ttf` with the download.
 
-The editor changes outlines and spacing only; names, licence, swash features
-and line metrics are copied unchanged.
+The editor changes outlines and spacing only; names, licence and line
+metrics are copied unchanged.
 
 ## Reset the font from the generator
 
@@ -24,7 +24,6 @@ and line metrics are copied unchanged.
 
 ```sh
 pip install fonttools numpy pillow scipy potracer
-python3 extract.py
 python3 build.py            # writes ../../fonts/creaturepunk/Creaturepunk.ttf
 python3 build.py out.ttf    # or somewhere else, to compare first
 cd ../.. && python3 scripts/heading-metrics.py   # then refresh the heading widths in plugin.js
@@ -39,8 +38,6 @@ How the glyphs are made:
 - `feral.py` then damages them: claw rakes, bite marks with fang punctures,
   drips, chewed edges, and a tilt and baseline wobble per glyph. The `FERAL`
   table says which glyph gets what.
-- `defs.py` keeps the logo's own C, U and K, traced from
-  `creaturepunk-logo.png`, as the swash alternates.
 
 Every glyph draws from its own random stream, seeded by its name, so changing
 one glyph leaves the others as they are. `python3 preview.py out.preview.png

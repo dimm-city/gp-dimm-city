@@ -1,7 +1,6 @@
 """Creaturepunk letterforms: a feral brush scrawl.
 
-Every default glyph is drawn here as brush strokes (the logo's swash C, U and
-K stay traced, from defs.py). A stroke is a centre line with a pressure that
+Every glyph is drawn here as brush strokes. A stroke is a centre line with a pressure that
 wanders, a sloppy hand (its points jitter and its blunt ends overshoot the
 join) and ends that are blunt, a sharp point, or a talon that hooks as it
 tapers. Bars carry fangs; stems end in spikes.
@@ -11,7 +10,7 @@ centre line at y=B or y=T puts the ink's edge on the baseline or cap line.
 Each glyph draws from its own random stream, seeded by its name.
 """
 import zlib
-from defs import *
+from glyphs import *
 
 W_ = 8.6                  # stroke width
 B, T, MID = 4.3, 39.7, 22.0
