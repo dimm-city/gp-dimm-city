@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creaturepunk Font</title>
+<style>
+:root {
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --ink: #1b1b1b;
+  --muted: #5f5d58;
+  --line: #dcd9d2;
+  --select: #e0479e;
+  --handle: #3b7dd8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161616; --surface: #202020; --ink: #ecebe7; --muted: #a3a19b; --line: #34332f;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161616; --surface: #202020; --ink: #ecebe7; --muted: #a3a19b; --line: #34332f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; }
+h2 { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 48px 0 12px; font-weight: 600; }
+p { margin: 0 0 12px; color: var(--muted); max-width: 70ch; }
+code, pre { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+button, .btn { font: inherit; font-size: 14px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--handle); outline-offset: 2px; }
+
+.cp { font-family: 'Creaturepunk', sans-serif; font-weight: normal; }
+
+/* Font source bar: where the font came from, open another, download the edit. */
+.fontbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 16px; font-size: 14px; color: var(--muted); }
+.fontbar #f-status { flex: 1 1 280px; }
+.fontbar input[type=file] { display: none; }
+
+/* A brick wall to set the hero on: 120x60 tile, offset vertical joints. The wall
+   is light in both themes, so its lettering is fixed dark ink. */
+.wall {
+  background: #c7c5c0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M0 1H120M0 31H120M1 0V30M61 30V60' stroke='%23a3a19c' stroke-width='2'/%3E%3C/svg%3E");
+  border-radius: 6px; overflow: hidden;
+}
+.wall .cp { color: #151413; }
+
+/* The hero line is ~9em wide: size it from the box so it never overflows. */
+.hero { padding: 40px 16px 48px; text-align: center; container-type: inline-size; }
+.hero .cp { font-size: min(120px, 10cqi); line-height: 1.25; white-space: nowrap; display: inline-block; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 16px; }
+.controls label { font-size: 14px; display: flex; gap: 8px; align-items: center; }
+.controls input[type=text] { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); width: min(420px, 100%); }
+.controls input[type=range] { width: 160px; }
+.tester { min-height: 1.4em; padding: 8px 4px; font-size: min(96px, 16vw); line-height: 1.35; overflow-wrap: anywhere; outline: none; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.cell { background: var(--surface); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.cell .cp { font-size: 46px; line-height: 1; }
+.cell small { position: absolute; left: 6px; top: 4px; font: 11px ui-monospace, monospace; color: var(--muted); }
+
+.waterfall div { white-space: nowrap; overflow: hidden; text-overflow: clip; border-bottom: 1px solid var(--line); padding: 6px 0; line-height: 1.3; }
+.waterfall span.sz { font: 12px ui-monospace, monospace; color: var(--muted); display: inline-block; width: 48px; }
+
+/* Glyph editor */
+.editor { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
+@media (max-width: 760px) { .editor { grid-template-columns: 1fr; } }
+.glyphs { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 4px; max-height: 560px; overflow-y: auto; align-content: start; }
+@media (max-width: 760px) { .glyphs { max-height: 220px; } }
+.glyphs button { padding: 2px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; }
+.glyphs button svg { width: 100%; height: 34px; }
+.glyphs button span { font: 10px/1 ui-monospace, monospace; color: var(--muted); max-width: 100%; overflow: hidden; white-space: nowrap; }
+.glyphs button[aria-pressed=true] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.glyphs button.edited::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--select); }
+.canvas-wrap { min-width: 0; }
+.ed-tools { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 8px; font-size: 14px; }
+.ed-tools label { display: flex; gap: 6px; align-items: center; }
+.ed-tools input[type=number] { width: 76px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); }
+#ed-svg { width: 100%; height: 520px; display: block; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; touch-action: none; user-select: none; }
+@media (max-width: 760px) { #ed-svg { height: 380px; } }
+#ed-svg .guide { stroke: var(--line); stroke-width: 2; vector-effect: non-scaling-stroke; }
+#ed-svg .guide.adv { stroke: var(--muted); stroke-dasharray: 4 4; }
+#ed-svg .glyph { fill: var(--ink); fill-opacity: .14; stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+#ed-svg .hl { stroke: var(--handle); stroke-width: 1; vector-effect: non-scaling-stroke; }
+#ed-svg .pt { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: move; }
+#ed-svg .pt.off { stroke: var(--handle); }
+#ed-svg .pt.sel { fill: var(--select); stroke: var(--select); }
+#ed-svg .marquee { fill: var(--select); fill-opacity: .08; stroke: var(--select); stroke-width: 1; vector-effect: non-scaling-stroke; }
+#ed-svg text { font-family: ui-monospace, monospace; fill: var(--muted); }
+.ed-help { font-size: 13px; margin-top: 8px; }
+.editor-empty { color: var(--muted); font-size: 14px; }
+
+pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; overflow-x: auto; margin: 0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="fontbar" role="status">
+    <span id="f-status">Loading the font…</span>
+    <label class="btn" for="f-open">Open .ttf…</label>
+    <input id="f-open" type="file" accept=".ttf,font/ttf">
+    <button id="f-download" class="primary" disabled>Download Creaturepunk.ttf</button>
+  </div>
+
+  <div class="wall hero">
+    <span class="cp">CREATUREPUNK</span>
+  </div>
+
+
+  <h2>Type tester</h2>
+  <div class="panel">
+    <div class="controls">
+      <input id="t-text" type="text" value="Dimm City Underground" aria-label="Sample text">
+      <label>Size <input id="t-size" type="range" min="24" max="200" value="96"></label>
+    </div>
+    <div id="tester" class="tester cp" contenteditable="true" spellcheck="false">Dimm City Underground</div>
+  </div>
+
+  <h2>Edit glyphs</h2>
+  <p>Drag points to reshape a glyph and set its side bearings; everything on this page redraws with the edit. Download the result and replace <code>fonts/creaturepunk/Creaturepunk.ttf</code> with it. Only outlines and spacing change: names, licence and line metrics are kept as they are.</p>
+  <div class="panel">
+    <div id="ed-empty" class="editor-empty">Open the font to edit it.</div>
+    <div id="ed" class="editor" hidden>
+      <div class="glyphs" id="ed-glyphs" aria-label="Glyphs"></div>
+      <div class="canvas-wrap">
+        <div class="ed-tools">
+          <strong id="ed-name"></strong>
+          <label>Left <input id="ed-lsb" type="number" step="5"></label>
+          <label>Right <input id="ed-rsb" type="number" step="5"></label>
+          <label>Advance <input id="ed-adv" type="number" step="5" readonly tabindex="-1"></label>
+          <button id="ed-undo" disabled>Undo</button>
+          <button id="ed-reset" disabled>Reset glyph</button>
+        </div>
+        <svg id="ed-svg" aria-label="Glyph outline editor"></svg>
+        <p class="ed-help">Click a point to select it, Shift-click to add to the selection, drag on empty space to box-select. Drag or use the arrow keys to move the selection (Shift: 10 units). Ctrl/⌘-Z undoes.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>Character set</h2>
+  <p>Caps only: lowercase keys map to the same letters. Every glyph is a feral brush scrawl: talon-hooked stroke ends, spiked stems, fangs under the bars, and claw rakes, bite marks and drips on some of them.</p>
+  <div class="grid" id="grid"></div>
+
+
+  <h2>Sizes</h2>
+  <div class="panel waterfall" id="waterfall"></div>
+
+  <h2>Use it</h2>
+<pre>@font-face {
+  font-family: 'Creaturepunk';
+  src: url('fonts/creaturepunk/Creaturepunk.ttf') format('truetype');
+}
+h1, h2 { font-family: 'Creaturepunk', sans-serif; }</pre>
+</main>
+<script>
+/* ── Specimen ─────────────────────────────────────────────────────────────── */
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;!?\'"-_/\\()[]<>+=*#%|$&…';
+const grid = document.getElementById('grid');
+for (const ch of chars) {
+  const c = document.createElement('div'); c.className = 'cell';
+  c.innerHTML = '<small></small><span class="cp"></span>';
+  c.querySelector('small').textContent = ch;
+  c.querySelector('.cp').textContent = ch;
+  grid.appendChild(c);
+}
+const wf = document.getElementById('waterfall');
+for (const s of [14, 18, 24, 36, 48, 72]) {
+  const d = document.createElement('div');
+  d.innerHTML = '<span class="sz">' + s + 'px</span><span class="cp" style="font-size:' + s + 'px">Rust never sleeps in Dimm City 2099</span>';
+  wf.appendChild(d);
+}
+const t = document.getElementById('tester');
+const txt = document.getElementById('t-text');
+txt.addEventListener('input', () => { t.textContent = txt.value; });
+t.addEventListener('input', () => { txt.value = t.textContent; });
+document.getElementById('t-size').addEventListener('input', e => { t.style.fontSize = e.target.value + 'px'; });
+
+/* ── TrueType read/write ──────────────────────────────────────────────────────
+   Reads simple glyf outlines and hmtx spacing; writes glyf, loca (long), hmtx
+   and the bounds in head/hhea/maxp. Every other table is copied byte for byte. */
+function readFont(buf) {
+  const dv = new DataView(buf);
+  const tables = {};
+  for (let i = 0; i < dv.getUint16(4); i++) {
+    const o = 12 + 16 * i;
+    const tag = String.fromCharCode(dv.getUint8(o), dv.getUint8(o + 1), dv.getUint8(o + 2), dv.getUint8(o + 3));
+    tables[tag] = new DataView(buf, dv.getUint32(o + 8), dv.getUint32(o + 12));
+  }
+  for (const tag of ['head', 'hhea', 'maxp', 'loca', 'glyf', 'hmtx', 'cmap']) if (!tables[tag]) throw new Error('Not a TrueType font: no ' + tag + ' table');
+  const numGlyphs = tables.maxp.getUint16(4), longLoca = tables.head.getInt16(50) === 1, nHM = tables.hhea.getUint16(34);
+  const loc = i => longLoca ? tables.loca.getUint32(4 * i) : tables.loca.getUint16(2 * i) * 2;
+  const glyphs = [];
+  let adv = 0;
+  for (let g = 0; g < numGlyphs; g++) {
+    if (g < nHM) adv = tables.hmtx.getUint16(4 * g);
+    const glyph = parseGlyph(tables.glyf, loc(g), loc(g + 1) - loc(g));
+    glyph.adv = adv;
+    glyphs.push(glyph);
+  }
+  return { sfnt: dv.getUint32(0), tables, glyphs, chars: readCmap(tables.cmap), names: tables.post ? readPostNames(tables.post) : [] };
+}
+function parseGlyph(dv, off, len) {
+  if (!len) return { contours: [], instr: new Uint8Array(0) };
+  const nc = dv.getInt16(off);
+  if (nc < 0) return { raw: new Uint8Array(dv.buffer, dv.byteOffset + off, len).slice(), contours: [] };
+  let p = off + 10;
+  const ends = [];
+  for (let i = 0; i < nc; i++) { ends.push(dv.getUint16(p)); p += 2; }
+  const il = dv.getUint16(p); p += 2;
+  const instr = new Uint8Array(dv.buffer, dv.byteOffset + p, il).slice(); p += il;
+  const np = nc ? ends[nc - 1] + 1 : 0, flags = [];
+  while (flags.length < np) {
+    const f = dv.getUint8(p++); flags.push(f);
+    if (f & 8) for (let r = dv.getUint8(p++); r > 0; r--) flags.push(f);
+  }
+  const coords = (shortBit, sameBit) => {
+    const out = []; let v = 0;
+    for (const f of flags) {
+      if (f & shortBit) { const d = dv.getUint8(p++); v += (f & sameBit) ? d : -d; }
+      else if (!(f & sameBit)) { v += dv.getInt16(p); p += 2; }
+      out.push(v);
+    }
+    return out;
+  };
+  const xs = coords(2, 16), ys = coords(4, 32);
+  const contours = []; let s = 0;
+  for (const e of ends) {
+    const c = [];
+    for (let i = s; i <= e; i++) c.push({ x: xs[i], y: ys[i], on: !!(flags[i] & 1) });
+    contours.push(c); s = e + 1;
+  }
+  return { contours, instr };
+}
+function readCmap(dv) {
+  const chars = {};
+  let sub = -1;
+  for (let i = 0; i < dv.getUint16(2); i++) {
+    const pid = dv.getUint16(4 + 8 * i), eid = dv.getUint16(6 + 8 * i), off = dv.getUint32(8 + 8 * i);
+    if (dv.getUint16(off) === 4 && (sub < 0 || (pid === 3 && eid === 1))) sub = off;
+  }
+  if (sub < 0) return chars;
+  const segX2 = dv.getUint16(sub + 6);
+  for (let i = 0; i < segX2 / 2; i++) {
+    const end = dv.getUint16(sub + 14 + 2 * i), start = dv.getUint16(sub + 16 + segX2 + 2 * i);
+    const delta = dv.getInt16(sub + 16 + 2 * segX2 + 2 * i), roPos = sub + 16 + 3 * segX2 + 2 * i, ro = dv.getUint16(roPos);
+    for (let c = start; c <= end && c !== 0xFFFF; c++) {
+      let g = ro ? dv.getUint16(roPos + ro + 2 * (c - start)) : c;
+      if (ro && !g) continue;
+      g = (g + delta) & 0xFFFF;
+      if (!(g in chars) || (chars[g] > 'Z' && c >= 65 && c <= 90)) chars[g] = String.fromCodePoint(c);
+    }
+  }
+  return chars;
+}
+function readPostNames(dv) {
+  if (dv.getUint32(0) !== 0x00020000) return [];
+  const n = dv.getUint16(32), idx = [];
+  for (let i = 0; i < n; i++) idx.push(dv.getUint16(34 + 2 * i));
+  let p = 34 + 2 * n; const extra = [];
+  while (p < dv.byteLength) { const l = dv.getUint8(p++); extra.push(String.fromCharCode(...new Uint8Array(dv.buffer, dv.byteOffset + p, l))); p += l; }
+  return idx.map(i => i >= 258 ? extra[i - 258] : (i === 0 ? '.notdef' : ''));
+}
+function bounds(g) {
+  const pts = g.contours.flat();
+  if (!pts.length) return null;
+  return { xMin: Math.min(...pts.map(p => p.x)), yMin: Math.min(...pts.map(p => p.y)), xMax: Math.max(...pts.map(p => p.x)), yMax: Math.max(...pts.map(p => p.y)) };
+}
+function encodeGlyph(g) {
+  if (g.raw) return g.raw;
+  const pts = g.contours.flat();
+  if (!pts.length) return new Uint8Array(0);
+  const b = bounds(g), out = [];
+  const u16 = v => out.push((v >> 8) & 255, v & 255);
+  u16(g.contours.length); u16(b.xMin); u16(b.yMin); u16(b.xMax); u16(b.yMax);
+  let end = -1;
+  for (const c of g.contours) { end += c.length; u16(end); }
+  u16(g.instr.length); out.push(...g.instr);
+  const flags = [], xb = [], yb = [];
+  let px = 0, py = 0;
+  for (const pt of pts) {
+    let f = pt.on ? 1 : 0;
+    const dx = pt.x - px, dy = pt.y - py; px = pt.x; py = pt.y;
+    if (dx === 0) f |= 16; else if (Math.abs(dx) < 256) { f |= 2 | (dx > 0 ? 16 : 0); xb.push(Math.abs(dx)); } else xb.push((dx >> 8) & 255, dx & 255);
+    if (dy === 0) f |= 32; else if (Math.abs(dy) < 256) { f |= 4 | (dy > 0 ? 32 : 0); yb.push(Math.abs(dy)); } else yb.push((dy >> 8) & 255, dy & 255);
+    flags.push(f);
+  }
+  out.push(...flags, ...xb, ...yb);
+  while (out.length % 4) out.push(0);
+  return Uint8Array.from(out);
+}
+function writeFont(font) {
+  const n = font.glyphs.length;
+  const glyfParts = font.glyphs.map(encodeGlyph);
+  const glyf = new Uint8Array(glyfParts.reduce((a, b) => a + b.length, 0));
+  const loca = new DataView(new ArrayBuffer(4 * (n + 1)));
+  let off = 0;
+  glyfParts.forEach((b, i) => { loca.setUint32(4 * i, off); glyf.set(b, off); off += b.length; });
+  loca.setUint32(4 * n, off);
+  const hmtx = new DataView(new ArrayBuffer(4 * n));
+  let advMax = 0, minL = 32767, minR = 32767, xExt = -32768, maxPts = 0, maxCont = 0;
+  const all = { xMin: 32767, yMin: 32767, xMax: -32768, yMax: -32768 };
+  font.glyphs.forEach((g, i) => {
+    const b = bounds(g);
+    hmtx.setUint16(4 * i, g.adv); hmtx.setInt16(4 * i + 2, b ? b.xMin : 0);
+    advMax = Math.max(advMax, g.adv);
+    if (!b) return;
+    minL = Math.min(minL, b.xMin); minR = Math.min(minR, g.adv - b.xMax); xExt = Math.max(xExt, b.xMax);
+    for (const k of ['xMin', 'yMin']) all[k] = Math.min(all[k], b[k]);
+    for (const k of ['xMax', 'yMax']) all[k] = Math.max(all[k], b[k]);
+    maxPts = Math.max(maxPts, g.contours.flat().length); maxCont = Math.max(maxCont, g.contours.length);
+  });
+  const copy = tag => { const s = font.tables[tag]; return new DataView(new Uint8Array(s.buffer, s.byteOffset, s.byteLength).slice().buffer); };
+  const head = copy('head');
+  head.setUint32(8, 0);
+  head.setInt16(36, all.xMin); head.setInt16(38, all.yMin); head.setInt16(40, all.xMax); head.setInt16(42, all.yMax);
+  head.setInt16(50, 1);
+  const hhea = copy('hhea');
+  hhea.setUint16(10, advMax); hhea.setInt16(12, minL); hhea.setInt16(14, minR); hhea.setInt16(16, xExt); hhea.setUint16(34, n);
+  const maxp = copy('maxp');
+  if (maxp.getUint32(0) === 0x00010000) { maxp.setUint16(6, Math.max(maxp.getUint16(6), maxPts)); maxp.setUint16(8, Math.max(maxp.getUint16(8), maxCont)); }
+  const out = {};
+  for (const tag of Object.keys(font.tables)) out[tag] = copy(tag);
+  Object.assign(out, { head, hhea, maxp, glyf: new DataView(glyf.buffer), loca, hmtx });
+  const tags = Object.keys(out).sort();
+  const pad = l => (l + 3) & ~3;
+  let size = 12 + 16 * tags.length;
+  for (const tag of tags) size += pad(out[tag].byteLength);
+  const file = new Uint8Array(size), dv = new DataView(file.buffer);
+  const es = Math.floor(Math.log2(tags.length));
+  dv.setUint32(0, font.sfnt); dv.setUint16(4, tags.length); dv.setUint16(6, 16 << es); dv.setUint16(8, es); dv.setUint16(10, tags.length * 16 - (16 << es));
+  const checksum = (bytes) => { let s = 0; const d = new DataView(bytes.buffer, bytes.byteOffset); for (let i = 0; i < bytes.length; i += 4) s = (s + d.getUint32(i)) >>> 0; return s; };
+  let pos = 12 + 16 * tags.length, headPos = 0;
+  tags.forEach((tag, i) => {
+    const src = new Uint8Array(out[tag].buffer, out[tag].byteOffset, out[tag].byteLength);
+    file.set(src, pos);
+    for (let k = 0; k < 4; k++) dv.setUint8(12 + 16 * i + k, tag.charCodeAt(k));
+    dv.setUint32(12 + 16 * i + 4, checksum(file.subarray(pos, pos + pad(src.length))));
+    dv.setUint32(12 + 16 * i + 8, pos); dv.setUint32(12 + 16 * i + 12, src.length);
+    if (tag === 'head') headPos = pos;
+    pos += pad(src.length);
+  });
+  dv.setUint32(headPos + 8, (0xB1B0AFBA - checksum(file)) >>> 0);
+  return file.buffer;
+}
+
+/* ── Font loading: the repo's file when served locally, or one opened by hand ── */
+const FONT_URL = '../fonts/creaturepunk/Creaturepunk.ttf';
+const statusEl = document.getElementById('f-status'), dlBtn = document.getElementById('f-download');
+let font = null, original = null, face = null, edited = new Set();
+const undoStack = [];
+
+async function applyFont() {
+  const bytes = writeFont(font);
+  const next = new FontFace('Creaturepunk', bytes);
+  await next.load();
+  if (face) document.fonts.delete(face);
+  document.fonts.add(next); face = next;
+  return bytes;
+}
+async function loadFont(buf, label) {
+  try { font = readFont(buf); original = readFont(buf.slice(0)); }
+  catch (e) { statusEl.textContent = 'Could not read ' + label + ': ' + e.message; return; }
+  edited = new Set(); undoStack.length = 0;
+  await applyFont();
+  statusEl.textContent = 'Font: ' + label;
+  dlBtn.disabled = false;
+  buildGlyphList();
+  select(font.glyphs.findIndex((g, i) => font.chars[i] === 'A'));
+}
+document.getElementById('f-open').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  await loadFont(await f.arrayBuffer(), f.name + ' (opened from disk)');
+  e.target.value = '';
+});
+dlBtn.addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([writeFont(font)], { type: 'font/ttf' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: 'Creaturepunk.ttf' });
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+(async () => {
+  if (location.protocol.startsWith('http')) {
+    try {
+      const r = await fetch(FONT_URL, { cache: 'no-store' });
+      if (r.ok) return loadFont(await r.arrayBuffer(), 'fonts/creaturepunk/Creaturepunk.ttf');
+    } catch (e) { /* fall through to the hint */ }
+  }
+  statusEl.textContent = 'Serve the repo root with any static server (for example bunx serve .) and open /docs/creaturepunk-font-demo.html to load the font automatically, or open Creaturepunk.ttf here.';
+})();
+
+/* ── Glyph editor ─────────────────────────────────────────────────────────── */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('ed-svg');
+const lsbIn = document.getElementById('ed-lsb'), rsbIn = document.getElementById('ed-rsb'), advIn = document.getElementById('ed-adv');
+const undoBtn = document.getElementById('ed-undo'), resetBtn = document.getElementById('ed-reset');
+let gid = -1, sel = new Set(), drag = null;
+
+const label = i => font.chars[i] || font.names[i] || '#' + i;
+const clone = g => ({ ...g, contours: g.contours.map(c => c.map(p => ({ ...p }))) });
+function contourPath(c) {
+  if (!c.length) return '';
+  const first = c.findIndex(p => p.on);
+  const pts = first < 0 ? [{ x: (c[c.length - 1].x + c[0].x) / 2, y: (c[c.length - 1].y + c[0].y) / 2, on: true }, ...c]
+                        : [...c.slice(first), ...c.slice(0, first)];
+  let d = `M${pts[0].x} ${-pts[0].y}`, off = null;
+  for (let i = 1; i <= pts.length; i++) {
+    const p = pts[i % pts.length];
+    if (p.on) { d += off ? `Q${off.x} ${-off.y} ${p.x} ${-p.y}` : `L${p.x} ${-p.y}`; off = null; }
+    else { if (off) d += `Q${off.x} ${-off.y} ${(off.x + p.x) / 2} ${-(off.y + p.y) / 2}`; off = p; }
+  }
+  return d + 'Z';
+}
+const glyphPath = g => g.contours.map(contourPath).join('');
+function el(name, attrs, parent) {
+  const e = document.createElementNS(SVGNS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function thumb(g) {
+  const s = el('svg', { viewBox: `-100 -1100 ${Math.max(g.adv, 600) + 300} 1400`, 'aria-hidden': 'true' });
+  el('path', { d: glyphPath(g), fill: 'currentColor' }, s);
+  return s;
+}
+function buildGlyphList() {
+  const list = document.getElementById('ed-glyphs');
+  list.textContent = '';
+  font.glyphs.forEach((g, i) => {
+    if (!g.contours.length || g.raw) return;
+    const b = document.createElement('button');
+    b.dataset.gid = i; b.title = label(i); b.setAttribute('aria-pressed', 'false');
+    b.append(thumb(g), Object.assign(document.createElement('span'), { textContent: label(i) }));
+    b.addEventListener('click', () => select(i));
+    list.appendChild(b);
+  });
+  document.getElementById('ed-empty').hidden = true;
+  document.getElementById('ed').hidden = false;
+}
+function select(i) {
+  gid = i; sel = new Set();
+  for (const b of document.querySelectorAll('#ed-glyphs button')) b.setAttribute('aria-pressed', String(+b.dataset.gid === i));
+  document.getElementById('ed-name').textContent = label(i);
+  render();
+}
+function points() { return font.glyphs[gid].contours.flat(); }
+function render() {
+  const g = font.glyphs[gid], b = bounds(g) || { xMin: 0, xMax: g.adv };
+  const x0 = Math.min(0, b.xMin) - 150, x1 = Math.max(g.adv, b.xMax) + 150;
+  svg.setAttribute('viewBox', `${x0} -1150 ${x1 - x0} 1500`);
+  svg.textContent = '';
+  for (const [y, name] of [[0, 'baseline'], [700, 'cap 700'], [-250, 'descender']]) {
+    el('line', { x1: x0, x2: x1, y1: -y, y2: -y, class: 'guide' }, svg);
+    el('text', { x: x0 + 12, y: -y - 12, 'font-size': (x1 - x0) / 70 }, svg).textContent = name;
+  }
+  for (const x of [0, g.adv]) el('line', { x1: x, x2: x, y1: -1150, y2: 350, class: 'guide adv' }, svg);
+  el('path', { d: glyphPath(g), class: 'glyph' }, svg);
+  const r = (x1 - x0) / 220;
+  for (const c of g.contours) c.forEach((p, k) => {
+    if (p.on) return;
+    for (const q of [c[(k + c.length - 1) % c.length], c[(k + 1) % c.length]]) el('line', { x1: p.x, y1: -p.y, x2: q.x, y2: -q.y, class: 'hl' }, svg);
+  });
+  points().forEach((p, k) => {
+    const cls = 'pt' + (p.on ? '' : ' off') + (sel.has(k) ? ' sel' : '');
+    const e = p.on ? el('rect', { x: p.x - r, y: -p.y - r, width: 2 * r, height: 2 * r, class: cls }, svg)
+                   : el('circle', { cx: p.x, cy: -p.y, r, class: cls }, svg);
+    e.dataset.k = k;
+  });
+  if (drag && drag.box) {
+    const [a, c] = [drag.start, drag.now];
+    el('rect', { x: Math.min(a.x, c.x), y: -Math.max(a.y, c.y), width: Math.abs(c.x - a.x), height: Math.abs(c.y - a.y), class: 'marquee' }, svg);
+  }
+  const bb = bounds(g);
+  lsbIn.value = bb ? bb.xMin : 0; rsbIn.value = bb ? g.adv - bb.xMax : 0; advIn.value = g.adv;
+  undoBtn.disabled = !undoStack.length;
+  resetBtn.disabled = !edited.has(gid);
+}
+function toFont(evt) {
+  const pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  return { x: p.x, y: -p.y };
+}
+function remember() { undoStack.push({ gid, glyph: clone(font.glyphs[gid]) }); if (undoStack.length > 200) undoStack.shift(); }
+async function commit() {
+  edited.add(gid);
+  const b = document.querySelector(`#ed-glyphs button[data-gid="${gid}"]`);
+  if (b) { b.classList.add('edited'); b.replaceChild(thumb(font.glyphs[gid]), b.querySelector('svg')); }
+  render();
+  await applyFont();
+}
+function moveSel(dx, dy) {
+  const pts = points();
+  for (const k of sel) { pts[k].x += dx; pts[k].y += dy; }
+}
+svg.addEventListener('pointerdown', e => {
+  if (gid < 0) return;
+  svg.setPointerCapture(e.pointerId);
+  const start = toFont(e), k = e.target.dataset.k;
+  if (k !== undefined) {
+    const i = +k;
+    if (e.shiftKey) { sel.has(i) ? sel.delete(i) : sel.add(i); }
+    else if (!sel.has(i)) sel = new Set([i]);
+    drag = { start, last: { x: Math.round(start.x), y: Math.round(start.y) }, moved: false };
+  } else {
+    if (!e.shiftKey) sel = new Set();
+    drag = { start, now: start, box: true };
+  }
+  render();
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const p = toFont(e);
+  if (drag.box) { drag.now = p; render(); return; }
+  const x = Math.round(p.x), y = Math.round(p.y), dx = x - drag.last.x, dy = y - drag.last.y;
+  if (!dx && !dy) return;
+  if (!drag.moved) { remember(); drag.moved = true; }
+  moveSel(dx, dy); drag.last = { x, y }; render();
+});
+svg.addEventListener('pointerup', () => {
+  if (!drag) return;
+  if (drag.box) {
+    const a = drag.start, c = drag.now;
+    points().forEach((p, k) => {
+      if (p.x >= Math.min(a.x, c.x) && p.x <= Math.max(a.x, c.x) && p.y >= Math.min(a.y, c.y) && p.y <= Math.max(a.y, c.y)) sel.add(k);
+    });
+    drag = null; render(); return;
+  }
+  const moved = drag.moved; drag = null;
+  if (moved) commit(); else render();
+});
+document.addEventListener('keydown', e => {
+  if (gid < 0 || e.target.closest('input, [contenteditable]')) return;
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); return; }
+  const step = e.shiftKey ? 10 : 1;
+  const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key];
+  if (!d || !sel.size) return;
+  e.preventDefault(); remember(); moveSel(...d); commit();
+});
+function setSpacing(lsb, rsb) {
+  const g = font.glyphs[gid], b = bounds(g);
+  if (!b || !Number.isFinite(lsb) || !Number.isFinite(rsb)) return render();
+  remember();
+  const shift = lsb - b.xMin;
+  for (const p of g.contours.flat()) p.x += shift;
+  g.adv = Math.max(0, b.xMax + shift + rsb);
+  commit();
+}
+lsbIn.addEventListener('change', () => setSpacing(Math.round(+lsbIn.value), Math.round(+rsbIn.value)));
+rsbIn.addEventListener('change', () => setSpacing(Math.round(+lsbIn.value), Math.round(+rsbIn.value)));
+function undo() {
+  const last = undoStack.pop(); if (!last) return;
+  font.glyphs[last.gid] = last.glyph;
+  if (last.gid !== gid) select(last.gid);
+  sel = new Set(); commit();
+}
+undoBtn.addEventListener('click', undo);
+resetBtn.addEventListener('click', () => {
+  remember();
+  font.glyphs[gid] = clone(original.glyphs[gid]);
+  sel = new Set(); commit();
+  edited.delete(gid);
+  document.querySelector(`#ed-glyphs button[data-gid="${gid}"]`)?.classList.remove('edited');
+  render();
+});
+</script>
+</body>
+</html>

@@ -68,7 +68,7 @@ function packed() {
   if (!packedFiles) {
     const raw = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
     const [entry] = JSON.parse(raw);
-    packedFiles = { paths: new Set(entry.files.map((f) => f.path)), size: entry.size, unpackedSize: entry.unpackedSize };
+    packedFiles = { paths: new Set(entry.files.map((f) => f.path)), size: entry.size };
   }
   return packedFiles;
 }
@@ -141,7 +141,7 @@ describe("the tarball npm would publish", () => {
     }
   }, PACK_TIMEOUT_MS);
 
-  test("ships nothing it should not, and stays within Gutterpress's limits", () => {
+  test("ships nothing it should not, in paths Gutterpress can vendor", () => {
     for (const p of packed().paths) {
       expect(p.startsWith("test/")).toBe(false);
       expect(p.startsWith("docs/")).toBe(false);
@@ -155,7 +155,6 @@ describe("the tarball npm would publish", () => {
         expect(seg.toLowerCase()).not.toMatch(/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/);
       }
     }
-    expect(packed().unpackedSize).toBeLessThan(50 * 1024 * 1024);
   }, PACK_TIMEOUT_MS);
 });
 

@@ -119,3 +119,14 @@
   font-weight: normal; font-style: normal; font-display: swap;
   unicode-range: U+2018-2019, U+201C-201D, U+2013-2014, U+2026;
 }
+/* Creaturepunk: feral brush-scrawled caps, clawed, bitten and dripping
+   (edit the .ttf itself in docs/creaturepunk-font-demo.html). Caps only — lowercase
+   maps to the same letters. */
+@font-face {
+  font-family: 'Creaturepunk';
+  src: url("../fonts/creaturepunk/Creaturepunk.ttf") format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+  /* Its caps are 0.75em, Lixdu's the full em: drawn 10% larger, every
+     Creaturepunk heading gains size at the same font-size and line box. */
+  size-adjust: 110%;
+}

@@ -1,0 +1,486 @@
+@layer dc.components {
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION ENCLOSURES — dc-block family
+   ═══════════════════════════════════════════════════════════════════════════
+   Reusable card-like enclosures for text content sections. Each variant has
+   a distinct clip-path geometry, surface color, and accent treatment that
+   signal different content registers.
+
+   Plugin macro API (plugin.js):
+     @block .dc-panel|.dc-slate|.dc-shard label="Title" … @end-block
+
+   CSS class API (direct use without plugin):
+     <div class="dc-block dc-panel"><div class="dc-block-title">…</div>…</div>
+
+   Public token API (override at usage site to create variants):
+     --dc-block-bg        → body surface color
+     --dc-block-fg        → body text color
+     --dc-block-accent    → left-strip accent / border highlight
+     --dc-block-title-bg  → title band background
+     --dc-block-title-fg  → title band text
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* ── Base shell ──────────────────────────────────────────────────────────── */
+/* Token defaults for .dc-block are declared in :root in dc-component-defaults.css.
+   Override via variant rules (.dc-block.dc-panel etc.) below. */
+.dc-block {
+  background: var(--dc-block-bg);
+  color: var(--dc-block-fg);
+  padding: 0 var(--space-lg) var(--space-lg);
+  margin: 0.15in 0;
+  position: relative;
+  break-inside: avoid;
+}
+
+/* Title band — bleeds to horizontal edges of the container */
+.dc-block-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 400;
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--dc-block-title-fg);
+  background: var(--dc-block-title-bg);
+  padding: 7px 18px 6px;
+  margin: 0 calc(-1 * var(--space-lg)) var(--space-md) calc(-1 * var(--space-lg));
+  display: block;
+  border: 0;
+  border-bottom: var(--dc-block-title-rule);
+}
+/* A tag stamped on the band's right end (`--dc-block-tag`, a quoted word;
+   unset, none is drawn). Reversed type: 10pt semibold. Not declared at :root:
+   unset is what draws nothing. */
+.dc-block-title::after {
+  content: var(--dc-block-tag);
+  float: right;
+  margin-left: var(--space-md);
+  padding: 1px 7px 0;
+  border: var(--dc-block-tag-edge);
+  box-shadow: var(--dc-label-shadow);
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  font-weight: 700;
+  letter-spacing: var(--ls-display);
+  line-height: 1.4;
+  transform: rotate(-2deg);
+}
+
+/* Content children inherit fg color (overrides dc-core.css heading defaults) */
+.dc-block h3,
+.dc-block h4,
+.dc-block p,
+.dc-block li {
+  color: var(--dc-block-fg);
+}
+
+.dc-block > p:last-child,
+.dc-block > ul:last-child,
+.dc-block > ol:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Variant: Panel — military/HUD tactical container ────────────────────── */
+/* Geometry: hex corner cuts top-left + bottom-right. Left accent strip.
+   Signal: structured information, mission briefings, system data. */
+.dc-block.dc-panel {
+  --dc-block-accent:   var(--hud-blue-dark);
+  --dc-block-title-bg: var(--hud-blue-dark);
+  --dc-accent-ink: var(--hud-blue-dark);
+  background: var(--paper-light);
+  padding-bottom: 14pt; /* clears the 14px (10.5pt) foot cut by more than 2pt */
+  box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
+  clip-path: polygon(
+    14px 0, 100% 0,
+    100% calc(100% - 14px), calc(100% - 14px) 100%,
+    0 100%, 0 14px
+  );
+}
+.dc-block.dc-panel .dc-block-title {
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 100%, 0 100%);
+}
+
+/* ── Variant: Slate — a binding ruling ───────────────────────────────────── */
+/* Geometry: a sign plate: all four corners cut (an octagon), a heavy crimson
+   frame all round. An ink body with a BLOOD band and a stamped "Binding" tag:
+   the red of cost and consequence, read as an order. Not the Dream Master's
+   colours (ink + cyan: `@section dm`) and not magenta. The tag's edge is doubled
+   (a worn stamp). Signal: key rulings, Dream Master directives that settle an
+   argument. */
+.dc-block.dc-slate {
+  --dc-block-bg:        var(--ink-dark);
+  --dc-block-fg:        var(--paper-cream);
+  --dc-block-accent:    var(--crimson);
+  --dc-block-title-bg:  var(--blood);
+  --dc-block-title-fg:  var(--paper-cream);
+  --dc-block-title-rule: 3pt solid var(--crimson);
+  --dc-block-tag: "Binding";
+  --dc-block-tag-edge: 3pt double var(--paper-cream);
+  font-weight: 600; /* reversed type is semibold */
+  --dc-accent-ink: color-mix(in srgb, var(--crimson) 40%, var(--paper-cream));
+  padding-bottom: 14pt;
+  box-shadow: inset 0 0 0 3px var(--dc-block-accent); /* a heavy frame, drawn as inset ink */
+  clip-path: polygon(
+    12px 0, calc(100% - 12px) 0, 100% 12px,
+    100% calc(100% - 12px), calc(100% - 12px) 100%,
+    12px 100%, 0 calc(100% - 12px), 0 12px
+  );
+}
+.dc-block.dc-slate .dc-block-title {
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+  padding-top: 11px;
+}
+
+/* ── Variant: Shard — a zine cutting ──────────────────────────────────────── */
+/* Geometry: a torn bottom edge. Light neutral paper, an ink-grey label strip
+   instead of a coloured band, no accent colour at all: fiction and atmosphere
+   are the one register that is paper and nothing else.
+   Signal: flavor text, atmospheric descriptions, setting detail. */
+.dc-block.dc-shard {
+  --dc-block-bg:        var(--paper-cream);
+  --dc-block-fg:        var(--ink);
+  --dc-block-accent:    var(--ink-smoke);
+  --dc-block-title-bg:  var(--paper-stain);
+  --dc-block-title-fg:  var(--ink);
+  --dc-block-title-rule: 2pt solid var(--ink-smoke);
+  --dc-accent-ink: var(--ink);
+  background: var(--paper-cream);
+  padding-bottom: calc(var(--space-lg) + 4px);
+  box-shadow: inset 3px 0 0 var(--dc-block-accent); /* rail: see .dc-intro */
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 94.44% calc(100% - 6px), 88.89% 100%, 83.33% calc(100% - 6px), 77.78% 100%, 72.22% calc(100% - 6px), 66.67% 100%, 61.11% calc(100% - 4px), 55.56% 100%, 50% calc(100% - 4px), 44.44% 100%, 38.89% calc(100% - 6px), 33.33% 100%, 27.78% calc(100% - 4px), 22.22% 100%, 16.67% calc(100% - 3px), 11.11% 100%, 5.56% calc(100% - 6px), 0% 100%);
+}
+.dc-block.dc-shard .dc-block-title {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 14px));
+  padding-right: 24px;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   CARD PRIMITIVE — dc-card family
+   ═════════════════════════════════════════════════════════════════════════
+   Generic structured card. Emits .dc-card with optional sub-elements:
+     .dc-card-heading  — card title (from first h4)
+     .dc-card-pull     — pull-quote or flavor intro (first blockquote)
+     .dc-card-body     — remaining content container
+   Footer: the last blockquote in .dc-card-body; no wrapper div emitted. The
+   plugin tags it .dc-card-footer.
+
+   Plugin macro:
+     @card .dc-flaws … @end-card
+
+   IMPORTANT: .dc-skill-card and .dc-card are different outer classes.
+   Sub-elements (.dc-card-body etc.) are always scoped to their outer parent:
+     .dc-skill-card .dc-card-body → skill card body (existing rules)
+     .dc-card > .dc-card-body     → card primitive body (this section)
+   No selector conflict. */
+
+.dc-card {
+  clip-path: var(--dc-card-shape);
+  background: var(--paper-light);
+  border-left: 3px solid var(--ink-dark);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  margin: var(--space-sm) 0;
+  break-inside: avoid;
+}
+
+.dc-card-heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+  margin-bottom: var(--space-xs);
+  color: var(--ink);
+}
+
+.dc-card-pull {
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: var(--space-xs);
+  font-size: var(--fs-sm);
+}
+
+.dc-card > .dc-card-body {
+  margin-top: var(--space-xs);
+}
+
+.dc-card > .dc-card-body > p {
+  margin-bottom: var(--space-xs);
+}
+
+.dc-card > .dc-card-body > p:last-child {
+  margin-bottom: 0;
+}
+
+.dc-card > .dc-card-body .dc-card-footer {
+  border-left: none;
+  padding-left: 0;
+  margin-top: var(--space-xs);
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  font-style: italic;
+}
+
+/* ── The three kinds of choice (components/*.css owns these — NOT the book's own sheet) ──
+   `@flaws`, `@ideals` and `@dreams` set the card tokens; a card INSIDE one
+   takes the choice chrome below (and no other `.dc-card` does: a gear entry
+   or a faction is a card too). The silhouette, the name's colour, the kind
+   chip and the quote well all follow the kind. The name is the `####` (the
+   card heading); a `###` is not one (core only takes the first `####`), so it
+   sits first in the body and is dressed the same. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card {
+  background: var(--dc-choice-surface);
+  border: var(--dc-choice-edge);
+  border-left: var(--dc-choice-rail) solid var(--dc-choice-accent);
+  border-top: var(--dc-choice-band) solid var(--dc-choice-accent);
+  padding-inline: 12pt;
+}
+/* The skill card's body rule (cards.css) also reaches this body: it is part of
+   the sheet here, not a second one. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body {
+  background: var(--dc-choice-surface);
+  padding: 0 0 4px;
+  border: 0;
+  clip-path: none;
+}
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
+  margin-top: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+  margin-bottom: var(--space-xs);
+  color: var(--dc-choice-accent);
+}
+/* The kind, said in a word before the name: "Flaw", "Ideal", "Dream".
+   Reversed type: 10pt semibold. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child)::before {
+  content: var(--dc-choice-kind);
+  display: block;
+  width: fit-content;
+  margin-bottom: 3px;
+  padding: 1px 7px 0;
+  background: var(--dc-choice-accent);
+  color: var(--paper-cream);
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  font-weight: 700;
+  letter-spacing: var(--ls-display);
+  line-height: 1.4;
+  box-shadow: var(--dc-label-shadow);
+}
+/* The closing quote: the choice's one line of voice. Ink on the card's white,
+   ruled down its left in the card's own colour. */
+.section:is(.dc-flaws, .dc-ideals, .dc-dreams) > .dc-card > .dc-card-body .dc-card-footer {
+  margin: var(--space-sm) 0 0;
+  padding: 4pt 8pt;
+  background: var(--dc-choice-tint);
+  border: 0;
+  border-left: 3px solid var(--dc-choice-accent);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-style: italic;
+}
+
+/* The three choices differ in grayscale as well as colour: edge weight and
+   how deep the silhouette bites, all three on white. Flaw = a heavy solid edge
+   and a deep crack; Ideal = a clean solid edge and deep V stubs; Dream = a
+   double edge and a steep rise with perforated tears. Every cut is cleared by
+   padding of cut + 2pt. */
+
+/* Flaws: blood. A cracked, ragged edge: a 40 x 26px nick off the top right and a
+   foot that jags up to 13px, over a blood-ruled quote. */
+.section.dc-flaws {
+  --dc-choice-accent: var(--blood);
+  --dc-choice-surface: var(--paper-light);
+  --dc-choice-edge: 2pt solid var(--ink-dark);
+  --dc-choice-band: 9px;
+  --dc-choice-rail: 9px;
+  --dc-choice-kind: "Flaw";
+  --dc-accent-ink: var(--blood);
+  --dc-card-shape: polygon(0 0, calc(100% - 40px) 0, 100% 26px, 100% calc(100% - 9px), 94% 100%, 88% calc(100% - 13px), 80% calc(100% - 2px), 71% calc(100% - 12px), 63% calc(100% - 3px), 52% calc(100% - 13px), 41% calc(100% - 1px), 33% calc(100% - 11px), 22% calc(100% - 2px), 12% calc(100% - 12px), 5% calc(100% - 1px), 0 calc(100% - 8px));
+}
+.section.dc-flaws > .dc-card {
+  padding-top: 14pt;
+  padding-bottom: 14pt;
+}
+/* A flaw table is taller than a page: it splits between rows, with its header
+   once at the top (print repeats a thead; the preview inserts a shim row). */
+.dc-flaws > table {
+  break-inside: auto;
+}
+.dc-flaws > table > thead {
+  display: table-row-group;
+}
+.dc-flaws > table tr.gp-thead-shim {
+  display: none;
+}
+
+/* Ideals: HUD blue. A steady ticket stub: symmetric V notches (14px deep) in the
+   middle of both sides, nothing uneven, a rule under the name. */
+.section.dc-ideals {
+  --dc-choice-accent: var(--hud-blue-dark);
+  --dc-choice-surface: var(--paper-cream);
+  --dc-choice-kind: "Ideal";
+  --dc-accent-ink: var(--hud-blue-dark);
+  --dc-card-shape: polygon(0 0, 100% 0, 100% calc(50% - 14px), calc(100% - 14px) 50%, 100% calc(50% + 14px), 100% 100%, 0 100%, 0 calc(50% + 14px), 14px 50%, 0 calc(50% - 14px));
+}
+.section.dc-ideals > .dc-card :is(.dc-card-heading, .dc-card-body > :is(h3, h4):first-child) {
+  padding-bottom: 3px;
+  border-bottom: 1.5pt solid var(--hud-blue-dark);
+}
+
+/* Dreams: violet. The top edge rises steeply to the right (30px), as an aim does,
+   and the foot is perforated with two 9px V tears. */
+.section.dc-dreams {
+  --dc-choice-accent: var(--brand-violet);
+  --dc-choice-surface: var(--paper-form);
+  --dc-choice-edge: 4pt double var(--ink-dark);
+  --dc-choice-band: 3px;
+  --dc-choice-kind: "Dream";
+  --dc-accent-ink: var(--brand-violet);
+  --dc-card-shape: polygon(0 30px, 100% 0, 100% 100%, 72% 100%, calc(72% - 9px) calc(100% - 9px), calc(72% - 18px) 100%, 32% 100%, calc(32% - 9px) calc(100% - 9px), calc(32% - 18px) 100%, 0 100%);
+}
+.section.dc-dreams > .dc-card {
+  padding-top: 24pt; /* the 30px (22.5pt) rise + 2pt, less the border */
+  padding-bottom: 12pt;
+}
+
+/* Faction (`@faction megacorp|cabal|cult|enforcer`): an organization's profile.
+   A .dc-card whose silhouette, top band, name and badge all say which kind it
+   is. The name is the first heading (`####` as authored, or `###`); the badge is
+   a span core puts first, floated to the right so the name and the text run
+   beside it. Splits across pages by default (see below).
+   Token contract (a kind class sets them; all defaults at :root):
+     --dc-faction-accent       rail, badge fill
+     --dc-faction-badge-fg     badge text (reversed: 10pt semibold)
+     --dc-faction-badge-shape  the badge's clip-path
+     --dc-faction-shape        the card's clip-path (its silhouette)
+     --dc-faction-surface      the sheet
+     --dc-faction-band         a box-shadow list: the top band, drawn as inset
+                               solid shadows, so it prints as vector ink
+     --dc-faction-band-height  how far the band reaches down (clears the name)
+     --dc-faction-pad-bottom   padding under the text
+     --dc-faction-title        the name's colour
+     --dc-faction-title-bg     a fill behind the name (none; the enforcer's label)
+     --dc-faction-title-pad    its side padding
+     --dc-faction-break-inside split / keep whole */
+.dc-card.dc-faction {
+  position: relative;
+  clip-path: var(--dc-faction-shape);
+  background: var(--dc-faction-surface);
+  box-shadow: var(--dc-faction-band);
+  border-left: 5px solid var(--dc-faction-accent);
+  padding: calc(var(--dc-faction-band-height) + 7pt) 14pt var(--dc-faction-pad-bottom);
+  /* A profile runs to half a page or more; kept whole (.dc-card's default) it
+     left half-empty pages through a chapter of factions. It splits between
+     paragraphs like an entry; the name keeps with its first lines (below), and
+     `.dc-avoid-split` on the marker keeps one whole. */
+  break-inside: var(--dc-faction-break-inside);
+}
+.dc-card.dc-faction > :is(h3, h4):first-of-type {
+  width: fit-content;
+  padding: 1px var(--dc-faction-title-pad) 0;
+  background: var(--dc-faction-title-bg);
+  font-size: var(--fs-h4);
+  letter-spacing: var(--ls-display);
+  margin: 0 0 4px;
+  color: var(--dc-faction-title);
+  break-after: avoid;
+}
+/* The first paragraph keeps with the next, so a profile never leaves just its
+   name and one line at a page foot (the card moves over, or splits later). */
+.dc-card.dc-faction > p:first-of-type {
+  break-after: avoid;
+}
+.dc-faction-kind {
+  float: right;
+  margin: 0 0 4px 10px;
+  padding: 2px 9px 1px 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-floor);
+  font-weight: 700;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  line-height: 1.4;
+  background: var(--dc-faction-accent);
+  color: var(--dc-faction-badge-fg);
+  clip-path: var(--dc-faction-badge-shape);
+  box-shadow: var(--dc-label-edge);
+}
+
+/* Megacorp: clean corporate HUD. Hard rectangles, nothing cut, a precise blue
+   band with a cyan edge; the badge a square tag. Machined: an L-shaped step
+   cut out of the top right and bottom left (16 x 8px), square everywhere else. */
+.dc-faction-megacorp {
+  --dc-faction-accent: var(--hud-blue-dark);
+  --dc-accent-ink: var(--hud-blue-dark);
+  --dc-faction-shape: polygon(0 0, calc(100% - 16px) 0, calc(100% - 16px) 8px, 100% 8px, 100% 100%, 16px 100%, 16px calc(100% - 8px), 0 calc(100% - 8px));
+  --dc-faction-badge-shape: none;
+  --dc-faction-band: inset 0 6pt 0 0 var(--hud-blue-dark), inset 0 8pt 0 0 var(--brand-cyan);
+  --dc-faction-title: var(--hud-blue-dark);
+}
+
+/* Cabal: violet and secretive. Long ASYMMETRIC cuts (the lore section's slash,
+   mirrored): a shallow one off the top right (60 x 18px), a steep one off the
+   bottom left (16 x 50px); a deep violet band and an inset
+   shadow down the foot. */
+.dc-faction-cabal {
+  --dc-faction-accent: var(--brand-violet);
+  --dc-accent-ink: var(--brand-violet);
+  --dc-faction-shape: polygon(0 0, calc(100% - 60px) 0, 100% 18px, 100% 100%, 16px 100%, 0 calc(100% - 50px));
+  --dc-faction-band: inset 0 10pt 0 0 color-mix(in srgb, var(--brand-violet) 72%, var(--ink)), inset 0 -5px 0 0 var(--brand-violet);
+  --dc-faction-band-height: 10pt;
+  --dc-faction-pad-bottom: calc(10pt + 5px);
+  --dc-faction-title: var(--brand-violet);
+}
+
+/* Cult: blood and ritual. Torn along the top and foot, a blood band, the name
+   in blood. Landfill, not tech. */
+.dc-faction-cult {
+  --dc-faction-accent: var(--blood);
+  --dc-accent-ink: var(--blood);
+  --dc-faction-shape: polygon(0% 0px, 7.14% 4px, 14.29% 0px, 21.43% 7px, 28.57% 0px, 35.71% 7px, 42.86% 0px, 50% 4px, 57.14% 0px, 64.29% 5px, 71.43% 0px, 78.57% 7px, 85.71% 0px, 92.86% 6px, 100% 0px, 100% 100%, 92.86% calc(100% - 7px), 85.71% 100%, 78.57% calc(100% - 3px), 71.43% 100%, 64.29% calc(100% - 7px), 57.14% 100%, 50% calc(100% - 3px), 42.86% 100%, 35.71% calc(100% - 6px), 28.57% 100%, 21.43% calc(100% - 5px), 14.29% 100%, 7.14% calc(100% - 7px), 0% 100%);
+  --dc-faction-band: inset 0 12pt 0 0 var(--blood);
+  --dc-faction-band-height: 12pt;
+  --dc-faction-pad-bottom: 14pt;
+  --dc-faction-title: var(--blood);
+}
+
+/* Enforcer: civic hazard, a SIGN PLATE. An octagon (a badge) in a heavy ink frame, a hazard-tape band of ink and
+   yellow, the name set as a yellow label in ink. The tape is vector: a yellow
+   strip (::before) under a skewed thick DASHED ink border (::after), clipped
+   by the octagon. */
+.dc-faction-enforcer {
+  --dc-faction-accent: var(--ink-dark);
+  --dc-faction-badge-fg: var(--brand-yellow);
+  --dc-faction-badge-shape: none;
+  --dc-faction-shape: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+  --dc-accent-ink: var(--amber-dark);
+  --dc-faction-band: inset 0 0 0 3px var(--ink);  /* the plate's heavy frame */
+  --dc-faction-band-height: 9pt;
+  --dc-faction-title: var(--ink);
+  --dc-faction-title-bg: var(--brand-yellow);
+  --dc-faction-title-pad: 8px;
+}
+.dc-card.dc-faction-enforcer::before,
+.dc-card.dc-faction-enforcer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.dc-card.dc-faction-enforcer::before {
+  height: var(--dc-faction-band-height);
+  background: var(--brand-yellow);
+}
+.dc-card.dc-faction-enforcer::after {
+  height: 0;
+  border-top: var(--dc-faction-band-height) dashed var(--ink);
+  transform: skewX(-45deg);
+}
+
+}

@@ -12,7 +12,7 @@
   font-size: var(--fs-floor);
   line-height: 1.25;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-heading);
   font-weight: 700;
   color: var(--dc-tag-fg);
   background: var(--dc-tag-bg);
@@ -94,7 +94,7 @@ h1.dc-chevron {
 .dc-spray {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-lead);
   color: var(--dc-spray-color);
   text-transform: uppercase;
   line-height: var(--lh-display);
@@ -142,6 +142,44 @@ h1.dc-chevron {
   width: 45%;
   height: 5px;
   background: color-mix(in srgb, var(--dc-spray-bg) 8%, transparent);
+}
+
+/* ── Logo ──────────────────────────────────────────────────────────────
+   `{.dc-logo}`: a heading (or a paragraph) set like the CREATUREPUNK logo,
+   yellow Creaturepunk caps with an ink outline, at any level.
+   The outline is sixteen hard text shadows round each glyph, not
+   -webkit-text-stroke: Chromium prints stroked text in a Type 3 font, which
+   the PDF/X preserve-text split cannot keep; shadows keep the text live in
+   its TrueType font. The plugin measures a .dc-logo heading in Creaturepunk.
+   Public API:
+     --dc-logo-color         → the fill (default --brand-yellow)
+     --dc-logo-outline       → the outline (default --ink)
+     --dc-logo-outline-width → the outline's thickness (default 0.05em) */
+.dc-logo {
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--dc-logo-color);
+  letter-spacing: var(--ls-title);
+  --dc-fit-ls: var(--ls-title);
+  word-spacing: 0.12em;
+  --dc-fit-ws: 0.12em;
+  text-shadow:
+    var(--dc-logo-outline-width) 0 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.924) calc(var(--dc-logo-outline-width) * 0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.707) calc(var(--dc-logo-outline-width) * 0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.383) calc(var(--dc-logo-outline-width) * 0.924) 0 var(--dc-logo-outline),
+    0 var(--dc-logo-outline-width) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.383) calc(var(--dc-logo-outline-width) * 0.924) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.707) calc(var(--dc-logo-outline-width) * 0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.924) calc(var(--dc-logo-outline-width) * 0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -1) 0 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.924) calc(var(--dc-logo-outline-width) * -0.383) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.707) calc(var(--dc-logo-outline-width) * -0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * -0.383) calc(var(--dc-logo-outline-width) * -0.924) 0 var(--dc-logo-outline),
+    0 calc(var(--dc-logo-outline-width) * -1) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.383) calc(var(--dc-logo-outline-width) * -0.924) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.707) calc(var(--dc-logo-outline-width) * -0.707) 0 var(--dc-logo-outline),
+    calc(var(--dc-logo-outline-width) * 0.924) calc(var(--dc-logo-outline-width) * -0.383) 0 var(--dc-logo-outline);
 }
 
 
@@ -199,10 +237,13 @@ h1.dc-chevron {
   background: var(--dc-path-chip-bg);
   color: var(--dc-path-chip-fg);
   border: 1.5px solid var(--dc-path-chip-edge);
+  /* Tilted, a fill under the edge shows past its anti-aliased outer side. */
+  background-clip: padding-box;
   transform: rotate(-0.5deg);
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, transparent);
+  /* 35% ink on the white sheet, pre-composited: flat and opaque in print. */
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 35%, var(--paper-cream));
 }
 
 .dc-sticker:nth-child(4n+3) {
@@ -241,7 +282,8 @@ h1.dc-chevron {
   vertical-align: middle;
   position: relative;
   top: -1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, transparent);
+  /* 30% ink on the band's fill, pre-composited: flat and opaque in print. */
+  box-shadow: 1px 2px 0 color-mix(in srgb, var(--ink) 30%, var(--dc-path-title-bg));
 }
 
 /* The gap between the sticker and the banner title. It is a real space
@@ -307,42 +349,50 @@ h1.dc-chevron {
 
 
 /* ── Intro / Lede line ──────────────────────────────────────────────────
-   The chapter's opening statement: larger, upright, semibold ink type on a
-   light substrate with a heavy accent rail and an ink foot rule. (Flavor is the
-   opposite register: small italic voice with a rail and no box at all.)
-   Single-direction margin: top: 0, bottom: standard gap. This gives the
-   lede flush attachment to a chevron heading above and natural
-   spacing to whatever comes below. When a lede follows body text (rare),
-   the paragraph's bottom margin provides the gap above the lede.
+   The chapter's opening statement, drawn as a callout with no label: a white
+   sheet with the note's machined chamfers, a heavy accent rail, an inset
+   accent ring and a bolt in each top corner (callouts.css, chrome.css "Bolt
+   heads"). Its type stays its own: larger, upright, semibold ink. (Flavor is
+   the opposite register: small italic voice with a rail and no box at all.)
+   Single-direction margin: top: 0, bottom: --dc-intro-gap.
 
    Token contract:
-     --dc-intro-accent → left-rail color (default --orange)
-     --dc-intro-bg     → substrate color right of the rail (default --paper-light)
-     --dc-intro-color / -size / -weight / -style → the type (ink, 13pt, 600, normal)
-     --dc-intro-rail   → rail width; --dc-intro-rule → foot rule (the pages that
-                         stack it flush set it 0)
-     --dc-intro-drop   → the outer shadow (default the poster shadow)
-     --dc-intro-gap / --dc-intro-pad-bottom → space below, inside and out (the
-                         front-matter pages set both to 0 to stack the lede flush) */
+     --dc-intro-accent → rail, ring colour (default --orange)
+     --dc-intro-bg     → the sheet (default --paper-cream, as every callout)
+     --dc-intro-color / -size / -weight / -style → the type (ink, 12pt, 600, normal)
+     --dc-intro-rail   → rail width
+     --dc-intro-ring   → the inset ring's width (0 for a lede on paper)
+     --dc-intro-shape  → the silhouette (a clip-path; `none` for a lede on paper)
+     --dc-intro-gap    → space below (the front-matter pages set 0 to stack the
+                         lede flush) */
 .dc-intro {
+  position: relative;  /* the host of its bolts */
   font-family: var(--font-body);
   font-size: var(--dc-intro-size);
   font-weight: var(--dc-intro-weight);
   font-style: var(--dc-intro-style);
   color: var(--dc-intro-color);
-  /* The accent rail is an inset shadow, not a hard-stop gradient: in a PDF/X
-     build Ghostscript turns a gradient into a 45 ppi bitmap, which printed
-     the rail's edge soft. */
   background: var(--dc-intro-bg);
+  clip-path: var(--dc-intro-shape);
+  border-left: var(--dc-intro-rail) solid var(--dc-intro-accent);
+  box-shadow: inset 0 0 0 var(--dc-intro-ring) var(--dc-intro-accent);
   line-height: 1.45;
-  padding: 0 14px var(--dc-intro-pad-bottom) 20px;
+  padding: var(--space-lg) var(--space-xl);
   margin: 0 0 var(--dc-intro-gap) 0;
-  box-shadow: inset var(--dc-intro-rail) 0 0 var(--dc-intro-accent), inset 0 calc(-1 * var(--dc-intro-rule)) 0 var(--ink), var(--dc-intro-drop);
   /* A lede is one to three short paragraphs: never split it. Split, its
-     panel paints on to the page foot with the last paragraph overleaf. */
+     sheet paints on to the page foot with the last paragraph overleaf. */
   break-inside: avoid;
   --dc-accent-ink: var(--dc-intro-ink);
 }
+.dc-intro > :last-child { margin-bottom: 0; }
+/* Its bolts (host A, as the note's): 2pt ring + 3px in. A learning path's
+   subtitle is a lede on the shell's own paper, with no bolts ("Bolt heads"). */
+.dc-intro::before,
+.dc-intro::after {
+  top: calc(2pt + 3px);
+}
+.dc-intro::before { left: calc(2pt + 3px); }
+.dc-intro::after { right: calc(2pt + 4px); }
 .dc-intro p,
 .dc-intro em,
 .dc-intro strong {
@@ -400,7 +450,6 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
     .dc-section-lore,
     .dc-section-dm,
     .dc-section-choose,
-    .dc-section-catalog,
     .dc-fiction-excerpt,
     .dc-card,
     .dc-skill-card,
@@ -474,27 +523,29 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
 /* ── Bolt heads ───────────────────────────────────────────────────────── */
 /* Wall hardware, drawn once. Every callout is bolted at its two top corners
    (callouts.css places them), a skill card at its top right and bottom left
-   (cards.css), and the `##` slip draws the same bolt in page-templates.css
+   (cards.css), a neon sign's plate at its two top corners (neon.css), and the `##` slip draws the same bolt in page-templates.css
    (layer guard) from the same tokens. An opaque disc: an ink ring round a grey
    face, the slot a hard-stopped band of ink (an ordinary gradient with opaque
    stops), a 1px hard shadow. A left-hand bolt turns its slot 35deg and a
    right-hand one -70deg, as a hand leaves them. Tokens --dc-bolt / -face /
    -size.
    Hosts. A: the callout's own ::before (left) and ::after (right), free on the
-   note, the GFM note/tip/important alerts and the example. B: where ::before
+   note, the GFM note/tip/important alerts, the example and the lede. B: where ::before
    is taken (the warning's rail, a framed sheet's white copy) the left bolt is
    on the first body block's ::before and the right one on the callout's
    ::after. The Dream Master note hangs both on its first body block. The first
    block is static, so its pseudo is placed against the callout. A rotated
    label (the warning chip, the origin and location stamps) cannot host a bolt:
    the transform would make it the containing block. */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before,
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::before,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
 .dc-dm-note > .dc-alert-label + *::after,
 .dc-skill-card > .dc-card-body::before,
-.dc-skill-card::after {
+.dc-skill-card::after,
+.dc-neon::before,
+.dc-neon::after {
   content: "";
   position: absolute;
   width: var(--dc-bolt-size);
@@ -506,10 +557,11 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   box-shadow: 1px 1px 0 var(--dc-bolt);
 }
 /* The right-hand bolts (a callout's ::after, a card's top right). */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
 .dc-dm-note > .dc-alert-label + *::after,
-.dc-skill-card > .dc-card-body::before {
+.dc-skill-card > .dc-card-body::before,
+.dc-neon::after {
   background: linear-gradient(-70deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
 }
 
@@ -543,7 +595,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   height: 4px;
   /* crimson dashes: an ordinary gradient tiled every 10px, not a
      repeating-linear-gradient, which a preserve-text PDF/X build cannot keep
-     live and answers by flattening the whole page (#41) */
+     live and answers by flattening the whole page */
   background-color: var(--dc-tape-bg);
   background-image: linear-gradient(90deg, color-mix(in srgb, var(--crimson) 85%, var(--dc-tape-bg)) 0 6px, var(--dc-tape-bg) 6px 10px);
   background-size: 10px 100%;
@@ -566,7 +618,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   background: var(--ink-dark);
 }
 
-/* The image runs to every edge of the sheet (#54). Its paragraph wrapper
+/* The image runs to every edge of the sheet. Its paragraph wrapper
    fills the plate too: left at its content height, the image's `height: 100%`
    has nothing to resolve against and the image keeps its own aspect ratio,
    stopping short of the bottom edge. Core caps an in-flow picture 4px under

@@ -38,6 +38,21 @@ the book works offline.
 
 `gutterpress ext list my-book` shows `gp-dimm-city@1.9.0 [npm; markdown, styles, snippets, components]`.
 
+## Raw HTML warning
+
+The package reports every HTML tag written into a book's markdown as a
+warning on its line (`raw_html`): it cannot check HTML, and a tag left open
+styles everything after it. Write markdown or a marker instead. HTML comments
+are not reported. A book whose HTML is deliberate turns the warning off in its
+manifest:
+
+```yaml
+extensions:
+  - use: gp-dimm-city@1.10.3
+    options:
+      rawHtml: "off"
+```
+
 ## What you get
 
 Pick by what you are writing. Every row is a marker (or a word on one) that the
@@ -54,7 +69,9 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A choice the player writes on the Citizen File | `@section choose` |
 | A term and its definition, or a glossary of terms | `@definition` |
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| An obstacle the crew must beat (a chase leg, a heist beat) | `@section challenge` |
 | A worked example | `@callout example` |
+| Text the DM reads aloud to the table | `@callout read-aloud` |
 | A box in one of three registers: panel, slate, shard | `@block …` |
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |
@@ -66,6 +83,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A drug, elixir or consumable | `@gear drug` |
 | A labelled line in an entry: SPECS, Traits, Effects… | `**SPECS:**` (or `@field specs`; `specs` is the one SPECS box) |
 | A titled run of entries, two columns | `@section catalog` with `@columns 2` |
+| Weapons, explosives or armor: a gear section by kind | `@section weapons`, `explosives`, `armor` |
 | A roll-result ladder | a pipe table of the five bands (20, 11-19, 6-10, 2-5, 1), or `@outcome` |
 | A random table with equal bands (1-4, 5-8, …) | `@roll-table` |
 | Flaw, ideal or dream choices | `@flaws`, `@ideals`, `@dreams` (each a `choose` section holding a run of `@card`) |
@@ -73,7 +91,7 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | The specialty catalog | `@card-grid` |
 | A specialty, its learning paths and skill cards | `@specialty`, `@learning-path`, `@skill` |
 | Grouping, with no styling | `@section` |
-| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-6` (and core's `blank`, `full-bleed`); `@chapter rules`, `lore`, `citizen-file`, `specialty` |
+| Where it sits | `@page chapter-start`, `intro`, `credits`, `contents`, `citizen-file`, `wall-1` … `wall-14` (and core's `blank`, `full-bleed`); `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` |
 
 The named components are also words on `@section` (`@npc-stat` is
 `@section npc`, `@fiction-excerpt` is `@section fiction`); either spelling
@@ -101,11 +119,11 @@ Also in the box:
   tokens, the element baseline, nine component sheets, page templates,
   paged-media rules, and `dc-native.css` — the engine-specific page chrome
   (brick-wall background, folios, chapter chips) that must stay last.
-- **Fonts**: Titillium Web, Tomorrow and Lixdu, embedded into the PDF at
+- **Fonts**: Titillium Web, Tomorrow, Lixdu and Creaturepunk, embedded into the PDF at
   build time.
 - **Page and chapter words** every Dimm City book writes: `@page contents`,
   `credits`, `intro`, `chapter-start`, `citizen-file` (and `.dc-full-page`), and
-  `@chapter rules`, `lore`, `citizen-file`, `specialty` for a chapter's section
+  `@chapter rules`, `dm`, `gear`, `lore`, `citizen-file`, `specialty` for a chapter's section
   colour, plus the folio/chapter-chip chrome driven by `@chapter #id ch="N"`.
 - **Snippets** for the app's snippet picker (`snippets/`): one per macro, per
   section, page and chapter word, and per modifier (`.dc-avoid-split`,
@@ -164,6 +182,7 @@ edit.
 | `.dc-snug` on `@section` or `@page` | Tighten the space under paragraphs and list items, for one that overflows by a line or two | `--dc-flow-gap: 0.04in` |
 | `.dc-h3` … `.dc-h6` on a heading or paragraph | Give it the look of that level without changing its place in the outline | none: a class only |
 | `.dc-chevron` on a heading | Set it as a chevron banner (the title under `@page intro`, `credits` and `contents` already is one) | `--dc-chevron-bg`, `--dc-chevron-color`, `--dc-chevron-font-size` |
+| `.dc-logo` on a heading or paragraph | Set it like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline, at any level | `--dc-logo-color`, `--dc-logo-outline`, `--dc-logo-outline-width` |
 | `.dc-flush` | Run a tape, stat block, sticker chain, pull quote or `@outcome` edge to edge | none: a class only |
 | `.dc-sidebar` on a callout | Float it right at about a third of the width, text wrapping on its left (`@callout note .dc-sidebar`) | none: a class only |
 | `.dc-spray`, `.dc-spec-tweak`, `.dc-no-top`, `.dc-img-float-left`, `.dc-img-float-right` | Heading banners and an image float | none: classes only |
@@ -276,7 +295,9 @@ paragraph inside an entry needs no change.
 
 Code, stylesheets, catalog and docs: [MIT](LICENSE). Fonts carry their own
 licences beside the files — `fonts/titillium-web/OFL.txt`,
-`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`. The Dimm City name, logo,
+`fonts/tomorrow/OFL.txt`, `fonts/lixdu/LICENSE.txt`, and
+`fonts/creaturepunk/LICENSE.txt` (Creaturepunk © 2026 Dimm City,
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)). The Dimm City name, logo,
 artwork and game text are not licensed by this package.
 
 ## Development

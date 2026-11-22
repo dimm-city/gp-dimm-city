@@ -14,9 +14,9 @@ Every marker on one page, the options they take, the classes you can add, and th
 | Marker | Closes | Notes |
 |---|---|---|
 | `@chapter [word] #id ch="N"` | next `@chapter` / EOF | `ch` prints the footer. Words: `rules` `lore` `citizen-file` `specialty` set the chapter's section colour; any other word is the label |
-| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog` `wall-1` … `wall-6`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
+| `@page [word] [.class...]` | next `@page` | Words: `chapter-start` `intro` `credits` `contents` `citizen-file` `specialty-catalog` `wall-1` … `wall-14`, plus core's `blank` and `full-bleed`: [Page Templates](#ch-templates) |
 | `@spread` | next `@spread` / `@page` | Two facing pages |
-| `@section [word] [.class...]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
+| `@section [word] [.class...]` | `@end-section` | A region; bare = core's plain box. Words: `panel` `flat` `catalog`, the kinds of text (`reference` `lore` `dm` `choose` `challenge`) and the component words (`npc` `fiction` `walkthrough` `cards` `flaws` `ideals` `dreams`) |
 | `@columns N` | `@end-columns` | `N` is 1 to 5. The one way to set content in columns; `@column-break` inside it starts the next column |
 | `@page-break` · `@column-break` | --- | Forced breaks |
 
@@ -26,7 +26,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 |---|---|---|
 | `@lede` | `@end-lede` | --- |
 | `> [!TYPE]` | end of blockquote | `NOTE` `WARNING` `DM` `VIBE` `ORIGIN` `LOCATION` `VISIT` `FLAVOR` `PULLQUOTE` |
-| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` (`@callout vibe`); `label="..."`; `.dc-sidebar` floats it |
+| `@callout` | `@end-callout` | a variant word: `note` `warning` `dm` `vibe` `origin` `location` `visit` `example` `read-aloud` (`@callout vibe`); `label="..."`; `.dc-sidebar` floats it |
 | `@dm-note` | `@end-dm-note` | `label="..."` (it is `@callout dm`) |
 | `@block` | `@end-block` | `.dc-panel` `.dc-slate` `.dc-shard`, `label="..."` |
 | `@definition [lucid\|surreal]` | `@end-definition` | a term, a run of `#### Term` entries (a glossary), or `####` + `---` + body; `lucid` and `surreal` are the two roll states, set as opposites |
@@ -60,13 +60,14 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-snug` | `@section`, `@page` | Tighten the space under paragraphs and list items; it sets `--dc-flow-gap` to 0.04in |
 | `.gp-no-break` | `@section` | Core's never-split class |
 | `.gp-break-before` | a heading | New page before it |
-| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-6` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
-| `.dc-chapter-rules` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
+| `.dc-page-chapter-start` · `.dc-page-intro` · `.dc-page-credits` · `.dc-page-contents` · `.dc-page-citizen-file` · `.dc-page-specialty-catalog` · `.dc-page-wall-1` … `.dc-page-wall-14` | `@page` | What the page words write. The old raw pairs (`.page-chapter-start .dc-chapter-start`, `.page-credits .dc-credits`, `.page-intro`, `.page-toc`, `.dc-citizen-file-page`) are no longer styled |
+| `.dc-chapter-rules` · `.dc-chapter-dm` · `.dc-chapter-gear` · `.dc-chapter-lore` · `.dc-chapter-citizen-file` · `.dc-chapter-specialty` | `@chapter` | What the chapter words write |
 | `.dc-section-panel` · `.dc-section-flat` | `@section` | What `@section panel` and `flat` write |
 | `.dc-section-reference` · `.dc-section-lore` · `.dc-section-dm` · `.dc-section-choose` | `@section` | What `@section reference`, `lore`, `dm` and `choose` write (with `.dc-section-panel`) |
 | `.dc-npc-compact` | `@section` | What `@npc-stat compact` writes |
 | `.dc-sidebar` | a callout | Float it right, text wrapping on its left |
 | `.dc-catalog` | `@section` | What `@section catalog` writes (with `.dc-section-panel`) |
+| `.dc-section-weapons` `.dc-section-explosives` `.dc-section-armor` | `@section` | What `@section weapons`, `explosives`, `armor` write (with `.dc-section-panel` `.dc-catalog`) |
 | `.dc-entry` · `.dc-gear` `.dc-augment` `.dc-treasure` `.dc-vehicle` `.dc-drug` | `@gear` and its kind words | The entry card family; the kind class sets its tokens |
 | `.dc-field` · `.dc-field-<variant>` · `.dc-field-label` | `@field` | What `@field` and a `**Label:**` paragraph in a card write |
 | `.dc-npc-stat` | `@section` | What `@npc-stat` and `@section npc` write (with `.dc-section-panel`) |
@@ -76,6 +77,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | The kind of choice (flaw, ideal, dream): colour, silhouette and chip per step |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
+| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |
 | `.dc-img-float-left` · `.dc-img-float-right` | an image | Float at 44% width |
 | `.dc-flush` | tape, stat block, stickers | Edge to edge |
@@ -104,13 +106,14 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Space under paragraphs and list items | `--dc-flow-gap` (unset by default) |
 | Art by context | `--dc-entry-art-width` `--dc-credits-art-height` |
 | Page text (free-standing headings and prose) | `--dc-page-title-ink` `--dc-page-slip-bg` `--dc-page-slip-ink` `--dc-page-slip-edge` `--dc-page-slip-shadow` `--dc-page-slip-bolt` `--dc-page-slip-bolt-face` `--dc-page-slip-bolt-size` `--dc-page-slip-gap` `--dc-page-slip-foot` `--dc-page-sheet-pad` `--dc-heading-gap` |
-| Lede | `--dc-intro-bg` `--dc-intro-accent` `--dc-intro-color` `--dc-intro-size` `--dc-intro-weight` `--dc-intro-style` `--dc-intro-rail` `--dc-intro-rule` `--dc-intro-ink` |
+| Lede | `--dc-intro-bg` `--dc-intro-accent` `--dc-intro-color` `--dc-intro-size` `--dc-intro-weight` `--dc-intro-style` `--dc-intro-rail` `--dc-intro-ring` `--dc-intro-shape` `--dc-intro-ink` |
 | Flavor | `--dc-flavor-accent` `--dc-flavor-accent-width` `--dc-flavor-color` `--dc-flavor-bg` |
-| Pull quote | `--dc-pullquote-accent` `--dc-pullquote-accent-soft` `--dc-pullquote-bg` |
+| Pull quote | `--dc-pullquote-accent` `--dc-pullquote-bg` |
 | Alerts, callout, DM note | `--dc-alert-bg` `--dc-alert-border` `--dc-alert-fg` `--dc-alert-label-color` `--dc-alert-border-width` `--dc-alert-label-size` `--dc-alert-body-size` `--dc-alert-frame` `--dc-alert-frame-width` `--dc-alert-label-bg` `--dc-alert-label-pad` |
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` `--dc-tape-shape` |
 | Tag (inline chip) | `--dc-tag-bg` `--dc-tag-fg` `--dc-tag-border` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
+| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` |
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-accent-ink` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` `--dc-block-title-rule` `--dc-block-tag` `--dc-block-tag-edge` |
@@ -132,7 +135,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` `--dc-band-reg` |
 | Specialty card | `--dc-specialty-card-bg` `--dc-specialty-card-accent` `--dc-specialty-card-fg` `--dc-specialty-card-media-height` `--dc-specialty-card-media-width` `--dc-specialty-card-title-align` `--dc-specialty-card-band-bg` `--dc-specialty-card-band-fg` `--dc-specialty-card-band-shape` `--dc-specialty-card-shell-shape` `--dc-specialty-card-title-color` `--dc-specialty-card-display` `--dc-specialty-card-media-order` `--dc-specialty-card-media-float` `--dc-specialty-card-media-margin` `--dc-specialty-card-media-shape` `--dc-specialty-card-media-mat` `--dc-specialty-card-name-size` `--dc-card-grid-display` `--dc-card-grid-item-display` `--dc-card-grid-row` `--dc-card-grid-gap` |
 | Learning path | `--dc-path-title-bg` `--dc-path-title-color` `--dc-path-code-bg` `--dc-path-code-fg` `--dc-path-chip-bg` `--dc-path-chip-fg` `--dc-path-chip-edge` `--dc-path-note-rail` `--dc-path-accent` `--dc-path-shell-padding-top` `--dc-path-shell-padding-bottom` `--dc-arrow-color` |
-| Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-body-mark` `--dc-card-gap` `--dc-card-tab-shadow` `--dc-tier-bg` `--dc-tier-fg` `--dc-tier-edge` |
+| Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-gap` `--dc-card-tab-shadow` `--dc-tier-bg` `--dc-tier-fg` `--dc-tier-edge` |
 | AP chip | `--dc-ap-bg` `--dc-ap-fg` `--dc-ap-border` |
 
 The brand tokens --- `--crimson`, `--orange`, `--rust`, `--amber`, `--blood`, `--hud-blue`, `--hud-magenta`, `--paper-cream`, `--paper-aged`, `--ink`, `--ink-smoke`, `--bg`, and the `--font-*` family --- are in [Color](#ch-palette) and [Typography](#ch-typography). The machine-readable catalog of every component, with the DOM it emits and the sheet that owns it, is the package's `components.yaml`.

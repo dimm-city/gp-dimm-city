@@ -38,7 +38,7 @@ A `citizen-file` page has a 0.875 in top margin. Margins swap per recto and vers
 | `@page chapter-start` | none | A chapter opener |
 | `@page citizen-file` | `p.N`, `c.N` | A Citizen File walkthrough page, 0.875 in from the top |
 | `@page specialty-catalog` | `p.N`, `c.N` | The specialty catalog: a two-page spread that opens on a left page |
-| `@page wall-1` … `wall-6` | `p.N`, `c.N` | A stone wall instead of the brick (below) |
+| `@page wall-1` … `wall-14` | `p.N`, `c.N` | A wall instead of the brick (below) |
 | `@page full-bleed` | none | Zero margins; full-bleed art (core's word; the raw `.dc-full-page` is styled the same) |
 | `@page blank` | none | A deliberately blank page (core's word) |
 
@@ -62,14 +62,22 @@ Six walls can stand in for the brick on any page, over the whole sheet: write th
 
 | Word | Wall |
 |---|---|
-| `wall-1` | Coursed rubble: rough stones in rough courses |
-| `wall-2` | Ashlar: big dressed blocks, some double height |
-| `wall-3` | Random rubble: big rounded stones, no courses |
-| `wall-4` | Running bond: small bricks, half-lapped |
-| `wall-5` | Flagstone: flat slabs bedded in rough courses |
-| `wall-6` | Square setts: square blocks, half-lapped |
+| `wall-1` | Coursed rubble: rough stones in rough courses, grimy and damaged |
+| `wall-2` | Ashlar: big dressed blocks, some double height, grimy and damaged |
+| `wall-3` | Random rubble: big rounded stones, no courses, grimy and damaged |
+| `wall-4` | Running bond: small bricks, half-lapped, grimy and damaged |
+| `wall-5` | Flagstone: flat slabs bedded in rough courses, grimy and damaged |
+| `wall-6` | Square setts: square blocks, half-lapped, grimy and damaged |
+| `wall-7` | Rusted steel plate: riveted plates under rust, with bullet holes, torch cuts and claw marks |
+| `wall-8` | Circuits set into the wall: a grey render with a few broken boards set into it |
+| `wall-9` | Moss and fungus: coursed rubble under moss, lichen, bracket fungi and creepers |
+| `wall-10` | Operating room: grimy clinical tiles with blood spatter, runs and filth |
+| `wall-11` | Into the aether: stone and metal plates torn by rifts that pull the wall in |
+| `wall-12` | A technosorcerer's lab: conduit, bulbs and LED strips, chalked circuit-sigils, shelves of jars and candles |
+| `wall-13` | A bazaar: stalls under faded awnings, bulb strings, hanging goods, crates along the foot |
+| `wall-14` | A priest's wall: the square setts of `wall-6` with soot rings, candle scorches, cracks from a point, ritual knife cuts and branded sigils |
 
-All six are in the brick's colours: ash stone with grey joints, the same tone as the brick on average, so a stone page sits beside a brick one without a jump. Each repeats only every 4.5in or so, so a page reads as one wall, not a grid of tiles; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
+Walls 1 to 6 are the city's own stone: ash stone with grey joints, as dim, dirty, damp and dangerous as the brick, which is weathered the same way. Soot and dirt in the joints and run down the faces, damp streaks, wet patches and tide marks, mould and fungus, soot, scorches and grease stains, chips, cracks, bullet pocks, claw gouges torn into the stone, some fresh and some old, scratched tallies and glyphs, and specks and spatters of dried blood: grim, not gory. The heaviest marks are kept moderate where the text sits and some damage is left in the margins, so every page shows it and the white sheets on it still lead. Each repeats only every 12in or so, so a page never shows the same mark twice; all fourteen are drawn at 300 DPI, so they print sharp. Walls 7 to 13 are drawn, in their own colours, and wall 14 is wall 6 with a priest's marks on it; these eight repeat no sooner than a spread, which reads as one wall across the spine; everything on them already sits on its own paper, panel or chip, so nothing changes for the text. A specialty has no page of its own around it, so its wall class goes on `@specialty`: the class only names its pages, so nothing on them moves, and its art plate keeps its full-bleed page, on the same wall. The chapter chip keeps its colour on a wall page in a `specialty`, `rules` or `lore` chapter. In a chapter a book colours itself, wire the wall pages the same way as the chapter: `#ch-rules > .page.dc-page-wall-3 { page: dc-wall-3-rust; }`. A page word with chrome of its own (`contents`, `credits`, `intro`, `citizen-file`) keeps the brick, and a full-bleed plate never takes a wall.
 
 ### Where pages break
 
@@ -85,6 +93,7 @@ Nothing is ever printed straight on the brick. Anything you write directly on a 
 | `## Heading` | A paper slip bolted to the wall: an accent rail on the left, a dashed ink foot, a hard shadow and a slotted bolt head in each top corner |
 | `### Heading` | The same slip at the full width of its column, with a thinner rail and foot and no bolts |
 | `#### Heading` and smaller | A label slip that shrinks to its words, framed in ink |
+| `## 4. Heading` | A step: the slip, its number set as a chip in the chapter's colour, so a procedure's steps (the Citizen File's 0–7) read as one sequence |
 | Paragraphs, lists, quotes | One paper sheet per run; the sheet ends where the run does. A list hangs its marker in a 1.1em indent (1.6em for numerals) inside the padding of the sheet, so wrapped lines align under the first word. A run of prose in `@columns` is one sheet and does not split across a page |
 
 Every heading has the same small gap under it, whatever follows: a sheet of text, a panel, a callout, a card or a table. Headings that already carry a look (`{.dc-chevron}`, `{.dc-spray}`) and everything inside a section keep their own. The chapter word recolours the rail and the banner. To change the slip or sheet for a book, set `--dc-page-slip-bg`, `--dc-page-slip-ink`, `--dc-page-slip-edge`, `--dc-page-slip-shadow`, `--dc-page-slip-bolt`, `--dc-page-slip-bolt-face` and `--dc-page-slip-bolt-size` (the bolt heads on a `##` slip: ring and slot, face, diameter), `--dc-page-slip-gap` (the space above a slip), `--dc-page-slip-foot` (the space below it, 6pt), `--dc-page-sheet-pad` or `--dc-page-title-ink`. A plain heading that follows a box (a ladder, a stat grid, a table) takes `--dc-heading-gap` above it. Explainer pages like the one you are reading (`@page .dg-doc`) print plain on white and are not wall pages.
@@ -100,8 +109,12 @@ A **chapter word** sets the colour register of every panel in the chapter. It re
 |---|---|---|
 | `@chapter citizen-file` | magenta-deep | Who you dream to be |
 | `@chapter specialty` | blue-dark | The specialty gateway |
-| `@chapter rules` | rust | Rules chapters |
+| `@chapter rules` | rust | How to play |
+| `@chapter dm` | ink | Behind the screen: the Dream Master's chapter |
+| `@chapter gear` | amber | The armory: cybernetics, weapons, gear |
 | `@chapter lore` | violet | Setting and history |
+
+The chapter's colour says where the reader is: it is every plain panel's tag and rail, the opener's and the footer chip's. What a section is stays its kind's: a reference, lore, dm or catalog sheet keeps its own colour and silhouette in any chapter, so a lore sheet in the Dream Master's chapter still reads as lore.
 
 ```markdown
 @chapter rules #ch-rules ch="3"

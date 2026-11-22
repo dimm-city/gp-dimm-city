@@ -11,7 +11,7 @@ The enclosures: the section variants and the kinds of text they hold, three bloc
 
 ## Section
 
-A `@section` groups what is inside it. Bare, it is core's plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). Sections split across pages by default; `.dc-avoid-split` keeps one whole. One accent knob, `--dc-section-accent`, colours a panel's rail and title bar. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
+A `@section` groups what is inside it. Bare, it is core's plain box: no look of its own beyond a sheet of paper under the text (no text is ever set straight on the wall); a word after it picks the look. Two are general and work anywhere, and four more say what kind of text they hold ([below](#kinds-of-text)). A `panel` and the kinds of text are sheets pasted on the wall ([Paste-up wall](#paste-up-wall)), each kept whole: a section that must run onto the next page is split in markup, the second part `.dc-pu-cont`. One accent knob, `--dc-section-accent`, colours a sheet's rail and title tag. For the named components (`@npc-stat`, `@gear`, `@outcome` and the rest), [Pick a section](#ch-start) maps what you are writing to the marker.
 
 ```markdown {.dg-split}
 @section panel
@@ -65,7 +65,7 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 
 </div>
 
-`panel` is the look for rules text with a heading; `.dc-avoid-split` on it keeps a short panel on one page. For a short note set off from the text, use [`@callout`](#ch-text). Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
+`panel` is the look for rules text with a heading: a sheet pasted on the wall, its heading a tag over the paper's edge, a closing bold line a sticker. For a short note set off from the text, use [`@callout`](#ch-text). Tokens: `--dc-section-bg`, `--dc-section-accent`, `--dc-section-pad-top`, `-right`, `-bottom`, `-left`, and for `panel` also `--dc-section-surface` and `--dc-section-shadow` (`none` removes the layer).
 
 The components below that are sections have a marker of their own and a word on `@section`: `@npc-stat` (`npc`), `@fiction-excerpt` (`fiction`), `@citizen-walkthrough` (`walkthrough`), `@card-grid` (`cards`), `@flaws`, `@ideals` and `@dreams`.
 
@@ -534,7 +534,7 @@ Tokens: `--dc-outcomes-surface`, `--dc-outcomes-border`, `--dc-outcomes-label-bg
 
 ### A table of the five bands is the ladder
 
-Write the result table you would write anyway. A two-column pipe table whose first column holds exactly the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order) is drawn as the same ladder, in a skill card or anywhere else. The headers do not decide it (`Roll | Result`, `Result | Effect`, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads "Outcomes". A band is read however it is typed: `11-19`, `11 -- 19`, `**20**`. Any other set of bands (six bands, a split at 10) is not a ladder, and stays a plain table: for those, use `@roll-table` below.
+Write the result table you would write anyway. A two-column pipe table whose first column holds a d20 result on every row is drawn as the same ladder, in a skill card or anywhere else, so a roll's results read the same wherever the book states them. The usual set is the five standard bands (`20`, `11-19`, `6-10`, `2-5`, `1`, in either order); an ability's own set is a ladder too (six bands with `16-19` over `11-15`, `1-5`, `2-10`, `11+`), every row in the colour of the tier its band falls in. A band may carry its label (`20: Total Wholeness`, `20 – Triumph`, `Triumph (20)`, `On 11-19`), which becomes the row's name, or be the tier's word alone (`Success`, `Hard Choice`). The headers do not decide it (`Roll | Result`, `Result | Effect`, or empty); the ladder shows them in its label bar, over the two columns, and an empty header reads "Outcomes". A band is read however it is typed: `11-19`, `11 -- 19`, `**20**`. Bands that overlap, run past 1-20 or straddle 10/11 (abilities known, a random table's `1-4`, `5-8`) stay a plain table; for a random table, use `@roll-table` below.
 
 ```markdown
 | Roll | Result |
@@ -1096,6 +1096,237 @@ A voice that is never quite yours.
 **SPECS:** Change your voice at will.
 
 @end-columns
+
+@end-section
+
+</div>
+
+### Gear sections by kind
+
+`@section weapons`, `@section explosives` and `@section armor` are the catalog in one colour and one chip label per kind of gear, so a run of them reads as one system and each is told at a glance: weapons in blood with a *Weapons* chip, explosives in hazard yellow (ink type) with *Explosives*, armor in slate steel with *Protection*. The colour is the title, every table's head row, the rail, and the rule over each entry and each `####` sub-head (set like an entry's name). The three read apart in grayscale too. Everything else is the catalog's own.
+
+```markdown {.dg-split}
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
+@section armor
+
+### Armor
+
+#### Damage Soak
+
+Armor reduces damage from every hit.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section weapons
+
+### Firearms
+
+| Weapon | Success | Triumph | DC |
+|---|---:|---:|---:|
+| Dentetsu Tanto | 2 | — | 770 DC |
+| Throwaway Blaster | 2 | 4 | 100-ish DC |
+
+@end-section
+
+@section explosives
+
+### Grenades
+
+| Grenade | Damage | Range |
+|---|---:|---|
+| Gutter Snap | 4 | Nearby |
+
+@end-section
+
+@section armor
+
+### Armor
+
+#### Damage Soak
+
+Armor reduces damage from every hit.
+
+| Armor | Protection | Durability |
+|---|---|---|
+| Street Leathers | Soak 1 | Surreal |
+
+@end-section
+
+</div>
+
+## Paste-up wall
+
+A `panel`, `reference`, `lore`, `dm` or `catalog` section (and the gear kinds) is a sheet pasted flat on the wall (constitution §IV), with nothing extra to write: a band of wall above and below the paper, the first heading a tag tilted over the paper's top edge, a closing bold line a yellow sticker across its foot, one hard shadow. A creature (`npc`), the Citizen File walkthrough, the `choose` sections and a fiction excerpt keep their own look. A sheet never splits: a section that must run on is split in markup, the second part `@section … .dc-pu-cont`, a sheet with no tag (the plugin keeps its first `###` a sub-head).
+
+Two sheets side by side are a row. Each sheet says its own width on its section line, `.dc-half`, `.dc-narrow` (38%) or `.dc-wide` (62%), and two sheets in a row whose widths complete it (half and half, narrow and wide, wide and narrow) sit side by side, each ending at its own last line. There is no row marker; a sheet with a width and no partner is reported and prints full width. `### Title {.dc-pu-tag}` pastes a sub-head on as a tag mid-sheet, `## Title {.dc-pu-bill}` makes a sheet's title a bill, and `![Caption](x.png){.dc-pu-plate}` pastes a framed print on the wall (`.gp-size-30` and the like set its width; `{.dc-pu-cutout}` pins a cut-out instead).
+
+```markdown {.dg-split}
+@section panel .dc-half
+
+### Lucid
+
+You see the Dream as it is. Roll as normal.
+
+**Trust your eyes.**
+
+@end-section
+
+@section panel .dc-half
+
+### Surreal
+
+The Dream bends around you. Roll twice and take the lower.
+
+### Fall Damage {.dc-pu-tag}
+
+Every ten feet you fall is one damage.
+
+@end-section
+
+@section panel .dc-pu-cont
+
+### Carrying On
+
+A continuation sheet: the second part of a sheet split in markup. No tag, and its first `###` stays a sub-head.
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section panel .dc-half
+
+### Lucid
+
+You see the Dream as it is. Roll as normal.
+
+**Trust your eyes.**
+
+@end-section
+
+@section panel .dc-half
+
+### Surreal
+
+The Dream bends around you. Roll twice and take the lower.
+
+### Fall Damage {.dc-pu-tag}
+
+Every ten feet you fall is one damage.
+
+@end-section
+
+@section panel .dc-pu-cont
+
+### Carrying On
+
+A continuation sheet: the second part of a sheet split in markup. No tag, and its first `###` stays a sub-head.
+
+@end-section
+
+</div>
+
+
+The two other widths:
+
+```markdown {.dg-split}
+@section panel .dc-wide
+
+### The Long Sheet
+
+Sixty-two parts of the row: the main text of the pair.
+
+@end-section
+
+@section panel .dc-narrow
+
+### Aside
+
+Thirty-eight.
+
+@end-section
+
+@section panel .dc-narrow
+
+### Intro
+
+A short lead-in.
+
+@end-section
+
+@section panel .dc-wide
+
+### The Long Sheet
+
+The other way round: thirty-eight, then sixty-two.
+
+@end-section
+```
+
+Result {.dg-result}
+
+<div class="dg-stage">
+
+@section panel .dc-wide
+
+### The Long Sheet
+
+Sixty-two parts of the row: the main text of the pair.
+
+@end-section
+
+@section panel .dc-narrow
+
+### Aside
+
+Thirty-eight.
+
+@end-section
+
+@section panel .dc-narrow
+
+### Intro
+
+A short lead-in.
+
+@end-section
+
+@section panel .dc-wide
+
+### The Long Sheet
+
+The other way round: thirty-eight, then sixty-two.
 
 @end-section
 
