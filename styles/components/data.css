@@ -317,6 +317,11 @@
      balancing the run's last fragment, which an `@outcome` ending a column
      run showed. */
 }
+/* The line that introduces an outcomes block (`**Effect:**`, a roll prompt)
+   stays with it, so it never ends a page with its outcomes on the next. */
+p:has(+ .dc-outcomes) {
+  break-after: avoid;
+}
 
 .dc-outcomes-label {
   font-family: var(--font-mono);

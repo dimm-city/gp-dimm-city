@@ -69,7 +69,9 @@ package renders and prints; `docs/macros.md` is the full inventory and
 | A choice the player writes on the Citizen File | `@section choose` |
 | A term and its definition, or a glossary of terms | `@definition` |
 | A boxed note, warning, DM note, vibe, origin or visit | `@callout …` (`@dm-note`) |
+| An obstacle the crew must beat (a chase leg, a heist beat) | `@section challenge` |
 | A worked example | `@callout example` |
+| Text the DM reads aloud to the table | `@callout read-aloud` |
 | A box in one of three registers: panel, slate, shard | `@block …` |
 | Fiction, a chapter-opener story | `@fiction-excerpt` |
 | A creature or NPC | `@npc-stat` (small ones: `@npc-stat compact`) |

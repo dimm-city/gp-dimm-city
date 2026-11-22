@@ -5,7 +5,7 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
-## [1.10.3] - 2026-11-10
+## [1.10.3] - 2026-11-22
 
 Paste-up becomes part of the package proper, gear sections get a kind each,
 and the styles say where a reader is and what they are reading.
@@ -40,6 +40,14 @@ and the styles say where a reader is and what they are reading.
 
 ### Added
 
+- **`@callout read-aloud`: text the Dream Master reads to the table.** A
+  speech bubble with a tail at its foot: an amber rail and chip, body-size
+  upright type. A long one splits across pages.
+- **`@section challenge`: an obstacle the crew must beat.** A chase leg, a
+  heist beat, a trap, as one sheet: a 2pt ink frame, a brand-yellow rail, its
+  title on an ink tag in yellow Creaturepunk caps at the `##` size, and each
+  option's sub-head under an ink rule. A long one splits between whole
+  paragraphs and list items. Snippet `section-challenge`.
 - **Each specialty's wall carries its own marks.** Drawn at the page's
   scale so they read across a spread, each on a random stream of its own so
   the wall underneath is unchanged, and no two kinds made alike:
@@ -202,6 +210,18 @@ and the styles say where a reader is and what they are reading.
 
 ### Changed
 
+- **An outcome is coloured by its names when every row names a tier.** A
+  two-row Success/Failure check reads green then red, and "Ramp success" /
+  "Ramp failure" rows read by their words; any other set keeps the ladder's
+  colours by position.
+- **Gear inside a creature is drawn flat.** A `@gear` in an `@npc-stat` is a
+  ruled part of the stat block, not a card in a box.
+- **A bleed plate is one page.** `{.gp-bleed}` art taller than the page stops
+  at the content box and is cropped to fill it, so no strip of it prints alone
+  on the next page.
+- **A long creature dossier breaks between its parts.** One creature with gear
+  entries or `#####` sub-sections may run past a page; it now breaks before a
+  gear entry or a sub-section, never inside a paragraph, list or entry.
 - **A box's title keeps one line when it nearly does.** A paste-up sheet's
   tag (and a mid-sheet `.dc-pu-tag`), a bill and the Dream Master booth's
   head that would wrap by a little are set up to 15% smaller (`--fs-fit`,
@@ -375,6 +395,12 @@ and the styles say where a reader is and what they are reading.
 
 ### Fixed
 
+- **A lone `**ROLL THE DIE!**` in a gear entry is the die call,** not the
+  item's cost tag (it was drawn magenta on magenta, its icon over the words).
+- **The line that introduces an outcomes block stays with it** (`**Effect:**`
+  no longer ends a page with its outcomes on the next).
+- **A chapter opener's tilted title stays inside the content box,** which a
+  long title overran by 3px and failed the PDF build.
 - **An art plate on a stone wall meets its intro page across the spine.** A
   stone wall (1 to 6) is placed from each page's text corner; the
   margin-free art plate has none, so its wall started at the sheet's corner

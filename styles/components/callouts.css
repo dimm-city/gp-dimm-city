@@ -44,7 +44,7 @@
    .dc-alert base + .dc-alert-label label chrome + thin variant classes.
    GFM: > [!NOTE/WARNING/DM/VIBE/ORIGIN/VISIT] or @callout/@dm-note macros.
 
-   One shell, eight registers, told apart by SILHOUETTE, EDGE and LABEL before
+   One shell, nine registers, told apart by SILHOUETTE, EDGE and LABEL before
    a word is read, in colour and in grayscale. Every register reads on WHITE:
    the body text of a book sits on white paper, and a callout's colour is in
    its rail, its frame and its label, never in its fill.
@@ -67,6 +67,8 @@
                a signpost point (a place)    wobble and the point
      example   ticket: a V notch in the      cyan rail + cyan ring          taped-on tag
                right edge (a sample)
+     read-     speech bubble: a tail drops   amber frame along the tail,    amber chip, paper type;
+     aloud     from the foot (said aloud)    heavy rail                     body upright
 
    Every register is bolted to the wall: one bolt head in each top corner,
    drawn in chrome.css ("Bolt heads") and placed in the rules below. A bolt
@@ -454,19 +456,56 @@
   vertical-align: -1px;
 }
 
-/* ── A framed sheet (vibe, origin, location, visit) ───────────────────────
-   These four have an outline an inset ring cannot follow: a ring is square,
+/* ── Variant: Read Aloud — text the Dream Master reads to the table ───────
+   A speech bubble: a white sheet whose foot drops a tail at the lower left,
+   framed in brass amber (a heavy rail, and a frame that follows the tail),
+   under an amber chip. Upright at body size, because it is read out word for
+   word, often at length; the narrator's italic is the vibe's. Amber is no
+   other register's colour, and the tail is no other register's outline. */
+.dc-read-aloud-callout {
+  --dc-alert-border: var(--amber);
+  --dc-alert-border-width: 6px;
+  --dc-alert-frame: none;  /* framed along the tail (see "A framed sheet") */
+  --dc-alert-label-bg: var(--amber);
+  /* a speech bubble: square corners, a 12px tail dropping from the foot near the left */
+  --dc-alert-shape: polygon(0 0, 100% 0, 100% calc(100% - 12px), 64px calc(100% - 12px), 30px 100%, 38px calc(100% - 12px), 0 calc(100% - 12px));
+  --dc-accent-ink: var(--amber-dark);
+  --dc-alert-body-size: var(--fs-body);
+  --dc-alert-label-spacing: 0.12em;
+  --dc-alert-label-margin: var(--space-sm);
+  /* A read-aloud runs as long as the scene does, often past a page: kept whole
+     it would leave the foot of the page before it blank. It splits between
+     lines, its tail at the end. */
+  --dc-alert-break-inside: auto;
+  padding-bottom: calc(var(--space-lg) + 12px + 2pt);  /* the tail's depth + 2pt under the last line */
+}
+.dc-read-aloud-callout p {
+  font-style: normal;
+}
+/* The bolts (host B): the left on the first body block, the right on the
+   callout's ::after, 3pt frame + 3px in from the top. */
+.dc-read-aloud-callout > .dc-alert-label + *::before {
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  left: 5px;
+}
+.dc-read-aloud-callout::after {
+  top: calc(var(--dc-alert-frame-width) + 3px);
+  right: 8px;
+}
+
+/* ── A framed sheet (vibe, origin, location, visit, read-aloud) ───────────────────────
+   These five have an outline an inset ring cannot follow: a ring is square,
    so a diagonal, a tear or a point cuts it off and leaves that edge bare. The
    callout's own box is filled with its accent instead, and a white copy of
    its silhouette sits inside it (--dc-alert-frame-width in from the top,
    right and foot; the rail is the left side), so the frame runs along every
    cut. The text is on the white copy. */
-:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout) {
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout) {
   position: relative;
   isolation: isolate;
   background: var(--dc-alert-border);
 }
-:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::before {
+:is(.dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::before {
   content: "";
   position: absolute;
   inset: var(--dc-alert-frame-width) var(--dc-alert-frame-width) var(--dc-alert-frame-width) 0;

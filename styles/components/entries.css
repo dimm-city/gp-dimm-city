@@ -363,6 +363,23 @@
   content: none;
 }
 
+/* An NPC's own gear (`@gear` inside `@npc-stat`) is part of its stat block,
+   not a card laid on it: no frame, rail, shape or fill of its own, a rule over
+   it as a catalog draws, and its kind chip kept so a weapon still reads as gear.
+   Boxed, it set a card inside a card, and a long one split away from its owner. */
+.dc-npc-stat .dc-entry {
+  --dc-entry-surface: transparent;
+  --dc-entry-rail: 0px;
+  --dc-entry-rule: 1.5pt;
+  --dc-entry-shape: none;
+  --dc-entry-radius: 0;
+  --dc-entry-ornament: none;
+  --dc-entry-frame: none;
+  padding: 8pt 0 4pt;
+  margin: 8pt 0 0;
+  break-inside: avoid;
+}
+
 /* A catalog is a run of entries that may run past a page, and kept whole it
    leaves the foot of the page before it blank, so by default it splits (between
    entries). `.dc-avoid-split`, or `--dc-catalog-break-inside: avoid` from a

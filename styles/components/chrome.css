@@ -539,8 +539,8 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
    the transform would make it the containing block. */
 :is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::before,
 :is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
 .dc-dm-note > .dc-alert-label + *::after,
 .dc-skill-card > .dc-card-body::before,
 .dc-skill-card::after,
@@ -558,7 +558,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
 }
 /* The right-hand bolts (a callout's ::after, a card's top right). */
 :is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout)::after,
+:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
 .dc-dm-note > .dc-alert-label + *::after,
 .dc-skill-card > .dc-card-body::before,
 .dc-neon::after {

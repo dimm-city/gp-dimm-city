@@ -93,6 +93,18 @@
   break-inside: var(--dc-npc-stat-break-inside);
   --dc-section-edge: 0px;
 }
+/* ...unless it is a dossier: one creature that carries gear entries or `#####`
+   sub-sections can run past a page, and kept whole it would be cut wherever the
+   page ends (an item's table on one page, its last lines alone on the next). It
+   breaks between its parts instead: before a gear entry or a sub-section, never
+   inside a paragraph, list or entry. */
+.dc-section-panel.dc-npc-stat:not(:has(h4 ~ h4)):has(> .dc-entry, > h5) {
+  break-inside: auto;
+  & > :is(p, ul, ol, blockquote, .dc-field) { break-inside: avoid; }
+  /* The keep-with-next chain above would glue it back into one block: only a
+     heading still holds the part under it. */
+  & > :not(h3, h4, h5, h6) { break-after: auto; }
+}
 
 /* The `@columns` run of an entries block is glued to the bar and intro above it,
    as a direct entry list is (the h3's own `break-after: avoid` plus the chain

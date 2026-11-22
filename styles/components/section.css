@@ -431,6 +431,47 @@ h3 + .dc-section-panel {
   margin-block: 0.04in;
 }
 
+/* ── challenge — an obstacle the crew must beat ──────────────────────────────
+   A chase leg, a heist beat, a trap: the scene's check and its outcomes in one
+   sheet, set as a hazard sign so a run of them reads as a course, in grey too.
+   A heavy ink frame, a brand-yellow rail, and its title on an ink tag in brand
+   yellow, set in the Creaturepunk caps (the book's graffiti face) with a yellow
+   rule. Kept whole like every sheet; one taller than a page still splits. */
+.dc-section-challenge {
+  --dc-section-accent: var(--brand-yellow);
+  --dc-section-ink-mix: 0%;               /* accent text (ROLL THE DIE!) stays ink */
+  --dc-accent-ink: var(--ink);
+  --dc-section-bar-mix: 0%;
+  --dc-section-bar-tone: var(--ink-dark);
+  --dc-section-bar-fg: var(--brand-yellow);
+  --dc-section-bar-rule: 3pt solid var(--brand-yellow);
+  --dc-section-bar-rule-sub: 2pt solid var(--ink-dark);
+  --dc-section-rail: 6px;
+  --dc-section-flag: inset 0 0 0 2pt var(--ink-dark);
+  --dc-section-clip: 14px;
+  --dc-section-cut-bl: 0px;
+  --dc-section-break-inside: avoid;
+  --dc-section-edge: 0px;
+}
+/* As heavy as paste-up's sheet-tag rule (paste-up.css), which sets a tag's size. */
+.section.dc-section-panel.dc-section-challenge:not(.dc-npc-stat) > :is(h2, h3, h2.dc-h3):first-child {
+  font-family: var(--font-title);
+  font-size: var(--fs-h2);
+  letter-spacing: 0.02em;
+  --dc-fit-ls: 0.02em;
+}
+/* One taller than a page splits where the page ends; it never leaves a line of
+   a paragraph or a list item alone on the next page. */
+.dc-section-challenge :is(p, li) {
+  break-inside: avoid;
+}
+/* Its sub-heads (### or #### options) under an ink rule, so options read as
+   steps of the one obstacle, not new sections. */
+.dc-section-challenge > :is(h3, h4):not(:first-child) {
+  border-bottom: var(--dc-section-bar-rule-sub);
+  padding-bottom: 2pt;
+}
+
 /* ── Recessed kinds: lore, dm, choose ─────────────────────────────────────────
    These sit sunk into the wall instead of hung on it: no drop-shadow layer, the
    wall's top edge casting a hard shadow down over the sheet's top (over its title

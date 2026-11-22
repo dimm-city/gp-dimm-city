@@ -751,6 +751,12 @@ li > p {
    centre, its top-left corner swung 2px past the content box and the page
    clipped the banner there to a flat edge. */
 .dc-page-chapter-start h1 { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
+/* Tilted about its top edge, a title's lower corners swing out by its height
+   x sin 2deg: 2-5px for one to three lines. A title that fills the measure
+   then overhangs the content box, and print shrinks the whole book to fit it
+   (gutterpress refuses the build). The inline margin is that swing, kept
+   inside the page. */
+.page.dc-page-chapter-start > h1 { margin-inline: 3pt; }
 
 /* ── PAGE TEMPLATE: INTRO (chapter intro / narrative entry) ─────────────────
    KEEPS the default .dc-chevron heading styling (magenta banner with its

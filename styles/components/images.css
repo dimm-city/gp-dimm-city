@@ -99,4 +99,12 @@
 }
 .dc-pu-plate[class*="gp-size-"] { width: revert-layer; }
 
+/* A bleed plate is one page: core sets it the page's full width, so tall art
+   would run past the page foot and print its last strip alone on the next page.
+   It stops at the content box and is cropped to fill it (cover), never squashed. */
+img.gp-bleed {
+  max-height: calc(var(--gp-content-h, 100vh) - 4px);
+  object-fit: cover;
+}
+
 }

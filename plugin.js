@@ -50,6 +50,7 @@ const CALLOUTS = {
   location: { class: 'dc-location-callout', label: 'Location' },
   visit: { class: 'dc-visit-callout', label: 'Visit' },
   example: { class: 'dc-example-callout', label: 'Example' },
+  'read-aloud': { class: 'dc-read-aloud-callout', label: 'Read Aloud' },
 };
 
 // `> [!TYPE]` alerts: the callout variants that have a bracket form, plus
@@ -111,7 +112,7 @@ const OUTCOME_TIERS = ['crit', 'hit', 'mixed', 'miss', 'fail'];
 const OUTCOME_NAMES = { crit: 'Crit', hit: 'Hit', mixed: 'Hard Choice', miss: 'Miss', fail: 'Catastrophe' };
 
 const LADDER_TIER_OF_BAND = { '20': 'crit', '11-19': 'hit', '6-10': 'mixed', '2-5': 'miss', '1': 'fail' };
-const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
+const TIER_OF_WORD = { triumph: 'crit', crit: 'crit', critical: 'crit', success: 'hit', hit: 'hit', 'hard choice': 'mixed', 'tough choice': 'mixed', mixed: 'mixed', failure: 'miss', fail: 'miss', miss: 'miss', catastrophe: 'fail' };
 
 // The widths a paste-up sheet can name, in percent of its row (see dcRows).
 const PU_WIDTHS = { 'dc-half': 50, 'dc-narrow': 38, 'dc-wide': 62 };
@@ -1965,6 +1966,15 @@ function dcCards(state) {
  * `.dc-flush`). Each `roll | name | text` line becomes a row, coloured by
  * position: crit, hit, mixed, miss, fail.
  */
+// An @outcome row's tier word: the tier its name names, whole ("Success",
+// "Tough Choice") or as a word in it ("Ramp failure"), or null.
+function tierOfName(name) {
+  const words = name.replace(/[*_`]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+  if (TIER_OF_WORD[words]) return TIER_OF_WORD[words];
+  const word = Object.keys(TIER_OF_WORD).find((w) => new RegExp('\\b' + w + '\\b').test(words));
+  return word ? TIER_OF_WORD[word] : null;
+}
+
 function dcOutcomes(state) {
   forEachComponent(state.tokens, 'outcome', (run) => {
     const lines = [];
@@ -1981,6 +1991,12 @@ function dcOutcomes(state) {
         const [roll = '', name = '', text = ''] = line.split('|').map((cell) => cell.trim());
         return { tier: OUTCOME_TIERS[i] || 'hit', name, roll, text };
       });
+    // A check whose every row names its tier ("11+ | Success" over "10- | Failure")
+    // is coloured by those names, not by position: a two-row check is a hit over a
+    // miss, not a crit over a hit. One unnamed row and the whole ladder keeps its
+    // positions, so a severity scale (1-2, 3-4, ...) reads as it always has.
+    const named = rows.map((row) => tierOfName(row.name));
+    if (named.every(Boolean)) rows.forEach((row, i) => { row.tier = named[i]; });
     return [run[0], makeToken('html_block', outcomeRowsHtml(rows, state.md)), run[run.length - 1]];
   });
 }
@@ -2076,12 +2092,14 @@ function dcGear(state) {
 
 // A paragraph in an entry that is only one bold run is its cost line
 // (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
-// A paragraph with a bold run and other text is body text.
+// A paragraph with a bold run and other text is body text, and a bold die call
+// (`**ROLL THE DIE!**`) is the die call, not a price.
 function dcEntryCosts(state) {
   forEachComponent(state.tokens, 'gear', (run) => {
     let depth = 0;
     run.forEach((tok, i) => {
-      if (depth === 1 && tok.type === 'paragraph_open' && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
+      const dieCall = run[i + 1]?.children?.some((k) => k.type === 'dc_roll_the_die');
+      if (depth === 1 && tok.type === 'paragraph_open' && !dieCall && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
       depth += tok.nesting;
     });
   });
@@ -2303,6 +2321,8 @@ export const markers = {
       lore: 'dc-section-panel dc-section-lore',
       dm: 'dc-section-panel dc-section-dm',
       choose: 'dc-section-panel dc-section-choose',
+      // A scene's obstacle the crew must beat (a chase leg, a heist beat): hazard chrome (section.css).
+      challenge: 'dc-section-panel dc-section-challenge',
       // A lore sheet for a place: its tag is lit (styles/components/neon.css).
       district: 'dc-section-panel dc-section-lore dc-section-district dc-lit',
       catalog: 'dc-section-panel dc-catalog',

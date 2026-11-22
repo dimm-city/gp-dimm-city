@@ -13,7 +13,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | `@section` | marker plugin | `.section` (plain: this package styles nothing on it) |
 | `@section panel` | DC section word | `.section.dc-section-panel` |
 | `@section flat` | DC section word | `.section.dc-section-flat` |
-| `@section reference` · `lore` · `dm` · `choose` | DC section word | `.section.dc-section-panel.dc-section-reference` (`-lore`, `-dm`, `-choose`) |
+| `@section reference` · `lore` · `dm` · `choose` · `challenge` | DC section word | `.section.dc-section-panel.dc-section-reference` (`-lore`, `-dm`, `-choose`, `-challenge`) |
 | `@npc-stat` · `@section npc` | DC section component | `.section.dc-section-panel.dc-npc-stat` (`@npc-stat compact` adds `.dc-npc-compact`) |
 | `@citizen-walkthrough` · `@section walkthrough` | DC section component | `.section.dc-section-panel.dc-citizen-walkthrough` |
 | `@flaws` / `@ideals` / `@dreams` · `@section flaws` … | DC section component | `.section.dc-section-panel.dc-section-choose.dc-flaws` (`-ideals`, `-dreams`) |
@@ -36,6 +36,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 | a table of the five bands | DC plugin (by shape) | `.dc-outcomes` ladder |
 | a table with HP and Damage columns | DC plugin (by shape) | `table.dc-stat-strip` |
 | `@callout example` | DC plugin | `.dc-alert.dc-example-callout` |
+| `@callout read-aloud` | DC plugin | `.dc-alert.dc-read-aloud-callout` |
 | `@specialty .NAME` | DC plugin | `.dc-specialty.NAME` (scope parent for specialty cards) |
 | `@skill … @end-skill` | DC plugin | `.dc-skill-card` |
 | `@learning-path … @end-learning-path` | DC plugin | `.dc-path-shell` + `.dc-learning-path` |
@@ -56,7 +57,7 @@ Authors write on the left; the right-hand columns show what appears in the DOM.
 - `.dc-alert` — the one callout shell: eight registers (note, warning, dm, vibe, origin, location, visit, example), told apart by silhouette, edge and label; every one is a white sheet, its colour in the rail, the frame and the label
 - `.dc-alert-label` — label chip on alerts
 - `.dc-note` / `.dc-note.warning`
-- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-location-callout`, `.dc-visit-callout`, `.dc-example-callout`
+- `.dc-vibe-callout`, `.dc-human-callout` (a contact card: blue ID band, ink strip foot), `.dc-origin-callout`, `.dc-location-callout`, `.dc-visit-callout`, `.dc-example-callout`, `.dc-read-aloud-callout`
 - `.dc-dm-note`
 - `.dc-prose-panel`
 
@@ -71,6 +72,7 @@ Use this to choose the right callout type before reaching for a class name.
 
 2. What is it? (every callout is bolted: a bolt head in each top corner)
    └── A worked example              → dc-example-callout  (cyan rail and ring, taped-on label)
+   └── Text read aloud to the table  → dc-read-aloud-callout (amber speech bubble, tail at its foot)
    └── Atmosphere / narrative voice  → dc-vibe-callout     (violet frame along its diagonals, violet chip, italic)
    └── Backstory, in second person   → dc-origin-callout   (torn edge, rust frame and rail, worn crimson stamp)
    └── A place, written up           → dc-location-callout (torn edge, teal frame and rail, worn teal stamp)
@@ -93,7 +95,7 @@ Every one is a white sheet: the brackets name the rail, frame and label that tel
 ### Sections
 - `.dc-section-panel` — the card: cream substrate, accent rail, clipped corner, title bar
 - `.dc-section-flat` — the rail on a plain host
-- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar over a white sheet: a pale HUD band, a deep violet bar, an ink bar with a cyan rule, and for `choose` a form with no bar (`--paper-form`)
+- `.dc-section-reference`, `.dc-section-lore`, `.dc-section-dm`, `.dc-section-choose` — boxes that say what kind of text they hold (a look-up, the world, advice for the Dream Master, a choice), each by its own bar over a white sheet: a pale HUD band, a deep violet bar, an ink bar with a cyan rule, for `choose` a form with no bar (`--paper-form`), and for `challenge` an ink tag in yellow Creaturepunk caps over an ink-framed sheet with a yellow rail
 - `.dc-npc-stat`, `.dc-citizen-walkthrough` — panels that carry their own class
 - `.dc-flaws`, `.dc-ideals`, `.dc-dreams` — `choose` sections of choice cards: blood with a cracked edge, HUD blue with a steady tablet, violet with a rising edge (the card reads `--dc-choice-*`)
 - `.dc-kicker` — a section's last paragraph when it is only a bold run: it never opens a page alone

@@ -3833,7 +3833,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="18:19">
 <td><code>@section [word] [.class...]</code></td>
 <td><code>@end-section</code></td>
-<td>A region; bare = core’s plain box. Words: <code>panel</code> <code>flat</code> <code>catalog</code>, the kinds of text (<code>reference</code> <code>lore</code> <code>dm</code> <code>choose</code>) and the component words (<code>npc</code> <code>fiction</code> <code>walkthrough</code> <code>cards</code> <code>flaws</code> <code>ideals</code> <code>dreams</code>)</td>
+<td>A region; bare = core’s plain box. Words: <code>panel</code> <code>flat</code> <code>catalog</code>, the kinds of text (<code>reference</code> <code>lore</code> <code>dm</code> <code>choose</code> <code>challenge</code>) and the component words (<code>npc</code> <code>fiction</code> <code>walkthrough</code> <code>cards</code> <code>flaws</code> <code>ideals</code> <code>dreams</code>)</td>
 </tr>
 <tr data-source-range="19:20">
 <td><code>@columns N</code></td>
@@ -3870,7 +3870,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="28:29">
 <td><code>@callout</code></td>
 <td><code>@end-callout</code></td>
-<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code> (<code>@callout vibe</code>); <code>label=&quot;...&quot;</code>; <code>.dc-sidebar</code> floats it</td>
+<td>a variant word: <code>note</code> <code>warning</code> <code>dm</code> <code>vibe</code> <code>origin</code> <code>location</code> <code>visit</code> <code>example</code> <code>read-aloud</code> (<code>@callout vibe</code>); <code>label=&quot;...&quot;</code>; <code>.dc-sidebar</code> floats it</td>
 </tr>
 <tr data-source-range="29:30">
 <td><code>@dm-note</code></td>

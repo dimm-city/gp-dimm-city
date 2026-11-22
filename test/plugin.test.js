@@ -425,6 +425,7 @@ describe("declared wrapper markers", () => {
       ["lore", "dc-section-panel dc-section-lore"],
       ["dm", "dc-section-panel dc-section-dm"],
       ["choose", "dc-section-panel dc-section-choose"],
+      ["challenge", "dc-section-panel dc-section-challenge"],
     ];
     expect(Object.keys(markers.section.variants).slice(0, words.length)).toEqual(words.map(([w]) => w));
     for (const [word, cls] of words) {
@@ -1162,6 +1163,17 @@ describe("declared card, outcome and procedure", () => {
       expect(warnings).toEqual([]);
     });
 
+    test("when every row names its tier, the names colour the rows, not their position", () => {
+      const tiersOf = (...lines) => [...renderGp(doc("@outcome", "", ...lines, "", "@end-outcome")).html.matchAll(/class="dc-outcome-row (\w+)"/g)].map((m) => m[1]);
+      // a two-row check is a hit over a miss, not a crit over a hit
+      expect(tiersOf("11+ | Success | Through.", "10- | Failure | Stalled.")).toEqual(["hit", "miss"]);
+      // Tough Choice is the mixed band; a name that holds a tier word keeps it
+      expect(tiersOf("13+ | Ramp success | Over.", "12- | Ramp failure | Down.", "6-10 | Tough Choice | Pick one.")).toEqual(["hit", "miss", "mixed"]);
+      // one row with no tier word and the ladder keeps its positions
+      expect(tiersOf("11+ | Success | Through.", "16+ | Bonus Effect | More.", "10- | Failure | Stalled.")).toEqual(["crit", "hit", "mixed"]);
+      expect(tiersOf("1--2 | Slim chance | x", "3--4 | Some chance | y")).toEqual(["crit", "hit"]);
+    });
+
     test("a roll typed 11--19 prints as 11\u201319; the \u2013 spelling still does", () => {
       const rollsOf = (...typed) => [...renderGp(doc("@outcome", "", ...typed.map((r) => `${r} | Name | Text`), "", "@end-outcome")).html.matchAll(/dc-outcome-roll">([^<]*)</g)].map((m) => m[1]);
       expect(rollsOf("20", "11--19", "6 -- 10", "2--5", "1")).toEqual(["20", "11\u201319", "6\u201310", "2\u20135", "1"]);
@@ -1554,6 +1566,7 @@ describe("declared callout and dm-note", () => {
     location: ["dc-location-callout", "Location"],
     visit: ["dc-visit-callout", "Visit"],
     example: ["dc-example-callout", "Example"],
+    "read-aloud": ["dc-read-aloud-callout", "Read Aloud"],
   };
 
   test("each variant word gives its class and default label", () => {
@@ -2118,6 +2131,11 @@ describe("the entry cost line", () => {
   });
   test("a paragraph with a bold run and other text does not", () => {
     for (const body of ["**Bold** then text.", "Text then **bold**.", "**One** and **two**", "*italic*"]) expect(cost(body), body).not.toContain("dc-entry-cost");
+  });
+  test("a bold die call in an entry is the die call, not its cost line", () => {
+    const html = cost("**ROLL THE DIE!**");
+    expect(html).not.toContain("dc-entry-cost");
+    expect(html).toContain('class="dc-die-call"');
   });
 });
 

@@ -93,14 +93,14 @@ components:
       - --dc-alert-label-bg
       - --dc-alert-label-pad
     breaks: "break-inside: avoid, relaxed to auto inside a column run (@columns; dc-native.css)"
-    notes: "One shell, eight registers, told apart by silhouette, edge and label (in colour and in grayscale). Every one is a white sheet (--dc-alert-bg): its colour is in the rail, the frame and the label, never in the fill: note (heavy blue rail, 2pt blue ring, blue chip with paper type, machined chamfers), warning (sign-plate octagon, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the tab; an ink ring, a cyan rail, one cut corner; Dream Master only), vibe (long shallow diagonals, a violet frame that follows them, violet chip, italic), origin (torn bottom edge, square corners, a rust frame along the tear, a heavy rust rail, worn crimson stamp label), location (origin's document in map teal: teal frame and rail, deep-teal stamp), visit (wobbly signpost, a fungi-green frame along the wobble and the point, a heavy green rail, green map-pin chip), example (ticket V notch, cyan rail and 2pt cyan ring, taped-on tag; an example that opens with its own heading is labelled by it, words as written, and gets no default Example tag). The ring is --dc-alert-frame (an inset box-shadow); vibe, origin, location and visit, whose outline a ring cannot follow, are filled with the accent under a white copy of their silhouette, --dc-alert-frame-width (3pt) in from the top, right and foot. Every register is bolted to the wall: a bolt head in each top corner, on the white body under the rule on the Dream Master note (--dc-bolt tokens; first fragment only). Every label is a raised chip (--dc-alert-label-shadow), except the dm note's, which is its ink bar. A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
+    notes: "One shell, nine registers, told apart by silhouette, edge and label (in colour and in grayscale). Every one is a white sheet (--dc-alert-bg): its colour is in the rail, the frame and the label, never in the fill: note (heavy blue rail, 2pt blue ring, blue chip with paper type, machined chamfers), warning (sign-plate octagon, hazard-stripe rail, heavy ink frame with a misregistered crimson line, yellow caution-tape label), dm (file folder: an ink bar across the top carries the label in cyan over a cyan rule, its left end rising as the tab; an ink ring, a cyan rail, one cut corner; Dream Master only), vibe (long shallow diagonals, a violet frame that follows them, violet chip, italic), origin (torn bottom edge, square corners, a rust frame along the tear, a heavy rust rail, worn crimson stamp label), location (origin's document in map teal: teal frame and rail, deep-teal stamp), visit (wobbly signpost, a fungi-green frame along the wobble and the point, a heavy green rail, green map-pin chip), example (ticket V notch, cyan rail and 2pt cyan ring, taped-on tag; an example that opens with its own heading is labelled by it, words as written, and gets no default Example tag), read-aloud (text the DM reads to the table: a speech bubble with a tail at its foot, a 6px amber rail and amber chip, body-size upright type; a long one may split across pages). The ring is --dc-alert-frame (an inset box-shadow); vibe, origin, location and visit, whose outline a ring cannot follow, are filled with the accent under a white copy of their silhouette, --dc-alert-frame-width (3pt) in from the top, right and foot. Every register is bolted to the wall: a bolt head in each top corner, on the white body under the rule on the Dream Master note (--dc-bolt tokens; first fragment only). Every label is a raised chip (--dc-alert-label-shadow), except the dm note's, which is its ink bar. A `> [!NOTE]` from gutterpress-gfm-alerts (.gp-alert) is drawn as the matching callout. Every variant sets --dc-accent-ink (the text-safe accent ink) and pads every cut by its depth + 2pt. A chapter must not re-theme these tokens. `warning` is an unprefixed modifier on .dc-note. The blockquote form is single-block; use @callout for multi-paragraph bodies."
 
   - name: callout
     status: live
     origin: plugin
     markers: ["@callout"]
     snippet: [callout, callout-example]
-    recipe: "@callout [note|warning|dm|vibe|origin|location|visit|example] label=\"…\" … @end-callout"
+    recipe: "@callout [note|warning|dm|vibe|origin|location|visit|example|read-aloud] label=\"…\" … @end-callout"
     emits:
       - div.dc-alert.dc-note > span.dc-alert-label
       - div.dc-alert.dc-note.warning
@@ -110,6 +110,7 @@ components:
       - div.dc-alert.dc-location-callout
       - div.dc-alert.dc-visit-callout
       - div.dc-alert.dc-example-callout
+      - div.dc-alert.dc-read-aloud-callout
     css: styles/components/callouts.css
     breaks: "as alert"
     notes: "Same DOM and tokens as alert; the macro form allows multiple paragraphs and a custom label. The variant is a bare word (`@callout vibe`); `variant=` is no longer accepted and is reported as a problem. With no label=\"…\" the variant's name is the label."
@@ -285,7 +286,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-art-width, --dc-entry-shape, --dc-entry-radius, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape, --dc-entry-badge-radius]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "The item entry, and the one marker for every kind of item: bare `@gear` is general gear, and a bare word picks a kind (`augment`, `treasure`, `vehicle`, `drug`, the four entries below). A .dc-card of the entry family; general gear is a hang tag (a paper card in a heavy ink frame, two clipped corners, a ring eyelet, a rust rail and badge); the name (### or ####), the italic tagline paragraph and the bold price paragraph (stamped as a dashed price tag) are picked out by shape. An image with no class in an entry is the item's picture: floated right at --dc-entry-art-width (half the card); a class the author writes (`{.gp-left .gp-large}`) places it instead. A `**SPECS:**` paragraph is a `@field specs`. Reports an entry with no name or with a second one, and a word that is not a kind (read as general gear). Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by silhouette, surface value, ornament, badge and name colour (and in grayscale), not by its rail colour alone, and an entry never splits."
+    notes: "Inside an @npc-stat an entry is drawn flat (no card, frame or ornament; a rule above it), so a creature's gear never makes a box in a box. The item entry, and the one marker for every kind of item: bare `@gear` is general gear, and a bare word picks a kind (`augment`, `treasure`, `vehicle`, `drug`, the four entries below). A .dc-card of the entry family; general gear is a hang tag (a paper card in a heavy ink frame, two clipped corners, a ring eyelet, a rust rail and badge); the name (### or ####), the italic tagline paragraph and the bold price paragraph (stamped as a dashed price tag) are picked out by shape. An image with no class in an entry is the item's picture: floated right at --dc-entry-art-width (half the card); a class the author writes (`{.gp-left .gp-large}`) places it instead. A `**SPECS:**` paragraph is a `@field specs`. Reports an entry with no name or with a second one, and a word that is not a kind (read as general gear). Not a section, so there is no `@section` word for it. A run of entries goes in a `@section catalog`; each kind is told apart by silhouette, surface value, ornament, badge and name colour (and in grayscale), not by its rail colour alone, and an entry never splits."
 
   - name: augment
     status: live
@@ -415,7 +416,7 @@ components:
     origin: plugin
     markers: ["@outcome"]
     snippet: outcome
-    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column holds a d20 result on every row (any headers, any order), in a skill card or outside one: the five standard bands 20, 11-19, 6-10, 2-5, 1, or an ability's own set (six bands, 16-19 over 11-15, 1-5, 2-10, 11+), a band with a label (\"20: Total Wholeness\", \"20 – Triumph\", \"Triumph (20)\", \"On 11–19\") or a tier's word alone (\"Success\"); each row takes the colour of the tier its band falls in, and a label is the row's name. Bands that overlap, leave 1-20 or straddle 10/11 stay a table; @roll-table is never a ladder"
+    recipe: "@outcome [flush] / 20 | Triumph | text / 11–19 | Success | text / 6–10 | Hard Choice | text / 2–5 | Failure | text / 1 | Catastrophe | text … @end-outcome, or any two-column pipe table whose first column holds a d20 result on every row (any headers, any order), in a skill card or outside one: the five standard bands 20, 11-19, 6-10, 2-5, 1, or an ability's own set (six bands, 16-19 over 11-15, 1-5, 2-10, 11+), a band with a label (\"20: Total Wholeness\", \"20 – Triumph\", \"Triumph (20)\", \"On 11–19\") or a tier's word alone (\"Success\"); each row takes the colour of the tier its band falls in, and a label is the row's name. Bands that overlap, leave 1-20 or straddle 10/11 stay a table; @roll-table is never a ladder. When every row's name is or contains a tier word (Success, Failure, Tough Choice, \"Ramp success\"…), the names colour the rows instead of their order, so a two-row Success/Failure check reads green then red; otherwise rows take the ladder's colours by position"
     emits:
       - div.dc-outcomes[.dc-flush] > div.dc-outcomes-label
       - div.dc-outcome-row.crit|hit|mixed|miss|fail > span.dc-outcome-key.tier-* > span.dc-outcome-name + span.dc-outcome-roll
@@ -788,7 +789,7 @@ components:
       - --dc-npc-stat-rule-width
       - --dc-npc-stat-break-inside
     notes: "The flavor line (`>`) is a ruled line, a 4px rail in --dc-npc-stat-rule, not a box. Stat lines are picked by position: the first paragraph after the `>` is the primary line, a chip (its first line 12pt bold, cream on --dc-npc-stat-primary, via ::first-line; a second line in it falls under as a small-caps tag, 10pt), the next paragraph the secondary tag (10pt), so a description belongs inside the quote. In a two-column run the `####` name is 11pt tracked 0.03em."
-    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no ####, or one, is one creature and stays whole (--dc-npc-stat-break-inside: auto lets one split)"
+    breaks: "a block with #### entries breaks between entries, never inside one (keep-with-next chain), whether the entries are direct children or sit in an @columns run inside it; a block with no ####, or one, is one creature and stays whole (--dc-npc-stat-break-inside: auto lets one split), unless it carries gear entries or ##### sub-sections: then it breaks between those parts, never inside a paragraph, list or entry"
 
   - name: npc-stat-compact
     status: live
@@ -1267,6 +1268,18 @@ components:
     css: [styles/components/section.css]
     tokens: [--dc-section-accent, --dc-section-bg, --dc-section-clip, --dc-section-rail, --dc-section-pad-top, --dc-section-pad-bottom, --dc-section-pad-left, --dc-section-pad-right]
     notes: "A panel that says 'look it up': HUD blue, a pale title band with dark text (the bar is a pale band, not the solid accent bar), small corner cut, tight table rows and list items. It keeps its own accent in any chapter. It absorbed @block codex."
+
+  - name: section-challenge
+    status: live
+    origin: plugin
+    markers: ["@section challenge"]
+    snippet: section-challenge
+    recipe: "@section challenge / ### Title / description, options (####), @outcome … @end-section  (one obstacle the crew must beat: a chase leg, a heist beat, a trap)"
+    emits: div.section.dc-section-panel.dc-section-challenge
+    css: [styles/components/section.css]
+    tokens: [--dc-section-accent, --dc-section-bar-tone, --dc-section-bar-fg, --dc-section-bar-rule, --dc-section-bar-rule-sub, --dc-section-rail, --dc-section-flag]
+    breaks: "kept whole; one taller than a page splits between whole paragraphs and list items"
+    notes: "A hazard sign: a cream sheet in a 2pt ink frame with a brand-yellow rail, its title on an ink tag in brand yellow set in the Creaturepunk caps (--font-title) at the ## size, and each later ### or #### (an option) under an ink rule. Accent text (ROLL THE DIE!) stays ink. A run of them reads as one course."
 
   - name: section-lore
     status: live
