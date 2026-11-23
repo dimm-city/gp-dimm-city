@@ -1195,7 +1195,7 @@ components:
     emits: p.dc-kicker
     css: styles/components/paste-up.css
     breaks: "break-before: avoid; the paragraph above it breaks after: avoid"
-    notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour."
+    notes: "A section's closing slogan (the plugin marks it .dc-kicker; it also keeps the line off the top of a page) set as the tear-off strip at a flyer's foot: a dotted ink perforation across the panel, then the line in the body face at 11pt bold, ink and level, with a short stub of the panel's accent (--dc-section-accent) at its left. No capitals and no loud colour. Inside a @ladder rung the stub takes the tier's colour. On a paste-up sheet the line that closes the sheet is the yellow sticker instead, one to a sheet: a line mid-sheet, the closing line of a sheet in a row, and a line marked {.dc-strip} (`**Line.** {.dc-strip}`) stay the strip, so a page carries one sticker, not one per sheet."
 
   - name: section-catalog
     status: live

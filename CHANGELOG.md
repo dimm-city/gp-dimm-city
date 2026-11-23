@@ -24,6 +24,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **One yellow sticker to a sheet.** On a paste-up sheet every closing bold
+  line and every bold line before a heading was a tilted yellow sticker: a
+  spread of four sheets carried five, and none read as emphasis. Only the line
+  that closes a sheet is a sticker now. A line mid-sheet and the closing line
+  of a sheet in a row are the tear-off strip (a dotted rule, the line in bold,
+  the sheet's accent stub), and `**Line.** {.dc-strip}` makes any closing line
+  the strip where a page still holds two.
 - **A lit card's value is the largest thing on it.** The number in a
   lightbox card's heading (`#### BODY TAX: 2`) is set half as large again as
   the title beside it. It was the title's own size, the smallest thing on a
