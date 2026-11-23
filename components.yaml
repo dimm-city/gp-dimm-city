@@ -409,7 +409,7 @@ components:
     emits: div.dc-toc
     css: [styles/components/data.css, styles/page-templates.css, styles/components/neon.css]
     breaks: "list items break-inside: avoid"
-    notes: "A chapter line that ends with its chapter's word as a class (`{.dc-toc-rules}`: citizen-file, specialty, rules, dm, gear, lore) gets its number lit in that chapter's tube colour. The plugin can't add it: each chapter file renders on its own, so the contents never sees the chapter ids."
+    notes: "A chapter line that ends with its chapter's word as a class (`{.dc-toc-rules}`: citizen-file, specialty, rules, dm, gear, lore) gets its number on that chapter's coupon (the chip at the foot of the chapter's pages: same colour, caps and ink edge) and its page number in that colour. An entry listed under a chapter gets a page number too, and one whose link names a specialty (`#chapter-02-1-augmerc`) opens with a swatch of that specialty's colour. The plugin can't add it: each chapter file renders on its own, so the contents never sees the chapter ids."
 
   - name: outcome
     status: live

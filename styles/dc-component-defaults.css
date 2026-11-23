@@ -373,7 +373,8 @@
   --dc-toc-rail-y:           4pt;                  /* rust strips top and bottom */
   --dc-toc-rail-x:           1.5pt;                /* ink rails left and right */
   --dc-toc-shadow:           var(--shadow-poster);
-  --dc-toc-badge:            var(--rust);          /* number chip */
+  --dc-toc-badge:            var(--rust);          /* number chip, and the page numbers */
+  --dc-toc-spec:             transparent;          /* a specialty entry's swatch (set per specialty in data.css) */
 
   /* NPC stat block (.dc-npc-stat-*) public API */
   --dc-npc-stat-label-color: var(--hud-blue-dark);

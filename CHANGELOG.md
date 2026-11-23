@@ -24,6 +24,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **The contents page uses the chapters' own colours.** A chapter's number
+  was a neon plate in its sign's tube colour (pink, chrome, orange, cyan,
+  yellow), which matched nothing a reader sees while turning pages. It is now
+  the chapter's coupon: the chip at the foot of every page of that chapter, in
+  the same colour, caps and ink edge. Page numbers take the chapter's colour,
+  the row rules are neutral, and an entry under a chapter gets a page number
+  too. An entry that links to a specialty opens with a swatch of that
+  specialty's colour.
 - **One yellow sticker to a sheet.** On a paste-up sheet every closing bold
   line and every bold line before a heading was a tilted yellow sticker: a
   spread of four sheets carried five, and none read as emphasis. Only the line
