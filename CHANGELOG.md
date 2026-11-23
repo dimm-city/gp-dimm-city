@@ -7,6 +7,23 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ## [1.10.4] - Unreleased
 
+### Changed
+
+- **The specialty catalog shows each emblem whole.** On `@page specialty-catalog`
+  a card's picture was cropped to a 0.7in strip across the card, which no
+  emblem survived. It is now 1.45in square under the name band, uncropped, with
+  no frame or field, and the tagline and pitch wrap around it. All ten cards
+  carry the same size; Dualist and Generalist still close each page full width.
+  The spread is still two pages, five cards on each. A book whose emblems are
+  round sets `--dc-specialty-card-media-wrap: circle(50%)` on the page and the
+  pitch follows the circle.
+- **Specialty card tokens.** New: `--dc-specialty-card-media-fit` (`cover`;
+  `contain` shows the whole picture), `-media-bg` (the field behind it),
+  `-media-wrap` (the outline the text wraps to) and `-tagline-display`
+  (`flow-root` stops the tagline's rule at the picture). Gone with the framed portrait:
+  `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
+  `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
+
 ### Fixed
 
 - **A bleed plate covers its sheet to the foot.** `{.gp-bleed}` art stopped 4px

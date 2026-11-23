@@ -102,7 +102,7 @@ A full-page art plate. It takes its own page and bleeds to the edge; in a book i
 
 ## Specialty card
 
-The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color, its silhouette and its own portrait cut. On a [`@page specialty-catalog`](#ch-templates) the ten cards become a two-page spread of tall poster cards (portrait on top, then name, tagline and pitch); anywhere else they are the dense card, a small thumbnail beside the text. The card's layout is tokens: `--dc-specialty-card-display`, `-media-order`, `-media-float`, `-media-margin`, `-media-shape`, `-media-mat`, `-name-size` and `-index`, and the grid's `--dc-card-grid-display`, `-item-display`, `-row` and `-gap`.
+The catalog card for a "choose your specialty" page: portrait, a `>` tagline, and a short pitch, inside a `@card-grid`, with `@columns 2` laying the cards out two across. Each card sits in its own `@specialty` so it carries its own color and its silhouette. On a [`@page specialty-catalog`](#ch-templates) the ten cards become a two-page spread of large cards, each showing its emblem whole (1.45in, uncropped, no frame) with the tagline and pitch wrapping around it; anywhere else they are the dense card, a small thumbnail cropped to its frame beside the text. The card's layout is tokens: `--dc-specialty-card-media-float`, `-media-margin`, `-media-width`, `-media-height`, `-media-fit`, `-media-bg`, `-media-wrap`, `-name-size` and `-index`, and the grid's `--dc-card-grid-display`, `-item-display`, `-row` and `-gap`.
 
 ```markdown {.dg-split}
 @card-grid

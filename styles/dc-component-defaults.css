@@ -235,22 +235,21 @@
   --dc-specialty-card-pad-x:       0.18in;      /* side padding; the name band reaches out through it */
   /* The card's layout. Defaults are the dense catalog card (a small portrait
      floated beside the text, the grid in columns); the specialty-catalog page
-     sets them for the tall poster card in a grid of equal rows. */
-  --dc-specialty-card-display:      flow-root;   /* flex, for the poster card (portrait on top) */
-  --dc-specialty-card-media-order:  0;           /* -1 lifts the portrait above the name */
+     sets them for a large emblem in a grid of equal rows. */
   --dc-specialty-card-media-float:  left;
   --dc-specialty-card-media-float-even: right;
   --dc-specialty-card-media-margin: 0 0.14in 0.08in 0;
   --dc-specialty-card-media-margin-even: 0 0 0.08in 0.14in;
-  --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
-  --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
+  --dc-specialty-card-media-fit:    cover;       /* contain: the whole picture shows, uncropped (an emblem) */
+  --dc-specialty-card-media-bg:     var(--paper-aged);  /* the field behind the portrait; none for an emblem */
+  --dc-specialty-card-media-wrap:   none;        /* the outline the text wraps to: the picture's box; circle(50%) for a round emblem */
+  --dc-specialty-card-tagline-display: block;    /* flow-root: the tagline's rule stops at the portrait instead of running behind it */
   --dc-specialty-card-name-size:    var(--fs-h4);
   --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
   --dc-card-grid-row:               0;           /* the least height of a card in the grid */
   --dc-card-grid-item-span:         1;           /* 2: the card spans both columns */
   --dc-card-grid-row-wide:          0;           /* the least height of a card spanning both columns */
-  --dc-card-grid-media-wide:        1in;         /* the portrait of a card spanning both columns */
   --dc-card-grid-gap:               0.16in;
 
   /* .dc-block public API */

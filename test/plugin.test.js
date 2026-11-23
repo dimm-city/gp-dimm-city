@@ -2153,6 +2153,15 @@ describe("polish rules in the stylesheets", () => {
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
     expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
   });
+  test("the specialty catalog shows each card's emblem whole: uncropped, no field behind it, the text wrapping around it", () => {
+    const card = css("page-templates.css").match(/\.dc-page-specialty-catalog \.dc-card-grid \.dc-specialty-card \{[^}]*\}/)[0];
+    expect(card).toContain("--dc-specialty-card-media-fit: contain;");
+    expect(card).toContain("--dc-specialty-card-media-bg: none;");
+    expect(card).toMatch(/--dc-specialty-card-media-width: ([\d.]+in);\s*--dc-specialty-card-media-height: \1;/);   // square
+    const wrapper = css("components/specialty.css").match(/\.dc-specialty-card \.dc-img-wrapper \{[^}]*\}/)[0];
+    expect(wrapper).toContain("float: var(--dc-specialty-card-media-float);");
+    expect(wrapper).not.toMatch(/background|clip-path|padding/);   // no frame or mat around the picture
+  });
   test("a bleed plate is capped at the content box exactly, so no strip of the wall shows under it", () => {
     expect(css("components/images.css")).toMatch(/img\.gp-bleed \{\s*max-height: var\(--gp-content-h, 100vh\);/);
   });
