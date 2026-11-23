@@ -1305,8 +1305,8 @@ A bare section: no look of its own. The text sits on a plain sheet of paper.
 </tr>
 <tr data-source-range="78:79">
 <td>lore</td>
-<td>italic violet caption</td>
-<td>italic violet caption</td>
+<td>italic caption in the chapter's ink</td>
+<td>italic caption in the chapter's ink</td>
 </tr>
 <tr data-source-range="79:80">
 <td>definition</td>
@@ -1360,12 +1360,12 @@ You do not need a plan to enter the Dream. You need a reason to stay in it.
 <tr data-source-range="128:129">
 <td>A table or list to look up: prices, conditions, a menu of options</td>
 <td><code>@section reference</code></td>
-<td>HUD blue, a pale title band ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers</td>
+<td>A pale title band in a tint of the chapter's colour, ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers</td>
 </tr>
 <tr data-source-range="129:130">
 <td>The world, not the rules: places, factions’ history, setting</td>
 <td><code>@section lore</code></td>
-<td>A deep violet bar with a slashed top-left corner and a torn top edge over a white sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads</td>
+<td>A deep bar in the chapter's colour with a slashed top-left corner and a torn top edge over a white sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads</td>
 </tr>
 <tr data-source-range="130:131">
 <td>Advice for the Dream Master, behind the screen</td>
@@ -3454,7 +3454,7 @@ exports[`rendered output 08-page-templates.md matches its snapshot 1`] = `
 </tr>
 </tbody>
 </table>
-<p>The chapter’s colour says where the reader is: it is every plain panel’s tag and rail, the opener’s and the footer chip’s. What a section is stays its kind’s: a reference, lore, dm or catalog sheet keeps its own colour and silhouette in any chapter, so a lore sheet in the Dream Master’s chapter still reads as lore.</p>
+<p>The chapter’s colour says where the reader is: it is every plain panel’s tag and rail, the opener’s and the footer chip’s. What a section is shows in its kind’s silhouette and weight, in the chapter’s own hue: a reference sheet is the pale tint of the chapter’s colour ruled in ink, a lore sheet the deep shade with a torn top and long slashes, so neither brings a second colour into a chapter and a lore sheet in the Dream Master’s chapter still reads as lore. A dm sheet (the lit ink booth) and a catalog entry’s kind (a weapon, an explosive) keep their own.</p>
 <pre><code data-source-range="118:125" class="language-markdown">@chapter rules #ch-rules ch=&quot;3&quot;
 
 @page chapter-start

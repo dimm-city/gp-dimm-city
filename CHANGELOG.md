@@ -24,6 +24,15 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A reference or lore sheet takes its chapter's colour.** `@section
+  reference` was HUD blue and `@section lore` violet in every chapter, so a
+  rust rules chapter carried pale-blue and violet sheets beside its own. A
+  reference sheet's pale band and table head are now a 30% tint of the
+  chapter's colour, and a lore sheet's deep bar and rule the chapter's colour
+  over ink (violet only in a `@chapter lore`). Each kind is still told apart by
+  its silhouette: the ruled pale band and small cuts, the torn top and long
+  slashes. A sub-head inside a sheet prints in the sheet's own ink, not the
+  base teal. `dm` sheets and catalog kinds are unchanged.
 - **Sub-heads are set in the label face.** `####`, `#####` and `######`
   (and the `.dc-h4` to `.dc-h6` looks) print in bold Tomorrow caps, not Lixdu.
   Lixdu's wide caps suit a bar's few words at 14pt and up; at 10 to 12pt in a

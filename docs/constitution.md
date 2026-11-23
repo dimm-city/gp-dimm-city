@@ -406,8 +406,8 @@ A section kind is read from its bar, its edge and its silhouette before its word
 | Kind | Bar | Sheet | Silhouette | Colour |
 |---|---|---|---|---|
 | `panel` | solid accent bar | cream | one larger chamfer (top right), a chipped bottom-left corner | the chapter accent (magenta by default; the only kind chapters re-theme) |
-| `reference` | pale HUD band ruled in ink above and below (a machined spec-sheet header) | white, alternate table rows in `--paper-aged`, tight 10pt rows | four small even machined chamfers | HUD blue: a look-up |
-| `lore` | deep violet bar, torn along the top | white, recessed | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | violet: the world |
+| `reference` | pale band, a 30% tint of the chapter\'s colour, ruled in ink above and below (a machined spec-sheet header) | white, alternate table rows in `--paper-aged`, tight 10pt rows | four small even machined chamfers | the chapter\'s own colour, pale: a look-up |
+| `lore` | deep bar in the chapter\'s colour (72% of it over ink), torn along the top | white, recessed | long ASYMMETRIC slashes: shallow top-left, steep bottom-right | the chapter\'s own colour, deepened: the world (violet only in a `@chapter lore`) |
 | `dm` | a lit booth: an ink head with the title in the cyan tube's pale core, closed by a lit line | white, in a cyan neon frame (ink both sides of the tube) | square, flat, no tilt: the one sheet that glows. Among the players' pages its head also carries the DREAM MASTER neon sign (D and M lit). In the Dream Master's own chapter nothing hangs the sign, neither a booth nor the opener: every page there is the Dream Master's, and the title already says so | cyan neon on ink: Dream Master only. The head is in the box's own top band, so a page break cannot strand it |
 | `choose` | none: a form | a white paper sheet (`--paper-form`) | a ticket: a V punched in the middle of each side, a perforated foot, an ink edge, recessed (sunk into the wall: a cast shadow along the top, a light lip on the bottom and right), no drop shadow | ink title over a double rule in the chapter accent; heavy ink tick boxes (2.25pt); a hazard-yellow *Choose* stamp; dotted write-in rules. A printed, stamped form, not a web control |
 
@@ -554,7 +554,7 @@ Two variant words, `@definition lucid` and `@definition surreal`, are the two ro
 
 ### Tables
 
-- Header row in `--ink-dark` by default (a structural bar with no chroma of its own); `reference` sections use the pale HUD band, and a chapter may set its own header colour through a declared token.
+- Header row in `--ink-dark` by default (a structural bar with no chroma of its own); `reference` sections use their pale band (a tint of the chapter\'s colour), and a chapter may set its own header colour through a declared token.
 - Header text: mono caps, 10pt, cream on a solid fill (reversed type: 10pt, semibold minimum).
 - Body rows: 10pt body font on alternating cream tints (the floor).
 - Inner cell padding generous (0.04in vertical, 0.08in horizontal).

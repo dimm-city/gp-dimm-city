@@ -114,7 +114,7 @@ A **chapter word** sets the colour register of every panel in the chapter. It re
 | `@chapter gear` | amber | The armory: cybernetics, weapons, gear |
 | `@chapter lore` | violet | Setting and history |
 
-The chapter's colour says where the reader is: it is every plain panel's tag and rail, the opener's and the footer chip's. What a section is stays its kind's: a reference, lore, dm or catalog sheet keeps its own colour and silhouette in any chapter, so a lore sheet in the Dream Master's chapter still reads as lore.
+The chapter's colour says where the reader is: it is every plain panel's tag and rail, the opener's and the footer chip's. What a section is shows in its kind's silhouette and weight, in the chapter's own hue: a reference sheet is the pale tint of the chapter's colour ruled in ink, a lore sheet the deep shade with a torn top and long slashes, so neither brings a second colour into a chapter and a lore sheet in the Dream Master's chapter still reads as lore. A dm sheet (the lit ink booth) and a catalog entry's kind (a weapon, an explosive) keep their own.
 
 ```markdown
 @chapter rules #ch-rules ch="3"

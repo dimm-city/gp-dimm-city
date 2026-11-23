@@ -287,6 +287,8 @@ div[class="section"] {
 .dc-section-panel > :is(.gp-columns, [class*="gp-columns-"]) > h3:where(:not(.dc-h4, .dc-h5, .dc-h6)) {
   border-left: 3px solid var(--dc-section-accent);
   padding-left: var(--space-sm);
+  /* the sheet's own text-safe ink (its chapter's colour), not the base h3 teal */
+  color: var(--dc-accent-ink);
 }
 
 /* Sub-heading H3/H4/H5 inside a panel — more room above than below, so it
@@ -373,8 +375,8 @@ h3 + .dc-section-panel {
    colour does (the skill cards do the same per specialty):
 
      panel      the default card, a solid accent bar      top right   chapter accent (magenta by default)
-     reference  look it up, a PALE bar                    all four, small   HUD blue
-     lore       the world, not the rules                  top left + bottom right, long   violet
+     reference  look it up, a PALE bar                    all four, small   the chapter's colour, tinted
+     lore       the world, not the rules                  top left + bottom right, long   the chapter's colour, deepened
      dm         behind the screen: a lit booth            none (square)   ink head, cyan neon frame, DREAM MASTER sign
      choose     a form to fill in: NO bar, lightest sheet, sunk in an ink edge, yellow "Choose" stamp
      catalog    a run of entries (entries.css)            both top
@@ -384,7 +386,6 @@ h3 + .dc-section-panel {
 
 /* ── reference — a look-up ────────────────────────────────────────────────── */
 .dc-section-reference {
-  --dc-section-accent: var(--hud-blue-dark);
   --dc-section-clip: 7px;
   --dc-section-cut-tl: 7px;
   --dc-section-cut-br: 7px;
@@ -395,10 +396,15 @@ h3 + .dc-section-panel {
   --dc-section-pad-left: var(--space-md);
   --dc-section-pad-right: var(--space-md);
 }
-/* The bar is a pale HUD band with dark text, not the solid accent of a rules panel. */
+/* The bar is a pale band with dark text, not the solid accent of a rules panel:
+   a 30% tint of the CHAPTER's colour (the sheet sets no accent of its own), so
+   a look-up in the rust chapter is pale rust and one in the ink chapter is
+   grey. Its kind is told by the pale band, the ink rules and the small cuts,
+   in any chapter, never by a hue of its own. */
 .dc-section-reference {
+  --dc-section-pale: color-mix(in srgb, var(--dc-section-accent) 30%, var(--paper-cream));
   --dc-section-bar-mix: 0%;
-  --dc-section-bar-tone: var(--hud-blue-dim);
+  --dc-section-bar-tone: var(--dc-section-pale);
   --dc-section-bar-fg: var(--ink);
   --dc-section-bar-rule: 3pt double var(--ink-dark);
   --dc-section-bar-rule-sub: 3pt double var(--ink-dark);
@@ -418,7 +424,7 @@ h3 + .dc-section-panel {
   --dc-th-pad-y: 3px;
 }
 .dc-section-reference th {
-  background: var(--hud-blue-dim);
+  background: var(--dc-section-pale);
   color: var(--ink);
 }
 .dc-section-reference tr:nth-child(odd) td {
@@ -502,9 +508,11 @@ h3 + .dc-section-panel {
     inset 0 calc(var(--dc-section-recess-depth) + 6pt) 9pt -6pt var(--shadow-press);
 }
 
-/* ── lore — the world ─────────────────────────────────────────────────────────
-   Violet, the dream colour. A white sheet under a DEEP violet bar (cream
-   on it 10:1), a violet rule, and LONG ASYMMETRIC cuts: a shallow slash off the
+/* ── lore — the world (the CHAPTER's colour, deepened) ─────────────────────────────────────────────────────────
+   The chapter's own colour, deepened with ink (violet only in a lore chapter,
+   whose colour it is): the sheet sets no accent of its own, so it never brings
+   a foreign hue into a chapter. A white sheet under the DEEP bar, a rule in
+   the chapter's colour, and LONG ASYMMETRIC cuts: a shallow slash off the
    top left (56 x 20px) and a steep one off the bottom right (16 x 50px), so it
    reads as secret and cut open, never as a chamfer; the top edge past the slash
    is TORN (a ragged line 5px deep, the bar's own edge following it). Darker and cooler than the
@@ -512,17 +520,15 @@ h3 + .dc-section-panel {
    shallow cut (padding left = cut-tl + 2pt, cut-tl standing for the 30px the
    slash eats at text height) and the right padding clears the steep one. */
 .dc-section-lore {
-  --dc-section-accent: var(--brand-violet);
   --dc-section-clip: 0px;
   --dc-section-cut-tl: 30px;
   --dc-section-cut-br: 16px;
   --dc-section-rail: 6px;
   --dc-section-pad-right: 0.24in;
-  --dc-accent-ink: var(--brand-violet);
   --dc-section-bar-mix: 72%;
   --dc-section-bar-tone: var(--ink);
-  --dc-section-bar-rule: 3pt solid var(--brand-violet);
-  --dc-section-bar-rule-sub: 3pt solid var(--brand-violet);
+  --dc-section-bar-rule: 3pt solid var(--dc-section-accent);
+  --dc-section-bar-rule-sub: 3pt solid var(--dc-section-accent);
 }
 .dc-section-lore::before,
 .dc-section-lore::after {
@@ -551,7 +557,7 @@ h3 + .dc-section-panel {
   font-style: italic;
   text-transform: none;
   letter-spacing: 0.02em; --dc-fit-ls: 0.02em;
-  color: var(--brand-violet);
+  color: var(--dc-accent-ink);
 }
 
 /* ── dm — behind the screen ───────────────────────────────────────────────────
