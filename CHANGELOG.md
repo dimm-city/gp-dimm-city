@@ -24,6 +24,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **`--dc-section-measure` holds every full-width text block.** The token
+  capped the prose of a sheet only. It now also holds a skill card's text and
+  ability rows, a path banner's, a specialty intro's, a fiction excerpt's and a
+  lede's, so a book that sets it (`.chapter { --dc-section-measure: 5.6in; }`)
+  gets one line length everywhere: at 12pt a 7in line runs 95 characters or
+  more, and 5.6in is about 72. Unset (the default) nothing changes; tables and
+  text in columns are never capped.
 - **The contents page uses the chapters' own colours.** A chapter's number
   was a neon plate in its sign's tube colour (pink, chrome, orange, cyan,
   yellow), which matched nothing a reader sees while turning pages. It is now

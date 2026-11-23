@@ -90,7 +90,7 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
-  --dc-section-measure:    none;                /* max-width of a panel's prose (p, lists, quotes); tables stay full width, a @row's sheets reset it */
+  --dc-section-measure:    none;                /* max-width of running text set at the page's full width (a sheet, a skill card, an intro, a fiction excerpt, a lede: p, lists, quotes); tables stay full width, a @row's sheets reset it */
   --dc-td-pad-y:           5px;                 /* a body cell's vertical padding */
   --dc-th-pad-y:           6px;                 /* a header cell's */
   --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */

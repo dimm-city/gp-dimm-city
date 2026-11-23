@@ -227,8 +227,20 @@ div[class="section"] {
 }
 
 /* Prose held to a readable measure when a book sets `--dc-section-measure`
-   (tables stay full width); the sheets of a `@row` take the full width. */
-.dc-section-panel > :is(p, ul, ol, blockquote) {
+   (tables stay full width); the sheets of a `@row` take the full width. The
+   same measure holds wherever a book's running text is set at the full width
+   of the page: a sheet, a skill card (an ability row's text column is the
+   measure less nothing: the chip sits outside it), a path's banner, a
+   specialty's intro, a fiction excerpt and a lede. At 12pt a 7in line is 95
+   characters or more; 5.6in is about 72. Text in columns is narrower than any
+   measure a book would set, so it is unaffected. */
+.dc-section-panel > :is(p, ul, ol, blockquote),
+.dc-skill-card .dc-card-inner > :is(p, ul, ol, blockquote),
+.dc-ability-text,
+.dc-path-shell > :is(p, ul, ol, blockquote):not(.dc-stickers),
+.dc-specialty-intro > :is(p, ul, ol, blockquote),
+.dc-fiction-excerpt > :is(p, blockquote),
+.dc-intro > p {
   max-width: var(--dc-section-measure);
 }
 .dc-pu-row > .dc-section-panel {
