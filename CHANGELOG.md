@@ -24,6 +24,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A lit card's value is the largest thing on it.** The number in a
+  lightbox card's heading (`#### BODY TAX: 2`) is set half as large again as
+  the title beside it. It was the title's own size, the smallest thing on a
+  card read for that number.
 - **A reference or lore sheet takes its chapter's colour.** `@section
   reference` was HUD blue and `@section lore` violet in every chapter, so a
   rust rules chapter carried pale-blue and violet sheets beside its own. A

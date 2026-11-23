@@ -169,7 +169,7 @@
      margin and the 1pt padding (it collapses with the body's top margin), so a
      lightbox is exactly a plain card's height. */
   margin: calc(7.5pt - var(--space-sm)) calc(7.5pt - var(--space-md)) calc(var(--space-sm) - 8.5pt) calc(7.5pt - var(--space-md) - 3px);
-  padding: 1pt calc(1.6em + 8pt) 0 calc(var(--space-md) + 3px - 7.5pt);   /* right: the value window */
+  padding: 1pt calc(2.1em + 8pt) 0 calc(var(--space-md) + 3px - 7.5pt);   /* right: the value window */
   background: var(--ink);
   color: var(--dc-neon-core);
 }
@@ -178,7 +178,12 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 1.6em;
+  /* The value is what the box is read for (a cost, a price): half as large
+     again as the title beside it, in a window as wide as it needs (2.1em of
+     the title's size). It was the title's own size in a 1.6em window, the
+     smallest thing on the card. */
+  font-size: 1.5em;
+  width: 1.4em;
   padding-left: 4.5pt;   /* clear of the tube down its left edge */
   display: grid;
   place-items: center;
