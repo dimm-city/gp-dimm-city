@@ -347,7 +347,7 @@ components:
     css: styles/components/entries.css
     tokens: [--dc-entry-accent, --dc-entry-ink, --dc-entry-surface, --dc-entry-rail, --dc-entry-rule, --dc-entry-kind, --dc-entry-shape, --dc-entry-ornament, --dc-entry-orn-inset, --dc-entry-orn-bg, --dc-entry-orn-border, --dc-entry-orn-clip, --dc-entry-orn-z, --dc-entry-frame, --dc-entry-badge-bg, --dc-entry-badge-fg, --dc-entry-badge-shape]
     breaks: "break-inside: avoid (via .dc-card)"
-    notes: "Deck software: a program found, bought or learned with an ability slot. A data cartridge: a white plate in a heavy ink frame, one cut corner top right, an ink label strip across the head with a PROGRAM badge, and a connector comb of ten ink pins cut into the foot. The name is HUD blue; the bold cost line is stamped as a tag (the gear's price tag, framed in HUD blue). It reads apart from the augment (stepped notch, cyan rule, teal name) in grayscale by its strip and comb. No cyan on the ink strip (that pairing is the Dream Master's). Same entry rules as @gear."
+    notes: "Deck software: a program found, bought or learned with an ability slot. A data cartridge: a white plate in a heavy ink frame, one cut corner top right, an ink label strip across the head with a PROGRAM badge, and a connector comb of ten ink pins cut into the foot. The name is HUD blue; the bold cost line opens with the AP chip an ability shows (the plugin writes `.dc-ap` for a line that starts with an AP cost), then the kind of program in mono caps. It reads apart from the augment (stepped notch, cyan rule, teal name) in grayscale by its strip and comb. No cyan on the ink strip (that pairing is the Dream Master's). Same entry rules as @gear."
 
   - name: field
     status: live

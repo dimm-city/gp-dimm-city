@@ -912,7 +912,7 @@ Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface
 
 ### Program
 
-`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line is stamped as a tag, as on general gear. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
+`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line opens with the AP chip a specialty ability shows (write the cost first: `**1 AP. ATTACK PROGRAM, 2 SesHP**`), then the kind of program in mono caps. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
 
 ```markdown {.dg-split}
 @gear program

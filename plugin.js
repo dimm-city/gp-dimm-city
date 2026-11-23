@@ -2094,15 +2094,37 @@ function dcGear(state) {
 // (`**1 AP. ATTACK PROGRAM, 2 SesHP**`, a price): `.dc-entry-cost`, stamped as a tag.
 // A paragraph with a bold run and other text is body text, and a bold die call
 // (`**ROLL THE DIE!**`) is the die call, not a price.
+// A program's cost line that opens with an AP cost shows it as the AP chip a
+// specialty's ability shows (`.dc-ap`), so a cost in AP is one mark book-wide;
+// what follows the cost (`ATTACK PROGRAM, 2 SesHP`) is the line's label.
 function dcEntryCosts(state) {
   forEachComponent(state.tokens, 'gear', (run) => {
     let depth = 0;
+    const program = run[0].meta?.variant === 'program';
     run.forEach((tok, i) => {
       const dieCall = run[i + 1]?.children?.some((k) => k.type === 'dc_roll_the_die');
-      if (depth === 1 && tok.type === 'paragraph_open' && !dieCall && isBoldOnlyInline(run[i + 1])) addTokenClass(tok, 'dc-entry-cost');
+      if (depth === 1 && tok.type === 'paragraph_open' && !dieCall && isBoldOnlyInline(run[i + 1])) {
+        addTokenClass(tok, 'dc-entry-cost');
+        if (program) apChipOnCostLine(run[i + 1]);
+      }
       depth += tok.nesting;
     });
   });
+}
+
+/** `**1 AP. ATTACK PROGRAM, 2 SesHP**` → the `1 AP` chip, then the rest in the bold run. Left alone when the line opens with no AP cost. */
+function apChipOnCostLine(inline) {
+  const kids = inline.children || [];
+  if (!kids.every((k) => k.type === 'text' || k.type === 'strong_open' || k.type === 'strong_close')) return;
+  const cost = COST_LEAD.exec(kids.map((k) => k.content).join('').trim());
+  if (!cost) return;
+  const bare = cost[1].replace(/\s+/g, '').replace(/^\+/, '');
+  const apClass = 'dc-ap' + (/^0+$/.test(bare) ? ' free' : VARIABLE_COST.test(bare) ? ' variable' : '');
+  const label = cost[2].replace(/^\s*[.:,]\s*/, '').trim();
+  const html = (content) => Object.assign(makeToken('html_inline', content), { level: inline.level });
+  const text = Object.assign(new Token('text', '', 0), { content: label, level: inline.level });
+  inline.children = [html('<span class="' + apClass + '">' + esc(enDashed(cost[1].replace(/\s+/g, ''))) + ' AP</span>')];
+  if (label) inline.children.push(html(' '), kids.find((k) => k.type === 'strong_open'), text, kids.find((k) => k.type === 'strong_close'));
 }
 
 // An explicit `@field specs` with no `label="…"` gets the variant's default label.

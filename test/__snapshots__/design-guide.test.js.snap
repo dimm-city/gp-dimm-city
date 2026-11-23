@@ -1988,7 +1988,7 @@ A pale syrup sold in thimbles. The world gets quiet and a little too clear.
 </div></div>
 <p>Tokens: <code>--dc-entry-accent</code> (rail), <code>--dc-entry-ink</code> (name), <code>--dc-entry-surface</code>, <code>--dc-entry-rail</code>, <code>--dc-entry-rule</code>, <code>--dc-entry-kind</code> (the badge word, a quoted string or <code>none</code>), <code>--dc-entry-shape</code> (the silhouette), <code>--dc-entry-radius</code>, <code>--dc-entry-ornament</code> with <code>--dc-entry-orn-inset</code>, <code>-orn-bg</code>, <code>-orn-border</code>, <code>-orn-clip</code> and <code>-orn-z</code> (the kind’s solid-fill ornament layer: a vehicle’s rivets), <code>--dc-entry-frame</code>, <code>--dc-entry-badge-bg</code>, <code>--dc-entry-badge-fg</code>, <code>--dc-entry-badge-shape</code>, <code>--dc-entry-badge-radius</code>.</p>
 <h3 data-name="program"><span class="dc-fit" style="--dc-fit-adv: 10.523; --dc-fit-n: 7; --dc-fit-s: 0; --dc-fit-word-adv: 10.523; --dc-fit-word-n: 7">Program</span></h3>
-<p><code>@gear program</code> is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line is stamped as a tag, as on general gear. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master’s.)</p>
+<p><code>@gear program</code> is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line opens with the AP chip a specialty ability shows (write the cost first: <code>**1 AP. ATTACK PROGRAM, 2 SesHP**</code>), then the kind of program in mono caps. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master’s.)</p>
 <pre><code class="dg-split language-markdown" data-source-range="916:941">@gear program
 
 #### DDoS
@@ -2019,13 +2019,13 @@ You list every connected system and who is logged in. The Dream Master names any
 <blockquote>
 <p data-source-range="950:951">Can’t crack it? Bury it.</p>
 </blockquote>
-<p class="dc-entry-cost"><strong>1 AP. ATTACK PROGRAM, 2 SesHP</strong></p>
+<p class="dc-entry-cost"><span class="dc-ap">1 AP</span> <strong>ATTACK PROGRAM, 2 SesHP</strong></p>
 <p>You flood a target system with junk traffic. It takes 1d4 SesHP of damage and cannot run programs until your next turn.</p>
 </div><div class="dc-card dc-entry dc-program" data-gear="program" data-name="ping-sweep" data-source-range="958:959"><h4 data-name="ping-sweep">Ping Sweep</h4>
 <blockquote>
 <p data-source-range="962:963">Who else is in here?</p>
 </blockquote>
-<p class="dc-entry-cost"><strong>1 AP. SCAN PROGRAM, 1 SesHP</strong></p>
+<p class="dc-entry-cost"><span class="dc-ap">1 AP</span> <strong>SCAN PROGRAM, 1 SesHP</strong></p>
 <p>You list every connected system and who is logged in. The Dream Master names anything hidden in Near range.</p>
 </div></div>
 <h3 data-name="fields"><span class="dc-fit" style="--dc-fit-adv: 7.234; --dc-fit-n: 6; --dc-fit-s: 0; --dc-fit-word-adv: 7.234; --dc-fit-word-n: 6">Fields</span></h3>

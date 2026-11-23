@@ -24,6 +24,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A program's cost is the AP chip.** A `@gear program` cost line that opens
+  with an AP cost (`**1 AP. ATTACK PROGRAM, 2 SesHP**`) shows it as the chip a
+  specialty ability shows (grey for 0 AP), followed by the kind of program. It
+  was a boxed text label, a second way of writing the same thing.
 - **The » between a learning path's chain chips takes the specialty's colour.**
   It was the package's red on every specialty, which clashed with the green,
   blue and cyan bands.

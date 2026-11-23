@@ -1932,8 +1932,17 @@ describe("@gear program", () => {
     const { html, warnings } = renderGp("@gear program\n\n#### DDoS\n\n> Bury it.\n\n**1 AP. ATTACK PROGRAM, 2 SesHP**\n\nYou flood it.\n\n@end-gear");
     expect(warnings).toEqual([]);
     expect(html).toContain('<div class="dc-card dc-entry dc-program"');
-    expect(html).toContain('<p class="dc-entry-cost"><strong>1 AP. ATTACK PROGRAM, 2 SesHP</strong></p>');
+    expect(html).toContain('<p class="dc-entry-cost"><span class="dc-ap">1 AP</span> <strong>ATTACK PROGRAM, 2 SesHP</strong></p>');
     expect(html).not.toContain("dc-gear");
+  });
+  test("a cost line that opens with an AP cost shows it as the AP chip; any other cost line is left as written", () => {
+    const cost = (line, kind = " program") => renderGp(`@gear${kind}\n\n#### X\n\n**${line}**\n\n@end-gear`).html.match(/<p class="dc-entry-cost">.*?<\/p>/)[0];
+    expect(cost("0 AP. UTILITY PROGRAM")).toBe('<p class="dc-entry-cost"><span class="dc-ap free">0 AP</span> <strong>UTILITY PROGRAM</strong></p>');
+    expect(cost("2 AP. ATTACK/DEFENSE PROGRAM — 3 SesHP")).toBe('<p class="dc-entry-cost"><span class="dc-ap">2 AP</span> <strong>ATTACK/DEFENSE PROGRAM — 3 SesHP</strong></p>');
+    expect(cost("1-X AP")).toBe('<p class="dc-entry-cost"><span class="dc-ap variable">1\u2013X AP</span></p>');
+    expect(cost("UTILITY PROGRAM")).toBe('<p class="dc-entry-cost"><strong>UTILITY PROGRAM</strong></p>');
+    // gear of any other kind keeps its price tag: 2 AP there is a price like any other
+    expect(cost("2 AP", " augment")).toBe('<p class="dc-entry-cost"><strong>2 AP</strong></p>');
   });
 });
 
