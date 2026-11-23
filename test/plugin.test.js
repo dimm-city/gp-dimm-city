@@ -2153,6 +2153,9 @@ describe("polish rules in the stylesheets", () => {
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
     expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
   });
+  test("a bleed plate is capped at the content box exactly, so no strip of the wall shows under it", () => {
+    expect(css("components/images.css")).toMatch(/img\.gp-bleed \{\s*max-height: var\(--gp-content-h, 100vh\);/);
+  });
 });
 
 describe("@page inside a specialty", () => {

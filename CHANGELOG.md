@@ -5,6 +5,14 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
+## [1.10.4] - Unreleased
+
+### Fixed
+
+- **A bleed plate covers its sheet to the foot.** `{.gp-bleed}` art stopped 4px
+  short of the page, so a strip of the wall and street showed under it (1.10.3,
+  on Gutterpress 0.11.26 and later). It is capped at the content box exactly.
+
 ## [1.10.3] - 2026-11-22
 
 Paste-up becomes part of the package proper, gear sections get a kind each,
