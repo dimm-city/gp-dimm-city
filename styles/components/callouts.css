@@ -51,14 +51,14 @@
 
      register  silhouette (meaning)          edge / grit                    label
      note      machined 6px chamfers + one   heavy blue rail + blue ring    blue chip, paper type
-               chipped notch (player rules)  + a bolt in each top corner
+               chipped notch (player rules)
      warning   sign plate: octagon, 12px     hazard-stripe rail, heavy ink  yellow/ink tape chip
                cuts (danger)                 frame + misregistered crimson
      dm        file folder: a tab rising     cyan rail + ink ring           an ink bar across the
                from the top + one cut corner                                top, cyan type on it
-               (classified)                  bolts on the white body
+               (classified)
      vibe      long shallow diagonals at     violet frame along every       violet chip, paper type
-               two opposite corners (world)  edge, a bolt in each top corner
+               two opposite corners (world)  edge
      origin    torn bottom edge, square      rust frame along the tear,     crimson rubber stamp
                corners (backstory)           heavy rail
      location  the origin's document         teal frame, heavy rail         deep-teal rubber stamp
@@ -70,10 +70,8 @@
      read-     speech bubble: a tail drops   amber frame along the tail,    amber chip, paper type;
      aloud     from the foot (said aloud)    heavy rail                     body upright
 
-   Every register is bolted to the wall: one bolt head in each top corner,
-   drawn in chrome.css ("Bolt heads") and placed in the rules below. A bolt
-   sits on the callout's first fragment only, so it prints once, at the real
-   top, never on a continuation.
+   No register carries bolt heads: a callout is a notice on a sheet, told by the
+   three things above, not hardware (chrome.css, "Bolt heads").
 
    Every clipped edge is padded by at least its cut depth + 2pt, so no glyph is
    ever cut. Each variant also sets --dc-accent-ink: the text-safe ink of its own
@@ -91,7 +89,7 @@
    as the note, warning and caution as the warning. */
 .dc-alert,
 .gp-alert {
-  position: relative;  /* the host of the callout's bolts (chrome.css, "Bolt heads") */
+  position: relative;
   clip-path: var(--dc-alert-shape);
   background: var(--dc-alert-bg);
   box-shadow: var(--dc-alert-frame);
@@ -188,17 +186,6 @@
   --dc-accent-ink: var(--hud-blue-dark);  /* 8.9:1 on the sheet */
 }
 
-/* The note's bolts (host A): the callout's own ::before and ::after, 2pt ring
-   + 3px in. The same for the GFM note, tip and important alerts and the example. */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::before {
-  top: calc(2pt + 3px);
-  left: calc(2pt + 3px);
-}
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout)::after {
-  top: calc(2pt + 3px);
-  right: calc(2pt + 4px);
-}
-
 /* ── Variant: Warning — a rule with consequences: hazard register ─────────
    A white sheet, a hazard-stripe rail down the left, an ink frame, and a
    yellow/ink caution-tape label. Yellow and ink are the "danger / you must
@@ -250,17 +237,6 @@
   transform-origin: left center;
 }
 
-/* The warning's bolts (host B): inside the 3px ink frame, clear of the 12px
-   octagon cuts, the rail and the crimson second pass at the right. */
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution)) > :is(.dc-alert-label, .gp-alert-title) + *::before {
-  top: 6px;
-  left: 6px;
-}
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution))::after {
-  top: 6px;
-  right: 9px;
-}
-
 /* ── Variant: DM Note (Dream Master only) — a classified file ─────────────
    The `dm` section's colours and parts, at a callout's size: an INK bar across
    the top carries the label in cyan over a cyan rule, its left end rising as a
@@ -291,12 +267,6 @@
   box-shadow: inset 0 -1.5pt 0 var(--neon-cyan), inset 0 -3pt 0 var(--neon-cyan-core);   /* the booth's lit line, in the 3pt the rule took */
 }
 
-/* The Dream Master's bolts hang on its first body block, on the white body 2pt
-   under the cyan rule, in the side paddings (the block is positioned, so they
-   are placed against it). */
-.dc-dm-note > .dc-alert-label + * {
-  position: relative;
-}
 /* In a column run, where a callout may fragment, glue the box's first child to its
    start: core's `break-after: avoid` keeps a heading with the box, but the box can
    still emit a contentless first fragment (border and padding only) at a page foot.
@@ -333,18 +303,6 @@
   --dc-alert-label-spacing: 0.14em;
   --dc-alert-label-margin: var(--space-sm);
 }
-/* The vibe's bolts: the left one on the first body block, the right one on the
-   callout's ::after (host B). The right one is lower: its corner is the 30px x
-   8px diagonal, and the bolt stays inside the frame that runs along it. */
-.dc-vibe-callout > .dc-alert-label + *::before {
-  top: calc(var(--dc-alert-frame-width) + 3px);
-  left: 5px;
-}
-.dc-vibe-callout::after {
-  top: 13px;
-  right: 8px;
-}
-
 /* ── Variant: Origin Callout — backstory, a personal document ─────────────
    A white sheet framed in rust (a heavy rail, and a frame that follows the
    torn foot) under a crimson rubber stamp. Location
@@ -380,22 +338,11 @@
 :is(.dc-origin-callout, .dc-location-callout) {
   padding-top: 14pt;  /* the stamp's place, kept from the dog-ear */
 }
-/* The bolts: the left on the first body block, the right on the callout's
-   ::after (host B), 3pt frame + 3px in from the top. */
-:is(.dc-origin-callout, .dc-location-callout) > .dc-alert-label + *::before {
-  top: calc(var(--dc-alert-frame-width) + 3px);
-  left: 5px;
-}
-:is(.dc-origin-callout, .dc-location-callout)::after {
-  top: calc(var(--dc-alert-frame-width) + 3px);
-  right: 8px;
-}
 :is(.dc-origin-callout, .dc-location-callout) .dc-alert-label {
   padding: 1px 9px;
   border: 2px solid currentColor;
   outline: 1pt dashed currentColor;  /* a worn, broken outer ring */
   outline-offset: 2px;
-  margin-left: calc(5px + var(--dc-bolt-size) + 2pt);   /* clear of the top-left bolt (5px in, --dc-bolt-size wide) */
   /* A stamp is ink on the sheet: no chip shadow, which ran 2px under the
      dashed ring and turned its right and bottom edges into a ragged slab. */
   box-shadow: none;
@@ -419,17 +366,6 @@
   --dc-alert-label-spacing: 0.1em;
   margin: 0.12in 0;
   padding-right: calc(var(--space-xl) + 14px);
-}
-
-/* The visit's bolts (host B): inside the wobble, the right one at the
-   signpost's shoulder, 3px short of where the point begins. */
-.dc-visit-callout > .dc-alert-label + *::before {
-  top: 10px;
-  left: 5px;
-}
-.dc-visit-callout::after {
-  top: 8px;
-  right: 30px;
 }
 
 /* The visit's label is lit (neon.css): civic green, the living city's colour. */
@@ -482,17 +418,6 @@
 .dc-read-aloud-callout p {
   font-style: normal;
 }
-/* The bolts (host B): the left on the first body block, the right on the
-   callout's ::after, 3pt frame + 3px in from the top. */
-.dc-read-aloud-callout > .dc-alert-label + *::before {
-  top: calc(var(--dc-alert-frame-width) + 3px);
-  left: 5px;
-}
-.dc-read-aloud-callout::after {
-  top: calc(var(--dc-alert-frame-width) + 3px);
-  right: 8px;
-}
-
 /* ── A framed sheet (vibe, origin, location, visit, read-aloud) ───────────────────────
    These five have an outline an inset ring cannot follow: a ring is square,
    so a diagonal, a tear or a point cuts it off and leaves that edge bare. The

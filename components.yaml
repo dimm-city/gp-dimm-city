@@ -387,7 +387,7 @@ components:
     css: [styles/components/chrome.css, styles/components/section.css, styles/page-templates.css]
     tokens: [--dc-intro-bg, --dc-intro-accent, --dc-intro-color, --dc-intro-size, --dc-intro-weight, --dc-intro-style, --dc-intro-rail, --dc-intro-ring, --dc-intro-shape, --dc-intro-ink]
     breaks: "break-after: avoid inside .dc-card-grid"
-    notes: "The chapter's opening statement, drawn as a callout with no label: a white sheet (--paper-cream) cut to the note's chamfers and chipped notch (--dc-intro-shape), an 8px accent rail, a 2pt inset ring in the accent (--dc-intro-ring) and a bolt in each top corner, around its own upright 600-weight ink type at --fs-h4. The flush-stacked front-matter ledes keep their concrete sheet and stack with no gap; contents and credits set body size and regular weight by token. The same .dc-intro is emitted for a learning path's subtitle, which sets the ring and shape off and has no bolts (a lede on the shell's own paper), and is authored raw on the contents page."
+    notes: "The chapter's opening statement, drawn as a callout with no label: a white sheet (--paper-cream) cut to the note's chamfers and chipped notch (--dc-intro-shape), an 8px accent rail and a 2pt inset ring in the accent (--dc-intro-ring), around its own upright 600-weight ink type at --fs-h4. The flush-stacked front-matter ledes keep their concrete sheet and stack with no gap; contents and credits set body size and regular weight by token. The same .dc-intro is emitted for a learning path's subtitle, which sets the ring and shape off (a lede on the shell's own paper), and is authored raw on the contents page."
 
   - name: tape
     status: live

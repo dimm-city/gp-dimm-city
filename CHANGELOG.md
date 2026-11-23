@@ -24,6 +24,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **Callouts and ledes carry no bolt heads.** Every callout register and the
+  lede had a bolt head in each top corner, beside a label, a rail and a frame:
+  on a one-line note the hardware was louder than the line. Bolts stay on what
+  is bolted to the wall (a skill card, a sign plate, a `##` slip). A callout is
+  told by its silhouette, edge and label, as before.
 - **`--dc-section-measure` holds every full-width text block.** The token
   capped the prose of a sheet only. It now also holds a skill card's text and
   ability rows, a path banner's, a specialty intro's, a fiction excerpt's and a

@@ -350,9 +350,8 @@ h1.dc-chevron {
 
 /* ── Intro / Lede line ──────────────────────────────────────────────────
    The chapter's opening statement, drawn as a callout with no label: a white
-   sheet with the note's machined chamfers, a heavy accent rail, an inset
-   accent ring and a bolt in each top corner (callouts.css, chrome.css "Bolt
-   heads"). Its type stays its own: larger, upright, semibold ink. (Flavor is
+   sheet with the note's machined chamfers, a heavy accent rail and an inset
+   accent ring. Its type stays its own: larger, upright, semibold ink. (Flavor is
    the opposite register: small italic voice with a rail and no box at all.)
    Single-direction margin: top: 0, bottom: --dc-intro-gap.
 
@@ -366,7 +365,7 @@ h1.dc-chevron {
      --dc-intro-gap    → space below (the front-matter pages set 0 to stack the
                          lede flush) */
 .dc-intro {
-  position: relative;  /* the host of its bolts */
+  position: relative;
   font-family: var(--font-body);
   font-size: var(--dc-intro-size);
   font-weight: var(--dc-intro-weight);
@@ -385,14 +384,6 @@ h1.dc-chevron {
   --dc-accent-ink: var(--dc-intro-ink);
 }
 .dc-intro > :last-child { margin-bottom: 0; }
-/* Its bolts (host A, as the note's): 2pt ring + 3px in. A learning path's
-   subtitle is a lede on the shell's own paper, with no bolts ("Bolt heads"). */
-.dc-intro::before,
-.dc-intro::after {
-  top: calc(2pt + 3px);
-}
-.dc-intro::before { left: calc(2pt + 3px); }
-.dc-intro::after { right: calc(2pt + 4px); }
 .dc-intro p,
 .dc-intro em,
 .dc-intro strong {
@@ -521,27 +512,18 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
 
 
 /* ── Bolt heads ───────────────────────────────────────────────────────── */
-/* Wall hardware, drawn once. Every callout is bolted at its two top corners
-   (callouts.css places them), a skill card at its top right and bottom left
-   (cards.css), a neon sign's plate at its two top corners (neon.css), and the `##` slip draws the same bolt in page-templates.css
-   (layer guard) from the same tokens. An opaque disc: an ink ring round a grey
-   face, the slot a hard-stopped band of ink (an ordinary gradient with opaque
-   stops), a 1px hard shadow. A left-hand bolt turns its slot 35deg and a
-   right-hand one -70deg, as a hand leaves them. Tokens --dc-bolt / -face /
-   -size.
-   Hosts. A: the callout's own ::before (left) and ::after (right), free on the
-   note, the GFM note/tip/important alerts, the example and the lede. B: where ::before
-   is taken (the warning's rail, a framed sheet's white copy) the left bolt is
-   on the first body block's ::before and the right one on the callout's
-   ::after. The Dream Master note hangs both on its first body block. The first
-   block is static, so its pseudo is placed against the callout. A rotated
-   label (the warning chip, the origin and location stamps) cannot host a bolt:
-   the transform would make it the containing block. */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::before,
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout, .dc-dm-note) > :is(.dc-alert-label, .gp-alert-title) + *::before,
-.dc-dm-note > .dc-alert-label + *::after,
+/* Wall hardware, drawn once, on what is bolted to the WALL: a skill card at
+   its top right and bottom left (cards.css), a neon sign's plate at its two top
+   corners (neon.css), and the `##` slip, which draws the same bolt in
+   page-templates.css (layer guard) from the same tokens. An opaque disc: an ink
+   ring round a grey face, the slot a hard-stopped band of ink (an ordinary
+   gradient with opaque stops), a 1px hard shadow. A left-hand bolt turns its
+   slot 35deg and a right-hand one -70deg, as a hand leaves them. Tokens
+   --dc-bolt / -face / -size.
+   A callout and a lede carry none: each is a notice on a sheet, told by its
+   silhouette, its edge and its label. Two bolt heads on a one-line note were
+   hardware louder than the line they held, and with a label, a frame and a
+   rail beside them nothing on the page stood out. */
 .dc-skill-card > .dc-card-body::before,
 .dc-skill-card::after,
 .dc-neon::before,
@@ -556,10 +538,7 @@ hr:has(+ :is(h1, h2, h3, h4, h5, h6, table,
   background: linear-gradient(35deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
   box-shadow: 1px 1px 0 var(--dc-bolt);
 }
-/* The right-hand bolts (a callout's ::after, a card's top right). */
-:is(.dc-note:not(.warning), .gp-alert:not(.gp-alert-warning, .gp-alert-caution), .dc-example-callout, .dc-intro:not(.dc-path-shell > *))::after,
-:is(.dc-note.warning, .gp-alert:is(.gp-alert-warning, .gp-alert-caution), .dc-vibe-callout, .dc-origin-callout, .dc-location-callout, .dc-visit-callout, .dc-read-aloud-callout)::after,
-.dc-dm-note > .dc-alert-label + *::after,
+/* The right-hand bolts (a card's top right, a sign plate's). */
 .dc-skill-card > .dc-card-body::before,
 .dc-neon::after {
   background: linear-gradient(-70deg, var(--dc-bolt-face) 0 40%, var(--dc-bolt) 40% 60%, var(--dc-bolt-face) 60% 100%);
