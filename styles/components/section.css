@@ -85,6 +85,13 @@ div[class="section"] {
 /* ── panel ───────────────────────────────────────────────────────────────── */
 .dc-section-panel {
   background: transparent;
+  /* Text starts one step (--space-lg, 0.15in) clear of the rail's inner edge
+     in every kind of sheet. Set here, on the sheet, so it follows the kind's
+     own rail width: the padding used to be 0.15in from the box edge with the
+     rail inside it, which left 7pt beside a panel's 5px rail and 6pt beside a
+     reference or lore sheet's, half what a skill card or a callout gives. A
+     kind with a frame of its own (dm, choose) sets its own below. */
+  --dc-section-pad-left: calc(var(--dc-section-rail) + var(--space-lg));
   --dc-section-edge: var(--dc-section-pad-bottom);
   /* The soft lift under the hung sheet (--shadow-lift, sized to include the
      hanging edge). A host that is a stacking context paints it first, under
@@ -405,7 +412,6 @@ h3 + .dc-section-panel {
   --dc-section-rail: 3px;
   --dc-section-pad-top: var(--space-sm);
   --dc-section-pad-bottom: var(--space-sm);
-  --dc-section-pad-left: var(--space-md);
   --dc-section-pad-right: var(--space-md);
 }
 /* The bar is a pale band with dark text, not the solid accent of a rules panel:

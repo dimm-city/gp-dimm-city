@@ -224,6 +224,26 @@ p:has(+ .dc-kicker) {
 .section.dc-fiction-excerpt > .dc-kicker::before { content: none; }
 
 
+/* A kind that is not a pasted sheet (the Dream Master's booth, a choose form)
+   keeps the sheets' spacing: the band above it and the foot under it, so any
+   two boxes that stand on a page are the same distance apart (band + foot).
+   They kept the plain section's 12pt under and nothing over, and stood 6pt
+   from the sheet above and 20pt from the one below. */
+.section.dc-section-panel:is(.dc-section-dm, .dc-section-choose) {
+  margin-top: var(--dc-pu-band);
+  margin-bottom: calc(var(--dc-pu-foot) + var(--dc-section-edge));
+}
+/* So does a callout, a ladder, a lit card or a column run that stands on the
+   page beside a sheet: the band under the sheet before it, the foot over the
+   sheet after it. (An entry card keeps its own foot: a program's connector
+   comb hangs there.) */
+:is(.section.dc-section-panel, .dc-pu-row) + :is(.dc-alert, .gp-alert, .dc-ladder, .dc-card:not(.dc-entry), .gp-columns) {
+  margin-top: var(--dc-pu-band);
+}
+:is(.dc-alert, .gp-alert, .dc-ladder, .dc-card:not(.dc-entry), .gp-columns):has(+ :is(.section.dc-section-panel, .dc-pu-row)) {
+  margin-bottom: var(--dc-pu-foot);
+}
+
 /* Rows: two sheets side by side, kept whole, each ending at its last line,
    closing strips at the foot. The plugin wraps two adjacent sheets whose
    widths complete a row (`.dc-half` twice, `.dc-narrow` and `.dc-wide` either

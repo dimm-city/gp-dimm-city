@@ -24,6 +24,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **One text inset and one gap for sheets.** Text starts 0.15in clear of the
+  rail in every kind of sheet: the padding was measured from the box edge with
+  the rail inside it, which left 7pt beside a panel's rail and 6pt beside a
+  reference or lore sheet's. And every box that stands on a page beside a
+  sheet keeps the sheets' spacing (the band above, the foot below): a Dream
+  Master or choose sheet, a callout, a ladder, a lit card and a column run
+  stood 6pt to 20pt from their neighbours, depending on the pair.
 - **Callouts and ledes carry no bolt heads.** Every callout register and the
   lede had a bolt head in each top corner, beside a label, a rail and a frame:
   on a one-line note the hardware was louder than the line. Bolts stay on what
