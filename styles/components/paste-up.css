@@ -157,7 +157,8 @@ p:has(+ .dc-kicker) {
     color: var(--dc-section-bar-fg);
   }
   & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title); }
-  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
+  /* A `###` tag is set in the display face at the tag's size, whatever look class it carries. */
+  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); font-family: var(--font-display); font-weight: 400; }
   &:not(.dc-catalog) > :is(h2, h3):first-child::after,
   & > .dc-pu-tag::after { content: none; }
   & > :is(h2, h3):first-child + * { break-before: avoid; }

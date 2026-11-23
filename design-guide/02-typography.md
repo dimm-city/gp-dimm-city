@@ -15,8 +15,8 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | H1 | `# Title` | 26pt bold · lixdu | Chapter and specialty openers |
 | H2 | `## Heading` | 20pt bold · lixdu | Section breaks, with an accent rule |
 | H3 | `### Sub-heading` | 16pt · lixdu | Column labels and sub-topics |
-| H4 | `#### Item` | 13pt uppercase · lixdu | Skill names, gear names, stat-block names |
-| H5 | `##### Label` | 11pt uppercase · lixdu | Sub-labels: smaller than body, carried by the display caps |
+| H4 | `#### Item` | 12pt bold uppercase · Tomorrow | Sub-heads inside a sheet, gear names, stat-block names: the label face, not the wide display caps |
+| H5 | `##### Label` | 11pt bold uppercase · Tomorrow | Sub-labels: smaller than body, in the label face |
 | H6 | `###### Label` | 10pt bold uppercase · Tomorrow | Metadata labels, in the label face |
 | Body | a paragraph | 12pt · Titillium Web | All prose |
 | Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |

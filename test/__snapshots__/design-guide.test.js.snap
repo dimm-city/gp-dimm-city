@@ -459,14 +459,14 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <tr data-source-range="17:18">
 <td>H4</td>
 <td><code>#### Item</code></td>
-<td>13pt uppercase · lixdu</td>
-<td>Skill names, gear names, stat-block names</td>
+<td>12pt bold uppercase · Tomorrow</td>
+<td>Sub-heads inside a sheet, gear names, stat-block names: the label face, not the wide display caps</td>
 </tr>
 <tr data-source-range="18:19">
 <td>H5</td>
 <td><code>##### Label</code></td>
-<td>11pt uppercase · lixdu</td>
-<td>Sub-labels: smaller than body, carried by the display caps</td>
+<td>11pt bold uppercase · Tomorrow</td>
+<td>Sub-labels: smaller than body, in the label face</td>
 </tr>
 <tr data-source-range="19:20">
 <td>H6</td>

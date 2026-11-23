@@ -24,6 +24,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **Sub-heads are set in the label face.** `####`, `#####` and `######`
+  (and the `.dc-h4` to `.dc-h6` looks) print in bold Tomorrow caps, not Lixdu.
+  Lixdu's wide caps suit a bar's few words at 14pt and up; at 10 to 12pt in a
+  text column its K, W, M and Y were hard to tell apart ("BLACK PILL",
+  "SYSCHK"), and a wide black sub-head weighed as much as the tag above it. A
+  `###` that is a sheet's tag stays in Lixdu whatever look class it carries.
 - **A program's cost is the AP chip.** A `@gear program` cost line that opens
   with an AP cost (`**1 AP. ATTACK PROGRAM, 2 SesHP**`) shows it as the chip a
   specialty ability shows (grey for 0 AP), followed by the kind of program. It
