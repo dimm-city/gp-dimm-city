@@ -52,7 +52,10 @@ body {
   letter-spacing: 0.005em;
   text-wrap: pretty;
   position: relative;
-  hyphens: auto;
+  /* Running text is set ragged right, so a word is never broken to fill a
+     line: automatic hyphenation only chopped words ("ta-ble", "me-ters")
+     without evening anything. A soft hyphen typed in the source still works. */
+  hyphens: manual;
   /* Paged Media orphans/widows constraint: cascades to every .page box, so
      no need to repeat at .page p level — that would be pure duplication. */
   widows: 2;
