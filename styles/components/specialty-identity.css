@@ -96,6 +96,12 @@
   --dc-path-note-rail: var(--spec-mid);
 }
 
+/* The » between a path's chain chips is the specialty's own ink, not the
+   package's red, which fought every band but the Proxy's. */
+.dc-specialty .dc-path-shell .dc-stickers {
+  --dc-arrow-color: var(--spec-ink);
+}
+
 .dc-specialty .dc-specialty-intro {
   --dc-accent-ink: var(--spec-ink);
   --dc-specialty-intro-clip: polygon(var(--spec-edge-top), var(--spec-edge-rest));

@@ -24,6 +24,9 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **The » between a learning path's chain chips takes the specialty's colour.**
+  It was the package's red on every specialty, which clashed with the green,
+  blue and cyan bands.
 - **Running text is no longer hyphenated.** Body text is set ragged right, so
   automatic hyphenation only broke words ("ta-ble", "me-ters", "opti-mization")
   without evening the lines. Words now wrap whole; a soft hyphen typed in the
