@@ -5,7 +5,7 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
-## [1.10.4] - Unreleased
+## [1.10.4] - 2026-11-24
 
 ### Changed
 
