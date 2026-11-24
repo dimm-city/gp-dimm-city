@@ -5,6 +5,18 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
+## [1.10.5] - 2026-11-24
+
+### Fixed
+
+- **A roll ladder's tabs stay inside the page.** Each rung's tab hangs 6px off
+  its plate's left edge. On a `@ladder` standing straight on a page that put
+  the tabs 6px outside the page's content box: the page's clip cut their left
+  border off, and on a page that also carried pinned art (where the page does
+  not clip) the build stopped with "content outside the page content box".
+  The ladder now keeps that 6px as its own left margin, so the tabs are whole
+  and inside the page everywhere. A ladder's plates are 6px narrower.
+
 ## [1.10.4] - 2026-11-24
 
 ### Changed
