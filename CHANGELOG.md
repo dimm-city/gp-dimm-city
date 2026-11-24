@@ -5,7 +5,7 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
-## [1.10.4] - Unreleased
+## [1.10.4] - 2026-11-24
 
 ### Changed
 
@@ -24,6 +24,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A lightbox card's number is yellow, in the Creaturepunk face.** The number
+  that ends a `@card lightbox` title (a price, a tax, a level) was set in the
+  title's face and the tube's pale core. It is now the graffiti caps in
+  `--brand-yellow` on the ink head, on every lightbox card, whatever its hue.
 - **A logo plate is bolted at its four corners.** Each corner of the plate
   (a `#` or `##` written `{.dc-logo}`, a fiction excerpt's title) carries a
   hexagon bolt head with a socket, in the logo's yellow. It is the plate's own
