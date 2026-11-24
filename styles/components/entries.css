@@ -516,10 +516,16 @@
   display: inline;
   margin: 0;
 }
-/* A label with nothing beside it heads the paragraph that follows. */
+/* A label with nothing beside it heads the block that follows: the chip
+   alone, as wide as its word, with no bar, frame or surface. As a full-width
+   bar it took a line and a half of the card to say one word. */
 .dc-field:not(:has(> p)) {
   break-after: avoid;
-  margin-bottom: 0;
+  width: fit-content;
+  margin: 4pt 0 1pt;
+  padding: 0;
+  border: 0;
+  background: none;
 }
 
 /* SPECS — the item's rules: the dark boxed strip with a yellow rail. */

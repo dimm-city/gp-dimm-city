@@ -2176,6 +2176,10 @@ describe("polish rules in the stylesheets", () => {
     expect(wrapper).toContain("float: var(--dc-specialty-card-media-float);");
     expect(wrapper).not.toMatch(/background|clip-path|padding/);   // no frame or mat around the picture
   });
+  test("a field label with nothing beside it is the chip alone: no bar, frame or surface", () => {
+    const rule = css("components/entries.css").match(/\.dc-field:not\(:has\(> p\)\) \{[^}]*\}/)[0];
+    for (const d of ["width: fit-content;", "padding: 0;", "border: 0;", "background: none;", "break-after: avoid;"]) expect(rule).toContain(d);
+  });
   test("a bleed plate is capped at the content box exactly, so no strip of the wall shows under it", () => {
     expect(css("components/images.css")).toMatch(/img\.gp-bleed \{\s*max-height: var\(--gp-content-h, 100vh\);/);
   });

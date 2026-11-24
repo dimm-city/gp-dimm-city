@@ -24,6 +24,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A field label with nothing beside it is the chip alone.** A bold label
+  on a line of its own in a card (`**TECHNOENHANCEMENT:**`) drew a full-width
+  grey bar holding one word. It is now the chip, as wide as its word, with no
+  bar, frame or surface, and it still stays with the block it heads.
 - **The rules chapter's opener hangs no neon sign.** The RULES sign above the
   opener's title is gone, as the Dream Master's and the gear chapter's were
   (owner, 2026-11-24). Only a Citizen File opener whose title stands straight
