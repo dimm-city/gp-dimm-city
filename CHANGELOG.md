@@ -127,6 +127,12 @@ cut a version that has no `## [X.Y.Z]` heading below.
 
 ### Fixed
 
+- **A warning at a column's foot no longer leaves a yellow triangle at the top
+  of the next column.** The hazard rail's own box reached 24px under its
+  callout so the slanted stripes left no gap. When the callout was the last
+  thing in a column, that overhang was laid out at the head of the next
+  column and printed there. The rail now ends level with the callout's foot
+  (its skew pivots there) and is raised only at the top.
 - **A bleed plate covers its sheet to the foot.** `{.gp-bleed}` art stopped 4px
   short of the page, so a strip of the wall and street showed under it (1.10.3,
   on Gutterpress 0.11.26 and later). It is capped at the content box exactly.

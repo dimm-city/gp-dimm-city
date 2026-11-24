@@ -2188,6 +2188,12 @@ describe("the entry cost line", () => {
 
 describe("polish rules in the stylesheets", () => {
   const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+  test("a warning's rail does not hang below its callout: at a column's foot that part printed at the head of the next column", () => {
+    const rail = css("components/callouts.css").match(/\.dc-note\.warning::before,[^{]*\{[^}]*\}/)[0];
+    expect(rail).toContain("bottom: 0;");
+    expect(rail).not.toMatch(/bottom:\s*-/);
+    expect(rail).toContain("transform-origin: 100% 100%;");   // the skew pivots on the foot, so the rail ends level with the box
+  });
   test("a # or ## set as the logo and a fiction excerpt's title are one plate: yellow on ink, upright, no outline", () => {
     const plate = css("components/chrome.css").match(/:is\(h1, h2\)\.dc-logo,\s*\.dc-fiction-excerpt > h1 \{[^}]*\}/)[0];
     expect(plate).toContain("color: var(--dc-logo-color);");
