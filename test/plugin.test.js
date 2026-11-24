@@ -2026,7 +2026,7 @@ describe("neon signs", () => {
   const widths = (html) => [...html.matchAll(/class="dc-neon-word"[^>]* width="([^"]*)"/g)].map((m) => m[1]);
 
   test("a chapter opener of a neon chapter hangs the chapter's word above its title", () => {
-    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Rules", ""));
+    const { html } = renderGp(doc("@chapter citizen-file", "", "@page chapter-start", "", "# Citizen File", ""));
     expect(signs(html)).toBe(1);
     expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
   });
@@ -2041,13 +2041,18 @@ describe("neon signs", () => {
     expect(signs(renderGp(doc("@chapter dm", "", "@page chapter-start", "", "# Dream Mastery", "")).html)).toBe(0);
   });
 
+  test("the rules and gear chapters hang no sign either", () => {
+    expect(signs(renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Are You Lucid Yet?", "")).html)).toBe(0);
+    expect(signs(renderGp(doc("@chapter gear", "", "@page chapter-start", "", "# Gear", "")).html)).toBe(0);
+  });
+
   test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
     expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
     expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
   });
 
   test("the chapter's word does not carry over to a chapter that has none", () => {
-    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
+    const { html } = renderGp(doc("@chapter citizen-file", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
     expect(signs(html)).toBe(1);
   });
 

@@ -24,6 +24,10 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **The rules chapter's opener hangs no neon sign.** The RULES sign above the
+  opener's title is gone, as the Dream Master's and the gear chapter's were
+  (owner, 2026-11-24). Only a Citizen File opener whose title stands straight
+  on the page still hangs one.
 - **One text inset and one gap for sheets.** Text starts 0.15in clear of the
   rail in every kind of sheet: the padding was measured from the box edge with
   the rail inside it, which left 7pt beside a panel's rail and 6pt beside a
