@@ -24,6 +24,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A skill's opening quote and its requirement note lose their left rails.**
+  Both were one more box with a rail down the left, like every sheet and
+  callout. The quote (`>` at the top of a `@skill`) now opens with a heavy
+  quotation mark in the specialty's colour and is set in the specialty's
+  text-safe ink, with no rail or field. A requirement (`**Requires:**`,
+  `**Wirephreak Gear:**`, `**Cybersurgeon Instruments:**`) is held in four
+  corner brackets, with no rail and no grey bar. A flavor line anywhere else is
+  unchanged.
 - **A field label with nothing beside it is the chip alone.** A bold label
   on a line of its own in a card (`**TECHNOENHANCEMENT:**`) drew a full-width
   grey bar holding one word. It is now the chip, as wide as its word, with no

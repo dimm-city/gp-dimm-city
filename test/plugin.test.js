@@ -2180,6 +2180,17 @@ describe("polish rules in the stylesheets", () => {
     const rule = css("components/entries.css").match(/\.dc-field:not\(:has\(> p\)\) \{[^}]*\}/)[0];
     for (const d of ["width: fit-content;", "padding: 0;", "border: 0;", "background: none;", "break-after: avoid;"]) expect(rule).toContain(d);
   });
+  test("a skill's opening quote and a requirement note carry no left rail: a drawn quotation mark, and four corner brackets", () => {
+    const quote = css("components/cards.css").match(/\.dc-skill-card \.dc-card-inner > p\.dc-flavor \{[^}]*\}/)[0];
+    expect(quote).toContain("border-left: 0;");
+    expect(quote).toContain("color: var(--dc-accent-ink);");
+    expect(quote).toMatch(/background:\s*linear-gradient\(105deg,/);
+    expect(quote).not.toContain("transparent");   // every stop opaque: no soft mask in the PDF
+    const note = css("components/entries.css").match(/\.dc-field-requires \{[^}]*\}/)[0];
+    expect(note).toContain("border: 0;");
+    expect(note).toContain("--dc-field-surface: transparent;");
+    expect(note.match(/linear-gradient\(var\(--dc-field-accent\), var\(--dc-field-accent\)\)/g).length).toBe(8);   // two arms at each corner
+  });
   test("a bleed plate is capped at the content box exactly, so no strip of the wall shows under it", () => {
     expect(css("components/images.css")).toMatch(/img\.gp-bleed \{\s*max-height: var\(--gp-content-h, 100vh\);/);
   });

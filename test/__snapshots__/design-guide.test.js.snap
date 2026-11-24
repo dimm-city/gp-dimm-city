@@ -2067,7 +2067,7 @@ You list every connected system and who is logged in. The Dream Master names any
 <tr data-source-range="983:984">
 <td><code>requires</code></td>
 <td>Requires</td>
-<td>a grey requirement bar</td>
+<td>four corner brackets round the note, no rail and no bar</td>
 </tr>
 </tbody>
 </table>
