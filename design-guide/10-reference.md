@@ -77,7 +77,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | The kind of choice (flaw, ideal, dream): colour, silhouette and chip per step |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
-| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline |
+| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, on an ink plate (`#`, `##`) or outlined in ink (smaller) |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |
 | `.dc-img-float-left` · `.dc-img-float-right` | an image | Float at 44% width |
 | `.dc-flush` | tape, stat block, stickers | Edge to edge |

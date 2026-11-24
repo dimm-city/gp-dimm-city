@@ -2188,6 +2188,15 @@ describe("the entry cost line", () => {
 
 describe("polish rules in the stylesheets", () => {
   const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+  test("a # or ## set as the logo and a fiction excerpt's title are one plate: yellow on ink, upright, no outline", () => {
+    const plate = css("components/chrome.css").match(/:is\(h1, h2\)\.dc-logo,\s*\.dc-fiction-excerpt > h1 \{[^}]*\}/)[0];
+    expect(plate).toContain("color: var(--dc-logo-color);");
+    expect(plate).toContain("text-shadow: none;");
+    expect(plate).toContain("var(--ink-dark)");
+    expect(plate).toContain("box-shadow: 4px 4px 0 var(--shadow-ink);");
+    // a chapter opener tilts its `#` title; a plate is left upright
+    expect(css("page-templates.css")).toContain(".dc-page-chapter-start h1:not(.dc-logo, .dc-fiction-excerpt > h1) { transform: rotate(-2deg);");
+  });
   test("every rung heading's band is wrapped, whatever the band's spelling or the heading's markup", () => {
     for (const [h, band] of [["### Triumphs (20)", "(20)"], ["### Success (11\u201319)", "(11\u201319)"], ["### **Hard** Choice (6-10)", "(6-10)"], ["### Failure (2--5)", "(2\u20135)"]]) {
       const html = renderGp(["@ladder", "", h, "", "x", "", "@end-ladder"].join("\n")).html;

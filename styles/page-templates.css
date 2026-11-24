@@ -737,8 +737,10 @@ li > p {
    The chapter's `#` title is a bill pasted on the wall (constitution §IV):
    tilted, over whatever it overlaps. It pivots on its top edge: about its
    centre, its top-left corner swung 2px past the content box and the page
-   clipped the banner there to a flat edge. */
-.dc-page-chapter-start h1 { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
+   clipped the banner there to a flat edge. A logo plate (chrome.css: a `#`
+   set as the logo, a story's title) is bolted on, not pasted: it stays
+   upright. */
+.dc-page-chapter-start h1:not(.dc-logo, .dc-fiction-excerpt > h1) { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
 /* Tilted about its top edge, a title's lower corners swing out by its height
    x sin 2deg: 2-5px for one to three lines. A title that fills the measure
    then overhangs the content box, and print shrinks the whole book to fit it

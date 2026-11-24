@@ -24,6 +24,13 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A fiction excerpt's title is the logo plate.** A story's `#` title was a
+  tilted line of chapter-coloured type on the page. It is now the plate the
+  logo headings use: logo yellow on ink with a hard shadow, upright and
+  centred, at `--dc-fiction-title-size`. The plate is the package's now, not a
+  book's: a `#` or `##` written `{.dc-logo}` is one wherever it stands, with no
+  outline (on ink it only thickened the letters). A smaller heading or a
+  paragraph set as the logo keeps the outlined look.
 - **A quote that closes a skill is its kicker.** Write a skill's last line as
   a quote (`> You don't need an opening. You make one.`) and it prints as the
   street-line sticker at the card's foot, in the specialty's band colour with

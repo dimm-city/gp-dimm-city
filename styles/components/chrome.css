@@ -182,6 +182,27 @@ h1.dc-chevron {
     calc(var(--dc-logo-outline-width) * 0.924) calc(var(--dc-logo-outline-width) * -0.383) 0 var(--dc-logo-outline);
 }
 
+/* The logo plate. A `#` or `##` set as the logo, and a fiction excerpt's
+   title (a story's name), are logo yellow on an ink plate with a hard shadow,
+   upright and centred. Outlined yellow on a wall or a sheet was the weakest
+   contrast in a book, and on ink the logo needs no outline: the sixteen
+   shadows would only thicken its letters. A smaller heading or a paragraph
+   set as the logo keeps the outline. */
+:is(h1, h2).dc-logo,
+.dc-fiction-excerpt > h1 {
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--dc-logo-color);
+  letter-spacing: var(--ls-title);
+  text-shadow: none;
+  text-align: center;
+  border: 0;
+  padding: 0.09in 0.2in 0.01in;   /* the face sits high in its line */
+  margin-right: 4px;   /* room for the hard shadow */
+  background: var(--ink-dark);
+  box-shadow: 4px 4px 0 var(--shadow-ink);
+}
+
 
 /* ── Stickers / Arrow ─────────────────────────────────────────────────── */
 /* The chain flows inline. Each » is bound to the chip BEFORE it: it is drawn as
