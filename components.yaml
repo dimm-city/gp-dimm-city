@@ -248,7 +248,7 @@ components:
       - div.dc-card.dc-card-lightbox > div.dc-card-heading > span.dc-lit-value (a trailing number in the title)
     css: [styles/components/enclosures.css, styles/components/neon.css]
     tokens: [--dc-neon, --dc-neon-core]
-    notes: "A card hung as a lightbox: a white face in an ink channel with a neon tube running round it, the title a lit plate across the top, and a number that ends the title (a price, a tax, a level) lit at the plate's right end, in a window set off by an upright tube. The text stays dark on white. The hue is a .dc-neon-<hue> class on the marker line."
+    notes: "A card hung as a lightbox: a white face in an ink channel with a neon tube running round it, the title a lit plate across the top, and a number that ends the title (a price, a tax, a level) at the plate's right end, in a window set off by an upright tube: the number is red, in the Creaturepunk face, whatever the card's hue. The text stays dark on white. The hue is a .dc-neon-<hue> class on the marker line."
 
   - name: card
     status: live
