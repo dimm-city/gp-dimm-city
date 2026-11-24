@@ -187,7 +187,13 @@ h1.dc-chevron {
    upright and centred. Outlined yellow on a wall or a sheet was the weakest
    contrast in a book, and on ink the logo needs no outline: the sixteen
    shadows would only thicken its letters. A smaller heading or a paragraph
-   set as the logo keeps the outline. */
+   set as the logo keeps the outline.
+   A bolt holds each corner, and it is the plate's own: a hexagon head with a
+   socket, in the logo's yellow (--dc-logo-bolt). The slotted grey heads
+   ("Bolt heads" below) belong to a `##` slip, a skill card and a sign. Each is
+   one inline SVG sized to its corner, a vector in the PDF (as the example
+   callout's notch is); its two colours are written out because an image
+   cannot read a token. */
 :is(h1, h2).dc-logo,
 .dc-fiction-excerpt > h1 {
   font-family: var(--font-title);
@@ -199,7 +205,12 @@ h1.dc-chevron {
   border: 0;
   padding: 0.09in 0.2in 0.01in;   /* the face sits high in its line */
   margin-right: 4px;   /* room for the hard shadow */
-  background: var(--ink-dark);
+  background:
+    var(--dc-logo-bolt) left 5px top 5px / 10px 10px no-repeat,
+    var(--dc-logo-bolt) right 5px top 5px / 10px 10px no-repeat,
+    var(--dc-logo-bolt) left 5px bottom 5px / 10px 10px no-repeat,
+    var(--dc-logo-bolt) right 5px bottom 5px / 10px 10px no-repeat,
+    var(--ink-dark);
   box-shadow: 4px 4px 0 var(--shadow-ink);
 }
 

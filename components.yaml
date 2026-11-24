@@ -958,8 +958,8 @@ components:
     recipe: "# Gutter Rats {.dc-logo}  (any heading level, or a paragraph)"
     emits: .dc-logo (on the heading or paragraph it is written on)
     css: styles/components/chrome.css
-    tokens: [--dc-logo-color, --dc-logo-outline, --dc-logo-outline-width]
-    notes: "A # or ## is the logo plate: yellow on ink with a hard shadow, upright and centred (a fiction excerpt's title is the same plate). The outline is hard text shadows, not -webkit-text-stroke, so the text prints live in its TrueType font (a stroked glyph prints as Type 3, which PDF/X preserve-text cannot keep). The plugin measures a .dc-logo heading in Creaturepunk at any level, so a title that would wrap by a little still fits its box."
+    tokens: [--dc-logo-color, --dc-logo-outline, --dc-logo-outline-width, --dc-logo-bolt]
+    notes: "A # or ## is the logo plate: yellow on ink with a hard shadow, upright and centred, a yellow hex bolt in each corner (--dc-logo-bolt, an inline SVG; none takes the bolts off). A fiction excerpt's title is the same plate. The outline is hard text shadows, not -webkit-text-stroke, so the text prints live in its TrueType font (a stroked glyph prints as Type 3, which PDF/X preserve-text cannot keep). The plugin measures a .dc-logo heading in Creaturepunk at any level, so a title that would wrap by a little still fits its box."
 
   - name: spec-tweak
     status: live

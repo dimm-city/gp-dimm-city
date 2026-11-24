@@ -24,6 +24,11 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A logo plate is bolted at its four corners.** Each corner of the plate
+  (a `#` or `##` written `{.dc-logo}`, a fiction excerpt's title) carries a
+  hexagon bolt head with a socket, in the logo's yellow. It is the plate's own
+  hardware: the grey slotted heads stay on a `##` slip, a skill card and a
+  sign. Token `--dc-logo-bolt` (an inline SVG; `none` takes the bolts off).
 - **A fiction excerpt's title is the logo plate.** A story's `#` title was a
   tilted line of chapter-coloured type on the page. It is now the plate the
   logo headings use: logo yellow on ink with a hard shadow, upright and

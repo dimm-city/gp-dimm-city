@@ -2194,6 +2194,11 @@ describe("polish rules in the stylesheets", () => {
     expect(plate).toContain("text-shadow: none;");
     expect(plate).toContain("var(--ink-dark)");
     expect(plate).toContain("box-shadow: 4px 4px 0 var(--shadow-ink);");
+    // a bolt in each corner, the plate's own picture: a hexagon head, not the slotted round head of a `##` slip
+    expect(plate.match(/var\(--dc-logo-bolt\) (left|right) 5px (top|bottom) 5px \/ 10px 10px no-repeat/g).length).toBe(4);
+    const bolt = css("dc-component-defaults.css").match(/--dc-logo-bolt:\s*url\("data:image\/svg\+xml,([^"]*)"\)/)[1];
+    expect(bolt).toContain("M5 1.3h10l5 8.7-5 8.7H5L0 10z");   // six sides
+    expect(bolt).not.toMatch(/opacity|rgba|gradient/i);          // flat and opaque: a vector with no soft mask
     // a chapter opener tilts its `#` title; a plate is left upright
     expect(css("page-templates.css")).toContain(".dc-page-chapter-start h1:not(.dc-logo, .dc-fiction-excerpt > h1) { transform: rotate(-2deg);");
   });

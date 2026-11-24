@@ -113,7 +113,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` `--dc-tape-shape` |
 | Tag (inline chip) | `--dc-tag-bg` `--dc-tag-fg` `--dc-tag-border` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
-| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` |
+| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` `--dc-logo-bolt` |
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-accent-ink` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` `--dc-block-title-rule` `--dc-block-tag` `--dc-block-tag-edge` |
