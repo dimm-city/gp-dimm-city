@@ -157,7 +157,8 @@ p:has(+ .dc-kicker) {
     color: var(--dc-section-bar-fg);
   }
   & > h2:first-child:not(.dc-h3) { font-size: var(--fs-h2); letter-spacing: var(--ls-title); --dc-fit-ls: var(--ls-title); }
-  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); }
+  /* A `###` tag is set in the display face at the tag's size, whatever look class it carries. */
+  & > :is(h3, h2.dc-h3):first-child { font-size: var(--fs-h3); font-family: var(--font-display); font-weight: 400; }
   &:not(.dc-catalog) > :is(h2, h3):first-child::after,
   & > .dc-pu-tag::after { content: none; }
   & > :is(h2, h3):first-child + * { break-before: avoid; }
@@ -194,12 +195,16 @@ p:has(+ .dc-kicker) {
 }
 .dc-pu-bill + .dc-flavor { margin-top: calc(-1 * var(--space-lg)); }
 
-/* Stickers: street lines. A closing one straddles the paper's foot. A fiction
-   excerpt's closing line (an opener's "What do you do?") is a sticker too. */
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker,
+/* Stickers: street lines. One to a sheet, the line that CLOSES it, straddling
+   the paper's foot; a fiction excerpt's closing line (an opener's "What do you
+   do?") is a sticker too. A line mid-sheet, the closing line of a sheet in a
+   row (two sheets side by side would carry two), and a line the author marks
+   `{.dc-strip}` stay the tear-off strip above: a spread of four sheets carried
+   five yellow stickers, and none of them read as emphasis. */
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose, .dc-pu-row > .section) > .dc-kicker:last-child:not(.dc-strip),
 .section.dc-fiction-excerpt > .dc-kicker {
   width: fit-content; max-width: 86%;
-  /* 10pt under one mid-sheet; the closing one straddles the paper's foot. Both hold at any paragraph gap (--dc-flow-gap). */
+  /* It straddles the paper's foot (the bottom margin is set just below), at any paragraph gap (--dc-flow-gap). */
   margin: var(--dc-pu-sticker-gap) calc(0.12in - var(--dc-section-pad-right)) 10pt auto;
   --dc-flow-gap: initial;
   padding: var(--space-xs) var(--space-md);
@@ -209,25 +214,38 @@ p:has(+ .dc-kicker) {
   transform: rotate(-2deg);
   position: relative; z-index: 2;
 }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker:last-child,
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose, .dc-pu-row > .section) > .dc-kicker:last-child:not(.dc-strip),
 .section.dc-fiction-excerpt > .dc-kicker:last-child {
   margin-bottom: calc(var(--dc-pu-sticker-drop) - var(--dc-section-pad-bottom) - var(--dc-pu-foot));
 }
-/* A line above a row's closing sticker keeps its air at any paragraph gap. */
-.dc-pu-row > .dc-section-panel > p:has(+ .dc-kicker:last-child) {
-  --dc-flow-gap: initial;
-}
-.dc-pu-row > .dc-section-panel > :has(+ .dc-kicker:last-child) {
-  margin-bottom: var(--space-lg);
-}
 /* A fiction excerpt's sticker is set upright, like any sticker. */
 .section.dc-fiction-excerpt > .dc-kicker { font-style: normal; }
-.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose) > .dc-kicker::before,
+.section.dc-section-panel:not(.dc-npc-stat, .dc-citizen-walkthrough, .dc-section-choose, .dc-pu-row > .section) > .dc-kicker:last-child:not(.dc-strip)::before,
 .section.dc-fiction-excerpt > .dc-kicker::before { content: none; }
 
 
+/* A kind that is not a pasted sheet (the Dream Master's booth, a choose form)
+   keeps the sheets' spacing: the band above it and the foot under it, so any
+   two boxes that stand on a page are the same distance apart (band + foot).
+   They kept the plain section's 12pt under and nothing over, and stood 6pt
+   from the sheet above and 20pt from the one below. */
+.section.dc-section-panel:is(.dc-section-dm, .dc-section-choose) {
+  margin-top: var(--dc-pu-band);
+  margin-bottom: calc(var(--dc-pu-foot) + var(--dc-section-edge));
+}
+/* So does a callout, a ladder, a lit card or a column run that stands on the
+   page beside a sheet: the band under the sheet before it, the foot over the
+   sheet after it. (An entry card keeps its own foot: a program's connector
+   comb hangs there.) */
+:is(.section.dc-section-panel, .dc-pu-row) + :is(.dc-alert, .gp-alert, .dc-ladder, .dc-card:not(.dc-entry), .gp-columns) {
+  margin-top: var(--dc-pu-band);
+}
+:is(.dc-alert, .gp-alert, .dc-ladder, .dc-card:not(.dc-entry), .gp-columns):has(+ :is(.section.dc-section-panel, .dc-pu-row)) {
+  margin-bottom: var(--dc-pu-foot);
+}
+
 /* Rows: two sheets side by side, kept whole, each ending at its last line,
-   closing stickers at the foot. The plugin wraps two adjacent sheets whose
+   closing strips at the foot. The plugin wraps two adjacent sheets whose
    widths complete a row (`.dc-half` twice, `.dc-narrow` and `.dc-wide` either
    way) in `div.dc-pu-row`; the widths are read off the first sheet (the
    register's three widths). */

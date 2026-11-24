@@ -100,8 +100,7 @@
 
 /* The ring stacks, computed where the hue is known. */
 :is(.dc-lit > :is(h2, h3):first-child, .dc-card-lightbox, .dc-lit-value, .dc-section-dm,
-    .dc-program, .dc-visit-callout .dc-alert-label,
-    .dc-toc ol > li[class*="dc-toc-"]) {
+    .dc-program, .dc-visit-callout .dc-alert-label) {
   --dc-lit-line:
     inset 0 0 0 1.5pt var(--dc-neon), inset 0 0 0 3pt var(--dc-neon-core), inset 0 0 0 4.5pt var(--dc-neon);
   --dc-lit-frame:
@@ -169,7 +168,7 @@
      margin and the 1pt padding (it collapses with the body's top margin), so a
      lightbox is exactly a plain card's height. */
   margin: calc(7.5pt - var(--space-sm)) calc(7.5pt - var(--space-md)) calc(var(--space-sm) - 8.5pt) calc(7.5pt - var(--space-md) - 3px);
-  padding: 1pt calc(1.6em + 8pt) 0 calc(var(--space-md) + 3px - 7.5pt);   /* right: the value window */
+  padding: 1pt calc(2.1em + 8pt) 0 calc(var(--space-md) + 3px - 7.5pt);   /* right: the value window */
   background: var(--ink);
   color: var(--dc-neon-core);
 }
@@ -178,24 +177,25 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 1.6em;
+  /* The value is what the box is read for (a cost, a price): half as large
+     again as the title beside it, in a window as wide as it needs (2.1em of
+     the title's size). It was the title's own size in a 1.6em window, the
+     smallest thing on the card. */
+  font-size: 1.5em;
+  width: 1.4em;
   padding-left: 4.5pt;   /* clear of the tube down its left edge */
   display: grid;
   place-items: center;
   line-height: 1;
-  color: var(--dc-neon-core);
+  /* The number is the card's loudest mark: the graffiti caps (one weight, so
+     never a synthesized bold), in the logo's yellow on the ink head. The
+     tube beside it keeps the card's hue. */
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--brand-yellow);
   /* a price window: one upright tube between the title and the number */
   box-shadow: inset 1.5pt 0 0 var(--dc-neon), inset 3pt 0 0 var(--dc-neon-core), inset 4.5pt 0 0 var(--dc-neon);
 }
 
-/* The contents list: an entry that ends with its chapter's word as a class
-   ({.dc-toc-rules}) has its number lit in that chapter's tube colour, the same
-   as the chapter's opener sign (the Dream Master's cyan is its booth's). */
-.dc-toc .dc-toc-citizen-file { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
-.dc-toc .dc-toc-specialty    { --dc-neon: var(--neon-chrome); --dc-neon-core: var(--neon-chrome-core); --dc-neon-ring-1: var(--neon-chrome-ring-1); --dc-neon-ring-2: var(--neon-chrome-ring-2); }
-.dc-toc .dc-toc-rules        { --dc-neon: var(--neon-orange); --dc-neon-core: var(--neon-orange-core); --dc-neon-ring-1: var(--neon-orange-ring-1); --dc-neon-ring-2: var(--neon-orange-ring-2); }
-.dc-toc .dc-toc-dm           { --dc-neon: var(--neon-cyan);   --dc-neon-core: var(--neon-cyan-core);   --dc-neon-ring-1: var(--neon-cyan-ring-1);   --dc-neon-ring-2: var(--neon-cyan-ring-2); }
-.dc-toc .dc-toc-gear         { --dc-neon: var(--neon-yellow); --dc-neon-core: var(--neon-yellow-core); --dc-neon-ring-1: var(--neon-yellow-ring-1); --dc-neon-ring-2: var(--neon-yellow-ring-2); }
-.dc-toc .dc-toc-lore         { --dc-neon: var(--neon-pink);   --dc-neon-core: var(--neon-pink-core);   --dc-neon-ring-1: var(--neon-pink-ring-1);   --dc-neon-ring-2: var(--neon-pink-ring-2); }
 
 }

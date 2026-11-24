@@ -101,9 +101,11 @@
 
 /* A bleed plate is one page: core sets it the page's full width, so tall art
    would run past the page foot and print its last strip alone on the next page.
-   It stops at the content box and is cropped to fill it (cover), never squashed. */
+   It stops at the content box and is cropped to fill it (cover), never squashed.
+   The cap is the content box exactly: anything less leaves a strip of the page's
+   wall under the art, on a sheet the plate is meant to cover to its edge. */
 img.gp-bleed {
-  max-height: calc(var(--gp-content-h, 100vh) - 4px);
+  max-height: var(--gp-content-h, 100vh);
   object-fit: cover;
 }
 

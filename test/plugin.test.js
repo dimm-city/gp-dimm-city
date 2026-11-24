@@ -1932,8 +1932,17 @@ describe("@gear program", () => {
     const { html, warnings } = renderGp("@gear program\n\n#### DDoS\n\n> Bury it.\n\n**1 AP. ATTACK PROGRAM, 2 SesHP**\n\nYou flood it.\n\n@end-gear");
     expect(warnings).toEqual([]);
     expect(html).toContain('<div class="dc-card dc-entry dc-program"');
-    expect(html).toContain('<p class="dc-entry-cost"><strong>1 AP. ATTACK PROGRAM, 2 SesHP</strong></p>');
+    expect(html).toContain('<p class="dc-entry-cost"><span class="dc-ap">1 AP</span> <strong>ATTACK PROGRAM, 2 SesHP</strong></p>');
     expect(html).not.toContain("dc-gear");
+  });
+  test("a cost line that opens with an AP cost shows it as the AP chip; any other cost line is left as written", () => {
+    const cost = (line, kind = " program") => renderGp(`@gear${kind}\n\n#### X\n\n**${line}**\n\n@end-gear`).html.match(/<p class="dc-entry-cost">.*?<\/p>/)[0];
+    expect(cost("0 AP. UTILITY PROGRAM")).toBe('<p class="dc-entry-cost"><span class="dc-ap free">0 AP</span> <strong>UTILITY PROGRAM</strong></p>');
+    expect(cost("2 AP. ATTACK/DEFENSE PROGRAM — 3 SesHP")).toBe('<p class="dc-entry-cost"><span class="dc-ap">2 AP</span> <strong>ATTACK/DEFENSE PROGRAM — 3 SesHP</strong></p>');
+    expect(cost("1-X AP")).toBe('<p class="dc-entry-cost"><span class="dc-ap variable">1\u2013X AP</span></p>');
+    expect(cost("UTILITY PROGRAM")).toBe('<p class="dc-entry-cost"><strong>UTILITY PROGRAM</strong></p>');
+    // gear of any other kind keeps its price tag: 2 AP there is a price like any other
+    expect(cost("2 AP", " augment")).toBe('<p class="dc-entry-cost"><strong>2 AP</strong></p>');
   });
 });
 
@@ -2009,6 +2018,39 @@ describe("steps and examples", () => {
   });
 });
 
+describe("a skill card's quotes", () => {
+  const card = (...body) => renderGp(["@specialty .augmerc", "", "@learning-path", "", "### Path", "", "@skill", "", "#### Skill", "", ...body, "", "@end-learning-path", "", "@end-specialty", ""].join("\n")).html;
+  const classes = (html) => [...html.matchAll(/<p class="(dc-flavor|dc-kicker)">([^<]*)/g)].map((m) => m[1] + ": " + m[2]);
+
+  test("the quote that opens the card is its flavor line; a short quote that closes it is its kicker", () => {
+    expect(classes(card("> Opening voice.", "", "1. **1 AP** Do it.", "", "> Closing line.")))
+      .toEqual(["dc-flavor: Opening voice.", "dc-kicker: Closing line."]);
+  });
+  test("a quote with anything after it is not the kicker", () => {
+    expect(classes(card("> Opening voice.", "", "Text.", "", "> A quote mid-card.", "", "More text."))).toEqual(["dc-flavor: Opening voice.", "dc-flavor: A quote mid-card."]);
+  });
+  test("a card that is only a quote keeps it as its flavor line", () => {
+    expect(classes(card("> Only voice."))).toEqual(["dc-flavor: Only voice."]);
+  });
+  test("a long closing quote (an example) stays a quote", () => {
+    const long = "Example: " + "three innocuous objects hidden around a corporate machine shop ".repeat(2) + "are quickly assembled.";
+    expect(classes(card("> Opening voice.", "", "Text.", "", "> " + long))[1]).toMatch(/^dc-flavor: Example/);
+  });
+  test("a closing paragraph is still the sign-off, never the kicker", () => {
+    const html = card("> Opening voice.", "", "1. **1 AP** Do it.", "", "Only one may be active at a time.");
+    expect(html).toContain('<p class="dc-card-signoff"');
+    expect(html).not.toContain("dc-kicker");
+  });
+  test("the kicker is the sticker in the specialty's band colour", () => {
+    const read = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+    const rule = read("components/cards.css").match(/\.dc-skill-card \.dc-card-inner > p\.dc-kicker \{[^}]*\}/)[0];
+    expect(rule).toContain("background: var(--dc-card-kicker-bg);");
+    expect(rule).toContain("color: var(--dc-card-kicker-fg);");
+    expect(rule).toContain("transform: rotate(-2deg);");
+    expect(read("components/specialty-identity.css")).toMatch(/--dc-card-kicker-bg: var\(--spec-band\);\s*--dc-card-kicker-fg: var\(--spec-on-band\);/);
+  });
+});
+
 describe("neon signs", () => {
   const doc = (...lines) => lines.join("\n");
   const signs = (html) => count(html, /class="dc-neon"/g);
@@ -2017,7 +2059,7 @@ describe("neon signs", () => {
   const widths = (html) => [...html.matchAll(/class="dc-neon-word"[^>]* width="([^"]*)"/g)].map((m) => m[1]);
 
   test("a chapter opener of a neon chapter hangs the chapter's word above its title", () => {
-    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Rules", ""));
+    const { html } = renderGp(doc("@chapter citizen-file", "", "@page chapter-start", "", "# Citizen File", ""));
     expect(signs(html)).toBe(1);
     expect(html).toMatch(/dc-page-chapter-start"[^>]*><div class="dc-neon"[\s\S]*?<h1>/);
   });
@@ -2032,13 +2074,18 @@ describe("neon signs", () => {
     expect(signs(renderGp(doc("@chapter dm", "", "@page chapter-start", "", "# Dream Mastery", "")).html)).toBe(0);
   });
 
+  test("the rules and gear chapters hang no sign either", () => {
+    expect(signs(renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# Are You Lucid Yet?", "")).html)).toBe(0);
+    expect(signs(renderGp(doc("@chapter gear", "", "@page chapter-start", "", "# Gear", "")).html)).toBe(0);
+  });
+
   test("a chapter with no neon word, or a page outside any chapter, gets no sign", () => {
     expect(signs(renderGp(doc("@chapter lore", "", "@page chapter-start", "", "# Lore", "")).html)).toBe(0);
     expect(signs(renderGp(doc("@page chapter-start", "", "# Alone", "")).html)).toBe(0);
   });
 
   test("the chapter's word does not carry over to a chapter that has none", () => {
-    const { html } = renderGp(doc("@chapter rules", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
+    const { html } = renderGp(doc("@chapter citizen-file", "", "@page chapter-start", "", "# A", "", "@chapter lore", "", "@page chapter-start", "", "# B", ""));
     expect(signs(html)).toBe(1);
   });
 
@@ -2141,6 +2188,32 @@ describe("the entry cost line", () => {
 
 describe("polish rules in the stylesheets", () => {
   const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+  test("a lightbox card's number is yellow, in the title face at its one weight", () => {
+    const value = css("components/neon.css").match(/\.dc-lit-value \{[^}]*\}/)[0];
+    expect(value).toContain("font-family: var(--font-title);");
+    expect(value).toContain("font-weight: 400;");   // Creaturepunk has one weight: no synthesized bold
+    expect(value).toContain("color: var(--brand-yellow);");
+  });
+  test("a warning's rail does not hang below its callout: at a column's foot that part printed at the head of the next column", () => {
+    const rail = css("components/callouts.css").match(/\.dc-note\.warning::before,[^{]*\{[^}]*\}/)[0];
+    expect(rail).toContain("bottom: 0;");
+    expect(rail).not.toMatch(/bottom:\s*-/);
+    expect(rail).toContain("transform-origin: 100% 100%;");   // the skew pivots on the foot, so the rail ends level with the box
+  });
+  test("a # or ## set as the logo and a fiction excerpt's title are one plate: yellow on ink, upright, no outline", () => {
+    const plate = css("components/chrome.css").match(/:is\(h1, h2\)\.dc-logo,\s*\.dc-fiction-excerpt > h1 \{[^}]*\}/)[0];
+    expect(plate).toContain("color: var(--dc-logo-color);");
+    expect(plate).toContain("text-shadow: none;");
+    expect(plate).toContain("var(--ink-dark)");
+    expect(plate).toContain("box-shadow: 4px 4px 0 var(--shadow-ink);");
+    // a bolt in each corner, the plate's own picture: a hexagon head, not the slotted round head of a `##` slip
+    expect(plate.match(/var\(--dc-logo-bolt\) (left|right) 5px (top|bottom) 5px \/ 10px 10px no-repeat/g).length).toBe(4);
+    const bolt = css("dc-component-defaults.css").match(/--dc-logo-bolt:\s*url\("data:image\/svg\+xml,([^"]*)"\)/)[1];
+    expect(bolt).toContain("M5 1.3h10l5 8.7-5 8.7H5L0 10z");   // six sides
+    expect(bolt).not.toMatch(/opacity|rgba|gradient/i);          // flat and opaque: a vector with no soft mask
+    // a chapter opener tilts its `#` title; a plate is left upright
+    expect(css("page-templates.css")).toContain(".dc-page-chapter-start h1:not(.dc-logo, .dc-fiction-excerpt > h1) { transform: rotate(-2deg);");
+  });
   test("every rung heading's band is wrapped, whatever the band's spelling or the heading's markup", () => {
     for (const [h, band] of [["### Triumphs (20)", "(20)"], ["### Success (11\u201319)", "(11\u201319)"], ["### **Hard** Choice (6-10)", "(6-10)"], ["### Failure (2--5)", "(2\u20135)"]]) {
       const html = renderGp(["@ladder", "", h, "", "x", "", "@end-ladder"].join("\n")).html;
@@ -2152,6 +2225,33 @@ describe("polish rules in the stylesheets", () => {
     expect(css("components/entries.css")).toMatch(/\.dc-section-panel:has\(\+ \.dc-entry\) \{\s*break-after: avoid;/);
     expect(css("components/cards.css")).toMatch(/\.dc-roll-the-die \{[^}]*white-space: nowrap;/);
     expect(css("dc-core.css")).toMatch(/:is\(td, th\):first-child > strong:first-child \{\s*white-space: nowrap;/);
+  });
+  test("the specialty catalog shows each card's emblem whole: uncropped, no field behind it, the text wrapping around it", () => {
+    const card = css("page-templates.css").match(/\.dc-page-specialty-catalog \.dc-card-grid \.dc-specialty-card \{[^}]*\}/)[0];
+    expect(card).toContain("--dc-specialty-card-media-fit: contain;");
+    expect(card).toContain("--dc-specialty-card-media-bg: none;");
+    expect(card).toMatch(/--dc-specialty-card-media-width: ([\d.]+in);\s*--dc-specialty-card-media-height: \1;/);   // square
+    const wrapper = css("components/specialty.css").match(/\.dc-specialty-card \.dc-img-wrapper \{[^}]*\}/)[0];
+    expect(wrapper).toContain("float: var(--dc-specialty-card-media-float);");
+    expect(wrapper).not.toMatch(/background|clip-path|padding/);   // no frame or mat around the picture
+  });
+  test("a field label with nothing beside it is the chip alone: no bar, frame or surface", () => {
+    const rule = css("components/entries.css").match(/\.dc-field:not\(:has\(> p\)\) \{[^}]*\}/)[0];
+    for (const d of ["width: fit-content;", "padding: 0;", "border: 0;", "background: none;", "break-after: avoid;"]) expect(rule).toContain(d);
+  });
+  test("a skill's opening quote and a requirement note carry no left rail: a drawn quotation mark, and four corner brackets", () => {
+    const quote = css("components/cards.css").match(/\.dc-skill-card \.dc-card-inner > p\.dc-flavor \{[^}]*\}/)[0];
+    expect(quote).toContain("border-left: 0;");
+    expect(quote).toContain("color: var(--dc-accent-ink);");
+    expect(quote).toMatch(/background:\s*linear-gradient\(105deg,/);
+    expect(quote).not.toContain("transparent");   // every stop opaque: no soft mask in the PDF
+    const note = css("components/entries.css").match(/\.dc-field-requires \{[^}]*\}/)[0];
+    expect(note).toContain("border: 0;");
+    expect(note).toContain("--dc-field-surface: transparent;");
+    expect(note.match(/linear-gradient\(var\(--dc-field-accent\), var\(--dc-field-accent\)\)/g).length).toBe(8);   // two arms at each corner
+  });
+  test("a bleed plate is capped at the content box exactly, so no strip of the wall shows under it", () => {
+    expect(css("components/images.css")).toMatch(/img\.gp-bleed \{\s*max-height: var\(--gp-content-h, 100vh\);/);
   });
 });
 

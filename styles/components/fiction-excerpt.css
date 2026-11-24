@@ -61,16 +61,18 @@
   z-index: -1;
 }
 
-/* The title is a story's name, not a chapter's. A story's heading, `#` or
-   `##`, has no underline. Its words fit its width as a box's title does
-   (dc-core.css, .dc-fit): it is its own size container, so the measure is its
-   own text width. */
+/* The title is a story's name, not a chapter's: the logo plate (chrome.css),
+   at its own size. A `##` inside the story has no underline. A heading's words
+   fit its width as a box's title does (dc-core.css, .dc-fit): it is its own
+   size container, so the measure is its own text width. */
 .dc-fiction-excerpt > h1 {
   font-size: var(--dc-fiction-title-size);
 }
-.dc-fiction-excerpt > :is(h1, h2) {
+.dc-fiction-excerpt > h2 {
   border-bottom: 0;
   padding-bottom: 0;
+}
+.dc-fiction-excerpt > :is(h1, h2) {
   container-type: inline-size;
   --dc-fit-measure: 100cqi;
 }

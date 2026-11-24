@@ -90,7 +90,7 @@
   --dc-section-pad-right:  var(--space-lg);
   --dc-section-pad-bottom: var(--space-md);
   --dc-section-pad-left:   var(--space-lg);
-  --dc-section-measure:    none;                /* max-width of a panel's prose (p, lists, quotes); tables stay full width, a @row's sheets reset it */
+  --dc-section-measure:    none;                /* max-width of running text set at the page's full width (a sheet, a skill card, an intro, a fiction excerpt, a lede: p, lists, quotes); tables stay full width, a @row's sheets reset it */
   --dc-td-pad-y:           5px;                 /* a body cell's vertical padding */
   --dc-th-pad-y:           6px;                 /* a header cell's */
   --dc-choose-stamp-room:  0px;                 /* the stamp's width reserved on the first block's first lines (a form that opens a page) */
@@ -235,22 +235,21 @@
   --dc-specialty-card-pad-x:       0.18in;      /* side padding; the name band reaches out through it */
   /* The card's layout. Defaults are the dense catalog card (a small portrait
      floated beside the text, the grid in columns); the specialty-catalog page
-     sets them for the tall poster card in a grid of equal rows. */
-  --dc-specialty-card-display:      flow-root;   /* flex, for the poster card (portrait on top) */
-  --dc-specialty-card-media-order:  0;           /* -1 lifts the portrait above the name */
+     sets them for a large emblem in a grid of equal rows. */
   --dc-specialty-card-media-float:  left;
   --dc-specialty-card-media-float-even: right;
   --dc-specialty-card-media-margin: 0 0.14in 0.08in 0;
   --dc-specialty-card-media-margin-even: 0 0 0.08in 0.14in;
-  --dc-specialty-card-media-shape:  none;        /* clip-path of the portrait frame */
-  --dc-specialty-card-media-mat:    0px;         /* the ink mat around the portrait (2px on the poster card) */
+  --dc-specialty-card-media-fit:    cover;       /* contain: the whole picture shows, uncropped (an emblem) */
+  --dc-specialty-card-media-bg:     var(--paper-aged);  /* the field behind the portrait; none for an emblem */
+  --dc-specialty-card-media-wrap:   none;        /* the outline the text wraps to: the picture's box; circle(50%) for a round emblem */
+  --dc-specialty-card-tagline-display: block;    /* flow-root: the tagline's rule stops at the portrait instead of running behind it */
   --dc-specialty-card-name-size:    var(--fs-h4);
   --dc-card-grid-display:           block;       /* grid: aligned rows, two cards across */
   --dc-card-grid-item-display:      block;       /* flex (a column): the card fills its row */
   --dc-card-grid-row:               0;           /* the least height of a card in the grid */
   --dc-card-grid-item-span:         1;           /* 2: the card spans both columns */
   --dc-card-grid-row-wide:          0;           /* the least height of a card spanning both columns */
-  --dc-card-grid-media-wide:        1in;         /* the portrait of a card spanning both columns */
   --dc-card-grid-gap:               0.16in;
 
   /* .dc-block public API */
@@ -317,6 +316,10 @@
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
 
+  /* a skill card's closing kicker (a short quote that ends the card): the sticker's fill and type; a specialty sets its band */
+  --dc-card-kicker-bg:       var(--brand-yellow);
+  --dc-card-kicker-fg:       var(--ink);
+
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
@@ -374,7 +377,8 @@
   --dc-toc-rail-y:           4pt;                  /* rust strips top and bottom */
   --dc-toc-rail-x:           1.5pt;                /* ink rails left and right */
   --dc-toc-shadow:           var(--shadow-poster);
-  --dc-toc-badge:            var(--rust);          /* number chip */
+  --dc-toc-badge:            var(--rust);          /* number chip, and the page numbers */
+  --dc-toc-spec:             transparent;          /* a specialty entry's swatch (set per specialty in data.css) */
 
   /* NPC stat block (.dc-npc-stat-*) public API */
   --dc-npc-stat-label-color: var(--hud-blue-dark);
@@ -490,6 +494,8 @@
   --dc-logo-color:           var(--brand-yellow);
   --dc-logo-outline:         var(--ink);
   --dc-logo-outline-width:   0.05em;
+  /* the logo plate's corner bolt (chrome.css): a hexagon head with a socket, --brand-yellow with --ink-dark in it */
+  --dc-logo-bolt:            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 1.3h10l5 8.7-5 8.7H5L0 10z' fill='%23ffd700'/%3E%3Ccircle cx='10' cy='10' r='4.3' fill='%232f2622'/%3E%3C/svg%3E");
 
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);

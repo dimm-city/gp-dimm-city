@@ -219,10 +219,7 @@
 .dc-specialty-card {
   box-shadow: var(--shadow-lift);
   color: var(--dc-specialty-card-fg);
-  /* flow-root for the dense card; flex (a column) for the poster card of the
-     specialty-catalog page, where the portrait sits under the band. */
-  display: var(--dc-specialty-card-display);
-  flex-direction: column;
+  display: flow-root;
   line-height: var(--lh-tight);
   /* Card spacing: --dc-card-gap plus 4px (layout, not shadow clearance).
      .dc-card-grid resets this to 0 — the grid packs cards deliberately tight
@@ -257,33 +254,29 @@
   z-index: -2;
 }
 
-/* Portrait. By default a small image floated beside the text (the dense
-   card); the specialty-catalog page sets the tokens for a full-width frame
-   above the name. The wrapper (the paragraph the image sits in) is the frame, and it is what floats:
-   an ink mat (--dc-specialty-card-media-mat, 0 by default) clipped to the
-   specialty's own cut (--dc-specialty-card-media-shape), over a paper-aged
-   field, so it reads whether the picture loads or the field is empty. */
+/* Portrait: an image floated beside the text, which wraps around it. The
+   wrapper (the paragraph the image sits in) is what floats. By default a
+   small picture cropped to fill its frame, over a paper field; the
+   specialty-catalog page sets the tokens for a large emblem shown whole, with
+   no field behind it. */
 .dc-specialty-card .dc-img-wrapper {
-  order: var(--dc-specialty-card-media-order);
-  position: relative;
   float: var(--dc-specialty-card-media-float);
   margin: var(--dc-specialty-card-media-margin);
-  padding: var(--dc-specialty-card-media-mat);
-  background: var(--ink);
-  clip-path: var(--dc-specialty-card-media-shape);
+  shape-outside: var(--dc-specialty-card-media-wrap);
+  shape-margin: 0.08in;
 }
 
 .dc-specialty-card img {
   display: block;
   width: var(--dc-specialty-card-media-width);
   height: var(--dc-specialty-card-media-height);
-  object-fit: cover;
+  object-fit: var(--dc-specialty-card-media-fit);
   border: none;
   padding: 0;
   box-sizing: border-box;
   margin: 0;
   border-radius: 2px;
-  background: var(--paper-aged);
+  background: var(--dc-specialty-card-media-bg);
   color: var(--ink);
 }
 
@@ -294,10 +287,8 @@
    read as ink on paper, not as a painted card. */
 /* The name is the specialty's band, as on its path banner: the banner's fill,
    type colour and cut, spanning the sheet edge to edge, its padding the
-   deepest cut plus 2pt (data.css, the path banner). First in the poster card
-   too: the portrait sits under it. */
+   deepest cut plus 2pt (data.css, the path banner). */
 .dc-specialty-card h3 {
-  order: -2;
   position: relative;
   margin: 0 calc(-1 * var(--dc-specialty-card-pad-x)) 0.1in;
   padding: 12px 28px 7px 20px;
@@ -327,15 +318,15 @@
    typographic anchor below the title, lifting the interior from "uniform
    cream surface" to a structured stat-block-like reading. */
 .dc-specialty-card blockquote {
+  /* block by default: the rule runs on behind the portrait, which covers it.
+     flow-root makes the tagline a box of its own beside the portrait, so the
+     rule stops there (an emblem is see-through at its corners). */
+  display: var(--dc-specialty-card-tagline-display);
   background: none;
   border: none;
   border-bottom: 1pt solid var(--dc-specialty-card-accent);
   padding: 0 0.06in 0.03in;
-  /* In the poster card (a flex column) the slack of a row's shorter card goes
-     above the tagline, between the portrait and the text, so the type block
-     sits at the foot with no dead paper under the pitch; in the dense card an
-     auto top margin is 0. */
-  margin: auto 0 0.06in;
+  margin: 0 0 0.06in;
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-style: normal;

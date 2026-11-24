@@ -52,7 +52,10 @@ body {
   letter-spacing: 0.005em;
   text-wrap: pretty;
   position: relative;
-  hyphens: auto;
+  /* Running text is set ragged right, so a word is never broken to fill a
+     line: automatic hyphenation only chopped words ("ta-ble", "me-ters")
+     without evening anything. A soft hyphen typed in the source still works. */
+  hyphens: manual;
   /* Paged Media orphans/widows constraint: cascades to every .page box, so
      no need to repeat at .page p level — that would be pure duplication. */
   widows: 2;
@@ -98,9 +101,22 @@ h1, h2 {
   word-spacing: 0.12em;
   --dc-fit-ws: 0.12em;
 }
-h2:is(.dc-h3, .dc-h4, .dc-h5, .dc-h6) {
+h2.dc-h3 {
   font-family: var(--font-display);
   font-weight: 400;
+}
+/* h4 to h6 are the sub-heads and labels set inside a sheet, among its text:
+   the label face (Tomorrow), bold. Lixdu's wide caps are for a bar's few words
+   at 14pt and up; at 10 to 12pt in a text column its K, W, M and Y are hard to
+   tell apart ("BLACK PILL", "SYSCHK", "WHAT'S YR HANDLE?"), and a wide black
+   sub-head weighed as much as the bar above it. A look class gives any
+   heading the same face. */
+h4, h5, h6,
+:is(h1, h2, h3, h4, h5, h6, p):is(.dc-h4, .dc-h5, .dc-h6) {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-synthesis-weight: auto;
+  word-spacing: normal;
 }
 /* A heading that wraps never splits across a page; keeping it with what follows is core's
    `break-after: avoid` (MARKER_CSS). */

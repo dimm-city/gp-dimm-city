@@ -76,7 +76,7 @@ A panel's first `##` or `###` is its title bar; a heading after it is a sub-head
 | Kind | `###` sub-heading | `####` sub-heading |
 |---|---|---|
 | panel, reference, dm | 13pt under an `##` bar, 11pt under an `###` bar; accent colour and rail | 11pt ink, no rail |
-| lore | italic violet caption | italic violet caption |
+| lore | italic caption in the chapter\'s ink | italic caption in the chapter\'s ink |
 | definition | --- | the headword |
 | choose | none: the form has no sub-headings | none |
 
@@ -126,8 +126,8 @@ The stub is `--dc-section-accent`, so a chapter that re-themes its panels re-the
 
 | You are writing | Write | Looks like |
 |---|---|---|
-| A table or list to look up: prices, conditions, a menu of options | `@section reference` | HUD blue, a pale title band ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers |
-| The world, not the rules: places, factions' history, setting | `@section lore` | A deep violet bar with a slashed top-left corner and a torn top edge over a white sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
+| A table or list to look up: prices, conditions, a menu of options | `@section reference` | A pale title band in a tint of the chapter\'s colour, ruled in ink above (a heavy inset rule) and below (a double rule) like a machined spec-sheet header, 10pt tight rows, four small even chamfers |
+| The world, not the rules: places, factions' history, setting | `@section lore` | A deep bar in the chapter\'s colour with a slashed top-left corner and a torn top edge over a white sheet, long asymmetric slashes (shallow at the top left, steep at the bottom right), italic sub-heads |
 | Advice for the Dream Master, behind the screen | `@section dm` | A classified file folder: an ink tab in the box's top band that carries the words *Dream Master* in cyan (it never splits from the box at a page break), an ink title bar with a cyan rule and a cyan rail over a white body, and one opposite corner cut (bottom right). The tab is drawn with or without a heading |
 | A choice the player writes on the Citizen File | `@section choose` | A printed form, not a panel: a white paper sheet, sunk into the wall in an ink edge cut like a ticket (a V punched in the middle of each side, a perforated foot), no bar, an ink title over a double rule in the chapter's accent, dotted write-in rules, heavy ink tick boxes and a yellow *Choose* stamp |
 
@@ -912,7 +912,7 @@ Tokens: `--dc-entry-accent` (rail), `--dc-entry-ink` (name), `--dc-entry-surface
 
 ### Program
 
-`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line is stamped as a tag, as on general gear. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
+`@gear program` is deck software: a program you find, buy or learn, with a cost to run it. It is a data cartridge: a white plate in a heavy ink frame, an ink label strip across its head with a PROGRAM badge, a connector comb cut into its foot, and the name in HUD blue. The bold cost line opens with the AP chip a specialty ability shows (write the cost first: `**1 AP. ATTACK PROGRAM, 2 SesHP**`), then the kind of program in mono caps. It does not read as an augment, which is a spec chip with a stepped notch, a cyan rule and a teal name: the strip and the comb tell them apart in grayscale. (Cyan never sits on the strip; that pairing is the Dream Master's.)
 
 ```markdown {.dg-split}
 @gear program
@@ -981,7 +981,7 @@ A field is a labelled line of an entry: its rules, its traits, what a drug does 
 | `equipment` | Equipment | the same, in grey |
 | `effects` | Effects | a solid teal frame on white, a + on the chip: the benefit; sits over side effects |
 | `side-effects` | Side Effects | a dashed blood frame on white, a -- on the chip: the cost |
-| `requires` | Requires | a grey requirement bar |
+| `requires` | Requires | four corner brackets round the note, no rail and no bar |
 
 ```markdown {.dg-split}
 @field specs

@@ -5,6 +5,142 @@ All notable changes to gp-dimm-city are documented here. The format follows
 [Semantic Versioning](https://semver.org/). The release workflow refuses to
 cut a version that has no `## [X.Y.Z]` heading below.
 
+## [1.10.4] - 2026-11-24
+
+### Changed
+
+- **The specialty catalog shows each emblem whole.** On `@page specialty-catalog`
+  a card's picture was cropped to a 0.7in strip across the card, which no
+  emblem survived. It is now 1.45in square under the name band, uncropped, with
+  no frame or field, and the tagline and pitch wrap around it. All ten cards
+  carry the same size; Dualist and Generalist still close each page full width.
+  The spread is still two pages, five cards on each. A book whose emblems are
+  round sets `--dc-specialty-card-media-wrap: circle(50%)` on the page and the
+  pitch follows the circle.
+- **Specialty card tokens.** New: `--dc-specialty-card-media-fit` (`cover`;
+  `contain` shows the whole picture), `-media-bg` (the field behind it),
+  `-media-wrap` (the outline the text wraps to) and `-tagline-display`
+  (`flow-root` stops the tagline's rule at the picture). Gone with the framed portrait:
+  `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
+  `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
+
+- **A lightbox card's number is yellow, in the Creaturepunk face.** The number
+  that ends a `@card lightbox` title (a price, a tax, a level) was set in the
+  title's face and the tube's pale core. It is now the graffiti caps in
+  `--brand-yellow` on the ink head, on every lightbox card, whatever its hue.
+- **A logo plate is bolted at its four corners.** Each corner of the plate
+  (a `#` or `##` written `{.dc-logo}`, a fiction excerpt's title) carries a
+  hexagon bolt head with a socket, in the logo's yellow. It is the plate's own
+  hardware: the grey slotted heads stay on a `##` slip, a skill card and a
+  sign. Token `--dc-logo-bolt` (an inline SVG; `none` takes the bolts off).
+- **A fiction excerpt's title is the logo plate.** A story's `#` title was a
+  tilted line of chapter-coloured type on the page. It is now the plate the
+  logo headings use: logo yellow on ink with a hard shadow, upright and
+  centred, at `--dc-fiction-title-size`. The plate is the package's now, not a
+  book's: a `#` or `##` written `{.dc-logo}` is one wherever it stands, with no
+  outline (on ink it only thickened the letters). A smaller heading or a
+  paragraph set as the logo keeps the outlined look.
+- **A quote that closes a skill is its kicker.** Write a skill's last line as
+  a quote (`> You don't need an opening. You make one.`) and it prints as the
+  street-line sticker at the card's foot, in the specialty's band colour with
+  the band's own type colour, not the sheet's yellow. The quote that opens the
+  card is still its flavor line. Only a short quote (120 characters or under)
+  that truly ends the card is one: a quote with anything after it, a long
+  closing example and a closing paragraph (the sign-off) are unchanged. Tokens
+  `--dc-card-kicker-bg` / `-fg`.
+- **A skill's opening quote and its requirement note lose their left rails.**
+  Both were one more box with a rail down the left, like every sheet and
+  callout. The quote (`>` at the top of a `@skill`) now opens with a heavy
+  quotation mark in the specialty's colour and is set in the specialty's
+  text-safe ink, with no rail or field. A requirement (`**Requires:**`,
+  `**Wirephreak Gear:**`, `**Cybersurgeon Instruments:**`) is held in four
+  corner brackets, with no rail and no grey bar. A flavor line anywhere else is
+  unchanged.
+- **A field label with nothing beside it is the chip alone.** A bold label
+  on a line of its own in a card (`**TECHNOENHANCEMENT:**`) drew a full-width
+  grey bar holding one word. It is now the chip, as wide as its word, with no
+  bar, frame or surface, and it still stays with the block it heads.
+- **The rules chapter's opener hangs no neon sign.** The RULES sign above the
+  opener's title is gone, as the Dream Master's and the gear chapter's were
+  (owner, 2026-11-24). Only a Citizen File opener whose title stands straight
+  on the page still hangs one.
+- **One text inset and one gap for sheets.** Text starts 0.15in clear of the
+  rail in every kind of sheet: the padding was measured from the box edge with
+  the rail inside it, which left 7pt beside a panel's rail and 6pt beside a
+  reference or lore sheet's. And every box that stands on a page beside a
+  sheet keeps the sheets' spacing (the band above, the foot below): a Dream
+  Master or choose sheet, a callout, a ladder, a lit card and a column run
+  stood 6pt to 20pt from their neighbours, depending on the pair.
+- **Callouts and ledes carry no bolt heads.** Every callout register and the
+  lede had a bolt head in each top corner, beside a label, a rail and a frame:
+  on a one-line note the hardware was louder than the line. Bolts stay on what
+  is bolted to the wall (a skill card, a sign plate, a `##` slip). A callout is
+  told by its silhouette, edge and label, as before.
+- **`--dc-section-measure` holds every full-width text block.** The token
+  capped the prose of a sheet only. It now also holds a skill card's text and
+  ability rows, a path banner's, a specialty intro's, a fiction excerpt's and a
+  lede's, so a book that sets it (`.chapter { --dc-section-measure: 5.6in; }`)
+  gets one line length everywhere: at 12pt a 7in line runs 95 characters or
+  more, and 5.6in is about 72. Unset (the default) nothing changes; tables and
+  text in columns are never capped.
+- **The contents page uses the chapters' own colours.** A chapter's number
+  was a neon plate in its sign's tube colour (pink, chrome, orange, cyan,
+  yellow), which matched nothing a reader sees while turning pages. It is now
+  the chapter's coupon: the chip at the foot of every page of that chapter, in
+  the same colour, caps and ink edge. Page numbers take the chapter's colour,
+  the row rules are neutral, and an entry under a chapter gets a page number
+  too. An entry that links to a specialty opens with a swatch of that
+  specialty's colour.
+- **One yellow sticker to a sheet.** On a paste-up sheet every closing bold
+  line and every bold line before a heading was a tilted yellow sticker: a
+  spread of four sheets carried five, and none read as emphasis. Only the line
+  that closes a sheet is a sticker now. A line mid-sheet and the closing line
+  of a sheet in a row are the tear-off strip (a dotted rule, the line in bold,
+  the sheet's accent stub), and `**Line.** {.dc-strip}` makes any closing line
+  the strip where a page still holds two.
+- **A lit card's value is the largest thing on it.** The number in a
+  lightbox card's heading (`#### BODY TAX: 2`) is set half as large again as
+  the title beside it. It was the title's own size, the smallest thing on a
+  card read for that number.
+- **A reference or lore sheet takes its chapter's colour.** `@section
+  reference` was HUD blue and `@section lore` violet in every chapter, so a
+  rust rules chapter carried pale-blue and violet sheets beside its own. A
+  reference sheet's pale band and table head are now a 30% tint of the
+  chapter's colour, and a lore sheet's deep bar and rule the chapter's colour
+  over ink (violet only in a `@chapter lore`). Each kind is still told apart by
+  its silhouette: the ruled pale band and small cuts, the torn top and long
+  slashes. A sub-head inside a sheet prints in the sheet's own ink, not the
+  base teal. `dm` sheets and catalog kinds are unchanged.
+- **Sub-heads are set in the label face.** `####`, `#####` and `######`
+  (and the `.dc-h4` to `.dc-h6` looks) print in bold Tomorrow caps, not Lixdu.
+  Lixdu's wide caps suit a bar's few words at 14pt and up; at 10 to 12pt in a
+  text column its K, W, M and Y were hard to tell apart ("BLACK PILL",
+  "SYSCHK"), and a wide black sub-head weighed as much as the tag above it. A
+  `###` that is a sheet's tag stays in Lixdu whatever look class it carries.
+- **A program's cost is the AP chip.** A `@gear program` cost line that opens
+  with an AP cost (`**1 AP. ATTACK PROGRAM, 2 SesHP**`) shows it as the chip a
+  specialty ability shows (grey for 0 AP), followed by the kind of program. It
+  was a boxed text label, a second way of writing the same thing.
+- **The » between a learning path's chain chips takes the specialty's colour.**
+  It was the package's red on every specialty, which clashed with the green,
+  blue and cyan bands.
+- **Running text is no longer hyphenated.** Body text is set ragged right, so
+  automatic hyphenation only broke words ("ta-ble", "me-ters", "opti-mization")
+  without evening the lines. Words now wrap whole; a soft hyphen typed in the
+  source still breaks. Lines re-wrap, so a tightly fitted page can move by a line.
+
+### Fixed
+
+- **A warning at a column's foot no longer leaves a yellow triangle at the top
+  of the next column.** The hazard rail's own box reached 24px under its
+  callout so the slanted stripes left no gap. When the callout was the last
+  thing in a column, that overhang was laid out at the head of the next
+  column and printed there. The rail now ends level with the callout's foot
+  (its skew pivots there) and is raised only at the top.
+- **A bleed plate covers its sheet to the foot.** `{.gp-bleed}` art stopped 4px
+  short of the page, so a strip of the wall and street showed under it (1.10.3,
+  on Gutterpress 0.11.26 and later). It is capped at the content box exactly.
+
 ## [1.10.3] - 2026-11-22
 
 Paste-up becomes part of the package proper, gear sections get a kind each,

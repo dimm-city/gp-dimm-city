@@ -251,7 +251,7 @@
   list-style: none;
   margin: 0;
   padding: 10px 0;
-  border-bottom: 1pt solid var(--hud-blue-dim);
+  border-bottom: 1pt solid var(--concrete-pale);   /* a neutral rule: the only colours on the page are the chapters' and the specialties' */
   font-family: var(--font-body);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-normal);
@@ -583,8 +583,9 @@
    Dualist), the other four cards and Generalist on the right; in aligned
    rows (a two-column grid). Every one-column card is one size and both
    full-width cards another. A lede of more than a few lines pushes
-   Generalist onto a third page. Each card is a poster: the portrait on
-   top, then the name, the tagline and the pitch. A location: it sets tokens and break rules, and
+   Generalist onto a third page. Each card shows its emblem whole, 1.45in
+   square under the name band, with the tagline and the pitch wrapping around
+   it; nothing frames or crops it. A location: it sets tokens and break rules, and
    nothing else. Whatever follows the grid begins a page of its own (write a
    plain `@page` after `@end-card-grid`). The Variant Gallery's @card-grid is on
    no such page and stays the dense card with a floated thumbnail. */
@@ -593,27 +594,26 @@
   --dc-card-grid-display: grid;
   --dc-card-grid-item-display: flex;
   /* Every one-column card is one size and both full-width cards another,
-     each at least the tallest of its kind. The text block is 9.75in tall
-     (11.25in sheet, 0.625in top and 0.875in bottom margins), and the right
-     page holds a lede, two rows of cards and Generalist. */
-  --dc-card-grid-row: 3.15in;
-  --dc-card-grid-row-wide: 1.7in;
-  --dc-card-grid-media-wide: 0.75in;   /* the portrait of a card that spans both columns */
-  --dc-card-grid-gap: 0.12in;
+     each at least the tallest of its kind. The text block is 9.675in tall
+     (11.25in sheet, 0.625in top and 0.95in bottom margins), and each page
+     holds a title or a lede, two rows of cards and a full-width card. Keep
+     more than one row gap free under Dualist: with less, print carries the
+     gap onto a sheet of its own, a blank page inside the spread. */
+  --dc-card-grid-row: 2.92in;
+  --dc-card-grid-row-wide: 2.2in;
+  --dc-card-grid-gap: 0.1in;
   --dc-intro-size: var(--fs-body-sm);  /* the lede at body size, so the left page holds two rows of cards */
 }
 
 .dc-page-specialty-catalog .dc-card-grid .dc-specialty-card {
-  --dc-specialty-card-display: flex;
-  --dc-specialty-card-media-order: -1;
-  --dc-specialty-card-media-float: none;
-  --dc-specialty-card-media-float-even: none;
-  --dc-specialty-card-media-margin: 0 0 0.14in;
-  --dc-specialty-card-media-margin-even: 0 0 0.14in;
-  --dc-specialty-card-media-width: 100%;
-  --dc-specialty-card-media-height: 0.7in;
-  --dc-specialty-card-media-mat: 2px;
-  --dc-specialty-card-media-shape: var(--spec-media-shape);
+  --dc-specialty-card-media-float-even: left;
+  --dc-specialty-card-media-margin: 0 0.14in 0.04in 0;
+  --dc-specialty-card-media-margin-even: 0 0.14in 0.04in 0;
+  --dc-specialty-card-media-width: 1.45in;
+  --dc-specialty-card-media-height: 1.45in;
+  --dc-specialty-card-media-fit: contain;
+  --dc-specialty-card-media-bg: none;
+  --dc-specialty-card-tagline-display: flow-root;
   --dc-specialty-card-name-size: var(--fs-body);
   --dc-specialty-card-title-align: left;
 }
@@ -632,18 +632,6 @@
 .dc-page-specialty-catalog .dc-card-grid .dc-specialty:is(.dualist, .generalist) {
   --dc-card-grid-item-span: 2;
   --dc-card-grid-row: var(--dc-card-grid-row-wide);
-}
-/* A full-width card is the dense card again: the band on top, the portrait
-   floated left of the tagline and pitch. */
-.dc-page-specialty-catalog .dc-card-grid :is(.dualist, .generalist) > .dc-specialty-card {
-  --dc-specialty-card-display: flow-root;
-  --dc-specialty-card-media-order: 0;
-  --dc-specialty-card-media-float: left;
-  --dc-specialty-card-media-float-even: left;
-  --dc-specialty-card-media-margin: 0 0.18in 0.06in 0;
-  --dc-specialty-card-media-margin-even: 0 0.18in 0.06in 0;
-  --dc-specialty-card-media-width: 1.2in;
-  --dc-specialty-card-media-height: var(--dc-card-grid-media-wide);
 }
 
 /* A tape divider (`.dc-tape`: the MASTERS strip between creature blocks, a
@@ -749,8 +737,10 @@ li > p {
    The chapter's `#` title is a bill pasted on the wall (constitution §IV):
    tilted, over whatever it overlaps. It pivots on its top edge: about its
    centre, its top-left corner swung 2px past the content box and the page
-   clipped the banner there to a flat edge. */
-.dc-page-chapter-start h1 { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
+   clipped the banner there to a flat edge. A logo plate (chrome.css: a `#`
+   set as the logo, a story's title) is bolted on, not pasted: it stays
+   upright. */
+.dc-page-chapter-start h1:not(.dc-logo, .dc-fiction-excerpt > h1) { transform: rotate(-2deg); transform-origin: 50% 0; position: relative; z-index: 2; }
 /* Tilted about its top edge, a title's lower corners swing out by its height
    x sin 2deg: 2-5px for one to three lines. A title that fills the measure
    then overhangs the content box, and print shrinks the whole book to fit it

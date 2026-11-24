@@ -77,7 +77,7 @@ Every marker on one page, the options they take, the classes you can add, and th
 | `.dc-flaws` · `.dc-ideals` · `.dc-dreams` | `@section` of `@card` | The kind of choice (flaw, ideal, dream): colour, silhouette and chip per step |
 | `.dc-chevron` | `#` heading | Chevron banner |
 | `.dc-spray` | `##` heading | Spray banner |
-| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline |
+| `.dc-logo` | any heading, a paragraph | The CREATUREPUNK logo look: yellow Creaturepunk caps, on an ink plate (`#`, `##`) or outlined in ink (smaller) |
 | `.dc-spec-tweak` · `.dc-no-top` | `###` heading | Spec-tweak rule; no top margin |
 | `.dc-img-float-left` · `.dc-img-float-right` | an image | Float at 44% width |
 | `.dc-flush` | tape, stat block, stickers | Edge to edge |
@@ -113,7 +113,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Tape | `--dc-tape-bg` `--dc-tape-border` `--dc-tape-color` `--dc-tape-shape` |
 | Tag (inline chip) | `--dc-tag-bg` `--dc-tag-fg` `--dc-tag-border` |
 | Chevron · Spray | `--dc-chevron-bg` `--dc-chevron-color` `--dc-chevron-font-size` · `--dc-spray-bg` `--dc-spray-color` `--dc-spray-stencil` |
-| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` |
+| Logo | `--dc-logo-color` `--dc-logo-outline` `--dc-logo-outline-width` `--dc-logo-bolt` |
 | Class tag | `--dc-classtag-color` |
 | Roll the die | `--dc-accent-ink` |
 | Block | `--dc-block-bg` `--dc-block-fg` `--dc-block-accent` `--dc-block-title-bg` `--dc-block-title-fg` `--dc-block-title-rule` `--dc-block-tag` `--dc-block-tag-edge` |
@@ -133,7 +133,7 @@ Reset any of these in a book's own sheet, at `:root` or at a chapter id. Default
 | Specialty wrapper | `--spec-accent` `--spec-mid` `--spec-dark` `--spec-band` `--spec-on-band` `--spec-chip-bg` `--spec-chip-fg` `--spec-chip-edge` `--dc-skill-tab-shape` `--dc-skill-body-shape` `--dc-path-title-shape` `--dc-path-shell-clip` `--dc-specialty-intro-title-shape` `--dc-specialty-intro-clip` |
 | Specialty intro | `--dc-specialty-intro-bg` `--dc-specialty-intro-title-bg` `--dc-specialty-intro-title-color` `--dc-specialty-intro-h3-color` |
 | Title band (path banner, intro title) | `--dc-band-rule` `--dc-band-rule-h` `--dc-band-tick` `--dc-band-tick-style` `--dc-band-tick-w` `--dc-band-rule-skew` `--dc-band-rule-bleed` `--dc-band-facet` `--dc-band-facet-width` `--dc-band-facet-clip` `--dc-band-rim` `--dc-band-reg` |
-| Specialty card | `--dc-specialty-card-bg` `--dc-specialty-card-accent` `--dc-specialty-card-fg` `--dc-specialty-card-media-height` `--dc-specialty-card-media-width` `--dc-specialty-card-title-align` `--dc-specialty-card-band-bg` `--dc-specialty-card-band-fg` `--dc-specialty-card-band-shape` `--dc-specialty-card-shell-shape` `--dc-specialty-card-title-color` `--dc-specialty-card-display` `--dc-specialty-card-media-order` `--dc-specialty-card-media-float` `--dc-specialty-card-media-margin` `--dc-specialty-card-media-shape` `--dc-specialty-card-media-mat` `--dc-specialty-card-name-size` `--dc-card-grid-display` `--dc-card-grid-item-display` `--dc-card-grid-row` `--dc-card-grid-gap` |
+| Specialty card | `--dc-specialty-card-bg` `--dc-specialty-card-accent` `--dc-specialty-card-fg` `--dc-specialty-card-media-height` `--dc-specialty-card-media-width` `--dc-specialty-card-title-align` `--dc-specialty-card-band-bg` `--dc-specialty-card-band-fg` `--dc-specialty-card-band-shape` `--dc-specialty-card-shell-shape` `--dc-specialty-card-title-color` `--dc-specialty-card-media-float` `--dc-specialty-card-media-margin` `--dc-specialty-card-media-fit` `--dc-specialty-card-media-bg` `--dc-specialty-card-media-wrap` `--dc-specialty-card-tagline-display` `--dc-specialty-card-name-size` `--dc-card-grid-display` `--dc-card-grid-item-display` `--dc-card-grid-row` `--dc-card-grid-gap` |
 | Learning path | `--dc-path-title-bg` `--dc-path-title-color` `--dc-path-code-bg` `--dc-path-code-fg` `--dc-path-chip-bg` `--dc-path-chip-fg` `--dc-path-chip-edge` `--dc-path-note-rail` `--dc-path-accent` `--dc-path-shell-padding-top` `--dc-path-shell-padding-bottom` `--dc-arrow-color` |
 | Skill card | `--dc-card-accent` `--dc-card-surface` `--dc-card-tab-bg` `--dc-card-tab-title-color` `--dc-card-gap` `--dc-card-tab-shadow` `--dc-tier-bg` `--dc-tier-fg` `--dc-tier-edge` |
 | AP chip | `--dc-ap-bg` `--dc-ap-fg` `--dc-ap-border` |

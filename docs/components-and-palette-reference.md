@@ -155,7 +155,7 @@ These are separate components — not variants of each other.
 ### Typography Decorations
 - `.dc-chevron` — deep-magenta chevron banner heading
 - `.dc-spray` — stencil-tag heading: stepped overspray edge, dashed stencil line
-- `.dc-logo` — the CREATUREPUNK logo look: yellow Creaturepunk caps with an ink outline (hard text shadows, so the text stays live in print)
+- `.dc-logo` — the CREATUREPUNK logo look: yellow Creaturepunk caps. A `#` or `##` is a plate (yellow on ink, hard shadow, upright, centred, a yellow hex bolt in each corner), as a fiction excerpt's title is; anything smaller has an ink outline (hard text shadows, so the text stays live in print)
 - `.dc-sub-header`
 - `.dc-pullquote`
 - `.dc-intro` — lede: upright semibold ink type on a light panel, accent rail, ink foot rule
@@ -319,6 +319,7 @@ Variants and templates set these on their own rule (`.dc-section-flat`, the intr
 | `--dc-spray-stencil` | `--ink-dark` | The dashed stencil line along a spray tag's foot |
 | `--dc-logo-color` / `-outline` | `--brand-yellow` / `--ink` | A `.dc-logo` heading's fill and outline |
 | `--dc-logo-outline-width` | `0.05em` | The outline's thickness |
+| `--dc-logo-bolt` | a yellow hex head (inline SVG) | The bolt in each corner of a logo plate; `none` for no bolts |
 
 ### Choice Card, Faction, Entry (`.dc-card`, `.dc-faction`, `.dc-entry`)
 | Token | Default | Role |

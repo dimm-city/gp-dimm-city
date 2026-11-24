@@ -1037,7 +1037,7 @@ table.dc-stat-strip {
 .dc-toc ol>li {
   position: relative;
   padding: 10px 4px 10px 56px;
-  border-bottom: 1pt solid var(--hud-blue-dim);
+  border-bottom: 1pt solid var(--concrete-pale);
   counter-increment: dc-toc;
   font-size: var(--fs-body-sm);
   line-height: 1.4;
@@ -1074,8 +1074,17 @@ table.dc-stat-strip {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), calc(100% - 6px) 100%, 0 100%);
 }
 
-/* An entry that links to a chapter (dcTocChapters) has its number lit: an ink
-   plate ringed in the chapter's tube (neon.css), the digits in its pale core. */
+/* An entry that ends with its chapter's word as a class ({.dc-toc-rules}) has
+   its number on that chapter's coupon: the chip a reader sees at the foot of
+   every page of the chapter (dc-native.css §2b, 2c), in the same colour, the
+   same display caps and the same ink edge, heavier below and right. The
+   contents page says a chapter's colour the way the chapter's own pages do. */
+.dc-toc .dc-toc-citizen-file { --dc-toc-badge: var(--brand-magenta-deep); }
+.dc-toc .dc-toc-specialty    { --dc-toc-badge: var(--hud-blue-dark); }
+.dc-toc .dc-toc-rules        { --dc-toc-badge: var(--rust); }
+.dc-toc .dc-toc-lore         { --dc-toc-badge: var(--brand-violet); }
+.dc-toc .dc-toc-dm           { --dc-toc-badge: var(--ink-dark); }
+.dc-toc .dc-toc-gear         { --dc-toc-badge: var(--signal-indigo); }
 .dc-toc ol > li[class*="dc-toc-"] {
   padding-left: 62px;
 }
@@ -1083,11 +1092,13 @@ table.dc-stat-strip {
   top: 6px;
   width: 48px;
   height: 30px;
-  background: var(--ink);
-  color: var(--dc-neon-core);
+  box-sizing: border-box;
   clip-path: none;
   line-height: 1;
-  box-shadow: var(--dc-lit-line), 0 0 0 1pt var(--ink), 2pt 2pt 0 var(--ink-dark);   /* an ink rim: a tube glows against dark */
+  font-family: var(--font-display);
+  font-weight: 400;
+  border: 1pt solid var(--ink);
+  border-width: 1pt 3px 3px 1pt;
 }
 
 .dc-toc ol>li>a {
@@ -1100,16 +1111,44 @@ table.dc-stat-strip {
   font-style: normal;
 }
 
-.dc-toc ol>li>a::after {
+/* The page number, on a chapter and on an entry listed under it, in the
+   chapter's colour (text-safe: cream on each chip is 4.5:1 or better). */
+.dc-toc li > a::after {
   content: ' p.' target-counter(attr(href), page);
   font-family: var(--font-mono);
   font-size: var(--fs-floor);
   font-weight: 600;
   letter-spacing: 1.5px;
-  color: var(--hud-blue);
+  color: var(--dc-toc-badge);
   font-style: normal;
   margin-left: 0.6em;
   white-space: nowrap;
+}
+
+/* An entry under a chapter that links to a specialty (its anchor holds the
+   specialty's name) opens with a swatch of that specialty's colour: the
+   catalog's and the chapter's own code, on the page that lists them. */
+.dc-toc li li > a { text-decoration: none; border-bottom: 0; color: var(--ink); }
+.dc-toc li li > a[href*="augmerc"]        { --dc-toc-spec: var(--augmerc-mid); }
+.dc-toc li li > a[href*="proxy"]          { --dc-toc-spec: var(--proxy-mid); }
+.dc-toc li li > a[href*="streetwarden"]   { --dc-toc-spec: var(--streetwarden-mid); }
+.dc-toc li li > a[href*="gutterdruid"]    { --dc-toc-spec: var(--gutterdruid-mid); }
+.dc-toc li li > a[href*="cybersurgeon"]   { --dc-toc-spec: var(--cybersurgeon-mid); }
+.dc-toc li li > a[href*="wirephreak"]     { --dc-toc-spec: var(--wirephreak-mid); }
+.dc-toc li li > a[href*="technosorcerer"] { --dc-toc-spec: var(--technosorcerer-mid); }
+.dc-toc li li > a[href*="etherlock"]      { --dc-toc-spec: var(--etherlock-mid); }
+.dc-toc li li > a[href*="dualist"]        { --dc-toc-spec: var(--dualist-mid); }
+.dc-toc li li > a[href*="generalist"]     { --dc-toc-spec: var(--generalist-mid); }
+.dc-toc li li > a:is([href*="augmerc"], [href*="proxy"], [href*="streetwarden"], [href*="gutterdruid"], [href*="cybersurgeon"], [href*="wirephreak"], [href*="technosorcerer"], [href*="etherlock"], [href*="dualist"], [href*="generalist"])::before {
+  content: "";
+  display: inline-block;
+  width: 0.72em;
+  height: 0.72em;
+  margin-right: 0.5em;
+  vertical-align: -0.04em;
+  background: var(--dc-toc-spec);
+  border: 1pt solid var(--ink);
+  box-sizing: border-box;
 }
 
 .dc-stat.dc-flush,
