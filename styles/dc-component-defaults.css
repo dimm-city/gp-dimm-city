@@ -316,6 +316,10 @@
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
 
+  /* a skill card's closing kicker (a short quote that ends the card): the sticker's fill and type; a specialty sets its band */
+  --dc-card-kicker-bg:       var(--brand-yellow);
+  --dc-card-kicker-fg:       var(--ink);
+
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;

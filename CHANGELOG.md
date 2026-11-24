@@ -24,6 +24,14 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A quote that closes a skill is its kicker.** Write a skill's last line as
+  a quote (`> You don't need an opening. You make one.`) and it prints as the
+  street-line sticker at the card's foot, in the specialty's band colour with
+  the band's own type colour, not the sheet's yellow. The quote that opens the
+  card is still its flavor line. Only a short quote (120 characters or under)
+  that truly ends the card is one: a quote with anything after it, a long
+  closing example and a closing paragraph (the sign-off) are unchanged. Tokens
+  `--dc-card-kicker-bg` / `-fg`.
 - **A skill's opening quote and its requirement note lose their left rails.**
   Both were one more box with a rail down the left, like every sheet and
   callout. The quote (`>` at the top of a `@skill`) now opens with a heavy

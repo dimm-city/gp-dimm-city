@@ -460,6 +460,29 @@
     left 0.05em top 0.34em / 1.1em 0.78em no-repeat;
 }
 
+/* The quote that closes a skill is its kicker (the plugin marks a short quote
+   that ends the card `.dc-kicker`): the sheet's street-line sticker, pasted at
+   the card's foot in the specialty's band colour, not the sheet's yellow.
+   Bold body type at the card's own size, tilted like every sticker, set in
+   from the right so it clears the foot's cut corner. */
+.dc-skill-card .dc-card-inner > p.dc-kicker {
+  width: fit-content;
+  max-width: 86%;
+  margin: var(--space-md) 0.3in 0 auto;
+  padding: var(--space-xs) var(--space-md);
+  border: 1.5pt solid var(--ink);
+  background: var(--dc-card-kicker-bg);
+  color: var(--dc-card-kicker-fg);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  line-height: 1.25;
+  transform: rotate(-2deg);
+  position: relative;
+  z-index: 2;
+}
+
 /* A sub-header (a ##### line) and the card's tab stay with what follows them. */
 .dc-skill-card .dc-sub-header,
 .dc-skill-card > .dc-card-tab {

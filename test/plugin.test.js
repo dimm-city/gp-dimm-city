@@ -2018,6 +2018,39 @@ describe("steps and examples", () => {
   });
 });
 
+describe("a skill card's quotes", () => {
+  const card = (...body) => renderGp(["@specialty .augmerc", "", "@learning-path", "", "### Path", "", "@skill", "", "#### Skill", "", ...body, "", "@end-learning-path", "", "@end-specialty", ""].join("\n")).html;
+  const classes = (html) => [...html.matchAll(/<p class="(dc-flavor|dc-kicker)">([^<]*)/g)].map((m) => m[1] + ": " + m[2]);
+
+  test("the quote that opens the card is its flavor line; a short quote that closes it is its kicker", () => {
+    expect(classes(card("> Opening voice.", "", "1. **1 AP** Do it.", "", "> Closing line.")))
+      .toEqual(["dc-flavor: Opening voice.", "dc-kicker: Closing line."]);
+  });
+  test("a quote with anything after it is not the kicker", () => {
+    expect(classes(card("> Opening voice.", "", "Text.", "", "> A quote mid-card.", "", "More text."))).toEqual(["dc-flavor: Opening voice.", "dc-flavor: A quote mid-card."]);
+  });
+  test("a card that is only a quote keeps it as its flavor line", () => {
+    expect(classes(card("> Only voice."))).toEqual(["dc-flavor: Only voice."]);
+  });
+  test("a long closing quote (an example) stays a quote", () => {
+    const long = "Example: " + "three innocuous objects hidden around a corporate machine shop ".repeat(2) + "are quickly assembled.";
+    expect(classes(card("> Opening voice.", "", "Text.", "", "> " + long))[1]).toMatch(/^dc-flavor: Example/);
+  });
+  test("a closing paragraph is still the sign-off, never the kicker", () => {
+    const html = card("> Opening voice.", "", "1. **1 AP** Do it.", "", "Only one may be active at a time.");
+    expect(html).toContain('<p class="dc-card-signoff"');
+    expect(html).not.toContain("dc-kicker");
+  });
+  test("the kicker is the sticker in the specialty's band colour", () => {
+    const read = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+    const rule = read("components/cards.css").match(/\.dc-skill-card \.dc-card-inner > p\.dc-kicker \{[^}]*\}/)[0];
+    expect(rule).toContain("background: var(--dc-card-kicker-bg);");
+    expect(rule).toContain("color: var(--dc-card-kicker-fg);");
+    expect(rule).toContain("transform: rotate(-2deg);");
+    expect(read("components/specialty-identity.css")).toMatch(/--dc-card-kicker-bg: var\(--spec-band\);\s*--dc-card-kicker-fg: var\(--spec-on-band\);/);
+  });
+});
+
 describe("neon signs", () => {
   const doc = (...lines) => lines.join("\n");
   const signs = (html) => count(html, /class="dc-neon"/g);
