@@ -188,11 +188,11 @@
   place-items: center;
   line-height: 1;
   /* The number is the card's loudest mark: the graffiti caps (one weight, so
-     never a synthesized bold), in red on the ink head. The tube beside it
-     keeps the card's hue. */
+     never a synthesized bold), in the logo's yellow on the ink head. The
+     tube beside it keeps the card's hue. */
   font-family: var(--font-title);
   font-weight: 400;
-  color: var(--crimson);
+  color: var(--brand-yellow);
   /* a price window: one upright tube between the title and the number */
   box-shadow: inset 1.5pt 0 0 var(--dc-neon), inset 3pt 0 0 var(--dc-neon-core), inset 4.5pt 0 0 var(--dc-neon);
 }

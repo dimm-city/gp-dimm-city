@@ -2188,11 +2188,11 @@ describe("the entry cost line", () => {
 
 describe("polish rules in the stylesheets", () => {
   const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
-  test("a lightbox card's number is red, in the title face at its one weight", () => {
+  test("a lightbox card's number is yellow, in the title face at its one weight", () => {
     const value = css("components/neon.css").match(/\.dc-lit-value \{[^}]*\}/)[0];
     expect(value).toContain("font-family: var(--font-title);");
     expect(value).toContain("font-weight: 400;");   // Creaturepunk has one weight: no synthesized bold
-    expect(value).toContain("color: var(--crimson);");
+    expect(value).toContain("color: var(--brand-yellow);");
   });
   test("a warning's rail does not hang below its callout: at a column's foot that part printed at the head of the next column", () => {
     const rail = css("components/callouts.css").match(/\.dc-note\.warning::before,[^{]*\{[^}]*\}/)[0];
