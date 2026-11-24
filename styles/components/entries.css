@@ -465,7 +465,7 @@
      equipment    what it carries    plain line, grey chip
      effects      the benefit        teal chip marked +, a solid frame
      side-effects the cost           blood chip marked –, a dashed frame
-     requires     the prerequisite   aged-paper bar, ink chip
+     requires     the prerequisite   four corner brackets, ink chip
 
      div.dc-field.dc-field-<variant>
        span.dc-field-label        the chip (the variant's name, or label="…")
@@ -516,10 +516,16 @@
   display: inline;
   margin: 0;
 }
-/* A label with nothing beside it heads the paragraph that follows. */
+/* A label with nothing beside it heads the block that follows: the chip
+   alone, as wide as its word, with no bar, frame or surface. As a full-width
+   bar it took a line and a half of the card to say one word. */
 .dc-field:not(:has(> p)) {
   break-after: avoid;
-  margin-bottom: 0;
+  width: fit-content;
+  margin: 4pt 0 1pt;
+  padding: 0;
+  border: 0;
+  background: none;
 }
 
 /* SPECS — the item's rules: the dark boxed strip with a yellow rail. */
@@ -564,10 +570,28 @@
 .dc-field-effects + .dc-field-side-effects {
   margin-top: 2pt;
 }
-/* Requires, and the labels that say the same: a requirement bar. */
+/* Requires, and the labels that say the same (a specialty's gear, its
+   instruments, its hardware): a note held in four corner brackets, a HUD's
+   targeting frame round the kit an ability needs. No rail down its left and no
+   grey bar: a sheet, a callout and a quote each had a left rail already, and
+   this is none of them. Each bracket is two bars of the accent, opaque and
+   vector (ordinary one-colour gradients). */
 .dc-field-requires {
   --dc-field-accent: var(--ink-dark);
-  --dc-field-surface: var(--paper-aged);
+  --dc-field-surface: transparent;
+  --dc-field-bracket: 9pt;      /* each arm's length */
+  --dc-field-bracket-w: 1.5pt;  /* and weight */
+  border: 0;
+  padding: 5pt 9pt;
+  background:
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) left top / var(--dc-field-bracket) var(--dc-field-bracket-w) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) left top / var(--dc-field-bracket-w) var(--dc-field-bracket) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) right top / var(--dc-field-bracket) var(--dc-field-bracket-w) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) right top / var(--dc-field-bracket-w) var(--dc-field-bracket) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) left bottom / var(--dc-field-bracket) var(--dc-field-bracket-w) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) left bottom / var(--dc-field-bracket-w) var(--dc-field-bracket) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) right bottom / var(--dc-field-bracket) var(--dc-field-bracket-w) no-repeat,
+    linear-gradient(var(--dc-field-accent), var(--dc-field-accent)) right bottom / var(--dc-field-bracket-w) var(--dc-field-bracket) no-repeat;
   /* A prerequisite is a tag, not a passage: it never splits (a two-line band
      split one and one, the first a grey box stretched over empty space) and
      never ends a page alone, so it stays with the line after it. The other

@@ -981,7 +981,7 @@ A field is a labelled line of an entry: its rules, its traits, what a drug does 
 | `equipment` | Equipment | the same, in grey |
 | `effects` | Effects | a solid teal frame on white, a + on the chip: the benefit; sits over side effects |
 | `side-effects` | Side Effects | a dashed blood frame on white, a -- on the chip: the cost |
-| `requires` | Requires | a grey requirement bar |
+| `requires` | Requires | four corner brackets round the note, no rail and no bar |
 
 ```markdown {.dg-split}
 @field specs

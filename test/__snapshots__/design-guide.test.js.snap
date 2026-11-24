@@ -501,7 +501,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <tr data-source-range="24:25">
 <td>Logo</td>
 <td><code># Title {.dc-logo}</code></td>
-<td>Its level’s scale · yellow Creaturepunk caps, ink outline</td>
+<td>Its level’s scale · yellow Creaturepunk caps · <code>#</code> and <code>##</code> on an ink plate, smaller lines outlined in ink</td>
 <td>A name that shouts: a cover line, a gang, a chapter’s title</td>
 </tr>
 <tr data-source-range="25:26">
@@ -576,7 +576,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <h3 class="dc-spec-tweak dc-no-top" data-name="spec-tweak-wired-to-kill">Spec Tweak: Wired to Kill</h3>
 </div></div>
 <h2 data-name="the-logo-look"><span class="dc-fit" style="--dc-fit-adv: 9.049; --dc-fit-n: 13; --dc-fit-s: 2; --dc-fit-word-adv: 3.261; --dc-fit-word-n: 4">The logo look</span></h2>
-<p><code>{.dc-logo}</code> sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline. Keep it for a name that has to shout; on every heading it stops shouting.</p>
+<p><code>{.dc-logo}</code> sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps. A <code>#</code> or <code>##</code> is a plate, upright and centred, yellow on ink with a hard shadow and a yellow hex bolt in each corner (its own: the grey slotted heads are a <code>##</code> slip’s); a smaller heading or a line of text has an ink outline instead. A fiction excerpt’s title is the same plate without the class. Keep it for a name that has to shout; on every heading it stops shouting.</p>
 <pre><code data-source-range="128:133" class="language-markdown"># Gutter Rats {.dc-logo}
 
 ### Guns &amp; Gear {.dc-logo}
@@ -586,7 +586,7 @@ exports[`rendered output 02-typography.md matches its snapshot 1`] = `
 <div class="section dc-section-panel" data-section="panel" data-name="gutter-rats" data-source-range="138:139"><h1 class="dc-logo" data-name="gutter-rats"><span class="dc-fit" style="--dc-fit-adv: 8.021; --dc-fit-n: 11; --dc-fit-s: 1; --dc-fit-word-adv: 4.597; --dc-fit-word-n: 6">Gutter Rats</span></h1>
 <h3 class="dc-logo" data-name="guns-gear">Guns &amp; Gear</h3>
 </div></div>
-<p>The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours it with <code>--dc-logo-color</code> and <code>--dc-logo-outline</code>, and thickens it with <code>--dc-logo-outline-width</code> (0.05em).</p>
+<p>The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours the logo with <code>--dc-logo-color</code>, and the outline with <code>--dc-logo-outline</code> and <code>--dc-logo-outline-width</code> (0.05em). <code>--dc-logo-bolt</code> is the plate’s bolt, a picture; <code>none</code> takes the bolts off.</p>
 <h2 data-name="body-and-flavor"><span class="dc-fit" style="--dc-fit-adv: 10.516; --dc-fit-n: 15; --dc-fit-s: 2; --dc-fit-word-adv: 4.654; --dc-fit-word-n: 6">Body and flavor</span></h2>
 <div class="dg-stage dg-on-paper">
 <p>Twelve-point Titillium Web carries all running narrative. Corporate enforcers earn their grafts in blood and overtime; street muscle runs cheaper and lasts longer than anyone admits. Notice the leading, the x-height, and how weight shifts when a word is <strong>bolded</strong> or <em>italicized</em> mid-sentence.</p>
@@ -2067,7 +2067,7 @@ You list every connected system and who is logged in. The Dream Master names any
 <tr data-source-range="983:984">
 <td><code>requires</code></td>
 <td>Requires</td>
-<td>a grey requirement bar</td>
+<td>four corner brackets round the note, no rail and no bar</td>
 </tr>
 </tbody>
 </table>
@@ -2884,7 +2884,7 @@ Gutterdruids rewrite their own flesh to match the wasteland around them.
 </div></div></div>
 <p>A path with no subtitle and no sticker chain is the band alone. Tokens: <code>--dc-path-title-bg</code>, <code>--dc-path-title-color</code>, <code>--dc-path-code-bg</code>, <code>--dc-path-code-fg</code>, <code>--dc-path-chip-bg</code>, <code>--dc-path-chip-fg</code>, <code>--dc-path-chip-edge</code>, <code>--dc-path-note-rail</code>, <code>--dc-path-accent</code>, <code>--dc-arrow-color</code>, and the band tokens above.</p>
 <h2 data-name="skill-card"><span class="dc-fit" style="--dc-fit-adv: 7.085; --dc-fit-n: 10; --dc-fit-s: 1; --dc-fit-word-adv: 3.5; --dc-fit-word-n: 5">Skill card</span></h2>
-<p>The anatomy of one card: a <code>####</code> name, optionally <code>| Tier</code> to override the computed tier; a <code>&gt;</code> flavor line; an ordered list where each item starts with <code>**N AP**</code> — rendered as a cost chip — and an italic ability name; and a closing <code>#####</code> line that becomes the card’s sub-header sticker. A skill sits in a learning path. <code>@skill</code> opens a skill, and opening the next one closes it; <code>@end-skill</code> closes just that skill, never the path around it. A <code>####</code> heading starts a card, so one <code>@skill</code> with two <code>####</code> headings makes two cards.</p>
+<p>The anatomy of one card: a <code>####</code> name, optionally <code>| Tier</code> to override the computed tier; a <code>&gt;</code> flavor line; an ordered list where each item starts with <code>**N AP**</code> — rendered as a cost chip — and an italic ability name; and a closing <code>#####</code> line that becomes the card’s sub-header sticker. End the card on a second, short <code>&gt;</code> line and it is the card’s kicker: a sticker at its foot in the specialty’s colour. A skill sits in a learning path. <code>@skill</code> opens a skill, and opening the next one closes it; <code>@end-skill</code> closes just that skill, never the path around it. A <code>####</code> heading starts a card, so one <code>@skill</code> with two <code>####</code> headings makes two cards.</p>
 <pre><code data-source-range="298:325" class="language-markdown">@specialty .augmerc
 
 @learning-path
@@ -4107,7 +4107,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 <tr data-source-range="79:80">
 <td><code>.dc-logo</code></td>
 <td>any heading, a paragraph</td>
-<td>The CREATUREPUNK logo look: yellow Creaturepunk caps, ink outline</td>
+<td>The CREATUREPUNK logo look: yellow Creaturepunk caps, on an ink plate (<code>#</code>, <code>##</code>) or outlined in ink (smaller)</td>
 </tr>
 <tr data-source-range="80:81">
 <td><code>.dc-spec-tweak</code> · <code>.dc-no-top</code></td>
@@ -4225,7 +4225,7 @@ exports[`rendered output 10-reference.md matches its snapshot 1`] = `
 </tr>
 <tr data-source-range="115:116">
 <td>Logo</td>
-<td><code>--dc-logo-color</code> <code>--dc-logo-outline</code> <code>--dc-logo-outline-width</code></td>
+<td><code>--dc-logo-color</code> <code>--dc-logo-outline</code> <code>--dc-logo-outline-width</code> <code>--dc-logo-bolt</code></td>
 </tr>
 <tr data-source-range="116:117">
 <td>Class tag</td>

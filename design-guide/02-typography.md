@@ -22,7 +22,7 @@ Three faces, each with one job. lixdu is the display face for chapter and sectio
 | Flavor | `> [!FLAVOR]` | 11pt italic · Titillium Web | In-world voice |
 | Chevron banner | `# Title {.dc-chevron}` | H1 scale, angled fill | One per chapter opener |
 | Spray banner | `## Title {.dc-spray}` | H2 scale, a stencilled tag with a stepped edge | Learning paths, major topic breaks |
-| Logo | `# Title {.dc-logo}` | Its level's scale · yellow Creaturepunk caps, ink outline | A name that shouts: a cover line, a gang, a chapter's title |
+| Logo | `# Title {.dc-logo}` | Its level's scale · yellow Creaturepunk caps · `#` and `##` on an ink plate, smaller lines outlined in ink | A name that shouts: a cover line, a gang, a chapter's title |
 | Card tab | emitted by `@skill` | 11pt title, 10pt tier pill · Tomorrow | Skill-card tab labels |
 | Tag | `<span class="dc-tag">` | 10pt · Tomorrow | Keyword and cost chips |
 
@@ -124,7 +124,7 @@ Result {.dg-result}
 
 ## The logo look
 
-`{.dc-logo}` sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps with an ink outline. Keep it for a name that has to shout; on every heading it stops shouting.
+`{.dc-logo}` sets a heading at any level, or a line of text, like the CREATUREPUNK logo: yellow Creaturepunk caps. A `#` or `##` is a plate, upright and centred, yellow on ink with a hard shadow and a yellow hex bolt in each corner (its own: the grey slotted heads are a `##` slip's); a smaller heading or a line of text has an ink outline instead. A fiction excerpt's title is the same plate without the class. Keep it for a name that has to shout; on every heading it stops shouting.
 
 ```markdown
 # Gutter Rats {.dc-logo}
@@ -146,7 +146,7 @@ Result {.dg-result}
 
 </div>
 
-The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours it with `--dc-logo-color` and `--dc-logo-outline`, and thickens it with `--dc-logo-outline-width` (0.05em).
+The outline is hard shadows round each letter, not a stroke, so the text prints live in its own font. A book recolours the logo with `--dc-logo-color`, and the outline with `--dc-logo-outline` and `--dc-logo-outline-width` (0.05em). `--dc-logo-bolt` is the plate's bolt, a picture; `none` takes the bolts off.
 
 ## Body and flavor
 

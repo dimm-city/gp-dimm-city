@@ -294,7 +294,7 @@ A path with no subtitle and no sticker chain is the band alone. Tokens: `--dc-pa
 
 ## Skill card
 
-The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` --- rendered as a cost chip --- and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. A skill sits in a learning path. `@skill` opens a skill, and opening the next one closes it; `@end-skill` closes just that skill, never the path around it. A `####` heading starts a card, so one `@skill` with two `####` headings makes two cards.
+The anatomy of one card: a `####` name, optionally `| Tier` to override the computed tier; a `>` flavor line; an ordered list where each item starts with `**N AP**` --- rendered as a cost chip --- and an italic ability name; and a closing `#####` line that becomes the card's sub-header sticker. End the card on a second, short `>` line and it is the card's kicker: a sticker at its foot in the specialty's colour. A skill sits in a learning path. `@skill` opens a skill, and opening the next one closes it; `@end-skill` closes just that skill, never the path around it. A `####` heading starts a card, so one `@skill` with two `####` headings makes two cards.
 
 ```markdown
 @specialty .augmerc

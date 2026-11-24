@@ -316,6 +316,10 @@
   /* .dc-fiction public API */
   --dc-fiction-art-float:    left;
 
+  /* a skill card's closing kicker (a short quote that ends the card): the sticker's fill and type; a specialty sets its band */
+  --dc-card-kicker-bg:       var(--brand-yellow);
+  --dc-card-kicker-fg:       var(--ink);
+
   /* .dc-flavor public API */
   --dc-flavor-accent:        var(--orange);
   --dc-flavor-accent-width:  3px;
@@ -490,6 +494,8 @@
   --dc-logo-color:           var(--brand-yellow);
   --dc-logo-outline:         var(--ink);
   --dc-logo-outline-width:   0.05em;
+  /* the logo plate's corner bolt (chrome.css): a hexagon head with a socket, --brand-yellow with --ink-dark in it */
+  --dc-logo-bolt:            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 1.3h10l5 8.7-5 8.7H5L0 10z' fill='%23ffd700'/%3E%3Ccircle cx='10' cy='10' r='4.3' fill='%232f2622'/%3E%3C/svg%3E");
 
   /* .dc-tag (inline chip) public API */
   --dc-tag-bg:               var(--paper-cream);

@@ -24,6 +24,42 @@ cut a version that has no `## [X.Y.Z]` heading below.
   `--dc-specialty-card-display`, `-media-order`, `-media-shape`, `-media-mat`,
   `--dc-card-grid-media-wide` and each specialty's `--spec-media-shape`.
 
+- **A logo plate is bolted at its four corners.** Each corner of the plate
+  (a `#` or `##` written `{.dc-logo}`, a fiction excerpt's title) carries a
+  hexagon bolt head with a socket, in the logo's yellow. It is the plate's own
+  hardware: the grey slotted heads stay on a `##` slip, a skill card and a
+  sign. Token `--dc-logo-bolt` (an inline SVG; `none` takes the bolts off).
+- **A fiction excerpt's title is the logo plate.** A story's `#` title was a
+  tilted line of chapter-coloured type on the page. It is now the plate the
+  logo headings use: logo yellow on ink with a hard shadow, upright and
+  centred, at `--dc-fiction-title-size`. The plate is the package's now, not a
+  book's: a `#` or `##` written `{.dc-logo}` is one wherever it stands, with no
+  outline (on ink it only thickened the letters). A smaller heading or a
+  paragraph set as the logo keeps the outlined look.
+- **A quote that closes a skill is its kicker.** Write a skill's last line as
+  a quote (`> You don't need an opening. You make one.`) and it prints as the
+  street-line sticker at the card's foot, in the specialty's band colour with
+  the band's own type colour, not the sheet's yellow. The quote that opens the
+  card is still its flavor line. Only a short quote (120 characters or under)
+  that truly ends the card is one: a quote with anything after it, a long
+  closing example and a closing paragraph (the sign-off) are unchanged. Tokens
+  `--dc-card-kicker-bg` / `-fg`.
+- **A skill's opening quote and its requirement note lose their left rails.**
+  Both were one more box with a rail down the left, like every sheet and
+  callout. The quote (`>` at the top of a `@skill`) now opens with a heavy
+  quotation mark in the specialty's colour and is set in the specialty's
+  text-safe ink, with no rail or field. A requirement (`**Requires:**`,
+  `**Wirephreak Gear:**`, `**Cybersurgeon Instruments:**`) is held in four
+  corner brackets, with no rail and no grey bar. A flavor line anywhere else is
+  unchanged.
+- **A field label with nothing beside it is the chip alone.** A bold label
+  on a line of its own in a card (`**TECHNOENHANCEMENT:**`) drew a full-width
+  grey bar holding one word. It is now the chip, as wide as its word, with no
+  bar, frame or surface, and it still stays with the block it heads.
+- **The rules chapter's opener hangs no neon sign.** The RULES sign above the
+  opener's title is gone, as the Dream Master's and the gear chapter's were
+  (owner, 2026-11-24). Only a Citizen File opener whose title stands straight
+  on the page still hangs one.
 - **One text inset and one gap for sheets.** Text starts 0.15in clear of the
   rail in every kind of sheet: the padding was measured from the box edge with
   the rail inside it, which left 7pt beside a panel's rail and 6pt beside a

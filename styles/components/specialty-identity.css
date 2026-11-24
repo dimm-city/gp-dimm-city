@@ -81,6 +81,8 @@
   --dc-tier-fg: var(--spec-chip-fg);
   --dc-tier-edge: var(--spec-chip-edge);
   --dc-flavor-accent: var(--spec-mid);
+  --dc-card-kicker-bg: var(--spec-band);
+  --dc-card-kicker-fg: var(--spec-on-band);
 }
 
 .dc-specialty .dc-path-shell {

@@ -439,7 +439,7 @@ Magenta is the `panel` default only. `flat` (a rail, no bar, no clip, no shadow)
 - Tab background uses `--dc-card-tab-bg` (specialty's mid colour) with a clipped polygon shape.
 - Per-specialty clip-path geometry distinguishes specialties at-a-glance, and the silhouette follows the register (see "Specialty silhouettes" under the register table): tech = crisp stair-steps and square bites (augmerc, wirephreak, cybersurgeon), magic = facets and lozenges (etherlock, dualist, generalist, proxy's gate), landfill = torn (technosorcerer), organic = wobbly (gutterdruid), civic hazard = a sign-plate octagon (streetwarden). The tab, the card body, the path banner and the intro share a specialty's language.
 - The **tier pill** on the tab (AUG1.3) is the specialty's own chip (`--spec-chip-*`), not a position colour. There is no bronze/gold/silver and no featured-card variant: every card is the same card.
-- The flavor line's rail is the specialty's mid colour.
+- The flavor line (the `>` that opens a skill) has no rail: a heavy opening quotation mark in the specialty's mid colour hangs beside its first line, and the line is set in the specialty's text-safe ink (owner, 2026-11-24: a left rail already marked every sheet and callout).
 - AP chips and inline ROLL THE DIE markers ride INSIDE the card body — they're digital-display elements pinned to the paper poster.
 - A `ROLL THE DIE!` in a specialty card, path or intro takes that specialty's own text-safe ink (`--spec-ink` → `--dc-accent-ink`: deep teal for augmerc, deep magenta for proxy, a dark ink of the family where the accent is bright yellow, green or chrome), at 4.5:1 or better on the cream, light or aged paper it sits on.
 - Body and ability text ≥ 10pt; chip and tab labels at the 10pt floor too.
@@ -536,7 +536,7 @@ A price board: the entries are ruled in their kind's colour, not boxed, and each
 
 ### Fields
 
-One chip family (the same slanted-edge label chip) for all six. What each means shows in its frame: **effects** = a solid teal frame, a "+" on the chip (the benefit); **side effects** = a dashed blood frame, a "–" on the chip (the cost); both on white. SPECS is the dark strip with a yellow rail; traits and equipment are a plain line under a chip; requires is a bar.
+One chip family (the same slanted-edge label chip) for all six. What each means shows in its frame: **effects** = a solid teal frame, a "+" on the chip (the benefit); **side effects** = a dashed blood frame, a "–" on the chip (the cost); both on white. SPECS is the dark strip with a yellow rail; traits and equipment are a plain line under a chip; requires is held in four corner brackets, with no rail and no surface (owner, 2026-11-24).
 
 ### Procedure (`@procedure`)
 
