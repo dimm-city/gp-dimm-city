@@ -530,8 +530,13 @@ p:has(+ .dc-outcomes) {
    the tab. A rung never splits; the ladder breaks between rungs. It reads the
    same tokens as the outcome ladder: --dc-outcomes-surface / -border /
    -inner-border, --dc-outcome-key-color. */
+/* Each tab hangs 6px off its plate's left edge. The ladder keeps that 6px as
+   its own left margin, so the tab stays inside the box the ladder stands in.
+   Without it, a ladder standing straight on a page put its tabs 6px outside
+   the page's content box: the page's clip cut their left border off, and on a
+   page with pinned art (no clip there) the build stopped on them as overflow. */
 .dc-ladder {
-  margin: 8px 0 0; /* the tabs hang 10px off the left edge, into the gutter */
+  margin: 8px 0 0 6px;
 }
 .dc-rung {
   position: relative;

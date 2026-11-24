@@ -2188,6 +2188,11 @@ describe("the entry cost line", () => {
 
 describe("polish rules in the stylesheets", () => {
   const css = (f) => readFileSync(new URL(`../styles/${f}`, import.meta.url), "utf8");
+  test("a ladder's tabs stay inside the box the ladder stands in: its left margin is the 6px they hang by", () => {
+    const data = css("components/data.css");
+    expect(data).toMatch(/\.dc-ladder \{\s*margin: 8px 0 0 6px;\s*\}/);
+    expect(data.match(/\.dc-rung-title \{[^}]*\}/)[0]).toContain("margin: 0 0 -11px -6px;");
+  });
   test("a lightbox card's number is yellow, in the title face at its one weight", () => {
     const value = css("components/neon.css").match(/\.dc-lit-value \{[^}]*\}/)[0];
     expect(value).toContain("font-family: var(--font-title);");
